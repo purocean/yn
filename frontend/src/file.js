@@ -29,5 +29,14 @@ export default {
         }
       })
     })
+  },
+  delete: (path, call) => {
+    fetch(`/api/file?path=${encodeURIComponent(path)}`, {method: 'DELETE'}).then(response => {
+      response.json().then(result => {
+        if (result.status === 'ok') {
+          call(result)
+        }
+      })
+    })
   }
 }

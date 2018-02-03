@@ -1,10 +1,10 @@
 <template>
   <div class="tree-node" :style="`padding-left: 1em`">
     <details open v-if="item.type === 'dir'">
-      <summary @contextmenu.prevent="createFile"> {{ item.name }} </summary>
+      <summary  @dblclick="createFile()" @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </summary>
       <tree-node @select="f => $emit('select', f)" @change="p => $emit('change', p)" v-for="x in item.children" :key="x.path" :item="x"></tree-node>
     </details>
-    <span v-else @click="select"> {{ item.name }} </span>
+    <div v-else @click="select" @contextmenu.prevent="deleteFile"> {{ item.name }} </div>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
     select () {
       this.$emit('select', this.item)
     },
-    createFile (e) {
+    createFile () {
       const filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')
 
       if (!filename) {
@@ -43,6 +43,13 @@ export default {
       File.write(path, '# 新文件', () => {
         this.$emit('change', path)
       })
+    },
+    deleteFile () {
+      if (window.confirm(`确定要删除 [${this.item.path}] 吗？`)) {
+        File.delete(this.item.path, () => {
+          this.$emit('change')
+        })
+      }
     }
   }
 }

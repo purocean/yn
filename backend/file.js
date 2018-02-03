@@ -27,8 +27,8 @@ const rmRecursiveSync = location => {
     }
 }
 
-const resolvePath = p => {
-    p = __dirname + '/../data/' + p.replace(/\.\./g, '')
+const resolvePath = (p, dir = 'data') => {
+    p = __dirname + '/../' + dir + '/' + p.replace(/\.\./g, '')
 
     return path.resolve(p)
 }
@@ -71,9 +71,13 @@ exports.write = (p, content) => {
 }
 
 exports.rm = p => {
-    p = resolvePath(p)
+    if (resolvePath(p) !== resolvePath('')) {
+        const newPath = resolvePath(p, 'trash') + '.' + (new Date).getTime()
 
-    rmRecursiveSync(p)
+        mkdirPSync(path.dirname(newPath))
+
+        fs.renameSync(resolvePath(p), newPath)
+    }
 }
 
 exports.tree = () => {
