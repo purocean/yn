@@ -1,6 +1,6 @@
 <template>
   <aside>
-    <TreeNode v-for="item in tree" :item = "item" :key="item.path" @change="change" @select="f => file = f"></TreeNode>
+    <TreeNode :slected-file="file" v-for="item in tree" :item = "item" :key="item.path" @change="change" @select="f => file = f"></TreeNode>
   </aside>
 </template>
 

@@ -1,10 +1,22 @@
 <template>
-  <div class="tree-node" :style="`padding-left: 1em`">
+  <div class="tree-node">
     <details open v-if="item.type === 'dir'">
-      <summary  @dblclick="createFile()" @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </summary>
-      <tree-node @select="f => $emit('select', f)" @change="p => $emit('change', p)" v-for="x in item.children" :key="x.path" :item="x"></tree-node>
+      <summary
+        :style="{background: selected ? '#eee' : 'none'}"
+        @dblclick="createFile()"
+        @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </summary>
+      <tree-node
+        @select="select"
+        @change="p => $emit('change', p)"
+        v-for="x in item.children"
+        :key="x.path" :item="x"
+        :slected-file="slectedFile"></tree-node>
     </details>
-    <div v-else @click="select" @contextmenu.prevent="deleteFile"> {{ item.name }} </div>
+    <div
+      v-else
+      @click="select(item)"
+      @contextmenu.prevent="deleteFile"
+      :style="{background: selected ? '#53ddf3' : 'none'}"> {{ item.name }} </div>
   </div>
 </template>
 
@@ -14,13 +26,28 @@ import File from '../file'
 export default {
   name: 'tree-node',
   props: {
-    item: Object
+    item: Object,
+    slectedFile: {
+      type: Object,
+      default: null
+    }
+  },
+  data () {
+    return {
+      selected: false
+    }
   },
   mounted () {
   },
   methods: {
-    select () {
-      this.$emit('select', this.item)
+    select (f) {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.selected = true
+        })
+      })
+
+      this.$emit('select', f)
     },
     createFile () {
       let filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')
@@ -50,6 +77,12 @@ export default {
         })
       }
     }
+  },
+  watch: {
+    slectedFile () {
+      this.selected = false
+      console.log('xxxxxxxxx')
+    }
   }
 }
 </script>
@@ -59,6 +92,7 @@ export default {
   border-left: 1px rgb(155, 155, 154) solid;
   font-size: 25px;
   line-height: 1.3em;
+  padding-left: 1em;
 }
 
 .tree-node * {

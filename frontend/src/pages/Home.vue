@@ -2,7 +2,7 @@
   <div>
     <header class="header">
       <div>
-        <h4 style="padding: .5em;margin: 0"> {{ file.name }}-{{ status }} </h4>
+        <h4 style="padding: 2em;margin: 0"> {{ file.path }}-{{ status }} </h4>
       </div>
     </header>
     <div style="display: flex; just-content: ">
