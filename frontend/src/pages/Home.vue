@@ -50,14 +50,15 @@ export default {
         return
       }
 
+      const content = this.value
+      this.lastSaveContent = content
       fetch('/api/file', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({path, content: this.value})
+        body: JSON.stringify({path, content})
       }).then(response => {
         response.json().then(result => {
           if (result.status === 'ok') {
-            this.lastSaveContent = this.value
             this.status = '保存于：' + (new Date()).toLocaleString()
           }
         })
