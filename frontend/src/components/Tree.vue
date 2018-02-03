@@ -36,7 +36,7 @@ export default {
     },
     onDelete (path) {
       // 删除了正在编辑的文件或者其父目录
-      if (this.file.path.startsWith(path)) {
+      if (this.file && this.file.path.startsWith(path)) {
         this.file = null
       }
 
