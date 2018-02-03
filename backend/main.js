@@ -19,6 +19,8 @@ const fileContent = ctx => {
 
             ctx.body = result()
         }
+    } else if (ctx.path === '/api/tree') {
+        ctx.body = result('ok', '获取成功', file.tree())
     }
 }
 

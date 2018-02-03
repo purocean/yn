@@ -8,7 +8,7 @@ import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
 
 export default {
-  name: 'view',
+  name: 'xview',
   props: {
     value: String
   },

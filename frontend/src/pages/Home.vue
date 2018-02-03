@@ -1,17 +1,19 @@
 <template>
   <div style="display: flex; just-content: ">
+    <Tree class="tree"></Tree>
     <Editor class="editor" v-model="value"></Editor>
-    <XView class="Xview" :value="value"></XView>
+    <XView class="view" :value="value"></XView>
   </div>
 </template>
 
 <script>
 import Editor from '../components/Editor'
 import XView from '../components/View'
+import Tree from '../components/Tree'
 
 export default {
   name: 'home',
-  components: { XView, Editor },
+  components: { XView, Editor, Tree },
   data () {
     return {
       value: '# jlkjkl'
@@ -27,9 +29,14 @@ export default {
 </script>
 
 <style scoped>
+.tree {
+  height: 90vh;
+  width: 20vw;
+}
+
 .editor {
   height: 90vh;
-  width: 50vw;
+  width: 40vw;
 }
 
 .view {
@@ -38,7 +45,7 @@ export default {
   max-width: 980px;
   margin: 0 auto;
   padding: 45px;
-  width: 50vw;
+  width: 40vw;
 }
 
 @media (max-width: 767px) {

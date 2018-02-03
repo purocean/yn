@@ -19,11 +19,11 @@ const rmRecursiveSync = location => {
     if (fs.statSync(location).isDirectory()) {
         let _ = fs.readdirSync(location)
         _.forEach(childItemName => {
-            rmRecursiveSync(path.join(location, childItemName));
+            rmRecursiveSync(path.join(location, childItemName))
         })
-        fs.rmdirSync(location);
+        fs.rmdirSync(location)
     } else {
-        fs.unlinkSync(location);
+        fs.unlinkSync(location)
     }
 }
 
@@ -31,6 +31,31 @@ const resolvePath = p => {
     p = __dirname + '/../data/' + p.replace(/\.\./g, '')
 
     return path.resolve(p)
+}
+
+const travels = location => {
+    if (!fs.statSync(location).isDirectory()) {
+        return []
+    }
+
+    return fs.readdirSync(location).filter(x => !x.startsWith('.')).map(x => {
+        const p = path.join(location, x)
+        const xpath = p.replace(resolvePath(''), '')
+        if (fs.statSync(p).isDirectory()) {
+            return {
+                name: x,
+                path: xpath,
+                type: 'dir',
+                children: travels(p)
+            }
+        } else {
+            return {
+                name: x,
+                path: xpath,
+                type: 'file'
+            }
+        }
+    })
 }
 
 exports.read = p => {
@@ -49,4 +74,8 @@ exports.rm = p => {
     p = resolvePath(p)
 
     rmRecursiveSync(p)
+}
+
+exports.tree = () => {
+    return travels(resolvePath(''))
 }
