@@ -2,7 +2,14 @@
   <div>
     <header class="header">
       <div>
-        <h4 style="padding: 2em;margin: 0"> {{ file.path }}-{{ status }} </h4>
+        <h4 style="padding: 2em;margin: 0">
+          <span v-if="file">
+            {{ file.path }}-{{ status }}
+          </span>
+          <span v-else>
+            未打开文件
+          </span>
+        </h4>
       </div>
     </header>
     <div style="display: flex; just-content: ">
@@ -27,13 +34,13 @@ export default {
       status: '请选择文件',
       value: '',
       lastSaveContent: '',
-      file: {name: '未选择文件'},
+      file: null,
       timer: null
     }
   },
   mounted () {
     this.timer = window.setInterval(() => {
-      this.saveFile(this.file.path)
+      this.saveFile(this.file)
     }, 5000)
   },
   beforeDestroy () {
@@ -42,8 +49,8 @@ export default {
     }
   },
   methods: {
-    saveFile (path) {
-      if (!path) {
+    saveFile (file) {
+      if (!file) {
         return
       }
 
@@ -53,17 +60,21 @@ export default {
 
       const content = this.value
       this.lastSaveContent = content
-      File.write(path, content, () => {
+      File.write(file.path, content, () => {
         this.status = '保存于：' + (new Date()).toLocaleString()
       })
     }
   },
   watch: {
     file (f) {
-      File.read(f.path, data => {
-        this.$refs.editor.setValue(data)
-        this.status = '加载完毕'
-      })
+      if (f) {
+        File.read(f.path, data => {
+          this.$refs.editor.setValue(data)
+          this.status = '加载完毕'
+        })
+      } else {
+        this.$refs.editor.setValue('')
+      }
     }
   }
 }

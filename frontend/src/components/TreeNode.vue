@@ -6,11 +6,12 @@
         @dblclick="createFile()"
         @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </summary>
       <tree-node
-        @select="select"
-        @change="p => $emit('change', p)"
         v-for="x in item.children"
         :key="x.path" :item="x"
-        :slected-file="slectedFile"></tree-node>
+        :slected-file="slectedFile"
+        @select="select"
+        @change="p => $emit('change', p)"
+        @delete="p => $emit('delete', p)"></tree-node>
     </details>
     <div
       v-else
@@ -73,7 +74,7 @@ export default {
     deleteFile () {
       if (window.confirm(`确定要删除 [${this.item.path}] 吗？`)) {
         File.delete(this.item.path, () => {
-          this.$emit('change')
+          this.$emit('delete', this.item.path)
         })
       }
     }
@@ -81,7 +82,6 @@ export default {
   watch: {
     slectedFile () {
       this.selected = false
-      console.log('xxxxxxxxx')
     }
   }
 }

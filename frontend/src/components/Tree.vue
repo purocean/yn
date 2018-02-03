@@ -1,6 +1,14 @@
 <template>
   <aside>
-    <TreeNode :slected-file="file" v-for="item in tree" :item = "item" :key="item.path" @change="change" @select="f => file = f"></TreeNode>
+    <TreeNode
+      v-for="item in tree"
+      :slected-file="file"
+      :item="item"
+      :key="item.path"
+      @change="change"
+      @select="f => file = f"
+      @delete="onDelete"
+      ></TreeNode>
   </aside>
 </template>
 
@@ -25,6 +33,14 @@ export default {
       File.tree(tree => {
         this.tree = tree
       })
+    },
+    onDelete (path) {
+      // 删除了正在编辑的文件或者其父目录
+      if (this.file.path.startsWith(path)) {
+        this.file = null
+      }
+
+      this.init()
     },
     change (path) {
       this.init()
