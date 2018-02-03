@@ -23,7 +23,7 @@ export default {
       this.$emit('select', this.item)
     },
     createFile () {
-      const filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')
+      let filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')
 
       if (!filename) {
         return
@@ -35,8 +35,7 @@ export default {
       }
 
       if (!filename.endsWith('.md')) {
-        window.alert('文件名必须以 .md 结尾')
-        return
+        filename += '.md'
       }
 
       const path = this.item.path + '/' + filename
