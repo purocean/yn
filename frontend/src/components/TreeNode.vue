@@ -1,8 +1,8 @@
 <template>
-  <div class="tree-node" :style="`padding-left: ${level}em`">
+  <div class="tree-node" :style="`padding-left: 1em`">
     <details open v-if="item.type === 'dir'">
       <summary> {{ item.name }} </summary>
-      <tree-node v-for="x in item.children" :key="x.path" :level="level + 1" :item="x"></tree-node>
+      <tree-node v-for="x in item.children" :key="x.path" :item="x"></tree-node>
     </details>
     <span v-else @click="select"> {{ item.name }} </span>
   </div>
@@ -12,11 +12,7 @@
 export default {
   name: 'tree-node',
   props: {
-    item: Object,
-    level: {
-      type: Number,
-      default: 0
-    }
+    item: Object
   },
   mounted () {
     console.log(this.item.children)
@@ -30,6 +26,10 @@ export default {
 </script>
 
 <style scoped>
+.tree-node {
+  border-left: 1px rgb(155, 155, 154) solid;
+}
+
 .tree-node * {
   user-select: none;
 }

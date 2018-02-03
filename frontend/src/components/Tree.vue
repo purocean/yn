@@ -1,5 +1,6 @@
 <template>
   <aside>
+    文件
     <TreeNode v-for="item in tree" :item = "item" :key="item.path"></TreeNode>
   </aside>
 </template>
