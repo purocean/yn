@@ -2,7 +2,7 @@
   <div class="tree-node" :style="`padding-left: 1em`">
     <details open v-if="item.type === 'dir'">
       <summary> {{ item.name }} </summary>
-      <tree-node v-for="x in item.children" :key="x.path" :item="x"></tree-node>
+      <tree-node @select="f => $emit('select', f)" v-for="x in item.children" :key="x.path" :item="x"></tree-node>
     </details>
     <span v-else @click="select"> {{ item.name }} </span>
   </div>
@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     select () {
-      alert(this.item.path)
+      this.$emit('select', this.item)
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <aside>
     文件
-    <TreeNode v-for="item in tree" :item = "item" :key="item.path"></TreeNode>
+    <TreeNode v-for="item in tree" :item = "item" :key="item.path" @select="f => file = f"></TreeNode>
   </aside>
 </template>
 
@@ -13,7 +13,8 @@ export default {
   components: { TreeNode },
   data () {
     return {
-      tree: []
+      tree: [],
+      file: null
     }
   },
   mounted () {
@@ -24,6 +25,11 @@ export default {
         }
       })
     })
+  },
+  watch: {
+    file (f) {
+      this.$emit('input', f)
+    }
   }
 }
 </script>

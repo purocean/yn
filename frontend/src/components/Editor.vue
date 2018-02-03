@@ -41,6 +41,9 @@ export default {
       this.editor.onDidChangeModelContent((e) => {
         this.$emit('input', this.editor.getModel().getValue())
       })
+    },
+    setValue (val) {
+      this.editor.getModel().setValue(val)
     }
   }
 }
