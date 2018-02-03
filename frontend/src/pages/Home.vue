@@ -25,6 +25,7 @@ export default {
     return {
       status: '请选择文件',
       value: '',
+      lastSaveContent: '',
       file: {name: '未选择文件'},
       timer: null
     }
@@ -45,6 +46,10 @@ export default {
         return
       }
 
+      if (this.lastSaveContent === this.value) {
+        return
+      }
+
       fetch('/api/file', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -52,6 +57,7 @@ export default {
       }).then(response => {
         response.json().then(result => {
           if (result.status === 'ok') {
+            this.lastSaveContent = this.value
             this.status = '保存于：' + (new Date()).toLocaleString()
           }
         })
