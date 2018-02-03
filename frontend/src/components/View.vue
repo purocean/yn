@@ -4,8 +4,10 @@
 
 <script>
 import 'github-markdown-css/github-markdown.css'
+import 'highlight.js/styles/github-gist.css'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
+import Highlight from 'highlight.js'
 
 export default {
   name: 'xview',
@@ -14,7 +16,18 @@ export default {
   },
   data () {
     return {
-      markdown: Markdown().use(TaskLists)
+      markdown: Markdown({
+        linkify: true,
+        highlight: (str, lang) => {
+          if (lang && Highlight.getLanguage(lang)) {
+            try {
+              return Highlight.highlight(lang, str).value
+            } catch (__) {}
+          }
+
+          return ''
+        }
+      }).use(TaskLists)
     }
   },
   mounted () {
