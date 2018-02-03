@@ -1,60 +1,27 @@
 <template>
   <div style="display: flex; just-content: ">
-    <div id="editor" class="editor">
-    </div>
-    <article ref="view" class="markdown-body"></article>
+    <Editor class="editor" v-model="value"></Editor>
+    <XView class="Xview" :value="value"></XView>
   </div>
 </template>
 
 <script>
-import 'github-markdown-css/github-markdown.css'
-import Markdown from 'markdown-it'
-import TaskLists from 'markdown-it-task-lists'
+import Editor from '../components/Editor'
+import XView from '../components/View'
 
 export default {
   name: 'home',
+  components: { XView, Editor },
   data () {
     return {
-      markdown: null,
-      editor: null
+      value: '# jlkjkl'
     }
   },
   mounted () {
-    this.markdown = Markdown().use(TaskLists)
-
-    if (!(window).require) {
-      let loaderScript = document.createElement('script')
-      loaderScript.type = 'text/javascript'
-      loaderScript.src = 'vs/loader.js'
-      loaderScript.addEventListener('load', this.onGotAmdLoader)
-      document.body.appendChild(loaderScript)
-    } else {
-      this.onGotAmdLoader()
-    }
   },
   methods: {
-    onGotAmdLoader () {
-      window.require(['vs/editor/editor.main'], () => {
-        this.initMonaco()
-      })
-    },
-    initMonaco () {
-      this.editor = window.monaco.editor.create(window.document.getElementById('editor'), {
-        value: [
-          'function x() {',
-          '\tconsole.log("Hello world!");',
-          '}'
-        ].join('\n'),
-        language: 'markdown',
-        theme: 'vs-dark'
-      })
-
-      console.log(this.editor)
-
-      this.editor.onDidChangeModelContent((e) => {
-        this.$refs.view.innerHTML = this.markdown.render(this.editor.getModel().getValue())
-      })
-    }
+  },
+  watch: {
   }
 }
 </script>
@@ -65,7 +32,7 @@ export default {
   width: 50vw;
 }
 
-.markdown-body {
+.view {
   box-sizing: border-box;
   min-width: 200px;
   max-width: 980px;
@@ -75,7 +42,7 @@ export default {
 }
 
 @media (max-width: 767px) {
-  .markdown-body {
+  .view {
     padding: 15px;
   }
 }
