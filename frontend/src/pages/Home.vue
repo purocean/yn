@@ -2,7 +2,7 @@
   <div>
     <header class="header">
       <div>
-        <h4> {{ file.name }}-{{ status }} </h4>
+        <h4 style="padding: .5em;margin: 0"> {{ file.name }}-{{ status }} </h4>
       </div>
     </header>
     <div style="display: flex; just-content: ">
@@ -87,7 +87,7 @@ export default {
 }
 
 .editor {
-  height: 90vh;
+  height: 80vh;
   width: 40vw;
 }
 
@@ -98,6 +98,8 @@ export default {
   margin: 0 auto;
   padding: 45px;
   width: 40vw;
+  height: 90vh;
+  overflow: auto;
 }
 
 @media (max-width: 767px) {
@@ -108,8 +110,7 @@ export default {
 
 .header {
   background: rgb(209, 209, 209);
-  line-height: 3em;
-  margin-bottom: 1em;
+  height: 10vh;
 }
 
 .header > div {

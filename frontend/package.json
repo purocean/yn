@@ -15,6 +15,7 @@
     "markdown-it": "^8.4.0",
     "markdown-it-task-lists": "^2.1.0",
     "monaco-editor": "^0.10.1",
+    "normalize.css": "^7.0.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
