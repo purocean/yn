@@ -1,12 +1,12 @@
 <template>
   <aside>
-    文件
-    <TreeNode v-for="item in tree" :item = "item" :key="item.path" @select="f => file = f"></TreeNode>
+    <TreeNode v-for="item in tree" :item = "item" :key="item.path" @change="change" @select="f => file = f"></TreeNode>
   </aside>
 </template>
 
 <script>
 import TreeNode from './TreeNode'
+import File from '../file'
 
 export default {
   name: 'tree',
@@ -18,13 +18,17 @@ export default {
     }
   },
   mounted () {
-    fetch('/api/tree').then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          this.tree = result.data
-        }
+    this.init()
+  },
+  methods: {
+    init () {
+      File.tree(tree => {
+        this.tree = tree
       })
-    })
+    },
+    change (path) {
+      this.init()
+    }
   },
   watch: {
     file (f) {

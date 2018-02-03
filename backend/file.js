@@ -77,5 +77,10 @@ exports.rm = p => {
 }
 
 exports.tree = () => {
-    return travels(resolvePath(''))
+    return [{
+        name: '/',
+        type: 'dir',
+        path: '/',
+        children: travels(resolvePath(''))
+    }]
 }

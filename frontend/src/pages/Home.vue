@@ -17,6 +17,7 @@
 import Editor from '../components/Editor'
 import XView from '../components/View'
 import Tree from '../components/Tree'
+import File from '../file'
 
 export default {
   name: 'home',
@@ -52,28 +53,16 @@ export default {
 
       const content = this.value
       this.lastSaveContent = content
-      fetch('/api/file', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({path, content})
-      }).then(response => {
-        response.json().then(result => {
-          if (result.status === 'ok') {
-            this.status = '保存于：' + (new Date()).toLocaleString()
-          }
-        })
+      File.write(path, content, () => {
+        this.status = '保存于：' + (new Date()).toLocaleString()
       })
     }
   },
   watch: {
     file (f) {
-      fetch(`/api/file?path=${encodeURIComponent(f.path)}`).then(response => {
-        response.json().then(result => {
-          if (result.status === 'ok') {
-            this.$refs.editor.setValue(result.data)
-            this.status = '加载完毕'
-          }
-        })
+      File.read(f.path, data => {
+        this.$refs.editor.setValue(data)
+        this.status = '加载完毕'
       })
     }
   }
