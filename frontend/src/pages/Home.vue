@@ -2,7 +2,7 @@
   <div>
     <header class="header">
       <div>
-        <h4 style="padding: 2em;margin: 0">
+        <h4 style="margin: 0;text-align: center">
           <span v-if="file">
             {{ file.path }}-{{ status }}
           </span>
@@ -82,7 +82,7 @@ export default {
 
 <style scoped>
 .tree {
-  height: 90vh;
+  height: 95vh;
   width: 20vw;
 }
 
@@ -98,7 +98,7 @@ export default {
   margin: 0 auto;
   padding: 45px;
   width: 40vw;
-  height: 90vh;
+  height: 95vh;
   overflow: auto;
 }
 
@@ -110,7 +110,7 @@ export default {
 
 .header {
   background: rgb(209, 209, 209);
-  height: 10vh;
+  line-height: 5vh;
 }
 
 .header > div {
