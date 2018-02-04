@@ -40,6 +40,10 @@ export default {
   },
   mounted () {
     this.timer = window.setInterval(() => {
+      if (!this.file || this.file.path.endsWith('.c.md')) { // 加密文件不自动保存
+        return
+      }
+
       this.saveFile()
     }, 5000)
   },
