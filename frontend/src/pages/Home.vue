@@ -14,7 +14,7 @@
     </header>
     <div style="display: flex; justify-content: space-between;">
       <Tree class="tree" v-model="file"></Tree>
-      <Editor ref="editor" class="editor" v-model="value"></Editor>
+      <Editor ref="editor" class="editor" v-model="value" @save="saveFile"></Editor>
       <XView class="view" :value="value"></XView>
     </div>
   </div>
@@ -40,7 +40,7 @@ export default {
   },
   mounted () {
     this.timer = window.setInterval(() => {
-      this.saveFile(this.file)
+      this.saveFile()
     }, 5000)
   },
   beforeDestroy () {
@@ -49,8 +49,8 @@ export default {
     }
   },
   methods: {
-    saveFile (file) {
-      if (!file) {
+    saveFile () {
+      if (!this.file) {
         return
       }
 
@@ -60,7 +60,7 @@ export default {
 
       const content = this.value
       this.lastSaveContent = content
-      File.write(file.path, content, () => {
+      File.write(this.file.path, content, () => {
         this.status = '保存于：' + (new Date()).toLocaleString()
       })
     }

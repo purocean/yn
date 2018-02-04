@@ -41,6 +41,24 @@ export default {
       this.editor.onDidChangeModelContent((e) => {
         this.$emit('input', this.editor.getModel().getValue())
       })
+
+      this.keyBind()
+    },
+    keyBind () {
+      const KM = window.monaco.KeyMod
+      const KC = window.monaco.KeyCode
+
+      this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
+        this.editor.getAction('editor.action.moveLinesUpAction').run()
+      })
+
+      this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.DownArrow, () => {
+        this.editor.getAction('editor.action.moveLinesDownAction').run()
+      })
+
+      this.editor.addCommand(KM.CtrlCmd | KC.KEY_S, () => {
+        this.$emit('save')
+      })
     },
     setValue (val) {
       this.editor.getModel().setValue(val)
