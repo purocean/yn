@@ -18,6 +18,7 @@ export default {
     return {
       markdown: Markdown({
         linkify: true,
+        breaks: true,
         highlight: (str, lang) => {
           if (lang && Highlight.getLanguage(lang)) {
             try {
