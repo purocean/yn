@@ -77,7 +77,11 @@ export default {
       })
     },
     renameFile () {
-      const newPath = window.prompt(`新文件名`, this.item.path)
+      let newPath = window.prompt(`新文件名`, this.item.path)
+
+      if (!newPath.endsWith('.md')) {
+        newPath += '.md'
+      }
 
       if (!newPath || newPath === this.item.path) {
         return
