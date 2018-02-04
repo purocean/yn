@@ -38,24 +38,31 @@ const travels = location => {
         return []
     }
 
-    return fs.readdirSync(location).filter(x => !x.startsWith('.')).map(x => {
+    const list = fs.readdirSync(location).filter(x => !x.startsWith('.'));
+
+    const dirs = list.filter(x => fs.statSync(path.join(location, x)).isDirectory())
+    const files = list.filter(x => !fs.statSync(path.join(location, x)).isDirectory())
+
+    return dirs.map(x => {
         const p = path.join(location, x)
         const xpath = p.replace(resolvePath(''), '')
-        if (fs.statSync(p).isDirectory()) {
-            return {
-                name: x,
-                path: xpath,
-                type: 'dir',
-                children: travels(p)
-            }
-        } else {
-            return {
-                name: x,
-                path: xpath,
-                type: 'file'
-            }
+
+        return {
+            name: x,
+            path: xpath,
+            type: 'dir',
+            children: travels(p)
         }
-    })
+    }).concat(files.map(x => {
+        const p = path.join(location, x)
+        const xpath = p.replace(resolvePath(''), '')
+
+        return {
+            name: x,
+            path: xpath,
+            type: 'file'
+        }
+    }))
 }
 
 exports.read = p => {
