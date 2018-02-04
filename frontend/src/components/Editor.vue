@@ -35,7 +35,8 @@ export default {
       this.editor = window.monaco.editor.create(window.document.getElementById('editor'), {
         value: this.value,
         language: 'markdown',
-        theme: 'vs-dark'
+        theme: 'vs-dark',
+        fontSize: '20'
       })
 
       this.editor.onDidChangeModelContent((e) => {

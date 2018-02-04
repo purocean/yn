@@ -107,7 +107,7 @@ export default {
 
 .editor {
   height: 80vh;
-  width: 40vw;
+  width: 50vw;
 }
 
 .view {
@@ -116,7 +116,7 @@ export default {
   max-width: 980px;
   margin: 0 auto;
   padding: 45px;
-  width: 40vw;
+  width: 30vw;
   height: 95vh;
   overflow: auto;
 }
