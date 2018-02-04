@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header class="header">
+    <header class="header" :style="unsaved ? 'background: orange' : ''">
       <div>
         <h4 style="margin: 0;text-align: center">
           <span v-if="file">
@@ -73,14 +73,21 @@ export default {
     file (f) {
       if (f) {
         File.read(f.path, data => {
+          this.lastSaveContent = data
           this.$refs.editor.setValue(data)
           this.status = '加载完毕'
           window.document.title = f.name
         })
       } else {
         window.document.title = '未打开文件'
+        this.lastSaveContent = ''
         this.$refs.editor.setValue('')
       }
+    }
+  },
+  computed: {
+    unsaved () {
+      return this.value !== this.lastSaveContent
     }
   }
 }
@@ -115,7 +122,7 @@ export default {
 }
 
 .header {
-  background: rgb(209, 209, 209);
+  background: #89e8e5;
   line-height: 5vh;
 }
 
