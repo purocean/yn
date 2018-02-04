@@ -12,7 +12,7 @@
         </h4>
       </div>
     </header>
-    <div style="display: flex; just-content: ">
+    <div style="display: flex; justify-content: space-between;">
       <Tree class="tree" v-model="file"></Tree>
       <Editor ref="editor" class="editor" v-model="value"></Editor>
       <XView class="view" :value="value"></XView>
@@ -116,5 +116,18 @@ export default {
 .header > div {
   max-width: 900px;
   margin: 0 auto;
+}
+
+@media print {
+  .editor, .header, .tree {
+    display: none;
+  }
+
+  .view.markdown-body {
+    min-width: 100%;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+  }
 }
 </style>
