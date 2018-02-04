@@ -39,7 +39,7 @@ export default {
       })
 
       this.editor.onDidChangeModelContent((e) => {
-        this.$emit('input', this.editor.getModel().getValue())
+        this.$emit('input', this.editor.getModel().getValue(window.monaco.editor.DefaultEndOfLine.LF))
       })
 
       this.keyBind()
@@ -59,6 +59,30 @@ export default {
       this.editor.addCommand(KM.CtrlCmd | KC.KEY_S, () => {
         this.$emit('save')
       })
+
+      window.monaco.languages.setLanguageConfiguration('markdown', {
+        onEnterRules: [
+          {beforeText: /\+ \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] '}},
+          {beforeText: /- \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] '}},
+          {beforeText: /\* \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] '}},
+          {beforeText: /\+ \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [x] '}},
+          {beforeText: /- \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [x] '}},
+          {beforeText: /\* \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [x] '}},
+          {beforeText: /\+ .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ '}},
+          {beforeText: /- .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- '}},
+          {beforeText: /\* .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* '}}
+        ]
+      })
+
+      // this.editor.addCommand(KC.Enter, () => {
+      //   const p = this.editor.getPosition()
+      //   this.editor.executeEdits('', [{
+      //     range: new window.monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
+      //     text: '\nresult',
+      //     forceMoveMarkers: true
+      //   }])
+      //   console.log(this.editor.getModel().getLineContent(this.editor.getPosition().lineNumber))
+      // })
     },
     setValue (val) {
       this.editor.getModel().setValue(val)
