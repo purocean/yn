@@ -5,6 +5,7 @@
       :slected-file="file"
       :item="item"
       :key="item.path"
+      @move="onMove"
       @change="change"
       @select="f => file = f"
       @delete="onDelete"
@@ -37,6 +38,14 @@ export default {
     onDelete (path) {
       // 删除了正在编辑的文件或者其父目录
       if (this.file && this.file.path.startsWith(path)) {
+        this.file = null
+      }
+
+      this.init()
+    },
+    onMove (oldPath) {
+      // 移动了正在编辑的文件或者其父目录
+      if (this.file && this.file.path.startsWith(oldPath)) {
         this.file = null
       }
 

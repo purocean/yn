@@ -80,6 +80,17 @@ exports.rm = p => {
     }
 }
 
+exports.mv = (oldPath, newPath) => {
+    oldPath = resolvePath(oldPath)
+    newPath = resolvePath(newPath)
+
+    if (oldPath !== newPath) {
+        mkdirPSync(path.dirname(newPath))
+
+        fs.renameSync(oldPath, newPath)
+    }
+}
+
 exports.tree = () => {
     return [{
         name: '/',

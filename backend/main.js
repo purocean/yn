@@ -16,7 +16,9 @@ const fileContent = ctx => {
             ctx.body = result()
         } else if (ctx.method === 'DELETE') {
             file.rm(ctx.query.path)
-
+            ctx.body = result()
+        } else if (ctx.method === 'PATCH') {
+            file.mv(ctx.request.body.oldPath, ctx.request.body.newPath)
             ctx.body = result()
         }
     } else if (ctx.path === '/api/tree') {

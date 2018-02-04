@@ -4,19 +4,22 @@
       <summary
         :style="{background: selected ? '#eee' : 'none'}"
         @dblclick="createFile()"
+        @contextmenu.ctrl.prevent="renameFile"
         @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </summary>
       <tree-node
         v-for="x in item.children"
         :key="x.path" :item="x"
         :slected-file="slectedFile"
         @select="select"
+        @move="p => $emit('move', p)"
         @change="p => $emit('change', p)"
         @delete="p => $emit('delete', p)"></tree-node>
     </details>
     <div
       v-else
       @click="select(item)"
-      @contextmenu.prevent="deleteFile"
+      @contextmenu.ctrl.prevent="renameFile"
+      @contextmenu.shift.prevent="deleteFile"
       :style="{background: selected ? '#53ddf3' : 'none'}"> {{ item.name }} </div>
   </div>
 </template>
@@ -69,6 +72,17 @@ export default {
       const path = this.item.path + '/' + filename
       File.write(path, '# 新文件', () => {
         this.$emit('change', path)
+      })
+    },
+    renameFile () {
+      const newPath = window.prompt(`新文件名`, this.item.path)
+
+      if (!newPath || newPath === this.item.path) {
+        return
+      }
+
+      File.move(this.item.path, newPath, () => {
+        this.$emit('move', this.item.path)
       })
     },
     deleteFile () {

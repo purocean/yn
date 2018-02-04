@@ -71,8 +71,10 @@ export default {
         File.read(f.path, data => {
           this.$refs.editor.setValue(data)
           this.status = '加载完毕'
+          window.document.title = f.name
         })
       } else {
+        window.document.title = '未打开文件'
         this.$refs.editor.setValue('')
       }
     }
