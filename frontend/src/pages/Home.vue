@@ -66,6 +66,9 @@ export default {
       this.lastSaveContent = content
       File.write(this.file.path, content, () => {
         this.status = '保存于：' + (new Date()).toLocaleString()
+      }, e => {
+        this.file = null
+        alert(e.message)
       })
     }
   },
@@ -77,6 +80,9 @@ export default {
           this.$refs.editor.setValue(data)
           this.status = '加载完毕'
           window.document.title = f.name
+        }, e => {
+          this.file = null
+          alert(e.message)
         })
       } else {
         window.document.title = '未打开文件'

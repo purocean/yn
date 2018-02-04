@@ -4,7 +4,7 @@ const getCryptKey = () => {
   const password = window.prompt('请输入密码：')
 
   if (!password) {
-    return null
+    throw new Error('未输入密码')
   }
 
   return CryptoJS.MD5(password).toString().substr(0, 16)
@@ -13,10 +13,6 @@ const getCryptKey = () => {
 const encrypt = content => {
   let key = getCryptKey()
   let iv = key
-
-  if (!key) {
-    return '请输入密码！！！'
-  }
 
   key = CryptoJS.enc.Utf8.parse(key)
   iv = CryptoJS.enc.Utf8.parse(iv)
@@ -34,10 +30,6 @@ const decrypt = content => {
   let key = getCryptKey()
   let iv = key
 
-  if (!key) {
-    return '请输入密码！！！'
-  }
-
   key = CryptoJS.enc.Utf8.parse(key)
   iv = CryptoJS.enc.Utf8.parse(iv)
 
@@ -49,30 +41,46 @@ const decrypt = content => {
 
   const result = CryptoJS.enc.Utf8.stringify(decrypted)
   if (!result) {
-    return '解密失败！！！'
+    throw new Error('解密失败！！！')
   }
 
   return result
 }
 
 export default {
-  read: (path, call) => {
+  read: (path, call, ecall) => {
     fetch(`/api/file?path=${encodeURIComponent(path)}`).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
-          let content = result.data
-          if (path.endsWith('.c.md')) {
-            content = decrypt(content)
-          }
+          try {
+            let content = result.data
+            if (path.endsWith('.c.md')) {
+              content = decrypt(content)
+            }
 
-          call(content)
+            call(content)
+          } catch (e) {
+            if (ecall) {
+              ecall(e)
+            } else {
+              throw e
+            }
+          }
         }
       })
     })
   },
-  write: (path, content, call) => {
-    if (path.endsWith('.c.md')) {
-      content = encrypt(content)
+  write: (path, content, call, ecall) => {
+    try {
+      if (path.endsWith('.c.md')) {
+        content = encrypt(content)
+      }
+    } catch (e) {
+      if (ecall) {
+        ecall(e)
+      } else {
+        throw e
+      }
     }
 
     fetch('/api/file', {

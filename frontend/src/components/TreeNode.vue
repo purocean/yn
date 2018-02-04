@@ -72,6 +72,8 @@ export default {
       const path = this.item.path + '/' + filename
       File.write(path, '# 新文件', () => {
         this.$emit('change', path)
+      }, e => {
+        alert(e.message)
       })
     },
     renameFile () {
