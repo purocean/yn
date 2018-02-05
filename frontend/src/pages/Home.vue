@@ -45,7 +45,7 @@ export default {
       }
 
       this.saveFile()
-    }, 5000)
+    }, 15000)
   },
   beforeDestroy () {
     if (this.timer) {
