@@ -54,7 +54,6 @@ export default {
       this.clearTimer()
 
       this.timer = window.setTimeout(() => {
-        console.log(this.timer)
         if (!this.file || this.file.path.endsWith('.c.md')) { // 加密文件不自动保存
           return
         }
