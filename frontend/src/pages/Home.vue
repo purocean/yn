@@ -39,20 +39,29 @@ export default {
     }
   },
   mounted () {
-    this.timer = window.setInterval(() => {
-      if (!this.file || this.file.path.endsWith('.c.md')) { // 加密文件不自动保存
-        return
-      }
-
-      this.saveFile()
-    }, 15000)
+    this.restartTimer()
   },
   beforeDestroy () {
-    if (this.timer) {
-      window.clearInterval(this.timer)
-    }
+    this.clearTimer()
   },
   methods: {
+    clearTimer () {
+      if (this.timer) {
+        window.clearTimeout(this.timer)
+      }
+    },
+    restartTimer () {
+      this.clearTimer()
+
+      this.timer = window.setTimeout(() => {
+        console.log(this.timer)
+        if (!this.file || this.file.path.endsWith('.c.md')) { // 加密文件不自动保存
+          return
+        }
+
+        this.saveFile()
+      }, 2000)
+    },
     saveFile () {
       if (!this.file) {
         return
@@ -73,7 +82,12 @@ export default {
     }
   },
   watch: {
+    value () {
+      this.restartTimer()
+    },
     file (f) {
+      this.clearTimer()
+
       if (f) {
         File.read(f.path, data => {
           this.lastSaveContent = data
