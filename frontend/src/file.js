@@ -125,5 +125,28 @@ export default {
         }
       })
     })
+  },
+  upload: (belongPath, file, call) => {
+    const fr = new FileReader()
+    fr.readAsBinaryString(file)
+    fr.onloadend = () => {
+      const filename = CryptoJS.MD5(CryptoJS.enc.Latin1.parse(fr.result)).toString().substr(0, 8) +
+        file.name.substr(file.name.lastIndexOf('.'))
+
+      const formData = new FormData()
+      formData.append('path', belongPath.replace(/\\/g, '/').replace(/\/([^/]*)$/, '/FILES/$1/' + filename))
+      formData.append('attachment', file)
+
+      fetch('/api/attachment', {
+        method: 'POST',
+        body: formData
+      }).then(response => {
+        response.json().then(result => {
+          if (result.status === 'ok') {
+            call(result.data)
+          }
+        })
+      })
+    }
   }
 }

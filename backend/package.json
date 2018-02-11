@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "koa": "^2.4.1",
-    "koa-bodyparser": "^4.2.0"
+    "koa-body": "^2.5.0",
+    "mime": "^2.2.0"
   }
 }

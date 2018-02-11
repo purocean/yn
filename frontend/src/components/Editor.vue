@@ -25,6 +25,9 @@ export default {
       this.onGotAmdLoader()
     }
   },
+  beforeDestroy () {
+    window.removeEventListener('paste', this.paste)
+  },
   methods: {
     onGotAmdLoader () {
       window.require(['vs/editor/editor.main'], () => {
@@ -44,6 +47,7 @@ export default {
       })
 
       this.keyBind()
+      window.addEventListener('paste', this.paste)
     },
     keyBind () {
       const KM = window.monaco.KeyMod
@@ -84,6 +88,27 @@ export default {
       //   }])
       //   console.log(this.editor.getModel().getLineContent(this.editor.getPosition().lineNumber))
       // })
+    },
+    paste (e) {
+      if (this.editor.isFocused()) {
+        const items = e.clipboardData.items
+        for (let i = 0; i < items.length; i++) {
+          let matches = items[i].type.match(/^image\/(png|jpg|jpeg|gif)$/i)
+          if (matches) {
+            this.$emit('paste-img', items[i].getAsFile())
+          }
+        }
+      }
+    },
+    insert (text) {
+      const selection = this.editor.getSelection()
+      this.editor.executeEdits('', [
+        {
+          range: new window.monaco.Range(selection.endLineNumber, selection.endColumn, selection.endLineNumber, selection.endColumn),
+          text,
+          forceMoveMarkers: true
+        }
+      ])
     },
     setValue (val) {
       this.editor.getModel().setValue(val)

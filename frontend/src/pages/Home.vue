@@ -13,8 +13,13 @@
       </div>
     </header>
     <div style="display: flex; justify-content: space-between;">
-      <Tree class="tree" v-model="file"></Tree>
-      <Editor ref="editor" class="editor" v-model="value" @save="saveFile"></Editor>
+      <Tree ref="tree" class="tree" v-model="file"></Tree>
+      <Editor
+        ref="editor"
+        class="editor"
+        v-model="value"
+        @paste-img="pasteImg"
+        @save="saveFile"></Editor>
       <XView class="view" :value="value"></XView>
     </div>
   </div>
@@ -77,6 +82,12 @@ export default {
       }, e => {
         this.file = null
         alert(e.message)
+      })
+    },
+    pasteImg (file) {
+      File.upload(this.file.path, file, filePath => {
+        this.$refs.tree.change()
+        this.$refs.editor.insert(`![图片](api/attachment?path=${encodeURIComponent(filePath)})\n`)
       })
     }
   },

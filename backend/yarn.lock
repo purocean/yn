@@ -17,7 +17,7 @@ bytes@3.0.0:
   version "3.0.0"
   resolved "http://registry.npm.taobao.org/bytes/download/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
 
-co-body@^5.1.0:
+co-body@^5.1.1:
   version "5.1.1"
   resolved "http://registry.npm.taobao.org/co-body/download/co-body-5.1.1.tgz#d97781d1e3344ba4a820fd1806bddf8341505236"
   dependencies:
@@ -44,10 +44,6 @@ cookies@~0.7.0:
   dependencies:
     depd "~1.1.1"
     keygrip "~1.0.2"
-
-copy-to@^2.0.1:
-  version "2.0.1"
-  resolved "http://registry.npm.taobao.org/copy-to/download/copy-to-2.0.1.tgz#2680fbb8068a48d08656b6098092bdafc906f4a5"
 
 debug@*:
   version "3.1.0"
@@ -86,6 +82,10 @@ error-inject@~1.0.0:
 escape-html@~1.0.1:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/escape-html/download/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
+
+formidable@^1.1.1:
+  version "1.1.1"
+  resolved "http://registry.npm.taobao.org/formidable/download/formidable-1.1.1.tgz#96b8886f7c3c3508b932d6bd70c4d3a88f35f1a9"
 
 fresh@^0.5.2:
   version "0.5.2"
@@ -127,12 +127,12 @@ keygrip@~1.0.2:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/keygrip/download/keygrip-1.0.2.tgz#ad3297c557069dea8bcfe7a4fa491b75c5ddeb91"
 
-koa-bodyparser@^4.2.0:
-  version "4.2.0"
-  resolved "http://registry.npm.taobao.org/koa-bodyparser/download/koa-bodyparser-4.2.0.tgz#bce6e08bc65f8709b6d1faa9411c7f0d8938aa54"
+koa-body@^2.5.0:
+  version "2.5.0"
+  resolved "http://registry.npm.taobao.org/koa-body/download/koa-body-2.5.0.tgz#84e8fcd8d5229a8cc1cb98a926e939069e716915"
   dependencies:
-    co-body "^5.1.0"
-    copy-to "^2.0.1"
+    co-body "^5.1.1"
+    formidable "^1.1.1"
 
 koa-compose@^3.0.0:
   version "3.2.1"
@@ -197,6 +197,10 @@ mime-types@^2.0.7, mime-types@~2.1.15, mime-types@~2.1.16:
   resolved "http://registry.npm.taobao.org/mime-types/download/mime-types-2.1.17.tgz#09d7a393f03e995a79f8af857b70a9e0ab16557a"
   dependencies:
     mime-db "~1.30.0"
+
+mime@^2.2.0:
+  version "2.2.0"
+  resolved "http://registry.npm.taobao.org/mime/download/mime-2.2.0.tgz#161e541965551d3b549fa1114391e3a3d55b923b"
 
 ms@2.0.0:
   version "2.0.0"

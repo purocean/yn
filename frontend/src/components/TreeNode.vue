@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details open v-if="item.type === 'dir'">
+    <details :open="item.name !== 'FILES'" v-if="item.type === 'dir'">
       <summary
         :style="{background: selected ? '#eee' : 'none'}"
         @dblclick="createFile()"
@@ -45,13 +45,17 @@ export default {
   },
   methods: {
     select (f) {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.selected = true
+      if (f.name.endsWith('.md')) {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.selected = true
+          })
         })
-      })
 
-      this.$emit('select', f)
+        this.$emit('select', f)
+      } else {
+        window.open(`api/attachment/${f.name}?path=${encodeURIComponent(f.path)}`)
+      }
     },
     createFile () {
       let filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')

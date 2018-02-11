@@ -98,6 +98,10 @@ exports.mv = (oldPath, newPath) => {
     }
 }
 
+exports.upload = (file, path) => {
+    exports.write(path, fs.readFileSync(file.path))
+}
+
 exports.tree = () => {
     return [{
         name: '/',
