@@ -8,6 +8,7 @@ import 'highlight.js/styles/github-gist.css'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
 import Highlight from 'highlight.js'
+import MermaidPlugin from './MermaidPlugin'
 
 export default {
   name: 'xview',
@@ -28,7 +29,7 @@ export default {
 
           return ''
         }
-      }).use(TaskLists)
+      }).use(TaskLists).use(MermaidPlugin)
     }
   },
   mounted () {
@@ -37,6 +38,7 @@ export default {
   methods: {
     render (val) {
       this.$refs.view.innerHTML = this.markdown.render(val)
+      MermaidPlugin.update()
     }
   },
   watch: {
