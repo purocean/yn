@@ -66,8 +66,10 @@ export default {
         this.saveFile()
       }, 2000)
     },
-    saveFile () {
-      if (!this.file) {
+    saveFile (f = null) {
+      const file = f || this.file
+
+      if (!file) {
         return
       }
 
@@ -77,7 +79,7 @@ export default {
 
       const content = this.value
       this.lastSaveContent = content
-      File.write(this.file.path, content, () => {
+      File.write(file.path, content, () => {
         this.status = '保存于：' + (new Date()).toLocaleString()
       }, e => {
         this.file = null
@@ -95,8 +97,12 @@ export default {
     value () {
       this.restartTimer()
     },
-    file (f) {
+    file (f, oldf) {
       this.clearTimer()
+
+      if (oldf) {
+        this.saveFile(oldf)
+      }
 
       if (f) {
         File.read(f.path, data => {
