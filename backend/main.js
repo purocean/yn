@@ -56,4 +56,7 @@ app.use(bodyParser({multipart: true}))
 app.use(async (ctx, next) => fileContent(ctx, next))
 app.use(async (ctx, next) => attachment(ctx, next))
 
-app.listen(3000)
+const port = 3000
+app.listen(port)
+
+console.log(`访问地址：http://localhost:${port}`)

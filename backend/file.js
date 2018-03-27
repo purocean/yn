@@ -8,6 +8,10 @@ const mkdirPSync = location => {
     let folders = parsedPathObj.dir.split(path.sep)
     folders.push(parsedPathObj.base)
     for(let part of folders) {
+        if (part.indexOf(':') > -1) { // 修复 Windows 下面路径错误
+            continue
+        }
+
         curDir = path.join(curDir, part)
         if (!fs.existsSync(curDir)) {
             fs.mkdirSync(curDir)
