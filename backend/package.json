@@ -2,6 +2,7 @@
   "dependencies": {
     "koa": "^2.4.1",
     "koa-body": "^2.5.0",
+    "koa-static": "^4.0.2",
     "mime": "^2.2.0"
   }
 }

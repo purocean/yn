@@ -1,5 +1,7 @@
+const path = require('path')
 const Koa = require('koa')
 const bodyParser = require('koa-body')
+const static = require('koa-static')
 const mime = require('mime')
 
 const file = require('./file')
@@ -45,6 +47,10 @@ const attachment = (ctx, next) => {
 }
 
 const app = new Koa()
+
+app.use(static(
+    path.join(__dirname,  '../static')
+))
 
 app.use(bodyParser({multipart: true}))
 app.use(async (ctx, next) => fileContent(ctx, next))

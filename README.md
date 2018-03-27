@@ -9,13 +9,17 @@
 4. 不需要更多花哨功能，简单够用就行
 5. 尽量少依赖三方库，也不花心思维护，杂凑在一起的功能，恰好工作即可 ^_^
 
-## 使用
-+ 后端: `cd backend; node main.js`
-+ 后端: `cd frontend; yarn run dev`
+## 直接使用
++ `cd backend; yarn; node main.js`
++ 访问 `http://localhost:3000`
 + 新增文件：`双击目录`
 + 删除文件/目录：`shift + 右键文件/目录`
 + 重命名文件/目录：`ctrl + 右键文件/目录`
 + 文件加密：以 `.c.md` 结尾的文件视为加密文件
+
+## 开发
++ 后端: `cd backend; node main.js`
++ 后端: `cd frontend; yarn run dev`
 
 ## 开发计划
 
@@ -29,8 +33,8 @@
 + [x] 图片粘贴预览
 + [x] 未保存切换文件自动保存
 + [x] 密码输入优化
++ [x] nodejs静态文件
 + [ ] 认证
-+ [ ] nodejs静态文件
 + [ ] 全文查找 Ctrl + p
 + [ ] 微信结合
 + [ ] git备份
