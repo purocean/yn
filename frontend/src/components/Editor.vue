@@ -67,6 +67,7 @@ export default {
 
       window.monaco.languages.setLanguageConfiguration('markdown', {
         onEnterRules: [
+          {beforeText: /> .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '> '}},
           {beforeText: /\+ \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] '}},
           {beforeText: /- \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] '}},
           {beforeText: /\* \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] '}},

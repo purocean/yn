@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details :open="item.name !== 'FILES'" v-if="item.type === 'dir'">
+    <details :open="item.name === '/'" v-if="item.type === 'dir'">
       <summary
         :style="{background: selected ? '#eee' : 'none'}"
         @dblclick="createFile()"
