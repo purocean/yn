@@ -67,16 +67,16 @@ export default {
 
       window.monaco.languages.setLanguageConfiguration('markdown', {
         onEnterRules: [
-          {beforeText: /> .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '> '}},
-          {beforeText: /\+ \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] '}},
-          {beforeText: /- \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] '}},
-          {beforeText: /\* \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] '}},
-          {beforeText: /\+ \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] '}},
-          {beforeText: /- \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] '}},
-          {beforeText: /\* \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] '}},
-          {beforeText: /\+ .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ '}},
-          {beforeText: /- .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- '}},
-          {beforeText: /\* .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* '}}
+          {beforeText: /^\s*> .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '> '}},
+          {beforeText: /^\s*\+ \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] '}},
+          {beforeText: /^\s*- \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] '}},
+          {beforeText: /^\s*\* \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] '}},
+          {beforeText: /^\s*\+ \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] '}},
+          {beforeText: /^\s*- \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] '}},
+          {beforeText: /^\s*\* \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] '}},
+          {beforeText: /^\s*\+ .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ '}},
+          {beforeText: /^\s*- .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- '}},
+          {beforeText: /^\s*\* .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* '}}
         ]
       })
 
