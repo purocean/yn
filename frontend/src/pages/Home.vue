@@ -133,10 +133,11 @@ export default {
 .tree {
   height: 95vh;
   width: 20vw;
+  overflow: auto;
 }
 
 .editor {
-  height: 80vh;
+  height: 90vh;
   width: 50vw;
 }
 
