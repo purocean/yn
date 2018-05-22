@@ -3,6 +3,7 @@ const Koa = require('koa')
 const bodyParser = require('koa-body')
 const static = require('koa-static')
 const mime = require('mime')
+const plantuml = require('node-plantuml')
 
 const file = require('./file')
 
@@ -46,6 +47,17 @@ const attachment = (ctx, next) => {
     }
 }
 
+const plantumlGen = (ctx, next) => {
+    if (ctx.path.startsWith('/api/plantuml/svg')) {
+        const gen = plantuml.generate(ctx.query.data, {format: 'svg'});
+
+        ctx.type = 'image/svg+xml'
+        ctx.body = gen.out
+    } else {
+        next()
+    }
+}
+
 const app = new Koa()
 
 app.use(static(
@@ -55,6 +67,7 @@ app.use(static(
 app.use(bodyParser({multipart: true}))
 app.use(async (ctx, next) => fileContent(ctx, next))
 app.use(async (ctx, next) => attachment(ctx, next))
+app.use(async (ctx, next) => plantumlGen(ctx, next))
 
 const port = 3000
 app.listen(port)

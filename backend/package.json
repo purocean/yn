@@ -3,6 +3,8 @@
     "koa": "^2.4.1",
     "koa-body": "^2.5.0",
     "koa-static": "^4.0.2",
-    "mime": "^2.2.0"
+    "mime": "^2.2.0",
+    "node-plantuml": "^0.6.2",
+    "safe-buffer": "^5.1.2"
   }
 }

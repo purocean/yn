@@ -7,6 +7,8 @@ import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/github-gist.css'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
+import Plantuml from 'markdown-it-plantuml'
+
 import Highlight from 'highlight.js'
 import MermaidPlugin from './MermaidPlugin'
 
@@ -29,7 +31,11 @@ export default {
 
           return ''
         }
-      }).use(TaskLists).use(MermaidPlugin)
+      }).use(TaskLists).use(MermaidPlugin).use(Plantuml, {
+        generateSource: umlCode => {
+          return '/api/plantuml/svg?data=' + encodeURIComponent(umlCode)
+        }
+      })
     }
   },
   mounted () {
