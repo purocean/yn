@@ -15,6 +15,7 @@
     "crypto-js": "^3.1.9-1",
     "github-markdown-css": "^2.10.0",
     "highlight.js": "^9.12.0",
+    "lodash": "^4.17.10",
     "markdown-it": "^8.4.0",
     "markdown-it-plantuml": "^1.0.0",
     "markdown-it-task-lists": "^2.1.0",

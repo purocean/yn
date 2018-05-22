@@ -5,6 +5,7 @@
 <script>
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/github-gist.css'
+import _ from 'lodash'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
 import Plantuml from 'markdown-it-plantuml'
@@ -39,17 +40,16 @@ export default {
     }
   },
   mounted () {
-    this.render(this.value)
-  },
-  methods: {
-    render (val) {
-      this.$refs.view.innerHTML = this.markdown.render(val)
+    this.render = _.debounce(() => {
+      this.$refs.view.innerHTML = this.markdown.render(this.value)
       MermaidPlugin.update()
-    }
+    }, 500)
+
+    this.render()
   },
   watch: {
-    value (val) {
-      this.render(val)
+    value () {
+      this.render()
     }
   }
 }
