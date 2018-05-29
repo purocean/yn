@@ -29,6 +29,7 @@
 import Editor from '../components/Editor'
 import XView from '../components/View'
 import Tree from '../components/Tree'
+import RunPlugin from '../components/RunPlugin'
 import File from '../file'
 
 export default {
@@ -44,6 +45,7 @@ export default {
     }
   },
   mounted () {
+    RunPlugin.clearCache()
     this.restartTimer()
   },
   beforeDestroy () {

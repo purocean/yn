@@ -6,6 +6,7 @@ const mime = require('mime')
 const plantuml = require('node-plantuml')
 
 const file = require('./file')
+const run = require('./run')
 
 const result = (status = 'ok', message = '操作成功', data = null) => {
     return { status, message, data }
@@ -58,6 +59,15 @@ const plantumlGen = (ctx, next) => {
     }
 }
 
+const runCode = (ctx, next) => {
+    if (ctx.path.startsWith('/api/run')) {
+        const rst = run.runCode(ctx.request.body.language, ctx.request.body.code)
+        ctx.body = result('ok', '运行成功', rst)
+    } else {
+        next()
+    }
+}
+
 const app = new Koa()
 
 app.use(static(
@@ -68,6 +78,7 @@ app.use(bodyParser({multipart: true}))
 app.use(async (ctx, next) => fileContent(ctx, next))
 app.use(async (ctx, next) => attachment(ctx, next))
 app.use(async (ctx, next) => plantumlGen(ctx, next))
+app.use(async (ctx, next) => runCode(ctx, next))
 
 const port = 3000
 app.listen(port)

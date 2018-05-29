@@ -9,6 +9,7 @@ import _ from 'lodash'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
 import Plantuml from 'markdown-it-plantuml'
+import RunPlugin from './RunPlugin'
 
 import Highlight from 'highlight.js'
 import MermaidPlugin from './MermaidPlugin'
@@ -36,7 +37,7 @@ export default {
         generateSource: umlCode => {
           return '/api/plantuml/svg?data=' + encodeURIComponent(umlCode)
         }
-      })
+      }).use(RunPlugin)
     }
   },
   mounted () {
