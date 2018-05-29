@@ -24,7 +24,7 @@ const RunPlugin = (md) => {
       var code = '${encodeURIComponent(code).replace(/'/g, '\\\'')}'
       code = decodeURIComponent(code)
       var resultDiv = this.parentElement.firstChild
-      resultDiv.innerHTML = '运行中……'
+      resultDiv.innerText = '运行中……'
 
       fetch('/api/run', {
         method: 'post',
@@ -36,16 +36,16 @@ const RunPlugin = (md) => {
       }).then(res => {
         res.json().then(result => {
           if (result.status === 'ok') {
-            localStorage.setItem('${cachePrefix}${hash}', result.data)
-            resultDiv.innerHTML = result.data
+            resultDiv.innerText = result.data
+            localStorage.setItem('${cachePrefix}${hash}', resultDiv.innerHTML)
           } else {
-            resultDiv.innerHTML = result.message
+            resultDiv.innerText = result.message
           }
         }).catch(e => {
-          resultDiv.innerHTML = e.message
+          resultDiv.innerText = e.message
         })
       }).catch(e => {
-        resultDiv.innerHTML = e.message
+        resultDiv.innerText = e.message
       })
     `
     const result = localStorage[`${cachePrefix}${hash}`] || ''
