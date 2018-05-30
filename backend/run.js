@@ -6,9 +6,9 @@ const runCode = (language, code) => {
             case 'php':
                 return execFileSync('php', ['-r', code]).toString()
             case 'python':
-                return execFileSync('python', ['-c', code]).toString()
+                return execFileSync('python3', ['-c', code]).toString()
             case 'py':
-                return execFileSync('python', ['-c', code]).toString()
+                return execFileSync('python3', ['-c', code]).toString()
             case 'js':
                 return execFileSync('node', ['-e', code]).toString()
             default:
