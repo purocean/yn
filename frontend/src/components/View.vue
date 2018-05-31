@@ -9,10 +9,13 @@ import _ from 'lodash'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
 import Plantuml from 'markdown-it-plantuml'
+import katex from 'markdown-it-katex'
 import RunPlugin from './RunPlugin'
 
 import Highlight from 'highlight.js'
 import MermaidPlugin from './MermaidPlugin'
+
+import 'katex/dist/katex.min.css'
 
 export default {
   name: 'xview',
@@ -37,7 +40,7 @@ export default {
         generateSource: umlCode => {
           return '/api/plantuml/svg?data=' + encodeURIComponent(umlCode)
         }
-      }).use(RunPlugin)
+      }).use(RunPlugin).use(katex)
     }
   },
   mounted () {

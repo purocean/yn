@@ -17,6 +17,7 @@
     "highlight.js": "^9.12.0",
     "lodash": "^4.17.10",
     "markdown-it": "^8.4.0",
+    "markdown-it-katex": "^2.0.3",
     "markdown-it-plantuml": "^1.0.0",
     "markdown-it-task-lists": "^2.1.0",
     "mermaid": "^7.1.2",
