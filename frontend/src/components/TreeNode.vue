@@ -110,7 +110,7 @@ export default {
 <style scoped>
 .tree-node {
   border-left: 1px rgb(155, 155, 154) solid;
-  font-size: 25px;
+  font-size: 16px;
   line-height: 1.3em;
   padding-left: 1em;
 }
