@@ -39,7 +39,13 @@ export default {
         value: this.value,
         language: 'markdown',
         theme: 'vs-dark',
-        fontSize: '20'
+        fontSize: '20',
+        wordWrap: true,
+        // wordWrapColumn: 40,
+        // Set this to false to not auto word wrap minified files
+        wordWrapMinified: true,
+        // try "same", "indent" or "none"
+        wrappingIndent: 'same'
       })
 
       this.editor.onDidChangeModelContent((e) => {
