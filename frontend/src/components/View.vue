@@ -3,9 +3,9 @@
     <div ref="outline" class="outline">
       <div style="padding: .5em;"><b>目录</b></div>
       <div class="catalog">
-        <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level}em`}" @click="syncScroll(head.sourceLine)">
-          <span style="color: #666;font-size: 12px;padding-left: .5em">{{head.tag}}</span>
+        <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level + 1}em`}" @click="syncScroll(head.sourceLine)">
           {{ head.text }}
+          <span style="color: #666;font-size: 12px;padding-left: .5em">{{head.tag}}</span>
         </div>
       </div>
     </div>
