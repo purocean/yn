@@ -24,11 +24,16 @@ export default {
     } else {
       this.onGotAmdLoader()
     }
+    window.addEventListener('resize', this.resize)
   },
   beforeDestroy () {
     window.removeEventListener('paste', this.paste)
+    window.removeEventListener('resize', this.resize)
   },
   methods: {
+    resize () {
+      this.editor.layout()
+    },
     onGotAmdLoader () {
       window.require(['vs/editor/editor.main'], () => {
         this.initMonaco()
