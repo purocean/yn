@@ -18,9 +18,10 @@
         ref="editor"
         class="editor"
         v-model="value"
+        @scroll-line="syncScrollView"
         @paste-img="pasteImg"
         @save="saveFile"></Editor>
-      <XView class="view" :value="value" @sync-scroll="syncScrollEditor"></XView>
+      <XView ref="view" class="view" :value="value" @sync-scroll="syncScrollEditor"></XView>
     </div>
   </div>
 </template>
@@ -96,6 +97,9 @@ export default {
     },
     syncScrollEditor (line) {
       this.$refs.editor.revealLine(line)
+    },
+    syncScrollView (line) {
+      this.$refs.view.revealLine(line)
     }
   },
   watch: {

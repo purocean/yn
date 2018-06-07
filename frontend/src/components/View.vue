@@ -58,6 +58,15 @@ export default {
         this.$emit('sync-scroll', parseInt(e.target.dataset['sourceLine']))
         e.preventDefault()
       }
+    },
+    revealLine (line) {
+      const nodes = document.querySelectorAll('.view .source-line')
+      for (let ele of nodes) {
+        if (parseInt(ele.dataset['sourceLine']) >= line) {
+          ele.scrollIntoView()
+          break
+        }
+      }
     }
   },
   watch: {

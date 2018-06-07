@@ -57,6 +57,11 @@ export default {
         this.$emit('input', this.editor.getModel().getValue(window.monaco.editor.DefaultEndOfLine.LF))
       })
 
+      this.editor.onDidScrollChange(e => {
+        const line = this.editor.getVisibleRanges()[0].startLineNumber
+        this.$emit('scroll-line', line)
+      })
+
       this.keyBind()
       window.addEventListener('paste', this.paste)
     },
