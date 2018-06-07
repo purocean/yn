@@ -20,7 +20,7 @@
         v-model="value"
         @paste-img="pasteImg"
         @save="saveFile"></Editor>
-      <XView class="view" :value="value"></XView>
+      <XView class="view" :value="value" @sync-scroll="syncScrollEditor"></XView>
     </div>
   </div>
 </template>
@@ -93,6 +93,9 @@ export default {
         this.$refs.tree.change()
         this.$refs.editor.insert(`![图片](api/attachment?path=${encodeURIComponent(filePath)})\n`)
       })
+    },
+    syncScrollEditor (line) {
+      this.$refs.editor.revealLine(line)
     }
   },
   watch: {

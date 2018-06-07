@@ -1,5 +1,5 @@
 <template>
-  <article ref="view" class="markdown-body"></article>
+  <article ref="view" class="markdown-body" @click="handleClick"></article>
 </template>
 
 <script>
@@ -11,6 +11,7 @@ import TaskLists from 'markdown-it-task-lists'
 import Plantuml from 'markdown-it-plantuml'
 import katex from 'markdown-it-katex'
 import RunPlugin from './RunPlugin'
+import SourceLinePlugin from './SourceLinePlugin'
 
 import Highlight from 'highlight.js'
 import MermaidPlugin from './MermaidPlugin'
@@ -40,7 +41,7 @@ export default {
         generateSource: umlCode => {
           return '/api/plantuml/svg?data=' + encodeURIComponent(umlCode)
         }
-      }).use(RunPlugin).use(katex)
+      }).use(RunPlugin).use(katex).use(SourceLinePlugin)
     }
   },
   mounted () {
@@ -50,6 +51,14 @@ export default {
     }, 500)
 
     this.render()
+  },
+  methods: {
+    handleClick (e) {
+      if (e.target.classList.contains('source-line')) {
+        this.$emit('sync-scroll', parseInt(e.target.dataset['sourceLine']))
+        e.preventDefault()
+      }
+    }
   },
   watch: {
     value () {

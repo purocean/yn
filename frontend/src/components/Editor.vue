@@ -117,6 +117,9 @@ export default {
         }
       ])
     },
+    revealLine (line) {
+      this.editor.revealLineInCenter(line)
+    },
     setValue (val) {
       this.editor.getModel().setValue(val)
     }
