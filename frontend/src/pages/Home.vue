@@ -181,12 +181,5 @@ export default {
   .editor, .header, .tree {
     display: none;
   }
-
-  .view.markdown-body {
-    min-width: 100%;
-    max-width: 100%;
-    width: 100%;
-    height: auto;
-  }
 }
 </style>

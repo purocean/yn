@@ -32,7 +32,9 @@ export default {
   },
   methods: {
     resize () {
-      this.editor.layout()
+      if (this.editor) {
+        this.editor.layout()
+      }
     },
     onGotAmdLoader () {
       window.require(['vs/editor/editor.main'], () => {

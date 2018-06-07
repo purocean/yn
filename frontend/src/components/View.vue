@@ -1,5 +1,16 @@
 <template>
-  <article ref="view" class="markdown-body" @click="handleClick"></article>
+  <div class="view">
+    <div ref="outline" class="outline">
+      <div style="padding: .5em;"><b>目录</b></div>
+      <div class="catalog">
+        <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level}em`}" @click="syncScroll(head.sourceLine)">
+          <span style="color: #666;font-size: 12px;padding-left: .5em">{{head.tag}}</span>
+          {{ head.text }}
+        </div>
+      </div>
+    </div>
+    <article ref="view" class="markdown-body" @click="handleClick"></article>
+  </div>
 </template>
 
 <script>
@@ -25,6 +36,7 @@ export default {
   },
   data () {
     return {
+      heads: [],
       markdown: Markdown({
         linkify: true,
         breaks: true,
@@ -48,16 +60,32 @@ export default {
     this.render = _.debounce(() => {
       this.$refs.view.innerHTML = this.markdown.render(this.value)
       MermaidPlugin.update()
+      this.updateOutline()
     }, 500)
 
     this.render()
   },
   methods: {
+    updateOutline () {
+      const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+      const nodes = this.$refs.view.querySelectorAll(tags.join(','))
+      this.heads = Array.from(nodes).map(node => {
+        return {
+          tag: node.tagName.toLowerCase(),
+          text: node.innerText,
+          level: tags.indexOf(node.tagName.toLowerCase()),
+          sourceLine: parseInt(node.dataset['sourceLine'])
+        }
+      })
+    },
     handleClick (e) {
       if (e.target.classList.contains('source-line')) {
-        this.$emit('sync-scroll', parseInt(e.target.dataset['sourceLine']))
+        this.syncScroll(parseInt(e.target.dataset['sourceLine']))
         e.preventDefault()
       }
+    },
+    syncScroll (line) {
+      this.$emit('sync-scroll', line)
     },
     revealLine (line) {
       const nodes = document.querySelectorAll('.view .source-line')
@@ -78,7 +106,7 @@ export default {
 </script>
 
 <style scoped>
-.markdown-body {
+.view {
   box-sizing: border-box;
   min-width: 200px;
   max-width: 980px;
@@ -87,8 +115,52 @@ export default {
   width: 50vw;
 }
 
+.outline {
+  position: fixed;
+  right: 3em;
+  background: #eee;
+  font-size: 14px;
+  max-height: 3.2em;
+  max-width: 2em;
+  overflow: hidden;
+  transition: .1s ease-in-out;
+  z-index: 500;
+}
+
+.outline:hover {
+  max-height: 80vh;
+  max-width: 20em;
+}
+
+.outline > .catalog {
+  max-height: 80vh;
+  cursor: pointer;
+  overflow: auto;
+  padding-bottom: 1em;
+}
+
+.outline > .catalog > div {
+  padding: .5em;
+}
+
+.outline > .catalog > div:hover {
+  background: #fff;
+}
+
+@media print {
+  .outline {
+    display: none;
+  }
+  .view {
+    min-width: 100%;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+  }
+}
+
 @media (max-width: 767px) {
-  .markdown-body {
+  .view {
     padding: 15px;
   }
 }
