@@ -128,7 +128,7 @@ export default {
 }
 
 .outline:hover {
-  max-height: 80vh;
+  max-height: 88vh;
   max-width: 20em;
 }
 
