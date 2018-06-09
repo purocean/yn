@@ -11,15 +11,36 @@
 5. 尽量少依赖三方库，也不花心思维护，杂凑在一起的功能，恰好工作即可 ^_^
 6. 在文档中运行 PHP Python Node.js 代码块
 
-## 直接使用
+## 上手使用
 + `cd backend; yarn; node main.js`
 + 访问 `http://localhost:3000`
 + 新增文件：`双击目录`
 + 删除文件/目录：`shift + 右键文件/目录`
 + 重命名文件/目录：`ctrl + 右键文件/目录`
++ 编辑器快捷键参考 [monaco-editor](https://github.com/Microsoft/monaco-editor)
++ 自定义编辑器快捷键
+    + `Ctrl + s` 保存文档
+    + `Ctrl + Shift + Up` 当前行上移
+    + `Ctrl + Shift + Down` 当前行下移
+
+## 功能
++ 同步预览滚动，实现得较粗糙
++ 目录大纲展示
 + 文件加密：以 `.c.md` 结尾的文件视为加密文件
-+ startuml 图形需要安装 Java
-+ 运行代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，需要安装 PHP Python Node.js
++ 自动保存（加密文档不自动保存）
++ 列表自动补全
++ 粘贴剪切板里面的图片
++ 运行PHP，nodejs，Python 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
++ 开启了HTML解析，可以直接在文档里面使用 HTML 代码
++ markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
++ markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
++ GitHub 风格样式和特性 [GitHub Flavored Markdown Spec]https://github.github.com/gfm/
++ 待办列表 [GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
++ mermaid 图形 [mermaid](https://github.com/knsv/mermaid)
++ Plantuml 图形，需要安装 Java，graphviz [markdown-it-plantuml](https://github.com/gmunguia/markdown-it-plantuml)
++ katex 公式解析 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex)
++ 元素属性书写 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)
++ 表格解析增强，支持表格标题多行文本，列表等特性 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table)
 
 ## 开发
 + 后端: `cd backend; node main.js`
