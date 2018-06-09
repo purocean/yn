@@ -54,6 +54,11 @@ const plantumlGen = (ctx, next) => {
 
         ctx.type = 'image/svg+xml'
         ctx.body = gen.out
+    } else if (ctx.path.startsWith('/api/plantuml/png')) {
+        const gen = plantuml.generate(ctx.query.data, {format: 'png'});
+
+        ctx.type = 'image/png'
+        ctx.body = gen.out
     } else {
         next()
     }

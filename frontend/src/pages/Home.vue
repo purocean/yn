@@ -181,5 +181,14 @@ export default {
   .editor, .header, .tree {
     display: none;
   }
+
+  .view {
+    min-width: auto;
+    max-width: auto;
+    margin: 0 auto;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+  }
 }
 </style>

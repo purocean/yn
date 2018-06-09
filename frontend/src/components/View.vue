@@ -21,6 +21,8 @@ import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
 import Plantuml from 'markdown-it-plantuml'
 import katex from 'markdown-it-katex'
+import MarkdownItAttrs from 'markdown-it-attrs'
+import MultimdTable from 'markdown-it-multimd-table'
 import RunPlugin from './RunPlugin'
 import SourceLinePlugin from './SourceLinePlugin'
 
@@ -40,6 +42,7 @@ export default {
       markdown: Markdown({
         linkify: true,
         breaks: true,
+        html: true,
         highlight: (str, lang) => {
           if (lang && Highlight.getLanguage(lang)) {
             try {
@@ -51,9 +54,9 @@ export default {
         }
       }).use(TaskLists).use(MermaidPlugin).use(Plantuml, {
         generateSource: umlCode => {
-          return '/api/plantuml/svg?data=' + encodeURIComponent(umlCode)
+          return '/api/plantuml/png?data=' + encodeURIComponent(umlCode)
         }
-      }).use(RunPlugin).use(katex).use(SourceLinePlugin)
+      }).use(RunPlugin).use(katex).use(SourceLinePlugin).use(MarkdownItAttrs).use(MultimdTable, {enableMultilineRows: true})
     }
   },
   mounted () {
@@ -163,5 +166,21 @@ export default {
   .view {
     padding: 15px;
   }
+}
+</style>
+
+<style>
+.view img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.view img.inline {
+  display: inline;
+}
+
+.view .new-page {
+  page-break-before: always;
 }
 </style>
