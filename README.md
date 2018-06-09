@@ -34,7 +34,7 @@
 + 开启了HTML解析，可以直接在文档里面使用 HTML 代码
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
-+ GitHub 风格样式和特性 [GitHub Flavored Markdown Spec]https://github.github.com/gfm/
++ GitHub 风格样式和特性 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)
 + 待办列表 [GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
 + mermaid 图形 [mermaid](https://github.com/knsv/mermaid)
 + Plantuml 图形，需要安装 Java，graphviz [markdown-it-plantuml](https://github.com/gmunguia/markdown-it-plantuml)
