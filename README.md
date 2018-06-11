@@ -22,6 +22,8 @@
     + `Ctrl + s` 保存文档
     + `Ctrl + Shift + Up` 当前行上移
     + `Ctrl + Shift + Down` 当前行下移
+    + `Ctrl + Alt + D` 插入当前日期
+    + `Ctrl + Alt + T` 插入当前时间
 
 ## 功能
 + 同步预览滚动，实现得较粗糙

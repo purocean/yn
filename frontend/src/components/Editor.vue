@@ -4,6 +4,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
+
 export default {
   name: 'editor',
   props: {
@@ -70,6 +72,14 @@ export default {
     keyBind () {
       const KM = window.monaco.KeyMod
       const KC = window.monaco.KeyCode
+
+      this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_D, () => {
+        this.insert(dayjs().format('YYYY-MM-DD'))
+      })
+
+      this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_T, () => {
+        this.insert(dayjs().format('HH:mm:ss'))
+      })
 
       this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
         this.editor.getAction('editor.action.moveLinesUpAction').run()
