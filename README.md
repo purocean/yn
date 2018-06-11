@@ -17,7 +17,7 @@
 + 新增文件：`双击目录`
 + 删除文件/目录：`shift + 右键文件/目录`
 + 重命名文件/目录：`ctrl + 右键文件/目录`
-+ 编辑器快捷键参考 [monaco-editor](https://github.com/Microsoft/monaco-editor)
++ 默认快捷键参考 [vscode](https://code.visualstudio.com/)
 + 自定义编辑器快捷键
     + `Ctrl + s` 保存文档
     + `Ctrl + Shift + Up` 当前行上移
