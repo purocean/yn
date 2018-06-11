@@ -89,6 +89,10 @@ export default {
         this.editor.getAction('editor.action.moveLinesDownAction').run()
       })
 
+      this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.KEY_D, () => {
+        this.editor.getAction('editor.action.copyLinesDownAction').run()
+      })
+
       this.editor.addCommand(KM.CtrlCmd | KC.KEY_S, () => {
         this.$emit('save')
       })
