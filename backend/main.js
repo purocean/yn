@@ -86,6 +86,16 @@ const convertFile = async (ctx, next) => {
     }
 }
 
+const searchFile = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/search')) {
+        const search = ctx.query.str
+
+        ctx.body = result('ok', '操作成功', file.search(search))
+    } else {
+        await next()
+    }
+}
+
 const app = new Koa()
 
 app.use(static(
@@ -103,6 +113,7 @@ app.use(async (ctx, next) => await attachment(ctx, next))
 app.use(async (ctx, next) => await plantumlGen(ctx, next))
 app.use(async (ctx, next) => await runCode(ctx, next))
 app.use(async (ctx, next) => await convertFile(ctx, next))
+app.use(async (ctx, next) => await searchFile(ctx, next))
 
 const port = 3000
 app.listen(port)

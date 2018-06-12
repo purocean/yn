@@ -42,7 +42,7 @@ const travels = location => {
         return []
     }
 
-    const list = fs.readdirSync(location).filter(x => !x.startsWith('.'));
+    const list = fs.readdirSync(location).filter(x => !x.startsWith('.'))
 
     const dirs = list.filter(x => fs.statSync(path.join(location, x)).isDirectory())
     const files = list.filter(x => !fs.statSync(path.join(location, x)).isDirectory())
@@ -113,4 +113,37 @@ exports.tree = () => {
         path: '/',
         children: travels(resolvePath(''))
     }]
+}
+
+exports.search = str => {
+    const files = []
+    const basePath = resolvePath('')
+
+    const match = (p, str) => {
+        return p.endsWith('.md') && new RegExp(str, 'i').test(fs.readFileSync(p, 'utf-8'))
+    }
+
+    const travelFiles = location => {
+        if (!fs.statSync(location).isDirectory()) {
+            return
+        }
+
+        const list = fs.readdirSync(location).filter(x => !x.startsWith('.'))
+
+        list.forEach(x => {
+            const p = path.join(location, x)
+
+            if (fs.statSync(p).isDirectory()) {
+                travelFiles(p)
+            } else if (fs.statSync(p).isFile()) {
+                if (match(p, str)) {
+                    files.push(p.replace(basePath, ''))
+                }
+            }
+        })
+    }
+
+    travelFiles(resolvePath(''))
+
+    return files
 }
