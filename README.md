@@ -33,8 +33,9 @@
 + 自动保存（加密文档不自动保存）
 + 列表自动补全
 + 粘贴剪切板里面的图片
-+ 运行PHP，nodejs，Python 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
-+ 开启了HTML解析，可以直接在文档里面使用 HTML 代码
++ 运行 PHP，nodejs，Python 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
++ 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
++ docx 格式导出，需要安装 [pandoc](https://pandoc.org/)
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
 + GitHub 风格样式和特性 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)

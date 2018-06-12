@@ -1,5 +1,13 @@
 <template>
   <div class="view">
+    <div class="convert">
+      <form ref="convertForm" :action="`/api/convert/${convert.fileName}`" method="post" target="_blank">
+        <input type="hidden" name="html" :value="convert.html">
+        <input type="hidden" name="type" :value="convert.type">
+        <!-- <button type="button" @click="convertFile('pdf')">pdf</button> -->
+        <button type="button" @click="convertFile('docx')">docx</button>
+      </form>
+    </div>
     <div ref="outline" class="outline">
       <div style="padding: .5em;"><b>目录</b></div>
       <div class="catalog">
@@ -34,11 +42,13 @@ import 'katex/dist/katex.min.css'
 export default {
   name: 'xview',
   props: {
-    value: String
+    value: String,
+    fileName: String
   },
   data () {
     return {
       heads: [],
+      convert: {},
       markdown: Markdown({
         linkify: true,
         breaks: true,
@@ -54,7 +64,7 @@ export default {
         }
       }).use(TaskLists).use(MermaidPlugin).use(Plantuml, {
         generateSource: umlCode => {
-          return '/api/plantuml/png?data=' + encodeURIComponent(umlCode)
+          return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
         }
       }).use(RunPlugin).use(katex).use(SourceLinePlugin).use(MarkdownItAttrs).use(MultimdTable, {enableMultilineRows: true})
     }
@@ -98,6 +108,18 @@ export default {
           break
         }
       }
+    },
+    convertFile (type) {
+      const baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
+
+      this.convert = {
+        fileName: (this.fileName || '未命名') + `.${type}`,
+        html: this.$refs.view.outerHTML.replace(/src="api/g, `src="${baseUrl}api`),
+        type
+      }
+      setTimeout(() => {
+        this.$refs.convertForm.submit()
+      }, 300)
     }
   },
   watch: {
@@ -148,6 +170,13 @@ export default {
 
 .outline > .catalog > div:hover {
   background: #fff;
+}
+
+.convert {
+  position: fixed;
+  font-size: 14px;
+  right: 3em;
+  margin-top: -2.5em;
 }
 
 @media print {

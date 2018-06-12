@@ -1,4 +1,4 @@
-const execFileSync = require("child_process").execFileSync;
+const execFileSync = require("child_process").execFileSync
 
 const runCode = (language, code) => {
     try {

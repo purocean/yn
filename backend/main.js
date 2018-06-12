@@ -7,12 +7,13 @@ const plantuml = require('node-plantuml')
 
 const file = require('./file')
 const run = require('./run')
+const convert = require('./convert')
 
 const result = (status = 'ok', message = '操作成功', data = null) => {
     return { status, message, data }
 }
 
-const fileContent = (ctx, next) => {
+const fileContent = async (ctx, next) => {
     if (ctx.path === '/api/file') {
         if (ctx.method === 'GET') {
             ctx.body = result('ok', '获取成功', file.read(ctx.query.path).toString())
@@ -29,11 +30,11 @@ const fileContent = (ctx, next) => {
     } else if (ctx.path === '/api/tree') {
         ctx.body = result('ok', '获取成功', file.tree())
     } else {
-        next()
+        await next()
     }
 }
 
-const attachment = (ctx, next) => {
+const attachment = async (ctx, next) => {
     if (ctx.path.startsWith('/api/attachment')) {
         if (ctx.method === 'POST') {
             const path = ctx.request.body.fields.path
@@ -44,11 +45,11 @@ const attachment = (ctx, next) => {
             ctx.body = file.read(ctx.query.path)
         }
     } else {
-        next()
+        await next()
     }
 }
 
-const plantumlGen = (ctx, next) => {
+const plantumlGen = async (ctx, next) => {
     if (ctx.path.startsWith('/api/plantuml/svg')) {
         const gen = plantuml.generate(ctx.query.data, {format: 'svg'});
 
@@ -60,16 +61,28 @@ const plantumlGen = (ctx, next) => {
         ctx.type = 'image/png'
         ctx.body = gen.out
     } else {
-        next()
+        await next()
     }
 }
 
-const runCode = (ctx, next) => {
+const runCode = async (ctx, next) => {
     if (ctx.path.startsWith('/api/run')) {
         const rst = run.runCode(ctx.request.body.language, ctx.request.body.code)
         ctx.body = result('ok', '运行成功', rst)
     } else {
-        next()
+        await next()
+    }
+}
+
+const convertFile = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/convert/')) {
+        const html = ctx.request.body.html
+        const type = ctx.request.body.type
+
+        ctx.type = mime.getType(`file.${type}`)
+        ctx.body = await convert(html, type)
+    } else {
+        await next()
     }
 }
 
@@ -79,11 +92,17 @@ app.use(static(
     path.join(__dirname,  '../static')
 ))
 
-app.use(bodyParser({multipart: true}))
-app.use(async (ctx, next) => fileContent(ctx, next))
-app.use(async (ctx, next) => attachment(ctx, next))
-app.use(async (ctx, next) => plantumlGen(ctx, next))
-app.use(async (ctx, next) => runCode(ctx, next))
+app.use(bodyParser({
+    multipart: true,
+    formLimit: '20mb',
+    jsonLimit: '20mb',
+    textLimit: '20mb'
+}))
+app.use(async (ctx, next) => await fileContent(ctx, next))
+app.use(async (ctx, next) => await attachment(ctx, next))
+app.use(async (ctx, next) => await plantumlGen(ctx, next))
+app.use(async (ctx, next) => await runCode(ctx, next))
+app.use(async (ctx, next) => await convertFile(ctx, next))
 
 const port = 3000
 app.listen(port)

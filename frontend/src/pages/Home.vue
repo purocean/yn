@@ -21,7 +21,7 @@
         @scroll-line="syncScrollView"
         @paste-img="pasteImg"
         @save="saveFile"></Editor>
-      <XView ref="view" class="view" :value="value" @sync-scroll="syncScrollEditor"></XView>
+      <XView ref="view" class="view" :value="value" :file-name="fileName" @sync-scroll="syncScrollEditor"></XView>
     </div>
   </div>
 </template>
@@ -133,6 +133,9 @@ export default {
   computed: {
     unsaved () {
       return this.value !== this.lastSaveContent
+    },
+    fileName () {
+      return this.file ? this.file.name : null
     }
   }
 }
