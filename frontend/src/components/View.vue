@@ -180,7 +180,8 @@ export default {
 }
 
 @media print {
-  .outline {
+  .outline,
+  .convert {
     display: none;
   }
   .view {
