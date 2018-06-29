@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js'
 
-const languages = ['php', 'python', 'js']
+const languages = ['php', 'python', 'js', 'bash']
 
 const cachePrefix = 'run_code_result_'
 

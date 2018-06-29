@@ -3,6 +3,8 @@ const execFileSync = require("child_process").execFileSync
 const runCode = (language, code) => {
     try {
         switch (language) {
+            case 'bash':
+                return execFileSync('bash', ['-c', code]).toString()
             case 'php':
                 return execFileSync('php', ['-r', code]).toString()
             case 'python':
