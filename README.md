@@ -9,7 +9,7 @@
 3. 支持加密解密，用来保存账号等隐私文件，文件可单独设置密码
 4. 不需要更多花哨功能，简单够用就行
 5. 尽量少依赖三方库，也不花心思维护，杂凑在一起的功能，恰好工作即可 ^_^
-6. 在文档中运行 PHP Python Node.js 代码块
+6. 在文档中运行 PHP Python Node.js bash 代码块
 
 ## 上手使用
 + `cd backend; yarn; node main.js`
@@ -33,7 +33,7 @@
 + 自动保存（加密文档不自动保存）
 + 列表自动补全
 + 粘贴剪切板里面的图片
-+ 运行 PHP，nodejs，Python 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
++ 运行 PHP，nodejs，Python，bash 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
 + 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
 + docx 格式导出，需要安装 [pandoc](https://pandoc.org/)
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
