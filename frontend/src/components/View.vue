@@ -138,6 +138,7 @@ export default {
   margin: 0 auto;
   padding: 45px;
   width: 50vw;
+  position: relative;
 }
 
 .outline {
@@ -177,6 +178,7 @@ export default {
   font-size: 14px;
   right: 3em;
   margin-top: -2.5em;
+  z-index: 500;
 }
 
 @media print {
