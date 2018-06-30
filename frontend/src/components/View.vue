@@ -62,7 +62,7 @@ export default {
 
           return ''
         }
-      }).use(TaskLists).use(MermaidPlugin).use(Plantuml, {
+      }).use(TaskLists, {enabled: true}).use(MermaidPlugin).use(Plantuml, {
         generateSource: umlCode => {
           return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
         }
@@ -92,6 +92,11 @@ export default {
       })
     },
     handleClick (e) {
+      if (e.target.tagName === 'INPUT' && e.target.parentElement.classList.contains('source-line')) {
+        this.switchTodo(parseInt(e.target.parentElement.dataset['sourceLine']), e.target.checked)
+        return
+      }
+
       if (e.target.classList.contains('source-line')) {
         this.syncScroll(parseInt(e.target.dataset['sourceLine']))
         e.preventDefault()
@@ -99,6 +104,9 @@ export default {
     },
     syncScroll (line) {
       this.$emit('sync-scroll', line)
+    },
+    switchTodo (line, checked) {
+      this.$emit('switch-todo', line, checked)
     },
     revealLine (line) {
       const nodes = document.querySelectorAll('.view .source-line')

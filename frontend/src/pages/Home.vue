@@ -21,7 +21,13 @@
         @scroll-line="syncScrollView"
         @paste-img="pasteImg"
         @save="saveFile"></Editor>
-      <XView ref="view" class="view" :value="value" :file-name="fileName" @sync-scroll="syncScrollEditor"></XView>
+      <XView
+        ref="view"
+        class="view"
+        :value="value"
+        :file-name="fileName"
+        @sync-scroll="syncScrollEditor"
+        @switch-todo="switchTodoEditor"></XView>
     </div>
   </div>
 </template>
@@ -94,6 +100,9 @@ export default {
         this.$refs.tree.change()
         this.$refs.editor.insert(`![图片](api/attachment?path=${encodeURIComponent(filePath)})\n`)
       })
+    },
+    switchTodoEditor (line, checked) {
+      this.$refs.editor.switchTodo(line, checked)
     },
     syncScrollEditor (line) {
       this.$refs.editor.revealLine(line)

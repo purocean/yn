@@ -143,8 +143,24 @@ export default {
         }
       ])
     },
+    replaceLine (line, text) {
+      const length = this.editor.getModel().getLineLength(line)
+
+      this.editor.executeEdits('', [
+        { range: new window.monaco.Range(line, 1, line, length + 1), text }
+      ])
+    },
     revealLine (line) {
       this.editor.revealLineInCenter(line)
+    },
+    switchTodo (line, checked) {
+      if (checked) {
+        const value = this.editor.getModel().getLineContent(line).replace('[ ]', '[x]')
+        this.replaceLine(line, value)
+      } else {
+        const value = this.editor.getModel().getLineContent(line).replace('[x]', '[ ]')
+        this.replaceLine(line, value)
+      }
     },
     setValue (val) {
       this.editor.getModel().setValue(val)
