@@ -1,4 +1,5 @@
 const fs = require('fs')
+const xfs = require('fs-extra')
 const path = require('path')
 
 const mkdirPSync = location => {
@@ -87,7 +88,11 @@ exports.rm = p => {
 
         mkdirPSync(path.dirname(newPath))
 
-        fs.renameSync(resolvePath(p), newPath)
+        try {
+            fs.renameSync(resolvePath(p), newPath)
+        } catch (error) {
+            xfs.moveSync(resolvePath(p), newPath)
+        }
     }
 }
 
@@ -98,7 +103,11 @@ exports.mv = (oldPath, newPath) => {
     if (oldPath !== newPath) {
         mkdirPSync(path.dirname(newPath))
 
-        fs.renameSync(oldPath, newPath)
+        try {
+            fs.renameSync(oldPath, newPath)
+        } catch (error) {
+            xfs.moveSync(oldPath, newPath)
+        }
     }
 }
 
