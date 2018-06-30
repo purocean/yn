@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details :open="item.name === '/'" v-if="item.type === 'dir'">
+    <details ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
       <summary
         :style="{background: selected ? '#eee' : 'none'}"
         @dblclick="createFile()"
@@ -42,6 +42,14 @@ export default {
     }
   },
   mounted () {
+    this.$bus.on('editor-ready', () => {
+      const filePath = this.getSelectedFilePath()
+      if (this.item.type === 'dir' && filePath.startsWith(this.item.path)) {
+        this.$refs.dir.open = true
+      } else if (filePath === this.item.path) {
+        this.select(this.item)
+      }
+    })
   },
   methods: {
     select (f) {
@@ -53,6 +61,7 @@ export default {
         })
 
         this.$emit('select', f)
+        this.storeSelectedFilePath(f.path)
       } else {
         window.open(`api/attachment/${f.name}?path=${encodeURIComponent(f.path)}`)
       }
@@ -97,6 +106,12 @@ export default {
           this.$emit('delete', this.item.path)
         })
       }
+    },
+    storeSelectedFilePath (path) {
+      window.localStorage['selectedFile'] = path
+    },
+    getSelectedFilePath () {
+      return window.localStorage['selectedFile'] || ''
     }
   },
   watch: {

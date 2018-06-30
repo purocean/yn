@@ -6162,6 +6162,10 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-bus@^1.1.0:
+  version "1.1.0"
+  resolved "http://registry.npm.taobao.org/vue-bus/download/vue-bus-1.1.0.tgz#803c53ced328a8ce01c95bfb72bf9d623d6df5a7"
+
 vue-eslint-parser@^2.0.1:
   version "2.0.2"
   resolved "http://registry.npm.taobao.org/vue-eslint-parser/download/vue-eslint-parser-2.0.2.tgz#8d603545e9d7c134699075bd1772af1ffd86b744"

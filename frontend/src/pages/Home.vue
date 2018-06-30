@@ -18,6 +18,7 @@
         ref="editor"
         class="editor"
         v-model="value"
+        @ready="editorReady"
         @scroll-line="syncScrollView"
         @paste-img="pasteImg"
         @save="saveFile"></Editor>
@@ -59,6 +60,9 @@ export default {
     this.clearTimer()
   },
   methods: {
+    editorReady () {
+      this.$bus.emit('editor-ready')
+    },
     clearTimer () {
       if (this.timer) {
         window.clearTimeout(this.timer)
@@ -83,6 +87,10 @@ export default {
       }
 
       if (this.lastSaveContent === this.value) {
+        return
+      }
+
+      if (!this.value) {
         return
       }
 

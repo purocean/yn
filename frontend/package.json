@@ -27,6 +27,7 @@
     "monaco-editor": "^0.13.1",
     "normalize.css": "^7.0.0",
     "vue": "^2.5.2",
+    "vue-bus": "^1.1.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

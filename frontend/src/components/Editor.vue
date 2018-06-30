@@ -68,6 +68,10 @@ export default {
 
       this.keyBind()
       window.addEventListener('paste', this.paste)
+
+      setTimeout(() => {
+        this.$emit('ready')
+      }, 500)
     },
     keyBind () {
       const KM = window.monaco.KeyMod
