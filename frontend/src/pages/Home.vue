@@ -149,8 +149,9 @@ export default {
 }
 
 .editor {
-  height: 90vh;
+  height: 95vh;
   width: 50vw;
+  overflow: hidden;
 }
 
 .view {
@@ -173,6 +174,7 @@ export default {
 .header {
   background: #89e8e5;
   line-height: 5vh;
+  height: 5vh;
 }
 
 .header > div {
