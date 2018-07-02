@@ -137,6 +137,8 @@ export default {
     })
   },
   upload: (belongPath, file, call) => {
+    belongPath = belongPath.replace(/\\/g, '/')
+
     const fr = new FileReader()
     fr.readAsBinaryString(file)
     fr.onloadend = () => {
@@ -144,7 +146,8 @@ export default {
         file.name.substr(file.name.lastIndexOf('.'))
 
       const formData = new FormData()
-      formData.append('path', belongPath.replace(/\\/g, '/').replace(/\/([^/]*)$/, '/FILES/$1/' + filename))
+      const path = belongPath.replace(/\/([^/]*)$/, '/FILES/$1/' + filename)
+      formData.append('path', path)
       formData.append('attachment', file)
 
       fetch('/api/attachment', {
@@ -153,7 +156,10 @@ export default {
       }).then(response => {
         response.json().then(result => {
           if (result.status === 'ok') {
-            call(result.data)
+            call({
+              path: path,
+              relativePath: path.replace(belongPath.substr(0, belongPath.lastIndexOf('/')), '.')
+            })
           } else {
             alert(result.message)
           }

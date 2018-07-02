@@ -43,7 +43,8 @@ export default {
   name: 'xview',
   props: {
     value: String,
-    fileName: String
+    fileName: String,
+    filePath: String
   },
   data () {
     return {
@@ -71,7 +72,7 @@ export default {
   },
   mounted () {
     this.render = _.debounce(() => {
-      this.$refs.view.innerHTML = this.markdown.render(this.value)
+      this.$refs.view.innerHTML = this.markdown.render(this.replaceImage(this.value))
       MermaidPlugin.update()
       this.updateOutline()
     }, 500)
@@ -79,6 +80,10 @@ export default {
     this.render()
   },
   methods: {
+    replaceImage (md) {
+      const basePath = this.filePath.substr(0, this.filePath.lastIndexOf('/'))
+      return md.replace(/!\[([^\]]*)\]\(\.\/([^)]+)\)/g, `![$1](api/attachment?path=${encodeURI(basePath)}/$2)`)
+    },
     updateOutline () {
       const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
       const nodes = this.$refs.view.querySelectorAll(tags.join(','))

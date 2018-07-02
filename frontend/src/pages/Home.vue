@@ -27,6 +27,7 @@
         class="view"
         :value="value"
         :file-name="fileName"
+        :file-path="filePath"
         @sync-scroll="syncScrollEditor"
         @switch-todo="switchTodoEditor"></XView>
     </div>
@@ -104,9 +105,9 @@ export default {
       })
     },
     pasteImg (file) {
-      File.upload(this.file.path, file, filePath => {
+      File.upload(this.file.path, file, ({relativePath}) => {
         this.$refs.tree.change()
-        this.$refs.editor.insert(`![图片](api/attachment?path=${encodeURIComponent(filePath)})\n`)
+        this.$refs.editor.insert(`![图片](${encodeURI(relativePath)})\n`)
       })
     },
     switchTodoEditor (line, checked) {
@@ -153,6 +154,9 @@ export default {
     },
     fileName () {
       return this.file ? this.file.name : null
+    },
+    filePath () {
+      return this.file ? this.file.path : null
     }
   }
 }
