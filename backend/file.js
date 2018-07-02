@@ -111,6 +111,10 @@ exports.mv = (oldPath, newPath) => {
     }
 }
 
+exports.exists = p => {
+    return fs.existsSync(resolvePath(p))
+}
+
 exports.upload = (file, path) => {
     exports.write(path, fs.readFileSync(file.path))
 }

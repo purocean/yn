@@ -66,11 +66,13 @@ export default {
               throw e
             }
           }
+        } else {
+          alert(result.message)
         }
       })
     })
   },
-  write: (path, content, call, ecall) => {
+  write: (path, content, call, ecall, isNew = false) => {
     try {
       if (path.endsWith('.c.md')) {
         content = encrypt(content)
@@ -86,11 +88,13 @@ export default {
     fetch('/api/file', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({path, content})
+      body: JSON.stringify({path, content, is_new: isNew})
     }).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
           call(result)
+        } else {
+          alert(result.message)
         }
       })
     })
@@ -104,6 +108,8 @@ export default {
       response.json().then(result => {
         if (result.status === 'ok') {
           call(result)
+        } else {
+          alert(result.message)
         }
       })
     })
@@ -113,6 +119,8 @@ export default {
       response.json().then(result => {
         if (result.status === 'ok') {
           call(result.data)
+        } else {
+          alert(result.message)
         }
       })
     })
@@ -122,6 +130,8 @@ export default {
       response.json().then(result => {
         if (result.status === 'ok') {
           call(result)
+        } else {
+          alert(result.message)
         }
       })
     })
@@ -144,6 +154,8 @@ export default {
         response.json().then(result => {
           if (result.status === 'ok') {
             call(result.data)
+          } else {
+            alert(result.message)
           }
         })
       })

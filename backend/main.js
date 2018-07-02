@@ -18,12 +18,20 @@ const fileContent = async (ctx, next) => {
         if (ctx.method === 'GET') {
             ctx.body = result('ok', '获取成功', file.read(ctx.query.path).toString())
         } else if (ctx.method === 'POST') {
+            if (ctx.request.body.is_new && file.exists(ctx.request.body.path)) {
+                throw new Error('文件已经存在')
+            }
+
             file.write(ctx.request.body.path, ctx.request.body.content)
             ctx.body = result()
         } else if (ctx.method === 'DELETE') {
             file.rm(ctx.query.path)
             ctx.body = result()
         } else if (ctx.method === 'PATCH') {
+            if (file.exists(ctx.request.body.newPath)) {
+                throw new Error('文件已经存在')
+            }
+
             file.mv(ctx.request.body.oldPath, ctx.request.body.newPath)
             ctx.body = result()
         }
@@ -108,12 +116,21 @@ app.use(bodyParser({
     jsonLimit: '20mb',
     textLimit: '20mb'
 }))
-app.use(async (ctx, next) => await fileContent(ctx, next))
-app.use(async (ctx, next) => await attachment(ctx, next))
-app.use(async (ctx, next) => await plantumlGen(ctx, next))
-app.use(async (ctx, next) => await runCode(ctx, next))
-app.use(async (ctx, next) => await convertFile(ctx, next))
-app.use(async (ctx, next) => await searchFile(ctx, next))
+
+const wrapper = async (ctx, next, fun) => {
+    try {
+        await fun(ctx, next)
+    } catch (error) {
+        ctx.body = result('error', error.message)
+    }
+}
+
+app.use(async (ctx, next) => await wrapper(ctx, next, fileContent))
+app.use(async (ctx, next) => await wrapper(ctx, next, attachment))
+app.use(async (ctx, next) => await wrapper(ctx, next, plantumlGen))
+app.use(async (ctx, next) => await wrapper(ctx, next, runCode))
+app.use(async (ctx, next) => await wrapper(ctx, next, convertFile))
+app.use(async (ctx, next) => await wrapper(ctx, next, searchFile))
 
 const port = 3000
 app.listen(port)

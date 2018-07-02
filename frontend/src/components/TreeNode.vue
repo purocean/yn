@@ -73,11 +73,6 @@ export default {
         return
       }
 
-      if (this.item.children.find(x => x.name === filename)) {
-        window.alert('目标目录有同名文件存在')
-        return
-      }
-
       if (!filename.endsWith('.md')) {
         filename += '.md'
       }
@@ -87,7 +82,7 @@ export default {
         this.$emit('change', path)
       }, e => {
         alert(e.message)
-      })
+      }, true)
     },
     renameFile () {
       let newPath = window.prompt(`新文件名`, this.item.path)
