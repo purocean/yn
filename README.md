@@ -77,3 +77,4 @@
 + [ ] 移动端展示
 
 ![截图](./screenshot.png)
+![截图](./screenshot2.png)
