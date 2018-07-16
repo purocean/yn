@@ -78,7 +78,7 @@ export default {
       }
 
       const path = this.item.path + '/' + filename
-      File.write(path, `# ${filename.replace(/\.md$/i, '')}`, () => {
+      File.write(path, `# ${filename.replace(/\.md$/i, '')}\n`, () => {
         this.$emit('change', path)
       }, e => {
         alert(e.message)
