@@ -97,6 +97,11 @@ export default {
       })
     },
     handleClick (e) {
+      if (e.target.tagName === 'IMG') {
+        window.open(e.target.src)
+        return
+      }
+
       if (e.target.tagName === 'INPUT' && e.target.parentElement.classList.contains('source-line')) {
         this.switchTodo(parseInt(e.target.parentElement.dataset['sourceLine']), e.target.checked)
         return
@@ -219,6 +224,7 @@ export default {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  cursor: zoom-in;
 }
 
 .view img.inline {
