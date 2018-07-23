@@ -86,7 +86,7 @@ export default {
       }
 
       const basePath = this.filePath.substr(0, this.filePath.lastIndexOf('/'))
-      return md.replace(/\[([^\]]*)\]\(\.\/([^)]+)\)/g, `[$1](api/attachment?path=${encodeURI(basePath)}/$2){target="_blank"}`)
+      return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\/([^)/]+)\)/g, `[$1](api/attachment/$3?path=${encodeURI(basePath)}%2F$2%2F$3){target="_blank"}`)
     },
     updateOutline () {
       const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
