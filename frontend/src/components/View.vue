@@ -81,6 +81,10 @@ export default {
   },
   methods: {
     replaceImage (md) {
+      if (!this.filePath) {
+        return md
+      }
+
       const basePath = this.filePath.substr(0, this.filePath.lastIndexOf('/'))
       return md.replace(/!\[([^\]]*)\]\(\.\/([^)]+)\)/g, `![$1](api/attachment?path=${encodeURI(basePath)}/$2)`)
     },
