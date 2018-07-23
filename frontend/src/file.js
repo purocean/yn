@@ -136,13 +136,13 @@ export default {
       })
     })
   },
-  upload: (belongPath, file, call) => {
+  upload: (belongPath, file, call, name = null) => {
     belongPath = belongPath.replace(/\\/g, '/')
 
     const fr = new FileReader()
     fr.readAsBinaryString(file)
     fr.onloadend = () => {
-      const filename = CryptoJS.MD5(CryptoJS.enc.Latin1.parse(fr.result)).toString().substr(0, 8) +
+      const filename = name || CryptoJS.MD5(CryptoJS.enc.Latin1.parse(fr.result)).toString().substr(0, 8) +
         file.name.substr(file.name.lastIndexOf('.'))
 
       const formData = new FormData()

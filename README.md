@@ -25,6 +25,7 @@
     + `Ctrl + Shift + D` 重复当前行
     + `Ctrl + Alt + D` 插入当前日期
     + `Ctrl + Alt + T` 插入当前时间
+    + `Ctrl + Alt + F` 插入文件附件
 
 ## 功能
 + 同步预览滚动，实现得较粗糙
@@ -33,6 +34,7 @@
 + 自动保存（加密文档不自动保存）
 + 列表自动补全
 + 粘贴剪切板里面的图片
++ 添加附件到文档
 + 运行 PHP，nodejs，Python，bash 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
 + 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
 + docx 格式导出，需要安装 [pandoc](https://pandoc.org/)
@@ -78,3 +80,4 @@
 
 ![截图](./screenshot.png)
 ![截图](./screenshot2.png)
+![截图](./screenshot3.png)

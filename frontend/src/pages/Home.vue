@@ -21,6 +21,7 @@
         @ready="editorReady"
         @scroll-line="syncScrollView"
         @paste-img="pasteImg"
+        @upload-file="uploadFile"
         @save="saveFile"></Editor>
       <XView
         ref="view"
@@ -35,6 +36,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 import Editor from '../components/Editor'
 import XView from '../components/View'
 import Tree from '../components/Tree'
@@ -109,6 +111,12 @@ export default {
         this.$refs.tree.change()
         this.$refs.editor.insert(`![图片](${encodeURI(relativePath)})\n`)
       })
+    },
+    uploadFile (file) {
+      File.upload(this.file.path, file, ({relativePath}) => {
+        this.$refs.tree.change()
+        this.$refs.editor.insert(`附件：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath)})\n`)
+      }, `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`)
     },
     switchTodoEditor (line, checked) {
       this.$refs.editor.switchTodo(line, checked)

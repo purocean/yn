@@ -72,7 +72,7 @@ export default {
   },
   mounted () {
     this.render = _.debounce(() => {
-      this.$refs.view.innerHTML = this.markdown.render(this.replaceImage(this.value))
+      this.$refs.view.innerHTML = this.markdown.render(this.replaceRelativeLink(this.value))
       MermaidPlugin.update()
       this.updateOutline()
     }, 500)
@@ -80,13 +80,13 @@ export default {
     this.render()
   },
   methods: {
-    replaceImage (md) {
+    replaceRelativeLink (md) {
       if (!this.filePath) {
         return md
       }
 
       const basePath = this.filePath.substr(0, this.filePath.lastIndexOf('/'))
-      return md.replace(/!\[([^\]]*)\]\(\.\/([^)]+)\)/g, `![$1](api/attachment?path=${encodeURI(basePath)}/$2)`)
+      return md.replace(/\[([^\]]*)\]\(\.\/([^)]+)\)/g, `[$1](api/attachment?path=${encodeURI(basePath)}/$2){target="_blank"}`)
     },
     updateOutline () {
       const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']

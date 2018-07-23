@@ -77,6 +77,8 @@ export default {
       const KM = window.monaco.KeyMod
       const KC = window.monaco.KeyCode
 
+      this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_F, this.addAttachment)
+
       this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_D, () => {
         this.insert(dayjs().format('YYYY-MM-DD'))
       })
@@ -130,12 +132,21 @@ export default {
       if (this.editor.isFocused()) {
         const items = e.clipboardData.items
         for (let i = 0; i < items.length; i++) {
-          let matches = items[i].type.match(/^image\/(png|jpg|jpeg|gif)$/i)
-          if (matches) {
+          if (items[i].type.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
             this.$emit('paste-img', items[i].getAsFile())
           }
         }
       }
+    },
+    addAttachment () {
+      const input = window.document.createElement('input')
+      input.type = 'file'
+      input.onchange = () => {
+        for (let i = 0; i < input.files.length; i++) {
+          this.$emit('upload-file', input.files[i])
+        }
+      }
+      input.click()
     },
     insert (text) {
       const selection = this.editor.getSelection()
