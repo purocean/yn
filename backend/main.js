@@ -57,6 +57,17 @@ const attachment = async (ctx, next) => {
     }
 }
 
+const open = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/open')) {
+        if (ctx.method === 'GET') {
+            file.open(ctx.query.path)
+            ctx.body = result()
+        }
+    } else {
+        await next()
+    }
+}
+
 const plantumlGen = async (ctx, next) => {
     if (ctx.path.startsWith('/api/plantuml/svg')) {
         const gen = plantuml.generate(ctx.query.data, {format: 'svg'});
@@ -127,6 +138,7 @@ const wrapper = async (ctx, next, fun) => {
 
 app.use(async (ctx, next) => await wrapper(ctx, next, fileContent))
 app.use(async (ctx, next) => await wrapper(ctx, next, attachment))
+app.use(async (ctx, next) => await wrapper(ctx, next, open))
 app.use(async (ctx, next) => await wrapper(ctx, next, plantumlGen))
 app.use(async (ctx, next) => await wrapper(ctx, next, runCode))
 app.use(async (ctx, next) => await wrapper(ctx, next, convertFile))

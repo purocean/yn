@@ -86,7 +86,7 @@ export default {
       }
 
       const basePath = this.filePath.substr(0, this.filePath.lastIndexOf('/'))
-      return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\/([^)/]+)\)/g, `[$1](api/attachment/$3?path=${encodeURI(basePath)}%2F$2%2F$3){target="_blank"}`)
+      return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\/([^)/]+)\)/g, `[$1](api/attachment/$3?path=${encodeURI(basePath)}%2F$2%2F$3)`)
     },
     updateOutline () {
       const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
@@ -101,6 +101,12 @@ export default {
       })
     },
     handleClick (e) {
+      if (e.target.tagName === 'A' && e.target.classList.contains('open')) {
+        fetch(e.target.href.replace('api/attachment', 'api/open'))
+        e.preventDefault()
+        return false
+      }
+
       if (e.target.tagName === 'IMG') {
         window.open(e.target.src)
         return

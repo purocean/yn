@@ -115,7 +115,7 @@ export default {
     uploadFile (file) {
       File.upload(this.file.path, file, ({relativePath}) => {
         this.$refs.tree.change()
-        this.$refs.editor.insert(`附件：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath)})\n`)
+        this.$refs.editor.insert(`附件：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
       }, `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`)
     },
     switchTodoEditor (line, checked) {

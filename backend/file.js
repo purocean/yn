@@ -1,6 +1,9 @@
 const fs = require('fs')
 const xfs = require('fs-extra')
 const path = require('path')
+const opn = require('opn')
+const isWsl = require('is-wsl')
+const wsl = require('./wsl')
 
 const mkdirPSync = location => {
     let normalizedPath = path.normalize(location)
@@ -126,6 +129,16 @@ exports.tree = () => {
         path: '/',
         children: travels(resolvePath(''))
     }]
+}
+
+exports.open = p => {
+    let path = resolvePath(p)
+
+    if (isWsl) {
+        path = wsl.toWinPath(path)
+    }
+
+    opn(path)
 }
 
 exports.search = str => {
