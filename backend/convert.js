@@ -19,6 +19,10 @@ const convert = async (html, type) => {
                 }
             })
 
+            process.on('error', error => {
+                reject(error)
+            })
+
             process.stdin.write(html)
             process.stdin.end()
         })
