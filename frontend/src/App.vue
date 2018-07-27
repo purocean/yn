@@ -31,20 +31,19 @@ export default {
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.15);
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 @media screen {

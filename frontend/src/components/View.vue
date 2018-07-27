@@ -164,6 +164,10 @@ export default {
     color: #ccc;
   }
 
+  .markdown-body /deep/ a {
+    color: #4c93e2;
+  }
+
   .markdown-body /deep/ tr {
     background: inherit;
   }
