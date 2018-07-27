@@ -12,7 +12,7 @@
 6. 在文档中运行 PHP Python Node.js bash 代码块
 
 ## 上手使用
-+ `cd backend; yarn; node main.js`
++ `cd frontend && yarn && yarn run dist && cd ../backend && yarn && node main.js`
 + 访问 `http://localhost:3000`
 + 新增文件：`双击目录`
 + 删除文件/目录：`shift + 右键文件/目录`
