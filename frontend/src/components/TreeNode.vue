@@ -2,7 +2,7 @@
   <div class="tree-node">
     <details ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
       <summary
-        :style="{background: selected ? '#eee' : 'none'}"
+        :style="{background: selected ? '#313131' : 'none'}"
         @dblclick="createFile()"
         @contextmenu.ctrl.prevent="renameFile"
         @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </summary>
@@ -20,7 +20,7 @@
       @click="select(item)"
       @contextmenu.ctrl.prevent="renameFile"
       @contextmenu.shift.prevent="deleteFile"
-      :style="{background: selected ? '#53ddf3' : 'none'}"> {{ item.name }} </div>
+      :style="{background: selected ? '#313131' : 'none'}"> {{ item.name }} </div>
   </div>
 </template>
 

@@ -159,6 +159,33 @@ export default {
 </script>
 
 <style scoped>
+@media screen {
+  .markdown-body {
+    color: #ccc;
+  }
+
+  .markdown-body /deep/ tr {
+    background: inherit;
+  }
+
+  .markdown-body /deep/ * {
+    border-color: #8b8d90;
+    background: inherit;
+  }
+
+  .markdown-body /deep/ table tr:nth-child(2n),
+  .markdown-body /deep/ pre
+  {
+    background: #333030;
+  }
+
+  .markdown-body /deep/ input,
+  .markdown-body /deep/ img
+  {
+    filter: brightness(70%);
+  }
+}
+
 .view {
   box-sizing: border-box;
   min-width: 200px;
@@ -169,16 +196,31 @@ export default {
   position: relative;
 }
 
+button {
+  background: #333030;
+  border: 0;
+  padding: 5px 10px;
+  color: #ccc;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+button:hover {
+  background: #252525;
+}
+
 .outline {
   position: fixed;
   right: 3em;
-  background: #eee;
+  background: #333030;
+  color: #ccc;
   font-size: 14px;
   max-height: 3.2em;
   max-width: 2em;
   overflow: hidden;
   transition: .1s ease-in-out;
   z-index: 500;
+  border-radius: 2px;
 }
 
 .outline:hover {
@@ -198,7 +240,7 @@ export default {
 }
 
 .outline > .catalog > div:hover {
-  background: #fff;
+  background: #252525;
 }
 
 .convert {

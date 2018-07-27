@@ -69,15 +69,14 @@
 + [x] 运行 python php nodejs 块
 + [x] 大纲展示
 + [x] 同步滚动
++ [x] 暗色主题
 + [ ] 运行代码支持图表生成
-+ [ ] 增加 rss 抓取
 + [ ] ~~认证，// 如有需要使用 nginx~~
 + [ ] 全文查找 Ctrl + p
-+ [ ] 微信结合
 + [ ] ~~git 备份，// 使用 OneDrive 同步备份~~
 + [ ] 标签
 + [ ] 移动端展示
 
-![截图](./screenshot.png)
-![截图](./screenshot2.png)
-![截图](./screenshot3.png)
+![截图](./1.png)
+![截图](./2.png)
+![截图](./3.png)

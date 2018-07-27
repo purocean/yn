@@ -201,7 +201,8 @@ export default {
 }
 
 .header {
-  background: #89e8e5;
+  background: #4e4e4e;
+  color: #eee;
   line-height: 5vh;
   height: 5vh;
 }
