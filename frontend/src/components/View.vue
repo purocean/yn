@@ -5,6 +5,7 @@
         <input type="hidden" name="html" :value="convert.html">
         <input type="hidden" name="type" :value="convert.type">
         <!-- <button type="button" @click="convertFile('pdf')">pdf</button> -->
+        <button type="button" @click="print()">打印</button>
         <button type="button" @click="convertFile('docx')">docx</button>
       </form>
     </div>
@@ -148,6 +149,9 @@ export default {
       setTimeout(() => {
         this.$refs.convertForm.submit()
       }, 300)
+    },
+    print () {
+      window.print()
     }
   },
   watch: {
