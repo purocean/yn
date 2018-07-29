@@ -19,6 +19,7 @@
 + 重命名文件/目录：`ctrl + 右键文件/目录`
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
 + 自定义编辑器快捷键
+    + `Ctrl + p` 打开文件快速跳转面板
     + `Ctrl + s` 保存文档
     + `Ctrl + Shift + Up` 当前行上移
     + `Ctrl + Shift + Down` 当前行下移
@@ -80,3 +81,4 @@
 ![截图](./1.png)
 ![截图](./2.png)
 ![截图](./3.png)
+![截图](./4.png)
