@@ -74,10 +74,10 @@ export default {
       this.updateSelected(this.list[index])
     },
     chooseItem (item = null) {
-      if (item) {
-        this.$emit('choose-item', item)
-      } else if (this.selected) {
-        this.$emit('choose-item', this.selected)
+      const file = item || this.selected
+      if (file) {
+        this.$emit('choose-file', file)
+        this.$bus.emit('choose-file', file)
       }
     }
   },

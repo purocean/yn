@@ -43,15 +43,20 @@ export default {
   },
   mounted () {
     this.$bus.on('editor-ready', () => {
-      const filePath = this.getSelectedFilePath()
+      this.chooseFile(this.getSelectedFilePath())
+    })
+    this.$bus.on('choose-file', file => {
+      this.chooseFile(file.path)
+    })
+  },
+  methods: {
+    chooseFile (filePath) {
       if (this.item.type === 'dir' && filePath.startsWith(this.item.path)) {
         this.$refs.dir.open = true
       } else if (filePath === this.item.path) {
         this.select(this.item)
       }
-    })
-  },
-  methods: {
+    },
     select (f) {
       if (f.name.endsWith('.md')) {
         this.$nextTick(() => {

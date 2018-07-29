@@ -11,7 +11,7 @@
       @delete="onDelete" />
       <transition name="fade">
         <div v-if="showFilter" class="filter-wrapper" @click="showFilter = false">
-          <XFilter @choose-item="f => { file = f; showFilter = false }" :files="files" />
+          <XFilter @choose-file="f => { showFilter = false }" :files="files" />
         </div>
       </transition>
   </aside>
