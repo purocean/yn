@@ -6,7 +6,7 @@
           <div :style="{
             backgroundColor: `rgb(${220 - 220 * todoDoneCount / todoCount}, ${200 * todoDoneCount / todoCount}, 0)`,
             width: `${todoDoneCount * 100 / todoCount}%`
-          }"> {{todoDoneCount}}/{{todoCount}} </div>
+          }"> {{(todoDoneCount * 100 / todoCount).toFixed(2)}}% {{todoDoneCount}}/{{todoCount}} </div>
         </div>
         <div v-else></div>
         <div class="convert">
@@ -264,6 +264,7 @@ button:hover {
   text-align: right;
   box-sizing: border-box;
   transition: all .3s ease-in-out;
+  white-space: nowrap;
 }
 
 .outline {
