@@ -33,9 +33,11 @@ export default {
       showFilter: false
     }
   },
+  created () {
+    window.addEventListener('keydown', this.keydownHandler, true)
+  },
   mounted () {
     this.init()
-    window.addEventListener('keydown', this.keydownHandler)
   },
   beforeDestroy () {
     window.removeEventListener('keydown', this.keydownHandler)

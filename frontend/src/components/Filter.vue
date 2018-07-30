@@ -1,6 +1,6 @@
 <template>
-  <div @keydown.enter="chooseItem()" @keydown.up="selectItem(-1)" @keydown.down="selectItem(1)" class="filter" @click.stop="nope">
-    <input @keydown.up.prevent="nope" @keydown.down.prevent="nope" ref="input" v-model="searchText" type="text" class="input" autofocus>
+  <div @keydown.enter="chooseItem()" @keydown.up="selectItem(-1)" @keydown.down="selectItem(1)" class="filter" @click.stop>
+    <input ref="input" v-model="searchText" type="text" class="input" @keydown.up.prevent @keydown.down.prevent autofocus>
     <ul ref="result" class="result">
       <li
         v-for="item in list"
@@ -39,9 +39,6 @@ export default {
   beforeDestroy () {
   },
   methods: {
-    nope () {
-      // nope
-    },
     updateSelected (item = null) {
       if (item) {
         this.selected = item
