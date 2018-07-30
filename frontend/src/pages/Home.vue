@@ -173,13 +173,13 @@ export default {
 <style scoped>
 .tree {
   height: 95vh;
-  width: 20vw;
+  width: 17vw;
   overflow: auto;
 }
 
 .editor {
   height: 95vh;
-  width: 50vw;
+  width: 40vw;
   overflow: hidden;
 }
 
@@ -189,7 +189,7 @@ export default {
   max-width: 980px;
   margin: 0 auto;
   padding: 45px;
-  width: 30vw;
+  width: 43vw;
   height: 95vh;
   overflow: auto;
 }
@@ -205,6 +205,7 @@ export default {
   color: #eee;
   line-height: 5vh;
   height: 5vh;
+  transition: all .3s ease-in-out;
 }
 
 .header > div {

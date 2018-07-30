@@ -38,6 +38,7 @@
 + 添加附件到文档
 + 运行 PHP，nodejs，Python，bash 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
 + 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
++ 待办进度条
 + docx 格式导出，需要安装 [pandoc](https://pandoc.org/)
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
@@ -82,3 +83,4 @@
 ![截图](./2.png)
 ![截图](./3.png)
 ![截图](./4.png)
+![截图](./5.png)

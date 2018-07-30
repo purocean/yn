@@ -1,13 +1,24 @@
 <template>
   <div class="view">
-    <div class="convert">
-      <form ref="convertForm" :action="`/api/convert/${convert.fileName}`" method="post" target="_blank">
-        <input type="hidden" name="html" :value="convert.html">
-        <input type="hidden" name="type" :value="convert.type">
-        <!-- <button type="button" @click="convertFile('pdf')">pdf</button> -->
-        <button type="button" @click="print()">打印</button>
-        <button type="button" @click="convertFile('docx')">docx</button>
-      </form>
+    <div class="action-bar">
+      <div :style="{background: todoCount ? '#4e4e4e' : 'transparent'}">
+        <div v-if="todoCount" class="todo-progress">
+          <div :style="{
+            backgroundColor: `rgb(${220 - 220 * todoDoneCount / todoCount}, ${200 * todoDoneCount / todoCount}, 0)`,
+            width: `${todoDoneCount * 100 / todoCount}%`
+          }"> {{todoDoneCount}}/{{todoCount}} </div>
+        </div>
+        <div v-else></div>
+        <div class="convert">
+          <form ref="convertForm" :action="`/api/convert/${convert.fileName}`" method="post" target="_blank">
+            <input type="hidden" name="html" :value="convert.html">
+            <input type="hidden" name="type" :value="convert.type">
+            <!-- <button type="button" @click="convertFile('pdf')">pdf</button> -->
+            <button type="button" @click="print()">打印</button>
+            <button type="button" @click="convertFile('docx')">docx</button>
+          </form>
+        </div>
+      </div>
     </div>
     <div ref="outline" class="outline">
       <div style="padding: .5em;"><b>目录</b></div>
@@ -51,6 +62,8 @@ export default {
     return {
       heads: [],
       convert: {},
+      todoCount: 0,
+      todoDoneCount: 0,
       markdown: Markdown({
         linkify: true,
         breaks: true,
@@ -76,7 +89,8 @@ export default {
       this.$refs.view.innerHTML = this.markdown.render(this.replaceRelativeLink(this.value))
       MermaidPlugin.update()
       this.updateOutline()
-    }, 500)
+      this.updateTodoCount()
+    }, 500, {leading: true})
 
     this.render()
   },
@@ -100,6 +114,10 @@ export default {
           sourceLine: parseInt(node.dataset['sourceLine'])
         }
       })
+    },
+    updateTodoCount () {
+      this.todoCount = this.$refs.view.querySelectorAll('input[type=checkbox]').length
+      this.todoDoneCount = this.$refs.view.querySelectorAll('input[type=checkbox][checked]').length
     },
     handleClick (e) {
       if (e.target.tagName === 'A' && e.target.classList.contains('open')) {
@@ -166,6 +184,7 @@ export default {
 @media screen {
   .markdown-body {
     color: #ccc;
+    margin-top: 1em;
   }
 
   .markdown-body /deep/ a {
@@ -194,16 +213,6 @@ export default {
   }
 }
 
-.view {
-  box-sizing: border-box;
-  min-width: 200px;
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 45px;
-  width: 50vw;
-  position: relative;
-}
-
 button {
   background: #333030;
   border: 0;
@@ -211,15 +220,55 @@ button {
   color: #ccc;
   cursor: pointer;
   border-radius: 2px;
+  transition: all .3s ease-in-out;
 }
 
 button:hover {
   background: #252525;
 }
 
+.action-bar {
+  position: fixed;
+  width: 43vw;
+  padding: 0 20px;
+  right: 0;
+  max-width: 980px;
+  box-sizing: border-box;
+  z-index: 1000;
+  margin-top: -2.2em;
+}
+
+.action-bar > div {
+  /* background: #4e4e4e; */
+  padding: .3em;
+  border-radius: 2px;
+  height: 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: flex-end;
+  transition: all .1s ease-in-out;
+}
+
+.todo-progress {
+  flex-grow: 1;
+  margin-right: 1em;
+  background: #808080;
+  z-index: 999;
+}
+
+.todo-progress div {
+  font-size: 12px;
+  line-height: 15px;
+  color: #ddd;
+  text-align: right;
+  box-sizing: border-box;
+  transition: all .3s ease-in-out;
+}
+
 .outline {
   position: fixed;
-  right: 3em;
+  right: 2em;
   background: #333030;
   color: #ccc;
   font-size: 14px;
@@ -229,6 +278,7 @@ button:hover {
   transition: .1s ease-in-out;
   z-index: 500;
   border-radius: 2px;
+  margin-top: 1em;
 }
 
 .outline:hover {
@@ -252,16 +302,12 @@ button:hover {
 }
 
 .convert {
-  position: fixed;
   font-size: 14px;
-  right: 3em;
-  margin-top: -2.5em;
-  z-index: 500;
 }
 
 @media print {
   .outline,
-  .convert {
+  .action-bar {
     display: none;
   }
   .view {
