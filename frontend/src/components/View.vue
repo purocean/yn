@@ -209,7 +209,13 @@ export default {
   .markdown-body /deep/ input,
   .markdown-body /deep/ img
   {
+    transition: all .3s ease-in-out;
     filter: brightness(70%);
+  }
+
+  .markdown-body /deep/ img:hover
+  {
+    filter: none;
   }
 }
 
