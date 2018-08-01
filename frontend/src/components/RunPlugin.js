@@ -1,16 +1,11 @@
 import CryptoJS from 'crypto-js'
 
-const languages = ['php', 'python', 'js', 'bash']
-
 const cachePrefix = 'run_code_result_'
 
 const RunPlugin = (md) => {
   const temp = md.renderer.rules.fence.bind(md.renderer.rules)
   md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
     const token = tokens[idx]
-    if (!languages.includes(token.info)) {
-      return temp(tokens, idx, options, env, slf)
-    }
 
     const code = token.content.trim()
     const firstLine = code.split(/\n/)[0].trim()
