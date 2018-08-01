@@ -9,7 +9,8 @@
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js",
-    "dist": "npm run build && cp -r dist/* ../static/"
+    "dist": "npm run build && cp -r dist/* ../static/",
+    "dist-win": "npm run build && xcopy dist\\* ..\\static\\ /s /e /y"
   },
   "dependencies": {
     "crypto-js": "^3.1.9-1",
