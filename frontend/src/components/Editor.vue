@@ -170,10 +170,10 @@ export default {
     },
     switchTodo (line, checked) {
       if (checked) {
-        const value = this.editor.getModel().getLineContent(line).replace('[ ]', '[x]')
+        const value = this.editor.getModel().getLineContent(line).replace('[ ]', `[x] ~~${dayjs().format('YYYY-MM-DD HH:mm')}~~`)
         this.replaceLine(line, value)
       } else {
-        const value = this.editor.getModel().getLineContent(line).replace('[x]', '[ ]')
+        const value = this.editor.getModel().getLineContent(line).replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
         this.replaceLine(line, value)
       }
     },
