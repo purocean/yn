@@ -224,6 +224,7 @@ export default {
   padding: 4px 0;
   background: #403e3e;
   cursor: pointer;
+  transition: all .2s ease-in-out;
 }
 
 .tab > div:hover {
