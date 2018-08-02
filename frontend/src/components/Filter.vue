@@ -1,12 +1,19 @@
 <template>
-  <div @keydown.enter="chooseItem()" @keydown.up="selectItem(-1)" @keydown.down="selectItem(1)" class="filter" @click.stop>
-    <input ref="input" v-model="searchText" type="text" class="input" @keydown.up.prevent @keydown.down.prevent autofocus>
+  <div @keydown.tab.stop="switchTab()" @keydown.enter="chooseItem()" @keydown.up="selectItem(-1)" @keydown.down="selectItem(1)" class="filter" @click.stop>
+    <div class="tab">
+      <div @click="switchTab('file')" :class="{selected: currentTab === 'file'}">快速跳转</div>
+      <div @click="switchTab('search')" :class="{selected: currentTab === 'search'}">搜索内容</div>
+      <!-- <div>标签</div> -->
+    </div>
+    <input ref="input" v-model="searchText" type="text" class="input" @keydown.tab.prevent @keydown.up.prevent @keydown.down.prevent autofocus>
     <ul ref="result" class="result">
-      <li
-        v-for="item in list"
-        :key="item.path"
-        :class="{selected: selected === item}"
-        @click="chooseItem(item)">
+      <li v-if="list === null">加载中……</li>
+      <template v-else>
+        <li
+          v-for="item in list"
+          :key="item.path"
+          :class="{selected: selected === item}"
+          @click="chooseItem(item)">
           <span>
             {{item.name}}
           </span>
@@ -14,12 +21,16 @@
             {{item.path.substr(0, item.path.lastIndexOf('/'))}}
           </span>
         </li>
-      <li v-if="list.length < 1">无结果</li>
+        <li v-if="list.length < 1">无结果</li>
+      </template>
     </ul>
   </div>
 </template>
 
 <script>
+import _ from 'lodash'
+import file from '../file'
+
 export default {
   name: 'x-filter',
   components: {},
@@ -29,17 +40,50 @@ export default {
   data () {
     return {
       selected: null,
-      searchText: ''
+      searchText: '',
+      currentTab: 'file',
+      list: [],
+      lastFetchTime: 0
     }
+  },
+  created () {
+    this.searchWithDebounce = _.debounce((text, call) => {
+      if (text.trim()) {
+        const fetchTime = new Date().getTime()
+        this.lastFetchTime = fetchTime
+        file.search(text.trim(), data => {
+          // 总是保证最后的搜索结果出现在列表
+          if (fetchTime >= this.lastFetchTime) {
+            call(data)
+          }
+        })
+      } else {
+        this.list = []
+      }
+    }, 500)
   },
   mounted () {
     this.$refs.input.focus()
-    this.updateSelected()
+    this.updateDataSource()
   },
   beforeDestroy () {
   },
   methods: {
+    updateDataSource () {
+      if (this.currentTab === 'file') {
+        this.list = this.files.filter(x => x.path.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1)
+      } else {
+        this.list = null
+        this.searchWithDebounce(this.searchText.trim(), data => {
+          this.list = data
+        })
+      }
+    },
     updateSelected (item = null) {
+      if (this.list === null) {
+        return
+      }
+
       if (item) {
         this.selected = item
       } else {
@@ -76,17 +120,34 @@ export default {
         this.$emit('choose-file', file)
         this.$bus.emit('choose-file', file)
       }
+    },
+    switchTab (tab = null) {
+      if (tab) {
+        this.currentTab = tab
+        return
+      }
+
+      if (this.currentTab === 'file') {
+        this.currentTab = 'search'
+      } else if (this.currentTab === 'search') {
+        this.currentTab = 'file'
+      }
     }
   },
   watch: {
     list () {
       this.updateSelected()
+    },
+    searchText () {
+      this.updateDataSource()
+    },
+    currentTab () {
+      this.list = null
+      this.$refs.input.focus()
+      this.updateDataSource()
     }
   },
   computed: {
-    list () {
-      return this.files.filter(x => x.path.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1)
-    }
   }
 }
 </script>
@@ -148,5 +209,28 @@ export default {
   font-size: 12px;
   color: #888;
   padding-left: .3em;
+}
+
+.tab {
+  display: flex;
+  margin-top: -8px;
+}
+
+.tab > div {
+  flex: auto;
+  text-align: center;
+  line-height: 1.5em;
+  font-size: 12px;
+  padding: 4px 0;
+  background: #403e3e;
+  cursor: pointer;
+}
+
+.tab > div:hover {
+  background: #444141;
+}
+
+.tab > div.selected {
+  background: #333030;
 }
 </style>

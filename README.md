@@ -51,6 +51,7 @@
 + 运行 PHP，nodejs，Python，bash 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
 + 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
 + 待办进度条
++ 快速跳转文件，全文搜索文件内容
 + docx 格式导出，需要安装 [pandoc](https://pandoc.org/)
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
@@ -84,11 +85,11 @@
 + [x] 大纲展示
 + [x] 同步滚动
 + [x] 暗色主题
++ [x] 全文查找 Ctrl + p
++ [ ] 标签支持
 + [ ] 运行代码支持图表生成
 + [ ] ~~认证，// 如有需要使用 nginx~~
-+ [ ] 全文查找 Ctrl + p
 + [ ] ~~git 备份，// 使用 OneDrive 同步备份~~
-+ [ ] 标签
 + [ ] 移动端展示
 
 ![截图](./1.png)
@@ -96,3 +97,4 @@
 ![截图](./3.png)
 ![截图](./4.png)
 ![截图](./5.gif)
+![截图](./6.gif)

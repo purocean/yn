@@ -142,11 +142,16 @@ exports.open = p => {
 }
 
 exports.search = str => {
+    str = str.trim()
+    if (!str) {
+        return []
+    }
+
     const files = []
     const basePath = resolvePath('')
 
     const match = (p, str) => {
-        return p.endsWith('.md') && new RegExp(str, 'i').test(fs.readFileSync(p, 'utf-8'))
+        return p.endsWith('.md') && !p.endsWith('.c.md') && new RegExp(str, 'i').test(fs.readFileSync(p, 'utf-8'))
     }
 
     const travelFiles = location => {
@@ -163,7 +168,11 @@ exports.search = str => {
                 travelFiles(p)
             } else if (fs.statSync(p).isFile()) {
                 if (match(p, str)) {
-                    files.push(p.replace(basePath, ''))
+                    files.push({
+                        name: x,
+                        path: p.replace(basePath, ''),
+                        type: 'file',
+                    })
                 }
             }
         })

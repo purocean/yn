@@ -166,5 +166,16 @@ export default {
         })
       })
     }
+  },
+  search: (text, call) => {
+    fetch(`/api/search?str=${encodeURI(text)}`).then(response => {
+      response.json().then(result => {
+        if (result.status === 'ok') {
+          call(result.data)
+        } else {
+          alert(result.message)
+        }
+      })
+    })
   }
 }
