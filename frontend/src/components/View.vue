@@ -181,6 +181,10 @@ export default {
 </script>
 
 <style scoped>
+.markdown-body {
+  position: relative;
+}
+
 @media screen {
   .markdown-body {
     color: #ccc;
