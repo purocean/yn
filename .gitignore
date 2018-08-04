@@ -1,3 +1,4 @@
 .vscode
 nohup.out
 *.log
+config.json

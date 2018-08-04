@@ -6,6 +6,7 @@ const mime = require('mime')
 const plantuml = require('node-plantuml')
 
 const file = require('./file')
+const dataRepository = require('./repository')
 const run = require('./run')
 const convert = require('./convert')
 
@@ -115,6 +116,14 @@ const searchFile = async (ctx, next) => {
     }
 }
 
+const repository = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/repository')) {
+        ctx.body = result('ok', '获取成功', dataRepository.list())
+    } else {
+        await next()
+    }
+}
+
 const app = new Koa()
 
 app.use(static(
@@ -143,6 +152,7 @@ app.use(async (ctx, next) => await wrapper(ctx, next, plantumlGen))
 app.use(async (ctx, next) => await wrapper(ctx, next, runCode))
 app.use(async (ctx, next) => await wrapper(ctx, next, convertFile))
 app.use(async (ctx, next) => await wrapper(ctx, next, searchFile))
+app.use(async (ctx, next) => await wrapper(ctx, next, repository))
 
 const port = 3000
 app.listen(port)
