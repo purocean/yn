@@ -26,7 +26,7 @@ const fileContent = async (ctx, next) => {
             file.write(ctx.request.body.repo, ctx.request.body.path, ctx.request.body.content)
             ctx.body = result()
         } else if (ctx.method === 'DELETE') {
-            file.rm(ctx.query.path)
+            file.rm(ctx.query.repo, ctx.query.path)
             ctx.body = result()
         } else if (ctx.method === 'PATCH') {
             if (file.exists(ctx.request.body.newPath)) {

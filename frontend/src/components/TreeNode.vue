@@ -102,7 +102,7 @@ export default {
     },
     deleteFile () {
       if (window.confirm(`确定要删除 [${this.item.path}] 吗？`)) {
-        File.delete(this.item.path, () => {
+        File.delete(this.item.repo, this.item.path, () => {
           this.$emit('delete', this.item.path)
         })
       }

@@ -125,8 +125,8 @@ export default {
       })
     })
   },
-  delete: (path, call) => {
-    fetch(`/api/file?path=${encodeURIComponent(path)}`, {method: 'DELETE'}).then(response => {
+  delete: (repo, path, call) => {
+    fetch(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, {method: 'DELETE'}).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
           call(result)

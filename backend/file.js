@@ -103,16 +103,16 @@ exports.write = (repo, p, content) => {
     fs.writeFileSync(p, content)
 }
 
-exports.rm = p => {
-    if (resolvePath(p) !== resolvePath('')) {
+exports.rm = (repo, p) => {
+    if (resolvePath(p) !== resolvePath('', repo)) {
         const newPath = resolvePath(p, 'trash') + '.' + (new Date).getTime()
 
         mkdirPSync(path.dirname(newPath))
 
         try {
-            fs.renameSync(resolvePath(p), newPath)
+            fs.renameSync(resolvePath(p, repo), newPath)
         } catch (error) {
-            xfs.moveSync(resolvePath(p), newPath)
+            xfs.moveSync(resolvePath(p, repo), newPath)
         }
     }
 }
