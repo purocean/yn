@@ -74,7 +74,7 @@ export default {
         this.$emit('select', f)
         this.storeSelectedFilePath(f.path)
       } else {
-        window.open(`api/attachment/${encodeURIComponent(f.name)}?path=${encodeURIComponent(f.path)}`)
+        window.open(`api/attachment/${encodeURIComponent(f.name)}?repo=${f.repo}&path=${encodeURIComponent(f.path)}`)
       }
     },
     createFile () {
