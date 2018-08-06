@@ -177,5 +177,16 @@ export default {
         }
       })
     })
+  },
+  fetchRepositories: call => {
+    fetch('/api/repositories').then(response => {
+      response.json().then(result => {
+        if (result.status === 'ok') {
+          call(result.data)
+        } else {
+          alert(result.message)
+        }
+      })
+    })
   }
 }

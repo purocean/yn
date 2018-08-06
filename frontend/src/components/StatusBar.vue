@@ -1,5 +1,7 @@
 <template>
   <div class="status-bar">
+    <RepositorySwitch class="left"></RepositorySwitch>
+
     <div class="document-info right">
       <span>行：{{documentInfo.line}}</span>
       <span>列：{{documentInfo.column}}</span>
@@ -11,9 +13,11 @@
 </template>
 
 <script>
+import RepositorySwitch from './RepositorySwitch'
+
 export default {
   name: 'status-bar',
-  components: {},
+  components: { RepositorySwitch },
   props: {
   },
   data () {
@@ -48,6 +52,10 @@ export default {
 </script>
 
 <style scoped>
+.left {
+  float: left;
+}
+
 .right {
   float: right;
 }

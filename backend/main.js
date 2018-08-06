@@ -117,7 +117,7 @@ const searchFile = async (ctx, next) => {
 }
 
 const repository = async (ctx, next) => {
-    if (ctx.path.startsWith('/api/repository')) {
+    if (ctx.path.startsWith('/api/repositories')) {
         ctx.body = result('ok', '获取成功', dataRepository.list())
     } else {
         await next()
