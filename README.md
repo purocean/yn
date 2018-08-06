@@ -29,6 +29,7 @@
 + 新增文件：`双击目录`
 + 删除文件/目录：`shift + 右键文件/目录`
 + 重命名文件/目录：`ctrl + 右键文件/目录`
++ 默认文件存储在 `./data` 目录下，添加更多仓库请编辑 `./config.json` 文件
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
 + 自定义编辑器快捷键
     + `Ctrl + p` 打开文件快速跳转面板
@@ -52,6 +53,7 @@
 + 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
 + 待办进度条
 + 快速跳转文件，全文搜索文件内容
++ 多仓库切换
 + docx 格式导出，需要安装 [pandoc](https://pandoc.org/)
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
@@ -86,9 +88,9 @@
 + [x] 同步滚动
 + [x] 暗色主题
 + [x] 全文查找 Ctrl + p
-+ [ ] 状态栏
++ [x] 支持多根目录
++ [x] 状态栏
 + [ ] 标签支持
-+ [ ] 支持多根目录
 + [ ] 运行代码支持图表生成
 + [ ] ~~认证，// 如有需要使用 nginx~~
 + [ ] ~~git 备份，// 使用 OneDrive 同步备份~~
