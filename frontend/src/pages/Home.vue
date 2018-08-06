@@ -29,6 +29,7 @@
         :value="value"
         :file-name="fileName"
         :file-path="filePath"
+        :file-repo="fileRepo"
         @sync-scroll="syncScrollEditor"
         @switch-todo="switchTodoEditor"></XView>
     </div>
@@ -111,13 +112,13 @@ export default {
       })
     },
     pasteImg (file) {
-      File.upload(this.file.path, file, ({relativePath}) => {
+      File.upload(this.file.repo, this.file.path, file, ({relativePath}) => {
         this.$refs.tree.change()
         this.$refs.editor.insert(`![图片](${encodeURI(relativePath)})\n`)
       })
     },
     uploadFile (file) {
-      File.upload(this.file.path, file, ({relativePath}) => {
+      File.upload(this.file.repo, this.file.path, file, ({relativePath}) => {
         this.$refs.tree.change()
         this.$refs.editor.insert(`附件：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
       }, `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`)
@@ -169,6 +170,9 @@ export default {
     },
     filePath () {
       return this.file ? this.file.path : null
+    },
+    fileRepo () {
+      return this.file ? this.file.repo : null
     }
   }
 }

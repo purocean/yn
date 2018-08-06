@@ -55,6 +55,7 @@ export default {
   name: 'xview',
   props: {
     value: String,
+    fileRepo: String,
     fileName: String,
     filePath: String
   },
@@ -101,7 +102,8 @@ export default {
       }
 
       const basePath = this.filePath.substr(0, this.filePath.lastIndexOf('/'))
-      return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\/([^)/]+)\)/g, `[$1](api/attachment/$3?path=${encodeURI(basePath)}%2F$2%2F$3)`)
+      const repo = this.fileRepo
+      return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\/([^)/]+)\)/g, `[$1](api/attachment/$3?repo=${repo}&path=${encodeURI(basePath)}%2F$2%2F$3)`)
     },
     updateOutline () {
       const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']

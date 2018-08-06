@@ -136,7 +136,7 @@ export default {
       })
     })
   },
-  upload: (belongPath, file, call, name = null) => {
+  upload: (repo, belongPath, file, call, name = null) => {
     belongPath = belongPath.replace(/\\/g, '/')
 
     const fr = new FileReader()
@@ -147,6 +147,7 @@ export default {
 
       const formData = new FormData()
       const path = belongPath.replace(/\/([^/]*)$/, '/FILES/$1/' + filename)
+      formData.append('repo', repo)
       formData.append('path', path)
       formData.append('attachment', file)
 
@@ -157,6 +158,7 @@ export default {
         response.json().then(result => {
           if (result.status === 'ok') {
             call({
+              repo: repo,
               path: path,
               relativePath: path.replace(belongPath.substr(0, belongPath.lastIndexOf('/')), '.')
             })

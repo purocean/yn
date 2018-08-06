@@ -47,11 +47,12 @@ const attachment = async (ctx, next) => {
     if (ctx.path.startsWith('/api/attachment')) {
         if (ctx.method === 'POST') {
             const path = ctx.request.body.fields.path
-            file.upload(ctx.request.body.files.attachment, path)
+            const repo = ctx.request.body.fields.repo
+            file.upload(repo, ctx.request.body.files.attachment, path)
             ctx.body = result('ok', '上传成功', path)
         } else if (ctx.method === 'GET') {
             ctx.type = mime.getType(ctx.query.path)
-            ctx.body = file.read(ctx.query.path)
+            ctx.body = file.read(ctx.query.repo, ctx.query.path)
         }
     } else {
         await next()

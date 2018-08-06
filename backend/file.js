@@ -136,8 +136,8 @@ exports.exists = (repo, p) => {
     return fs.existsSync(resolvePath(p, repo))
 }
 
-exports.upload = (file, path) => {
-    exports.write(path, fs.readFileSync(file.path))
+exports.upload = (repo, file, path) => {
+    exports.write(repo, path, fs.readFileSync(file.path))
 }
 
 exports.tree = repo => {
