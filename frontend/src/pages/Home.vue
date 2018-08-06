@@ -32,6 +32,9 @@
         @sync-scroll="syncScrollEditor"
         @switch-todo="switchTodoEditor"></XView>
     </div>
+    <div class="status-bar">
+      <StatusBar></StatusBar>
+    </div>
   </div>
 </template>
 
@@ -40,12 +43,13 @@ import dayjs from 'dayjs'
 import Editor from '../components/Editor'
 import XView from '../components/View'
 import Tree from '../components/Tree'
+import StatusBar from '../components/StatusBar'
 import RunPlugin from '../components/RunPlugin'
 import File from '../file'
 
 export default {
   name: 'home',
-  components: { XView, Editor, Tree },
+  components: { XView, Editor, Tree, StatusBar },
   data () {
     return {
       status: '请选择文件',
@@ -174,6 +178,8 @@ export default {
 .tree {
   height: 95vh;
   width: 17vw;
+  padding-bottom: 20px;
+  box-sizing: border-box;
   overflow: auto;
 }
 
@@ -192,6 +198,8 @@ export default {
   width: 43vw;
   height: 95vh;
   overflow: auto;
+  padding-bottom: 20px;
+  box-sizing: border-box;
 }
 
 @media (max-width: 767px) {
@@ -213,8 +221,15 @@ export default {
   margin: 0 auto;
 }
 
+.status-bar {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+}
+
 @media print {
-  .editor, .header, .tree {
+  .editor, .header, .tree, .status-bar {
     display: none;
   }
 

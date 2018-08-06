@@ -57,8 +57,12 @@ export default {
         wrappingIndent: 'same'
       })
 
-      this.editor.onDidChangeModelContent((e) => {
-        this.$emit('input', this.editor.getModel().getValue(window.monaco.editor.DefaultEndOfLine.LF))
+      this.editor.onDidChangeCursorSelection(e => {
+        this.$bus.emit('change-document', this.getDucumentInfo())
+      })
+
+      this.editor.onDidChangeModelContent(e => {
+        this.$emit('input', this.getValue())
       })
 
       this.editor.onDidScrollChange(e => {
@@ -177,8 +181,22 @@ export default {
         this.replaceLine(line, value)
       }
     },
+    getValue () {
+      return this.editor.getModel().getValue(window.monaco.editor.DefaultEndOfLine.LF)
+    },
     setValue (val) {
       this.editor.getModel().setValue(val)
+    },
+    getDucumentInfo () {
+      const selection = this.editor.getSelection()
+
+      return {
+        line: selection.positionLineNumber,
+        column: selection.positionColumn,
+        lineCount: this.editor.getModel().getLineCount(),
+        textLength: this.getValue().length,
+        selectedLength: this.editor.getModel().getValueInRange(selection).length
+      }
     }
   }
 }

@@ -26,18 +26,18 @@ export default {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 5px;
+  border-radius: 3px;
   background: rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
+  border-radius: 3px;
   background: rgba(255, 255, 255, 0.09);
   box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
 }
