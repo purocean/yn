@@ -4,7 +4,7 @@
       <div>
         <h4 style="margin: 0;text-align: center">
           <span v-if="file">
-            {{ file.path }}-{{ status }}
+            {{ file.path }}-{{ status }} [{{file.repo}}]
           </span>
           <span v-else>
             未打开文件
