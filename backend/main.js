@@ -70,6 +70,25 @@ const open = async (ctx, next) => {
     }
 }
 
+const searchFile = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/search')) {
+        const search = ctx.query.search
+        const repo = ctx.query.repo
+
+        ctx.body = result('ok', '操作成功', file.search(repo, search))
+    } else {
+        await next()
+    }
+}
+
+const repository = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/repositories')) {
+        ctx.body = result('ok', '获取成功', dataRepository.list())
+    } else {
+        await next()
+    }
+}
+
 const plantumlGen = async (ctx, next) => {
     if (ctx.path.startsWith('/api/plantuml/svg')) {
         const gen = plantuml.generate(ctx.query.data, {format: 'svg'});
@@ -81,24 +100,6 @@ const plantumlGen = async (ctx, next) => {
 
         ctx.type = 'image/png'
         ctx.body = gen.out
-    } else {
-        await next()
-    }
-}
-
-const searchFile = async (ctx, next) => {
-    if (ctx.path.startsWith('/api/search')) {
-        const search = ctx.query.str
-
-        ctx.body = result('ok', '操作成功', file.search(search))
-    } else {
-        await next()
-    }
-}
-
-const repository = async (ctx, next) => {
-    if (ctx.path.startsWith('/api/repositories')) {
-        ctx.body = result('ok', '获取成功', dataRepository.list())
     } else {
         await next()
     }

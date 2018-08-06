@@ -169,8 +169,8 @@ export default {
       })
     }
   },
-  search: (text, call) => {
-    fetch(`/api/search?str=${encodeURI(text)}`).then(response => {
+  search: (repo, text, call) => {
+    fetch(`/api/search?repo=${repo}&search=${encodeURI(text)}`).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
           call(result.data)

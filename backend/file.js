@@ -160,14 +160,14 @@ exports.open = (repo, p) => {
     opn(path)
 }
 
-exports.search = str => {
+exports.search = (repo, str) => {
     str = str.trim()
     if (!str) {
         return []
     }
 
     const files = []
-    const basePath = resolvePath('')
+    const basePath = resolvePath('', repo)
 
     const match = (p, str) => {
         return p.endsWith('.md') && !p.endsWith('.c.md') && new RegExp(str, 'i').test(fs.readFileSync(p, 'utf-8'))
@@ -197,7 +197,7 @@ exports.search = str => {
         })
     }
 
-    travelFiles(resolvePath(''))
+    travelFiles(resolvePath('', repo))
 
     return files
 }

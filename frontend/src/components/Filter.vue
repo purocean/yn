@@ -35,7 +35,8 @@ export default {
   name: 'x-filter',
   components: {},
   props: {
-    files: Array
+    files: Array,
+    repo: String
   },
   data () {
     return {
@@ -48,10 +49,10 @@ export default {
   },
   created () {
     this.searchWithDebounce = _.debounce((text, call) => {
-      if (text.trim()) {
+      if (this.repo && text.trim()) {
         const fetchTime = new Date().getTime()
         this.lastFetchTime = fetchTime
-        file.search(text.trim(), data => {
+        file.search(this.repo, text.trim(), data => {
           // 总是保证最后的搜索结果出现在列表
           if (fetchTime >= this.lastFetchTime) {
             call(data)
