@@ -198,7 +198,6 @@ export default {
   width: 43vw;
   height: 95vh;
   overflow: auto;
-  padding-bottom: 20px;
   box-sizing: border-box;
 }
 
