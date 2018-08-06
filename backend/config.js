@@ -16,14 +16,22 @@ const readJson = () => {
     }
 }
 
-exports.set = (key, value) => {
-    const config = readJson()
+const set = (key, value) => {
+    const config = readJson() || {}
     config[key] = value
     writeJson(config)
 }
 
-exports.get = (key, defaultVal = null) => {
-    const config = readJson()
+exports.set = set
 
-    return config[key] === undefined ? defaultVal : config[key]
+exports.get = (key, defaultVal = null) => {
+    const config = readJson() || {}
+
+    if (config[key] === undefined) {
+        set(key, defaultVal) // 写入默认值到配置文件
+
+        return defaultVal
+    }
+
+    return config[key]
 }

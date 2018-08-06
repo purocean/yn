@@ -1,12 +1,15 @@
 const path = require('path')
 const config = require('./config')
 
+const configKey = 'repositories'
+const defaultVal = {"main": "./data"}
+
 exports.list = () => {
-    return config.get('repositories', {})
+    return config.get(configKey, defaultVal)
 }
 
 exports.getPath = name => {
-    let p = config.get('repositories', {})[name]
+    let p = config.get(configKey, defaultVal)[name]
 
     if (!p) {
         return null
