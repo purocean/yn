@@ -117,9 +117,9 @@ exports.rm = (repo, p) => {
     }
 }
 
-exports.mv = (oldPath, newPath) => {
-    oldPath = resolvePath(oldPath)
-    newPath = resolvePath(newPath)
+exports.mv = (repo, oldPath, newPath) => {
+    oldPath = resolvePath(oldPath, repo)
+    newPath = resolvePath(newPath, repo)
 
     if (oldPath !== newPath) {
         mkdirPSync(path.dirname(newPath))

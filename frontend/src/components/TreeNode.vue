@@ -96,7 +96,7 @@ export default {
         return
       }
 
-      File.move(this.item.path, newPath, () => {
+      File.move(this.item.repo, this.item.path, newPath, () => {
         this.$emit('move', this.item.path)
       })
     },

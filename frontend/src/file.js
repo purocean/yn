@@ -99,11 +99,11 @@ export default {
       })
     })
   },
-  move: (oldPath, newPath, call) => {
+  move: (repo, oldPath, newPath, call) => {
     fetch('/api/file', {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({oldPath, newPath})
+      body: JSON.stringify({repo, oldPath, newPath})
     }).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {

@@ -29,11 +29,11 @@ const fileContent = async (ctx, next) => {
             file.rm(ctx.query.repo, ctx.query.path)
             ctx.body = result()
         } else if (ctx.method === 'PATCH') {
-            if (file.exists(ctx.request.body.newPath)) {
+            if (file.exists(ctx.request.body.repo, ctx.request.body.newPath)) {
                 throw new Error('文件已经存在')
             }
 
-            file.mv(ctx.request.body.oldPath, ctx.request.body.newPath)
+            file.mv(ctx.request.body.repo, ctx.request.body.oldPath, ctx.request.body.newPath)
             ctx.body = result()
         }
     } else if (ctx.path === '/api/tree') {
