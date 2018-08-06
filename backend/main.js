@@ -17,7 +17,7 @@ const result = (status = 'ok', message = '操作成功', data = null) => {
 const fileContent = async (ctx, next) => {
     if (ctx.path === '/api/file') {
         if (ctx.method === 'GET') {
-            ctx.body = result('ok', '获取成功', file.read(ctx.query.path).toString())
+            ctx.body = result('ok', '获取成功', file.read(ctx.query.repo, ctx.query.path).toString())
         } else if (ctx.method === 'POST') {
             if (ctx.request.body.is_new && file.exists(ctx.request.body.path)) {
                 throw new Error('文件已经存在')
@@ -85,6 +85,24 @@ const plantumlGen = async (ctx, next) => {
     }
 }
 
+const searchFile = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/search')) {
+        const search = ctx.query.str
+
+        ctx.body = result('ok', '操作成功', file.search(search))
+    } else {
+        await next()
+    }
+}
+
+const repository = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/repositories')) {
+        ctx.body = result('ok', '获取成功', dataRepository.list())
+    } else {
+        await next()
+    }
+}
+
 const runCode = async (ctx, next) => {
     if (ctx.path.startsWith('/api/run')) {
         const rst = run.runCode(ctx.request.body.language, ctx.request.body.code)
@@ -101,24 +119,6 @@ const convertFile = async (ctx, next) => {
 
         ctx.type = mime.getType(`file.${type}`)
         ctx.body = await convert(html, type)
-    } else {
-        await next()
-    }
-}
-
-const searchFile = async (ctx, next) => {
-    if (ctx.path.startsWith('/api/search')) {
-        const search = ctx.query.str
-
-        ctx.body = result('ok', '操作成功', file.search(search))
-    } else {
-        await next()
-    }
-}
-
-const repository = async (ctx, next) => {
-    if (ctx.path.startsWith('/api/repositories')) {
-        ctx.body = result('ok', '获取成功', dataRepository.list())
     } else {
         await next()
     }

@@ -144,7 +144,7 @@ export default {
       }
 
       if (f) {
-        File.read(f.path, data => {
+        File.read(f.repo, f.path, data => {
           this.lastSaveContent = data
           this.$refs.editor.setValue(data)
           this.status = '加载完毕'

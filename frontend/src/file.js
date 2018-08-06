@@ -48,8 +48,8 @@ const decrypt = content => {
 }
 
 export default {
-  read: (path, call, ecall) => {
-    fetch(`/api/file?path=${encodeURIComponent(path)}`).then(response => {
+  read: (repo, path, call, ecall) => {
+    fetch(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
           try {

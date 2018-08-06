@@ -91,8 +91,8 @@ const travels = (location, repo, basePath = null) => {
     }))
 }
 
-exports.read = p => {
-    return fs.readFileSync(resolvePath(p))
+exports.read = (repo, p) => {
+    return fs.readFileSync(resolvePath(p, repo))
 }
 
 exports.write = (p, content) => {
