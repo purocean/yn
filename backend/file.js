@@ -150,8 +150,8 @@ exports.tree = repo => {
     }]
 }
 
-exports.open = p => {
-    let path = resolvePath(p)
+exports.open = (repo, p) => {
+    let path = resolvePath(p, repo)
 
     if (isWsl) {
         path = wsl.toWinPath(path)

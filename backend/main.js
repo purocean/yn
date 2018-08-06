@@ -62,7 +62,7 @@ const attachment = async (ctx, next) => {
 const open = async (ctx, next) => {
     if (ctx.path.startsWith('/api/open')) {
         if (ctx.method === 'GET') {
-            file.open(ctx.query.path)
+            file.open(ctx.query.repo, ctx.query.path)
             ctx.body = result()
         }
     } else {
