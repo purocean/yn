@@ -37,7 +37,7 @@ const fileContent = async (ctx, next) => {
             ctx.body = result()
         }
     } else if (ctx.path === '/api/tree') {
-        ctx.body = result('ok', '获取成功', file.tree())
+        ctx.body = result('ok', '获取成功', file.tree(ctx.query.repo))
     } else {
         await next()
     }

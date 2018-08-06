@@ -114,8 +114,8 @@ export default {
       })
     })
   },
-  tree: call => {
-    fetch('/api/tree').then(response => {
+  tree: (repo, call) => {
+    fetch(`/api/tree?repo=${repo}`).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
           call(result.data)

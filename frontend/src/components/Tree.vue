@@ -1,19 +1,22 @@
 <template>
   <aside class="side">
-    <TreeNode
-      v-for="item in tree"
-      :slected-file="file"
-      :item="item"
-      :key="item.path"
-      @move="onMove"
-      @change="change"
-      @select="f => file = f"
-      @delete="onDelete" />
-      <transition name="fade">
-        <div v-if="showFilter" class="filter-wrapper" @click="showFilter = false">
-          <XFilter @choose-file="f => { showFilter = false }" :files="files" />
-        </div>
-      </transition>
+    <div class="loading" v-if="tree === null"> 加载中 </div>
+    <template v-else>
+      <TreeNode
+        v-for="item in tree"
+        :slected-file="file"
+        :item="item"
+        :key="item.path"
+        @move="onMove"
+        @change="change"
+        @select="f => file = f"
+        @delete="onDelete" />
+        <transition name="fade">
+          <div v-if="showFilter" class="filter-wrapper" @click="showFilter = false">
+            <XFilter @choose-file="f => { showFilter = false }" :files="files" />
+          </div>
+        </transition>
+    </template>
   </aside>
 </template>
 
@@ -27,27 +30,29 @@ export default {
   components: { TreeNode, XFilter },
   data () {
     return {
-      files: [],
-      tree: [],
+      tree: null,
       file: null,
       showFilter: false
     }
   },
   created () {
     window.addEventListener('keydown', this.keydownHandler, true)
+    this.$bus.on('switch-repository', this.init)
   },
   mounted () {
-    this.init()
   },
   beforeDestroy () {
     window.removeEventListener('keydown', this.keydownHandler)
+    this.$bus.off('switch-repository', this.init)
   },
   methods: {
-    init () {
-      File.tree(tree => {
-        this.tree = tree
-        this.files = this.travelFiles(tree)
-      })
+    init (repo) {
+      if (repo) {
+        this.tree = null
+        File.tree(repo, tree => {
+          this.tree = tree
+        })
+      }
     },
     onDelete (path) {
       // 删除了正在编辑的文件或者其父目录
@@ -99,6 +104,11 @@ export default {
     file (f) {
       this.$emit('input', f)
     }
+  },
+  computed: {
+    files () {
+      return this.travelFiles(this.tree)
+    }
   }
 }
 </script>
@@ -124,5 +134,12 @@ export default {
 
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+
+.loading {
+  font-size: 32px;
+  text-align: center;
+  padding-top: 50%;
+  color: #848181;
 }
 </style>

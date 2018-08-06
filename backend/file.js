@@ -4,6 +4,7 @@ const path = require('path')
 const opn = require('opn')
 const isWsl = require('is-wsl')
 const wsl = require('./wsl')
+const repository = require('./repository')
 
 const mkdirPSync = location => {
     let normalizedPath = path.normalize(location)
@@ -35,13 +36,28 @@ const rmRecursiveSync = location => {
     }
 }
 
-const resolvePath = (p, dir = 'data') => {
-    p = __dirname + '/../' + dir + '/' + p.replace(/\.\./g, '')
+const resolvePath = (p, repo = 'main') => {
+    p = p.replace(/\.\./g, '')
 
-    return path.resolve(p)
+    if (repo === 'trash') {
+        p = path.join(__dirname, '/../trash/', p)
+    } else {
+        const basePath = repository.getPath(repo)
+        if (!basePath) {
+            throw new Error(`仓库 ${repo} 不存在`)
+        }
+
+        p = path.join(basePath, p)
+    }
+
+    return p
 }
 
-const travels = location => {
+const travels = (location, repo, basePath = null) => {
+    if (!basePath) {
+        basePath = resolvePath('', repo)
+    }
+
     if (!fs.statSync(location).isDirectory()) {
         return []
     }
@@ -53,22 +69,24 @@ const travels = location => {
 
     return dirs.map(x => {
         const p = path.join(location, x)
-        const xpath = p.replace(resolvePath(''), '')
+        const xpath = p.replace(basePath, '')
 
         return {
             name: x,
             path: xpath,
             type: 'dir',
-            children: travels(p)
+            repo: repo,
+            children: travels(p, repo, basePath)
         }
     }).concat(files.map(x => {
         const p = path.join(location, x)
-        const xpath = p.replace(resolvePath(''), '')
+        const xpath = p.replace(basePath, '')
 
         return {
             name: x,
             path: xpath,
-            type: 'file'
+            type: 'file',
+            repo: repo,
         }
     }))
 }
@@ -122,12 +140,13 @@ exports.upload = (file, path) => {
     exports.write(path, fs.readFileSync(file.path))
 }
 
-exports.tree = () => {
+exports.tree = repo => {
     return [{
         name: '/',
         type: 'dir',
         path: '/',
-        children: travels(resolvePath(''))
+        repo: repo,
+        children: travels(resolvePath('', repo), repo)
     }]
 }
 
