@@ -30,6 +30,7 @@ export default {
   components: { TreeNode, XFilter },
   data () {
     return {
+      repo: null,
       tree: null,
       file: null,
       showFilter: false
@@ -46,13 +47,15 @@ export default {
     this.$bus.off('switch-repository', this.init)
   },
   methods: {
-    init (repo) {
+    init (repo = null) {
       if (repo) {
+        this.repo = repo
         this.tree = null
-        File.tree(repo, tree => {
-          this.tree = tree
-        })
       }
+
+      File.tree(this.repo, tree => {
+        this.tree = tree
+      })
     },
     onDelete (path) {
       // 删除了正在编辑的文件或者其父目录

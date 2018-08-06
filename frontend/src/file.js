@@ -72,7 +72,7 @@ export default {
       })
     })
   },
-  write: (path, content, call, ecall, isNew = false) => {
+  write: (repo, path, content, call, ecall, isNew = false) => {
     try {
       if (path.endsWith('.c.md')) {
         content = encrypt(content)
@@ -88,7 +88,7 @@ export default {
     fetch('/api/file', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({path, content, is_new: isNew})
+      body: JSON.stringify({repo, path, content, is_new: isNew})
     }).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {

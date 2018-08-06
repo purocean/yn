@@ -95,8 +95,8 @@ exports.read = (repo, p) => {
     return fs.readFileSync(resolvePath(p, repo))
 }
 
-exports.write = (p, content) => {
-    p = resolvePath(p)
+exports.write = (repo, p, content) => {
+    p = resolvePath(p, repo)
 
     mkdirPSync(path.dirname(p))
 
@@ -132,8 +132,8 @@ exports.mv = (oldPath, newPath) => {
     }
 }
 
-exports.exists = p => {
-    return fs.existsSync(resolvePath(p))
+exports.exists = (repo, p) => {
+    return fs.existsSync(resolvePath(p, repo))
 }
 
 exports.upload = (file, path) => {

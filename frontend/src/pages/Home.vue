@@ -103,7 +103,7 @@ export default {
 
       const content = this.value
       this.lastSaveContent = content
-      File.write(file.path, content, () => {
+      File.write(file.repo, file.path, content, () => {
         this.status = '保存于：' + (new Date()).toLocaleString()
       }, e => {
         this.file = null

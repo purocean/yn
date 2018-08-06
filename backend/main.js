@@ -19,11 +19,11 @@ const fileContent = async (ctx, next) => {
         if (ctx.method === 'GET') {
             ctx.body = result('ok', '获取成功', file.read(ctx.query.repo, ctx.query.path).toString())
         } else if (ctx.method === 'POST') {
-            if (ctx.request.body.is_new && file.exists(ctx.request.body.path)) {
+            if (ctx.request.body.is_new && file.exists(ctx.request.body.repo, ctx.request.body.path)) {
                 throw new Error('文件已经存在')
             }
 
-            file.write(ctx.request.body.path, ctx.request.body.content)
+            file.write(ctx.request.body.repo, ctx.request.body.path, ctx.request.body.content)
             ctx.body = result()
         } else if (ctx.method === 'DELETE') {
             file.rm(ctx.query.path)
