@@ -51,6 +51,7 @@ export default {
       if (repo) {
         this.repo = repo
         this.tree = null
+        this.file = null
       }
 
       File.tree(this.repo, tree => {

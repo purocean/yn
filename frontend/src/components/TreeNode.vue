@@ -42,14 +42,20 @@ export default {
     }
   },
   mounted () {
-    this.$bus.on('editor-ready', () => {
-      this.chooseFile(this.getSelectedFilePath())
-    })
-    this.$bus.on('choose-file', file => {
-      this.chooseFile(file.path)
-    })
+    this.$bus.on('editor-ready', this.handleEditorReady)
+    this.$bus.on('choose-file', this.handleChooseFile)
+  },
+  beforeDestroy () {
+    this.$bus.off('editor-ready', this.handleEditorReady)
+    this.$bus.off('choose-file', this.handleChooseFile)
   },
   methods: {
+    handleEditorReady () {
+      this.chooseFile(this.getSelectedFilePath())
+    },
+    handleChooseFile (file) {
+      this.chooseFile(file.path)
+    },
     chooseFile (filePath) {
       if (this.item.type === 'dir' && filePath.startsWith(this.item.path)) {
         this.$refs.dir.open = true

@@ -23,9 +23,8 @@ export default {
     }
   },
   created () {
+    this.current = this.getRepo()
     this.fetchRepositories()
-  },
-  mounted () {
   },
   beforeDestroy () {
   },
@@ -34,19 +33,27 @@ export default {
       file.fetchRepositories(data => {
         this.list = data
         const keys = Object.keys(data)
-        if (keys.length > 0) {
+
+        if (keys.length > 0 && !keys.includes(this.current)) {
           this.choose(keys[0])
         }
       })
     },
     choose (name) {
       this.current = name
+    },
+    storeRepo (name) {
+      window.localStorage['repository'] = name
+    },
+    getRepo () {
+      return window.localStorage['repository'] || null
     }
   },
   watch: {
     current (val) {
       if (val) {
         this.$bus.emit('switch-repository', val)
+        this.storeRepo(this.current)
       }
     }
   },
