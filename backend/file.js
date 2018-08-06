@@ -39,18 +39,12 @@ const rmRecursiveSync = location => {
 const resolvePath = (p, repo = 'main') => {
     p = p.replace(/\.\./g, '')
 
-    if (repo === 'trash') {
-        p = path.join(__dirname, '/../trash/', p)
-    } else {
-        const basePath = repository.getPath(repo)
-        if (!basePath) {
-            throw new Error(`仓库 ${repo} 不存在`)
-        }
-
-        p = path.join(basePath, p)
+    const basePath = repository.getPath(repo)
+    if (!basePath) {
+        throw new Error(`仓库 ${repo} 不存在`)
     }
 
-    return p
+    return path.join(basePath, p)
 }
 
 const travels = (location, repo, basePath = null) => {
@@ -105,7 +99,7 @@ exports.write = (repo, p, content) => {
 
 exports.rm = (repo, p) => {
     if (resolvePath(p) !== resolvePath('', repo)) {
-        const newPath = resolvePath(p, 'trash') + '.' + (new Date).getTime()
+        const newPath = path.join(repository.getTrashPath(repo), p.replace(/\.\./g, '')) + '.' + (new Date).getTime()
 
         mkdirPSync(path.dirname(newPath))
 

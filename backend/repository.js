@@ -21,3 +21,7 @@ exports.getPath = name => {
 
     return path.join(__dirname, '../', p)
 }
+
+exports.getTrashPath = name => {
+    return path.join(__dirname, '/../trash/', name)
+}
