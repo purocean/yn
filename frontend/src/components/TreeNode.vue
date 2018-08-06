@@ -41,16 +41,19 @@ export default {
       selected: false
     }
   },
-  mounted () {
-    this.$bus.on('editor-ready', this.handleEditorReady)
+  created () {
+    this.$bus.on('editor-ready', this.handleReady)
     this.$bus.on('choose-file', this.handleChooseFile)
   },
   beforeDestroy () {
-    this.$bus.off('editor-ready', this.handleEditorReady)
+    this.$bus.off('editor-ready', this.handleReady)
     this.$bus.off('choose-file', this.handleChooseFile)
   },
+  mounted () {
+    this.handleReady()
+  },
   methods: {
-    handleEditorReady () {
+    handleReady () {
       this.chooseFile(this.getSelectedFilePath())
     },
     handleChooseFile (file) {
@@ -114,10 +117,10 @@ export default {
       }
     },
     storeSelectedFilePath (path) {
-      window.localStorage['selectedFile'] = path
+      window.localStorage[`selectedFile_${this.item.repo}`] = path
     },
     getSelectedFilePath () {
-      return window.localStorage['selectedFile'] || ''
+      return window.localStorage[`selectedFile_${this.item.repo}`] || ''
     }
   },
   watch: {

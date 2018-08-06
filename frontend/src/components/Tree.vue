@@ -9,7 +9,7 @@
         :key="item.path"
         @move="onMove"
         @change="change"
-        @select="f => file = f"
+        @select="handleSelect"
         @delete="onDelete" />
         <transition name="fade">
           <div v-if="showFilter" class="filter-wrapper" @click="showFilter = false">
@@ -33,20 +33,31 @@ export default {
       repo: null,
       tree: null,
       file: null,
-      showFilter: false
+      showFilter: false,
+      editorReady: false
     }
   },
   created () {
     window.addEventListener('keydown', this.keydownHandler, true)
     this.$bus.on('switch-repository', this.init)
+    this.$bus.on('editor-ready', this.handleReady)
   },
   mounted () {
   },
   beforeDestroy () {
     window.removeEventListener('keydown', this.keydownHandler)
     this.$bus.off('switch-repository', this.init)
+    this.$bus.off('editor-ready', this.handleReady)
   },
   methods: {
+    handleSelect (file) {
+      if (this.editorReady) {
+        this.file = file
+      }
+    },
+    handleReady () {
+      this.editorReady = true
+    },
     init (repo = null) {
       if (repo) {
         this.repo = repo
