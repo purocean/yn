@@ -91,6 +91,14 @@ export default {
         this.insert(dayjs().format('HH:mm:ss'))
       })
 
+      this.editor.addCommand(KM.CtrlCmd | KC.Enter, () => {
+        this.insert(this.editor.getModel().getEOL())
+      })
+
+      this.editor.addCommand(KM.Shift | KC.Enter, () => {
+        this.insert(this.editor.getModel().getOneIndent())
+      })
+
       this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
         this.editor.getAction('editor.action.moveLinesUpAction').run()
       })

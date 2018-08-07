@@ -32,8 +32,10 @@
 + 默认文件存储在 `./data` 目录下，添加更多仓库请编辑 `./config.json` 文件
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
 + 自定义编辑器快捷键
-    + `Ctrl + p` 打开文件快速跳转面板
-    + `Ctrl + s` 保存文档
+    + `Ctrl + P` 打开文件快速跳转面板
+    + `Ctrl + S` 保存文档
+    + `Ctrl + Enter` 强制插入新行，忽略预置补全规则
+    + `Shift + Enter` 强制插入 Tab，忽略预置补全规则
     + `Ctrl + Shift + Up` 当前行上移
     + `Ctrl + Shift + Down` 当前行下移
     + `Ctrl + Shift + D` 重复当前行
