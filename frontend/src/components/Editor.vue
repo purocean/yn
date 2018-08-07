@@ -62,7 +62,13 @@ export default {
       })
 
       this.editor.onDidChangeModelContent(e => {
-        this.$emit('input', this.getValue())
+        let val = this.getValue()
+        const eol = this.editor.getModel().getEOL()
+        if (!val.endsWith(eol)) {
+          val += eol
+          this.setValue(val)
+        }
+        this.$emit('input', val)
       })
 
       this.editor.onDidScrollChange(e => {
