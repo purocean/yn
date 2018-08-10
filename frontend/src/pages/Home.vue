@@ -156,8 +156,8 @@ export default {
         })
       } else {
         window.document.title = '未打开文件'
-        this.lastSaveContent = ''
-        this.$refs.editor.setValue('')
+        this.lastSaveContent = '\n'
+        this.$refs.editor.setValue('\n')
       }
     }
   },
