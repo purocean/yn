@@ -53,6 +53,7 @@ export default {
     handleSelect (file) {
       if (this.editorReady) {
         this.file = file
+        this.updateRecentOpenTime(this.file)
       }
     },
     handleReady () {
@@ -113,6 +114,19 @@ export default {
       })
 
       return tmp
+    },
+    updateRecentOpenTime (file) {
+      const json = window.localStorage[`${file.repo}_open_time`] || '{}'
+
+      let map = {}
+      try {
+        map = JSON.parse(json)
+      } catch (error) {
+      }
+
+      map[file.path] = new Date().getTime()
+
+      window.localStorage[`${file.repo}_open_time`] = JSON.stringify(map)
     }
   },
   watch: {

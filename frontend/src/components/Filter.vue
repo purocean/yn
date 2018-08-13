@@ -73,10 +73,12 @@ export default {
     updateDataSource () {
       if (this.currentTab === 'file') {
         this.list = this.files.filter(x => x.path.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1)
+        this.sortList()
       } else {
         this.list = null
         this.searchWithDebounce(this.searchText.trim(), data => {
           this.list = data
+          this.sortList()
         })
       }
     },
@@ -133,6 +135,26 @@ export default {
       } else if (this.currentTab === 'search') {
         this.currentTab = 'file'
       }
+    },
+    sortList () {
+      if (this.list === null) {
+        return
+      }
+
+      const json = window.localStorage[`${this.repo}_open_time`] || '{}'
+
+      let map = {}
+      try {
+        map = JSON.parse(json)
+      } catch (error) {
+      }
+
+      this.list.sort((a, b) => {
+        const at = map[a.path] || 0
+        const bt = map[b.path] || 0
+
+        return bt - at
+      })
     }
   },
   watch: {
