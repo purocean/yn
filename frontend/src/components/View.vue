@@ -1,5 +1,5 @@
 <template>
-  <div class="view">
+  <div ref="view-wrapper" class="view">
     <div class="action-bar">
       <div :style="{background: todoCount ? '#4e4e4e' : 'transparent'}">
         <div v-if="todoCount" class="todo-progress">
@@ -150,7 +150,12 @@ export default {
       this.$emit('switch-todo', line, checked)
     },
     revealLine (line) {
-      const nodes = document.querySelectorAll('.view .source-line')
+      if (line <= 1) {
+        this.$refs['view-wrapper'].scrollTo(0, 0)
+        return
+      }
+
+      const nodes = this.$refs['view-wrapper'].querySelectorAll('.view .source-line')
       for (let ele of nodes) {
         if (parseInt(ele.dataset['sourceLine']) >= line) {
           ele.scrollIntoView()

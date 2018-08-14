@@ -159,6 +159,9 @@ export default {
         this.lastSaveContent = '\n'
         this.$refs.editor.setValue('\n')
       }
+
+      // 切换文件时候定位到第一行
+      this.$refs.editor.setPosition({column: 1, lineNumber: 1})
     }
   },
   computed: {

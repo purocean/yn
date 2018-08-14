@@ -212,6 +212,10 @@ export default {
         textLength: this.getValue().length,
         selectedLength: this.editor.getModel().getValueInRange(selection).length
       }
+    },
+    setPosition (position) {
+      console.log(position)
+      this.editor.setScrollTop(0)
     }
   }
 }
