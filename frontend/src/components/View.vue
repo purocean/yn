@@ -48,6 +48,7 @@ import SourceLinePlugin from './SourceLinePlugin'
 
 import Highlight from 'highlight.js'
 import MermaidPlugin from './MermaidPlugin'
+import file from '../file'
 
 import 'katex/dist/katex.min.css'
 
@@ -129,7 +130,30 @@ export default {
       }
 
       if (e.target.tagName === 'IMG') {
-        window.open(e.target.src)
+        const img = e.target
+        if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地
+          if (
+            img.src.startsWith('data:') ||
+            img.src.startsWith('http://') ||
+            img.src.startsWith('https://') ||
+            img.src.startsWith('//')
+          ) {
+            const canvas = document.createElement('canvas')
+            canvas.width = img.naturalWidth
+            canvas.height = img.naturalHeight
+            canvas.getContext('2d').drawImage(img, 0, 0)
+            canvas.toBlob(blob => {
+              const imgFile = new File([blob], 'file.png')
+              file.upload(this.fileRepo, this.filePath, imgFile, result => {
+                this.$bus.emit('tree-refresh')
+                this.$bus.emit('editor-replace-value', img.src, result.relativePath)
+              })
+            })
+          }
+          return
+        }
+
+        window.open(img.src)
         return
       }
 

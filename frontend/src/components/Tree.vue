@@ -41,6 +41,7 @@ export default {
     window.addEventListener('keydown', this.keydownHandler, true)
     this.$bus.on('switch-repository', this.init)
     this.$bus.on('editor-ready', this.handleReady)
+    this.$bus.on('tree-refresh', this.change)
   },
   mounted () {
   },
@@ -48,6 +49,7 @@ export default {
     window.removeEventListener('keydown', this.keydownHandler)
     this.$bus.off('switch-repository', this.init)
     this.$bus.off('editor-ready', this.handleReady)
+    this.$bus.off('tree-refresh', this.change)
   },
   methods: {
     handleSelect (file) {

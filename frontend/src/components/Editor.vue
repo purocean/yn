@@ -27,10 +27,12 @@ export default {
       this.onGotAmdLoader()
     }
     window.addEventListener('resize', this.resize)
+    this.$bus.on('editor-replace-value', this.replaceValue)
   },
   beforeDestroy () {
     window.removeEventListener('paste', this.paste)
     window.removeEventListener('resize', this.resize)
+    this.$bus.off('editor-replace-value', this.replaceValue)
   },
   methods: {
     resize () {
@@ -201,6 +203,9 @@ export default {
     },
     setValue (val) {
       this.editor.getModel().setValue(val)
+    },
+    replaceValue (oldValue, newValue) {
+      this.setValue(this.getValue().replace(oldValue, newValue))
     },
     getDucumentInfo () {
       const selection = this.editor.getSelection()
