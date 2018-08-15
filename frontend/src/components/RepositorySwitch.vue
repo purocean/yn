@@ -70,6 +70,9 @@ export default {
 
 .current {
   padding: 0 .3em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .repository-switch:hover {
@@ -94,6 +97,9 @@ export default {
 
 .list li {
   padding: 4px .6em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .list li:hover {
