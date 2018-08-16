@@ -9,6 +9,7 @@ const file = require('./file')
 const dataRepository = require('./repository')
 const run = require('./run')
 const convert = require('./convert')
+const request = require('request')
 
 const result = (status = 'ok', message = '操作成功', data = null) => {
     return { status, message, data }
@@ -126,6 +127,15 @@ const convertFile = async (ctx, next) => {
     }
 }
 
+const proxy = async (ctx, next) => {
+    if (ctx.path.startsWith('/api/proxy')) {
+        const url = ctx.query.url
+        ctx.body = request(url)
+    } else {
+        await next()
+    }
+}
+
 const app = new Koa()
 
 app.use(static(
@@ -155,6 +165,7 @@ app.use(async (ctx, next) => await wrapper(ctx, next, runCode))
 app.use(async (ctx, next) => await wrapper(ctx, next, convertFile))
 app.use(async (ctx, next) => await wrapper(ctx, next, searchFile))
 app.use(async (ctx, next) => await wrapper(ctx, next, repository))
+app.use(async (ctx, next) => await wrapper(ctx, next, proxy))
 
 const port = 3000
 app.listen(port)

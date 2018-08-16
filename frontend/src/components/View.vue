@@ -132,16 +132,11 @@ export default {
       if (e.target.tagName === 'IMG') {
         const img = e.target
         if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地
-          if (
-            img.src.startsWith('data:') ||
-            img.src.startsWith('http://') ||
-            img.src.startsWith('https://') ||
-            img.src.startsWith('//')
-          ) {
+          const transform = ximg => {
             const canvas = document.createElement('canvas')
-            canvas.width = img.naturalWidth
-            canvas.height = img.naturalHeight
-            canvas.getContext('2d').drawImage(img, 0, 0)
+            canvas.width = ximg.naturalWidth
+            canvas.height = ximg.naturalHeight
+            canvas.getContext('2d').drawImage(ximg, 0, 0)
             canvas.toBlob(blob => {
               const imgFile = new File([blob], 'file.png')
               file.upload(this.fileRepo, this.filePath, imgFile, result => {
@@ -150,6 +145,21 @@ export default {
               })
             })
           }
+
+          if (img.src.startsWith('data:')) {
+            transform(img)
+          } else if (
+            img.src.startsWith('http://') ||
+            img.src.startsWith('https://')
+          ) {
+            const ximg = document.createElement('img')
+            ximg.crossOrigin = 'anonymous'
+            ximg.src = `api/proxy?url=${encodeURI(img.src)}`
+            ximg.onload = () => {
+              transform(ximg)
+            }
+          }
+
           return
         }
 
