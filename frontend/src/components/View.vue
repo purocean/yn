@@ -35,7 +35,7 @@
 
 <script>
 import 'github-markdown-css/github-markdown.css'
-import 'highlight.js/styles/github-gist.css'
+import 'highlight.js/styles/atom-one-dark.css'
 import _ from 'lodash'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
