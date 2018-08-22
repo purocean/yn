@@ -45,6 +45,7 @@ import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
 import RunPlugin from './RunPlugin'
 import SourceLinePlugin from './SourceLinePlugin'
+import MyPlugin from './MyPlugin'
 
 import Highlight from 'highlight.js'
 import MermaidPlugin from './MermaidPlugin'
@@ -83,7 +84,13 @@ export default {
         generateSource: umlCode => {
           return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
         }
-      }).use(RunPlugin).use(katex).use(SourceLinePlugin).use(MarkdownItAttrs).use(MultimdTable, {enableMultilineRows: true})
+      })
+      .use(RunPlugin)
+      .use(katex)
+      .use(SourceLinePlugin)
+      .use(MarkdownItAttrs)
+      .use(MyPlugin)
+      .use(MultimdTable, {enableMultilineRows: true})
     }
   },
   mounted () {
