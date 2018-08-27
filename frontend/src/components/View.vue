@@ -80,17 +80,18 @@ export default {
 
           return ''
         }
-      }).use(TaskLists, {enabled: true}).use(MermaidPlugin).use(Plantuml, {
-        generateSource: umlCode => {
-          return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
-        }
       })
-      .use(RunPlugin)
-      .use(katex)
-      .use(SourceLinePlugin)
-      .use(MarkdownItAttrs)
-      .use(MyPlugin)
-      .use(MultimdTable, {enableMultilineRows: true})
+        .use(TaskLists, {enabled: true}).use(MermaidPlugin).use(Plantuml, {
+          generateSource: umlCode => {
+            return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
+          }
+        })
+        .use(RunPlugin)
+        .use(katex)
+        .use(SourceLinePlugin)
+        .use(MarkdownItAttrs)
+        .use(MyPlugin)
+        .use(MultimdTable, {enableMultilineRows: true})
     }
   },
   mounted () {
