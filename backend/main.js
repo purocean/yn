@@ -3,13 +3,13 @@ const Koa = require('koa')
 const bodyParser = require('koa-body')
 const static = require('koa-static')
 const mime = require('mime')
-const plantuml = require('node-plantuml')
+const request = require('request')
 
 const file = require('./file')
 const dataRepository = require('./repository')
 const run = require('./run')
 const convert = require('./convert')
-const request = require('request')
+const plantuml = require('./plantuml')
 
 const result = (status = 'ok', message = '操作成功', data = null) => {
     return { status, message, data }
@@ -91,16 +91,9 @@ const repository = async (ctx, next) => {
 }
 
 const plantumlGen = async (ctx, next) => {
-    if (ctx.path.startsWith('/api/plantuml/svg')) {
-        const gen = plantuml.generate(ctx.query.data, {format: 'svg'});
-
-        ctx.type = 'image/svg+xml'
-        ctx.body = gen.out
-    } else if (ctx.path.startsWith('/api/plantuml/png')) {
-        const gen = plantuml.generate(ctx.query.data, {format: 'png'});
-
+    if (ctx.path.startsWith('/api/plantuml/png')) {
         ctx.type = 'image/png'
-        ctx.body = gen.out
+        ctx.body = plantuml.generate(ctx.query.data)
     } else {
         await next()
     }

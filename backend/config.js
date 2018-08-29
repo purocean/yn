@@ -3,8 +3,8 @@ const path = require('path')
 
 const configFile = path.join(__dirname, '../', 'config.json')
 
-const writeJson = (data, call = () => {}) => {
-    fs.writeFile(configFile, JSON.stringify(data), 'utf8', call);
+const writeJson = data => {
+    fs.writeFileSync(configFile, JSON.stringify(data), 'utf8');
 }
 
 const readJson = () => {
