@@ -3796,10 +3796,6 @@ markdown-it-multimd-table@^3.1.2:
   dependencies:
     markdown-it "^5.0.3"
 
-markdown-it-plantuml@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.npm.taobao.org/markdown-it-plantuml/download/markdown-it-plantuml-1.0.0.tgz#7b6a351a1d9275705c09626b02d873301e5899c2"
-
 markdown-it-task-lists@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/markdown-it-task-lists/download/markdown-it-task-lists-2.1.0.tgz#4594f750f70df053d1dad68024388007c1d20783"

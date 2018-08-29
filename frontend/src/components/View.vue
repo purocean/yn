@@ -39,15 +39,15 @@ import 'highlight.js/styles/atom-one-dark.css'
 import _ from 'lodash'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
-import Plantuml from 'markdown-it-plantuml'
 import katex from 'markdown-it-katex'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
+import Highlight from 'highlight.js'
+
 import RunPlugin from './RunPlugin'
 import SourceLinePlugin from './SourceLinePlugin'
 import MyPlugin from './MyPlugin'
-
-import Highlight from 'highlight.js'
+import PlantumlPlugin from './PlantumlPlugin'
 import MermaidPlugin from './MermaidPlugin'
 import file from '../file'
 
@@ -81,11 +81,9 @@ export default {
           return ''
         }
       })
-        .use(TaskLists, {enabled: true}).use(MermaidPlugin).use(Plantuml, {
-          generateSource: umlCode => {
-            return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
-          }
-        })
+        .use(TaskLists, {enabled: true})
+        .use(MermaidPlugin)
+        .use(PlantumlPlugin)
         .use(RunPlugin)
         .use(katex)
         .use(SourceLinePlugin)
@@ -95,14 +93,22 @@ export default {
     }
   },
   mounted () {
+    this.updatePlantumlDebounce = _.debounce(() => {
+      this.updatePlantuml()
+    }, 3000)
+
     this.render = _.debounce(() => {
       this.$refs.view.innerHTML = this.markdown.render(this.replaceRelativeLink(this.value))
       MermaidPlugin.update()
       this.updateOutline()
       this.updateTodoCount()
+      this.updatePlantumlDebounce()
     }, 500, {leading: true})
 
     this.render()
+    setTimeout(() => {
+      this.updatePlantuml()
+    }, 100)
   },
   methods: {
     replaceRelativeLink (md) {
@@ -113,6 +119,12 @@ export default {
       const basePath = this.filePath.substr(0, this.filePath.lastIndexOf('/'))
       const repo = this.fileRepo
       return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\/([^)/]+)\)/g, `[$1](api/attachment/$3?repo=${repo}&path=${encodeURI(basePath)}%2F$2%2F$3)`)
+    },
+    updatePlantuml () {
+      const nodes = this.$refs.view.querySelectorAll('img[data-plantuml-src]')
+      for (let ele of nodes) {
+        ele.src = ele.dataset['plantumlSrc']
+      }
     },
     updateOutline () {
       const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
@@ -224,6 +236,11 @@ export default {
   watch: {
     value () {
       this.render()
+    },
+    filePath () {
+      setTimeout(() => {
+        this.updatePlantuml()
+      }, 100)
     }
   }
 }
