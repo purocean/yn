@@ -9,6 +9,6 @@ exports.generate = data => {
         const gen = plantuml.generate(data, {format: 'png'});
         return gen.out
     } else {
-        return request(api.replace('{data}', encodeURI(data)))
+        return request(api.replace('{data}', encodeURIComponent(data)))
     }
 }
