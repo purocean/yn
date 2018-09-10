@@ -63,6 +63,10 @@ export default {
   mounted () {
     RunPlugin.clearCache()
     this.restartTimer()
+
+    window.onbeforeunload = () => {
+      return this.unsaved || null
+    }
   },
   beforeDestroy () {
     this.clearTimer()
