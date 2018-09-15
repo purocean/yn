@@ -53,12 +53,12 @@ export default {
       response.json().then(result => {
         if (result.status === 'ok') {
           try {
-            let content = result.data
+            let content = result.data.content
             if (path.endsWith('.c.md')) {
               content = decrypt(content)
             }
 
-            call(content)
+            call(content, result.data.hash)
           } catch (e) {
             if (ecall) {
               ecall(e)
@@ -72,7 +72,7 @@ export default {
       })
     })
   },
-  write: (repo, path, content, call, ecall, isNew = false) => {
+  write: (repo, path, content, oldHash, call, ecall) => {
     try {
       if (path.endsWith('.c.md')) {
         content = encrypt(content)
@@ -88,7 +88,7 @@ export default {
     fetch('/api/file', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({repo, path, content, is_new: isNew})
+      body: JSON.stringify({repo, path, content, old_hash: oldHash})
     }).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {

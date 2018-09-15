@@ -57,6 +57,7 @@ export default {
       value: '',
       lastSaveContent: '',
       file: null,
+      oldHash: null,
       timer: null
     }
   },
@@ -107,8 +108,9 @@ export default {
       }
 
       const content = this.value
-      this.lastSaveContent = content
-      File.write(file.repo, file.path, content, () => {
+      File.write(file.repo, file.path, content, this.oldHash, result => {
+        this.oldHash = result.data
+        this.lastSaveContent = content
         this.status = '保存于：' + (new Date()).toLocaleString()
       }, e => {
         this.file = null
@@ -149,9 +151,10 @@ export default {
       }
 
       if (f) {
-        File.read(f.repo, f.path, data => {
+        File.read(f.repo, f.path, (data, hash) => {
           this.lastSaveContent = data
           this.$refs.editor.setValue(data)
+          this.oldHash = hash
           this.status = '加载完毕'
           window.document.title = f.name
         }, e => {

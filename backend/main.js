@@ -18,14 +18,23 @@ const result = (status = 'ok', message = '操作成功', data = null) => {
 const fileContent = async (ctx, next) => {
     if (ctx.path === '/api/file') {
         if (ctx.method === 'GET') {
-            ctx.body = result('ok', '获取成功', file.read(ctx.query.repo, ctx.query.path).toString())
+            ctx.body = result('ok', '获取成功', {
+                content: file.read(ctx.query.repo, ctx.query.path).toString(),
+                hash: file.hash(ctx.query.repo, ctx.query.path)
+            })
         } else if (ctx.method === 'POST') {
-            if (ctx.request.body.is_new && file.exists(ctx.request.body.repo, ctx.request.body.path)) {
+            const oldHash = ctx.request.body.old_hash
+
+            if (!oldHash) {
+                throw new Error('未传递文件hash')
+            } else if (oldHash === 'new' && file.exists(ctx.request.body.repo, ctx.request.body.path)) {
                 throw new Error('文件已经存在')
+            } else if (oldHash !== 'new' && !file.checkHash(ctx.request.body.repo, ctx.request.body.path, oldHash)) {
+                throw new Error('磁盘文件已经更新，请刷新文件')
             }
 
-            file.write(ctx.request.body.repo, ctx.request.body.path, ctx.request.body.content)
-            ctx.body = result()
+            const hash = file.write(ctx.request.body.repo, ctx.request.body.path, ctx.request.body.content)
+            ctx.body = result('ok', '保存成功', hash)
         } else if (ctx.method === 'DELETE') {
             file.rm(ctx.query.repo, ctx.query.path)
             ctx.body = result()

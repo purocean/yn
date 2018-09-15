@@ -3,6 +3,7 @@ const xfs = require('fs-extra')
 const path = require('path')
 const opn = require('opn')
 const isWsl = require('is-wsl')
+const crypto = require('crypto')
 const wsl = require('./wsl')
 const repository = require('./repository')
 
@@ -95,6 +96,8 @@ exports.write = (repo, p, content) => {
     mkdirPSync(path.dirname(p))
 
     fs.writeFileSync(p, content)
+
+    return crypto.createHash('md5').update(content).digest('hex')
 }
 
 exports.rm = (repo, p) => {
@@ -128,6 +131,15 @@ exports.mv = (repo, oldPath, newPath) => {
 
 exports.exists = (repo, p) => {
     return fs.existsSync(resolvePath(p, repo))
+}
+
+exports.hash = (repo, p) => {
+    const content = exports.read(repo, p)
+    return crypto.createHash('md5').update(content).digest('hex')
+}
+
+exports.checkHash = (repo, p, oldHash) => {
+    return oldHash === exports.hash(repo, p)
 }
 
 exports.upload = (repo, file, path) => {

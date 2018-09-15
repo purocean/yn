@@ -92,11 +92,11 @@ export default {
       }
 
       const path = this.item.path + '/' + filename
-      File.write(this.item.repo, path, `# ${filename.replace(/\.md$/i, '')}\n`, () => {
+      File.write(this.item.repo, path, `# ${filename.replace(/\.md$/i, '')}\n`, 'new', () => {
         this.$emit('change', path)
       }, e => {
         alert(e.message)
-      }, true)
+      })
     },
     renameFile () {
       let newPath = window.prompt(`新文件名`, this.item.path)
