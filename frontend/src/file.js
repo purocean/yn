@@ -190,5 +190,8 @@ export default {
         }
       })
     })
+  },
+  openInOS (repo, path) {
+    fetch(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
   }
 }

@@ -3,7 +3,8 @@
     <details ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
       <summary
         :style="{background: selected ? '#313131' : 'none'}"
-        @dblclick="createFile()"
+        @dblclick.exact="createFile()"
+        @dblclick.ctrl.exact="revealInExplorer()"
         @contextmenu.ctrl.prevent="renameFile"
         @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </summary>
       <tree-node
@@ -18,6 +19,7 @@
     <div
       v-else
       @click="select(item)"
+      @dblclick.ctrl.exact="revealInExplorer()"
       @contextmenu.ctrl.prevent="renameFile"
       @contextmenu.shift.prevent="deleteFile"
       :style="{background: selected ? '#313131' : 'none'}"> {{ item.name }} </div>
@@ -79,6 +81,9 @@ export default {
       } else {
         window.open(`api/attachment/${encodeURIComponent(f.name)}?repo=${f.repo}&path=${encodeURIComponent(f.path)}`)
       }
+    },
+    revealInExplorer () {
+      File.openInOS(this.item.repo, this.item.path)
     },
     createFile () {
       let filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')
