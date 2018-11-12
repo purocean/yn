@@ -12,7 +12,7 @@
         </h4>
       </div>
     </header>
-    <div style="display: flex; justify-content: space-between;">
+    <div style="display: flex; justify-content: space-between;" :class="{'show-view': showView}">
       <Tree ref="tree" class="tree" v-model="file"></Tree>
       <Editor
         ref="editor"
@@ -58,21 +58,28 @@ export default {
       lastSaveContent: '',
       file: null,
       oldHash: null,
-      timer: null
+      timer: null,
+      showView: true
     }
   },
   mounted () {
     RunPlugin.clearCache()
     this.restartTimer()
 
+    this.$bus.on('toggle-view', this.toggleView)
+
     window.onbeforeunload = () => {
       return this.unsaved || null
     }
   },
   beforeDestroy () {
+    this.$bus.off('toggle-view', this.toggleView)
     this.clearTimer()
   },
   methods: {
+    toggleView () {
+      this.showView = !this.showView
+    },
     editorReady () {
       this.$bus.emit('editor-ready')
     },
@@ -140,6 +147,11 @@ export default {
     }
   },
   watch: {
+    showView () {
+      this.$nextTick(() => {
+        this.$refs.editor.resize()
+      })
+    },
     value () {
       this.restartTimer()
     },
@@ -189,30 +201,42 @@ export default {
 </script>
 
 <style scoped>
-.tree {
-  height: 95vh;
-  width: 17vw;
-  padding-bottom: 20px;
-  box-sizing: border-box;
-  overflow: auto;
-}
+@media screen {
+  .tree {
+    height: 95vh;
+    width: 17vw;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+    overflow: auto;
+  }
 
-.editor {
-  height: 95vh;
-  width: 40vw;
-  overflow: hidden;
-}
+  .show-view .editor {
+    width: 40vw;
+  }
 
-.view {
-  box-sizing: border-box;
-  min-width: 200px;
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 45px;
-  width: 43vw;
-  height: 95vh;
-  overflow: auto;
-  box-sizing: border-box;
+  .editor {
+    height: 95vh;
+    width: 83vw;
+    overflow: hidden;
+  }
+
+  .show-view .view {
+    width: 43vw;
+    min-width: 200px;
+    display: block;
+  }
+
+  .view {
+    box-sizing: border-box;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 45px;
+    width: 43vw;
+    height: 95vh;
+    overflow: auto;
+    box-sizing: border-box;
+    display: none;
+  }
 }
 
 @media (max-width: 767px) {
