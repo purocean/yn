@@ -5,6 +5,7 @@
     "koa-body": "^2.5.0",
     "koa-static": "^4.0.2",
     "mime": "^2.2.0",
+    "natural-orderby": "^1.0.2",
     "node-plantuml": "^0.6.2",
     "opn": "^5.3.0",
     "request": "^2.88.0",

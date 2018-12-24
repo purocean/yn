@@ -4,6 +4,7 @@ const path = require('path')
 const opn = require('opn')
 const isWsl = require('is-wsl')
 const crypto = require('crypto')
+const NaturalOrderby = require('natural-orderby')
 const wsl = require('./wsl')
 const repository = require('./repository')
 
@@ -59,8 +60,8 @@ const travels = (location, repo, basePath = null) => {
 
     const list = fs.readdirSync(location).filter(x => !x.startsWith('.'))
 
-    const dirs = list.filter(x => fs.statSync(path.join(location, x)).isDirectory())
-    const files = list.filter(x => !fs.statSync(path.join(location, x)).isDirectory())
+    const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()))
+    const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()))
 
     return dirs.map(x => {
         const p = path.join(location, x)

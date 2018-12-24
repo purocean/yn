@@ -430,6 +430,10 @@ mz@^2.6.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
+natural-orderby@^1.0.2:
+  version "1.0.2"
+  resolved "http://registry.npm.taobao.org/natural-orderby/download/natural-orderby-1.0.2.tgz#287a4778217fbf6af0d704129d55ae90450f7a88"
+
 negotiator@0.6.1:
   version "0.6.1"
   resolved "http://registry.npm.taobao.org/negotiator/download/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
