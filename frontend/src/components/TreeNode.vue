@@ -2,11 +2,12 @@
   <div class="tree-node">
     <details ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
       <summary
+        class="dir-label"
         :style="{background: selected ? '#313131' : 'none'}"
         @dblclick.exact="createFile()"
         @dblclick.ctrl.exact="revealInExplorer()"
         @contextmenu.ctrl.prevent="renameFile"
-        @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </summary>
+        @contextmenu.shift.prevent="deleteFile"> {{ item.name }} <span class="count">({{item.children.length}})</span> </summary>
       <tree-node
         v-for="x in item.children"
         :key="x.path" :item="x"
@@ -146,5 +147,17 @@ export default {
 
 .tree-node * {
   user-select: none;
+}
+
+.dir-label .count {
+  color: #989898;
+  font-size: 12px;
+  vertical-align: text-bottom;
+
+  opacity: 0;
+}
+
+.dir-label:hover .count {
+  opacity: 1;
 }
 </style>
