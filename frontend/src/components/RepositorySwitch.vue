@@ -66,6 +66,7 @@ export default {
 .repository-switch {
   width: 100px;
   cursor: pointer;
+  user-select: none;
 }
 
 .current {

@@ -28,11 +28,13 @@ export default {
     }
     window.addEventListener('resize', this.resize)
     this.$bus.on('editor-replace-value', this.replaceValue)
+    this.$bus.on('editor-toggle-wrap', this.toggleWrap)
   },
   beforeDestroy () {
     window.removeEventListener('paste', this.paste)
     window.removeEventListener('resize', this.resize)
     this.$bus.off('editor-replace-value', this.replaceValue)
+    this.$bus.off('editor-toggle-wrap', this.toggleWrap)
   },
   methods: {
     resize () {
@@ -51,7 +53,7 @@ export default {
         language: 'markdown',
         theme: 'vs-dark',
         fontSize: '20',
-        wordWrap: true,
+        wordWrap: false,
         // wordWrapColumn: 40,
         // Set this to false to not auto word wrap minified files
         wordWrapMinified: true,
@@ -221,6 +223,10 @@ export default {
     setPosition (position) {
       console.log(position)
       this.editor.setScrollTop(0)
+    },
+    toggleWrap () {
+      const isWrapping = this.editor.getConfiguration().wrappingInfo.isViewportWrapping
+      this.editor.updateOptions({wordWrap: !isWrapping})
     }
   }
 }

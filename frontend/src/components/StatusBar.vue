@@ -3,6 +3,7 @@
     <RepositorySwitch class="left"></RepositorySwitch>
 
     <div class="view-control right" @click="toggleView">切换预览</div>
+    <div class="wrap-control right" @click="toggleWrap">切换换行</div>
     <div class="document-info right">
       <span>行：{{documentInfo.line}}</span>
       <span>列：{{documentInfo.column}}</span>
@@ -49,9 +50,18 @@ export default {
     toggleView () {
       this.$bus.emit('toggle-view')
     },
+    toggleWrap () {
+      this.$bus.emit('editor-toggle-wrap')
+    },
     keydownHandler (e) {
       if (e.key === 'v' && e.altKey) {
         this.toggleView()
+        e.preventDefault()
+        e.stopPropagation()
+      }
+
+      if (e.key === 'w' && e.altKey) {
+        this.toggleWrap()
         e.preventDefault()
         e.stopPropagation()
       }
@@ -87,13 +97,14 @@ export default {
   padding: 0 .2em;
 }
 
-.view-control {
+.view-control, .wrap-control {
   padding: 0 .5em;
-  margin-left: 1em;
+  /* margin-left: 1em; */
   cursor: pointer;
+  user-select: none;
 }
 
-.view-control:hover {
+.view-control:hover, .wrap-control:hover {
   background: #2e2e2e;
 }
 </style>
