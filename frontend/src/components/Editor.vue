@@ -125,6 +125,10 @@ export default {
         this.$emit('save')
       })
 
+      this.editor.addCommand(KM.CtrlCmd | KC.KEY_J, () => {
+        this.editor.getAction('editor.action.joinLines').run()
+      })
+
       window.monaco.languages.setLanguageConfiguration('markdown', {
         onEnterRules: [
           {beforeText: /^\s*> .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '> '}},

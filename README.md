@@ -46,6 +46,7 @@
     + `Ctrl + Alt + D` 插入当前日期
     + `Ctrl + Alt + T` 插入当前时间
     + `Ctrl + Alt + F` 插入文件附件
+    + `Ctrl + J` 连接行 join lines
 
 ## 功能
 + 同步预览滚动，实现得较粗糙
