@@ -22,6 +22,7 @@
     "markdown-it-attrs": "^2.1.0",
     "markdown-it-katex": "^2.0.3",
     "markdown-it-multimd-table": "^3.1.2",
+    "markdown-it-table-of-contents": "^0.4.3",
     "markdown-it-task-lists": "^2.1.0",
     "mermaid": "^7.1.2",
     "monaco-editor": "^0.13.1",

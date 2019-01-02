@@ -42,6 +42,7 @@ import TaskLists from 'markdown-it-task-lists'
 import katex from 'markdown-it-katex'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
+import MarkdownItToc from 'markdown-it-table-of-contents'
 import Highlight from 'highlight.js'
 
 import RunPlugin from './RunPlugin'
@@ -90,6 +91,7 @@ export default {
         .use(MarkdownItAttrs)
         .use(MyPlugin)
         .use(MultimdTable, {enableMultilineRows: true})
+        .use(MarkdownItToc)
     }
   },
   mounted () {
