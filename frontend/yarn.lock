@@ -3796,10 +3796,6 @@ markdown-it-multimd-table@^3.1.2:
   dependencies:
     markdown-it "^5.0.3"
 
-markdown-it-table-of-contents@^0.4.3:
-  version "0.4.3"
-  resolved "http://registry.npm.taobao.org/markdown-it-table-of-contents/download/markdown-it-table-of-contents-0.4.3.tgz#6453925a76e49b9b3d9569a0d89f1c2168b46982"
-
 markdown-it-task-lists@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/markdown-it-task-lists/download/markdown-it-task-lists-2.1.0.tgz#4594f750f70df053d1dad68024388007c1d20783"

@@ -42,12 +42,12 @@ import TaskLists from 'markdown-it-task-lists'
 import katex from 'markdown-it-katex'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
-import MarkdownItToc from 'markdown-it-table-of-contents'
 import Highlight from 'highlight.js'
 
+import MarkdownItToc from './TocPlugin'
 import RunPlugin from './RunPlugin'
 import SourceLinePlugin from './SourceLinePlugin'
-import MyPlugin from './MyPlugin'
+import LinkTargetPlugin from './LinkTargetPlugin'
 import PlantumlPlugin from './PlantumlPlugin'
 import MermaidPlugin from './MermaidPlugin'
 import file from '../file'
@@ -89,7 +89,7 @@ export default {
         .use(katex)
         .use(SourceLinePlugin)
         .use(MarkdownItAttrs)
-        .use(MyPlugin)
+        .use(LinkTargetPlugin)
         .use(MultimdTable, {enableMultilineRows: true})
         .use(MarkdownItToc)
     }

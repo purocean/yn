@@ -1,4 +1,4 @@
-const MyPlugin = (md) => {
+const LinkTargetPlugin = (md) => {
   const LinkTargetBlank = (tokens, idx, options, env, slf) => {
     if (tokens[idx].attrIndex('target') < 0) {
       tokens[idx].attrPush(['target', '_blank'])
@@ -10,4 +10,4 @@ const MyPlugin = (md) => {
   md.renderer.rules.link_open = LinkTargetBlank
 }
 
-export default MyPlugin
+export default LinkTargetPlugin
