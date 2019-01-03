@@ -63,6 +63,7 @@
 + 待办进度条
 + 快速跳转文件，全文搜索文件内容
 + 多仓库切换
++ 生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可
 + docx 格式导出，需要安装 [pandoc](https://pandoc.org/)
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
@@ -99,9 +100,9 @@
 + [x] 全文查找 Ctrl + p
 + [x] 支持多根目录
 + [x] 状态栏
++ [x] toc 生成
 + [ ] 信息流，定时任务
 + [ ] 标签支持
-+ [ ] toc 生成
 + [ ] 跨文件跳转
 + [ ] 脚注引用
 + [ ] 表格编辑器
