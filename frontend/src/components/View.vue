@@ -1,5 +1,5 @@
 <template>
-  <div ref="view-wrapper" class="view">
+  <div ref="view-wrapper" class="view" @scroll="handleScroll">
     <div class="action-bar">
       <div :style="{background: todoCount ? '#4e4e4e' : 'transparent'}">
         <div v-if="todoCount" class="todo-progress">
@@ -29,6 +29,7 @@
         </div>
       </div>
     </div>
+    <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" @click="scrollToTop">TOP</div>
     <article ref="view" class="markdown-body" @click="handleClick"></article>
   </div>
 </template>
@@ -68,6 +69,7 @@ export default {
       convert: {},
       todoCount: 0,
       todoDoneCount: 0,
+      scrollTop: 0,
       markdown: Markdown({
         linkify: true,
         breaks: true,
@@ -113,6 +115,13 @@ export default {
     }, 100)
   },
   methods: {
+    handleScroll (e) {
+      this.scrollTop = e.target.scrollTop
+    },
+    scrollToTop () {
+      this.$refs['view-wrapper'].scrollTo(0, 0)
+      this.syncScroll(1)
+    },
     replaceRelativeLink (md) {
       if (!this.filePath) {
         return md
@@ -194,7 +203,7 @@ export default {
         return
       }
 
-      if (e.target.classList.contains('source-line')) {
+      if (e.target.classList.contains('source-line') && window.getSelection().toString().length < 1) {
         this.syncScroll(parseInt(e.target.dataset['sourceLine']))
         e.preventDefault()
       }
@@ -361,7 +370,7 @@ button:hover {
 }
 
 .outline:hover {
-  max-height: 88vh;
+  max-height: 75vh;
   max-width: 20em;
 }
 
@@ -384,8 +393,44 @@ button:hover {
   font-size: 14px;
 }
 
+.scroll-to-top {
+  user-select: none;
+  position: fixed;
+  right: 2em;
+  bottom: 40px;
+  background: #333030;
+  color: #ccc;
+  font-size: 14px;
+  overflow: hidden;
+  transition: .1s ease-in-out;
+  z-index: 400;
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 7px 5px;
+  text-align: center;
+}
+
+.scroll-to-top::before {
+  content: ' ';
+  display: block;
+  border-left: 20px transparent solid;
+  border-bottom: 7px #bbb solid;
+  border-right: 20px transparent solid;
+  margin-bottom: 4px;
+}
+
+.scroll-to-top:hover {
+  background: #252525;
+}
+
+.scroll-to-top.hide {
+  opacity: 0;
+  right: -60px;
+}
+
 @media print {
   .outline,
+  .scroll-to-top,
   .action-bar {
     display: none;
   }

@@ -42,7 +42,6 @@ export default (md, o) => {
     if (match.length > 1) { // 有自定义参数进来
       try {
         const ext = JSON.parse(match[1].replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": '))
-        console.log(options, defaults, o, ext)
         Object.assign(options, defaults, o, ext)
       } catch (error) {
         console.log('参数解析错误', match)

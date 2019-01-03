@@ -58,7 +58,9 @@ export default {
         // Set this to false to not auto word wrap minified files
         wordWrapMinified: true,
         // try "same", "indent" or "none"
-        wrappingIndent: 'same'
+        wrappingIndent: 'same',
+        smoothScrolling: true,
+        cursorBlinking: 'smooth'
       })
 
       this.editor.onDidChangeCursorSelection(e => {
