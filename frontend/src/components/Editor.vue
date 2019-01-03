@@ -129,6 +129,14 @@ export default {
         this.editor.getAction('editor.action.joinLines').run()
       })
 
+      this.editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_U), () => {
+        this.editor.getAction('editor.action.transformToUppercase').run()
+      })
+
+      this.editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_L), () => {
+        this.editor.getAction('editor.action.transformToLowercase').run()
+      })
+
       window.monaco.languages.setLanguageConfiguration('markdown', {
         onEnterRules: [
           {beforeText: /^\s*> .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '> '}},
