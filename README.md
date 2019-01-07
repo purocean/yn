@@ -79,6 +79,12 @@
 + 后端: `cd backend; node main.js`
 + 后端: `cd frontend; yarn run dev`
 
+## 捐助
+
+如果我的工作对您有帮助，请我喝杯咖啡吧 ^_^。**附言可以留下您的 github 用户名或网站连接**。
+
+<img alt="微信" src="./wechat.png" width="20%">　<img alt="支付宝" src="./alipay.jpg" width="20%">　<img alt="支付宝红包" src="./hb.jpg" width="20%">
+
 ## 开发计划
 
 + [x] 回收站
