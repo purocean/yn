@@ -450,6 +450,10 @@ button:hover {
 </style>
 
 <style>
+.view .markdown-body hr {
+  border-bottom: 1px solid;
+}
+
 .view img {
   display: block;
   margin-left: auto;
