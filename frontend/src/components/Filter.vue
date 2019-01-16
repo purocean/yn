@@ -14,10 +14,10 @@
           :key="item.path"
           :class="{selected: selected === item}"
           @click="chooseItem(item)">
-          <span>
+          <span ref="fileName">
             {{item.name}}
           </span>
-          <span class="path">
+          <span ref="filePath" class="path">
             {{item.path.substr(0, item.path.lastIndexOf('/'))}}
           </span>
         </li>
@@ -30,6 +30,7 @@
 <script>
 import _ from 'lodash'
 import file from '../file'
+import fuzzyMatch from '../fuzzyMatch'
 
 export default {
   name: 'x-filter',
@@ -70,9 +71,53 @@ export default {
   beforeDestroy () {
   },
   methods: {
+    highlightText (search) {
+      if (this.$refs.fileName && this.$refs.filePath) {
+        search = search.toLowerCase()
+
+        const openF = '(#$*B'
+        const closeF = '#$*B)'
+
+        const escape = function (s) {
+          return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+        }
+
+        const openR = new RegExp(escape(openF), 'g')
+        const closeR = new RegExp(escape(closeF), 'g')
+
+        this.$refs.fileName.concat(this.$refs.filePath).forEach(function (it) {
+          let text = ''
+
+          it.innerText.toLowerCase().split('').forEach(char => {
+            if (search.indexOf(char) > -1) {
+              text += `${openF}${char}${closeF}`
+            } else {
+              text += char
+            }
+          })
+
+          it.innerText = text
+
+          it.innerHTML = it.innerHTML.replace(openR, '<b>').replace(closeR, '</b>')
+        })
+      }
+    },
+    filterFiles (files, search) {
+      const tmp = []
+
+      files.forEach(x => {
+        const result = fuzzyMatch(search, x.path)
+
+        if (result.matched) {
+          tmp.push({...x})
+        }
+      })
+
+      return tmp.sort((a, b) => b.score - a.score)
+    },
     updateDataSource () {
       if (this.currentTab === 'file') {
-        this.list = this.files.filter(x => x.path.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1)
+        this.list = this.filterFiles(this.files, this.searchText.trim())
         this.sortList()
       } else {
         this.list = null
@@ -81,6 +126,8 @@ export default {
           this.sortList()
         })
       }
+
+      this.$nextTick(this.highlightText(this.searchText.trim()))
     },
     updateSelected (item = null) {
       if (this.list === null) {
@@ -232,6 +279,16 @@ export default {
   font-size: 12px;
   color: #888;
   padding-left: .3em;
+}
+
+.result li span.path /deep/ b {
+  color: #ababab;
+  font-weight: bold;
+}
+
+.result li /deep/ b {
+  color: #c6d2ca;
+  font-weight: normal;
 }
 
 .tab {
