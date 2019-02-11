@@ -35,6 +35,20 @@
 + 将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片`
 + 默认文件存储在 `./data` 目录下，添加更多仓库请编辑 `./config.json` 文件
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
+    + Ctrl+X 删一行
+    + Ctrl+C 复制一行(不会自动复制，要手动ctrl+v)
+    + Ctrl+Z 撤消
+    + Ctrl+Shift+Z 反撤消
+    + Ctrl+/ 注释行
+    + Ctrl+Shift+A 注释段
+    + Ctrl+K Ctrl+X 删除尾部空格
+    + Alt+Click 插入光标
+    + Shift+Alt+ ↑ / ↓ 在相邻行插入光标
+    + Ctrl+U 取消最后添加的光标
+    + Shift+Alt+I 在选中区的所有行的最后添加光标
+    + Ctrl+D 为下一个匹配项添加光标
+    + Ctrl+F 查找
+    + Ctrl+H 替换
 + 自定义编辑器快捷键
     + `Ctrl + P` 打开文件快速跳转面板
     + `Ctrl + S` 保存文档
