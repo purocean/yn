@@ -32,6 +32,7 @@
 + 重命名文件/目录：`Ctrl + 右键文件/目录`
 + 切换文档预览显示：`Alt + V` 或点击状态栏 `切换预览` 按钮
 + 切换编辑器自动换行：`Alt + W` 或点击状态栏 `切换换行` 按钮
++ 切换内置终端展示：`Alt + O` 或点击状态栏 `切换终端` 按钮
 + 将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片`
 + 默认文件存储在 `./data` 目录下，添加更多仓库请编辑 `./config.json` 文件
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
@@ -88,6 +89,7 @@
 + katex 公式解析 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex)
 + 元素属性书写 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)
 + 表格解析增强，支持表格标题多行文本，列表等特性 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table)
++ 内置终端 [XTERM.JS](https://xtermjs.org/) [node-pty](https://github.com/Microsoft/node-pty)
 
 ## 开发
 + 后端: `cd backend; node main.js`
@@ -124,6 +126,7 @@
 + [x] 支持多根目录
 + [x] 状态栏
 + [x] toc 生成
++ [x] 内置终端
 + [ ] 代码块渲染增加行号
 + [ ] 信息流，定时任务
 + [ ] 标签支持
@@ -141,3 +144,4 @@
 ![截图](./4.png)
 ![截图](./5.gif)
 ![截图](./6.png)
+![截图](./7.png)

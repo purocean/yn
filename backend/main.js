@@ -4,6 +4,7 @@ const bodyParser = require('koa-body')
 const static = require('koa-static')
 const mime = require('mime')
 const request = require('request')
+const pty = require('node-pty')
 
 const file = require('./file')
 const dataRepository = require('./repository')
@@ -171,6 +172,23 @@ app.use(async (ctx, next) => await wrapper(ctx, next, repository))
 app.use(async (ctx, next) => await wrapper(ctx, next, proxy))
 
 const port = 3000
-app.listen(port)
+
+const server = require('http').createServer(app.callback())
+const io = require('socket.io')(server, {path: '/ws'})
+
+io.on('connection', socket => {
+    const ptyProcess = pty.spawn('bash', ['--login'], {
+        name: 'xterm-color',
+        cols: 80,
+        rows: 24,
+        cwd: path.join(__dirname, '../'),
+        env: process.env
+    })
+    ptyProcess.on('data', data => socket.emit('output', data))
+    socket.on('input', data => ptyProcess.write(data))
+    socket.on('resize', size => ptyProcess.resize(size[0], size[1]))
+})
+
+server.listen(port)
 
 console.log(`访问地址：http://localhost:${port}`)
