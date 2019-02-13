@@ -14,24 +14,30 @@
     </header>
     <div style="display: flex; justify-content: space-between;" :class="{'show-view': showView}">
       <Tree ref="tree" class="tree" v-model="file"></Tree>
-      <Editor
-        ref="editor"
-        class="editor"
-        v-model="value"
-        @ready="editorReady"
-        @scroll-line="syncScrollView"
-        @paste-img="pasteImg"
-        @upload-file="uploadFile"
-        @save="saveFile"></Editor>
-      <XView
-        ref="view"
-        class="view"
-        :value="value"
-        :file-name="fileName"
-        :file-path="filePath"
-        :file-repo="fileRepo"
-        @sync-scroll="syncScrollEditor"
-        @switch-todo="switchTodoEditor"></XView>
+      <div style="display: flex;flex-direction: column; height: 95vh">
+        <div style="display: flex;height: 100%">
+          <Editor
+            ref="editor"
+            class="editor"
+            v-model="value"
+            @ready="editorReady"
+            @scroll-line="syncScrollView"
+            @paste-img="pasteImg"
+            @upload-file="uploadFile"
+            @save="saveFile"></Editor>
+          <XView
+            ref="view"
+            class="view"
+            :value="value"
+            :file-name="fileName"
+            :file-path="filePath"
+            :file-repo="fileRepo"
+            :show-xterm="showXterm"
+            @sync-scroll="syncScrollEditor"
+            @switch-todo="switchTodoEditor"></XView>
+        </div>
+        <Xterm ref="xterm" v-show="showXterm"></Xterm>
+      </div>
     </div>
     <div class="status-bar">
       <StatusBar></StatusBar>
@@ -43,6 +49,7 @@
 import dayjs from 'dayjs'
 import Editor from '../components/Editor'
 import XView from '../components/View'
+import Xterm from '../components/Xterm'
 import Tree from '../components/Tree'
 import StatusBar from '../components/StatusBar'
 import RunPlugin from '../components/RunPlugin'
@@ -50,7 +57,7 @@ import File from '../file'
 
 export default {
   name: 'home',
-  components: { XView, Editor, Tree, StatusBar },
+  components: { XView, Editor, Tree, StatusBar, Xterm },
   data () {
     return {
       status: '请选择文件',
@@ -59,7 +66,8 @@ export default {
       file: null,
       oldHash: null,
       timer: null,
-      showView: true
+      showView: true,
+      showXterm: false
     }
   },
   mounted () {
@@ -67,6 +75,7 @@ export default {
     this.restartTimer()
 
     this.$bus.on('toggle-view', this.toggleView)
+    this.$bus.on('toggle-xterm', this.toggleXterm)
 
     window.onbeforeunload = () => {
       return this.unsaved || null
@@ -74,11 +83,19 @@ export default {
   },
   beforeDestroy () {
     this.$bus.off('toggle-view', this.toggleView)
+    this.$bus.off('toggle-xterm', this.toggleXterm)
     this.clearTimer()
   },
   methods: {
     toggleView () {
       this.showView = !this.showView
+    },
+    toggleXterm (flag) {
+      this.showXterm = flag === undefined ? !this.showXterm : !!flag
+      this.$nextTick(() => {
+        this.$refs.editor.resize()
+        this.$refs.xterm.init()
+      })
     },
     editorReady () {
       this.$bus.emit('editor-ready')
@@ -208,6 +225,7 @@ export default {
     padding-bottom: 20px;
     box-sizing: border-box;
     overflow: auto;
+    flex: 0 0 auto;
   }
 
   .show-view .editor {
@@ -215,7 +233,7 @@ export default {
   }
 
   .editor {
-    height: 95vh;
+    /* height: 95vh; */
     width: 83vw;
     overflow: hidden;
   }
@@ -232,7 +250,7 @@ export default {
     margin: 0 auto;
     padding: 45px;
     width: 43vw;
-    height: 95vh;
+    /* height: 95vh; */
     overflow: auto;
     box-sizing: border-box;
     display: none;

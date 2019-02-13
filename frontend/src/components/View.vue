@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" @click="scrollToTop">TOP</div>
+    <div :class="{'scroll-to-top': true, 'show-xterm': showXterm, 'hide': scrollTop < 30}" @click="scrollToTop">TOP</div>
     <article ref="view" class="markdown-body" @click="handleClick"></article>
   </div>
 </template>
@@ -61,7 +61,8 @@ export default {
     value: String,
     fileRepo: String,
     fileName: String,
-    filePath: String
+    filePath: String,
+    showXterm: Boolean
   },
   data () {
     return {
@@ -391,6 +392,10 @@ button:hover {
 
 .convert {
   font-size: 14px;
+}
+
+.scroll-to-top.show-xterm {
+  bottom: 45vh;
 }
 
 .scroll-to-top {
