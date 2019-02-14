@@ -1,3 +1,4 @@
+const os = require('os')
 const path = require('path')
 const Koa = require('koa')
 const bodyParser = require('koa-body')
@@ -177,7 +178,7 @@ const server = require('http').createServer(app.callback())
 const io = require('socket.io')(server, {path: '/ws'})
 
 io.on('connection', socket => {
-    const ptyProcess = pty.spawn('bash', ['--login'], {
+    const ptyProcess = pty.spawn(os.platform() === 'win32' ? 'cmd.exe' : 'bash', [], {
         name: 'xterm-color',
         cols: 80,
         rows: 24,
