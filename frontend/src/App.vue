@@ -48,7 +48,7 @@ export default {
 
 @media screen {
   body {
-    background: #403e3e;
+    background: #282a2b;
   }
 }
 </style>

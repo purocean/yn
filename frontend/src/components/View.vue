@@ -285,7 +285,7 @@ export default {
   .markdown-body /deep/ table tr:nth-child(2n),
   .markdown-body /deep/ pre
   {
-    background: #333030;
+    background: #303133;
   }
 
   .markdown-body /deep/ input,
