@@ -147,6 +147,7 @@ export default {
 <style scoped>
 .side {
   color: #ddd;
+  background: #282a2b;
 }
 
 .filter-wrapper {
