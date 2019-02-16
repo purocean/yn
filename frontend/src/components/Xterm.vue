@@ -38,12 +38,22 @@ export default {
         xterm.open(this.$refs.xterm)
         xterm.fit()
         window.addEventListener('resize', this.fitXterm)
+      }
 
+      if (!socket) {
         socket = io({ path: '/ws' })
 
         xterm.on('resize', size => socket.emit('resize', [size.cols, size.rows]))
         xterm.on('data', data => this.input(data))
         socket.on('output', arrayBuffer => xterm.write(arrayBuffer))
+        socket.on('disconnect', () => {
+          xterm.clear()
+          this.$bus.emit('toggle-xterm', false)
+        })
+      }
+
+      if (!socket.connected) {
+        socket.connect()
       }
 
       this.focus()

@@ -43,8 +43,6 @@ export default {
     this.$bus.on('editor-ready', this.handleReady)
     this.$bus.on('tree-refresh', this.change)
   },
-  mounted () {
-  },
   beforeDestroy () {
     window.removeEventListener('keydown', this.keydownHandler)
     this.$bus.off('switch-repository', this.init)
@@ -52,6 +50,9 @@ export default {
     this.$bus.off('tree-refresh', this.change)
   },
   methods: {
+    closeCurrentFile () {
+      this.file = null
+    },
     handleSelect (file) {
       if (this.editorReady) {
         this.file = file
@@ -60,6 +61,11 @@ export default {
     },
     handleReady () {
       this.editorReady = true
+
+      // 第一次打开此程序
+      if (!Object.keys(window.localStorage).find(x => x.endsWith('_open_time'))) {
+        this.$bus.$emit('toggle-readme')
+      }
     },
     init (repo = null) {
       if (repo) {

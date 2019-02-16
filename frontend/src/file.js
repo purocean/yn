@@ -193,5 +193,16 @@ export default {
   },
   openInOS (repo, path) {
     fetch(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
+  },
+  readme (call) {
+    fetch('/api/readme').then(response => {
+      response.json().then(result => {
+        if (result.status === 'ok') {
+          call(result.data.content)
+        } else {
+          alert(result.message)
+        }
+      })
+    })
   }
 }
