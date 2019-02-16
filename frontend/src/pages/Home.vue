@@ -92,9 +92,13 @@ export default {
     },
     toggleXterm (flag) {
       this.showXterm = flag === undefined ? !this.showXterm : !!flag
+
       this.$nextTick(() => {
         this.$refs.editor.resize()
-        this.$refs.xterm.init()
+
+        if (this.showXterm) {
+          this.$refs.xterm.init()
+        }
       })
     },
     editorReady () {

@@ -186,8 +186,10 @@ io.on('connection', socket => {
         env: process.env
     })
     ptyProcess.on('data', data => socket.emit('output', data))
+    ptyProcess.on('exit', () => socket.disconnect())
     socket.on('input', data => ptyProcess.write(data))
     socket.on('resize', size => ptyProcess.resize(size[0], size[1]))
+    socket.on('disconnect', () => ptyProcess.destroy())
 })
 
 server.listen(port)
