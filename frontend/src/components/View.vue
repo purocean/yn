@@ -124,6 +124,15 @@ export default {
       this.syncScroll(1)
     },
     replaceRelativeLink (md) {
+      if (!this.fileRepo) {
+        return md
+      }
+
+      if (this.fileRepo === '__readme__') {
+        return md.replace(/\[([^\]]*)\]\((\.\/[^)]*)\)/g, `[$1](api/readme/file?path=$2)`)
+          .replace(/<img([^>]*)src=["']?([^\s'"]*)["']?/ig, `<img$1src="api/readme/file?path=$2"`)
+      }
+
       if (!this.filePath) {
         return md
       }

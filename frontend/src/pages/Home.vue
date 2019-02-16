@@ -2,14 +2,7 @@
   <div>
     <header class="header" :style="unsaved ? 'background: orange' : ''">
       <div>
-        <h4 style="margin: 0;text-align: center">
-          <span v-if="file">
-            {{ file.path }}-{{ status }} [{{file.repo}}]
-          </span>
-          <span v-else>
-            未打开文件
-          </span>
-        </h4>
+        <h4 style="margin: 0;text-align: center"> {{statusText}}</h4>
       </div>
     </header>
     <div style="display: flex; justify-content: space-between;" :class="{'show-view': showView}">
@@ -76,6 +69,7 @@ export default {
 
     this.$bus.on('toggle-view', this.toggleView)
     this.$bus.on('toggle-xterm', this.toggleXterm)
+    this.$bus.on('toggle-readme', this.toggleReadme)
 
     window.onbeforeunload = () => {
       return this.unsaved || null
@@ -84,9 +78,24 @@ export default {
   beforeDestroy () {
     this.$bus.off('toggle-view', this.toggleView)
     this.$bus.off('toggle-xterm', this.toggleXterm)
+    this.$bus.off('toggle-readme', this.toggleReadme)
     this.clearTimer()
   },
   methods: {
+    toggleReadme () {
+      if (this.file && this.file.repo === '__readme__') {
+        this.$refs.tree.closeCurrentFile()
+        this.file = null
+      } else {
+        File.readme(content => {
+          this.file = {
+            repo: '__readme__',
+            title: 'README.md',
+            content
+          }
+        })
+      }
+    },
     toggleView () {
       this.showView = !this.showView
     },
@@ -112,6 +121,10 @@ export default {
     restartTimer () {
       this.clearTimer()
 
+      if (!(this.file && this.file.repo && this.file.path)) {
+        return
+      }
+
       this.timer = window.setTimeout(() => {
         if (!this.file || this.file.path.endsWith('.c.md')) { // 加密文件不自动保存
           return
@@ -123,7 +136,7 @@ export default {
     saveFile (f = null) {
       const file = f || this.file
 
-      if (!file) {
+      if (!(file && file.repo && file.path)) {
         return
       }
 
@@ -179,21 +192,27 @@ export default {
     file (f, oldf) {
       this.clearTimer()
 
-      if (oldf) {
+      if (oldf && oldf.repo && oldf.path) {
         this.saveFile(oldf)
       }
 
       if (f) {
-        File.read(f.repo, f.path, (data, hash) => {
-          this.lastSaveContent = data
-          this.$refs.editor.setValue(data)
-          this.oldHash = hash
-          this.status = '加载完毕'
-          window.document.title = f.name
-        }, e => {
-          this.file = null
-          alert(e.message)
-        })
+        if (f.title) {
+          window.document.title = f.title
+          this.lastSaveContent = f.content
+          this.$refs.editor.setValue(f.content)
+        } else {
+          File.read(f.repo, f.path, (data, hash) => {
+            this.lastSaveContent = data
+            this.$refs.editor.setValue(data)
+            this.oldHash = hash
+            this.status = '加载完毕'
+            window.document.title = f.name
+          }, e => {
+            this.file = null
+            alert(e.message)
+          })
+        }
       } else {
         window.document.title = '未打开文件'
         this.lastSaveContent = '\n'
@@ -216,6 +235,17 @@ export default {
     },
     fileRepo () {
       return this.file ? this.file.repo : null
+    },
+    statusText () {
+      if (this.file) {
+        if (this.file.path && this.file.repo) {
+          return `${this.file.path}-${this.status} [${this.file.repo}]`
+        } else {
+          return this.file.title
+        }
+      } else {
+        return '未打开文件'
+      }
     }
   }
 }
