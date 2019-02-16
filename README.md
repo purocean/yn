@@ -1,6 +1,8 @@
 # 自用 markdown 编辑器
 >vue + monaco-editor + markdown-it + nodejs + Koa
 
+![截图](./0.png)
+
 ## 目标
 1. 界面字大不费眼 :)
 1. markdown 撰写
@@ -138,7 +140,6 @@
 + [ ] ~~git 备份，// 使用 OneDrive 同步备份~~
 + [ ] 移动端展示
 
-![截图](./0.png)
 ![截图](./1.png)
 ![截图](./2.png)
 ![截图](./3.png)
