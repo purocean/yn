@@ -235,7 +235,6 @@ export default {
       }
     },
     setPosition (position) {
-      console.log(position)
       this.editor.setScrollTop(0)
     },
     toggleWrap () {

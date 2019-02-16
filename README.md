@@ -99,7 +99,7 @@
 
 如果我的工作对您有帮助，请我喝杯咖啡吧 ^_^。**附言可以留下您的 github 用户名或网站连接**。
 
-<img alt="微信" src="./wechat.png" width="17%">　<img alt="支付宝" src="./alipay.jpg" width="17%">　<img alt="支付宝红包" src="./hb.jpg" width="17%">
+<img alt="微信" src="./wechat.png" width="17%" style="display: inline-block">　<img alt="支付宝" src="./alipay.jpg" width="17%" style="display: inline-block">　<img alt="支付宝红包" src="./hb.jpg" width="17%" style="display: inline-block">
 
 1. [wangyedong66](https://github.com/wangyedong66) 2元
 1. [yubingcen](https://github.com/yubingcen) 0.1元
@@ -138,10 +138,9 @@
 + [ ] ~~git 备份，// 使用 OneDrive 同步备份~~
 + [ ] 移动端展示
 
-![截图](./7.png)
+![截图](./0.png)
 ![截图](./1.png)
 ![截图](./2.png)
 ![截图](./3.png)
-![截图](./4.png)
 ![截图](./5.gif)
 ![截图](./6.png)
