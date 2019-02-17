@@ -7,8 +7,8 @@
     </header>
     <div style="display: flex; justify-content: space-between;" :class="{'show-view': showView}">
       <Tree ref="tree" class="tree" v-model="file"></Tree>
-      <div style="display: flex;flex-direction: column; height: 95vh">
-        <div style="display: flex;height: 100%">
+      <div class="content" style="flex-direction: column;">
+        <div class="content">
           <Editor
             ref="editor"
             class="editor"
@@ -288,6 +288,11 @@ export default {
     overflow: auto;
     box-sizing: border-box;
     display: none;
+  }
+
+  .content {
+    display: flex;
+    height: 95vh;
   }
 }
 
