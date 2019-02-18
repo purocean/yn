@@ -66,6 +66,7 @@
     + `Ctrl + J` 连接行 join lines
     + `Ctrl + K, Ctrl + U` 转换大写
     + `Ctrl + K, Ctrl + L` 转换小写
+    + `Ctrl + Alt + R` 在内置终端里面运行选中内容
 
 ## 功能
 + 同步预览滚动，实现得较粗糙
