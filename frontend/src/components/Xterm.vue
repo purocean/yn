@@ -19,6 +19,12 @@ export default {
   name: 'xterm',
   created () {
     window.runInXterm = this.runInXterm
+    this.$bus.on('run-in-terminal', this.handleRunInXterm)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.fitXterm)
+    window.runInXterm = null
+    this.$bus.off('run-in-terminal', this.handleRunInXterm)
   },
   methods: {
     init () {
@@ -67,6 +73,9 @@ export default {
     focus () {
       xterm.focus()
     },
+    handleRunInXterm (code) {
+      this.runInXterm(null, code, false)
+    },
     runInXterm (language, code, exit = true) {
       this.$bus.emit('toggle-xterm', true)
       this.$nextTick(() => {
@@ -81,16 +90,22 @@ export default {
           js: {start: 'node', exit: '.exit', eol: '\n'}
         }
 
-        if (map[language]) {
+        const run = (code, eol) => {
+          code.split('\n').forEach((x, i) => {
+            this.input(x.trim())
+            this.input(eol)
+          })
+        }
+
+        if (!language) {
+          run(code, '\n')
+        } else if (map[language]) {
           this.input(map[language].start)
           this.input(map[language].eol)
 
           // 延迟一下等待子进程启动
           setTimeout(() => {
-            code.split('\n').forEach((x, i) => {
-              this.input(x.trim())
-              this.input(map[language].eol)
-            })
+            run(code, map[language].eol)
 
             if (exit) {
               this.input(map[language].exit)
@@ -102,10 +117,6 @@ export default {
         }
       })
     }
-  },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.fitXterm)
-    window.runInXterm = null
   }
 }
 </script>
