@@ -67,7 +67,7 @@ export default {
         this.$bus.$emit('toggle-readme')
       }
     },
-    init (repo = null) {
+    init (repo = null, path = null) {
       if (repo) {
         this.repo = repo
         this.tree = null
@@ -76,6 +76,12 @@ export default {
 
       File.tree(this.repo, tree => {
         this.tree = tree
+
+        if (path) {
+          this.$nextTick(() => {
+            this.$bus.emit('choose-file', { path })
+          })
+        }
       })
     },
     onDelete (path) {
@@ -86,16 +92,17 @@ export default {
 
       this.init()
     },
-    onMove (oldPath) {
+    onMove ({ oldPath, newPath }) {
       // 移动了正在编辑的文件或者其父目录
       if (this.file && this.file.path.startsWith(oldPath)) {
         this.file = null
+        this.init(null, newPath)
+      } else {
+        this.init()
       }
-
-      this.init()
     },
     change (path) {
-      this.init()
+      this.init(null, path)
     },
     keydownHandler (e) {
       if (e.key === 'p' && e.ctrlKey) {

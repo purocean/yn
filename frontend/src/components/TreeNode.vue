@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
+    <details :title="dirTitle" ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
       <summary
         class="dir-label"
         :style="{background: selected ? '#313131' : 'none'}"
@@ -18,6 +18,7 @@
         @delete="p => $emit('delete', p)"></tree-node>
     </details>
     <div
+      :title="fileTitle"
       v-else
       @click="select(item)"
       @dblclick.ctrl.exact="revealInExplorer()"
@@ -41,7 +42,19 @@ export default {
   },
   data () {
     return {
-      selected: false
+      selected: false,
+      dirTitle: [
+        '"双击" 创建新文件',
+        '"Ctrl + 右键" 重命名目录',
+        '"Shift + 右键" 删除目录',
+        '"Ctrl + 双击" 在操作系统中打开目录'
+      ].join('\n'),
+      fileTitle: [
+        '"Ctrl + 右键" 重命名文件',
+        '"Shift + 右键" 删除文件',
+        '"Ctrl + 双击" 使用系统程序打开文件',
+        '".c.md" 结尾的文件为加密文件'
+      ].join('\n')
     }
   },
   created () {
@@ -97,7 +110,7 @@ export default {
         filename += '.md'
       }
 
-      const path = this.item.path + '/' + filename
+      const path = this.item.path.replace(/\/$/, '') + '/' + filename
       File.write(this.item.repo, path, `# ${filename.replace(/\.md$/i, '')}\n`, 'new', () => {
         this.$emit('change', path)
       }, e => {
@@ -112,7 +125,7 @@ export default {
       }
 
       File.move(this.item.repo, this.item.path, newPath, () => {
-        this.$emit('move', this.item.path)
+        this.$emit('move', { oldPath: this.item.path, newPath })
       })
     },
     deleteFile () {
