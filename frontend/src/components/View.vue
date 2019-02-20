@@ -45,6 +45,7 @@ import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
 import Highlight from 'highlight.js'
 
+import HighlightLineNumber from './HightLightNumber'
 import MarkdownItToc from './TocPlugin'
 import MarkdownItECharts from './EChartsPlugin'
 import RunPlugin from './RunPlugin'
@@ -55,6 +56,7 @@ import MermaidPlugin from './MermaidPlugin'
 import file from '../file'
 
 import 'katex/dist/katex.min.css'
+HighlightLineNumber.addStyles()
 
 export default {
   name: 'xview',
@@ -111,6 +113,10 @@ export default {
       this.updateOutline()
       this.updateTodoCount()
       this.updatePlantumlDebounce()
+
+      for (let ele of document.querySelectorAll('code[class^="language-"]')) {
+        HighlightLineNumber.lineNumbersBlock(ele)
+      }
     }, 500, {leading: true})
 
     this.render()
@@ -272,13 +278,6 @@ export default {
   }
 }
 </script>
-
-<style>
-.echarts {
-  width: 100%;
-  height: 350px;
-}
-</style>
 
 <style scoped>
 .markdown-body {
@@ -494,5 +493,55 @@ button:hover {
 
 .view .new-page {
   page-break-before: always;
+}
+
+.view .echarts {
+  width: 100%;
+  height: 350px;
+}
+
+.view .hljs-ln,
+.view .hljs-ln tr,
+.view .hljs-ln td {
+  border: 0;
+}
+
+.view .hljs-ln td {
+  padding: 0;
+}
+
+@media screen {
+  .view table.hljs-ln {
+    max-height: 400px;
+  }
+}
+
+.view table.hljs-ln tr:last-child td {
+  padding-bottom: 10px;
+}
+
+.view table.hljs-ln tr:nth-child(even) {
+  background: rgba(110, 110, 110, .05)
+}
+
+.view .hljs-ln td.hljs-ln-numbers {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  text-align: center;
+  border-right: 1px solid #777;
+  vertical-align: top;
+  padding-right: 5px;
+
+  /* your custom style here */
+}
+
+/* for block of code */
+.view .hljs-ln td.hljs-ln-code {
+  padding-left: 10px;
 }
 </style>
