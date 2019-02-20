@@ -103,6 +103,10 @@ export default {
         this.insert(dayjs().format('HH:mm:ss'))
       })
 
+      this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_R, () => {
+        this.$bus.emit('run-in-terminal', this.editor.getModel().getValueInRange(this.editor.getSelection()))
+      })
+
       this.editor.addCommand(KM.CtrlCmd | KC.Enter, () => {
         this.insert(this.editor.getModel().getEOL())
       })

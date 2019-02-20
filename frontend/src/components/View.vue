@@ -46,6 +46,7 @@ import MultimdTable from 'markdown-it-multimd-table'
 import Highlight from 'highlight.js'
 
 import MarkdownItToc from './TocPlugin'
+import MarkdownItECharts from './EChartsPlugin'
 import RunPlugin from './RunPlugin'
 import SourceLinePlugin from './SourceLinePlugin'
 import LinkTargetPlugin from './LinkTargetPlugin'
@@ -95,6 +96,7 @@ export default {
         .use(LinkTargetPlugin)
         .use(MultimdTable, {enableMultilineRows: true})
         .use(MarkdownItToc)
+        .use(MarkdownItECharts)
     }
   },
   mounted () {
@@ -105,6 +107,7 @@ export default {
     this.render = _.debounce(() => {
       this.$refs.view.innerHTML = this.markdown.render(this.replaceRelativeLink(this.value))
       MermaidPlugin.update()
+      MarkdownItECharts.update()
       this.updateOutline()
       this.updateTodoCount()
       this.updatePlantumlDebounce()
@@ -239,6 +242,8 @@ export default {
       }
     },
     convertFile (type) {
+      MarkdownItECharts.preparePrint()
+
       const baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
 
       this.convert = {
@@ -246,6 +251,7 @@ export default {
         html: this.$refs.view.outerHTML.replace(/src="api/g, `src="${baseUrl}api`),
         type
       }
+      MarkdownItECharts.update()
       setTimeout(() => {
         this.$refs.convertForm.submit()
       }, 300)
@@ -266,6 +272,13 @@ export default {
   }
 }
 </script>
+
+<style>
+.echarts {
+  width: 100%;
+  height: 350px;
+}
+</style>
 
 <style scoped>
 .markdown-body {
