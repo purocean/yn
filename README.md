@@ -83,7 +83,7 @@
 + 多仓库切换
 + 生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可
 + docx 格式导出，**需要安装 [pandoc](https://pandoc.org/)**
-+ ECharts 图形支持装 [ECharts](https://echarts.baidu.com/) **Js代码块第一行需要包含以 `--echarts--` 字符串，示例见下面截图**
++ ECharts 图形支持装 [ECharts](https://echarts.baidu.com/) **Js 代码块第一行需要包含以 `--echarts--` 字符串，示例见下面截图**
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
 + GitHub 风格样式和特性 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)
