@@ -323,6 +323,10 @@ export default {
 }
 
 @media print {
+  .content {
+    width: 100%;
+  }
+
   .editor, .header, .tree, .status-bar {
     display: none;
   }

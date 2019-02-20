@@ -76,19 +76,20 @@
 + 列表自动补全
 + 粘贴剪切板里面的图片
 + 添加附件到文档
-+ 运行 PHP，nodejs，Python，bash 代码，代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境
++ 运行 PHP，nodejs，Python，bash 代码，**代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境**
 + 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
 + 待办进度条
 + 快速跳转文件，全文搜索文件内容
 + 多仓库切换
 + 生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可
-+ docx 格式导出，需要安装 [pandoc](https://pandoc.org/)
++ docx 格式导出，**需要安装 [pandoc](https://pandoc.org/)**
++ ECharts 图形支持装 [ECharts](https://echarts.baidu.com/) **Js代码块第一行需要包含以 `--echarts--` 字符串，示例见下面截图**
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
 + GitHub 风格样式和特性 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)
 + 待办列表 [GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
 + mermaid 图形 [mermaid](https://github.com/knsv/mermaid)
-+ Plantuml 图形，需要安装 Java，graphviz [markdown-it-plantuml](https://github.com/gmunguia/markdown-it-plantuml)
++ Plantuml 图形，**需要安装 Java，graphviz [markdown-it-plantuml](https://github.com/gmunguia/markdown-it-plantuml)**
 + katex 公式解析 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex)
 + 元素属性书写 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)
 + 表格解析增强，支持表格标题多行文本，列表等特性 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table)
@@ -130,6 +131,7 @@
 + [x] 状态栏
 + [x] toc 生成
 + [x] 内置终端
++ [x] EChart 图表
 + [ ] 代码块渲染增加行号
 + [ ] 信息流，定时任务
 + [ ] 标签支持
@@ -144,5 +146,4 @@
 ![截图](./1.png)
 ![截图](./2.png)
 ![截图](./3.png)
-![截图](./5.gif)
-![截图](./6.png)
+![截图](./4.gif)
