@@ -24,7 +24,6 @@
     "markdown-it-katex": "^2.0.3",
     "markdown-it-multimd-table": "^3.1.2",
     "markdown-it-task-lists": "^2.1.0",
-    "mermaid": "^7.1.2",
     "monaco-editor": "^0.13.1",
     "normalize.css": "^7.0.0",
     "socket.io-client": "^2.2.0",

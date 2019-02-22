@@ -52,7 +52,6 @@ import RunPlugin from '../plugins/RunPlugin'
 import SourceLinePlugin from '../plugins/SourceLinePlugin'
 import LinkTargetPlugin from '../plugins/LinkTargetPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
-import MermaidPlugin from '../plugins/MermaidPlugin'
 import file from '../file'
 
 import 'katex/dist/katex.min.css'
@@ -89,7 +88,6 @@ export default {
         }
       })
         .use(TaskLists, {enabled: true})
-        .use(MermaidPlugin)
         .use(PlantumlPlugin)
         .use(RunPlugin)
         .use(katex)
@@ -108,7 +106,6 @@ export default {
 
     this.render = _.debounce(() => {
       this.$refs.view.innerHTML = this.markdown.render(this.replaceRelativeLink(this.value))
-      MermaidPlugin.update()
       MarkdownItECharts.update()
       this.updateOutline()
       this.updateTodoCount()

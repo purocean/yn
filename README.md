@@ -7,7 +7,7 @@
 1. 界面字大不费眼 :)
 1. markdown 撰写
 2. 图片文件保存在本地，导出 markdown 文件可简单处理离线工作
-3. 支持一些流程图表绘制 planttuml mermaidt
+3. 支持一些流程图表绘制 planttuml
 3. 支持加密解密，用来保存账号等隐私文件，文件可单独设置密码
 4. 不需要更多花哨功能，简单够用就行
 5. 尽量少依赖三方库，也不花心思维护，杂凑在一起的功能，恰好工作即可 ^_^
@@ -88,7 +88,6 @@
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
 + GitHub 风格样式和特性 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)
 + 待办列表 [GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
-+ mermaid 图形 [mermaid](https://github.com/knsv/mermaid)
 + Plantuml 图形，**需要安装 Java，graphviz [markdown-it-plantuml](https://github.com/gmunguia/markdown-it-plantuml)**
 + katex 公式解析 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex)
 + 元素属性书写 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)
