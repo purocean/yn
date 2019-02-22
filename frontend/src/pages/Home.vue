@@ -45,7 +45,7 @@ import XView from '../components/View'
 import Xterm from '../components/Xterm'
 import Tree from '../components/Tree'
 import StatusBar from '../components/StatusBar'
-import RunPlugin from '../components/RunPlugin'
+import RunPlugin from '../plugins/RunPlugin'
 import File from '../file'
 
 export default {
