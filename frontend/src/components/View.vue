@@ -523,7 +523,17 @@ button:hover {
   }
 }
 
-.view table.hljs-ln tr:last-child td {
+@media print {
+  .view table.hljs-ln td {
+    white-space: normal;
+  }
+
+  .view .run-in-xterm {
+    display: none;
+  }
+}
+
+.view table.hljs-ln {
   padding-bottom: 10px;
 }
 
