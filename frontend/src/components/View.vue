@@ -117,6 +117,16 @@ export default {
       for (let ele of document.querySelectorAll('code[class^="language-"]')) {
         HighlightLineNumber.lineNumbersBlock(ele)
       }
+
+      for (let ele of document.getElementsByTagName('a')) {
+        const href = ele.getAttribute('href')
+        if (href && href.startsWith('#')) {
+          ele.onclick = () => {
+            document.getElementById(href.replace(/^#/, '')).scrollIntoView()
+            return false
+          }
+        }
+      }
     }, 500, {leading: true})
 
     this.render()

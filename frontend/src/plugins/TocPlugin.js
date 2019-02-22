@@ -166,7 +166,7 @@ export default (md, o) => {
         header.attrSet('id', slug)
       }
 
-      buffer = `<li><a href="#${slug}" onclick="document.getElementById('${slug}').scrollIntoView(); return false;">`
+      buffer = `<li><a href="#${slug}">`
       buffer += typeof options.format === 'function' ? options.format(heading.content) : heading.content
       buffer += `</a>`
       i++
