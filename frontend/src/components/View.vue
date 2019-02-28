@@ -461,6 +461,11 @@ button:hover {
   right: -60px;
 }
 
+.markdown-body /deep/ table.hljs-ln tbody {
+  display: table;
+  min-width: 100%;
+}
+
 @media print {
   .outline,
   .scroll-to-top,
@@ -472,10 +477,11 @@ button:hover {
     max-width: 100%;
     width: 100%;
     height: auto;
+    padding: 0;
   }
 }
 
-@media (max-width: 767px) {
+@media screen and (max-width: 767px) {
   .view {
     padding: 15px;
   }
