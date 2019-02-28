@@ -315,7 +315,7 @@ export default {
   }
 
   .markdown-body /deep/ table tr:nth-child(2n),
-  .markdown-body /deep/ pre
+  .markdown-body /deep/ pre,
   .markdown-body /deep/ pre > code
   {
     background: #303133;
