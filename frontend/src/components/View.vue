@@ -45,16 +45,17 @@ import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
 import Highlight from 'highlight.js'
 
-import MarkdownItToc from './TocPlugin'
-import MarkdownItECharts from './EChartsPlugin'
-import RunPlugin from './RunPlugin'
-import SourceLinePlugin from './SourceLinePlugin'
-import LinkTargetPlugin from './LinkTargetPlugin'
-import PlantumlPlugin from './PlantumlPlugin'
-import MermaidPlugin from './MermaidPlugin'
+import HighlightLineNumber from '../plugins/HightLightNumberPlugin'
+import MarkdownItToc from '../plugins/TocPlugin'
+import MarkdownItECharts from '../plugins/EChartsPlugin'
+import RunPlugin from '../plugins/RunPlugin'
+import SourceLinePlugin from '../plugins/SourceLinePlugin'
+import LinkTargetPlugin from '../plugins/LinkTargetPlugin'
+import PlantumlPlugin from '../plugins/PlantumlPlugin'
 import file from '../file'
 
 import 'katex/dist/katex.min.css'
+HighlightLineNumber.addStyles()
 
 export default {
   name: 'xview',
@@ -87,7 +88,6 @@ export default {
         }
       })
         .use(TaskLists, {enabled: true})
-        .use(MermaidPlugin)
         .use(PlantumlPlugin)
         .use(RunPlugin)
         .use(katex)
@@ -106,11 +106,24 @@ export default {
 
     this.render = _.debounce(() => {
       this.$refs.view.innerHTML = this.markdown.render(this.replaceRelativeLink(this.value))
-      MermaidPlugin.update()
       MarkdownItECharts.update()
       this.updateOutline()
       this.updateTodoCount()
       this.updatePlantumlDebounce()
+
+      for (let ele of document.querySelectorAll('code[class^="language-"]')) {
+        HighlightLineNumber.lineNumbersBlock(ele)
+      }
+
+      for (let ele of document.getElementsByTagName('a')) {
+        const href = ele.getAttribute('href')
+        if (href && href.startsWith('#')) {
+          ele.onclick = () => {
+            document.getElementById(href.replace(/^#/, '')).scrollIntoView()
+            return false
+          }
+        }
+      }
     }, 500, {leading: true})
 
     this.render()
@@ -273,13 +286,6 @@ export default {
 }
 </script>
 
-<style>
-.echarts {
-  width: 100%;
-  height: 350px;
-}
-</style>
-
 <style scoped>
 .markdown-body {
   position: relative;
@@ -304,8 +310,13 @@ export default {
     background: inherit;
   }
 
+  .markdown-body /deep/ code {
+    background: #464648;
+  }
+
   .markdown-body /deep/ table tr:nth-child(2n),
   .markdown-body /deep/ pre
+  .markdown-body /deep/ pre > code
   {
     background: #303133;
   }
@@ -455,6 +466,11 @@ button:hover {
   right: -60px;
 }
 
+.markdown-body /deep/ table.hljs-ln tbody {
+  display: table;
+  min-width: 100%;
+}
+
 @media print {
   .outline,
   .scroll-to-top,
@@ -466,10 +482,11 @@ button:hover {
     max-width: 100%;
     width: 100%;
     height: auto;
+    padding: 0;
   }
 }
 
-@media (max-width: 767px) {
+@media screen and (max-width: 767px) {
   .view {
     padding: 15px;
   }
@@ -494,5 +511,65 @@ button:hover {
 
 .view .new-page {
   page-break-before: always;
+}
+
+.view .echarts {
+  width: 100%;
+  height: 350px;
+}
+
+.view .hljs-ln,
+.view .hljs-ln tr,
+.view .hljs-ln td {
+  border: 0;
+}
+
+.view .hljs-ln td {
+  padding: 0;
+}
+
+@media screen {
+  .view table.hljs-ln {
+    max-height: 400px;
+  }
+}
+
+@media print {
+  .view table.hljs-ln td {
+    white-space: normal;
+  }
+
+  .view .run-in-xterm {
+    display: none;
+  }
+}
+
+.view table.hljs-ln {
+  padding-bottom: 10px;
+}
+
+.view table.hljs-ln tr:nth-child(even) {
+  background: rgba(110, 110, 110, .05)
+}
+
+.view .hljs-ln td.hljs-ln-numbers {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  text-align: center;
+  border-right: 1px solid #777;
+  vertical-align: top;
+  padding-right: 5px;
+
+  /* your custom style here */
+}
+
+/* for block of code */
+.view .hljs-ln td.hljs-ln-code {
+  padding-left: 10px;
 }
 </style>
