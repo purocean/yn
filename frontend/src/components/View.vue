@@ -409,7 +409,7 @@ button:hover {
 }
 
 .outline > .catalog {
-  max-height: 80vh;
+  max-height: 70vh;
   cursor: pointer;
   overflow: auto;
   padding-bottom: 1em;
