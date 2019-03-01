@@ -117,6 +117,10 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v1.18.1](https://github.com/purocean/yn/releases/tag/v1.18.1) 2019-03-01
+1. 修复目录样式
+1. 修复代码块样式
+
 ### [v1.18.0](https://github.com/purocean/yn/releases/tag/v1.18.0) 2019-02-28
 1. 代码块增加行号显示
 1. 支持统一文档锚点跳转
