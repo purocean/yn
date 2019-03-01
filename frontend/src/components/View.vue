@@ -315,7 +315,7 @@ export default {
   }
 
   .markdown-body /deep/ table tr:nth-child(2n),
-  .markdown-body /deep/ pre
+  .markdown-body /deep/ pre,
   .markdown-body /deep/ pre > code
   {
     background: #303133;
@@ -409,7 +409,7 @@ button:hover {
 }
 
 .outline > .catalog {
-  max-height: 80vh;
+  max-height: 70vh;
   cursor: pointer;
   overflow: auto;
   padding-bottom: 1em;
