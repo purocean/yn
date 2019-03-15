@@ -97,7 +97,7 @@
 + 内置终端 [XTERM.JS](https://xtermjs.org/) [node-pty](https://github.com/Microsoft/node-pty)
 
 ## 开发贡献
-+ 后端: `cd backend; node main.js`
++ 前端: `cd backend; node main.js`
 + 后端: `cd frontend; yarn run dev`
 
 ## 捐赠
