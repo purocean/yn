@@ -536,7 +536,7 @@ button:hover {
 
 @media print {
   .view table.hljs-ln td {
-    white-space: normal;
+    white-space: pre-wrap;
   }
 
   .view .run-in-xterm {
