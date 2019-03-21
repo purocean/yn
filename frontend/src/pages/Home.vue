@@ -8,7 +8,7 @@
     <div style="display: flex; justify-content: space-between;" :class="{'show-view': showView}">
       <Tree ref="tree" class="tree" v-model="file"></Tree>
       <div class="content" style="flex-direction: column;">
-        <div class="content">
+        <div :class="{content: true, 'show-xterm': showXterm}">
           <Editor
             ref="editor"
             class="editor"
@@ -293,6 +293,10 @@ export default {
   .content {
     display: flex;
     height: 95vh;
+  }
+
+  .content.show-xterm {
+    height: 55vh;
   }
 }
 
