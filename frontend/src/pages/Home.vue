@@ -29,7 +29,7 @@
             @sync-scroll="syncScrollEditor"
             @switch-todo="switchTodoEditor"></XView>
         </div>
-        <Xterm ref="xterm" v-show="showXterm"></Xterm>
+        <Xterm ref="xterm" v-show="showXterm" class="xterm"></Xterm>
       </div>
     </div>
     <div class="status-bar">
@@ -298,6 +298,10 @@ export default {
   .content.show-xterm {
     height: 55vh;
   }
+
+  .xterm {
+    height: 40vh;
+  }
 }
 
 @media (max-width: 767px) {
@@ -331,7 +335,7 @@ export default {
     width: 100%;
   }
 
-  .editor, .header, .tree, .status-bar {
+  .editor, .header, .tree, .status-bar, .xterm {
     display: none;
   }
 
