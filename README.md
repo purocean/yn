@@ -97,7 +97,7 @@
 + 内置终端 [XTERM.JS](https://xtermjs.org/) [node-pty](https://github.com/Microsoft/node-pty)
 
 ## 开发贡献
-+ 后端: `cd backend; node main.js`
++ 前端: `cd backend; node main.js`
 + 后端: `cd frontend; yarn run dev`
 
 ## 捐赠
@@ -116,6 +116,10 @@
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v1.18.2](https://github.com/purocean/yn/releases/tag/v1.18.2) 2019-03-21
+1. 保存加密文件密码不一致时增加提示
+1. 修复样式问题
 
 ### [v1.18.1](https://github.com/purocean/yn/releases/tag/v1.18.1) 2019-03-01
 1. 修复目录样式

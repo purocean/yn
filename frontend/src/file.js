@@ -13,6 +13,7 @@ const getCryptKey = () => {
 const encrypt = content => {
   let key = getCryptKey()
   let iv = key
+  const passwordHash = CryptoJS.MD5(key).toString()
 
   key = CryptoJS.enc.Utf8.parse(key)
   iv = CryptoJS.enc.Utf8.parse(iv)
@@ -23,12 +24,13 @@ const encrypt = content => {
     padding: CryptoJS.pad.Pkcs7
   })
 
-  return encrypted.toString()
+  return {content: encrypted.toString(), passwordHash}
 }
 
 const decrypt = content => {
   let key = getCryptKey()
   let iv = key
+  const passwordHash = CryptoJS.MD5(key).toString()
 
   key = CryptoJS.enc.Utf8.parse(key)
   iv = CryptoJS.enc.Utf8.parse(iv)
@@ -44,9 +46,10 @@ const decrypt = content => {
     throw new Error('解密失败！！！')
   }
 
-  return result
+  return {content: result, passwordHash}
 }
 
+const oldPasswordHash = {}
 export default {
   read: (repo, path, call, ecall) => {
     fetch(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`).then(response => {
@@ -55,7 +58,9 @@ export default {
           try {
             let content = result.data.content
             if (path.endsWith('.c.md')) {
-              content = decrypt(content)
+              const data = decrypt(content)
+              content = data.content
+              oldPasswordHash[`${repo}_${path}`] = data.passwordHash
             }
 
             call(content, result.data.hash)
@@ -75,7 +80,16 @@ export default {
   write: (repo, path, content, oldHash, call, ecall) => {
     try {
       if (path.endsWith('.c.md')) {
-        content = encrypt(content)
+        const data = encrypt(content)
+        const oldPasswdHash = oldPasswordHash[`${repo}_${path}`]
+        if (oldPasswdHash) {
+          if (oldPasswdHash !== data.passwordHash && !window.confirm('密码和上一次输入的密码不一致，是否用新密码保存？')) {
+            return
+          }
+
+          delete oldPasswordHash[`${repo}_${path}`]
+        }
+        content = data.content
       }
     } catch (e) {
       if (ecall) {

@@ -126,7 +126,6 @@ export default {
   box-sizing: border-box;
   padding: 5px;
   padding-bottom: 20px;
-  height: 40vh;
   background: rgb(29, 31, 33);
   border: 1px solid rgb(92, 91, 100);
   flex: 0 0 auto;

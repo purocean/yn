@@ -8,7 +8,7 @@
     <div style="display: flex; justify-content: space-between;" :class="{'show-view': showView}">
       <Tree ref="tree" class="tree" v-model="file"></Tree>
       <div class="content" style="flex-direction: column;">
-        <div class="content">
+        <div :class="{content: true, 'show-xterm': showXterm}">
           <Editor
             ref="editor"
             class="editor"
@@ -29,7 +29,7 @@
             @sync-scroll="syncScrollEditor"
             @switch-todo="switchTodoEditor"></XView>
         </div>
-        <Xterm ref="xterm" v-show="showXterm"></Xterm>
+        <Xterm ref="xterm" v-show="showXterm" class="xterm"></Xterm>
       </div>
     </div>
     <div class="status-bar">
@@ -294,6 +294,14 @@ export default {
     display: flex;
     height: 95vh;
   }
+
+  .content.show-xterm {
+    height: 55vh;
+  }
+
+  .xterm {
+    height: 40vh;
+  }
 }
 
 @media (max-width: 767px) {
@@ -327,7 +335,7 @@ export default {
     width: 100%;
   }
 
-  .editor, .header, .tree, .status-bar {
+  .editor, .header, .tree, .status-bar, .xterm {
     display: none;
   }
 
