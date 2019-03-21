@@ -6,7 +6,7 @@
         :style="{background: selected ? '#313131' : 'none'}"
         @dblclick.exact="createFile()"
         @dblclick.ctrl.exact="revealInExplorer()"
-        @click.ctrl.alt.exact="revealInXterminal(item)"
+        @click.ctrl.alt.exact.prevent="revealInXterminal(item)"
         @contextmenu.ctrl.prevent="renameFile"
         @contextmenu.shift.prevent="deleteFile"> {{ item.name }} <span class="count">({{item.children.length}})</span> </summary>
       <tree-node
