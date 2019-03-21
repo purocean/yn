@@ -1,5 +1,5 @@
 <template>
-  <aside class="side">
+  <aside class="side" @dblclick="init()" title="双击此处刷新目录树">
     <div class="loading" v-if="tree === null"> 加载中 </div>
     <template v-else>
       <TreeNode
