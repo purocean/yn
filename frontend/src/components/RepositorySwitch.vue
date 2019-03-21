@@ -3,7 +3,7 @@
     <div class="current" v-if="current">仓库：{{current}}</div>
     <div class="current" v-else>未选择仓库</div>
     <ul class="list">
-      <li v-for="(path, name) in list" :key="name" :title="path" @click="choose(name)">{{name}}</li>
+      <li v-for="(path, name) in repositories" :key="name" :title="path" @click="choose(name)">{{name}}</li>
     </ul>
   </div>
 </template>
@@ -19,11 +19,11 @@ export default {
   data () {
     return {
       current: null,
-      list: []
+      repositories: {}
     }
   },
   created () {
-    this.current = this.getRepo()
+    this.choose(this.getRepo())
     this.fetchRepositories()
   },
   beforeDestroy () {
@@ -31,7 +31,7 @@ export default {
   methods: {
     fetchRepositories () {
       file.fetchRepositories(data => {
-        this.list = data
+        this.repositories = data
         const keys = Object.keys(data)
 
         if (keys.length > 0 && !keys.includes(this.current)) {
@@ -41,9 +41,11 @@ export default {
     },
     choose (name) {
       this.current = name
+      this.storeRepo(this.current)
     },
     storeRepo (name) {
       window.localStorage['repository'] = name
+      window.localStorage['repository_path'] = this.repositories[name]
     },
     getRepo () {
       return window.localStorage['repository'] || null
@@ -55,6 +57,9 @@ export default {
         this.$bus.emit('switch-repository', val)
         this.storeRepo(this.current)
       }
+    },
+    repositories () {
+      this.storeRepo(this.current)
     }
   },
   computed: {

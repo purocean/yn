@@ -6,6 +6,7 @@
         :style="{background: selected ? '#313131' : 'none'}"
         @dblclick.exact="createFile()"
         @dblclick.ctrl.exact="revealInExplorer()"
+        @click.ctrl.alt.exact="revealInXterminal(item)"
         @contextmenu.ctrl.prevent="renameFile"
         @contextmenu.shift.prevent="deleteFile"> {{ item.name }} <span class="count">({{item.children.length}})</span> </summary>
       <tree-node
@@ -47,7 +48,8 @@ export default {
         '"双击" 创建新文件',
         '"Ctrl + 右键" 重命名目录',
         '"Shift + 右键" 删除目录',
-        '"Ctrl + 双击" 在操作系统中打开目录'
+        '"Ctrl + 双击" 在操作系统中打开目录',
+        '"Ctrl + Alt + 单击" 在终端中打开'
       ].join('\n'),
       fileTitle: [
         '"Ctrl + 右键" 重命名文件',
@@ -98,6 +100,11 @@ export default {
     },
     revealInExplorer () {
       File.openInOS(this.item.repo, this.item.path)
+    },
+    revealInXterminal (item) {
+      const path = window.localStorage['repository_path'] ? window.localStorage['repository_path'] + item.path : '~'
+
+      this.$bus.emit('run-in-terminal', `cd '${path.replace('\'', '\\\'')}'`)
     },
     createFile () {
       let filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')
