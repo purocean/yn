@@ -119,6 +119,10 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v1.19.0](https://github.com/purocean/yn/releases/tag/v1.18.2) 2019-03-21
+1. 增加终端打开目录功能 `Ctrl + Alt + 单击目录`
+1. 增加刷新目录树功能 `Ctrl + Alt + 单击目录`
+
 ### [v1.18.2](https://github.com/purocean/yn/releases/tag/v1.18.2) 2019-03-21
 1. 保存加密文件密码不一致时增加提示
 1. 修复样式问题
