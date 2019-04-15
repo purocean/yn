@@ -37,6 +37,8 @@
 + 切换文档预览显示：`Alt + V` 或点击状态栏 `切换预览` 按钮
 + 切换编辑器自动换行：`Alt + W` 或点击状态栏 `切换换行` 按钮
 + 切换内置终端展示：`Alt + O` 或点击状态栏 `切换终端` 按钮
++ 切换内置终端工作目录到当前目录 `Ctrl + Alt + 单击目录`
++ 刷新目录树 `双击目录空白区域`
 + 将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片`
 + 默认文件存储在 `./data` 目录下，添加更多仓库请编辑 `./config.json` 文件
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
@@ -116,6 +118,10 @@
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v1.19.0](https://github.com/purocean/yn/releases/tag/v1.18.2) 2019-03-21
+1. 增加终端打开目录功能 `Ctrl + Alt + 单击目录`
+1. 增加刷新目录树功能 `Ctrl + Alt + 单击目录`
 
 ### [v1.18.2](https://github.com/purocean/yn/releases/tag/v1.18.2) 2019-03-21
 1. 保存加密文件密码不一致时增加提示
