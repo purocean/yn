@@ -119,6 +119,9 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v1.20.0](https://github.com/purocean/yn/releases/tag/v1.20.0) 2019-04-18
+1. 无功能变化，前端使用 vue cli 3
+
 ### [v1.19.0](https://github.com/purocean/yn/releases/tag/v1.19.0) 2019-04-15
 1. 增加终端打开目录功能 `Ctrl + Alt + 单击目录`
 1. 增加刷新目录树功能 `Ctrl + Alt + 单击目录`
