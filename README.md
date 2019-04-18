@@ -100,7 +100,7 @@
 
 ## 开发贡献
 + 前端: `cd backend; node main.js`
-+ 后端: `cd frontend; yarn run dev`
++ 后端: `cd frontend; yarn run serve`
 
 ## 捐赠
 如果我的工作对您有帮助，请我喝杯咖啡吧 ^_^。**附言可以留下您的 github 用户名或网站连接**。
@@ -118,6 +118,9 @@
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v1.20.0](https://github.com/purocean/yn/releases/tag/v1.20.0) 2019-04-18
+1. 无功能变化，前端使用 vue cli 3
 
 ### [v1.19.0](https://github.com/purocean/yn/releases/tag/v1.19.0) 2019-04-15
 1. 增加终端打开目录功能 `Ctrl + Alt + 单击目录`

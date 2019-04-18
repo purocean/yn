@@ -82,12 +82,12 @@ export default {
         this.init()
 
         const map = {
-          bat: {start: 'cmd.exe', exit: 'exit', eol: '\r\n'},
-          bash: {start: 'bash', exit: 'exit', eol: '\n'},
-          php: {start: 'php -a', exit: 'exit', eol: '\n'},
-          python: {start: 'python', exit: 'exit()', eol: '\n'},
-          py: {start: 'python', exit: 'exit()', eol: '\n'},
-          js: {start: 'node', exit: '.exit', eol: '\n'}
+          bat: { start: 'cmd.exe', exit: 'exit', eol: '\r\n' },
+          bash: { start: 'bash', exit: 'exit', eol: '\n' },
+          php: { start: 'php -a', exit: 'exit', eol: '\n' },
+          python: { start: 'python', exit: 'exit()', eol: '\n' },
+          py: { start: 'python', exit: 'exit()', eol: '\n' },
+          js: { start: 'node', exit: '.exit', eol: '\n' }
         }
 
         const run = (code, eol) => {

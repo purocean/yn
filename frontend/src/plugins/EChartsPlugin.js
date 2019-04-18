@@ -38,7 +38,7 @@ EChartsPlugin.update = (theme = 'dark', animation = undefined, renderImg = false
         eval(`(${decodeURIComponent(code)})(chart)`)
 
         if (animation !== undefined) {
-          chart.setOption({animation})
+          chart.setOption({ animation })
         }
 
         let img = null

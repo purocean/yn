@@ -109,7 +109,7 @@ export default {
         const result = fuzzyMatch(search, x.path)
 
         if (result.matched) {
-          tmp.push({...x})
+          tmp.push({ ...x })
         }
       })
 

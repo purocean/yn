@@ -87,14 +87,14 @@ export default {
           return ''
         }
       })
-        .use(TaskLists, {enabled: true})
+        .use(TaskLists, { enabled: true })
         .use(PlantumlPlugin)
         .use(RunPlugin)
         .use(katex)
         .use(SourceLinePlugin)
         .use(MarkdownItAttrs)
         .use(LinkTargetPlugin)
-        .use(MultimdTable, {enableMultilineRows: true})
+        .use(MultimdTable, { enableMultilineRows: true })
         .use(MarkdownItToc)
         .use(MarkdownItECharts)
     }
@@ -124,7 +124,7 @@ export default {
           }
         }
       }
-    }, 500, {leading: true})
+    }, 500, { leading: true })
 
     this.render()
     setTimeout(() => {
