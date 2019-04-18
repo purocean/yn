@@ -159,13 +159,13 @@ export default {
       })
     },
     pasteImg (file) {
-      File.upload(this.file.repo, this.file.path, file, ({relativePath}) => {
+      File.upload(this.file.repo, this.file.path, file, ({ relativePath }) => {
         this.$refs.tree.change()
         this.$refs.editor.insert(`![图片](${encodeURI(relativePath)})\n`)
       })
     },
     uploadFile (file) {
-      File.upload(this.file.repo, this.file.path, file, ({relativePath}) => {
+      File.upload(this.file.repo, this.file.path, file, ({ relativePath }) => {
         this.$refs.tree.change()
         this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
       }, `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`)
@@ -220,7 +220,7 @@ export default {
       }
 
       // 切换文件时候定位到第一行
-      this.$refs.editor.setPosition({column: 1, lineNumber: 1})
+      this.$refs.editor.setPosition({ column: 1, lineNumber: 1 })
     }
   },
   computed: {

@@ -145,17 +145,17 @@ export default {
 
       window.monaco.languages.setLanguageConfiguration('markdown', {
         onEnterRules: [
-          {beforeText: /^\s*> .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '> '}},
-          {beforeText: /^\s*\+ \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] '}},
-          {beforeText: /^\s*- \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] '}},
-          {beforeText: /^\s*\* \[ \] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] '}},
-          {beforeText: /^\s*\+ \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] '}},
-          {beforeText: /^\s*- \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] '}},
-          {beforeText: /^\s*\* \[x\] .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] '}},
-          {beforeText: /^\s*\+ .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '+ '}},
-          {beforeText: /^\s*- .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '- '}},
-          {beforeText: /^\s*\* .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '* '}},
-          {beforeText: /^\s*1. .*$/, action: {indentAction: window.monaco.languages.IndentAction.None, appendText: '1. '}}
+          { beforeText: /^\s*> .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '> ' } },
+          { beforeText: /^\s*\+ \[ \] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] ' } },
+          { beforeText: /^\s*- \[ \] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] ' } },
+          { beforeText: /^\s*\* \[ \] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] ' } },
+          { beforeText: /^\s*\+ \[x\] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] ' } },
+          { beforeText: /^\s*- \[x\] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] ' } },
+          { beforeText: /^\s*\* \[x\] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] ' } },
+          { beforeText: /^\s*\+ .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '+ ' } },
+          { beforeText: /^\s*- .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '- ' } },
+          { beforeText: /^\s*\* .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '* ' } },
+          { beforeText: /^\s*1. .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '1. ' } }
         ]
       })
 
@@ -243,7 +243,7 @@ export default {
     },
     toggleWrap () {
       const isWrapping = this.editor.getConfiguration().wrappingInfo.isViewportWrapping
-      this.editor.updateOptions({wordWrap: !isWrapping})
+      this.editor.updateOptions({ wordWrap: !isWrapping })
     }
   }
 }

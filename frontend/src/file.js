@@ -24,7 +24,7 @@ const encrypt = content => {
     padding: CryptoJS.pad.Pkcs7
   })
 
-  return {content: encrypted.toString(), passwordHash}
+  return { content: encrypted.toString(), passwordHash }
 }
 
 const decrypt = content => {
@@ -46,7 +46,7 @@ const decrypt = content => {
     throw new Error('解密失败！！！')
   }
 
-  return {content: result, passwordHash}
+  return { content: result, passwordHash }
 }
 
 const oldPasswordHash = {}
@@ -101,8 +101,8 @@ export default {
 
     fetch('/api/file', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({repo, path, content, old_hash: oldHash})
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ repo, path, content, old_hash: oldHash })
     }).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
@@ -116,8 +116,8 @@ export default {
   move: (repo, oldPath, newPath, call) => {
     fetch('/api/file', {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({repo, oldPath, newPath})
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ repo, oldPath, newPath })
     }).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
@@ -140,7 +140,7 @@ export default {
     })
   },
   delete: (repo, path, call) => {
-    fetch(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, {method: 'DELETE'}).then(response => {
+    fetch(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' }).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
           call(result)

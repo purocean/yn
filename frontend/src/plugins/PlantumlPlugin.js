@@ -1,6 +1,6 @@
 // https://github.com/DeepElement/markdown-it-plantuml-offline
 
-module.exports = function umlPlugin (md, options) {
+export default function umlPlugin (md, options) {
   function generateSourceDefault (umlCode, pluginOptions) {
     return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
   }

@@ -100,7 +100,7 @@
 
 ## 开发贡献
 + 前端: `cd backend; node main.js`
-+ 后端: `cd frontend; yarn run dev`
++ 后端: `cd frontend; yarn run serve`
 
 ## 捐赠
 如果我的工作对您有帮助，请我喝杯咖啡吧 ^_^。**附言可以留下您的 github 用户名或网站连接**。
