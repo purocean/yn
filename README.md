@@ -119,6 +119,12 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v1.21.0](https://github.com/purocean/yn/releases/tag/v1.21.0) 2019-05-03
+1. 调整抓取图片到本地的逻辑
+1. 优化目录树样式
+1. 目录树排除 node_modules
+1. eslint 规则调整
+
 ### [v1.20.0](https://github.com/purocean/yn/releases/tag/v1.20.0) 2019-04-18
 1. 无功能变化，前端使用 vue cli 3
 

@@ -8,6 +8,8 @@ const NaturalOrderby = require('natural-orderby')
 const wsl = require('./wsl')
 const repository = require('./repository')
 
+const ignorePath = /node_modules/
+
 const mkdirPSync = location => {
     let normalizedPath = path.normalize(location)
     let parsedPathObj = path.parse(normalizedPath)
@@ -58,7 +60,7 @@ const travels = (location, repo, basePath = null) => {
         return []
     }
 
-    const list = fs.readdirSync(location).filter(x => !x.startsWith('.'))
+    const list = fs.readdirSync(location).filter(x => !x.startsWith('.') && !ignorePath.test(x))
 
     const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()))
     const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()))
