@@ -67,6 +67,7 @@
     + `Ctrl + Alt + D` 插入当前日期
     + `Ctrl + Alt + T` 插入当前时间
     + `Ctrl + Alt + F` 插入文件附件
+    + `Ctrl + Alt + I` 插入文档链接
     + `Ctrl + J` 连接行 join lines
     + `Ctrl + K, Ctrl + U` 转换大写
     + `Ctrl + K, Ctrl + L` 转换小写
