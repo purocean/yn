@@ -235,6 +235,7 @@ export default {
   margin: 0;
   border: 0;
   font-size: 18px;
+  line-height: 1.4em;
   padding: 6px;
   box-sizing: border-box;
   background: #333030;
