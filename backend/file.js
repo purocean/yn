@@ -187,7 +187,7 @@ exports.search = (repo, str) => {
             return
         }
 
-        const list = fs.readdirSync(location).filter(x => !x.startsWith('.'))
+        const list = fs.readdirSync(location).filter(x => !x.startsWith('.') && !ignorePath.test(x))
 
         list.forEach(x => {
             const p = path.join(location, x)
