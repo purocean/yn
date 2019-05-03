@@ -215,7 +215,7 @@ export default {
                 const imgFile = new File([blob], 'file.' + mime.extension(r.headers.get('content-type')))
                 file.upload(this.fileRepo, this.filePath, imgFile, result => {
                   this.$bus.emit('tree-refresh')
-                  this.$bus.emit('editor-replace-value', img.src, result.relativePath)
+                  this.$bus.emit('editor-replace-value', img.src, encodeURI(result.relativePath))
                 })
               })
             })
