@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details :title="dirTitle" ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
+    <details class="name" :title="item.name + '\n\n' + dirTitle" ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
       <summary
         class="dir-label"
         :style="{background: selected ? '#313131' : 'none'}"
@@ -19,7 +19,8 @@
         @delete="p => $emit('delete', p)"></tree-node>
     </details>
     <div
-      :title="fileTitle"
+      class="name"
+      :title="item.name + '\n\n' + fileTitle"
       v-else
       @click="select(item)"
       @dblclick.ctrl.exact="revealInExplorer()"
@@ -167,6 +168,12 @@ export default {
 
 .tree-node * {
   user-select: none;
+}
+
+.name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .dir-label .count {
