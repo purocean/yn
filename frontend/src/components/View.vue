@@ -38,6 +38,7 @@
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import _ from 'lodash'
+import mime from 'mime-types'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
 import katex from 'markdown-it-katex'
@@ -209,12 +210,15 @@ export default {
             img.src.startsWith('http://') ||
             img.src.startsWith('https://')
           ) {
-            const ximg = document.createElement('img')
-            ximg.crossOrigin = 'anonymous'
-            ximg.src = `api/proxy?url=${encodeURI(img.src)}`
-            ximg.onload = () => {
-              transform(ximg)
-            }
+            window.fetch(`api/proxy?url=${encodeURI(img.src)}`).then(r => {
+              r.blob().then(blob => {
+                const imgFile = new File([blob], 'file.' + mime.extension(r.headers.get('content-type')))
+                file.upload(this.fileRepo, this.filePath, imgFile, result => {
+                  this.$bus.emit('tree-refresh')
+                  this.$bus.emit('editor-replace-value', img.src, result.relativePath)
+                })
+              })
+            })
           }
 
           return
