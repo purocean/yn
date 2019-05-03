@@ -168,7 +168,6 @@ export default {
       const file = item || this.selected
       if (file) {
         this.$emit('choose-file', file)
-        this.$bus.emit('choose-file', file)
       }
     },
     switchTab (tab = null) {

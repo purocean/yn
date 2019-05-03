@@ -27,12 +27,14 @@ export default {
       this.onGotAmdLoader()
     }
     window.addEventListener('resize', this.resize)
+    this.$bus.on('editor-insert-value', this.insert)
     this.$bus.on('editor-replace-value', this.replaceValue)
     this.$bus.on('editor-toggle-wrap', this.toggleWrap)
   },
   beforeDestroy () {
     window.removeEventListener('paste', this.paste)
     window.removeEventListener('resize', this.resize)
+    this.$bus.off('editor-insert-value', this.insert)
     this.$bus.off('editor-replace-value', this.replaceValue)
     this.$bus.off('editor-toggle-wrap', this.toggleWrap)
   },

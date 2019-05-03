@@ -13,7 +13,7 @@
         @delete="onDelete" />
         <transition name="fade">
           <div v-if="showFilter" class="filter-wrapper" @click="showFilter = false">
-            <XFilter @choose-file="f => { showFilter = false }" :repo="repo" :files="files" />
+            <XFilter @choose-file="showFilter" :repo="repo" :files="files" />
           </div>
         </transition>
     </template>
@@ -105,8 +105,21 @@ export default {
       this.init(null, path)
     },
     keydownHandler (e) {
-      if (e.key === 'p' && e.ctrlKey) {
-        this.showFilter = true
+      if (e.key === 'i' && e.ctrlKey && e.altKey) {
+        this.showFilter = f => {
+          if (this.file) {
+            const relativePath = f.path.replace(this.file.path.substr(0, this.file.path.lastIndexOf('/')), '.')
+            this.$bus.emit('editor-insert-value', `[${f.name.replace(/\.[^.]$/, '')}](${encodeURI(relativePath)})`)
+          }
+          this.showFilter = false
+        }
+        e.preventDefault()
+        e.stopPropagation()
+      } else if (e.key === 'p' && e.ctrlKey) {
+        this.showFilter = f => {
+          this.$bus.emit('choose-file', f)
+          this.showFilter = false
+        }
         e.preventDefault()
         e.stopPropagation()
       } else if (e.key === 'Escape' && this.showFilter) {
