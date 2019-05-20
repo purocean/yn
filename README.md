@@ -121,6 +121,14 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v1.22.0](https://github.com/purocean/yn/releases/tag/v1.22.0) 2019-05-20
+1. 增加粘贴 html 富文本功能 `Ctrl + B + V`
+1. 增加插入文档快捷键 `Ctrl + Alt + I`
+1. 修复 vue cli 3 打包错误
+1. 修复图片链接转义
+1. 搜索排除 node_modules
+1. 上传文件目录优化
+
 ### [v1.21.0](https://github.com/purocean/yn/releases/tag/v1.21.0) 2019-05-03
 1. 调整抓取图片到本地的逻辑
 1. 优化目录树样式
