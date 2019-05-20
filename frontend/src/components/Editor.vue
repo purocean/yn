@@ -5,6 +5,9 @@
 
 <script>
 import dayjs from 'dayjs'
+import TurndownService from 'turndown'
+
+const keys = {}
 
 export default {
   name: 'editor',
@@ -27,6 +30,8 @@ export default {
       this.onGotAmdLoader()
     }
     window.addEventListener('resize', this.resize)
+    window.addEventListener('keydown', this.recordKeys, true)
+    window.addEventListener('keyup', this.recordKeys, true)
     this.$bus.on('editor-insert-value', this.insert)
     this.$bus.on('editor-replace-value', this.replaceValue)
     this.$bus.on('editor-toggle-wrap', this.toggleWrap)
@@ -34,11 +39,20 @@ export default {
   beforeDestroy () {
     window.removeEventListener('paste', this.paste)
     window.removeEventListener('resize', this.resize)
+    window.removeEventListener('keydown', this.recordKeys)
+    window.removeEventListener('keyup', this.recordKeys)
     this.$bus.off('editor-insert-value', this.insert)
     this.$bus.off('editor-replace-value', this.replaceValue)
     this.$bus.off('editor-toggle-wrap', this.toggleWrap)
   },
   methods: {
+    recordKeys (e) {
+      if (e.type === 'keydown') {
+        keys[e.key] = true
+      } else {
+        keys[e.key] = false
+      }
+    },
     resize () {
       if (this.editor) {
         this.editor.layout()
@@ -85,7 +99,7 @@ export default {
       })
 
       this.keyBind()
-      window.addEventListener('paste', this.paste)
+      window.addEventListener('paste', this.paste, true)
 
       setTimeout(() => {
         this.$emit('ready')
@@ -174,9 +188,23 @@ export default {
     paste (e) {
       if (this.editor.isFocused()) {
         const items = e.clipboardData.items
-        for (let i = 0; i < items.length; i++) {
-          if (items[i].type.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
-            this.$emit('paste-img', items[i].getAsFile())
+        if (keys['b'] || keys['B']) { // 粘贴 HTML 转为 markdown
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.match(/^text\/html$/i)) {
+              items[i].getAsString(str => {
+                const md = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', bulletListMarker: '+' }).turndown(str)
+                this.insert(md)
+              })
+            }
+          }
+
+          e.preventDefault()
+          e.stopPropagation()
+        } else {
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
+              this.$emit('paste-img', items[i].getAsFile())
+            }
           }
         }
       }

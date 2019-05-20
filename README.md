@@ -72,6 +72,7 @@
     + `Ctrl + K, Ctrl + U` 转换大写
     + `Ctrl + K, Ctrl + L` 转换小写
     + `Ctrl + Alt + R` 在内置终端里面运行选中内容
+    + `Ctrl + B + V` 粘贴 html 富文本
 
 ## 特色功能
 + 同步预览滚动，实现得较粗糙
