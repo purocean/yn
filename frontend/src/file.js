@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js'
+import { slugify } from 'transliteration'
 
 const getCryptKey = () => {
   const password = window.prompt('请输入密码：')
@@ -160,7 +161,9 @@ export default {
         file.name.substr(file.name.lastIndexOf('.'))
 
       const formData = new FormData()
-      const path = belongPath.replace(/\/([^/]*)$/, '/FILES/$1/' + filename)
+      const path = belongPath.replace(/\/([^/]*)$/, (match, capture) => {
+        return `/FILES/${slugify(capture)}/` + filename
+      })
       formData.append('repo', repo)
       formData.append('path', path)
       formData.append('attachment', file)

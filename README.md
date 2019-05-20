@@ -67,10 +67,12 @@
     + `Ctrl + Alt + D` 插入当前日期
     + `Ctrl + Alt + T` 插入当前时间
     + `Ctrl + Alt + F` 插入文件附件
+    + `Ctrl + Alt + I` 插入文档链接
     + `Ctrl + J` 连接行 join lines
     + `Ctrl + K, Ctrl + U` 转换大写
     + `Ctrl + K, Ctrl + L` 转换小写
     + `Ctrl + Alt + R` 在内置终端里面运行选中内容
+    + `Ctrl + B + V` 粘贴 html 富文本
 
 ## 特色功能
 + 同步预览滚动，实现得较粗糙
@@ -118,6 +120,14 @@
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v1.22.0](https://github.com/purocean/yn/releases/tag/v1.22.0) 2019-05-20
+1. 增加粘贴 html 富文本功能 `Ctrl + B + V`
+1. 增加插入文档快捷键 `Ctrl + Alt + I`
+1. 修复 vue cli 3 打包错误
+1. 修复图片链接转义
+1. 搜索排除 node_modules
+1. 上传文件目录优化
 
 ### [v1.21.0](https://github.com/purocean/yn/releases/tag/v1.21.0) 2019-05-03
 1. 调整抓取图片到本地的逻辑
