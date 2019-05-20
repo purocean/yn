@@ -39,7 +39,7 @@
 + 切换内置终端展示：`Alt + O` 或点击状态栏 `切换终端` 按钮
 + 切换内置终端工作目录到当前目录 `Ctrl + Alt + 单击目录`
 + 刷新目录树 `双击目录空白区域`
-+ 将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片`
++ 将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
 + 默认文件存储在 `./data` 目录下，添加更多仓库请编辑 `./config.json` 文件
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
     + `Ctrl + X` 剪切所选/当前行

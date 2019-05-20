@@ -131,8 +131,24 @@ export default {
     setTimeout(() => {
       this.updatePlantuml()
     }, 100)
+
+    window.addEventListener('keydown', this.keydownHandler, true)
+  },
+  beforeDestroy () {
+    window.removeEventListener('keydown', this.keydownHandler)
+    this.$bus.off('change-document', this.handleChangeDocument)
   },
   methods: {
+    keydownHandler (e) {
+      // 转换所有外链图片到本地
+      if (e.key === 'l' && e.ctrlKey && e.altKey) {
+        this.$refs.view.querySelectorAll('img').forEach(img => {
+          this.transformImgOutLink(img)
+        })
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    },
     handleScroll (e) {
       this.scrollTop = e.target.scrollTop
     },
@@ -180,6 +196,38 @@ export default {
       this.todoCount = this.$refs.view.querySelectorAll('input[type=checkbox]').length
       this.todoDoneCount = this.$refs.view.querySelectorAll('input[type=checkbox][checked]').length
     },
+    transformImgOutLink (img) {
+      const transform = ximg => {
+        const canvas = document.createElement('canvas')
+        canvas.width = ximg.naturalWidth
+        canvas.height = ximg.naturalHeight
+        canvas.getContext('2d').drawImage(ximg, 0, 0)
+        canvas.toBlob(blob => {
+          const imgFile = new File([blob], 'file.png')
+          file.upload(this.fileRepo, this.filePath, imgFile, result => {
+            this.$bus.emit('tree-refresh')
+            this.$bus.emit('editor-replace-value', img.src, result.relativePath)
+          })
+        })
+      }
+
+      if (img.src.startsWith('data:')) {
+        transform(img)
+      } else if (
+        img.src.startsWith('http://') ||
+        img.src.startsWith('https://')
+      ) {
+        window.fetch(`api/proxy?url=${encodeURI(img.src)}`).then(r => {
+          r.blob().then(blob => {
+            const imgFile = new File([blob], 'file.' + mime.extension(r.headers.get('content-type')))
+            file.upload(this.fileRepo, this.filePath, imgFile, result => {
+              this.$bus.emit('tree-refresh')
+              this.$bus.emit('editor-replace-value', img.src, encodeURI(result.relativePath))
+            })
+          })
+        })
+      }
+    },
     handleClick (e) {
       if (e.target.tagName === 'A' && e.target.classList.contains('open')) {
         fetch(e.target.href.replace('api/attachment', 'api/open'))
@@ -190,37 +238,7 @@ export default {
       if (e.target.tagName === 'IMG') {
         const img = e.target
         if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地
-          const transform = ximg => {
-            const canvas = document.createElement('canvas')
-            canvas.width = ximg.naturalWidth
-            canvas.height = ximg.naturalHeight
-            canvas.getContext('2d').drawImage(ximg, 0, 0)
-            canvas.toBlob(blob => {
-              const imgFile = new File([blob], 'file.png')
-              file.upload(this.fileRepo, this.filePath, imgFile, result => {
-                this.$bus.emit('tree-refresh')
-                this.$bus.emit('editor-replace-value', img.src, result.relativePath)
-              })
-            })
-          }
-
-          if (img.src.startsWith('data:')) {
-            transform(img)
-          } else if (
-            img.src.startsWith('http://') ||
-            img.src.startsWith('https://')
-          ) {
-            window.fetch(`api/proxy?url=${encodeURI(img.src)}`).then(r => {
-              r.blob().then(blob => {
-                const imgFile = new File([blob], 'file.' + mime.extension(r.headers.get('content-type')))
-                file.upload(this.fileRepo, this.filePath, imgFile, result => {
-                  this.$bus.emit('tree-refresh')
-                  this.$bus.emit('editor-replace-value', img.src, encodeURI(result.relativePath))
-                })
-              })
-            })
-          }
-
+          this.transformImgOutLink(img)
           return
         }
 
