@@ -121,6 +121,9 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v1.23.0](https://github.com/purocean/yn/releases/tag/v1.23.0) 2019-07-09
+1. 增加转换所有外链图片到本地功能 `Ctrl + Alt + L`
+
 ### [v1.22.0](https://github.com/purocean/yn/releases/tag/v1.22.0) 2019-05-20
 1. 增加粘贴 html 富文本功能 `Ctrl + B + V`
 1. 增加插入文档快捷键 `Ctrl + Alt + I`
