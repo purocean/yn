@@ -17,38 +17,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import RepositorySwitch from './RepositorySwitch'
 
 export default {
   name: 'status-bar',
   components: { RepositorySwitch },
-  props: {
-  },
-  data () {
-    return {
-      documentInfo: {
-        textLength: 0,
-        selectedLength: 0,
-        lineCount: 0,
-        line: 0,
-        column: 0
-      }
-    }
-  },
   created () {
     window.addEventListener('keydown', this.keydownHandler, true)
-    this.$bus.on('change-document', this.handleChangeDocument)
-  },
-  mounted () {
   },
   beforeDestroy () {
     window.removeEventListener('keydown', this.keydownHandler)
-    this.$bus.off('change-document', this.handleChangeDocument)
   },
   methods: {
-    handleChangeDocument (data) {
-      this.documentInfo = data
-    },
     toggleView () {
       this.$bus.emit('toggle-view')
     },
@@ -56,7 +37,7 @@ export default {
       this.$bus.emit('toggle-xterm')
     },
     toggleReadme () {
-      this.$bus.emit('toggle-readme')
+      this.$store.dispatch('app/showReadme')
     },
     toggleWrap () {
       this.$bus.emit('editor-toggle-wrap')
@@ -90,6 +71,7 @@ export default {
   watch: {
   },
   computed: {
+    ...mapState('app', ['documentInfo'])
   }
 }
 </script>
@@ -110,6 +92,7 @@ export default {
   background: #4e4e4e;
   font-size: 12px;
   line-height: 20px;
+  height: 100%;
 }
 
 .document-info > span {

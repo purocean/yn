@@ -1,15 +1,15 @@
 <template>
   <div class="repository-switch">
-    <div class="current" v-if="current">仓库：{{current}}</div>
+    <div class="current" v-if="currentRepo">仓库：{{currentRepo.name}}</div>
     <div class="current" v-else>未选择仓库</div>
     <ul class="list">
-      <li v-for="(path, name) in repositories" :key="name" :title="path" @click="choose(name)">{{name}}</li>
+      <li v-for="(path, name) in repositories" :key="name" :title="path" @click="choose({name, path})">{{name}}</li>
     </ul>
   </div>
 </template>
 
 <script>
-import file from '../file'
+import { mapState } from 'vuex'
 
 export default {
   name: 'repository-switch',
@@ -19,50 +19,33 @@ export default {
   data () {
     return {
       current: null,
-      repositories: {}
     }
   },
   created () {
-    this.choose(this.getRepo())
-    this.fetchRepositories()
+    this.$store.dispatch('app/fetchRepositories')
   },
   beforeDestroy () {
   },
   methods: {
-    fetchRepositories () {
-      file.fetchRepositories(data => {
-        this.repositories = data
-        const keys = Object.keys(data)
-
-        if (keys.length > 0 && !keys.includes(this.current)) {
-          this.choose(keys[0])
-        }
-      })
-    },
-    choose (name) {
-      this.current = name
-      this.storeRepo(this.current)
-    },
-    storeRepo (name) {
-      window.localStorage['repository'] = name
-      window.localStorage['repository_path'] = this.repositories[name]
-    },
-    getRepo () {
-      return window.localStorage['repository'] || null
-    }
-  },
-  watch: {
-    current (val) {
-      if (val) {
-        this.$bus.emit('switch-repository', val)
-        this.storeRepo(this.current)
+    choose (repo) {
+      if (repo.name !== this.currentRepo.name) {
+        this.$store.commit('app/setCurrentRepo', repo)
       }
     },
-    repositories () {
-      this.storeRepo(this.current)
+  },
+  watch: {
+    repositories (val) {
+      const keys = Object.keys(val)
+      if (!this.currentRepo || keys.indexOf(this.currentRepo.name) < 0) {
+        if (keys.length > 0) {
+          const name = keys[0]
+          this.$store.commit('app/setCurrentRepo', { name, path: val[name] })
+        }
+      }
     }
   },
   computed: {
+    ...mapState('app', ['currentRepo', 'repositories']),
   }
 }
 </script>

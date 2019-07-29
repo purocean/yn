@@ -1,4 +1,4 @@
-# 自用 markdown 编辑器
+# Yank-Note markdown 编辑器
 >vue + monaco-editor + markdown-it + nodejs + Koa
 
 [toc]{level: [2]}

@@ -52,7 +52,8 @@ const decrypt = content => {
 
 const oldPasswordHash = {}
 export default {
-  read: (repo, path, call, ecall) => {
+  read: (file, call, ecall) => {
+    const { path, repo } = file
     fetch(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`).then(response => {
       response.json().then(result => {
         if (result.status === 'ok') {
@@ -95,6 +96,7 @@ export default {
     } catch (e) {
       if (ecall) {
         ecall(e)
+        return
       } else {
         throw e
       }
