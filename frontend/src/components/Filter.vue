@@ -1,18 +1,17 @@
 <template>
-  <transition name="fade">
-    <div v-if="show" class="filter-wrapper" @click="show = false">
-      <QuickOpen @choose-file="show" @close="show = false"></QuickOpen>
-    </div>
-  </transition>
+  <XMask :show="!!show" @close="show = false">
+    <QuickOpen @choose-file="show" @close="show = false"></QuickOpen>
+  </XMask>
 </template>
 
 <script>
-import QuickOpen from './QuickOpen'
 import { mapState } from 'vuex'
+import XMask from './Mask'
+import QuickOpen from './QuickOpen'
 
 export default {
   name: 'x-filter',
-  components: { QuickOpen },
+  components: { QuickOpen, XMask },
   data () {
     return {
       show: false,
@@ -43,10 +42,6 @@ export default {
         }
         e.preventDefault()
         e.stopPropagation()
-      } else if (e.key === 'Escape' && this.show) {
-        this.show = false
-        e.preventDefault()
-        e.stopPropagation()
       }
     },
   },
@@ -55,23 +50,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.filter-wrapper {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, .2);
-  z-index: 99999;
-  padding-top: 4em;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-</style>

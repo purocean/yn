@@ -9,13 +9,13 @@ export default {
     showView: true,
     showXterm: false,
     savedAt: null,
-    currentStatus: 0,
     currentContent: '',
     previousContent: '',
     previousHash: '',
     currentRepo: Storage.get('currentRepo'),
     currentFile: Storage.get('currentFile'),
     recentOpenTime: Storage.get('recentOpenTime', {}),
+    passwordHash: {},
     documentInfo: {
       textLength: 0,
       selectedLength: 0,
@@ -25,6 +25,11 @@ export default {
     },
   },
   mutations: {
+    setPasswordHash (state, { file, passwordHash }) {
+      if (file && passwordHash) {
+        state.passwordHash = { ...state.passwordHash, [`${file.repo}|${file.path}`]: passwordHash }
+      }
+    },
     setRepositories (state, data) {
       state.repositories = data
     },
@@ -54,6 +59,8 @@ export default {
     },
     setCurrentRepo (state, data) {
       state.currentRepo = data
+      state.currentFile = null
+      state.tree = null
       Storage.set('currentRepo', data)
     },
     setCurrentFile (state, data) {
@@ -69,30 +76,27 @@ export default {
   getters: {
   },
   actions: {
-    fetchRepositories ({ commit }) {
-      file.fetchRepositories(data => {
-        commit('setRepositories', data)
-      })
+    async fetchRepositories ({ commit }) {
+      const data = await file.fetchRepositories()
+      commit('setRepositories', data)
     },
-    fetchTree ({ commit }, repo) {
+    async fetchTree ({ commit }, repo) {
       if (!repo) {
         console.warn('未选择仓库')
         return
       }
 
-      file.tree(repo.name, tree => {
-        commit('setTree', tree)
-      })
+      const tree = await file.fetchTree(repo.name)
+      commit('setTree', tree)
     },
-    showReadme ({ commit }) {
-      file.readme(content => {
-        commit('setCurrentFile', {
-          repo: '__readme__',
-          title: 'README.md',
-          name: 'README.md',
-          path: '/README.md',
-          content
-        })
+    async showReadme ({ commit }) {
+      const content = await file.fetchReadmeContent()
+      commit('setCurrentFile', {
+        repo: '__readme__',
+        title: 'README.md',
+        name: 'README.md',
+        path: '/README.md',
+        content
       })
     }
   }

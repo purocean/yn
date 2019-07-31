@@ -11,14 +11,14 @@
       @change-document="val => $store.commit('app/setDocumentInfo', val)"
       @xterm-run="val => $bus.emit('xterm-run', val)"
       @save="saveFile"></MonacoEditor>
-</div>
+  </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import MonacoEditor from './MonacoEditor'
-import File from '@/lib/file'
 import dayjs from 'dayjs'
+import File from '@/lib/file'
+import MonacoEditor from './MonacoEditor'
 
 export default {
   name: 'editor',
@@ -34,6 +34,7 @@ export default {
     this.$bus.on('editor-insert-value', this.$refs.editor.insert)
     this.$bus.on('editor-replace-value', this.$refs.editor.replaceValue)
     this.$bus.on('editor-toggle-wrap', this.$refs.editor.toggleWrap)
+    this.$bus.on('file-new', this.createFile)
     this.restartTimer()
   },
   beforeDestroy () {
@@ -42,8 +43,37 @@ export default {
     this.$bus.off('editor-insert-value', this.$refs.editor.insert)
     this.$bus.off('editor-replace-value', this.$refs.editor.replaceValue)
     this.$bus.off('editor-toggle-wrap', this.$refs.editor.toggleWrap)
+    this.$bus.off('file-new', this.createFile)
   },
   methods: {
+    async createFile ({ file, content }) {
+      try {
+        // 加密文件内容
+        if (File.isEncryptedFile(file)) {
+          const password = await this.inputPassword('[创建] 请输入密码', file.name)
+          const encrypted = File.encrypt(content, password)
+          content = encrypted.content
+          // 储存这次解密文件密码的 hash，用于下次判断是否输入了相同密码
+          this.$store.commit('app/setPasswordHash', file, encrypted.passwordHash)
+        }
+
+        await File.write(file, content, 'new')
+
+        this.$bus.emit('file-created', file)
+        this.$store.commit('app/setCurrentFile', file)
+      } catch (error) {
+        this.$bus.emit('show-toast', 'warning', error.message)
+        console.error(error)
+      }
+    },
+    async inputPassword (title, filename) {
+      const password = await this.$modal.input({ title, type: 'password', hint: filename })
+      if (!password) {
+        throw new Error('未输入密码')
+      }
+
+      return password
+    },
     clearTimer () {
       if (this.timer) {
         window.clearTimeout(this.timer)
@@ -57,7 +87,7 @@ export default {
       }
 
       this.timer = window.setTimeout(() => {
-        if (!this.currentFile || this.currentFile.path.endsWith('.c.md')) { // 加密文件不自动保存
+        if (!this.currentFile || File.isEncryptedFile(this.currentFile)) { // 加密文件不自动保存
           return
         }
 
@@ -79,7 +109,7 @@ export default {
     syncScrollView (e) {
       this.$emit('scroll-line', e)
     },
-    saveFile (f = null) {
+    async saveFile (f = null) {
       const file = f || this.currentFile
 
       if (!(file && file.repo && file.path)) {
@@ -98,14 +128,34 @@ export default {
         return
       }
 
-      const content = this.currentContent
-      File.write(file.repo, file.path, content, this.previousHash, result => {
-        this.$store.commit('app/setPreviousHash', result.data)
-        this.$store.commit('app/setPreviousContent', content)
+      try {
+        let content = this.currentContent
+
+        // 加密文件内容
+        if (File.isEncryptedFile(file)) {
+          const password = await this.inputPassword('[保存] 请输入密码', file.name)
+          const encrypted = File.encrypt(content, password)
+          const oldPasswdHash = this.passwordHash[`${file.repo}|${file.path}`]
+          if (oldPasswdHash !== encrypted.passwordHash) {
+            if (!(await this.$modal.confirm({ title: '提示', content: '密码和上一次输入的密码不一致，是否用新密码保存？' }))) {
+              return
+            }
+          }
+
+          content = encrypted.content
+          // 储存这次解密文件密码的 hash，用于下次判断是否输入了相同密码
+          this.$store.commit('app/setPasswordHash', file, encrypted.passwordHash)
+        }
+
+        const { hash } = await File.write(file, content, this.previousHash)
+
+        this.$store.commit('app/setPreviousHash', hash)
+        this.$store.commit('app/setPreviousContent', this.currentContent)
         this.$store.commit('app/setSavedAt', new Date())
-      }, e => {
-        alert(e.message)
-      })
+      } catch (error) {
+        this.$bus.emit('show-toast', 'warning', error.message)
+        console.error(error)
+      }
     },
     pasteImg (file) {
       File.upload(this.currentFile.repo, this.currentFile.path, file, ({ relativePath }) => {
@@ -119,33 +169,47 @@ export default {
         this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
       }, `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`)
     },
-    changeFile (current, previous) {
+    async changeFile (current, previous) {
       this.clearTimer()
 
       if (previous && previous.repo && previous.path) {
-        this.saveFile(previous)
+        await this.saveFile(previous)
       }
 
-      if (current) {
-        if (current.content) { // 系统文件
-          this.$store.commit('app/setPreviousContent', current.content)
-          this.$store.commit('app/setSavedAt', null)
-          this.$refs.editor.setValue(current.content)
-        } else {
-          File.read(current, (data, hash) => {
-            this.$store.commit('app/setPreviousContent', data)
-            this.$store.commit('app/setPreviousHash', hash)
-            this.$store.commit('app/setSavedAt', null)
-            this.$refs.editor.setValue(data)
-          }, e => {
-            this.$store.commit('app/setCurrentFile', null)
-            alert(e.message)
-          })
-        }
-      } else {
+      if (!current) {
         this.$store.commit('app/setPreviousContent', '\n')
         this.$refs.editor.setValue('\n')
         this.$store.commit('app/setCurrentFile', null)
+        return
+      }
+
+      if (current.content) { // 系统文件
+        this.$store.commit('app/setPreviousContent', current.content)
+        this.$store.commit('app/setSavedAt', null)
+        this.$refs.editor.setValue(current.content)
+        return
+      }
+
+      try {
+        let { content, hash } = await File.read(current)
+
+        // 解密文件内容
+        if (File.isEncryptedFile(current)) {
+          const password = await this.inputPassword('[打开] 请输入密码', current.name)
+          const decrypted = File.decrypt(content, password)
+          content = decrypted.content
+          // 储存这次解密文件密码的 hash，用于下次判断是否输入了相同密码
+          this.$store.commit('app/setPasswordHash', { file: current, passwordHash: decrypted.passwordHash })
+        }
+
+        this.$store.commit('app/setPreviousContent', content)
+        this.$store.commit('app/setPreviousHash', hash)
+        this.$store.commit('app/setSavedAt', null)
+        this.$refs.editor.setValue(content)
+      } catch (error) {
+        this.$store.commit('app/setCurrentFile', null)
+        this.$bus.emit('show-toast', 'warning', error.message)
+        console.error(error)
       }
 
       // 切换文件时候定位到第一行
@@ -153,7 +217,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('app', ['currentFile', 'currentContent', 'previousContent', 'previousHash'])
+    ...mapState('app', ['currentFile', 'currentContent', 'previousContent', 'previousHash', 'passwordHash'])
   },
   watch: {
     currentFile (current, previous) {

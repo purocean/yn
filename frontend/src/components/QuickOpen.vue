@@ -5,7 +5,7 @@
       <div @click="switchTab('search')" :class="{selected: currentTab === 'search'}">搜索内容</div>
       <!-- <div>标签</div> -->
     </div>
-    <input ref="input" @blur="$emit('close')" v-model="searchText" type="text" class="input" @keydown.tab.prevent @keydown.up.prevent @keydown.down.prevent autofocus>
+    <input ref="input" v-model="searchText" type="text" class="input" @keydown.tab.prevent @keydown.up.prevent @keydown.down.prevent autofocus>
     <ul ref="result" class="result">
       <li v-if="list === null">加载中……</li>
       <template v-else>
@@ -223,7 +223,7 @@ export default {
   computed: {
     ...mapState('app', ['currentRepo', 'recentOpenTime', 'tree']),
     files () {
-      return this.travelFiles(this.tree)
+      return this.travelFiles(this.tree || [])
     },
     repo () {
       return this.currentRepo && this.currentRepo.name

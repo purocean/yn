@@ -60,7 +60,7 @@ export default {
 }
 
 .loading {
-  font-size: 32px;
+  font-size: 24px;
   text-align: center;
   padding-top: 50%;
   color: #848181;

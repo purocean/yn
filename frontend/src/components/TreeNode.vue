@@ -50,11 +50,6 @@ export default {
     }
   },
   methods: {
-    updateOpenStatus () {
-      if (this.currentFile && this.item.type === 'dir' && this.currentFile.path.startsWith(this.item.path + '/')) {
-        this.$refs.dir.open = true
-      }
-    },
     select (item) {
       if (item.type !== 'dir') {
         if (item.name.endsWith('.md')) {
@@ -65,56 +60,93 @@ export default {
       }
     },
     revealInExplorer () {
-      File.openInOS(this.item.repo, this.item.path)
+      File.openInOS(this.item)
     },
     revealInXterminal (item) {
       const path = this.currentRepo ? this.currentRepo.path + item.path : '~'
 
       this.$bus.emit('xterm-run', `cd '${path.replace('\'', '\\\'')}'`)
     },
-    createFile () {
-      let filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')
+    async createFile () {
+      let filename = await this.$modal.input({
+        title: '创建文件(加密文件以 .c.md 结尾)',
+        hint: '文件路径',
+        content: '当前路径：' + this.item.path,
+        value: 'new.md'
+      })
 
       if (!filename) {
         return
       }
 
       if (!filename.endsWith('.md')) {
-        filename += '.md'
+        filename = filename.replace(/\/$/, '') + '.md'
       }
 
       const path = this.item.path.replace(/\/$/, '') + '/' + filename
-      File.write(this.item.repo, path, `# ${filename.replace(/\.md$/i, '')}\n`, 'new', () => {
-        const newFile = { name: filename, path, repo: this.item.repo, type: this.item.type }
-        this.$bus.emit('file-created', newFile)
-        this.$store.commit('app/setCurrentFile', newFile)
-      }, e => {
-        alert(e.message)
-      })
-    },
-    renameFile () {
-      let newPath = window.prompt(`新文件名`, this.item.path)
 
-      if (!newPath || newPath === this.item.path) {
+      const file = {
+        type: 'file',
+        repo: this.item.repo,
+        path,
+        name: filename,
+      }
+
+      this.$bus.emit('file-new', { file, content: `# ${filename.replace(/\.md$/i, '')}\n` })
+    },
+    async renameFile () {
+      let newPath = await this.$modal.input({
+        title: '移动文件',
+        hint: '新的路径',
+        content: '当前路径：' + this.item.path,
+        value: this.item.path
+      })
+
+      if (!newPath) {
         return
       }
 
-      File.move(this.item.repo, this.item.path, newPath, () => {
-        const newFile = { name: newPath.substr(newPath.lastIndexOf('/') + 1), path: newPath, repo: this.item.repo, type: this.item.type }
-        this.$bus.emit('file-moved', newFile)
-        if (this.currentFile.repo === this.item.repo && this.currentFile.path === this.item.path) {
+      newPath = newPath.replace(/\/$/, '')
+      const oldPath = this.item.path.replace(/\/$/, '')
+
+      if (newPath === oldPath) {
+        return
+      }
+
+      // TODO 文件统一处理
+      // this.$bus.emit('file-move', {file, newPath})
+      const newFile = {
+        name: File.basename(newPath),
+        path: newPath,
+        repo: this.item.repo,
+        type: this.item.type
+      }
+
+      await File.move(this.item, newPath)
+      // 重命名当前文件或父目录后，切换到新位置
+      if (this.currentFile && (File.isSameFile(this.item, this.currentFile) || (this.item.type === 'dir' && File.isBelongTo(this.item.path, this.currentFile.path)))) {
+        if (newFile.type === 'file') {
           this.$store.commit('app/setCurrentFile', newFile)
+        } else {
+          // TODO 切换到新位置
+          this.$store.commit('app/setCurrentFile', null)
         }
-      })
+      }
+
+      this.$bus.emit('file-moved', newFile)
     },
-    deleteFile () {
-      if (window.confirm(`确定要删除 [${this.item.path}] 吗？`)) {
-        File.delete(this.item.repo, this.item.path, () => {
-          this.$bus.emit('file-deleted', this.item)
-          if (this.currentFile.repo === this.item.repo && this.currentFile.path === this.item.path) {
-            this.$store.commit('app/setCurrentFile', null)
-          }
-        })
+    async deleteFile () {
+      const confirm = await this.$modal.confirm({ title: '删除文件', content: `确定要删除 [${this.item.path}] 吗？` })
+
+      if (confirm) {
+        await File.delete(this.item)
+
+        // 删除当前文件或父目录后，关闭当前文件
+        if (this.currentFile && (File.isSameFile(this.item, this.currentFile) || (this.item.type === 'dir' && File.isBelongTo(this.item.path, this.currentFile.path)))) {
+          this.$store.commit('app/setCurrentFile', null)
+        }
+
+        this.$bus.emit('file-deleted', this.item)
       }
     },
   },
@@ -122,11 +154,21 @@ export default {
     ...mapState('app', ['currentFile', 'currentRepo']),
     selected () {
       return this.currentFile && this.currentFile.path === this.item.path && this.currentFile.repo === this.item.repo
+    },
+    shouldOpen () {
+      return this.currentFile && this.item.type === 'dir' && this.currentFile.path.startsWith(this.item.path + '/')
     }
   },
   watch: {
-    currentFile () {
-      this.updateOpenStatus()
+    shouldOpen: {
+      immediate: true,
+      handler (val) {
+        if (val) {
+          this.$nextTick(() => {
+            this.$refs.dir.open = true
+          })
+        }
+      }
     }
   }
 }

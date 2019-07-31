@@ -1,227 +1,150 @@
-import CryptoJS from 'crypto-js'
+import Crypto from './Crypto'
 import { slugify } from 'transliteration'
 
-const getCryptKey = () => {
-  const password = window.prompt('请输入密码：')
+const fetchHttp = async (...params) => {
+  const response = await fetch(...params)
+  const result = await response.json()
+  if (result.status !== 'ok') {
+    throw new Error(result.message)
+  }
 
+  return result
+}
+
+const isBelongTo = (path, sub) => {
+  return sub.startsWith(path.replace(/\/$/, '') + '/')
+}
+
+const isEncryptedFile = file => {
+  return file && file.path.endsWith('.c.md')
+}
+
+const isSameFile = (a, b) => {
+  return a && b && a.repo === b.repo && a.path === b.path
+}
+
+const basename = path => {
+  return path.substr(path.lastIndexOf('/') + 1)
+}
+
+const extname = path => {
+  return path.substr(path.lastIndexOf('.'))
+}
+
+const decrypt = (content, password) => {
   if (!password) {
-    throw new Error('未输入密码')
+    throw new Error('未输入解密密码')
   }
 
-  return CryptoJS.MD5(password).toString().substr(0, 16)
+  return Crypto.decrypt(content, password)
 }
 
-const encrypt = content => {
-  let key = getCryptKey()
-  let iv = key
-  const passwordHash = CryptoJS.MD5(key).toString()
-
-  key = CryptoJS.enc.Utf8.parse(key)
-  iv = CryptoJS.enc.Utf8.parse(iv)
-
-  const encrypted = CryptoJS.AES.encrypt(content, key, {
-    iv: iv,
-    mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7
-  })
-
-  return { content: encrypted.toString(), passwordHash }
-}
-
-const decrypt = content => {
-  let key = getCryptKey()
-  let iv = key
-  const passwordHash = CryptoJS.MD5(key).toString()
-
-  key = CryptoJS.enc.Utf8.parse(key)
-  iv = CryptoJS.enc.Utf8.parse(iv)
-
-  const decrypted = CryptoJS.AES.decrypt(content.trim(), key, {
-    iv: iv,
-    mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7
-  })
-
-  const result = CryptoJS.enc.Utf8.stringify(decrypted)
-  if (!result) {
-    throw new Error('解密失败！！！')
+const encrypt = (content, password) => {
+  if (!password) {
+    throw new Error('未输入解密密码')
   }
 
-  return { content: result, passwordHash }
+  return Crypto.encrypt(content, password)
 }
 
-const oldPasswordHash = {}
-export default {
-  read: (file, call, ecall) => {
-    const { path, repo } = file
-    fetch(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`).then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          try {
-            let content = result.data.content
-            if (path.endsWith('.c.md')) {
-              const data = decrypt(content)
-              content = data.content
-              oldPasswordHash[`${repo}_${path}`] = data.passwordHash
-            }
+const read = async ({ path, repo }) => {
+  const result = await fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`)
+  const hash = result.data.hash
+  let content = result.data.content
 
-            call(content, result.data.hash)
-          } catch (e) {
-            if (ecall) {
-              ecall(e)
-            } else {
-              throw e
-            }
-          }
-        } else {
-          alert(result.message)
-        }
-      })
-    })
-  },
-  write: (repo, path, content, oldHash, call, ecall) => {
-    try {
-      if (path.endsWith('.c.md')) {
-        const data = encrypt(content)
-        const oldPasswdHash = oldPasswordHash[`${repo}_${path}`]
-        if (oldPasswdHash) {
-          if (oldPasswdHash !== data.passwordHash && !window.confirm('密码和上一次输入的密码不一致，是否用新密码保存？')) {
-            return
-          }
+  return { content, hash }
+}
 
-          delete oldPasswordHash[`${repo}_${path}`]
-        }
-        content = data.content
-      }
-    } catch (e) {
-      if (ecall) {
-        ecall(e)
-        return
-      } else {
-        throw e
-      }
-    }
+const write = async ({ repo, path }, content, oldHash) => {
+  const result = await fetchHttp('/api/file', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo, path, content, old_hash: oldHash })
+  })
 
-    fetch('/api/file', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ repo, path, content, old_hash: oldHash })
-    }).then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          call(result)
-        } else {
-          alert(result.message)
-        }
-      })
-    })
-  },
-  move: (repo, oldPath, newPath, call) => {
-    fetch('/api/file', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ repo, oldPath, newPath })
-    }).then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          call(result)
-        } else {
-          alert(result.message)
-        }
-      })
-    })
-  },
-  tree: (repo, call) => {
-    fetch(`/api/tree?repo=${repo}`).then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          call(result.data)
-        } else {
-          alert(result.message)
-        }
-      })
-    })
-  },
-  delete: (repo, path, call) => {
-    fetch(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' }).then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          call(result)
-        } else {
-          alert(result.message)
-        }
-      })
-    })
-  },
-  upload: (repo, belongPath, file, call, name = null) => {
+  return { hash: result.data.hash }
+}
+
+const move = async ({ repo, path }, newPath) => {
+  return fetchHttp('/api/file', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo: repo, oldPath: path, newPath })
+  })
+}
+
+const deleteFile = async ({ path, repo }) => {
+  return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
+}
+
+const fetchTree = async repo => {
+  const result = await fetchHttp(`/api/tree?repo=${repo}`)
+  return result.data
+}
+
+const fetchReadmeContent = async () => {
+  const result = await fetchHttp('/api/readme')
+  return result.data.content
+}
+
+const fetchRepositories = async () => {
+  const result = await fetchHttp('/api/repositories')
+  return result.data
+}
+
+const search = async (repo, text) => {
+  const result = await fetchHttp(`/api/search?repo=${repo}&search=${encodeURIComponent(text)}`)
+  return result.data
+}
+
+const upload = async (repo, belongPath, uploadFile, name = null) => {
+  return Promise((resolve, reject) => {
     belongPath = belongPath.replace(/\\/g, '/')
 
     const fr = new FileReader()
-    fr.readAsBinaryString(file)
-    fr.onloadend = () => {
-      const filename = name || CryptoJS.MD5(CryptoJS.enc.Latin1.parse(fr.result)).toString().substr(0, 8) +
-        file.name.substr(file.name.lastIndexOf('.'))
+    fr.readAsBinaryString(uploadFile)
+    fr.onloadend = async () => {
+      try {
+        const filename = name || Crypto.binMd5(fr.result).substr(0, 8) + extname(uploadFile.name)
 
-      const formData = new FormData()
-      const path = belongPath.replace(/\/([^/]*)$/, (match, capture) => {
-        return `/FILES/${slugify(capture)}/` + filename
-      })
-      formData.append('repo', repo)
-      formData.append('path', path)
-      formData.append('attachment', file)
+        const formData = new FormData()
+        const path = belongPath.replace(/\/([^/]*)$/, (_, capture) => `/FILES/${slugify(capture)}/` + filename)
+        formData.append('repo', repo)
+        formData.append('path', path)
+        formData.append('attachment', uploadFile)
 
-      fetch('/api/attachment', {
-        method: 'POST',
-        body: formData
-      }).then(response => {
-        response.json().then(result => {
-          if (result.status === 'ok') {
-            call({
-              repo: repo,
-              path: path,
-              relativePath: path.replace(belongPath.substr(0, belongPath.lastIndexOf('/')), '.')
-            })
-          } else {
-            alert(result.message)
-          }
-        })
-      })
+        await fetchHttp('/api/attachment', { method: 'POST', body: formData })
+
+        // TODO 更好的相对路径算法
+        const relativePath = path.replace(belongPath.substr(0, belongPath.lastIndexOf('/')), '.')
+        resolve({ repo, path, relativePath })
+      } catch (error) {
+        reject(error)
+      }
     }
-  },
-  search: (repo, text, call) => {
-    fetch(`/api/search?repo=${repo}&search=${encodeURI(text)}`).then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          call(result.data)
-        } else {
-          alert(result.message)
-        }
-      })
-    })
-  },
-  fetchRepositories: call => {
-    fetch('/api/repositories').then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          call(result.data)
-        } else {
-          alert(result.message)
-        }
-      })
-    })
-  },
-  openInOS (repo, path) {
-    fetch(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
-  },
-  readme (call) {
-    fetch('/api/readme').then(response => {
-      response.json().then(result => {
-        if (result.status === 'ok') {
-          call(result.data.content)
-        } else {
-          alert(result.message)
-        }
-      })
-    })
-  }
+  })
+}
+
+const openInOS = async ({ repo, path }) => {
+  return fetchHttp(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
+}
+
+export default {
+  isBelongTo,
+  isSameFile,
+  isEncryptedFile,
+  basename,
+  extname,
+  decrypt,
+  encrypt,
+  read,
+  write,
+  move,
+  delete: deleteFile,
+  fetchTree,
+  fetchRepositories,
+  fetchReadmeContent,
+  openInOS,
+  search,
+  upload,
 }
