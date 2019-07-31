@@ -197,6 +197,7 @@ exports.search = (repo, str) => {
             } else if (fs.statSync(p).isFile()) {
                 if (match(p, str)) {
                     files.push({
+                        repo,
                         name: x,
                         path: p.replace(basePath, ''),
                         type: 'file',

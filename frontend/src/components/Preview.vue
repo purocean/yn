@@ -1,6 +1,6 @@
 <template>
   <div ref="view-wrapper" class="view" @scroll="handleScroll">
-    <div class="action-bar">
+    <div class="action-bar" :style="{width: (width - 50) + 'px'}">
       <div :style="{background: todoCount ? '#4e4e4e' : 'transparent'}">
         <div v-if="todoCount" class="todo-progress">
           <div :style="{
@@ -22,21 +22,20 @@
     </div>
     <div ref="outline" class="outline">
       <div style="padding: .5em;"><b>目录</b></div>
-      <div class="catalog">
+      <div class="catalog" :style="{maxHeight: (height - 120) + 'px'}">
         <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level + 1}em`}" @click="syncScroll(head.sourceLine)">
           {{ head.text }}
           <span style="color: #666;font-size: 12px;padding-left: .5em">{{head.tag}}</span>
         </div>
       </div>
     </div>
-    <div :class="{'scroll-to-top': true, 'show-xterm': showXterm, 'hide': scrollTop < 30}" @click="scrollToTop">TOP</div>
+    <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="{top: (height - 40) + 'px'}" @click="scrollToTop">TOP</div>
     <article ref="view" class="markdown-body" @click="handleClick"></article>
   </div>
 </template>
 
 <script>
-import 'github-markdown-css/github-markdown.css'
-import 'highlight.js/styles/atom-one-dark.css'
+import { mapState } from 'vuex'
 import _ from 'lodash'
 import mime from 'mime-types'
 import Markdown from 'markdown-it'
@@ -53,51 +52,49 @@ import RunPlugin from '../plugins/RunPlugin'
 import SourceLinePlugin from '../plugins/SourceLinePlugin'
 import LinkTargetPlugin from '../plugins/LinkTargetPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
-import file from '../file'
+import file from '@/lib/file'
 
+import 'github-markdown-css/github-markdown.css'
+import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
 HighlightLineNumber.addStyles()
 
+const markdown = Markdown({
+  linkify: true,
+  breaks: true,
+  html: true,
+  highlight: (str, lang) => {
+    if (lang && Highlight.getLanguage(lang)) {
+      try {
+        return Highlight.highlight(lang, str).value
+      } catch (__) {}
+    }
+
+    return ''
+  }
+})
+  .use(TaskLists, { enabled: true })
+  .use(PlantumlPlugin)
+  .use(RunPlugin)
+  .use(katex)
+  .use(SourceLinePlugin)
+  .use(MarkdownItAttrs)
+  .use(LinkTargetPlugin)
+  .use(MultimdTable, { enableMultilineRows: true })
+  .use(MarkdownItToc)
+  .use(MarkdownItECharts)
+
 export default {
   name: 'xview',
-  props: {
-    value: String,
-    fileRepo: String,
-    fileName: String,
-    filePath: String,
-    showXterm: Boolean
-  },
   data () {
     return {
+      width: 1024,
+      height: 1024,
       heads: [],
       convert: {},
       todoCount: 0,
       todoDoneCount: 0,
       scrollTop: 0,
-      markdown: Markdown({
-        linkify: true,
-        breaks: true,
-        html: true,
-        highlight: (str, lang) => {
-          if (lang && Highlight.getLanguage(lang)) {
-            try {
-              return Highlight.highlight(lang, str).value
-            } catch (__) {}
-          }
-
-          return ''
-        }
-      })
-        .use(TaskLists, { enabled: true })
-        .use(PlantumlPlugin)
-        .use(RunPlugin)
-        .use(katex)
-        .use(SourceLinePlugin)
-        .use(MarkdownItAttrs)
-        .use(LinkTargetPlugin)
-        .use(MultimdTable, { enableMultilineRows: true })
-        .use(MarkdownItToc)
-        .use(MarkdownItECharts)
     }
   },
   mounted () {
@@ -106,7 +103,7 @@ export default {
     }, 3000)
 
     this.render = _.debounce(() => {
-      this.$refs.view.innerHTML = this.markdown.render(this.replaceRelativeLink(this.value))
+      this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(this.currentContent))
       MarkdownItECharts.update()
       this.updateOutline()
       this.updateTodoCount()
@@ -133,12 +130,18 @@ export default {
     }, 100)
 
     window.addEventListener('keydown', this.keydownHandler, true)
+    this.$bus.on('resize', this.resizeHandler)
+    this.resizeHandler()
   },
   beforeDestroy () {
     window.removeEventListener('keydown', this.keydownHandler)
-    this.$bus.off('change-document', this.handleChangeDocument)
+    this.$bus.off('resize', this.resizeHandler)
   },
   methods: {
+    resizeHandler () {
+      this.width = this.$refs['view-wrapper'].clientWidth
+      this.height = this.$refs['view-wrapper'].clientHeight
+    },
     keydownHandler (e) {
       // 转换所有外链图片到本地
       if (e.key === 'l' && e.ctrlKey && e.altKey) {
@@ -295,8 +298,20 @@ export default {
       window.print()
     }
   },
+  computed: {
+    ...mapState('app', ['currentContent', 'currentFile']),
+    fileRepo () {
+      return this.currentFile && this.currentFile.repo
+    },
+    fileName () {
+      return this.currentFile && this.currentFile.name
+    },
+    filePath () {
+      return this.currentFile && this.currentFile.path
+    },
+  },
   watch: {
-    value () {
+    currentContent () {
       this.render()
     },
     filePath () {
@@ -364,6 +379,7 @@ button {
   cursor: pointer;
   border-radius: 2px;
   transition: all .3s ease-in-out;
+  margin-left: 4px;
 }
 
 button:hover {
@@ -372,13 +388,13 @@ button:hover {
 
 .action-bar {
   position: fixed;
-  width: 43vw;
-  padding: 0 20px;
-  right: 0;
+  width: 27vw;
+  padding: 0;
+  right: 20px;
   max-width: 980px;
   box-sizing: border-box;
   z-index: 1000;
-  margin-top: -2.2em;
+  margin-top: -1.8em;
 }
 
 .action-bar > div {
@@ -449,15 +465,11 @@ button:hover {
   font-size: 14px;
 }
 
-.scroll-to-top.show-xterm {
-  bottom: 45vh;
-}
-
 .scroll-to-top {
   user-select: none;
   position: fixed;
   right: 2em;
-  bottom: 40px;
+  /* bottom: 40px; */
   background: #333030;
   color: #ccc;
   font-size: 14px;
@@ -516,6 +528,14 @@ button:hover {
 </style>
 
 <style>
+.view {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
 .view .markdown-body hr {
   border-bottom: 1px solid;
 }

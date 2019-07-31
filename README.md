@@ -1,4 +1,4 @@
-# 自用 markdown 编辑器
+# Yank-Note markdown 编辑器
 >vue + monaco-editor + markdown-it + nodejs + Koa
 
 [toc]{level: [2]}
@@ -120,6 +120,11 @@
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v1.24.0](https://github.com/purocean/yn/releases/tag/v1.24.0) 2019-07-31
+1. 目录树和集成终端增加拖动调整尺寸功能
+1. 调整前端代码架构
+1. 增加 2.0 计划
 
 ### [v1.23.0](https://github.com/purocean/yn/releases/tag/v1.23.0) 2019-07-09
 1. 增加转换所有外链图片到本地功能 `Ctrl + Alt + L`

@@ -19,12 +19,14 @@ export default {
   name: 'xterm',
   created () {
     window.runInXterm = this.runInXterm
-    this.$bus.on('run-in-terminal', this.handleRunInXterm)
+    this.$bus.on('xterm-run', this.handleRunInXterm)
+    this.$bus.on('xterm-init', this.init)
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.fitXterm)
     window.runInXterm = null
-    this.$bus.off('run-in-terminal', this.handleRunInXterm)
+    this.$bus.off('xterm-init', this.init)
+    this.$bus.off('xterm-run', this.handleRunInXterm)
+    this.$bus.off('resize', this.handleRunInXterm)
   },
   methods: {
     init () {
@@ -43,7 +45,7 @@ export default {
 
         xterm.open(this.$refs.xterm)
         xterm.fit()
-        window.addEventListener('resize', this.fitXterm)
+        this.$bus.on('resize', this.fitXterm)
       }
 
       if (!socket) {
@@ -129,5 +131,7 @@ export default {
   background: rgb(29, 31, 33);
   border: 1px solid rgb(92, 91, 100);
   flex: 0 0 auto;
+  width: 100%;
+  height: 100%;
 }
 </style>

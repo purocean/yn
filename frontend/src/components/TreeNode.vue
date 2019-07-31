@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details class="name" :title="item.name + '\n\n' + dirTitle" ref="dir" :open="item.path === '/'" v-if="item.type === 'dir'">
+    <details v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" ref="dir" :open="item.path === '/'">
       <summary
         class="dir-label"
         :style="{background: selected ? '#313131' : 'none'}"
@@ -9,19 +9,12 @@
         @click.ctrl.alt.exact.prevent="revealInXterminal(item)"
         @contextmenu.ctrl.prevent="renameFile"
         @contextmenu.shift.prevent="deleteFile"> {{ item.name }} <span class="count">({{item.children.length}})</span> </summary>
-      <tree-node
-        v-for="x in item.children"
-        :key="x.path" :item="x"
-        :slected-file="slectedFile"
-        @select="select"
-        @move="p => $emit('move', p)"
-        @change="p => $emit('change', p)"
-        @delete="p => $emit('delete', p)"></tree-node>
+      <tree-node v-for="x in item.children" :key="x.path" :item="x"></tree-node>
     </details>
     <div
+      v-else
       class="name"
       :title="item.name + '\n\n' + fileTitle"
-      v-else
       @click="select(item)"
       @dblclick.ctrl.exact="revealInExplorer()"
       @contextmenu.ctrl.prevent="renameFile"
@@ -31,20 +24,16 @@
 </template>
 
 <script>
-import File from '../file'
+import { mapState } from 'vuex'
+import File from '@/lib/file'
 
 export default {
   name: 'tree-node',
   props: {
     item: Object,
-    slectedFile: {
-      type: Object,
-      default: null
-    }
   },
   data () {
     return {
-      selected: false,
       dirTitle: [
         '"双击" 创建新文件',
         '"Ctrl + 右键" 重命名目录',
@@ -60,52 +49,28 @@ export default {
       ].join('\n')
     }
   },
-  created () {
-    this.$bus.on('editor-ready', this.handleReady)
-    this.$bus.on('choose-file', this.handleChooseFile)
-  },
-  beforeDestroy () {
-    this.$bus.off('editor-ready', this.handleReady)
-    this.$bus.off('choose-file', this.handleChooseFile)
-  },
-  mounted () {
-    this.handleReady()
-  },
   methods: {
-    handleReady () {
-      this.chooseFile(this.getSelectedFilePath())
-    },
-    handleChooseFile (file) {
-      this.chooseFile(file.path)
-    },
-    chooseFile (filePath) {
-      if (this.item.type === 'dir' && filePath.startsWith(this.item.path)) {
+    updateOpenStatus () {
+      if (this.currentFile && this.item.type === 'dir' && this.currentFile.path.startsWith(this.item.path + '/')) {
         this.$refs.dir.open = true
-      } else if (filePath === this.item.path) {
-        this.select(this.item)
       }
     },
-    select (f) {
-      if (f.name.endsWith('.md')) {
-        this.$nextTick(() => {
-          setTimeout(() => {
-            this.selected = true
-          })
-        })
-
-        this.$emit('select', f)
-        this.storeSelectedFilePath(f.path)
-      } else {
-        window.open(`api/attachment/${encodeURIComponent(f.name)}?repo=${f.repo}&path=${encodeURIComponent(f.path)}`)
+    select (item) {
+      if (item.type !== 'dir') {
+        if (item.name.endsWith('.md')) {
+          this.$store.commit('app/setCurrentFile', item)
+        } else {
+          window.open(`api/attachment/${encodeURIComponent(item.name)}?repo=${item.repo}&path=${encodeURIComponent(item.path)}`)
+        }
       }
     },
     revealInExplorer () {
       File.openInOS(this.item.repo, this.item.path)
     },
     revealInXterminal (item) {
-      const path = window.localStorage['repository_path'] ? window.localStorage['repository_path'] + item.path : '~'
+      const path = this.currentRepo ? this.currentRepo.path + item.path : '~'
 
-      this.$bus.emit('run-in-terminal', `cd '${path.replace('\'', '\\\'')}'`)
+      this.$bus.emit('xterm-run', `cd '${path.replace('\'', '\\\'')}'`)
     },
     createFile () {
       let filename = window.prompt(`[${this.item.path}] 文件名`, 'new.md')
@@ -120,7 +85,9 @@ export default {
 
       const path = this.item.path.replace(/\/$/, '') + '/' + filename
       File.write(this.item.repo, path, `# ${filename.replace(/\.md$/i, '')}\n`, 'new', () => {
-        this.$emit('change', path)
+        const newFile = { name: filename, path, repo: this.item.repo, type: this.item.type }
+        this.$bus.emit('file-created', newFile)
+        this.$store.commit('app/setCurrentFile', newFile)
       }, e => {
         alert(e.message)
       })
@@ -133,26 +100,33 @@ export default {
       }
 
       File.move(this.item.repo, this.item.path, newPath, () => {
-        this.$emit('move', { oldPath: this.item.path, newPath })
+        const newFile = { name: newPath.substr(newPath.lastIndexOf('/') + 1), path: newPath, repo: this.item.repo, type: this.item.type }
+        this.$bus.emit('file-moved', newFile)
+        if (this.currentFile.repo === this.item.repo && this.currentFile.path === this.item.path) {
+          this.$store.commit('app/setCurrentFile', newFile)
+        }
       })
     },
     deleteFile () {
       if (window.confirm(`确定要删除 [${this.item.path}] 吗？`)) {
         File.delete(this.item.repo, this.item.path, () => {
-          this.$emit('delete', this.item.path)
+          this.$bus.emit('file-deleted', this.item)
+          if (this.currentFile.repo === this.item.repo && this.currentFile.path === this.item.path) {
+            this.$store.commit('app/setCurrentFile', null)
+          }
         })
       }
     },
-    storeSelectedFilePath (path) {
-      window.localStorage[`selectedFile_${this.item.repo}`] = path
-    },
-    getSelectedFilePath () {
-      return window.localStorage[`selectedFile_${this.item.repo}`] || ''
+  },
+  computed: {
+    ...mapState('app', ['currentFile', 'currentRepo']),
+    selected () {
+      return this.currentFile && this.currentFile.path === this.item.path && this.currentFile.repo === this.item.repo
     }
   },
   watch: {
-    slectedFile () {
-      this.selected = false
+    currentFile () {
+      this.updateOpenStatus()
     }
   }
 }
