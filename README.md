@@ -18,7 +18,7 @@
 ## Yank-Note 2.0 开发计划
 + [x] 项目更名为 **Yank-Note**
 + [x] 前端界面可以拖动调整尺寸
-+ [ ] 重构前端项目结构，便于拓展：引入 `vuex`，使用 `Promise` 代替可怕的回调，规范文件接口。
++ [x] 重构前端项目结构，便于拓展：引入 `vuex`，使用 `async await` 代替可怕的回调，规范文件接口。
 + [ ] 使用 `Electron` 构建为桌面应用。不追求完全做成客户端，还是可以沿用 CS 架构。同样可以在浏览器中使用。
 + [ ] 支持打开多个文件
 + [ ] 常驻托盘，支持使用快捷键打开常用文档
@@ -133,9 +133,10 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v1.24.0](https://github.com/purocean/yn/releases/tag/v1.24.0) 2019-07-31
+### [v2.0.0-alpha1](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha1) 2019-08-01
 1. 目录树和集成终端增加拖动调整尺寸功能
-1. 调整前端代码架构
+1. 重构前端代码便于拓展
+1. 使用自定义 UI 控件代替浏览器阻塞性弹出框
 1. 增加 2.0 计划
 
 ### [v1.23.0](https://github.com/purocean/yn/releases/tag/v1.23.0) 2019-07-09
