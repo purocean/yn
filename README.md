@@ -16,6 +16,8 @@
 6. 在文档中运行 PHP Python Node.js bash 代码块
 
 ## Yank-Note 2.0 开发计划
+[V2 项目看板](https://github.com/purocean/yn/projects/2)
+
 + [x] 项目更名为 **Yank-Note**
 + [x] 前端界面可以拖动调整尺寸
 + [x] 重构前端项目结构，便于拓展：引入 `vuex`，使用 `async await` 代替可怕的回调，规范文件接口。
