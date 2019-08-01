@@ -1,11 +1,12 @@
-const fs = require('fs')
-const os = require('os');
-const path = require('path')
-const isWsl = require('is-wsl')
-const execFileSync = require("child_process").execFileSync
-const wsl = require('./wsl')
+import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
+import { execFileSync } from 'child_process'
+import * as wsl from './wsl'
 
-const runCode = (language, code) => {
+const isWsl = wsl.isWsl
+
+const runCode = (language: string, code: string) => {
     try {
         switch (language) {
             case 'bat':
@@ -38,4 +39,6 @@ const runCode = (language, code) => {
     }
 }
 
-module.exports = { runCode }
+export default {
+  runCode
+}

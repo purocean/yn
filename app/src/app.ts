@@ -1,4 +1,6 @@
 import { app, BrowserWindow } from 'electron'
+import server from './server/main'
+import { dialog } from 'electron'
 
 let win: BrowserWindow | null = null
 
@@ -13,11 +15,42 @@ const createWindow = () => {
 
   // 加载index.html文件
   // win.loadFile('../../static/index.html')
-  // win.loadURL('http://g.cn')
-  win.loadURL('http://localhost:8066')
+
+  // 打开后端服务器
+  server(3044)
+
+  // 加载页面
+  setTimeout(() => {
+    win.loadURL('http://localhost:8066')
+    win.maximize()
+  }, 1000)
 
   // 打开开发者工具
   win.webContents.openDevTools()
+
+  win.on('close', e => {
+    const contents = win.webContents
+
+    if (contents) {
+      contents.executeJavaScript('window.documentSaved', true).then(val => {
+        if (val) {
+          win.destroy()
+        } else {
+          dialog.showMessageBox(win, {
+            type: 'question',
+            buttons: ['取消', '放弃保存并退出'],
+            title: '提示',
+            message: '有文档未保存，是否要退出？'
+          }).then(choice => {
+            if (choice.response === 1) {
+              win.destroy()
+            }
+          })
+        }
+      })
+      e.preventDefault()
+    }
+  })
 
   // 当 window 被关闭，这个事件会被触发。
   win.on('closed', () => {

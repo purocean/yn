@@ -6,6 +6,8 @@
 import dayjs from 'dayjs'
 import TurndownService from 'turndown'
 
+const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
+
 const keys = {}
 
 export default {
@@ -19,8 +21,8 @@ export default {
     }
   },
   mounted () {
-    if (!(window).require) {
-      let loaderScript = document.createElement('script')
+    if (!(isElectron && window.AMDLoader && window.AMDLoader.global && window.AMDLoader.global.require) || !(window).require) {
+      const loaderScript = document.createElement('script')
       loaderScript.type = 'text/javascript'
       loaderScript.src = 'vs/loader.js'
       loaderScript.addEventListener('load', this.onGotAmdLoader)
@@ -50,7 +52,11 @@ export default {
       }
     },
     onGotAmdLoader () {
-      window.require(['vs/editor/editor.main'], () => {
+      const xrequire = isElectron ? window.AMDLoader.global.require : window.require
+      if (isElectron) {
+        xrequire.config({ paths: { 'vs': 'static/vs' } })
+      }
+      xrequire(['vs/editor/editor.main'], () => {
         this.initMonaco()
       })
     },

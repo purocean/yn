@@ -2,11 +2,14 @@ module.exports = {
   devServer: {
     port: 8066,
     proxy: {
+      '/static': {
+        target: 'http://localhost:3044'
+      },
       '/api': {
-        target: 'http://localhost:3000'
+        target: 'http://localhost:3044'
       },
       '/ws': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3044',
         ws: true
       }
     }
