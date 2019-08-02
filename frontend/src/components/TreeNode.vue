@@ -13,13 +13,12 @@
     </details>
     <div
       v-else
-      class="name"
+      :class="{name: true, 'file-name': true, selected}"
       :title="item.name + '\n\n' + fileTitle"
       @click="select(item)"
       @dblclick.ctrl.exact="revealInExplorer()"
       @contextmenu.ctrl.prevent="renameFile"
-      @contextmenu.shift.prevent="deleteFile"
-      :style="{background: selected ? '#5d5d5d' : 'none'}"> {{ item.name }} </div>
+      @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </div>
   </div>
 </template>
 
@@ -199,7 +198,23 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.file-name {
   padding-left: 0.2em;
+  transition: 50ms ease;
+}
+
+.file-name.selected {
+  background: #5d5d5d;
+}
+
+.file-name:hover {
+  background: #5d5d5d;
+}
+
+.file-name:active {
+  padding-left: 0.3em;
 }
 
 .dir-label .count {
