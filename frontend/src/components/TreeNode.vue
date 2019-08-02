@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" ref="dir" :open="item.path === '/'">
+    <details @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" ref="dir" :open="item.path === '/'">
       <summary
         class="dir-label"
         :style="{background: selected ? '#313131' : 'none'}"
