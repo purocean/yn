@@ -98,7 +98,7 @@ const search = async (repo, text) => {
 }
 
 const upload = async (repo, belongPath, uploadFile, name = null) => {
-  return Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     belongPath = belongPath.replace(/\\/g, '/')
 
     const fr = new FileReader()

@@ -205,12 +205,11 @@ export default {
         canvas.width = ximg.naturalWidth
         canvas.height = ximg.naturalHeight
         canvas.getContext('2d').drawImage(ximg, 0, 0)
-        canvas.toBlob(blob => {
+        canvas.toBlob(async blob => {
           const imgFile = new File([blob], 'file.png')
-          file.upload(this.fileRepo, this.filePath, imgFile, result => {
-            this.$bus.emit('tree-refresh')
-            this.$bus.emit('editor-replace-value', img.src, result.relativePath)
-          })
+          const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
+          this.$bus.emit('tree-refresh')
+          this.$bus.emit('editor-replace-value', img.src, relativePath)
         })
       }
 
@@ -221,12 +220,11 @@ export default {
         img.src.startsWith('https://')
       ) {
         window.fetch(`api/proxy?url=${encodeURI(img.src)}`).then(r => {
-          r.blob().then(blob => {
+          r.blob().then(async blob => {
             const imgFile = new File([blob], 'file.' + mime.extension(r.headers.get('content-type')))
-            file.upload(this.fileRepo, this.filePath, imgFile, result => {
-              this.$bus.emit('tree-refresh')
-              this.$bus.emit('editor-replace-value', img.src, encodeURI(result.relativePath))
-            })
+            const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
+            this.$bus.emit('tree-refresh')
+            this.$bus.emit('editor-replace-value', img.src, encodeURI(relativePath))
           })
         })
       }
