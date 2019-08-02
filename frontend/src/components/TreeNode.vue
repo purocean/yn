@@ -19,7 +19,7 @@
       @dblclick.ctrl.exact="revealInExplorer()"
       @contextmenu.ctrl.prevent="renameFile"
       @contextmenu.shift.prevent="deleteFile"
-      :style="{background: selected ? '#313131' : 'none'}"> {{ item.name }} </div>
+      :style="{background: selected ? '#5d5d5d' : 'none'}"> {{ item.name }} </div>
   </div>
 </template>
 
@@ -154,10 +154,18 @@ export default {
   computed: {
     ...mapState('app', ['currentFile', 'currentRepo']),
     selected () {
-      return this.currentFile && this.currentFile.path === this.item.path && this.currentFile.repo === this.item.repo
+      if (!this.currentFile) {
+        return false
+      }
+
+      if (this.item.type === 'dir') {
+        return this.currentFile.repo === this.item.repo && this.currentFile.path.startsWith(this.item.path + '/')
+      }
+
+      return this.currentFile.repo === this.item.repo && this.currentFile.path === this.item.path
     },
     shouldOpen () {
-      return this.currentFile && this.item.type === 'dir' && this.currentFile.path.startsWith(this.item.path + '/')
+      return this.item.type === 'dir' && this.currentFile && this.currentFile.path.startsWith(this.item.path + '/') && this.currentFile.repo === this.item.repo
     }
   },
   watch: {
@@ -179,7 +187,7 @@ export default {
 .tree-node {
   border-left: 1px rgb(87, 87, 87) solid;
   font-size: 16px;
-  line-height: 1.3em;
+  line-height: 1.4em;
   padding-left: 1em;
 }
 
@@ -191,6 +199,7 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  padding-left: 0.2em;
 }
 
 .dir-label .count {
