@@ -157,17 +157,16 @@ export default {
         console.error(error)
       }
     },
-    pasteImg (file) {
-      File.upload(this.currentFile.repo, this.currentFile.path, file, ({ relativePath }) => {
-        this.$bus.emit('file-uploaded', relativePath)
-        this.$refs.editor.insert(`![图片](${encodeURI(relativePath)})\n`)
-      })
+    async pasteImg (file) {
+      const { relativePath } = await File.upload(this.currentFile.repo, this.currentFile.path, file)
+      this.$bus.emit('file-uploaded', relativePath)
+      this.$refs.editor.insert(`![图片](${encodeURI(relativePath)})\n`)
     },
-    uploadFile (file) {
-      File.upload(this.currentFile.repo, this.currentFile.path, file, ({ relativePath }) => {
-        this.$bus.emit('file-uploaded', relativePath)
-        this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
-      }, `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`)
+    async uploadFile (file) {
+      const filename = `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`
+      const { relativePath } = await File.upload(this.currentFile.repo, this.currentFile.path, file, filename)
+      this.$bus.emit('file-uploaded', relativePath)
+      this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
     },
     async changeFile (current, previous) {
       this.clearTimer()

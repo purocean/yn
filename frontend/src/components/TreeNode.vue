@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" ref="dir" :open="item.path === '/'">
+    <details @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" ref="dir" :open="item.path === '/'">
       <summary
         class="dir-label"
         :style="{background: selected ? '#313131' : 'none'}"
@@ -13,13 +13,12 @@
     </details>
     <div
       v-else
-      class="name"
+      :class="{name: true, 'file-name': true, selected}"
       :title="item.name + '\n\n' + fileTitle"
       @click="select(item)"
       @dblclick.ctrl.exact="revealInExplorer()"
       @contextmenu.ctrl.prevent="renameFile"
-      @contextmenu.shift.prevent="deleteFile"
-      :style="{background: selected ? '#313131' : 'none'}"> {{ item.name }} </div>
+      @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </div>
   </div>
 </template>
 
@@ -99,7 +98,8 @@ export default {
         title: '移动文件',
         hint: '新的路径',
         content: '当前路径：' + this.item.path,
-        value: this.item.path
+        value: this.item.path,
+        select: [this.item.path.lastIndexOf('/') + 1, this.item.path.length, 'forward']
       })
 
       if (!newPath) {
@@ -153,10 +153,18 @@ export default {
   computed: {
     ...mapState('app', ['currentFile', 'currentRepo']),
     selected () {
-      return this.currentFile && this.currentFile.path === this.item.path && this.currentFile.repo === this.item.repo
+      if (!this.currentFile) {
+        return false
+      }
+
+      if (this.item.type === 'dir') {
+        return this.currentFile.repo === this.item.repo && this.currentFile.path.startsWith(this.item.path + '/')
+      }
+
+      return this.currentFile.repo === this.item.repo && this.currentFile.path === this.item.path
     },
     shouldOpen () {
-      return this.currentFile && this.item.type === 'dir' && this.currentFile.path.startsWith(this.item.path + '/')
+      return this.item.type === 'dir' && this.currentFile && this.currentFile.path.startsWith(this.item.path + '/') && this.currentFile.repo === this.item.repo
     }
   },
   watch: {
@@ -178,7 +186,7 @@ export default {
 .tree-node {
   border-left: 1px rgb(87, 87, 87) solid;
   font-size: 16px;
-  line-height: 1.3em;
+  line-height: 1.4em;
   padding-left: 1em;
 }
 
@@ -190,6 +198,23 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.file-name {
+  padding-left: 0.2em;
+  transition: 50ms ease;
+}
+
+.file-name.selected {
+  background: #5d5d5d;
+}
+
+.file-name:hover {
+  background: #5d5d5d;
+}
+
+.file-name:active {
+  padding-left: 0.3em;
 }
 
 .dir-label .count {

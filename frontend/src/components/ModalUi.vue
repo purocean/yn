@@ -3,7 +3,7 @@
     <div class="wrapper" @click.stop>
       <h4>{{title}}</h4>
       <p v-if="content">{{content}}</p>
-      <input v-if="type === 'input'" ref="input" @keydown.enter.stop="ok" :type="type" :placeholder="inputHint" v-model="inputValue">
+      <input v-if="type === 'input'" ref="input" :type="inputType" :placeholder="inputHint" v-model="inputValue">
       <div class="action">
         <button @click="cancel">取消</button>
         <button class="primary" @click="ok">确定</button>
@@ -30,38 +30,51 @@ export default {
     }
   },
   methods: {
-    cancel () {
-      this.resolve && this.resolve(this.type === 'input' ? null : false)
+    handle (val) {
       this.show = false
       this.inputValue = ''
+      try {
+        this.resolve && this.resolve(val)
+      } catch (error) {
+        throw error
+      } finally {
+        this.resolve = null
+      }
+    },
+    cancel () {
+      this.handle(this.type === 'input' ? null : false)
     },
     ok () {
-      this.resolve && this.resolve(this.type === 'input' ? this.inputValue : true)
-      this.show = false
-      this.inputValue = ''
+      this.handle(this.type === 'input' ? this.inputValue : true)
     },
     confirm ({ title, content }) {
       this.type = 'confirm'
-      this.show = true
       this.title = title || '提示'
       this.content = content || ''
+      this.show = true
 
       return new Promise(resolve => {
         this.resolve = resolve
       })
     },
-    input ({ type, title, hint, value, content }) {
+    input ({ type, title, hint, value, content, select = true }) {
       this.type = 'input'
-      this.show = true
       this.title = title || '请输入'
       this.content = content || ''
       this.inputType = type || 'text'
       this.inputValue = value || ''
       this.inputHint = hint || ''
 
+      this.show = true
       this.$nextTick(() => {
         this.$refs.input.focus()
-        this.$refs.input.select()
+
+        if (select) {
+          this.$refs.input.select()
+          if (Array.isArray(select)) {
+            this.$refs.input.setSelectionRange(...select)
+          }
+        }
       })
 
       return new Promise(resolve => {

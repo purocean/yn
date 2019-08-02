@@ -136,13 +136,17 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-alpha3](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha3) 2019-08-02
+1. 优化界面样式，提升交互体验
+1. 修复若干 v2.0.0-alpha2 的问题
+
 ### [v2.0.0-alpha2](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha2) 2019-08-02
 1. 默认仓库数据和配置改为在 `<home>/yank-note` 下保存
-2. 调整在 Windows 端的仓库配置，不论是否在 WSL 环境下都使用 windows 风格的路径
+1. 调整在 Windows 端的仓库配置，不论是否在 WSL 环境下都使用 windows 风格的路径
 1. 前端重构文件接口
-2. 尝试引入 Electron
-3. 后端重构改用 TypeScript
-4. 修复若干 v2.0.0-alpha1 的问题
+1. 尝试引入 Electron
+1. 后端重构改用 TypeScript
+1. 修复若干 v2.0.0-alpha1 的问题
 
 ### [v2.0.0-alpha1](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha1) 2019-08-01
 1. 目录树和集成终端增加拖动调整尺寸功能
