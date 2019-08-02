@@ -1,6 +1,34 @@
 import Storage from '@/lib/Storage'
 import file from '@/lib/file'
 
+const getLastOpenFile = repo => {
+  const currentFile = Storage.get('currentFile')
+  const recentOpenTime = Storage.get('recentOpenTime', {})
+
+  if (!repo) {
+    return null
+  }
+
+  if (currentFile && currentFile.repo === repo.name) {
+    return currentFile
+  }
+
+  const item = Object.entries(recentOpenTime)
+    .filter(x => x[0].startsWith(repo.name + '|'))
+    .sort((a, b) => b[1] - a[1])[0]
+
+  if (!item) {
+    return null
+  }
+
+  const path = item[0].split('|', 2)[1]
+  if (!path) {
+    return null
+  }
+
+  return { repo: repo.name, name: file.basename(path), path }
+}
+
 export default {
   namespaced: true,
   state: {
@@ -13,7 +41,7 @@ export default {
     previousContent: '',
     previousHash: '',
     currentRepo: Storage.get('currentRepo'),
-    currentFile: Storage.get('currentFile'),
+    currentFile: getLastOpenFile(Storage.get('currentRepo')),
     recentOpenTime: Storage.get('recentOpenTime', {}),
     passwordHash: {},
     documentInfo: {
@@ -59,7 +87,7 @@ export default {
     },
     setCurrentRepo (state, data) {
       state.currentRepo = data
-      state.currentFile = null
+      state.currentFile = getLastOpenFile(data)
       state.tree = null
       Storage.set('currentRepo', data)
     },
