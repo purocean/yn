@@ -57,7 +57,7 @@ export default {
         this.resolve = resolve
       })
     },
-    input ({ type, title, hint, value, content }) {
+    input ({ type, title, hint, value, content, select = true }) {
       this.type = 'input'
       this.title = title || '请输入'
       this.content = content || ''
@@ -68,7 +68,13 @@ export default {
       this.show = true
       this.$nextTick(() => {
         this.$refs.input.focus()
-        this.$refs.input.select()
+
+        if (select) {
+          this.$refs.input.select()
+          if (Array.isArray(select)) {
+            this.$refs.input.setSelectionRange(...select)
+          }
+        }
       })
 
       return new Promise(resolve => {

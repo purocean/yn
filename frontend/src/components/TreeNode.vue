@@ -99,7 +99,8 @@ export default {
         title: '移动文件',
         hint: '新的路径',
         content: '当前路径：' + this.item.path,
-        value: this.item.path
+        value: this.item.path,
+        select: [this.item.path.lastIndexOf('/') + 1, this.item.path.length, 'forward']
       })
 
       if (!newPath) {
