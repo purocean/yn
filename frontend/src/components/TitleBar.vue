@@ -7,15 +7,21 @@
 <script>
 import { mapState } from 'vuex'
 
+const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
+
 export default {
   name: 'title-bar',
   mounted () {
-    window.onbeforeunload = () => {
-      return !this.saved || null
+    if (!isElectron) {
+      window.onbeforeunload = () => {
+        return !this.saved || null
+      }
     }
   },
   beforeDestroy () {
-    window.onbeforeunload = null
+    if (!isElectron) {
+      window.onbeforeunload = null
+    }
   },
   computed: {
     ...mapState('app', ['currentFile', 'savedAt', 'previousContent', 'currentContent']),
@@ -53,6 +59,12 @@ export default {
       immediate: true,
       handler (val) {
         document.title = val
+      },
+    },
+    saved: {
+      immediate: true,
+      handler (val) {
+        window.documentSaved = val
       },
     },
   }

@@ -62,7 +62,7 @@ const write = async ({ repo, path }, content, oldHash) => {
     body: JSON.stringify({ repo, path, content, old_hash: oldHash })
   })
 
-  return { hash: result.data.hash }
+  return { hash: result.data }
 }
 
 const move = async ({ repo, path }, newPath) => {

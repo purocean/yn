@@ -16,6 +16,8 @@
 6. 在文档中运行 PHP Python Node.js bash 代码块
 
 ## Yank-Note 2.0 开发计划
+[V2 项目看板](https://github.com/purocean/yn/projects/2)
+
 + [x] 项目更名为 **Yank-Note**
 + [x] 前端界面可以拖动调整尺寸
 + [x] 重构前端项目结构，便于拓展：引入 `vuex`，使用 `async await` 代替可怕的回调，规范文件接口。
@@ -37,9 +39,14 @@
     # yarn run dist-win # or npm run dist-win # Windows 用户
 
     # 安装后端
-    cd ../background
+    cd app
     yarn # or npm i
-    node main.js # 运行
+    yarn run serve # 运行后端
+
+    # 运行 electron
+    cd app
+    yarn # Windows 上安装 node-pty 需要费一番功夫，参考 https://github.com/microsoft/node-pty#windows
+    yarn run start
     ```
 + 访问 `http://localhost:3000`
 + 新增文件：`双击目录`
@@ -112,10 +119,6 @@
 + 表格解析增强，支持表格标题多行文本，列表等特性 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table)
 + 内置终端 [XTERM.JS](https://xtermjs.org/) [node-pty](https://github.com/Microsoft/node-pty)
 
-## 开发贡献
-+ 前端: `cd backend; node main.js`
-+ 后端: `cd frontend; yarn run serve`
-
 ## 捐赠
 如果我的工作对您有帮助，请我喝杯咖啡吧 ^_^。**附言可以留下您的 github 用户名或网站连接**。
 
@@ -132,6 +135,14 @@
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v2.0.0-alpha2](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha2) 2019-08-02
+1. 默认仓库数据和配置改为在 `<home>/yank-note` 下保存
+2. 调整在 Windows 端的仓库配置，不论是否在 WSL 环境下都使用 windows 风格的路径
+1. 前端重构文件接口
+2. 尝试引入 Electron
+3. 后端重构改用 TypeScript
+4. 修复若干 v2.0.0-alpha1 的问题
 
 ### [v2.0.0-alpha1](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha1) 2019-08-01
 1. 目录树和集成终端增加拖动调整尺寸功能
