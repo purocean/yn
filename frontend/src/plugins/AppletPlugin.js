@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import CryptoJS from 'crypto-js'
+import dayjs from 'dayjs'
 
 const RunPlugin = (md) => {
   const temp = md.renderer.rules.fence.bind(md.renderer.rules)
@@ -128,6 +129,7 @@ RunPlugin.runScript = (el) => {
     this.contentWindow.appletId = appletId
     this.contentWindow.Vue = Vue
     this.contentWindow.CryptoJS = CryptoJS
+    this.contentWindow.dayjs = dayjs
 
     // 调用初始化方法
     this.contentWindow.init && this.contentWindow.init()
