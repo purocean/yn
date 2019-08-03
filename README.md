@@ -137,6 +137,11 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-alpha4](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha4) 2019-08-03
+1. 增加特色功能说明和示例
+1. 增加 HTML 小工具渲染
+1. 目录树自动定位文件
+
 ### [v2.0.0-alpha3](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha3) 2019-08-02
 1. 优化界面样式，提升交互体验
 1. 修复若干 v2.0.0-alpha2 的问题
