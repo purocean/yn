@@ -49,6 +49,7 @@ import HighlightLineNumber from '../plugins/HightLightNumberPlugin'
 import MarkdownItToc from '../plugins/TocPlugin'
 import MarkdownItECharts from '../plugins/EChartsPlugin'
 import RunPlugin from '../plugins/RunPlugin'
+import AppletPlugin from '../plugins/AppletPlugin'
 import SourceLinePlugin from '../plugins/SourceLinePlugin'
 import LinkTargetPlugin from '../plugins/LinkTargetPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
@@ -76,6 +77,7 @@ const markdown = Markdown({
   .use(TaskLists, { enabled: true })
   .use(PlantumlPlugin)
   .use(RunPlugin)
+  .use(AppletPlugin)
   .use(katex)
   .use(SourceLinePlugin)
   .use(MarkdownItAttrs)
@@ -102,9 +104,14 @@ export default {
       this.updatePlantuml()
     }, 3000)
 
+    this.runAppletScriptDebounce = _.debounce(() => {
+      this.runAppletScript()
+    }, 1000)
+
     this.render = _.debounce(() => {
       this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(this.currentContent))
       MarkdownItECharts.update()
+      this.runAppletScriptDebounce()
       this.updateOutline()
       this.updateTodoCount()
       this.updatePlantumlDebounce()
@@ -181,6 +188,12 @@ export default {
       const nodes = this.$refs.view.querySelectorAll('img[data-plantuml-src]')
       for (let ele of nodes) {
         ele.src = ele.dataset['plantumlSrc']
+      }
+    },
+    runAppletScript () {
+      const nodes = this.$refs.view.querySelectorAll('.applet[data-code]')
+      for (const el of nodes) {
+        AppletPlugin.runScript(el)
       }
     },
     updateOutline () {
@@ -501,6 +514,15 @@ button:hover {
 .markdown-body /deep/ table.hljs-ln tbody {
   display: table;
   min-width: 100%;
+}
+
+.markdown-body /deep/ fieldset {
+  border-style: solid;
+  margin: 20px 0;
+}
+
+.markdown-body /deep/ legend {
+  padding: 0 .2em;
 }
 
 @media print {

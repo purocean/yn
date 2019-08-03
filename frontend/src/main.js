@@ -8,8 +8,10 @@ Vue.config.productionTip = false
 
 Vue.use(modal)
 
-new Vue({
+const appVm = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
+
+window.appVm = appVm
