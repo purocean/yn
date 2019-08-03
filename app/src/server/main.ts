@@ -148,10 +148,10 @@ const readme = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/help')) {
     if (ctx.query.path) {
       ctx.type = mime.getType(ctx.query.path)
-      ctx.body = fs.readFileSync(path.join(STATIC_DIR, 'help', ctx.query.path.replace('/', '')))
+      ctx.body = fs.readFileSync(path.join(STATIC_DIR, 'help', ctx.query.path.replace('../', '')))
     } else {
       ctx.body = result('ok', '获取成功', {
-        content: fs.readFileSync(path.join(STATIC_DIR, 'help', ctx.query.doc.replace('/', ''))).toString()
+        content: fs.readFileSync(path.join(STATIC_DIR, 'help', ctx.query.doc.replace('../', ''))).toString()
       })
     }
   } else {
