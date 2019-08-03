@@ -4,8 +4,8 @@
       <summary
         class="dir-label"
         :style="{background: selected ? '#313131' : 'none'}"
-        @dblclick.exact="createFile()"
-        @dblclick.ctrl.exact="revealInExplorer()"
+        @dblclick.exact.prevent="createFile()"
+        @click.ctrl.exact.prevent="revealInExplorer()"
         @click.ctrl.alt.exact.prevent="revealInXterminal(item)"
         @contextmenu.ctrl.prevent="renameFile"
         @contextmenu.shift.prevent="deleteFile"> {{ item.name }} <span class="count">({{item.children.length}})</span> </summary>
@@ -16,8 +16,8 @@
       v-else
       :class="{name: true, 'file-name': true, selected}"
       :title="item.name + '\n\n' + fileTitle"
-      @click="select(item)"
-      @dblclick.ctrl.exact="revealInExplorer()"
+      @click.exact.prevent="select(item)"
+      @click.ctrl.exact.prevent="revealInExplorer()"
       @contextmenu.ctrl.prevent="renameFile"
       @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </div>
   </div>
