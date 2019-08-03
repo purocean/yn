@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" ref="dir" :open="item.path === '/'">
+    <details ref="dir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" :open="item.path === '/'">
       <summary
         class="dir-label"
         :style="{background: selected ? '#313131' : 'none'}"
@@ -12,6 +12,7 @@
       <tree-node v-for="x in item.children" :key="x.path" :item="x"></tree-node>
     </details>
     <div
+      ref="file"
       v-else
       :class="{name: true, 'file-name': true, selected}"
       :title="item.name + '\n\n' + fileTitle"
@@ -168,6 +169,16 @@ export default {
     }
   },
   watch: {
+    selected: {
+      immediate: true,
+      handler (val) {
+        if (val && this.item.type === 'file') {
+          this.$nextTick(() => {
+            this.$refs.file.scrollIntoViewIfNeeded()
+          })
+        }
+      }
+    },
     shouldOpen: {
       immediate: true,
       handler (val) {

@@ -40,7 +40,7 @@ export default {
     statusText () {
       const file = this.currentFile
       if (file) {
-        if (file.repo === '__readme__') {
+        if (file.repo === '__help__') {
           return file.title
         }
 

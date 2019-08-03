@@ -82,8 +82,8 @@ const fetchTree = async repo => {
   return result.data
 }
 
-const fetchReadmeContent = async () => {
-  const result = await fetchHttp('/api/readme')
+const fetchHelpContent = async (doc) => {
+  const result = await fetchHttp('/api/help?doc=' + doc)
   return result.data.content
 }
 
@@ -143,7 +143,7 @@ export default {
   delete: deleteFile,
   fetchTree,
   fetchRepositories,
-  fetchReadmeContent,
+  fetchHelpContent,
   openInOS,
   search,
   upload,

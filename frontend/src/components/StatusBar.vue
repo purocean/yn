@@ -2,6 +2,7 @@
   <div class="status-bar">
     <RepositorySwitch class="left"></RepositorySwitch>
 
+    <div class="view-control right" @click="toggleFeature">特色功能说明</div>
     <div class="view-control right" @click="toggleReadme" title="Alt + h">README</div>
     <div class="view-control right" @click="toggleView" title="Alt + v">切换预览</div>
     <div class="wrap-control right" @click="toggleWrap" title="Alt + w">切换换行</div>
@@ -36,8 +37,11 @@ export default {
     toggleXterm () {
       this.$bus.emit('toggle-xterm')
     },
+    toggleFeature () {
+      this.$store.dispatch('app/showHelp', 'FEATURES.md')
+    },
     toggleReadme () {
-      this.$store.dispatch('app/showReadme')
+      this.$store.dispatch('app/showHelp', 'README.md')
     },
     toggleWrap () {
       this.$bus.emit('editor-toggle-wrap')
