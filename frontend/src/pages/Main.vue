@@ -44,7 +44,7 @@ export default {
   methods: {
     init () {
       if (!this.currentFile) {
-        this.$store.dispatch('app/showReadme')
+        this.$store.dispatch('app/showHelp', 'README.md')
       }
     }
   },

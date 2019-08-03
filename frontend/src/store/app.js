@@ -117,15 +117,15 @@ export default {
       const tree = await file.fetchTree(repo.name)
       commit('setTree', tree)
     },
-    async showReadme ({ commit }) {
-      const content = await file.fetchReadmeContent()
+    async showHelp ({ commit }, doc) {
+      const content = await file.fetchHelpContent(doc)
       commit('setCurrentFile', {
-        repo: '__readme__',
-        title: 'README.md',
-        name: 'README.md',
-        path: '/README.md',
+        repo: '__help__',
+        title: doc,
+        name: doc,
+        path: '/' + doc,
         content
       })
-    }
+    },
   }
 }

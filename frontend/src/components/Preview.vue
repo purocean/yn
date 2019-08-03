@@ -171,9 +171,9 @@ export default {
         return md
       }
 
-      if (this.fileRepo === '__readme__') {
-        return md.replace(/\[([^\]]*)\]\((\.\/[^)]*)\)/g, `[$1](api/readme/file?path=$2)`)
-          .replace(/<img([^>]*)src=["']?([^\s'"]*)["']?/ig, `<img$1src="api/readme/file?path=$2"`)
+      if (this.fileRepo === '__help__') {
+        return md.replace(/\[([^\]]*)\]\((\.\/[^)]*)\)/g, `[$1](api/help/file?path=$2)`)
+          .replace(/<img([^>]*)src=["']?([^\s'"]*)["']?/ig, `<img$1src="api/help/file?path=$2"`)
       }
 
       if (!this.filePath) {

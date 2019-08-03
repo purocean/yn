@@ -6,8 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dist": "npm run build && cp -r ../*.* ../app/static/readme/ && cp -r dist/* ../app/static/",
-    "dist-win": "npm run build && xcopy ..\\*.* ..\\app\\static\\readme\\ /s /e /y && xcopy dist\\* ..\\app\\static\\ /s /e /y"
+    "dist": "npm run build && cp -r ../*.* ../app/static/help/ && cp -r dist/* ../app/static/",
+    "dist-win": "npm run build && xcopy ..\\*.* ..\\app\\static\\help\\ /s /e /y && xcopy dist\\* ..\\app\\static\\ /s /e /y"
   },
   "dependencies": {
     "core-js": "^2.6.5",
