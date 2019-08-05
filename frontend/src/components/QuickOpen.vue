@@ -46,16 +46,15 @@ export default {
     }
   },
   created () {
-    this.searchWithDebounce = _.debounce((text, call) => {
+    this.searchWithDebounce = _.debounce(async (text, call) => {
       if (this.repo && text.trim()) {
         const fetchTime = new Date().getTime()
         this.lastFetchTime = fetchTime
-        file.search(this.repo, text.trim(), data => {
-          // 总是保证最后的搜索结果出现在列表
-          if (fetchTime >= this.lastFetchTime) {
-            call(data)
-          }
-        })
+        const data = await file.search(this.repo, text.trim())
+        // 总是保证最后的搜索结果出现在列表
+        if (fetchTime >= this.lastFetchTime) {
+          call(data)
+        }
       } else {
         this.list = []
       }
