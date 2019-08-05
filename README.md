@@ -137,6 +137,13 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-alpha5](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha5) 2019-08-05
+1. 小工具全局注入 dayjs
+1. 在系统中打开快捷键改用 `Ctrl + 单击`
+1. 修复帮助接口图片加载
+1. 增加 HTML 小工具渲染
+1. 修复快速打开文件不能搜索内容
+
 ### [v2.0.0-alpha4](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha4) 2019-08-03
 1. 增加特色功能说明和示例
 1. 增加 HTML 小工具渲染
