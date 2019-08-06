@@ -39,17 +39,12 @@
     yarn run dist # or npm run dist
     # yarn run dist-win # or npm run dist-win # Windows 用户
 
-    # 安装后端
+    # 运行
     cd app
-    yarn # or npm i
-    yarn run serve # 运行后端
-
-    # 运行 electron
-    cd app
-    yarn # Windows 上安装 node-pty 需要费一番功夫，参考 https://github.com/microsoft/node-pty#windows
+    yarn_install.sh # Windows 上安装 运行 yarn_install.bat node-pty 需要费一番功夫，参考 https://github.com/microsoft/node-pty#windows
     yarn run start
     ```
-+ 访问 `http://localhost:3000`
++ 可以在浏览器中访问 `http://localhost:3044`
 + 新增文件：`双击目录`
 + 在系统中打开文件/目录：`Ctrl ＋ 单击文件/目录`
 + 删除文件/目录：`Shift + 右键文件/目录`

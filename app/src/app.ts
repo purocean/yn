@@ -21,7 +21,7 @@ const createWindow = () => {
 
   // 加载页面
   setTimeout(() => {
-    win.loadURL('http://localhost:8066')
+    win.loadURL('http://localhost:3044')
     win.maximize()
   }, 1000)
 
