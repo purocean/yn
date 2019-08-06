@@ -21,15 +21,24 @@ export default {
     }
   },
   mounted () {
-    if (!(isElectron && window.AMDLoader && window.AMDLoader.global && window.AMDLoader.global.require) || !(window).require) {
-      const loaderScript = document.createElement('script')
-      loaderScript.type = 'text/javascript'
-      loaderScript.src = 'vs/loader.js'
-      loaderScript.addEventListener('load', this.onGotAmdLoader)
-      document.body.appendChild(loaderScript)
-    } else {
+    if (isElectron && !window.amdRequire) {
+      const path = window.require('path')
+      const appPath = window.require('electron').remote.app.getAppPath()
+      const amdLoader = window.require(path.resolve(appPath, './static/vs/loader.js'))
+      window.amdRequire = amdLoader.require
       this.onGotAmdLoader()
+    } else {
+      if (!window.require) {
+        const loaderScript = document.createElement('script')
+        loaderScript.type = 'text/javascript'
+        loaderScript.src = 'vs/loader.js'
+        loaderScript.addEventListener('load', this.onGotAmdLoader)
+        document.body.appendChild(loaderScript)
+      } else {
+        this.onGotAmdLoader()
+      }
     }
+
     window.addEventListener('keydown', this.recordKeys, true)
     window.addEventListener('keyup', this.recordKeys, true)
   },
@@ -52,7 +61,7 @@ export default {
       }
     },
     onGotAmdLoader () {
-      const xrequire = isElectron ? window.AMDLoader.global.require : window.require
+      const xrequire = isElectron ? window.amdRequire : window.require
       if (isElectron) {
         xrequire.config({ paths: { 'vs': 'static/vs' } })
       }
@@ -179,7 +188,6 @@ export default {
       //     text: '\nresult',
       //     forceMoveMarkers: true
       //   }])
-      //   console.log(this.editor.getModel().getLineContent(this.editor.getPosition().lineNumber))
       // })
     },
     paste (e) {

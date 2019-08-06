@@ -5,7 +5,6 @@
   "asar": false,
   "files": [
     "./dist/**",
-    "./static/**",
     "./node_modules/**"
   ],
   "artifactName": "${productName}-${arch}-${version}.${ext}",

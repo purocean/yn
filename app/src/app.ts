@@ -11,22 +11,24 @@ let win: BrowserWindow | null = null
 
 const createWindow = () => {
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    maximizable: true,
     webPreferences: {
       nodeIntegration: true
     }
   })
 
+  win.maximize()
+
   // 加载index.html文件
   // win.loadFile('../../static/index.html')
 
-  // 加载页面
-  win.loadURL(url)
-  // win.maximize()
-
   // 打开开发者工具
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
+
+  // 不明原因，第一次启动窗口不能正确加载js
+  setTimeout(() => {
+    win.loadURL(url)
+  }, 0)
 
   win.on('close', e => {
     const contents = win.webContents
@@ -86,7 +88,12 @@ const showWindow = () => {
 let tray = null
 app.on('ready', () => {
   // 打开后端服务器
-  server(port)
+
+  try {
+    server(port)
+  } catch (error) {
+    app.exit(-1)
+  }
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -105,7 +112,7 @@ app.on('ready', () => {
     },
     {
       type: 'normal',
-      label: '重新启动',
+      label: '强制重新启动',
       click: () => {
         app.relaunch()
         app.exit()
@@ -115,7 +122,7 @@ app.on('ready', () => {
       type: 'normal',
       label: '退出',
       click: () => {
-        app.exit()
+        app.quit()
       }
     },
   ])
