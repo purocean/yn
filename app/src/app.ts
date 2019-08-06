@@ -195,7 +195,7 @@ app.on('ready', () => {
   ])
 
   tray = new Tray(path.join(__dirname, './assets/icon.png'))
-  tray.setToolTip('Yank-Note')
+  tray.setToolTip('Yank Note')
   tray.on('click', showWindow)
   tray.setContextMenu(contextMenu)
 })

@@ -58,7 +58,7 @@ export default {
     statusText: {
       immediate: true,
       handler (val) {
-        document.title = val
+        document.title = val + ' - Yank Note'
       },
     },
     saved: {
