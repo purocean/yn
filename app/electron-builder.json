@@ -1,0 +1,27 @@
+{
+  "appId": "yank.note.yang",
+  "productName": "Yank-Note",
+  "copyright": "Copyright 2019 Y",
+  "asar": false,
+  "files": [
+    "./dist/**",
+    "./static/**",
+    "./node_modules/**"
+  ],
+  "artifactName": "${productName}-${arch}-${version}.${ext}",
+  "directories": {
+    "app": "./",
+    "output": "./out/"
+  },
+  "npmRebuild": false,
+  "win": {
+    "target": [
+    ]
+  },
+  "nsis": {
+    "perMachine": true
+  },
+  "portable": {
+    "artifactName": "${productName}-${version}-portable.${ext}"
+  }
+}

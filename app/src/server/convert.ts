@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { spawn } from 'child_process'
 
-const binPath = path.join(__dirname, '../bin/pandoc/2.7.3/', os.platform(), 'pandoc' + (os.platform() === 'win32' ? '.exe' : ''))
+const binPath = path.join(__dirname, '../', 'pandoc' + (os.platform() === 'win32' ? '.exe' : ''))
 
 const convert = async (html: string, type: string) => {
   try {

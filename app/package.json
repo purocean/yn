@@ -1,6 +1,10 @@
 {
+  "name": "yank.note.yang",
+  "version": "0.0.1",
+  "description": "Yank-Note",
+  "main": "dist/app.js",
   "scripts": {
-    "copy-assets": "cp ./src/assets ./dist/ -r && cp ./src/bin ./dist/ -r",
+    "copy-assets": "node copy_assets.js",
     "build": "tsc && npm run copy-assets",
     "serve": "ts-node src/server/main.ts",
     "start": "npm run build && electron ./dist/app.js"
@@ -27,6 +31,7 @@
     "@types/node": "^12.6.1",
     "@types/request": "^2.48.2",
     "electron": "^6.0.0",
+    "electron-builder": "^21.2.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }
