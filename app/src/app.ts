@@ -1,6 +1,11 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu, Tray } from 'electron'
+import * as path from 'path'
 import server from './server/main'
 import { dialog } from 'electron'
+const opn = require('opn')
+
+const port = 3044
+const url = `http://localhost:${port}`
 
 let win: BrowserWindow | null = null
 
@@ -16,14 +21,9 @@ const createWindow = () => {
   // 加载index.html文件
   // win.loadFile('../../static/index.html')
 
-  // 打开后端服务器
-  server(3044)
-
   // 加载页面
-  setTimeout(() => {
-    win.loadURL('http://localhost:3044')
-    win.maximize()
-  }, 1000)
+  win.loadURL(url)
+  // win.maximize()
 
   // 打开开发者工具
   win.webContents.openDevTools()
@@ -61,18 +61,9 @@ const createWindow = () => {
   })
 }
 
-// Electron 会在初始化后并准备
-// 创建浏览器窗口时，调用这个函数。
-// 部分 API 在 ready 事件触发后才能使用。
-app.on('ready', createWindow)
-
 // 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {
-  // 在 macOS 上，除非用户用 Cmd + Q 确定地退出，
-  // 否则绝大部分应用及其菜单栏会保持激活。
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  // 不处理，点击托盘退出
 })
 
 app.on('activate', () => {
@@ -81,4 +72,48 @@ app.on('activate', () => {
   if (win === null) {
     createWindow()
   }
+})
+
+const showWindow = () => {
+  if (win) {
+    win.show()
+  } else {
+    createWindow()
+  }
+}
+
+// 系统托盘
+let tray = null
+app.on('ready', () => {
+  // 打开后端服务器
+  server(port)
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      type: 'normal',
+      label: '打开主界面',
+      click: () => {
+        showWindow()
+      }
+    },
+    {
+      type: 'normal',
+      label: '浏览器中打开',
+      click: () => {
+        opn(url)
+      }
+    },
+    {
+      type: 'normal',
+      label: '退出',
+      click: () => {
+        app.exit()
+      }
+    },
+  ])
+
+  tray = new Tray(path.join(__dirname, './assets/icon.png'))
+  tray.setToolTip('Yank-Note')
+  tray.on('click', showWindow)
+  tray.setContextMenu(contextMenu)
 })
