@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "copy-assets": "cp ./src/assets ./dist/ -r",
+    "copy-assets": "cp ./src/assets ./dist/ -r && cp ./src/bin ./dist/ -r",
     "build": "tsc && npm run copy-assets",
     "serve": "ts-node src/server/main.ts",
     "start": "npm run build && electron ./dist/app.js"
