@@ -4,30 +4,31 @@ import server from './server/main'
 import { dialog } from 'electron'
 const opn = require('opn')
 
-const port = 3044
-const url = `http://localhost:${port}`
+let isDev = false
+
+const backendPort = 3044
+const devFrontendPort = 8066
+const getFrontendProt = () => isDev ? devFrontendPort : backendPort
+const getUrl = () => `http://localhost:${isDev ? devFrontendPort : backendPort}`
 
 let win: BrowserWindow | null = null
 
 const createWindow = () => {
   win = new BrowserWindow({
     maximizable: true,
+    show: false,
     webPreferences: {
       nodeIntegration: true
     }
   })
 
   win.maximize()
-
-  // 加载index.html文件
-  // win.loadFile('../../static/index.html')
-
-  // 打开开发者工具
-  // win.webContents.openDevTools()
+  win.show()
+  win.setMenu(null)
 
   // 不明原因，第一次启动窗口不能正确加载js
   setTimeout(() => {
-    win.loadURL(url)
+    win.loadURL(getUrl())
   }, 0)
 
   win.on('close', e => {
@@ -35,9 +36,7 @@ const createWindow = () => {
 
     if (contents) {
       contents.executeJavaScript('window.documentSaved', true).then(val => {
-        if (val) {
-          win.destroy()
-        } else {
+        if (val === false) {
           dialog.showMessageBox(win, {
             type: 'question',
             buttons: ['取消', '放弃保存并退出'],
@@ -48,6 +47,8 @@ const createWindow = () => {
               win.destroy()
             }
           })
+        } else {
+          win.destroy()
         }
       })
       e.preventDefault()
@@ -84,16 +85,22 @@ const showWindow = () => {
   }
 }
 
+const reload = () => {
+  win && win.loadURL(getUrl())
+}
+
 // 系统托盘
 let tray = null
 app.on('ready', () => {
   // 打开后端服务器
 
   try {
-    server(port)
+    server(backendPort)
   } catch (error) {
     app.exit(-1)
   }
+
+  showWindow()
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -107,17 +114,65 @@ app.on('ready', () => {
       type: 'normal',
       label: '浏览器中打开',
       click: () => {
-        opn(url)
+        opn(getUrl())
+      }
+    },
+    { type: 'separator' },
+    {
+      type: 'normal',
+      label: 'GitHub 地址',
+      click: () => {
+        opn('https://github.com/purocean/yn')
       }
     },
     {
-      type: 'normal',
-      label: '强制重新启动',
-      click: () => {
-        app.relaunch()
-        app.exit()
-      }
+      type: 'submenu',
+      label: '开发',
+      submenu: [
+        {
+          type: 'radio',
+          checked: !isDev,
+          label: `正式端口（${backendPort}）`,
+          click: () => {
+            isDev = false
+            reload()
+          }
+        },
+        {
+          type: 'radio',
+          checked: isDev,
+          label: `开发端口（${devFrontendPort}）`,
+          click: () => {
+            isDev = true
+            reload()
+          }
+        },
+        { type: 'separator' },
+        {
+          type: 'normal',
+          label: '重载页面',
+          click: () => {
+            reload()
+          }
+        },
+        {
+          type: 'normal',
+          label: '强制重新启动',
+          click: () => {
+            app.relaunch()
+            app.exit()
+          }
+        },
+        {
+          type: 'normal',
+          label: '主窗口开发工具',
+          click: () => {
+            win && win.webContents.openDevTools()
+          }
+        }
+      ]
     },
+    { type: 'separator' },
     {
       type: 'normal',
       label: '退出',
