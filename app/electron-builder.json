@@ -15,7 +15,9 @@
   "npmRebuild": false,
   "win": {
     "target": [
-    ]
+      "zip"
+    ],
+    "icon": "./src/assets/icon.ico"
   },
   "nsis": {
     "perMachine": true

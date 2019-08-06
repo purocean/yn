@@ -18,6 +18,7 @@ const createWindow = () => {
     maximizable: true,
     show: false,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: true
     }
   })
@@ -157,19 +158,27 @@ app.on('ready', () => {
         },
         {
           type: 'normal',
-          label: '强制重新启动',
-          click: () => {
-            app.relaunch()
-            app.exit()
-          }
-        },
-        {
-          type: 'normal',
           label: '主窗口开发工具',
           click: () => {
             win && win.webContents.openDevTools()
           }
-        }
+        },
+        { type: 'separator' },
+        {
+          type: 'normal',
+          label: '强制重新启动',
+          click: () => {
+            app.relaunch()
+            app.exit(1)
+          }
+        },
+        {
+          type: 'normal',
+          label: '强制退出',
+          click: () => {
+            app.exit(1)
+          }
+        },
       ]
     },
     { type: 'separator' },
@@ -177,7 +186,10 @@ app.on('ready', () => {
       type: 'normal',
       label: '退出',
       click: () => {
-        app.quit()
+        win && win.close()
+        setTimeout(() => {
+          app.quit()
+        }, 200)
       }
     },
   ])

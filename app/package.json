@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "Yank-Note",
   "main": "dist/app.js",
+  "author": {
+    "name": "purocean",
+    "email": "purocean@outlook.com"
+  },
   "scripts": {
     "copy-assets": "node copy_assets.js",
     "build": "tsc && npm run copy-assets",
