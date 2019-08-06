@@ -1,5 +1,4 @@
 import * as fs from 'fs'
-import * as os from 'os'
 import * as path from 'path'
 import * as Koa from 'koa'
 import * as bodyParser from 'koa-body'
@@ -15,6 +14,7 @@ import dataRepository from './repository'
 import run from './run'
 import convert from './convert'
 import plantuml from './plantuml'
+import shell from './shell'
 
 const result = (status = 'ok', message = '操作成功', data: any = null) => {
   return { status, message, data }
@@ -203,7 +203,7 @@ const server = (port = 3000) => {
   const io = require('socket.io')(server, {path: '/ws'})
 
   io.on('connection', (socket: any) => {
-    const ptyProcess = pty.spawn(os.platform() === 'win32' ? 'cmd.exe' : 'bash', [], {
+    const ptyProcess = pty.spawn(shell.getShell(), [], {
       name: 'xterm-color',
       cols: 80,
       rows: 24,
