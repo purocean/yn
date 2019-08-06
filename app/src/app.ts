@@ -105,6 +105,14 @@ app.on('ready', () => {
     },
     {
       type: 'normal',
+      label: '重新启动',
+      click: () => {
+        app.relaunch()
+        app.exit()
+      }
+    },
+    {
+      type: 'normal',
       label: '退出',
       click: () => {
         app.exit()
