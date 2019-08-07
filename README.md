@@ -156,7 +156,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta3](https://github.com/purocean/yn/releases/tag/v2.0.0-beta3) 2019-08-07
+### [v2.0.0-beta3.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta3.1) 2019-08-07
 1. 修正 Windows 上路径问题
 1. 修正文件排序
 
