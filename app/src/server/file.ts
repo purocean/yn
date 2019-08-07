@@ -62,12 +62,12 @@ const travels = (location: string, repo: string, basePath: string = null): any =
 
   const list = fs.readdirSync(location).filter(x => !x.startsWith('.') && !ignorePath.test(x))
 
-  const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()))
-  const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()))
+  const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()), (v: any) => v.name)
+  const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()), (v: any) => v.name)
 
   return dirs.map(x => {
     const p = path.join(location, x)
-    const xpath = p.replace(basePath, '')
+    const xpath = p.replace(basePath, '').replace(/\\/g, '/')
 
     return {
       name: x,
@@ -78,7 +78,7 @@ const travels = (location: string, repo: string, basePath: string = null): any =
     }
   }).concat(files.map(x => {
     const p = path.join(location, x)
-    const xpath = p.replace(basePath, '')
+    const xpath = p.replace(basePath, '').replace(/\\/g, '/')
 
     return {
       name: x,
@@ -199,7 +199,7 @@ const search = (repo: string, str: string) => {
           files.push({
             repo,
             name: x,
-            path: p.replace(basePath, ''),
+            path: p.replace(basePath, '').replace(/\\/g, '/'),
             type: 'file',
           })
         }

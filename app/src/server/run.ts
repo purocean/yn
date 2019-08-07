@@ -23,7 +23,7 @@ const runCode = (language: string, code: string) => {
       if (isWsl) {
         const tmpFile = path.join(wsl.toWslPath(wsl.getWinTempPath()), fileName)
         fs.writeFileSync(tmpFile, code)
-        return execFileSync('cmd.exe', ['/c', `${wsl.toWinPath(tmpFile).replace('\\', '/')}`]).toString()
+        return execFileSync('cmd.exe', ['/c', `${wsl.toWinPath(tmpFile).replace(/\\/g, '/')}`]).toString()
       } else {
         const tmpFile = path.join(os.tmpdir(), fileName)
         fs.writeFileSync(tmpFile, code)
