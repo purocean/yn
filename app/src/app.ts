@@ -1,7 +1,8 @@
 import { app, BrowserWindow, Menu, Tray } from 'electron'
 import * as path from 'path'
-import server from './server/main'
 import { dialog } from 'electron'
+import server from './server/main'
+import { USER_DIR } from './server/constant'
 const opn = require('opn')
 
 let isDev = false
@@ -116,6 +117,13 @@ app.on('ready', () => {
       label: '浏览器中打开',
       click: () => {
         opn(getUrl())
+      }
+    },
+    {
+      type: 'normal',
+      label: '打开主目录',
+      click: () => {
+        opn(USER_DIR)
       }
     },
     { type: 'separator' },
