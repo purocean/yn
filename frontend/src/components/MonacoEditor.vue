@@ -7,7 +7,8 @@ import dayjs from 'dayjs'
 import TurndownService from 'turndown'
 
 const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
-
+const appPath = isElectron && window.require('electron').remote.app.getAppPath().replace(/dist$/, '')
+const pathModule = isElectron && window.require('path')
 const keys = {}
 
 export default {
@@ -21,15 +22,22 @@ export default {
     }
   },
   mounted () {
-    if (!(isElectron && window.AMDLoader && window.AMDLoader.global && window.AMDLoader.global.require) || !(window).require) {
-      const loaderScript = document.createElement('script')
-      loaderScript.type = 'text/javascript'
-      loaderScript.src = 'vs/loader.js'
-      loaderScript.addEventListener('load', this.onGotAmdLoader)
-      document.body.appendChild(loaderScript)
-    } else {
+    if (isElectron && !window.amdRequire) {
+      const amdLoader = window.require(pathModule.resolve(appPath, 'dist/static/vs/loader.js'))
+      window.amdRequire = amdLoader.require
       this.onGotAmdLoader()
+    } else {
+      if (!window.require) {
+        const loaderScript = document.createElement('script')
+        loaderScript.type = 'text/javascript'
+        loaderScript.src = 'vs/loader.js'
+        loaderScript.addEventListener('load', this.onGotAmdLoader)
+        document.body.appendChild(loaderScript)
+      } else {
+        this.onGotAmdLoader()
+      }
     }
+
     window.addEventListener('keydown', this.recordKeys, true)
     window.addEventListener('keyup', this.recordKeys, true)
   },
@@ -52,9 +60,16 @@ export default {
       }
     },
     onGotAmdLoader () {
-      const xrequire = isElectron ? window.AMDLoader.global.require : window.require
+      const xrequire = isElectron ? window.amdRequire : window.require
       if (isElectron) {
-        xrequire.config({ paths: { 'vs': 'static/vs' } })
+        const uriFromPath = path => {
+          let pathName = pathModule.resolve(path).replace(/\\/g, '/')
+          if (pathName.length > 0 && pathName.charAt(0) !== '/') {
+            pathName = '/' + pathName
+          }
+          return encodeURI('file://' + pathName)
+        }
+        xrequire.config({ baseUrl: uriFromPath(pathModule.join(appPath, 'dist/static')) })
       }
       xrequire(['vs/editor/editor.main'], () => {
         this.initMonaco()
@@ -179,7 +194,6 @@ export default {
       //     text: '\nresult',
       //     forceMoveMarkers: true
       //   }])
-      //   console.log(this.editor.getModel().getLineContent(this.editor.getPosition().lineNumber))
       // })
     },
     paste (e) {

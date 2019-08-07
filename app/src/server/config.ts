@@ -8,10 +8,10 @@ const writeJson = (data: any) => {
 }
 
 const readJson = () => {
-  try {
+  if (fs.existsSync(configFile)) {
     const data = fs.readFileSync(configFile)
     return JSON.parse(data.toString())
-  } catch (error) {
+  } else {
     return null
   }
 }

@@ -58,7 +58,7 @@ export default {
     statusText: {
       immediate: true,
       handler (val) {
-        document.title = val
+        document.title = val + ' - Yank Note 一款面向程序员的 Markdown 编辑器'
       },
     },
     saved: {

@@ -29,7 +29,6 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('resize', this.$refs.editor.resize)
     this.$bus.on('resize', this.$refs.editor.resize)
     this.$bus.on('editor-insert-value', this.$refs.editor.insert)
     this.$bus.on('editor-replace-value', this.$refs.editor.replaceValue)
@@ -38,7 +37,6 @@ export default {
     this.restartTimer()
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.$refs.editor.resize)
     this.$bus.off('resize', this.$refs.editor.resize)
     this.$bus.off('editor-insert-value', this.$refs.editor.insert)
     this.$bus.off('editor-replace-value', this.$refs.editor.replaceValue)

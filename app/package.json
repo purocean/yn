@@ -1,6 +1,15 @@
 {
+  "name": "yank.note.yang",
+  "version": "2.0.0-beta1",
+  "description": "Yank-Note",
+  "main": "dist/app.js",
+  "author": {
+    "name": "purocean",
+    "email": "purocean@outlook.com"
+  },
   "scripts": {
-    "build": "tsc",
+    "copy-assets": "node copy_assets.js",
+    "build": "tsc && npm run copy-assets",
     "serve": "ts-node src/server/main.ts",
     "start": "npm run build && electron ./dist/app.js"
   },
@@ -12,7 +21,7 @@
     "mime": "^2.2.0",
     "natural-orderby": "^1.0.2",
     "node-plantuml": "^0.6.2",
-    "node-pty": "^0.8.1",
+    "node-pty": "0.9.0-beta21",
     "opn": "^5.3.0",
     "request": "^2.88.0",
     "safe-buffer": "^5.1.2",
@@ -26,6 +35,7 @@
     "@types/node": "^12.6.1",
     "@types/request": "^2.48.2",
     "electron": "^6.0.0",
+    "electron-builder": "^21.2.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }

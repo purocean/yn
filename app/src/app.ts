@@ -1,41 +1,44 @@
-import { app, BrowserWindow } from 'electron'
-import server from './server/main'
+import { app, BrowserWindow, Menu, Tray } from 'electron'
+import * as path from 'path'
 import { dialog } from 'electron'
+import server from './server/main'
+import { USER_DIR } from './server/constant'
+const opn = require('opn')
+
+let isDev = false
+
+const backendPort = 3044
+const devFrontendPort = 8066
+const getFrontendProt = () => isDev ? devFrontendPort : backendPort
+const getUrl = () => `http://localhost:${isDev ? devFrontendPort : backendPort}`
 
 let win: BrowserWindow | null = null
 
 const createWindow = () => {
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    maximizable: true,
+    show: false,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: true
     }
   })
 
-  // 加载index.html文件
-  // win.loadFile('../../static/index.html')
+  win.maximize()
+  win.show()
+  win.setMenu(null)
 
-  // 打开后端服务器
-  server(3044)
-
-  // 加载页面
+  // 不明原因，第一次启动窗口不能正确加载js
   setTimeout(() => {
-    win.loadURL('http://localhost:8066')
-    win.maximize()
-  }, 1000)
-
-  // 打开开发者工具
-  win.webContents.openDevTools()
+    win.loadURL(getUrl())
+  }, 0)
 
   win.on('close', e => {
     const contents = win.webContents
 
     if (contents) {
       contents.executeJavaScript('window.documentSaved', true).then(val => {
-        if (val) {
-          win.destroy()
-        } else {
+        if (val === false) {
           dialog.showMessageBox(win, {
             type: 'question',
             buttons: ['取消', '放弃保存并退出'],
@@ -46,6 +49,8 @@ const createWindow = () => {
               win.destroy()
             }
           })
+        } else {
+          win.destroy()
         }
       })
       e.preventDefault()
@@ -61,18 +66,9 @@ const createWindow = () => {
   })
 }
 
-// Electron 会在初始化后并准备
-// 创建浏览器窗口时，调用这个函数。
-// 部分 API 在 ready 事件触发后才能使用。
-app.on('ready', createWindow)
-
 // 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {
-  // 在 macOS 上，除非用户用 Cmd + Q 确定地退出，
-  // 否则绝大部分应用及其菜单栏会保持激活。
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  // 不处理，点击托盘退出
 })
 
 app.on('activate', () => {
@@ -81,4 +77,133 @@ app.on('activate', () => {
   if (win === null) {
     createWindow()
   }
+})
+
+const showWindow = () => {
+  if (win) {
+    win.show()
+  } else {
+    createWindow()
+  }
+}
+
+const reload = () => {
+  win && win.loadURL(getUrl())
+}
+
+// 系统托盘
+let tray = null
+app.on('ready', () => {
+  // 打开后端服务器
+
+  try {
+    server(backendPort)
+  } catch (error) {
+    app.exit(-1)
+  }
+
+  showWindow()
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      type: 'normal',
+      label: '打开主界面',
+      click: () => {
+        showWindow()
+      }
+    },
+    {
+      type: 'normal',
+      label: '浏览器中打开',
+      click: () => {
+        opn(getUrl())
+      }
+    },
+    {
+      type: 'normal',
+      label: '打开主目录',
+      click: () => {
+        opn(USER_DIR)
+      }
+    },
+    { type: 'separator' },
+    {
+      type: 'normal',
+      label: 'GitHub 地址',
+      click: () => {
+        opn('https://github.com/purocean/yn')
+      }
+    },
+    {
+      type: 'submenu',
+      label: '开发',
+      submenu: [
+        {
+          type: 'radio',
+          checked: !isDev,
+          label: `正式端口（${backendPort}）`,
+          click: () => {
+            isDev = false
+            reload()
+          }
+        },
+        {
+          type: 'radio',
+          checked: isDev,
+          label: `开发端口（${devFrontendPort}）`,
+          click: () => {
+            isDev = true
+            reload()
+          }
+        },
+        { type: 'separator' },
+        {
+          type: 'normal',
+          label: '重载页面',
+          click: () => {
+            reload()
+          }
+        },
+        {
+          type: 'normal',
+          label: '主窗口开发工具',
+          click: () => {
+            win && win.webContents.openDevTools()
+          }
+        },
+        { type: 'separator' },
+        {
+          type: 'normal',
+          label: '强制重新启动',
+          click: () => {
+            app.relaunch()
+            app.exit(1)
+          }
+        },
+        {
+          type: 'normal',
+          label: '强制退出',
+          click: () => {
+            app.exit(1)
+          }
+        },
+      ]
+    },
+    { type: 'separator' },
+    {
+      type: 'normal',
+      label: '退出',
+      click: () => {
+        win && win.close()
+        setTimeout(() => {
+          app.quit()
+        }, 200)
+      }
+    },
+  ])
+
+  tray = new Tray(path.join(__dirname, './assets/icon.png'))
+  tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
+  tray.on('click', showWindow)
+  tray.setContextMenu(contextMenu)
 })
