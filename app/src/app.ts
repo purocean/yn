@@ -9,10 +9,12 @@ let isDev = false
 
 const backendPort = 3044
 const devFrontendPort = 8066
-const getFrontendProt = () => isDev ? devFrontendPort : backendPort
 const getUrl = () => `http://localhost:${isDev ? devFrontendPort : backendPort}`
 
+// 主窗口
 let win: BrowserWindow | null = null
+// 系统托盘
+let tray = null
 
 const createWindow = () => {
   win = new BrowserWindow({
@@ -66,23 +68,11 @@ const createWindow = () => {
   })
 }
 
-// 当全部窗口关闭时退出。
-app.on('window-all-closed', () => {
-  // 不处理，点击托盘退出
-})
-
-app.on('activate', () => {
-  // 在macOS上，当单击dock图标并且没有其他窗口打开时，
-  // 通常在应用程序中重新创建一个窗口。
-  if (win === null) {
-    createWindow()
-  }
-})
-
 const showWindow = () => {
   if (win) {
     win.maximize()
     win.show()
+    win.focus()
   } else {
     createWindow()
   }
@@ -92,119 +82,140 @@ const reload = () => {
   win && win.loadURL(getUrl())
 }
 
-// 系统托盘
-let tray = null
-app.on('ready', () => {
-  // 打开后端服务器
+const gotTheLock = app.requestSingleInstanceLock()
 
-  try {
-    server(backendPort)
-  } catch (error) {
-    app.exit(-1)
-  }
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    showWindow()
+  })
 
-  showWindow()
+  app.on('ready', () => {
+    // 打开后端服务器
 
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      type: 'normal',
-      label: '打开主界面',
-      click: () => {
-        showWindow()
-      }
-    },
-    {
-      type: 'normal',
-      label: '浏览器中打开',
-      click: () => {
-        opn(getUrl())
-      }
-    },
-    {
-      type: 'normal',
-      label: '打开主目录',
-      click: () => {
-        opn(USER_DIR)
-      }
-    },
-    { type: 'separator' },
-    {
-      type: 'normal',
-      label: 'GitHub 地址',
-      click: () => {
-        opn('https://github.com/purocean/yn')
-      }
-    },
-    {
-      type: 'submenu',
-      label: '开发',
-      submenu: [
-        {
-          type: 'radio',
-          checked: !isDev,
-          label: `正式端口（${backendPort}）`,
-          click: () => {
-            isDev = false
-            reload()
-          }
-        },
-        {
-          type: 'radio',
-          checked: isDev,
-          label: `开发端口（${devFrontendPort}）`,
-          click: () => {
-            isDev = true
-            reload()
-          }
-        },
-        { type: 'separator' },
-        {
-          type: 'normal',
-          label: '重载页面',
-          click: () => {
-            reload()
-          }
-        },
-        {
-          type: 'normal',
-          label: '主窗口开发工具',
-          click: () => {
-            win && win.webContents.openDevTools()
-          }
-        },
-        { type: 'separator' },
-        {
-          type: 'normal',
-          label: '强制重新启动',
-          click: () => {
-            app.relaunch()
-            app.exit(1)
-          }
-        },
-        {
-          type: 'normal',
-          label: '强制退出',
-          click: () => {
-            app.exit(1)
-          }
-        },
-      ]
-    },
-    { type: 'separator' },
-    {
-      type: 'normal',
-      label: '退出',
-      click: () => {
-        win && win.close()
-        setTimeout(() => {
-          app.quit()
-        }, 200)
-      }
-    },
-  ])
+    try {
+      server(backendPort)
+    } catch (error) {
+      app.exit(-1)
+    }
 
-  tray = new Tray(path.join(__dirname, './assets/icon.png'))
-  tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
-  tray.on('click', showWindow)
-  tray.setContextMenu(contextMenu)
-})
+    showWindow()
+
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        type: 'normal',
+        label: '打开主界面',
+        click: () => {
+          showWindow()
+        }
+      },
+      {
+        type: 'normal',
+        label: '浏览器中打开',
+        click: () => {
+          opn(getUrl())
+        }
+      },
+      {
+        type: 'normal',
+        label: '打开主目录',
+        click: () => {
+          opn(USER_DIR)
+        }
+      },
+      { type: 'separator' },
+      {
+        type: 'normal',
+        label: 'GitHub 地址',
+        click: () => {
+          opn('https://github.com/purocean/yn')
+        }
+      },
+      {
+        type: 'submenu',
+        label: '开发',
+        submenu: [
+          {
+            type: 'radio',
+            checked: !isDev,
+            label: `正式端口（${backendPort}）`,
+            click: () => {
+              isDev = false
+              reload()
+            }
+          },
+          {
+            type: 'radio',
+            checked: isDev,
+            label: `开发端口（${devFrontendPort}）`,
+            click: () => {
+              isDev = true
+              reload()
+            }
+          },
+          { type: 'separator' },
+          {
+            type: 'normal',
+            label: '重载页面',
+            click: () => {
+              reload()
+            }
+          },
+          {
+            type: 'normal',
+            label: '主窗口开发工具',
+            click: () => {
+              win && win.webContents.openDevTools()
+            }
+          },
+          { type: 'separator' },
+          {
+            type: 'normal',
+            label: '强制重新启动',
+            click: () => {
+              app.relaunch()
+              app.exit(1)
+            }
+          },
+          {
+            type: 'normal',
+            label: '强制退出',
+            click: () => {
+              app.exit(1)
+            }
+          },
+        ]
+      },
+      { type: 'separator' },
+      {
+        type: 'normal',
+        label: '退出',
+        click: () => {
+          win && win.close()
+          setTimeout(() => {
+            app.quit()
+          }, 200)
+        }
+      },
+    ])
+
+    tray = new Tray(path.join(__dirname, './assets/icon.png'))
+    tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
+    tray.on('click', showWindow)
+    tray.setContextMenu(contextMenu)
+  })
+
+  // 当全部窗口关闭时退出。
+  app.on('window-all-closed', () => {
+    // 不处理，点击托盘退出
+  })
+
+  app.on('activate', () => {
+    // 在macOS上，当单击dock图标并且没有其他窗口打开时，
+    // 通常在应用程序中重新创建一个窗口。
+    if (win === null) {
+      createWindow()
+    }
+  })
+}
