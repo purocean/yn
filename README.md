@@ -1,19 +1,20 @@
-# Yank-Note markdown 编辑器
->vue + monaco-editor + markdown-it + nodejs + Koa
+# Yank Note Markdown 编辑器
+> 一款面向程序员的 Markdown 编辑器
 
 [toc]{level: [2]}
 
 ![截图](./0.png)
 
-## 目标
-1. 界面字大不费眼 :)
-1. markdown 撰写
-2. 图片文件保存在本地，导出 markdown 文件可简单处理离线工作
-3. 支持一些流程图表绘制 planttuml
-3. 支持加密解密，用来保存账号等隐私文件，文件可单独设置密码
-4. 不需要更多花哨功能，简单够用就行
-5. 尽量少依赖三方库，也不花心思维护，杂凑在一起的功能，恰好工作即可 ^_^
-6. 在文档中运行 PHP Python Node.js bash 代码块
+## 特色
++ 使用方便：使用 Monaco 编辑器（vscode 编辑器内核）编辑，添加了针对 Markdown 文件加入快捷键和补全规则
++ 归档方便：图片文件保存在本地，无元数据文件或其他数据库，Markdown 文件可简单处理离线工作
++ 拓展性强：可在文档中嵌入小工具、可运行的代码块、ECharts 图形、Plantuml 图形等
++ 支持加密：用来保存账号等隐私文件，文件可单独设置密码
+
+## 注意事项
++ Yank Note 是一款**针对程序员**的 Markdown 编辑器，目标应用场景为在本机写文章，日志，笔记，小工具。
++ Yank Note 为了更高的拓展性和方便性，牺牲了安全防护（命令执行，文件读写）。如果要用 Yank Note 打开外来 Markdown 文件，**请务必仔细甄别文件内容是值得信任的**。
++ 如果要改造为对外的 Web 服务，本工具可能不太适合。或者请运行在可隔离控制的环境下。
 
 ## Yank-Note 2.0 开发计划
 [V2 项目看板](https://github.com/purocean/yn/projects/2)
@@ -22,7 +23,7 @@
 + [x] 前端界面可以拖动调整尺寸
 + [x] 重构前端项目结构，便于拓展：引入 `vuex`，使用 `async await` 代替可怕的回调，规范文件接口
 + [x] 暴露 Api 接口可以在文档中嵌入轻量应用，以便构建一些小工具
-+ [ ] 使用 `Electron` 构建为桌面应用。不追求完全做成客户端，还是可以沿用 CS 架构。同样可以在浏览器中使用
++ [x] 使用 `Electron` 构建为桌面应用。不追求完全做成客户端，还是可以沿用 CS 架构。同样可以在浏览器中使用
 + [ ] 支持嵌入 `draw.io` 文档
 + [ ] 支持打开多个文件
 + [ ] 常驻托盘，支持使用快捷键打开常用文档
@@ -31,20 +32,7 @@
 + [ ] 可以使用 `WebDAV` 协议作为文件通信协议
 
 ## 上手使用
-+ 安装
-    ```bash
-    # 安装前端
-    cd frontend
-    yarn # or npm i
-    yarn run dist # or npm run dist
-    # yarn run dist-win # or npm run dist-win # Windows 用户
-
-    # 运行
-    cd app
-    yarn_install.sh # Windows 上安装 运行 yarn_install.bat node-pty 需要费一番功夫，参考 https://github.com/microsoft/node-pty#windows
-    yarn run start
-    ```
-+ 可以在浏览器中访问 `http://localhost:3044`
++ 在 [最新版本](https://github.com/purocean/yn/releases) 下载对应平台应用即可
 + 新增文件：`双击目录`
 + 在系统中打开文件/目录：`Ctrl ＋ 单击文件/目录`
 + 删除文件/目录：`Shift + 右键文件/目录`
@@ -115,6 +103,41 @@
 + 元素属性书写 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)
 + 表格解析增强，支持表格标题多行文本，列表等特性 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table)
 + 内置终端 [XTERM.JS](https://xtermjs.org/) [node-pty](https://github.com/Microsoft/node-pty)
+
+## 开发
+依赖安装和编译比较麻烦，请保证自己有足够耐心且有科学上网的手段。
+
+### Windows
+Windows 上安装 node-pty 需要费一番功夫，请参考 https://github.com/microsoft/node-pty#windows 配置编译环境。
+
+```bat
+REM Node 版本要求 12 v12.7.0
+node -v
+
+REM 前端
+cd frontend
+REM 安装依赖
+yarn
+REM 打包
+yarn run dist
+REM 开发
+yarn run serve
+
+REM Electron 端
+cd ../app
+REM 安装依赖
+win_install.bat
+REM 打包 打包前请在前端目录运行打包命令
+win_build.bat
+REM 开发
+yarn run start
+```
+
+### Liunx
+    TODO 手头没有环境，待完善
+
+### OSX
+    TODO 手头没有环境，待完善
 
 ## 捐赠
 如果我的工作对您有帮助，请我喝杯咖啡吧 ^_^。**附言可以留下您的 github 用户名或网站连接**。
