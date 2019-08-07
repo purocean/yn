@@ -158,6 +158,10 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-beta2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta2) 2019-08-07
+1. 应用单例
+1. 自动构建
+
 ### [v2.0.0-beta1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta1) 2019-08-07
 1. Electron 打包
 1. 修复若干问题
