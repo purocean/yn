@@ -1,6 +1,8 @@
 # Yank Note Markdown 编辑器
 > 一款面向程序员的 Markdown 编辑器
 
+[![Build Status](https://travis-ci.org/purocean/yn.svg?branch=master)](https://travis-ci.org/purocean/yn)
+
 [toc]{level: [2]}
 
 ![截图](./0.png)
@@ -25,6 +27,7 @@
 + [x] 暴露 Api 接口可以在文档中嵌入轻量应用，以便构建一些小工具
 + [x] 使用 `Electron` 构建为桌面应用。不追求完全做成客户端，还是可以沿用 CS 架构。同样可以在浏览器中使用
 + [ ] 支持嵌入 `draw.io` 文档
++ [ ] 文件目录增加右键菜单
 + [ ] 支持打开多个文件
 + [ ] 常驻托盘，支持使用快捷键打开常用文档
 + [ ] 拥有更友好的配置界面
@@ -43,7 +46,6 @@
 + 切换内置终端工作目录到当前目录 `Ctrl + Alt + 单击目录`
 + 刷新目录树 `双击目录空白区域`
 + 将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
-+ 默认文件存储在 `./data` 目录下，添加更多仓库请编辑 `./config.json` 文件
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
     + `Ctrl + X` 剪切所选/当前行
     + `Ctrl + C` 复制所选/当前行
@@ -126,9 +128,9 @@ yarn run serve
 REM Electron 端
 cd ../app
 REM 安装依赖
-win_install.bat
+win-install.bat
 REM 打包 打包前请在前端目录运行打包命令
-win_build.bat
+win-build.bat
 REM 开发
 yarn run start
 ```
@@ -155,6 +157,10 @@ yarn run start
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v2.0.0-beta2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta2) 2019-08-07
+1. 应用单例
+1. 自动构建
 
 ### [v2.0.0-beta1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta1) 2019-08-07
 1. Electron 打包
