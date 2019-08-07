@@ -11,3 +11,5 @@ export npm_config_runtime=electron
 export npm_config_build_from_source=true
 # Install all dependencies, and store cache to ~/.electron-gyp.
 HOME=~/.electron-gyp yarn
+
+yarn run download-pandoc

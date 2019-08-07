@@ -126,9 +126,9 @@ yarn run serve
 REM Electron 端
 cd ../app
 REM 安装依赖
-win_install.bat
+win-install.bat
 REM 打包 打包前请在前端目录运行打包命令
-win_build.bat
+win-build.bat
 REM 开发
 yarn run start
 ```

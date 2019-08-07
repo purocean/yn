@@ -12,10 +12,12 @@ install:
   - cd frontend
   - yarn
   - cd ../app
-  - ./win_install.bat
+  - ./win-install.bat
+  - cd ..
 
 script:
   - cd frontend
   - yarn run dist
   - cd ../app
-  - ./win_build.bat
+  - ./win-build.bat
+  - cd ..

@@ -6,4 +6,5 @@ set npm_config_runtime="electron"
 set npm_config_cache=~\.npm-electron
 REM npm i --registry=https://registry.npm.taobao.org
 yarn
+yarn run download-pandoc
 endlocal
