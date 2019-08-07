@@ -62,8 +62,8 @@ const travels = (location: string, repo: string, basePath: string = null): any =
 
   const list = fs.readdirSync(location).filter(x => !x.startsWith('.') && !ignorePath.test(x))
 
-  const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()))
-  const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()))
+  const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()), (v: any) => v.name)
+  const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()), (v: any) => v.name)
 
   return dirs.map(x => {
     const p = path.join(location, x)
