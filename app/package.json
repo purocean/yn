@@ -1,6 +1,6 @@
 {
   "name": "yank.note.yang",
-  "version": "0.0.1",
+  "version": "2.0.0-beta1",
   "description": "Yank-Note",
   "main": "dist/app.js",
   "author": {
