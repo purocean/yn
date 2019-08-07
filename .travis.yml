@@ -34,3 +34,4 @@ deploy:
   draft: true
   on:
     repo: purocean/yn
+    tags: true
