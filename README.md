@@ -1,6 +1,8 @@
 # Yank Note Markdown 编辑器
 > 一款面向程序员的 Markdown 编辑器
 
+[![Build Status](https://travis-ci.org/purocean/yn.svg?branch=master)](https://travis-ci.org/purocean/yn)
+
 [toc]{level: [2]}
 
 ![截图](./0.png)
