@@ -217,7 +217,7 @@ const server = (port = 3000) => {
     socket.on('disconnect', () => ptyProcess.kill())
   })
 
-  server.listen(port)
+  server.listen(port, 'localhost')
 
   console.log(`访问地址：http://localhost:${port}`)
 }
