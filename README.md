@@ -156,6 +156,10 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-beta1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta1) 2019-08-07
+1. Electron 打包
+1. 修复若干问题
+
 ### [v2.0.0-alpha5](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha5) 2019-08-05
 1. 小工具全局注入 dayjs
 1. 在系统中打开快捷键改用 `Ctrl + 单击`
