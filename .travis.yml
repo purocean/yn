@@ -1,11 +1,13 @@
+branches:
+  only:
+  - /^v\d+\./
+
 os: windows
 
 language: node_js
 
 node_js:
   - "12"
-
-cache: yarn
 
 before_install:
   - npm install -g yarn

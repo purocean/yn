@@ -1,8 +1,6 @@
 # Yank Note Markdown 编辑器
 > 一款面向程序员的 Markdown 编辑器
 
-[![Build Status](https://travis-ci.org/purocean/yn.svg?branch=master)](https://travis-ci.org/purocean/yn)
-
 [toc]{level: [2]}
 
 ![截图](./0.png)
@@ -158,7 +156,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta2) 2019-08-07
+### [v2.0.0-beta2.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta2.1) 2019-08-07
 1. 应用单例
 1. 自动构建
 
