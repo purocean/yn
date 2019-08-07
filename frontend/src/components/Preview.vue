@@ -146,7 +146,6 @@ export default {
   },
   methods: {
     resizeHandler () {
-      console.log('xxx')
       this.width = this.$refs['view-wrapper'].clientWidth
       this.height = this.$refs['view-wrapper'].clientHeight
     },
