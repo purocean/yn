@@ -1,3 +1,7 @@
+branches:
+  only:
+  - /^v\d+\./
+
 os: windows
 
 language: node_js
