@@ -81,6 +81,7 @@ app.on('activate', () => {
 
 const showWindow = () => {
   if (win) {
+    win.maximize()
     win.show()
   } else {
     createWindow()
