@@ -158,6 +158,10 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-beta4](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4) 2019-08-08
+1. 增加 drawio 图形文件渲染功能
+1. 双击刷新目录树时候也刷新仓库列表
+
 ### [v2.0.0-beta3.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta3.1) 2019-08-07
 1. 修正 Windows 上路径问题
 1. 修正文件排序
