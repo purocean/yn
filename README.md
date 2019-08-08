@@ -85,15 +85,16 @@
 + 列表自动补全
 + 粘贴剪切板里面的图片
 + 添加附件到文档
-+ 运行 PHP，nodejs，Python，bash 代码，**代码块第一行需要包含以 `--run--` 字符串，示例见下面截图，当然需要安装相关环境**
-+ 文档支持内嵌 HTML 小工具，**HTMl代码块第一行需要包含以 `--applet--` 字符串，其余字符串作为小工具标题，示例见下面截图**
++ 运行 PHP，nodejs，Python，bash 代码，**代码块第一行需要包含以 `--run--` 字符串，示例见 FEATURE.md，当然需要安装相关环境**
++ 文档支持内嵌 HTML 小工具，**HTMl代码块第一行需要包含以 `--applet--` 字符串，其余字符串作为小工具标题，示例见 FEATURE.md**
++ 文档支持内嵌 drawio 图形，示例见 FEATURE.md
 + 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
 + 待办进度条
 + 快速跳转文件，全文搜索文件内容
 + 多仓库切换
 + 生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可
 + docx 格式导出，**需要安装 [pandoc](https://pandoc.org/)**
-+ ECharts 图形支持 [ECharts](https://echarts.baidu.com/) **Js 代码块第一行需要包含以 `--echarts--` 字符串，示例见下面截图**
++ ECharts 图形支持 [ECharts](https://echarts.baidu.com/) **Js 代码块第一行需要包含以 `--echarts--` 字符串，示例见 FEATURE.md**
 + markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
 + markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
 + GitHub 风格样式和特性 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)
