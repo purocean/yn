@@ -102,10 +102,6 @@ Plugin.load = async (el, repo, path) => {
         max-width: 100%;
         max-height: 100%;
       }
-
-      html, body {
-        height: 100%;
-      }
     </style>
     ${div.outerHTML}
     <script src="${location.origin}/viewer.min.js"></script>
@@ -116,6 +112,7 @@ Plugin.load = async (el, repo, path) => {
     el.contentDocument.documentElement.style.height = 'auto'
     el.height = el.contentDocument.documentElement.scrollHeight + 'px'
     el.contentDocument.body.style.height = el.contentDocument.body.clientHeight + 'px'
+    el.contentDocument.documentElement.style.height = '100%'
     appVm.$bus.emit('resize')
   }
 
@@ -131,10 +128,6 @@ Plugin.load = async (el, repo, path) => {
   button2.style.cssText = 'margin-left: 5px;font-size: 14px;background: #444444; border: 0; padding: 0 6px; color: #ccc; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
   button2.innerText = '新窗口打开'
   button2.onclick = () => {
-    // const a = document.createElement('a')
-    // a.href = 'data:text/html,nihao' // + encodeURIComponent(srcdoc)
-    // a.target = '_blank'
-    // a.click()
     const opener = window.open('about:blank')
     const frame = document.createElement('iframe')
     frame.width = '100%'
