@@ -10,7 +10,11 @@ const Plugin = md => {
     iframe.dataset['file'] = file || ''
     iframe.dataset['content'] = content || ''
 
-    return iframe.outerHTML
+    return `
+      <div style="position: relative">
+        ${iframe.outerHTML}
+      </div>
+    `
   }
 
   const linkTemp = md.renderer.rules.link_open.bind(md.renderer.rules)
@@ -63,26 +67,7 @@ Plugin.load = async (el, repo, path) => {
     xml: content
   })
 
-  const appVm = window.appVm
-  el.onload = function () {
-    const resize = () => {
-      this.height = this.contentDocument.documentElement.scrollHeight + 'px'
-      this.contentDocument.body.style.height = this.contentDocument.body.clientHeight + 'px'
-      appVm.$bus.emit('resize')
-    }
-
-    this.contentWindow.resize = resize
-    // 点击 fit 的时候调整窗口大小
-    this.contentDocument.addEventListener('click', e => {
-      if (e.target.parentElement.title === 'Fit') {
-        resize()
-      }
-    })
-
-    setTimeout(resize, 300)
-  }
-
-  el.srcdoc = `
+  const srcdoc = `
     <style>
       ::selection {
         background: #d3d3d3;
@@ -117,10 +102,55 @@ Plugin.load = async (el, repo, path) => {
         max-width: 100%;
         max-height: 100%;
       }
+
+      html, body {
+        height: 100%;
+      }
     </style>
     ${div.outerHTML}
-    <script src="./viewer.min.js"></script>
+    <script src="${location.origin}/viewer.min.js"></script>
   `
+
+  const resize = () => {
+    el.contentDocument.body.style.height = 'auto'
+    el.contentDocument.documentElement.style.height = 'auto'
+    el.height = el.contentDocument.documentElement.scrollHeight + 'px'
+    el.contentDocument.body.style.height = el.contentDocument.body.clientHeight + 'px'
+    appVm.$bus.emit('resize')
+  }
+
+  const appVm = window.appVm
+  el.onload = () => setTimeout(resize, 300)
+  el.srcdoc = srcdoc
+
+  const button1 = document.createElement('button')
+  button1.style.cssText = 'font-size: 14px;background: #444444; border: 0; padding: 0 6px; color: #ccc; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
+  button1.innerText = '适应高度'
+  button1.onclick = resize
+  const button2 = document.createElement('button')
+  button2.style.cssText = 'font-size: 14px;background: #444444; border: 0; padding: 0 6px; color: #ccc; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
+  button2.innerText = '新窗口打开'
+  button2.onclick = () => {
+    // const a = document.createElement('a')
+    // a.href = 'data:text/html,nihao' // + encodeURIComponent(srcdoc)
+    // a.target = '_blank'
+    // a.click()
+    const opener = window.open('about:blank')
+    const frame = document.createElement('iframe')
+    frame.width = '100%'
+    frame.height = '100%'
+    frame.frameBorder = '0'
+    frame.srcdoc = srcdoc
+    opener.document.body.style.height = '100vh'
+    opener.document.body.style.margin = '0'
+    opener.document.body.appendChild(frame)
+  }
+
+  const action = document.createElement('div')
+  action.style.cssText = 'position: absolute; right: 15px; top: 3px; z-index: 1;'
+  action.appendChild(button2)
+  action.appendChild(button1)
+  el.parentElement.appendChild(action)
 }
 
 export default Plugin
