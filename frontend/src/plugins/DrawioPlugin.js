@@ -147,6 +147,7 @@ Plugin.load = async (el, repo, path) => {
   }
 
   const action = document.createElement('div')
+  action.className = 'no-print'
   action.style.cssText = 'position: absolute; right: 15px; top: 3px; z-index: 1;'
   action.appendChild(button2)
   action.appendChild(button1)
