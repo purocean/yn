@@ -109,7 +109,6 @@ Plugin.load = async (el, repo, path) => {
       }
     </style>
     ${div.outerHTML}
-    <script>DRAW_MATH_URL = '.'</script>
     <script src="./viewer.min.js"></script>
   `
 }
