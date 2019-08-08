@@ -9,7 +9,7 @@ const RunPlugin = (md) => {
 
     const code = token.content.trim()
     const firstLine = code.split(/\n/)[0].trim()
-    if (!firstLine.includes('--applet--')) {
+    if (token.info !== 'html' || !firstLine.includes('--applet--')) {
       return temp(tokens, idx, options, env, slf)
     }
 
@@ -42,7 +42,7 @@ RunPlugin.runScript = (el) => {
   const iframe = document.createElement('iframe')
   iframe.srcdoc = `
     <style>
-    ::selection {
+      ::selection {
         background: #d3d3d3;
       }
 
