@@ -1,41 +1,56 @@
 import file from '@/lib/file'
 
 const Plugin = md => {
-  const temp = md.renderer.rules.link_open.bind(md.renderer.rules)
-
-  md.renderer.rules.link_open = (tokens, idx, options, env, slf) => {
-    const token = tokens[idx]
-
-    if (token.attrGet('title') !== 'drawio') {
-      return temp(tokens, idx, options, env, slf)
-    }
-
-    const file = token.attrGet('href')
-    let linkText = ''
-    const nextToken = tokens[idx + 1]
-    if (nextToken && nextToken.type === 'text') {
-      linkText = nextToken.content
-      nextToken.content = ''
-    }
-
+  const renderHtml = ({ file, content }) => {
     const iframe = document.createElement('iframe')
     iframe.className = 'drawio'
     iframe.frameBorder = '0'
     iframe.width = '100%'
     iframe.height = '300px'
-    iframe.dataset['text'] = linkText
-    iframe.dataset['file'] = file
+    iframe.dataset['file'] = file || ''
+    iframe.dataset['content'] = content || ''
 
     return iframe.outerHTML
+  }
+
+  const linkTemp = md.renderer.rules.link_open.bind(md.renderer.rules)
+  md.renderer.rules.link_open = (tokens, idx, options, env, slf) => {
+    const token = tokens[idx]
+
+    if (token.attrGet('title') !== '--drawio--') {
+      return linkTemp(tokens, idx, options, env, slf)
+    }
+
+    const file = token.attrGet('href')
+    const nextToken = tokens[idx + 1]
+    if (nextToken && nextToken.type === 'text') {
+      nextToken.content = ''
+    }
+
+    return renderHtml({ file })
+  }
+
+  const fenceTemp = md.renderer.rules.fence.bind(md.renderer.rules)
+  md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
+    const token = tokens[idx]
+
+    const code = token.content.trim()
+    const firstLine = code.split(/\n/)[0].trim()
+    if (!firstLine.includes('--drawio--')) {
+      return fenceTemp(tokens, idx, options, env, slf)
+    }
+
+    return renderHtml({ content: code })
   }
 }
 
 Plugin.load = async (el, repo, path) => {
-  if (!el.dataset['file']) {
-    return
+  let content = el.dataset['content']
+  if (!content) {
+    content = (await file.read({ repo, path })).content
   }
 
-  const { content } = await file.read({ repo, path })
+  content = content.replace(/<!--.*?-->/gs, '').trim()
 
   const div = document.createElement('div')
   div.className = 'mxgraph'
@@ -62,6 +77,8 @@ Plugin.load = async (el, repo, path) => {
         resize()
       }
     })
+
+    setTimeout(resize, 300)
   }
 
   el.srcdoc = `
@@ -92,12 +109,7 @@ Plugin.load = async (el, repo, path) => {
       }
     </style>
     ${div.outerHTML}
-    <script type="text/javascript" src="https://www.draw.io/js/viewer.min.js"></script>
-    <script>
-      setTimeout(() => {
-        resize()
-      }, 300)
-    </script>
+    <script src="https://www.draw.io/js/viewer.min.js"></script>
   `
 }
 

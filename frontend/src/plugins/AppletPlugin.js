@@ -42,7 +42,7 @@ RunPlugin.runScript = (el) => {
   const iframe = document.createElement('iframe')
   iframe.srcdoc = `
     <style>
-    ::selection {
+      ::selection {
         background: #d3d3d3;
       }
 

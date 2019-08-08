@@ -206,6 +206,8 @@ export default {
         if (originPath) {
           const filepath = originPath.startsWith('/') ? originPath : (file.dirname(this.filePath) + originPath.replace(/^.\//, ''))
           DrawioPlugin.load(el, this.fileRepo, filepath)
+        } else {
+          DrawioPlugin.load(el)
         }
       }
     },
