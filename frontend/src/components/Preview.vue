@@ -52,6 +52,7 @@ import RunPlugin from '../plugins/RunPlugin'
 import AppletPlugin from '../plugins/AppletPlugin'
 import SourceLinePlugin from '../plugins/SourceLinePlugin'
 import LinkTargetPlugin from '../plugins/LinkTargetPlugin'
+import DrawioPlugin from '../plugins/DrawioPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
 import file from '@/lib/file'
 
@@ -82,6 +83,7 @@ const markdown = Markdown({
   .use(SourceLinePlugin)
   .use(MarkdownItAttrs)
   .use(LinkTargetPlugin)
+  .use(DrawioPlugin)
   .use(MultimdTable, { enableMultilineRows: true })
   .use(MarkdownItToc)
   .use(MarkdownItECharts)
