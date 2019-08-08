@@ -114,6 +114,7 @@ export default {
       this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(this.currentContent))
       MarkdownItECharts.update()
       this.runAppletScriptDebounce()
+      this.initDrawio()
       this.updateOutline()
       this.updateTodoCount()
       this.updatePlantumlDebounce()
@@ -196,6 +197,16 @@ export default {
       const nodes = this.$refs.view.querySelectorAll('.applet[data-code]')
       for (const el of nodes) {
         AppletPlugin.runScript(el)
+      }
+    },
+    initDrawio () {
+      const nodes = this.$refs.view.querySelectorAll('.drawio[data-file]')
+      for (const el of nodes) {
+        const originPath = el.dataset.file
+        if (originPath) {
+          const filepath = originPath.startsWith('/') ? originPath : (file.dirname(this.filePath) + originPath.replace(/^.\//, ''))
+          DrawioPlugin.load(el, this.fileRepo, filepath)
+        }
       }
     },
     updateOutline () {
