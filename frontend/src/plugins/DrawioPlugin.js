@@ -124,11 +124,11 @@ Plugin.load = async (el, repo, path) => {
   el.srcdoc = srcdoc
 
   const button1 = document.createElement('button')
-  button1.style.cssText = 'font-size: 14px;background: #444444; border: 0; padding: 0 6px; color: #ccc; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
+  button1.style.cssText = 'margin-left: 5px;font-size: 14px;background: #444444; border: 0; padding: 0 6px; color: #ccc; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
   button1.innerText = '适应高度'
   button1.onclick = resize
   const button2 = document.createElement('button')
-  button2.style.cssText = 'font-size: 14px;background: #444444; border: 0; padding: 0 6px; color: #ccc; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
+  button2.style.cssText = 'margin-left: 5px;font-size: 14px;background: #444444; border: 0; padding: 0 6px; color: #ccc; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
   button2.innerText = '新窗口打开'
   button2.onclick = () => {
     // const a = document.createElement('a')
