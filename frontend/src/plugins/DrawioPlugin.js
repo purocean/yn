@@ -36,7 +36,7 @@ const Plugin = md => {
 
     const code = token.content.trim()
     const firstLine = code.split(/\n/)[0].trim()
-    if (!firstLine.includes('--drawio--')) {
+    if (token.info !== 'xml' || !firstLine.includes('--drawio--')) {
       return fenceTemp(tokens, idx, options, env, slf)
     }
 
