@@ -149,9 +149,10 @@ yarn run start
 1. [yubingcen](https://github.com/yubingcen) 0.1元
 
 ## 界面截图
+![截图](./3.png)
+![截图](./5.png)
 ![截图](./1.png)
 ![截图](./2.png)
-![截图](./3.png)
 ![截图](./4.gif)
 
 ## 更新日志
