@@ -67,6 +67,7 @@ Plugin.load = async (el, repo, path) => {
   el.onload = function () {
     const resize = () => {
       this.height = this.contentDocument.documentElement.scrollHeight + 'px'
+      this.contentDocument.body.style.height = this.contentDocument.body.clientHeight + 'px'
       appVm.$bus.emit('resize')
     }
 
@@ -83,7 +84,7 @@ Plugin.load = async (el, repo, path) => {
 
   el.srcdoc = `
     <style>
-    ::selection {
+      ::selection {
         background: #d3d3d3;
       }
 
@@ -106,6 +107,15 @@ Plugin.load = async (el, repo, path) => {
 
       ::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.15);
+      }
+
+      .mxgraph {
+        max-width: 100%;
+      }
+
+      .geDiagramContainer {
+        max-width: 100%;
+        max-height: 100%;
       }
     </style>
     ${div.outerHTML}
