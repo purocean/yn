@@ -1,5 +1,5 @@
 <template>
-  <aside class="side" @dblclick="refresh" title="双击此处刷新目录树">
+  <aside class="side" @dblclick="refresh();refreshRepo()" title="双击此处刷新目录树">
     <div class="loading" v-if="tree === null"> 加载中 </div>
     <template v-else>
       <TreeNode v-for="item in tree" :item="item" :key="item.path" />
@@ -35,6 +35,9 @@ export default {
     refresh () {
       this.$store.dispatch('app/fetchTree', this.currentRepo)
     },
+    refreshRepo () {
+      this.$store.dispatch('app/fetchRepositories')
+    }
   },
   watch: {
     file (f) {
