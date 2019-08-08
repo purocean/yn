@@ -23,6 +23,10 @@ const isSameFile = (a, b) => {
   return a && b && a.repo === b.repo && a.path === b.path
 }
 
+const dirname = path => {
+  return path.substr(0, path.lastIndexOf('/'))
+}
+
 const basename = path => {
   return path.substr(path.lastIndexOf('/') + 1)
 }
@@ -133,6 +137,7 @@ export default {
   isBelongTo,
   isSameFile,
   isEncryptedFile,
+  dirname,
   basename,
   extname,
   decrypt,

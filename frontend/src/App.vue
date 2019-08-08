@@ -51,4 +51,10 @@ export default {
     background: #282a2b;
   }
 }
+
+@media print {
+  .no-print {
+    display: none;
+  }
+}
 </style>
