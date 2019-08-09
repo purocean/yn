@@ -8,8 +8,7 @@ const store = new Store()
 const checkForUpdatesAvailable = app.isPackaged
 
 const init = () => {
-  // autoUpdater.setFeedURL({ provider: 'github', owner: 'purocean', repo: 'yn'})
-  autoUpdater.setFeedURL({ provider: "generic", "url": "http://localhost:8040"})
+  autoUpdater.setFeedURL({ provider: 'github', owner: 'purocean', repo: 'yn'})
   autoUpdater.autoDownload = false
 
   autoUpdater.on('update-available', async info => {
