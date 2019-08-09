@@ -26,7 +26,9 @@ const createWindow = () => {
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true
-    }
+    },
+    minWidth: 700,
+    minHeight: 500,
   })
 
   win.maximize()

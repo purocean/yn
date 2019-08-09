@@ -6,7 +6,9 @@
           <div :style="{
             backgroundColor: `rgb(${220 - 220 * todoDoneCount / todoCount}, ${200 * todoDoneCount / todoCount}, 0)`,
             width: `${todoDoneCount * 100 / todoCount}%`
-          }"> {{(todoDoneCount * 100 / todoCount).toFixed(2)}}% {{todoDoneCount}}/{{todoCount}} </div>
+          }">
+            <span style="padding-right: 3px;">{{(todoDoneCount * 100 / todoCount).toFixed(2)}}% {{todoDoneCount}}/{{todoCount}}</span>
+          </div>
         </div>
         <div v-else></div>
         <div class="convert">
@@ -206,9 +208,10 @@ export default {
 
       const nodes = this.$refs.view.querySelectorAll('.drawio[data-file]')
       for (const el of nodes) {
-        const originPath = el.dataset.file
+        let originPath = el.dataset.file
         if (originPath) {
-          const filepath = originPath.startsWith('/') ? originPath : (file.dirname(this.filePath) + originPath.replace(/^.\//, ''))
+          originPath = decodeURI(originPath)
+          const filepath = originPath.startsWith('/') ? originPath : (file.dirname(this.filePath) + '/' + originPath.replace(/^.\//, ''))
           DrawioPlugin.load(el, this.fileRepo, filepath)
         } else {
           DrawioPlugin.load(el)
@@ -388,6 +391,7 @@ export default {
     background: #303133;
   }
 
+  .markdown-body /deep/ div.drawio-wrapper,
   .markdown-body /deep/ input,
   .markdown-body /deep/ img
   {
@@ -395,6 +399,7 @@ export default {
     filter: brightness(70%);
   }
 
+  .markdown-body /deep/ div.drawio-wrapper:hover,
   .markdown-body /deep/ img:hover
   {
     filter: none;
