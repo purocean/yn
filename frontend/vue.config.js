@@ -18,6 +18,10 @@ module.exports = {
     config.plugin('copy').tap(args => {
       args[0][0].from = 'node_modules/monaco-editor/min/vs'
       args[0][0].to = 'vs'
+      args[0][1] = {
+        from: 'public/viewer.min.js',
+        to: 'viewer.min.js'
+      }
       return args
     })
   }
