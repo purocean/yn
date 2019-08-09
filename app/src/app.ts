@@ -3,6 +3,7 @@ import * as path from 'path'
 import { dialog } from 'electron'
 import server from './server/main'
 import { USER_DIR } from './server/constant'
+import * as updater from './updater'
 const opn = require('opn')
 
 let isDev = false
@@ -98,7 +99,6 @@ if (!gotTheLock) {
 
   app.on('ready', () => {
     // 打开后端服务器
-
     try {
       server(backendPort)
     } catch (error) {
@@ -192,6 +192,13 @@ if (!gotTheLock) {
           },
         ]
       },
+      {
+        type: "normal",
+        label: "检查更新",
+        click: () => {
+          updater.checkForUpdates()
+        }
+      },
       { type: 'separator' },
       {
         type: 'normal',
@@ -209,6 +216,12 @@ if (!gotTheLock) {
     tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
     tray.on('click', showWindow)
     tray.setContextMenu(contextMenu)
+
+    // 检查更新
+    updater.init()
+    setTimeout(() => {
+      updater.autoCheckForUpdates()
+    }, 1000)
   })
 
   // 当全部窗口关闭时退出。

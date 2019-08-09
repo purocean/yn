@@ -12,6 +12,9 @@ if (!fs.existsSync(dir)) {
 }
 
 const filePath = path.join(dir, filename)
-
-console.log('Download pandoc', downloadUrl, filename, filePath)
-request(downloadUrl).pipe(fs.createWriteStream(filePath))
+if (fs.existsSync(filePath)) {
+  console.warn('Pandoc exists. Skip download.', filePath)
+} else {
+  console.info('Download pandoc', downloadUrl, filename, filePath)
+  request(downloadUrl).pipe(fs.createWriteStream(filePath))
+}
