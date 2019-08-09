@@ -142,7 +142,7 @@ Plugin.load = async (el, repo, path) => {
   const resize = () => {
     el.contentDocument.body.style.height = 'auto'
     el.contentDocument.documentElement.style.height = 'auto'
-    el.height = el.contentDocument.documentElement.scrollHeight + 'px'
+    el.height = el.contentDocument.documentElement.offsetHeight + 'px'
     el.contentDocument.body.style.height = el.contentDocument.body.clientHeight + 'px'
     el.contentDocument.documentElement.style.height = '100%'
     window.appVm.$bus.emit('resize')
