@@ -134,9 +134,20 @@ Plugin.load = async (el, repo, path) => {
     frame.height = '100%'
     frame.frameBorder = '0'
     frame.srcdoc = srcdoc
-    opener.document.body.style.height = '100vh'
-    opener.document.body.style.margin = '0'
-    opener.document.body.appendChild(frame)
+
+    const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
+    if (isElectron) {
+      const json = JSON.stringify(frame.outerHTML)
+      opener.eval(`
+        document.body.style.height = '100vh'
+        document.body.style.margin = '0'
+        document.body.innerHTML = ${json}
+      `)
+    } else {
+      opener.document.body.style.height = '100vh'
+      opener.document.body.style.margin = '0'
+      opener.document.body.appendChild(frame)
+    }
   }
 
   const action = document.createElement('div')
