@@ -159,6 +159,10 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-beta4.3](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.3) 2019-08-09
+1. Windows 平台增加安装包
+1. 引入检查更新
+
 ### [v2.0.0-beta4.2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.2) 2019-08-09
 1. 修复文件方式引入 drawio 图形问题
 1. 支持直接在新窗口打开 drawio 图形
