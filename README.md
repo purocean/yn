@@ -24,7 +24,7 @@
 + [x] 重构前端项目结构，便于拓展：引入 `vuex`，使用 `async await` 代替可怕的回调，规范文件接口
 + [x] 暴露 Api 接口可以在文档中嵌入轻量应用，以便构建一些小工具
 + [x] 使用 `Electron` 构建为桌面应用。不追求完全做成客户端，还是可以沿用 CS 架构。同样可以在浏览器中使用
-+ [ ] 支持嵌入 `draw.io` 文档
++ [x] 支持嵌入 `draw.io` 文档
 + [ ] 文件目录增加右键菜单
 + [ ] 支持打开多个文件
 + [ ] 常驻托盘，支持使用快捷键打开常用文档
@@ -157,6 +157,11 @@ yarn run start
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v2.0.0-beta4.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.1) 2019-08-09
+1. 修复 js 文件打包拷贝
+1. 修复在 Electron 中用新窗口打开 drawio 图形
+1. 去掉 Electron 默认窗口菜单
 
 ### [v2.0.0-beta4](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4) 2019-08-08
 1. 增加 drawio 图形文件渲染功能

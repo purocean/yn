@@ -200,6 +200,10 @@ export default {
       }
     },
     initDrawio () {
+      if (!this.$refs.view) {
+        return
+      }
+
       const nodes = this.$refs.view.querySelectorAll('.drawio[data-file]')
       for (const el of nodes) {
         const originPath = el.dataset.file

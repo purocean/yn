@@ -11,6 +11,9 @@ const backendPort = 3044
 const devFrontendPort = 8066
 const getUrl = () => `http://localhost:${isDev ? devFrontendPort : backendPort}`
 
+// 去掉每个窗口默认的菜单
+Menu.setApplicationMenu(null)
+
 // 主窗口
 let win: BrowserWindow | null = null
 // 系统托盘
