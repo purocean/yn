@@ -159,6 +159,11 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-beta4.2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.2) 2019-08-09
+1. 修复文件方式引入 drawio 图形问题
+1. 支持直接在新窗口打开 drawio 图形
+1. 调整 drawio 图形样式
+
 ### [v2.0.0-beta4.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.1) 2019-08-09
 1. 修复 js 文件打包拷贝
 1. 修复在 Electron 中用新窗口打开 drawio 图形
