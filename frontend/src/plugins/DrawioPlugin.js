@@ -48,8 +48,7 @@ const Plugin = md => {
   }
 }
 
-Plugin.load = async (el, repo, path) => {
-  let content = el.dataset['content']
+const buildSrcdoc = async ({ repo, path, content }) => {
   if (!content) {
     content = (await file.read({ repo, path })).content
   }
@@ -67,7 +66,7 @@ Plugin.load = async (el, repo, path) => {
     xml: content
   })
 
-  const srcdoc = `
+  return `
     <style>
       ::selection {
         background: #d3d3d3;
@@ -110,6 +109,35 @@ Plugin.load = async (el, repo, path) => {
     ${div.outerHTML}
     <script src="${location.origin}/viewer.min.js"></script>
   `
+}
+
+const openInNewWindow = srcdoc => {
+  const opener = window.open('about:blank')
+  const frame = document.createElement('iframe')
+  frame.width = '100%'
+  frame.height = '100%'
+  frame.frameBorder = '0'
+  frame.srcdoc = srcdoc
+
+  const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
+  if (isElectron) {
+    const json = JSON.stringify(frame.outerHTML)
+    opener.eval(`
+      document.body.style.height = '100vh'
+      document.body.style.margin = '0'
+      document.body.innerHTML = ${json}
+    `)
+  } else {
+    opener.document.body.style.height = '100vh'
+    opener.document.body.style.margin = '0'
+    opener.document.body.appendChild(frame)
+  }
+}
+
+Plugin.load = async (el, repo, path) => {
+  const content = el.dataset['content']
+
+  const srcdoc = await buildSrcdoc({ repo, path, content })
 
   const resize = () => {
     el.contentDocument.body.style.height = 'auto'
@@ -117,10 +145,9 @@ Plugin.load = async (el, repo, path) => {
     el.height = el.contentDocument.documentElement.scrollHeight + 'px'
     el.contentDocument.body.style.height = el.contentDocument.body.clientHeight + 'px'
     el.contentDocument.documentElement.style.height = '100%'
-    appVm.$bus.emit('resize')
+    window.appVm.$bus.emit('resize')
   }
 
-  const appVm = window.appVm
   el.onload = () => setTimeout(resize, 300)
   el.srcdoc = srcdoc
 
@@ -131,28 +158,7 @@ Plugin.load = async (el, repo, path) => {
   const button2 = document.createElement('button')
   button2.style.cssText = 'margin-left: 5px;font-size: 14px;background: #444444; border: 0; padding: 0 6px; color: #ccc; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
   button2.innerText = '新窗口打开'
-  button2.onclick = () => {
-    const opener = window.open('about:blank')
-    const frame = document.createElement('iframe')
-    frame.width = '100%'
-    frame.height = '100%'
-    frame.frameBorder = '0'
-    frame.srcdoc = srcdoc
-
-    const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
-    if (isElectron) {
-      const json = JSON.stringify(frame.outerHTML)
-      opener.eval(`
-        document.body.style.height = '100vh'
-        document.body.style.margin = '0'
-        document.body.innerHTML = ${json}
-      `)
-    } else {
-      opener.document.body.style.height = '100vh'
-      opener.document.body.style.margin = '0'
-      opener.document.body.appendChild(frame)
-    }
-  }
+  button2.onclick = () => openInNewWindow(srcdoc)
 
   const action = document.createElement('div')
   action.className = 'no-print'
@@ -160,6 +166,11 @@ Plugin.load = async (el, repo, path) => {
   action.appendChild(button2)
   action.appendChild(button1)
   el.parentElement.appendChild(action)
+}
+
+Plugin.open = async file => {
+  const srcdoc = await buildSrcdoc(file)
+  openInNewWindow(srcdoc)
 }
 
 export default Plugin

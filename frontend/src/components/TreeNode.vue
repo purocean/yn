@@ -26,6 +26,7 @@
 <script>
 import { mapState } from 'vuex'
 import File from '@/lib/file'
+import DrawioPlugin from '@/plugins/DrawioPlugin'
 
 export default {
   name: 'tree-node',
@@ -55,7 +56,11 @@ export default {
         if (item.name.endsWith('.md')) {
           this.$store.commit('app/setCurrentFile', item)
         } else {
-          window.open(`api/attachment/${encodeURIComponent(item.name)}?repo=${item.repo}&path=${encodeURIComponent(item.path)}`)
+          if (item.path.toLowerCase().endsWith('.drawio')) {
+            DrawioPlugin.open(item)
+          } else {
+            window.open(`api/attachment/${encodeURIComponent(item.name)}?repo=${item.repo}&path=${encodeURIComponent(item.path)}`)
+          }
         }
       }
     },
