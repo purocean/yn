@@ -1,13 +1,13 @@
 {
   "appId": "yank.note.yang",
   "productName": "Yank-Note",
-  "copyright": "Copyright 2019 Y",
+  "copyright": "Copyright 2019 purocean@outlook.com",
   "asar": false,
   "files": [
     "./dist/**",
     "./node_modules/**"
   ],
-  "artifactName": "${productName}-${arch}-${version}.${ext}",
+  "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
   "directories": {
     "app": "./",
     "output": "./out/"
@@ -15,15 +15,13 @@
   "npmRebuild": false,
   "win": {
     "target": [
-      "zip"
+      "zip",
+      "nsis"
     ],
     "icon": "./src/assets/icon.ico"
   },
   "nsis": {
-    "perMachine": true
-  },
-  "portable": {
-    "artifactName": "${productName}-${version}-portable.${ext}"
+    "perMachine": false
   },
   "publish": [
     {

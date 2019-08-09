@@ -15,6 +15,9 @@
     "start": "npm run build && electron ./dist/app.js"
   },
   "dependencies": {
+    "electron-progressbar": "^1.2.0",
+    "electron-store": "^4.0.0",
+    "electron-updater": "^4.1.2",
     "fs-extra": "^6.0.1",
     "koa": "^2.4.1",
     "koa-body": "^2.5.0",
@@ -37,7 +40,6 @@
     "@types/request": "^2.48.2",
     "electron": "^6.0.0",
     "electron-builder": "^21.2.0",
-    "electron-updater": "^4.1.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }

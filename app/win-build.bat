@@ -1,1 +1,1 @@
-@yarn run build && cmd.exe /c "node_modules\.bin\electron-builder --win"
+@yarn run build && yarn run electron-builder --win
