@@ -208,9 +208,10 @@ export default {
 
       const nodes = this.$refs.view.querySelectorAll('.drawio[data-file]')
       for (const el of nodes) {
-        const originPath = el.dataset.file
+        let originPath = el.dataset.file
         if (originPath) {
-          const filepath = originPath.startsWith('/') ? originPath : (file.dirname(this.filePath) + originPath.replace(/^.\//, ''))
+          originPath = decodeURI(originPath)
+          const filepath = originPath.startsWith('/') ? originPath : (file.dirname(this.filePath) + '/' + originPath.replace(/^.\//, ''))
           DrawioPlugin.load(el, this.fileRepo, filepath)
         } else {
           DrawioPlugin.load(el)
