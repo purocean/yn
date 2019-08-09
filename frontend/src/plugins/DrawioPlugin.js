@@ -102,6 +102,10 @@ Plugin.load = async (el, repo, path) => {
         max-width: 100%;
         max-height: 100%;
       }
+
+      body {
+        background: #fff;
+      }
     </style>
     ${div.outerHTML}
     <script src="${location.origin}/viewer.min.js"></script>
