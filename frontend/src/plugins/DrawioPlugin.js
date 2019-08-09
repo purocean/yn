@@ -11,7 +11,7 @@ const Plugin = md => {
     iframe.dataset['content'] = content || ''
 
     return `
-      <div style="position: relative">
+      <div class="drawio-wrapper" style="position: relative">
         ${iframe.outerHTML}
       </div>
     `

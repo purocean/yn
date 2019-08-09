@@ -391,7 +391,7 @@ export default {
     background: #303133;
   }
 
-  .markdown-body /deep/ iframe.drawio,
+  .markdown-body /deep/ div.drawio-wrapper,
   .markdown-body /deep/ input,
   .markdown-body /deep/ img
   {
@@ -399,7 +399,7 @@ export default {
     filter: brightness(70%);
   }
 
-  .markdown-body /deep/ iframe.drawio:hover,
+  .markdown-body /deep/ div.drawio-wrapper:hover,
   .markdown-body /deep/ img:hover
   {
     filter: none;
