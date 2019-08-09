@@ -24,5 +24,12 @@
   },
   "portable": {
     "artifactName": "${productName}-${version}-portable.${ext}"
-  }
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "purocean",
+      "repo": "yn"
+    }
+  ]
 }

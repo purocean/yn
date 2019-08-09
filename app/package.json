@@ -37,6 +37,7 @@
     "@types/request": "^2.48.2",
     "electron": "^6.0.0",
     "electron-builder": "^21.2.0",
+    "electron-updater": "^4.1.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }
