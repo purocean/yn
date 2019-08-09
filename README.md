@@ -158,6 +158,11 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.0.0-beta4.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.1) 2019-08-09
+1. 修复 js 文件打包拷贝
+1. 修复在 Electron 中用新窗口打开 drawio 图形
+1. 去掉 Electron 默认窗口菜单
+
 ### [v2.0.0-beta4](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4) 2019-08-08
 1. 增加 drawio 图形文件渲染功能
 1. 双击刷新目录树时候也刷新仓库列表
