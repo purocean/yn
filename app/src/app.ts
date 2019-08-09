@@ -193,8 +193,8 @@ if (!gotTheLock) {
         ]
       },
       {
-        type: "normal",
-        label: "检查更新",
+        type: 'normal',
+        label: `检查更新 ${app.getVersion()}`,
         click: () => {
           updater.checkForUpdates()
         }
