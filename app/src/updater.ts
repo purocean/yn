@@ -9,42 +9,10 @@ autoUpdater.logger = logger
 
 const store = new Store()
 
-const checkForUpdatesAvailable = app.isPackaged
-
 let progressBar: any = null
-
-autoUpdater.on('error', e => {
-  progressBar && (progressBar.detail = '下载失败： ' + e)
-})
-
-autoUpdater.on('download-progress', e => {
-  if (progressBar) {
-    progressBar.value = e.percent
-    progressBar.detail = '下载中…… ' + e.percent.toFixed(2) + '%'
-  }
-})
-
-autoUpdater.on('update-downloaded', () => {
-  progressBar && progressBar.close()
-
-  dialog.showMessageBox({
-    cancelId: 999,
-    type: 'question',
-    buttons: ['立即安装', '推迟'],
-    defaultId: 0,
-    message: '新版本下载完成，是否要立即安装？'
-  }).then(result => {
-    if (result.response === 0) {
-      setImmediate(() => {
-        autoUpdater.quitAndInstall()
-      })
-    }
-  })
-})
-
 let cancellationToken: CancellationToken = null
 
-const init = () => {
+const init = (call: () => void) => {
   autoUpdater.setFeedURL({ provider: 'github', owner: 'purocean', repo: 'yn'})
   autoUpdater.autoDownload = false
 
@@ -91,19 +59,40 @@ const init = () => {
       store.set('dontCheckUpdates', true)
     }
   })
+
+  autoUpdater.on('error', e => {
+    progressBar && (progressBar.detail = '下载失败： ' + e)
+  })
+
+  autoUpdater.on('download-progress', e => {
+    if (progressBar) {
+      progressBar.value = e.percent
+      progressBar.detail = '下载中…… ' + e.percent.toFixed(2) + '%'
+    }
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    progressBar && progressBar.close()
+
+    dialog.showMessageBox({
+      cancelId: 999,
+      type: 'question',
+      buttons: ['立即安装', '推迟'],
+      defaultId: 0,
+      message: '新版本下载完成，是否要立即安装？'
+    }).then(result => {
+      if (result.response === 0) {
+        setImmediate(() => {
+          autoUpdater.quitAndInstall()
+          call()
+        })
+      }
+    })
+  })
 }
 
 const checkForUpdates = () => {
   store.set('dontCheckUpdates', false)
-  if (!checkForUpdatesAvailable) {
-    dialog.showMessageBox({
-      type: 'info',
-      title: '检查更新不可用',
-      message: '安装到系统的应用才可检查更新',
-    })
-    return false
-  }
-
   autoUpdater.once('update-not-available', () => {
     dialog.showMessageBox({
       type: 'info',
@@ -117,9 +106,7 @@ const checkForUpdates = () => {
 
 const autoCheckForUpdates = () => {
   if (!store.get('dontCheckUpdates')) {
-    if (checkForUpdatesAvailable) {
-      autoUpdater.checkForUpdates()
-    }
+    autoUpdater.checkForUpdates()
   }
 }
 

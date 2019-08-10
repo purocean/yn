@@ -225,8 +225,10 @@ if (!gotTheLock) {
     tray.on('click', showWindow)
     tray.setContextMenu(contextMenu)
 
-    // 检查更新
-    updater.init()
+    updater.init(() => {
+      // 立即升级，退出程序
+      app.exit(0)
+    })
     setTimeout(() => {
       updater.autoCheckForUpdates()
     }, 1000)
