@@ -15,6 +15,7 @@
     "start": "npm run build && electron ./dist/app.js"
   },
   "dependencies": {
+    "electron-log": "^3.0.7",
     "electron-progressbar": "^1.2.0",
     "electron-store": "^4.0.0",
     "electron-updater": "^4.1.2",

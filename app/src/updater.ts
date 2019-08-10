@@ -2,6 +2,10 @@ import { dialog, app } from 'electron'
 import { autoUpdater, CancellationToken } from 'electron-updater'
 const ProgressBar = require('electron-progressbar')
 const Store = require('electron-store')
+import logger from 'electron-log'
+
+logger.transports.file.level = 'info'
+autoUpdater.logger = logger
 
 const store = new Store()
 

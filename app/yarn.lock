@@ -869,6 +869,11 @@ electron-download@^4.1.0:
     semver "^5.4.1"
     sumchecker "^2.0.2"
 
+electron-log@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.npm.taobao.org/electron-log/download/electron-log-3.0.7.tgz#bfdba9489c84b1301d6067028fce2f4cb2f89d7f"
+  integrity sha1-v9upSJyEsTAdYGcCj84vTLL4nX8=
+
 electron-progressbar@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/electron-progressbar/-/electron-progressbar-1.2.0.tgz#3628ee759da5c4b6ae08887843b54d7364477310"
