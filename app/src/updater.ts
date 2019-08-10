@@ -21,13 +21,13 @@ const init = (call: () => void) => {
       cancelId: 999,
       type: 'question',
       buttons: ['下载更新', '取消', '不再提醒'],
-      title: '发现新版本',
+      title: 'Yank Note 发现新版本',
       message: `当前版本 ${app.getVersion()}\n最新版本：${info.version}`
     })
 
     if (response === 0) {
       progressBar = new ProgressBar({
-        title: '下载更新',
+        title: 'Yank Note 下载更新',
         text: `${info.version}`,
         detail: '正在下载新版本 ',
         indeterminate: false,
@@ -45,7 +45,7 @@ const init = (call: () => void) => {
         if (e.message !== 'Cancelled') {
           dialog.showMessageBox({
             type: 'info',
-            title: '出现一点错误',
+            title: 'Yank Note 出现一点错误',
             message: e.message,
           })
         }
@@ -77,6 +77,7 @@ const init = (call: () => void) => {
     dialog.showMessageBox({
       cancelId: 999,
       type: 'question',
+      title: 'Yank Note 下载完成',
       buttons: ['立即安装', '推迟'],
       defaultId: 0,
       message: '新版本下载完成，是否要立即安装？'
@@ -96,7 +97,7 @@ const checkForUpdates = () => {
   autoUpdater.once('update-not-available', () => {
     dialog.showMessageBox({
       type: 'info',
-      title: '无新版本',
+      title: 'Yank Note 无新版本',
       message: '当前已经是最新版本',
     })
   })
