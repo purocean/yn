@@ -83,9 +83,9 @@ const init = () => {
           message: '新版本下载完成，是否要立即安装？'
         }).then(result => {
           if (result.response === 0) {
-            setTimeout(() => {
+            setImmediate(() => {
               autoUpdater.quitAndInstall()
-            }, 100)
+            })
           }
         })
       })
