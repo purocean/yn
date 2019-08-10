@@ -11,6 +11,39 @@ const store = new Store()
 
 const checkForUpdatesAvailable = app.isPackaged
 
+let progressBar: any = null
+
+autoUpdater.on('error', e => {
+  progressBar && (progressBar.detail = '下载失败： ' + e)
+})
+
+autoUpdater.on('download-progress', e => {
+  if (progressBar) {
+    progressBar.value = e.percent
+    progressBar.detail = '下载中…… ' + e.percent.toFixed(2) + '%'
+  }
+})
+
+autoUpdater.on('update-downloaded', () => {
+  progressBar && progressBar.close()
+
+  dialog.showMessageBox({
+    cancelId: 999,
+    type: 'question',
+    buttons: ['立即安装', '推迟'],
+    defaultId: 0,
+    message: '新版本下载完成，是否要立即安装？'
+  }).then(result => {
+    if (result.response === 0) {
+      setImmediate(() => {
+        autoUpdater.quitAndInstall()
+      })
+    }
+  })
+})
+
+let cancellationToken: CancellationToken = null
+
 const init = () => {
   autoUpdater.setFeedURL({ provider: 'github', owner: 'purocean', repo: 'yn'})
   autoUpdater.autoDownload = false
@@ -25,10 +58,11 @@ const init = () => {
     })
 
     if (response === 0) {
-      const progressBar = new ProgressBar({
+      progressBar = new ProgressBar({
         title: '下载更新',
         text: `${info.version}`,
         detail: '正在下载新版本 ',
+        indeterminate: false,
         browserWindow: {
           closable: true,
           webPreferences: {
@@ -37,9 +71,9 @@ const init = () => {
         }
       })
 
-      const cancellationToken = new CancellationToken()
+      cancellationToken = new CancellationToken()
       autoUpdater.downloadUpdate(cancellationToken).catch(e => {
-        progressBar.close()
+        progressBar && progressBar.close()
         if (e.message !== 'Cancelled') {
           dialog.showMessageBox({
             type: 'info',
@@ -52,42 +86,6 @@ const init = () => {
       progressBar.on('aborted', () => {
         console.log('cancel download')
         cancellationToken.cancel()
-      })
-
-      const reportUpdateError = (e: any) => {
-        progressBar.detail = '下载失败： ' + e
-      }
-
-      autoUpdater.once('error', e => {
-        if (progressBar._window != null) {
-          reportUpdateError(e)
-        } else {
-          progressBar.on('ready', () => {
-            reportUpdateError(e)
-          })
-        }
-      })
-
-      autoUpdater.once('download-progress', (d) => {
-        progressBar.value = d.percent
-      })
-
-      autoUpdater.once('update-downloaded', () => {
-        progressBar.close()
-
-        dialog.showMessageBox({
-          cancelId: 999,
-          type: 'question',
-          buttons: ['立即安装', '推迟'],
-          defaultId: 0,
-          message: '新版本下载完成，是否要立即安装？'
-        }).then(result => {
-          if (result.response === 0) {
-            setImmediate(() => {
-              autoUpdater.quitAndInstall()
-            })
-          }
-        })
       })
     } else if (response === 2) {
       store.set('dontCheckUpdates', true)
