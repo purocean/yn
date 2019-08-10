@@ -24,12 +24,13 @@ const createWindow = () => {
   win = new BrowserWindow({
     maximizable: true,
     show: false,
+    minWidth: 700,
+    minHeight: 500,
+    backgroundColor: '#282a2b',
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true
     },
-    minWidth: 700,
-    minHeight: 500,
   })
 
   win.maximize()
@@ -42,42 +43,21 @@ const createWindow = () => {
   }, 0)
 
   win.on('close', e => {
-    const contents = win.webContents
-
-    if (contents) {
-      contents.executeJavaScript('window.documentSaved', true).then(val => {
-        if (val === false) {
-          dialog.showMessageBox(win, {
-            type: 'question',
-            buttons: ['取消', '放弃保存并退出'],
-            title: '提示',
-            message: '有文档未保存，是否要退出？'
-          }).then(choice => {
-            if (choice.response === 1) {
-              win.destroy()
-            }
-          })
-        } else {
-          win.destroy()
-        }
-      })
-      e.preventDefault()
-    }
+    win.hide()
+    win.setSkipTaskbar(true)
+    e.preventDefault()
   })
 
-  // 当 window 被关闭，这个事件会被触发。
   win.on('closed', () => {
-    // 取消引用 window 对象，如果你的应用支持多窗口的话，
-    // 通常会把多个 window 对象存放在一个数组里面，
-    // 与此同时，你应该删除相应的元素。
     win = null
   })
 }
 
 const showWindow = () => {
   if (win) {
-    win.maximize()
+    win.setSkipTaskbar(false)
     win.show()
+    win.maximize()
     win.focus()
   } else {
     createWindow()
@@ -88,10 +68,39 @@ const reload = () => {
   win && win.loadURL(getUrl())
 }
 
+const quit = () => {
+  if (!win) {
+    app.exit(0)
+    return
+  }
+
+  const contents = win.webContents
+  if (contents) {
+    contents.executeJavaScript('window.documentSaved', true).then(val => {
+      if (val === false) {
+        dialog.showMessageBox(win, {
+          type: 'question',
+          buttons: ['取消', '放弃保存并退出'],
+          title: '提示',
+          message: '有文档未保存，是否要退出？'
+        }).then(choice => {
+          if (choice.response === 1) {
+            win.destroy()
+            app.quit()
+          }
+        })
+      } else {
+        win.destroy()
+        app.quit()
+      }
+    })
+  }
+}
+
 const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
-  app.quit()
+  app.exit()
 } else {
   app.on('second-instance', (event, commandLine, workingDirectory) => {
     showWindow()
@@ -204,9 +213,8 @@ if (!gotTheLock) {
         type: 'normal',
         label: '退出',
         click: () => {
-          win && win.close()
           setTimeout(() => {
-            app.quit()
+            quit()
           }, 200)
         }
       },
