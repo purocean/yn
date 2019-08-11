@@ -4,6 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Yank Note</title>
+    <script>
+      // 强制 monaco-editor 使用 浏览器模式
+      window.nodeRequire = window.require
+      window.nodeProcess = window.process
+      window.nodeModule = window.module
+      window.require = undefined
+      window.process = undefined
+      window.module = undefined
+    </script>
   </head>
   <body>
     <div id="app"></div>

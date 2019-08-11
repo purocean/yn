@@ -6,9 +6,6 @@
 import dayjs from 'dayjs'
 import TurndownService from 'turndown'
 
-const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
-const appPath = isElectron && window.require('electron').remote.app.getAppPath().replace(/dist$/, '')
-const pathModule = isElectron && window.require('path')
 const keys = {}
 
 export default {
@@ -22,20 +19,14 @@ export default {
     }
   },
   mounted () {
-    if (isElectron && !window.amdRequire) {
-      const amdLoader = window.require(pathModule.resolve(appPath, 'dist/static/vs/loader.js'))
-      window.amdRequire = amdLoader.require
-      this.onGotAmdLoader()
+    if (!window.require) {
+      const loaderScript = document.createElement('script')
+      loaderScript.type = 'text/javascript'
+      loaderScript.src = 'vs/loader.js'
+      loaderScript.addEventListener('load', this.onGotAmdLoader)
+      document.body.appendChild(loaderScript)
     } else {
-      if (!window.require) {
-        const loaderScript = document.createElement('script')
-        loaderScript.type = 'text/javascript'
-        loaderScript.src = 'vs/loader.js'
-        loaderScript.addEventListener('load', this.onGotAmdLoader)
-        document.body.appendChild(loaderScript)
-      } else {
-        this.onGotAmdLoader()
-      }
+      this.onGotAmdLoader()
     }
 
     window.addEventListener('keydown', this.recordKeys, true)
@@ -60,18 +51,7 @@ export default {
       }
     },
     onGotAmdLoader () {
-      const xrequire = isElectron ? window.amdRequire : window.require
-      if (isElectron) {
-        const uriFromPath = path => {
-          let pathName = pathModule.resolve(path).replace(/\\/g, '/')
-          if (pathName.length > 0 && pathName.charAt(0) !== '/') {
-            pathName = '/' + pathName
-          }
-          return encodeURI('file://' + pathName)
-        }
-        xrequire.config({ baseUrl: uriFromPath(pathModule.join(appPath, 'dist/static')) })
-      }
-      xrequire(['vs/editor/editor.main'], () => {
+      window.require(['vs/editor/editor.main'], () => {
         this.initMonaco()
       })
     },

@@ -6,8 +6,9 @@
 
 <script>
 import { mapState } from 'vuex'
+import env from '@/lib/env'
 
-const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
+const isElectron = env.isElectron
 
 export default {
   name: 'title-bar',
