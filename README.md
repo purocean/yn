@@ -159,69 +159,18 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta4.5](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.5) 2019-08-11
-1. Windows 平台增加安装包
-1. 引入检查更新
-
-### [v2.0.0-beta4.4](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.4) 2019-08-10
-1. Windows 平台增加安装包
-1. 引入检查更新
-
-### [v2.0.0-beta4.2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.2) 2019-08-09
-1. 修复文件方式引入 drawio 图形问题
-1. 支持直接在新窗口打开 drawio 图形
-1. 调整 drawio 图形样式
-
-### [v2.0.0-beta4.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.1) 2019-08-09
-1. 修复 js 文件打包拷贝
-1. 修复在 Electron 中用新窗口打开 drawio 图形
-1. 去掉 Electron 默认窗口菜单
-
-### [v2.0.0-beta4](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4) 2019-08-08
-1. 增加 drawio 图形文件渲染功能
-1. 双击刷新目录树时候也刷新仓库列表
-
-### [v2.0.0-beta3.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta3.1) 2019-08-07
-1. 修正 Windows 上路径问题
-1. 修正文件排序
-
-### [v2.0.0-beta2.1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta2.1) 2019-08-07
-1. 应用单例
-1. 自动构建
-
-### [v2.0.0-beta1](https://github.com/purocean/yn/releases/tag/v2.0.0-beta1) 2019-08-07
+### [v2.0.0-beta4.6](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.6) 2019-08-11
+1. 增加 2.0 计划
 1. Electron 打包
-1. 修复若干问题
-
-### [v2.0.0-alpha5](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha5) 2019-08-05
-1. 小工具全局注入 dayjs
-1. 在系统中打开快捷键改用 `Ctrl + 单击`
-1. 修复帮助接口图片加载
 1. 增加 HTML 小工具渲染
-1. 修复快速打开文件不能搜索内容
-
-### [v2.0.0-alpha4](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha4) 2019-08-03
 1. 增加特色功能说明和示例
-1. 增加 HTML 小工具渲染
 1. 目录树自动定位文件
-
-### [v2.0.0-alpha3](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha3) 2019-08-02
-1. 优化界面样式，提升交互体验
-1. 修复若干 v2.0.0-alpha2 的问题
-
-### [v2.0.0-alpha2](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha2) 2019-08-02
+1. 目录树和集成终端增加拖动调整尺寸功能
+1. 使用自定义 UI 控件代替浏览器阻塞性弹出框，优化界面样式，提升交互体验
 1. 默认仓库数据和配置改为在 `<home>/yank-note` 下保存
 1. 调整在 Windows 端的仓库配置，不论是否在 WSL 环境下都使用 windows 风格的路径
-1. 前端重构文件接口
-1. 尝试引入 Electron
-1. 后端重构改用 TypeScript
-1. 修复若干 v2.0.0-alpha1 的问题
-
-### [v2.0.0-alpha1](https://github.com/purocean/yn/releases/tag/v2.0.0-alpha1) 2019-08-01
-1. 目录树和集成终端增加拖动调整尺寸功能
 1. 重构前端代码便于拓展
-1. 使用自定义 UI 控件代替浏览器阻塞性弹出框
-1. 增加 2.0 计划
+1. 前端重构文件接口，改用 TypeScript
 
 ### [v1.23.0](https://github.com/purocean/yn/releases/tag/v1.23.0) 2019-07-09
 1. 增加转换所有外链图片到本地功能 `Ctrl + Alt + L`
