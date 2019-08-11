@@ -1,4 +1,5 @@
 import file from '@/lib/file'
+import env from '@/lib/env'
 
 const Plugin = md => {
   const renderHtml = ({ file, content }) => {
@@ -119,15 +120,16 @@ const openInNewWindow = srcdoc => {
   frame.frameBorder = '0'
   frame.srcdoc = srcdoc
 
-  const isElectron = !!(window && window.process && window.process.versions && window.process.versions['electron'])
-  if (isElectron) {
+  if (env.isElectron) {
     const json = JSON.stringify(frame.outerHTML)
     opener.eval(`
+      document.title = '查看图形'
       document.body.style.height = '100vh'
       document.body.style.margin = '0'
       document.body.innerHTML = ${json}
     `)
   } else {
+    opener.document.title = '查看图形'
     opener.document.body.style.height = '100vh'
     opener.document.body.style.margin = '0'
     opener.document.body.appendChild(frame)
