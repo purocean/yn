@@ -2,6 +2,7 @@ import { dialog, app } from 'electron'
 import { autoUpdater, CancellationToken } from 'electron-updater'
 const ProgressBar = require('electron-progressbar')
 const Store = require('electron-store')
+const opn = require('opn')
 import logger from 'electron-log'
 
 logger.transports.file.level = 'info'
@@ -20,7 +21,7 @@ const init = (call: () => void) => {
     const { response } = await dialog.showMessageBox({
       cancelId: 999,
       type: 'question',
-      buttons: ['下载更新', '取消', '不再提醒'],
+      buttons: ['下载更新', '查看更新内容', '取消', '不再提醒'],
       title: 'Yank Note 发现新版本',
       message: `当前版本 ${app.getVersion()}\n最新版本：${info.version}`
     })
@@ -55,7 +56,9 @@ const init = (call: () => void) => {
         console.log('cancel download')
         cancellationToken.cancel()
       })
-    } else if (response === 2) {
+    } else if (response === 1) {
+      opn('https://github.com/purocean/yn#%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97')
+    } else if (response === 3) {
       store.set('dontCheckUpdates', true)
     }
   })
