@@ -12,7 +12,8 @@
         </div>
         <div v-else></div>
         <div class="convert">
-          <form ref="convertForm" :action="`/api/convert/${convert.fileName}`" method="post" target="_blank">
+          <iframe width="0" height="0" hidden id="preview_download" name="preview_download"></iframe>
+          <form ref="convertForm" :action="`/api/convert/${convert.fileName}`" method="post" target="preview_download">
             <input type="hidden" name="html" :value="convert.html">
             <input type="hidden" name="type" :value="convert.type">
             <!-- <button type="button" @click="convertFile('pdf')">pdf</button> -->

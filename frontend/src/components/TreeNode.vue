@@ -59,7 +59,8 @@ export default {
           if (item.path.toLowerCase().endsWith('.drawio')) {
             DrawioPlugin.open(item)
           } else {
-            window.open(`api/attachment/${encodeURIComponent(item.name)}?repo=${item.repo}&path=${encodeURIComponent(item.path)}`)
+            File.openInOS(this.item)
+            // window.open(`api/attachment/${encodeURIComponent(item.name)}?repo=${item.repo}&path=${encodeURIComponent(item.path)}`)
           }
         }
       }
