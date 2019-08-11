@@ -871,7 +871,7 @@ electron-download@^4.1.0:
 
 electron-log@^3.0.7:
   version "3.0.7"
-  resolved "https://registry.npm.taobao.org/electron-log/download/electron-log-3.0.7.tgz#bfdba9489c84b1301d6067028fce2f4cb2f89d7f"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.7.tgz#bfdba9489c84b1301d6067028fce2f4cb2f89d7f"
   integrity sha1-v9upSJyEsTAdYGcCj84vTLL4nX8=
 
 electron-progressbar@^1.2.0:
