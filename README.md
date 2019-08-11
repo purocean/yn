@@ -160,8 +160,7 @@ yarn run start
 [最新发布](https://github.com/purocean/yn/releases)
 
 ### [v2.0.0-beta4.5](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.5) 2019-08-11
-1. Windows 平台增加安装包
-1. 引入检查更新
+1. 修复一些问题
 
 ### [v2.0.0-beta4.4](https://github.com/purocean/yn/releases/tag/v2.0.0-beta4.4) 2019-08-10
 1. Windows 平台增加安装包
