@@ -2,13 +2,25 @@
   <div class="tree-node">
     <details ref="dir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" :open="item.path === '/'">
       <summary
-        class="dir-label"
+        class="folder"
         :style="{background: selected ? '#313131' : 'none'}"
-        @dblclick.exact.prevent="createFile()"
-        @click.ctrl.exact.prevent="revealInExplorer()"
+        @dblclick.exact.prevent="createFile"
+        @click.ctrl.exact.prevent="revealInExplorer"
         @click.ctrl.alt.exact.prevent="revealInXterminal(item)"
         @contextmenu.ctrl.prevent="renameFile"
-        @contextmenu.shift.prevent="deleteFile"> {{ item.name }} <span class="count">({{item.children.length}})</span> </summary>
+        @contextmenu.shift.prevent="deleteFile">
+        <div class="item">
+          <div class="item-label">
+            {{ item.name }} <span class="count">({{item.children.length}})</span>
+          </div>
+          <div class="item-action">
+            <FileIcon class="icon" @click.native.exact.stop.prevent="createFile" title="创建文件（双击目录）"></FileIcon>
+            <EditIcon class="icon" @click.native.exact.stop.prevent="renameFile" title="重命名/移动（Ctrl + 右键）"></EditIcon>
+            <ShareIcon class="icon" @click.native.exact.stop.prevent="revealInExplorer" title="系统中打开（Ctrl + 单击）"></ShareIcon>
+            <TrashIcon class="icon" @click.native.exact.stop.prevent="deleteFile" title="删除（Shift + 右键）"></TrashIcon>
+          </div>
+        </div>
+      </summary>
       <tree-node v-for="x in item.children" :key="x.path" :item="x"></tree-node>
     </details>
     <div
@@ -19,7 +31,17 @@
       @click.exact.prevent="select(item)"
       @click.ctrl.exact.prevent="revealInExplorer()"
       @contextmenu.ctrl.prevent="renameFile"
-      @contextmenu.shift.prevent="deleteFile"> {{ item.name }} </div>
+      @contextmenu.shift.prevent="deleteFile">
+      <div class="item">
+        <div class="item-label"> {{ item.name }} </div>
+        <div class="item-action">
+          <!-- <BookmarkIcon class="icon" @click.native.exact.stop.prevent="" title="标记"></BookmarkIcon> -->
+          <EditIcon class="icon" @click.native.exact.stop.prevent="renameFile" title="重命名/移动（Ctrl + 右键）"></EditIcon>
+          <ShareIcon class="icon" @click.native.exact.stop.prevent="revealInExplorer" title="系统中打开（Ctrl + 单击）"></ShareIcon>
+          <TrashIcon class="icon" @click.native.exact.stop.prevent="deleteFile" title="删除（Shift + 右键）"></TrashIcon>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -27,9 +49,15 @@
 import { mapState } from 'vuex'
 import File from '@/lib/file'
 import DrawioPlugin from '@/plugins/DrawioPlugin'
+import FileIcon from 'vue-ionicons/dist/ios-document.vue'
+import ShareIcon from 'vue-ionicons/dist/ios-share-alt.vue'
+import EditIcon from 'vue-ionicons/dist/ios-brush.vue'
+import TrashIcon from 'vue-ionicons/dist/ios-trash.vue'
+// import BookmarkIcon from 'vue-ionicons/dist/ios-bookmark.vue'
 
 export default {
   name: 'tree-node',
+  components: { FileIcon, ShareIcon, EditIcon, TrashIcon },
   props: {
     item: Object,
   },
@@ -39,13 +67,13 @@ export default {
         '"双击" 创建新文件',
         '"Ctrl + 右键" 重命名目录',
         '"Shift + 右键" 删除目录',
-        '"Ctrl + 双击" 在操作系统中打开目录',
+        '"Ctrl + 单击" 在操作系统中打开目录',
         '"Ctrl + Alt + 单击" 在终端中打开'
       ].join('\n'),
       fileTitle: [
         '"Ctrl + 右键" 重命名文件',
         '"Shift + 右键" 删除文件',
-        '"Ctrl + 双击" 使用系统程序打开文件',
+        '"Ctrl + 单击" 使用系统程序打开文件',
         '".c.md" 结尾的文件为加密文件'
       ].join('\n')
     }
@@ -211,6 +239,76 @@ export default {
   user-select: none;
 }
 
+summary.folder::-webkit-details-marker {
+  flex: none;
+  width: 10px;
+  position: relative;
+  margin: 0;
+  margin-right: 5px;
+}
+
+.folder {
+  display: flex;
+  align-items: center;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+summary > .item {
+  width: calc(100% - 15px);
+}
+
+.item-label {
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+}
+
+.item-action {
+  display: none;
+  align-content: center;
+  justify-content: space-around;
+  padding-right: 8px;
+  flex: none;
+}
+
+.item-action .icon {
+  cursor: pointer;
+  padding: 0 2px;
+  display: flex;
+  align-items: center;
+  height: 22px;
+  border-radius: 2px;
+  fill: #999999;
+}
+
+.item-action .icon:hover {
+  background: #757575;
+  fill: #eee;
+}
+
+.item:hover .item-action {
+  display: flex;
+}
+
+.item .count {
+  color: #989898;
+  font-size: 12px;
+  vertical-align: text-bottom;
+
+  opacity: 0;
+}
+
+.item:hover .count {
+  opacity: 1;
+}
+
 .name {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -232,17 +330,5 @@ export default {
 
 .file-name:active {
   padding-left: 0.3em;
-}
-
-.dir-label .count {
-  color: #989898;
-  font-size: 12px;
-  vertical-align: text-bottom;
-
-  opacity: 0;
-}
-
-.dir-label:hover .count {
-  opacity: 1;
 }
 </style>

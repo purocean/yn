@@ -31,6 +31,7 @@
     "turndown": "^5.0.3",
     "vue": "^2.6.10",
     "vue-bus": "^1.2.1",
+    "vue-ionicons": "^3.0.4",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1",
     "xterm": "^3.12.2"
