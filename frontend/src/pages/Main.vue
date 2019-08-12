@@ -12,7 +12,7 @@
       <Preview
         ref="preview"
         slot="preview"
-        @sync-scroll="line => $refs.editor.revealLine(line)"
+        @sync-scroll="line => $refs.editor.revealLineInCenter(line)"
         @switch-todo="(line, checked) => $refs.editor.switchTodo(line, checked)" />
     </Layout>
     <XFilter />

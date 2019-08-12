@@ -5,7 +5,7 @@
       class="editor"
       @change="val => $store.commit('app/setCurrentContent', val)"
       @ready="editorReady"
-      @scroll-line="syncScrollView"
+      @scroll-view="syncScrollView"
       @paste-img="pasteImg"
       @upload-file="uploadFile"
       @change-document="val => $store.commit('app/setDocumentInfo', val)"
@@ -15,10 +15,14 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 import File from '@/lib/file'
+import Storage from '@/lib/Storage'
 import MonacoEditor from './MonacoEditor'
+
+const FILE_POSITION_KEY = 'filePosition'
 
 export default {
   name: 'editor',
@@ -35,6 +39,10 @@ export default {
     this.$bus.on('editor-toggle-wrap', this.$refs.editor.toggleWrap)
     this.$bus.on('file-new', this.createFile)
     this.restartTimer()
+
+    this.saveFileOpenPositionDebounce = _.debounce(line => {
+      this.saveFileOpenPosition(line)
+    }, 1000)
   },
   beforeDestroy () {
     this.$bus.off('resize', this.$refs.editor.resize)
@@ -44,6 +52,13 @@ export default {
     this.$bus.off('file-new', this.createFile)
   },
   methods: {
+    saveFileOpenPosition (top) {
+      if (this.currentFile) {
+        const map = Storage.get(FILE_POSITION_KEY, {})
+        map[`${this.currentFile.repo}|${this.currentFile.path}`] = top
+        Storage.set(FILE_POSITION_KEY, map)
+      }
+    },
     async createFile ({ file, content }) {
       try {
         // 加密文件内容
@@ -101,11 +116,15 @@ export default {
     revealLine (line) {
       this.$refs.editor.revealLine(line)
     },
+    revealLineInCenter (line) {
+      this.$refs.editor.revealLineInCenter(line)
+    },
     switchTodo (line, checked) {
       this.$refs.editor.switchTodo(line, checked)
     },
-    syncScrollView (e) {
-      this.$emit('scroll-line', e)
+    syncScrollView ({ line, top }) {
+      this.$emit('scroll-line', line)
+      this.saveFileOpenPositionDebounce(top)
     },
     async saveFile (f = null) {
       const file = f || this.currentFile
@@ -167,6 +186,7 @@ export default {
       this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
     },
     async changeFile (current, previous) {
+      this.$refs.editor.setScrollToTop(0)
       this.clearTimer()
 
       if (previous && previous.repo && previous.path) {
@@ -209,8 +229,9 @@ export default {
         console.error(error)
       }
 
-      // 切换文件时候定位到第一行
-      this.$refs.editor.setPosition({ column: 1, lineNumber: 1 })
+      // 切换文件时候定位
+      const top = Storage.get(FILE_POSITION_KEY, {})[`${current.repo}|${current.path}`] || 1
+      this.$refs.editor.setScrollToTop(top)
     }
   },
   computed: {

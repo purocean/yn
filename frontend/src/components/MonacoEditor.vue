@@ -87,7 +87,8 @@ export default {
 
       this.editor.onDidScrollChange(e => {
         const line = this.editor.getVisibleRanges()[0].startLineNumber
-        this.$emit('scroll-line', line)
+        const top = this.editor.getScrollTop()
+        this.$emit('scroll-view', { line, top })
       })
 
       this.keyBind()
@@ -227,8 +228,11 @@ export default {
         { range: new window.monaco.Range(line, 1, line, length + 1), text }
       ])
     },
-    revealLine (line) {
+    revealLineInCenter (line) {
       this.editor.revealLineInCenter(line)
+    },
+    setScrollToTop (top) {
+      this.editor.setScrollTop(top)
     },
     switchTodo (line, checked) {
       if (checked) {
@@ -258,9 +262,6 @@ export default {
         textLength: this.getValue().length,
         selectedLength: this.editor.getModel().getValueInRange(selection).length
       }
-    },
-    setPosition (position) {
-      this.editor.setScrollTop(0)
     },
     toggleWrap () {
       const isWrapping = this.editor.getConfiguration().wrappingInfo.isViewportWrapping
