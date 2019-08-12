@@ -4,7 +4,6 @@
       <summary
         class="folder"
         :style="{background: selected ? '#313131' : 'none'}"
-        @dblclick.exact.prevent="createFile"
         @click.ctrl.exact.prevent="revealInExplorer"
         @click.ctrl.alt.exact.prevent="revealInXterminal(item)"
         @contextmenu.ctrl.prevent="renameFile"
@@ -14,7 +13,7 @@
             {{ item.name }} <span class="count">({{item.children.length}})</span>
           </div>
           <div class="item-action">
-            <FileIcon class="icon" @click.native.exact.stop.prevent="createFile" title="创建文件（双击目录）"></FileIcon>
+            <FileIcon class="icon" @click.native.exact.stop.prevent="createFile" title="创建文件"></FileIcon>
             <EditIcon class="icon" @click.native.exact.stop.prevent="renameFile" title="重命名/移动（Ctrl + 右键）"></EditIcon>
             <ShareIcon class="icon" @click.native.exact.stop.prevent="revealInExplorer" title="系统中打开（Ctrl + 单击）"></ShareIcon>
             <TrashIcon class="icon" @click.native.exact.stop.prevent="deleteFile" title="删除（Shift + 右键）"></TrashIcon>
@@ -64,7 +63,6 @@ export default {
   data () {
     return {
       dirTitle: [
-        '"双击" 创建新文件',
         '"Ctrl + 右键" 重命名目录',
         '"Shift + 右键" 删除目录',
         '"Ctrl + 单击" 在操作系统中打开目录',
