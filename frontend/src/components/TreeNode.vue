@@ -49,14 +49,15 @@ import { mapState } from 'vuex'
 import File from '@/lib/file'
 import DrawioPlugin from '@/plugins/DrawioPlugin'
 import FileIcon from 'vue-ionicons/dist/ios-document.vue'
-import ShareIcon from 'vue-ionicons/dist/ios-share-alt.vue'
-import EditIcon from 'vue-ionicons/dist/ios-brush.vue'
-import TrashIcon from 'vue-ionicons/dist/ios-trash.vue'
+// import ShareIcon from 'vue-ionicons/dist/ios-share-alt.vue'
+// import EditIcon from 'vue-ionicons/dist/ios-brush.vue'
+// import TrashIcon from 'vue-ionicons/dist/ios-trash.vue'
 // import BookmarkIcon from 'vue-ionicons/dist/ios-bookmark.vue'
 
 export default {
   name: 'tree-node',
-  components: { FileIcon, ShareIcon, EditIcon, TrashIcon },
+  // components: { FileIcon, ShareIcon, EditIcon, TrashIcon },
+  components: { FileIcon },
   props: {
     item: Object,
   },
