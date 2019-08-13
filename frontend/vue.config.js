@@ -22,6 +22,10 @@ module.exports = {
         from: 'public/viewer.min.js',
         to: 'viewer.min.js'
       }
+      args[0][2] = {
+        from: 'public/favicon.ico',
+        to: 'favicon.ico'
+      }
       return args
     })
   }
