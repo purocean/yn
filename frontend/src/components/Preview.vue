@@ -58,6 +58,7 @@ import LinkTargetPlugin from '../plugins/LinkTargetPlugin'
 import DrawioPlugin from '../plugins/DrawioPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
 import file from '@/lib/file'
+import env from '@/lib/env'
 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
@@ -269,7 +270,13 @@ export default {
       if (e.target.tagName === 'A' && e.target.classList.contains('open')) {
         fetch(e.target.href.replace('api/attachment', 'api/open'))
         e.preventDefault()
-        return false
+        return
+      }
+
+      if (env.isElectron && e.target.tagName === 'A' && /^(http:|https:|ftp:)\/\//i.test(e.target.getAttribute('href') || '')) {
+        env.require && env.require('opn')(e.target.href)
+        e.preventDefault()
+        return
       }
 
       if (e.target.tagName === 'IMG') {

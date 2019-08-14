@@ -178,7 +178,7 @@ export default {
       // })
     },
     paste (e) {
-      if (this.editor.isFocused()) {
+      if (this.editor.hasTextFocus()) {
         const items = e.clipboardData.items
         if (keys['b'] || keys['B']) { // 粘贴 HTML 转为 markdown
           for (let i = 0; i < items.length; i++) {
