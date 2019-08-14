@@ -126,7 +126,7 @@ REM 开发
 yarn run serve
 
 REM Electron 端
-cd ../app
+cd ../
 REM 安装依赖
 win-install.bat
 REM 打包 打包前请在前端目录运行打包命令
@@ -159,7 +159,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta5.2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta5.2) 2019-08-14
+### [v2.0.0-beta5.3](https://github.com/purocean/yn/releases/tag/v2.0.0-beta5.3) 2019-08-14
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染

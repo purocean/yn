@@ -6,8 +6,7 @@ import * as xStatic from 'koa-static'
 import * as mime from 'mime'
 import * as request from 'request'
 import * as pty from 'node-pty'
-
-import { STATIC_DIR, HOME_DIR } from './constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR } from './constant'
 import init from './init'
 import file from './file'
 import dataRepository from './repository'
@@ -148,10 +147,10 @@ const readme = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/help')) {
     if (ctx.query.path) {
       ctx.type = mime.getType(ctx.query.path)
-      ctx.body = fs.readFileSync(path.join(STATIC_DIR, 'help', ctx.query.path.replace('../', '')))
+      ctx.body = fs.readFileSync(path.join(HELP_DIR, ctx.query.path.replace('../', '')))
     } else {
       ctx.body = result('ok', '获取成功', {
-        content: fs.readFileSync(path.join(STATIC_DIR, 'help', ctx.query.doc.replace('../', ''))).toString()
+        content: fs.readFileSync(path.join(HELP_DIR, ctx.query.doc.replace('../', ''))).toString()
       })
     }
   } else {
@@ -172,15 +171,6 @@ const server = (port = 3000) => {
 
   const app = new Koa()
 
-  app.use(xStatic(STATIC_DIR))
-  app.use(async (ctx: any, next: any) => {
-    if (ctx.path.startsWith('/static')) {
-      ctx.response.redirect(ctx.path.replace(/^\/static/, ''))
-    } else {
-      await next()
-    }
-  })
-
   app.use(bodyParser({
     multipart: true,
     formLimit: '20mb',
@@ -198,6 +188,22 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, repository))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
+
+  app.use(async (ctx: any, next: any) => {
+    if (ctx.path.startsWith('/static')) {
+      ctx.response.redirect(ctx.path.replace(/^\/static/, ''))
+    } else {
+      await next()
+    }
+  })
+
+  app.use(xStatic(STATIC_DIR))
+  app.use(async (ctx: any, next: any) => {
+    ctx.url = '/index.html'
+    await next()
+  })
+  app.use(xStatic(STATIC_DIR))
+
 
   const server = require('http').createServer(app.callback())
   const io = require('socket.io')(server, {path: '/ws'})

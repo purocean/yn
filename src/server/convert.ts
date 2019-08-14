@@ -2,10 +2,12 @@ import * as os from 'os'
 import * as fs from 'fs'
 import * as path from 'path'
 import { spawn } from 'child_process'
+import { BIN_DIR } from './constant'
 
-const binPath = path.join(__dirname, '../', 'pandoc' + (os.platform() === 'win32' ? '.exe' : ''))
+const binPath = path.join(BIN_DIR, os.platform() + '-pandoc-2.7.3' + (os.platform() === 'win32' ? '.exe' : ''))
 
 const convert = async (html: string, type: string) => {
+  console.log(binPath)
   try {
     const path = os.tmpdir() + `/yn_convert_${new Date().getTime()}.${type}`
 

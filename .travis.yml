@@ -13,18 +13,16 @@ before_install:
   - npm install -g yarn
 
 install:
+  - ./win-install.bat
   - cd frontend
   - yarn
-  - cd ../app
-  - ./win-install.bat
   - cd ..
 
 script:
   - cd frontend
   - yarn run dist
-  - cd ../app
+  - cd ../
   - ./win-build.bat
-  - cd ..
 
 deploy:
   provider: releases

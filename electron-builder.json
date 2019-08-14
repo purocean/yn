@@ -4,7 +4,10 @@
   "copyright": "Copyright 2019 purocean@outlook.com",
   "asar": false,
   "files": [
+    "./bin/**",
+    "./help/**",
     "./dist/**",
+    "./frontend/dist/**",
     "./node_modules/**"
   ],
   "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
@@ -15,8 +18,7 @@
   "npmRebuild": false,
   "win": {
     "target": [
-      "zip",
-      "nsis"
+      "zip"
     ],
     "icon": "./src/assets/icon.ico"
   },
