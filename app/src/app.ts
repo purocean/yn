@@ -51,6 +51,30 @@ const createWindow = () => {
   win.on('closed', () => {
     win = null
   })
+
+  const selectionMenu = Menu.buildFromTemplate([
+    { role: 'copy', label: '复制' },
+  ])
+
+  const inputMenu = Menu.buildFromTemplate([
+    { role: 'copy', label: '复制' },
+    { role: 'paste', label: '粘贴' },
+    { role: 'cut', label: '剪切' },
+    { type: 'separator' },
+    { role: 'undo' , label: '撤销' },
+    { role: 'redo', label: '重做'},
+    { type: 'separator' },
+    { role: 'selectall', label: '全选' },
+  ])
+
+  win.webContents.on('context-menu', (e, props) => {
+    const { selectionText, isEditable } = props
+    if (isEditable) {
+      inputMenu.popup({ window: win })
+    } else if (selectionText && selectionText.trim() !== '') {
+      selectionMenu.popup({ window: win })
+    }
+  })
 }
 
 const showWindow = () => {
