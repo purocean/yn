@@ -126,7 +126,7 @@ REM 开发
 yarn run serve
 
 REM Electron 端
-cd ../app
+cd ../
 REM 安装依赖
 win-install.bat
 REM 打包 打包前请在前端目录运行打包命令
