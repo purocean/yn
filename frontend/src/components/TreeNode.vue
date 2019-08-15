@@ -11,7 +11,7 @@
         @contextmenu.shift.exact.prevent.stop="deleteFile">
         <div class="item">
           <div class="item-label">
-            {{ item.name }} <span class="count">({{item.children.length}})</span>
+            {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children.length}})</span>
           </div>
           <div class="item-action">
             <y-icon class="icon" name="folder-plus" @click.native.exact.stop.prevent="createFile" title="创建文件"></y-icon>
@@ -141,6 +141,11 @@ export default {
       this.$bus.emit('file-new', { file, content: `# ${filename.replace(/\.md$/i, '')}\n` })
     },
     async renameFile () {
+      if (this.item.path === '/') {
+        this.$toast.show('warning', '不能移动根目录')
+        return
+      }
+
       let newPath = await this.$modal.input({
         title: '移动文件',
         hint: '新的路径',
@@ -183,6 +188,11 @@ export default {
       this.$bus.emit('file-moved', newFile)
     },
     async deleteFile () {
+      if (this.item.path === '/') {
+        this.$toast.show('warning', '不能删除根目录')
+        return
+      }
+
       const confirm = await this.$modal.confirm({ title: '删除文件', content: `确定要删除 [${this.item.path}] 吗？` })
 
       if (confirm) {
@@ -198,6 +208,9 @@ export default {
     },
   },
   computed: {
+    currentRepoName () {
+      return this.currentRepo ? this.currentRepo.name : '/'
+    },
     ...mapState('app', ['currentFile', 'currentRepo']),
     selected () {
       if (!this.currentFile) {

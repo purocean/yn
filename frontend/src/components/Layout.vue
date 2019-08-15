@@ -27,7 +27,6 @@
     <div class="footer">
       <slot name="footer"></slot>
     </div>
-    <div v-if="toast" :class="{toast: true, [`toast-${toast.type}`]: true}">{{toast.content}}</div>
   </div>
 </template>
 
@@ -38,15 +37,9 @@ let resizeOrigin = null
 
 export default {
   name: 'layout',
-  data () {
-    return {
-      toast: null
-    }
-  },
   mounted () {
     window.addEventListener('resize', this.emitResize)
     window.document.addEventListener('mousemove', this.resizeFrame)
-    this.$bus.on('show-toast', this.showToast)
     this.$bus.on('toggle-view', this.toggleView)
     this.$bus.on('toggle-xterm', this.toggleXterm)
   },
@@ -55,19 +48,10 @@ export default {
     window.document.removeEventListener('mousemove', this.resizeFrame)
     this.$bus.off('toggle-view', this.toggleView)
     this.$bus.off('toggle-xterm', this.toggleXterm)
-    this.$bus.off('show-toast', this.showToast)
   },
   methods: {
     emitResize () {
       this.$bus.emit('resize')
-    },
-    showToast (type, content, timeout = 2000) {
-      // TODO 暂时只有 warn type
-      this.toast = { type, content }
-
-      setTimeout(() => {
-        this.toast = null
-      }, timeout)
     },
     toggleView () {
       this.$store.commit('app/setShowView', !this.showView)
@@ -232,24 +216,5 @@ export default {
   .layout {
     height: auto;
   }
-}
-
-.toast {
-  position: fixed;
-  width: 250px;
-  left: 0;
-  top: 100px;
-  padding: 10px;
-  z-index: 100;
-  right: 0;
-  margin: auto;
-  border-radius: 50px;
-  text-align: center;
-  word-break: break-all;
-}
-
-.toast-warning {
-  background: #d46b08;
-  color: #f9ebeb;
 }
 </style>
