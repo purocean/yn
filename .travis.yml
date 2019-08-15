@@ -20,7 +20,7 @@ install:
 
 script:
   - cd frontend
-  - yarn run dist
+  - yarn run build
   - cd ../
   - ./win-build.bat
 
