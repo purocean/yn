@@ -23,11 +23,11 @@ export const getIsWsl = () => {
 export const isWsl = getIsWsl()
 
 export const toWslPath = (path: string) => {
-  return execFileSync('wslpath', ['-u', `${path.replace(/\\/g, '/')}`]).toString().trim()
+  return execFileSync('wsl.exe', ['--', 'wslpath', '-u', `${path.replace(/\\/g, '/')}`]).toString().trim()
 }
 
 export const toWinPath = (path: string) => {
-  return execFileSync('wslpath', ['-w', path]).toString().trim()
+  return execFileSync('wsl.exe', ['--', 'wslpath', '-w', path]).toString().trim()
 }
 
 export const getWinTempPath = () => {
