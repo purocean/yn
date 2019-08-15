@@ -5,9 +5,10 @@
         class="folder"
         :style="{background: selected ? '#313131' : 'none'}"
         @click.ctrl.exact.prevent="revealInExplorer"
-        @click.ctrl.alt.exact.prevent="revealInXterminal(item)"
-        @contextmenu.ctrl.prevent="renameFile"
-        @contextmenu.shift.prevent="deleteFile">
+        @click.ctrl.alt.exact.prevent="revealInXterminal"
+        @contextmenu.exact.prevent.stop="showContextMenu(item)"
+        @contextmenu.ctrl.exact.prevent.stop="renameFile"
+        @contextmenu.shift.exact.prevent.stop="deleteFile">
         <div class="item">
           <div class="item-label">
             {{ item.name }} <span class="count">({{item.children.length}})</span>
@@ -28,16 +29,14 @@
       :class="{name: true, 'file-name': true, selected}"
       :title="item.name + '\n\n' + fileTitle"
       @click.exact.prevent="select(item)"
-      @click.ctrl.exact.prevent="revealInExplorer()"
-      @contextmenu.ctrl.prevent="renameFile"
-      @contextmenu.shift.prevent="deleteFile">
+      @click.ctrl.exact.prevent="revealInExplorer"
+      @contextmenu.exact.prevent.stop="showContextMenu(item)"
+      @contextmenu.ctrl.exact.prevent.stop="renameFile"
+      @contextmenu.shift.exact.prevent.stop="deleteFile">
       <div class="item">
         <div class="item-label"> {{ item.name }} </div>
         <div class="item-action">
           <!-- <BookmarkIcon class="icon" @click.native.exact.stop.prevent="" title="标记"></BookmarkIcon> -->
-          <!-- <EditIcon class="icon" @click.native.exact.stop.prevent="renameFile" title="重命名/移动（Ctrl + 右键）"></EditIcon>
-          <ShareIcon class="icon" @click.native.exact.stop.prevent="revealInExplorer" title="系统中打开（Ctrl + 单击）"></ShareIcon>
-          <TrashIcon class="icon" @click.native.exact.stop.prevent="deleteFile" title="删除（Shift + 右键）"></TrashIcon> -->
         </div>
       </div>
     </div>
@@ -72,6 +71,26 @@ export default {
     }
   },
   methods: {
+    showContextMenu (item) {
+      const menu = [
+        { id: 'rename', label: '重命名 / 移动', onClick: () => this.renameFile() },
+        { id: 'delete', label: '删除', onClick: () => this.deleteFile() },
+        { type: 'separator' },
+        { id: 'openInOS', label: '在系统中打开', onClick: () => this.revealInExplorer() },
+      ]
+
+      if (item.type === 'dir') {
+        this.$contextMenu.show([
+          { id: 'create', label: '创建新文件', onClick: () => this.createFile() }
+        ].concat(menu).concat([
+          { id: 'openInTerminal', label: '在终端中打开', onClick: () => this.revealInXterminal() }
+        ]))
+      } else {
+        this.$contextMenu.show([
+          // { id: 'mark', label: '标记为常用', onClick: x => console.log(x) }
+        ].concat(menu))
+      }
+    },
     select (item) {
       if (item.type !== 'dir') {
         if (item.name.endsWith('.md')) {
@@ -89,8 +108,8 @@ export default {
     revealInExplorer () {
       File.openInOS(this.item)
     },
-    revealInXterminal (item) {
-      const path = this.currentRepo ? this.currentRepo.path + item.path : '~'
+    revealInXterminal () {
+      const path = this.currentRepo ? this.currentRepo.path + this.item.path : '~'
 
       this.$bus.emit('xterm-run', `cd '${path.replace('\'', '\\\'')}'`)
     },
