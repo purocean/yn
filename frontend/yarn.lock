@@ -7179,6 +7179,10 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-awesome@^3.5.4:
+  version "3.5.4"
+  resolved "https://registry.npmjs.org/vue-awesome/-/vue-awesome-3.5.4.tgz#da14ca20a3c6415c72823a7f743022f2dbd0183f"
+
 vue-bus@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/vue-bus/-/vue-bus-1.2.1.tgz#50577b0b73fc1af9cda8a475fef2f7f0fdad7045"
@@ -7208,10 +7212,6 @@ vue-eslint-parser@^5.0.0:
 vue-hot-reload-api@^2.3.0:
   version "2.3.3"
   resolved "https://registry.npmjs.org/vue-hot-reload-api/-/vue-hot-reload-api-2.3.3.tgz#2756f46cb3258054c5f4723de8ae7e87302a1ccf"
-
-vue-ionicons@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.npmjs.org/vue-ionicons/-/vue-ionicons-3.0.4.tgz#06dbb8334def235d9afe7ecb40bb1c01ba99b24d"
 
 vue-loader@^15.7.0:
   version "15.7.0"
