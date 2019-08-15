@@ -108,11 +108,11 @@ export default {
   mounted () {
     this.updatePlantumlDebounce = _.debounce(() => {
       this.updatePlantuml()
-    }, 3000)
+    }, 3000, { leading: true })
 
     this.runAppletScriptDebounce = _.debounce(() => {
       this.runAppletScript()
-    }, 1000)
+    }, 1000, { leading: true })
 
     this.render = _.debounce(() => {
       this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(this.currentContent))

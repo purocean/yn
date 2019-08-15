@@ -1,5 +1,5 @@
 <template>
-  <aside class="side" @dblclick="refresh();refreshRepo()" title="双击此处刷新目录树">
+  <aside class="side" @contextmenu.exact.prevent="showContextMenu" @dblclick="refresh();refreshRepo()" title="双击此处刷新目录树">
     <div class="loading" v-if="tree === null"> 加载中 </div>
     <template v-else>
       <TreeNode v-for="item in tree" :item="item" :key="item.path" />
@@ -32,6 +32,18 @@ export default {
     this.$bus.off('file-uploaded', this.refresh)
   },
   methods: {
+    showContextMenu () {
+      this.$contextMenu.show([
+        {
+          id: 'refresh',
+          label: '刷新目录树',
+          onClick: () => {
+            this.refresh()
+            this.refreshRepo()
+          }
+        }
+      ])
+    },
     refresh () {
       this.$store.dispatch('app/fetchTree', this.currentRepo)
     },

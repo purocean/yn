@@ -75,7 +75,7 @@ export default {
         this.$bus.emit('file-created', file)
         this.$store.commit('app/setCurrentFile', file)
       } catch (error) {
-        this.$bus.emit('show-toast', 'warning', error.message)
+        this.$toast.show('warning', error.message)
         console.error(error)
       }
     },
@@ -170,7 +170,7 @@ export default {
         this.$store.commit('app/setPreviousContent', this.currentContent)
         this.$store.commit('app/setSavedAt', new Date())
       } catch (error) {
-        this.$bus.emit('show-toast', 'warning', error.message)
+        this.$toast.show('warning', error.message)
         console.error(error)
       }
     },
@@ -225,7 +225,7 @@ export default {
         this.$refs.editor.setValue(content)
       } catch (error) {
         this.$store.commit('app/setCurrentFile', null)
-        this.$bus.emit('show-toast', 'warning', error.message)
+        this.$toast.show('warning', error.message)
         console.error(error)
       }
 

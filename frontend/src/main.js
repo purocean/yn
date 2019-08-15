@@ -4,10 +4,14 @@ import Icon from 'vue-awesome/components/Icon'
 import router from './router'
 import store from './store/index'
 import modal from './modal'
+import contextMenu from './contextMenu'
+import toast from './toast'
 
 Vue.config.productionTip = false
 
 Vue.use(modal)
+Vue.use(contextMenu)
+Vue.use(toast)
 Vue.component('y-icon', Icon)
 
 const appVm = new Vue({
