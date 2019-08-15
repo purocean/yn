@@ -64,7 +64,7 @@ const createWindow = () => {
     { role: 'undo' , label: '撤销' },
     { role: 'redo', label: '重做'},
     { type: 'separator' },
-    { role: 'selectall', label: '全选' },
+    { role: 'selectAll', label: '全选' },
   ])
 
   win.webContents.on('context-menu', (e, props) => {
