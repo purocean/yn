@@ -109,9 +109,9 @@ export default {
       File.openInOS(this.item)
     },
     revealInXterminal () {
-      const path = this.currentRepo ? this.currentRepo.path + this.item.path : '~'
+      const path = this.currentRepo ? this.currentRepo.path + this.item.path : ''
 
-      this.$bus.emit('xterm-run', `cd '${path.replace('\'', '\\\'')}'`)
+      this.$bus.emit('xterm-run', `--yank-note-run-command-cd-- ${path}`)
     },
     async createFile () {
       let filename = await this.$modal.input({

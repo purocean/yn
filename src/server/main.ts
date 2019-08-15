@@ -6,6 +6,7 @@ import * as xStatic from 'koa-static'
 import * as mime from 'mime'
 import * as request from 'request'
 import * as pty from 'node-pty'
+import * as os from 'os'
 import { STATIC_DIR, HOME_DIR, HELP_DIR } from './constant'
 import init from './init'
 import file from './file'
@@ -218,7 +219,13 @@ const server = (port = 3000) => {
     })
     ptyProcess.on('data', (data: any) => socket.emit('output', data))
     ptyProcess.on('exit', () => socket.disconnect())
-    socket.on('input', (data: any) => ptyProcess.write(data))
+    socket.on('input', (data: any) => {
+      if (data.startsWith(shell.CD_COMMAND_PREFIX)) {
+        ptyProcess.write(shell.transformCdCommand(data.toString()))
+      } else {
+        ptyProcess.write(data)
+      }
+    })
     socket.on('resize', (size: any) => ptyProcess.resize(size[0], size[1]))
     socket.on('disconnect', () => ptyProcess.kill())
   })
