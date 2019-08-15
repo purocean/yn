@@ -18,7 +18,8 @@
   "npmRebuild": false,
   "win": {
     "target": [
-      "zip"
+      "zip",
+      "nsis"
     ],
     "icon": "./src/assets/icon.ico"
   },

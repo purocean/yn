@@ -20,7 +20,7 @@ install:
 
 script:
   - cd frontend
-  - yarn run dist
+  - yarn run build
   - cd ../
   - ./win-build.bat
 
@@ -30,8 +30,8 @@ deploy:
     secure: plPTWdi1zCN54NVQELPJKecebLxx0347zUc6upBpKANcDNyZgXKbSLaXdaWu2NKJn/Ax4nrdT4tQrpB70YBgV5B744141Rv2QgSrVJKOKcRIygFhOV6U3c/PCKoPOi9T6iky/sieLnujDm9Kwvif4qhucPIEoEq0+v/A2uwJbfkgT9Wa39NYZPOz/GSTJiUSTVTFexjhADZmONpD6VmlmN6jnTqrYQJIR9ioopY5YNrtvAYZtK7qtTCCZQqGBgFoF1/UFiFyoREpZqrdZg4qdXv18d9b2liA45+xXayUOo/Q7DNlWem23BqmURRj9R+LaKy6viUfZGq4zcFBjKXGWSizBJZCHCM8UGUxr1td8cQBGbsRkeGweI8t6EGL7zECEeUF1JAAYN/Ok24bf0So2hmdEbLtRqUJZTf6eYITZj+sTHTzlRR0vNLjmsKIh6t5sU9Hpcw+De/rIEc/hRRRwoeTWHcIippy4R54WDTKhoxAl+m8+F2bS0zgkxQGEPXImsT9RVRo83eG2/uI8FId18Nl4CmsqeGRUeOnEry5+g38tHqskYf0RiCRwVdiDh7jxfxZzSwavB+fk0pWJxrLAKbzCAieNEThw0VOIYUZIBz4MWSgMU2ahPmoPyDUrUapyV8eQW+/8S2NFXjaXO1y2i4p/1ikVqMufaSlWGI8hVM=
   file_glob: true
   file:
-    - app/out/Yank-Note*.*
-    - app/out/latest*.yml
+    - out/Yank-Note*.*
+    - out/latest*.yml
   skip_cleanup: true
   draft: true
   on:
