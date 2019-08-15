@@ -28,10 +28,10 @@
 + [x] 支持嵌入 `draw.io` 文档
 + [ ] 文件目录增加右键菜单
 + [ ] 支持打开多个文件
-+ [ ] 常驻托盘，支持使用快捷键打开常用文档
++ [ ] 支持使用快捷键打开常用文档
++ [ ] 全局剪切板功能
 + [ ] 拥有更友好的配置界面
 + [ ] 可以自定义快捷键
-+ [ ] 可以使用 `WebDAV` 协议作为文件通信协议
 
 ## 上手使用
 + 在 [最新版本](https://github.com/purocean/yn/releases) 下载对应平台应用即可
@@ -159,7 +159,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta5.3](https://github.com/purocean/yn/releases/tag/v2.0.0-beta5.3) 2019-08-14
+### [v2.0.0-beta6.0](https://github.com/purocean/yn/releases/tag/v2.0.0-beta6.0) 2019-08-15
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染

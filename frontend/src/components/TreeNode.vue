@@ -13,7 +13,7 @@
             {{ item.name }} <span class="count">({{item.children.length}})</span>
           </div>
           <div class="item-action">
-            <FileIcon class="icon" @click.native.exact.stop.prevent="createFile" title="创建文件"></FileIcon>
+            <y-icon class="icon" name="folder-plus" @click.native.exact.stop.prevent="createFile" title="创建文件"></y-icon>
             <!-- <EditIcon class="icon" @click.native.exact.stop.prevent="renameFile" title="重命名/移动（Ctrl + 右键）"></EditIcon>
             <ShareIcon class="icon" @click.native.exact.stop.prevent="revealInExplorer" title="系统中打开（Ctrl + 单击）"></ShareIcon>
             <TrashIcon class="icon" @click.native.exact.stop.prevent="deleteFile" title="删除（Shift + 右键）"></TrashIcon> -->
@@ -48,16 +48,10 @@
 import { mapState } from 'vuex'
 import File from '@/lib/file'
 import DrawioPlugin from '@/plugins/DrawioPlugin'
-import FileIcon from 'vue-ionicons/dist/ios-document.vue'
-// import ShareIcon from 'vue-ionicons/dist/ios-share-alt.vue'
-// import EditIcon from 'vue-ionicons/dist/ios-brush.vue'
-// import TrashIcon from 'vue-ionicons/dist/ios-trash.vue'
-// import BookmarkIcon from 'vue-ionicons/dist/ios-bookmark.vue'
+import 'vue-awesome/icons/folder-plus'
 
 export default {
   name: 'tree-node',
-  // components: { FileIcon, ShareIcon, EditIcon, TrashIcon },
-  components: { FileIcon },
   props: {
     item: Object,
   },
