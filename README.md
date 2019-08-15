@@ -159,12 +159,13 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta6.2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta6.2) 2019-08-15
+### [v2.0.0-beta7.0](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.0) 2019-08-15
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染
 1. 增加特色功能说明和示例
 1. 目录树自动定位文件
+1. 目录树增加右键菜单
 1. 目录树和集成终端增加拖动调整尺寸功能
 1. 使用自定义 UI 控件代替浏览器阻塞性弹出框，优化界面样式，提升交互体验
 1. 默认仓库数据和配置改为在 `<home>/yank-note` 下保存
