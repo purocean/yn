@@ -3,21 +3,21 @@ import * as fs from 'fs'
 import { execFileSync } from 'child_process'
 
 export const getIsWsl = () => {
-	if (process.platform !== 'linux') {
-		return false
-	}
+  if (process.platform !== 'linux') {
+    return false
+  }
 
-	if (os.release().toLowerCase().includes('microsoft')) {
-		return true
-	}
+  if (os.release().toLowerCase().includes('microsoft')) {
+    return true
+  }
 
-	try {
-		if (fs.readFileSync('/proc/version', 'utf8').toLowerCase().includes('microsoft')) {
-			return true
-		}
-	} catch (_) {
-		return false
-	}
+  try {
+    if (fs.readFileSync('/proc/version', 'utf8').toLowerCase().includes('microsoft')) {
+      return true
+    }
+  } catch (_) {
+    return false
+  }
 }
 
 export const isWsl = getIsWsl()
