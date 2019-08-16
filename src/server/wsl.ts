@@ -4,19 +4,19 @@ import { execFileSync } from 'child_process'
 
 export const getIsWsl = () => {
 	if (process.platform !== 'linux') {
-		return false;
+		return false
 	}
 
 	if (os.release().toLowerCase().includes('microsoft')) {
-		return true;
+		return true
 	}
 
 	try {
 		if (fs.readFileSync('/proc/version', 'utf8').toLowerCase().includes('microsoft')) {
-			return true;
+			return true
 		}
 	} catch (_) {
-		return false;
+		return false
 	}
 }
 
