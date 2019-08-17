@@ -23,6 +23,8 @@ export default {
     this.$bus.on('file-moved', this.refresh)
     this.$bus.on('file-deleted', this.refresh)
     this.$bus.on('file-uploaded', this.refresh)
+    this.$bus.on('file-marked', this.refresh)
+    this.$bus.on('file-unmarked', this.refresh)
     this.refresh()
   },
   beforeDestroy () {
@@ -30,6 +32,8 @@ export default {
     this.$bus.off('file-moved', this.refresh)
     this.$bus.off('file-deleted', this.refresh)
     this.$bus.off('file-uploaded', this.refresh)
+    this.$bus.off('file-marked', this.refresh)
+    this.$bus.off('file-unmarked', this.refresh)
   },
   methods: {
     showContextMenu () {

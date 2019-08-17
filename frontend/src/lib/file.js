@@ -81,6 +81,14 @@ const deleteFile = async ({ path, repo }) => {
   return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
 }
 
+const mark = async ({ path, repo }) => {
+  return fetchHttp(`/api/mark?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'POST' })
+}
+
+const unmark = async ({ path, repo }) => {
+  return fetchHttp(`/api/mark?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
+}
+
 const fetchTree = async repo => {
   const result = await fetchHttp(`/api/tree?repo=${repo}`)
   return result.data
@@ -152,4 +160,6 @@ export default {
   openInOS,
   search,
   upload,
+  mark,
+  unmark,
 }

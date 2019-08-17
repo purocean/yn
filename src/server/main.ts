@@ -6,7 +6,6 @@ import * as xStatic from 'koa-static'
 import * as mime from 'mime'
 import * as request from 'request'
 import * as pty from 'node-pty'
-import * as os from 'os'
 import { STATIC_DIR, HOME_DIR, HELP_DIR } from './constant'
 import init from './init'
 import file from './file'
@@ -15,8 +14,9 @@ import run from './run'
 import convert from './convert'
 import plantuml from './plantuml'
 import shell from './shell'
+import mark from './mark'
 
-const result = (status = 'ok', message = '操作成功', data: any = null) => {
+const result = (status: 'ok' | 'error' = 'ok', message = '操作成功', data: any = null) => {
   return { status, message, data }
 }
 
@@ -78,6 +78,22 @@ const open = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/open')) {
     if (ctx.method === 'GET') {
       file.open(ctx.query.repo, ctx.query.path)
+      ctx.body = result()
+    }
+  } else {
+    await next()
+  }
+}
+
+const markFile = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/mark')) {
+    if (ctx.method === 'GET') {
+      ctx.body = result('ok', '获取成功', mark.list())
+    } else if (ctx.method === 'POST') {
+      mark.add({repo: ctx.query.repo, path: ctx.query.path})
+      ctx.body = result()
+    } else if (ctx.method === 'DELETE') {
+      mark.remove({repo: ctx.query.repo, path: ctx.query.path})
       ctx.body = result()
     }
   } else {
@@ -189,6 +205,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, repository))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, markFile))
 
   app.use(async (ctx: any, next: any) => {
     if (ctx.path.startsWith('/static')) {

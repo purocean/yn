@@ -4,11 +4,24 @@ import * as path from 'path'
 import * as crypto from 'crypto'
 import * as NaturalOrderby from 'natural-orderby'
 import * as wsl from './wsl'
+import mark, { MarkedFile } from './mark'
 import repository from './repository'
 const opn = require('opn')
 
 const isWsl = wsl.isWsl
 const ignorePath = /node_modules/
+
+interface XFile {
+  name: string,
+  path: string,
+  type: 'dir' | 'file',
+  repo: string,
+}
+
+interface TreeItem extends XFile {
+  marked?: boolean,
+  children?: XFile[]
+}
 
 const mkdirPSync = (location: string) => {
   let normalizedPath = path.normalize(location)
@@ -51,7 +64,7 @@ const resolvePath = (p: string, repo = 'main') => {
   return path.join(basePath, p)
 }
 
-const travels = (location: string, repo: string, basePath: string = null): any => {
+const travels = (location: string, repo: string, basePath: string = null, markedFiles: MarkedFile[] | null = null): any => {
   if (!basePath) {
     basePath = resolvePath('', repo)
   }
@@ -65,6 +78,8 @@ const travels = (location: string, repo: string, basePath: string = null): any =
   const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()), (v: any) => v.name)
   const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()), (v: any) => v.name)
 
+  markedFiles = markedFiles || mark.list()
+
   return dirs.map(x => {
     const p = path.join(location, x)
     const xpath = p.replace(basePath, '').replace(/\\/g, '/')
@@ -74,8 +89,8 @@ const travels = (location: string, repo: string, basePath: string = null): any =
       path: xpath,
       type: 'dir',
       repo: repo,
-      children: travels(p, repo, basePath)
-    }
+      children: travels(p, repo, basePath, markedFiles)
+    } as TreeItem
   }).concat(files.map(x => {
     const p = path.join(location, x)
     const xpath = p.replace(basePath, '').replace(/\\/g, '/')
@@ -85,7 +100,8 @@ const travels = (location: string, repo: string, basePath: string = null): any =
       path: xpath,
       type: 'file',
       repo: repo,
-    } as any
+      marked: markedFiles.findIndex(f => f.path === xpath && f.repo === repo) > -1
+    } as TreeItem
   }))
 }
 
