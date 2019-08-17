@@ -83,9 +83,14 @@ export default {
           { id: 'openInTerminal', label: '在终端中打开', onClick: () => this.revealInXterminal() }
         ]))
       } else {
-        this.$contextMenu.show([
-          { id: 'mark', label: this.item.marked ? '取消标记' : '标记文件', onClick: () => this.toggleMark() }
-        ].concat(menu))
+        // markdown 文件可以被标记
+        if (this.item.path.endsWith('.md')) {
+          this.$contextMenu.show([
+            { id: 'mark', label: this.item.marked ? '取消标记' : '标记文件', onClick: () => this.toggleMark() }
+          ].concat(menu))
+        } else {
+          this.$contextMenu.show(menu)
+        }
       }
     },
     async toggleMark () {
