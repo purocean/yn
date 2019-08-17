@@ -34,10 +34,7 @@
       @contextmenu.ctrl.exact.prevent.stop="renameFile"
       @contextmenu.shift.exact.prevent.stop="deleteFile">
       <div class="item">
-        <div class="item-label"> {{ item.name }} </div>
-        <div class="item-action">
-          <!-- <BookmarkIcon class="icon" @click.native.exact.stop.prevent="" title="标记"></BookmarkIcon> -->
-        </div>
+        <div :class="{'item-label': true, marked: !!item.marked}"> {{ item.name }} </div>
       </div>
     </div>
   </div>
@@ -87,8 +84,19 @@ export default {
         ]))
       } else {
         this.$contextMenu.show([
-          // { id: 'mark', label: '标记为常用', onClick: x => console.log(x) }
+          { id: 'mark', label: this.item.marked ? '取消标记' : '标记文件', onClick: () => this.toggleMark() }
         ].concat(menu))
+      }
+    },
+    async toggleMark () {
+      if (this.item.marked) {
+        this.item.marked = false
+        await File.unmark(this.item)
+        this.$bus.emit('file-unmarked', this.item)
+      } else {
+        this.item.marked = true
+        await File.mark(this.item)
+        this.$bus.emit('file-marked', this.item)
       }
     },
     select (item) {
@@ -355,5 +363,9 @@ summary > .item {
 
 .file-name:active {
   padding-left: 0.3em;
+}
+
+.marked {
+  color: #ffc107;
 }
 </style>
