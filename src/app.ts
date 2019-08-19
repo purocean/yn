@@ -32,8 +32,9 @@ const createWindow = () => {
   win = new BrowserWindow({
     maximizable: true,
     show: false,
-    minWidth: 700,
+    minWidth: 800,
     minHeight: 500,
+    frame: false,
     backgroundColor: '#282a2b',
     webPreferences: {
       webSecurity: false,
@@ -41,7 +42,7 @@ const createWindow = () => {
     },
   })
 
-  win.maximize()
+  // win.maximize()
   win.show()
   win.setMenu(null)
 
@@ -90,7 +91,7 @@ const showWindow = () => {
       win.setSkipTaskbar(false)
       win.show()
     }
-    if (win.isFocused() && win.isVisible()) {
+    if (win.isVisible()) {
       hide()
     } else {
       // 先隐藏再显示，以便在 windows 10 当前虚拟窗口展示
