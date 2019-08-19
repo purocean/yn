@@ -4,6 +4,7 @@ import { dialog } from 'electron'
 import server from './server/main'
 import { USER_DIR } from './server/constant'
 import * as updater from './updater'
+import { getAccelerator, registerShortcut } from './shortcut'
 const opn = require('opn')
 
 let isDev = false
@@ -19,6 +20,13 @@ Menu.setApplicationMenu(null)
 let win: BrowserWindow | null = null
 // 系统托盘
 let tray = null
+
+const hide = () => {
+  if (win) {
+    win.hide()
+    win.setSkipTaskbar(true)
+  }
+}
 
 const createWindow = () => {
   win = new BrowserWindow({
@@ -43,8 +51,7 @@ const createWindow = () => {
   }, 0)
 
   win.on('close', e => {
-    win.hide()
-    win.setSkipTaskbar(true)
+    hide()
     e.preventDefault()
   })
 
@@ -79,10 +86,17 @@ const createWindow = () => {
 
 const showWindow = () => {
   if (win) {
-    win.setSkipTaskbar(false)
-    win.show()
-    win.maximize()
-    win.focus()
+    const show = () => {
+      win.setSkipTaskbar(false)
+      win.show()
+    }
+    if (win.isFocused() && win.isVisible()) {
+      hide()
+    } else {
+      // 先隐藏再显示，以便在 windows 10 当前虚拟窗口展示
+      hide()
+      setTimeout(show, 100)
+    }
   } else {
     createWindow()
   }
@@ -140,10 +154,17 @@ if (!gotTheLock) {
 
     showWindow()
 
+    // 注册快捷键
+    registerShortcut({
+      'show-main-window': () => showWindow(),
+      'open-in-browser': () => opn(getUrl())
+    })
+
     const contextMenu = Menu.buildFromTemplate([
       {
         type: 'normal',
         label: '打开主界面',
+        accelerator: getAccelerator('show-main-window'),
         click: () => {
           showWindow()
         }
@@ -151,6 +172,7 @@ if (!gotTheLock) {
       {
         type: 'normal',
         label: '浏览器中打开',
+        accelerator: getAccelerator('open-in-browser'),
         click: () => {
           opn(getUrl())
         }
