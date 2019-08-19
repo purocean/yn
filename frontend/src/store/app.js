@@ -34,6 +34,7 @@ export default {
   state: {
     repositories: {},
     tree: null,
+    showSide: true,
     showView: true,
     showXterm: false,
     savedAt: null,
@@ -66,6 +67,9 @@ export default {
     },
     setShowView (state, data) {
       state.showView = data
+    },
+    setShowSide (state, data) {
+      state.showSide = data
     },
     setShowXterm (state, data) {
       state.showXterm = data

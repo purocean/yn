@@ -4,7 +4,7 @@
       <slot name="header"></slot>
     </div>
     <div class="main">
-      <div class="left" ref="aside">
+      <div class="left" ref="aside" v-show="showSide">
         <slot name="left"></slot>
         <div class="sash-right" @mousedown="e => initResize('right', 'aside', 100, 700, e)"></div>
       </div>
@@ -41,17 +41,23 @@ export default {
     window.addEventListener('resize', this.emitResize)
     window.document.addEventListener('mousemove', this.resizeFrame)
     this.$bus.on('toggle-view', this.toggleView)
+    this.$bus.on('toggle-side', this.toggleSide)
     this.$bus.on('toggle-xterm', this.toggleXterm)
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.emitResize)
     window.document.removeEventListener('mousemove', this.resizeFrame)
+    this.$bus.off('toggle-side', this.toggleSide)
     this.$bus.off('toggle-view', this.toggleView)
     this.$bus.off('toggle-xterm', this.toggleXterm)
   },
   methods: {
     emitResize () {
       this.$bus.emit('resize')
+    },
+    toggleSide () {
+      this.$store.commit('app/setShowSide', !this.showSide)
+      this.$nextTick(() => this.$bus.emit('resize'), 500)
     },
     toggleView () {
       this.$store.commit('app/setShowView', !this.showView)
@@ -109,7 +115,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('app', ['showView', 'showXterm'])
+    ...mapState('app', ['showView', 'showXterm', 'showSide'])
   }
 }
 </script>
