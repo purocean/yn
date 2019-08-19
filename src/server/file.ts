@@ -19,6 +19,8 @@ interface XFile {
 }
 
 interface TreeItem extends XFile {
+  mtime?: number,
+  birthtime?: number,
   marked?: boolean,
   children?: XFile[]
 }
@@ -96,13 +98,16 @@ const travels = (location: string, repo: string, basePath: string = null, marked
   }).concat(files.map(x => {
     const p = path.join(location, x)
     const xpath = p.replace(basePath, '').replace(/\\/g, '/')
+    const stat = fs.statSync(p)
 
     return {
       name: x,
       path: xpath,
       type: 'file',
       repo: repo,
-      marked: markedFiles.findIndex(f => f.path === xpath && f.repo === repo) > -1
+      marked: markedFiles.findIndex(f => f.path === xpath && f.repo === repo) > -1,
+      birthtime: stat.birthtimeMs,
+      mtime: stat.mtimeMs
     } as TreeItem
   }))
 }

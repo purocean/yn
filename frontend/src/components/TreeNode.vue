@@ -60,6 +60,9 @@ export default {
         '"Ctrl + Alt + 单击" 在终端中打开'
       ].join('\n'),
       fileTitle: [
+        `创建于：${this.item.birthtime ? new Date(this.item.birthtime).toLocaleString() : '无'}`,
+        `更新于：${this.item.mtime ? new Date(this.item.mtime).toLocaleString() : '无'}`,
+        '',
         '"Ctrl + 右键" 重命名文件',
         '"Shift + 右键" 删除文件',
         '"Ctrl + 单击" 使用系统程序打开文件',
@@ -164,7 +167,8 @@ export default {
         hint: '新的路径',
         content: '当前路径：' + this.item.path,
         value: this.item.path,
-        select: [this.item.path.lastIndexOf('/') + 1, this.item.path.length, 'forward']
+        // 默认选中文件名
+        select: [this.item.path.lastIndexOf('/') + 1, this.item.name.lastIndexOf('.') > -1 ? this.item.path.lastIndexOf('.') : this.item.path.length, 'forward']
       })
 
       if (!newPath) {
