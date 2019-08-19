@@ -164,7 +164,8 @@ export default {
         hint: '新的路径',
         content: '当前路径：' + this.item.path,
         value: this.item.path,
-        select: [this.item.path.lastIndexOf('/') + 1, this.item.path.length, 'forward']
+        // 默认选中文件名
+        select: [this.item.path.lastIndexOf('/') + 1, this.item.name.lastIndexOf('.') > -1 ? this.item.path.lastIndexOf('.') : this.item.path.length, 'forward']
       })
 
       if (!newPath) {
