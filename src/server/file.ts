@@ -75,8 +75,10 @@ const travels = (location: string, repo: string, basePath: string = null, marked
 
   const list = fs.readdirSync(location).filter(x => !x.startsWith('.') && !ignorePath.test(x))
 
-  const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()), (v: any) => v.name)
-  const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()), (v: any) => v.name)
+  const sortOptions = [(v: string) => v && v.charCodeAt(0) > 255 ? 1 : 0, (v: string) => v]
+
+  const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()), sortOptions)
+  const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()), sortOptions)
 
   markedFiles = markedFiles || mark.list()
 
