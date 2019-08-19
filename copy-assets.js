@@ -11,5 +11,5 @@ try {
 fs.copySync(path.join(__dirname, 'src/assets'), assetsPath)
 
 // 复制 markdown，处理相对路径
-const md = fs.readFileSync('README.md').toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./')
+const md = fs.readFileSync('README.md').toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')
 fs.writeFileSync(path.join(__dirname, './help/README.md'), md)

@@ -1,5 +1,5 @@
 <template>
-  <div class="title-bar" :style="saved ? '' : 'background: orange'">
+  <div class="title-bar" :style="saved ? '' : 'background: #ff9800ad'">
     <h4 class="title">
       <img v-if="win" @dblclick="close" class="logo" src="~@/assets/icon.png" alt="logo">
       <span>{{statusText}}</span>
@@ -162,6 +162,7 @@ export default {
   height: 100%;
   display: flex;
   align-items: center;
+  font-size: .8em;
 }
 
 .logo {

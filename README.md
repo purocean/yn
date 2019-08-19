@@ -144,7 +144,7 @@ yarn run start
 ## 捐赠
 如果我的工作对您有帮助，请我喝杯咖啡吧 ^_^。**附言可以留下您的 github 用户名或网站连接**。
 
-<img alt="微信" src="./wechat.png" width="17%" style="display: inline-block">　<img alt="支付宝" src="./alipay.jpg" width="17%" style="display: inline-block">　<img alt="支付宝红包" src="./hb.jpg" width="17%" style="display: inline-block">
+<img alt="微信" src="./help/wechat.png" width="17%" style="display: inline-block">　<img alt="支付宝" src="./help/alipay.jpg" width="17%" style="display: inline-block">　<img alt="支付宝红包" src="./help/hb.jpg" width="17%" style="display: inline-block">
 
 1. [wangyedong66](https://github.com/wangyedong66) 2元
 1. [yubingcen](https://github.com/yubingcen) 0.1元
@@ -159,7 +159,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta7.6](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.6) 2019-08-19
+### [v2.0.0-beta7.7](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.7) 2019-08-19
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染
