@@ -69,7 +69,11 @@ export default {
         // try "same", "indent" or "none"
         wrappingIndent: 'same',
         smoothScrolling: true,
-        cursorBlinking: 'smooth'
+        cursorBlinking: 'smooth',
+        scrollbar: {
+          vertical: 'hidden',
+          verticalScrollbarSize: 0
+        }
       })
 
       this.editor.onDidChangeCursorSelection(e => {
