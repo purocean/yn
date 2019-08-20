@@ -79,7 +79,7 @@ export default {
   computed: {
     ...mapState('app', ['currentFile', 'savedAt', 'previousContent', 'currentContent']),
     titleBarStyles () {
-      if (!this.isFocused) {
+      if (isElectron && !this.isFocused) {
         return { background: '#818181' }
       }
 
