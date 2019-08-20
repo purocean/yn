@@ -286,7 +286,7 @@ export default {
           return
         }
 
-        window.open(img.src)
+        env.openAlwaysOnTopWindow(img.src)
         return
       }
 
