@@ -113,7 +113,7 @@ const buildSrcdoc = async ({ repo, path, content }) => {
 }
 
 const openInNewWindow = srcdoc => {
-  const opener = window.open('about:blank')
+  const opener = env.openAlwaysOnTopWindow('about:blank')
   const frame = document.createElement('iframe')
   frame.width = '100%'
   frame.height = '100%'

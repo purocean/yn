@@ -1,5 +1,5 @@
 <template>
-  <div class="title-bar" :style="saved ? '' : 'background: #ff9800ad'">
+  <div class="title-bar" :style="titleBarStyles">
     <h4 class="title">
       <img v-if="win" @dblclick="close" class="logo" src="~@/assets/icon.png" alt="logo">
       <span>{{statusText}}</span>
@@ -38,6 +38,7 @@ export default {
       win: null,
       isMaximized: false,
       isAlwaysOnTop: false,
+      isFocused: false,
     }
   },
   mounted () {
@@ -49,11 +50,13 @@ export default {
 
     if (isElectron && env.require) {
       this.win = env.require('electron').remote.getCurrentWindow()
-      this.isMaximized = this.win.isMaximized()
-      this.win.on('maximize', this.changeWindowStatus)
-      this.win.on('restore', this.changeWindowStatus)
-      this.win.on('unmaximize', this.changeWindowStatus)
-      this.win.on('always-on-top-changed', this.changeWindowStatus)
+      this.updateWindowStatus()
+      this.win.on('maximize', this.updateWindowStatus)
+      this.win.on('restore', this.updateWindowStatus)
+      this.win.on('unmaximize', this.updateWindowStatus)
+      this.win.on('always-on-top-changed', this.updateWindowStatus)
+      this.win.on('focus', this.updateWindowStatus)
+      this.win.on('blur', this.updateWindowStatus)
     }
   },
   beforeDestroy () {
@@ -62,15 +65,30 @@ export default {
     }
 
     if (this.win) {
-      this.win.removeListener('maximize', this.changeWindowStatus)
-      this.win.removeListener('restore', this.changeWindowStatus)
-      this.win.removeListener('unmaximize', this.changeWindowStatus)
-      this.win.removeListener('minimize', this.changeWindowStatus)
-      this.win.removeListener('always-on-top-changed', this.changeWindowStatus)
+      this.win.removeListener('maximize', this.updateWindowStatus)
+      this.win.removeListener('restore', this.updateWindowStatus)
+      this.win.removeListener('unmaximize', this.updateWindowStatus)
+      this.win.removeListener('minimize', this.updateWindowStatus)
+      this.win.removeListener('always-on-top-changed', this.updateWindowStatus)
+      this.win.removeListener('focus', this.updateWindowStatus)
+      this.win.removeListener('blur', this.updateWindowStatus)
     }
+
+    this.win = null
   },
   computed: {
     ...mapState('app', ['currentFile', 'savedAt', 'previousContent', 'currentContent']),
+    titleBarStyles () {
+      if (!this.isFocused) {
+        return { background: '#818181' }
+      }
+
+      if (!this.saved) {
+        return { background: '#ff9800ad' }
+      }
+
+      return null
+    },
     saved () {
       return this.previousContent === this.currentContent
     },
@@ -115,10 +133,11 @@ export default {
     },
   },
   methods: {
-    changeWindowStatus () {
+    updateWindowStatus () {
       if (this.win) {
         this.isMaximized = this.win.isMaximized()
         this.isAlwaysOnTop = this.win.isAlwaysOnTop()
+        this.isFocused = this.win.isFocused()
       }
     },
     toggleAlwaysOnTop () {
