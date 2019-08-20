@@ -3,7 +3,7 @@ import { globalShortcut, dialog } from 'electron'
 type AcceleratorType = 'show-main-window' | 'open-in-browser'
 export const getAccelerator = (type: AcceleratorType) => {
   return {
-    'show-main-window': 'Super+Shift+O',
+    'show-main-window': 'Super+N',
     'open-in-browser': 'Super+Shift+B'
   }[type]
 }
