@@ -1,19 +1,20 @@
 <template>
   <div class="status-bar">
     <RepositorySwitch class="left"></RepositorySwitch>
-
-    <div class="view-control right" @click="toggleFeature">特色功能说明</div>
-    <div class="view-control right" @click="toggleReadme" title="Alt + h">README</div>
-    <div class="view-control right" @click="toggleView" title="Alt + v">切换预览</div>
-    <div class="wrap-control right" @click="toggleWrap" title="Alt + w">切换换行</div>
-    <div class="wrap-control right" @click="toggleXterm" title="Alt + o">切换终端</div>
-    <div class="view-control right" @click="toggleSide" title="Alt + e">切换侧栏</div>
-    <div class="document-info right">
-      <span>行：{{documentInfo.line}}</span>
-      <span>列：{{documentInfo.column}}</span>
-      <span>总行数：{{documentInfo.lineCount}}</span>
-      <span>字符数：{{documentInfo.textLength}}</span>
-      <span v-if="documentInfo.selectedLength > 0">已选中：{{documentInfo.selectedLength}}</span>
+    <div class="right">
+      <div class="document-info">
+        <span>行：{{documentInfo.line}}</span>
+        <span>列：{{documentInfo.column}}</span>
+        <span>总行数：{{documentInfo.lineCount}}</span>
+        <span>字符数：{{documentInfo.textLength}}</span>
+        <span v-if="documentInfo.selectedLength > 0">已选中：{{documentInfo.selectedLength}}</span>
+      </div>
+      <div class="action" @click="toggleSide" title="Alt + e">切换侧栏</div>
+      <div class="action" @click="toggleWrap" title="Alt + w">切换换行</div>
+      <div class="action" @click="toggleView" title="Alt + v">切换预览</div>
+      <div class="action" @click="toggleXterm" title="Alt + o">切换终端</div>
+      <div class="action" @click="toggleReadme" title="Alt + h">README</div>
+      <div class="action" @click="toggleFeature">特色功能说明</div>
     </div>
   </div>
 </template>
@@ -92,11 +93,11 @@ export default {
 
 <style scoped>
 .left {
-  float: left;
+  display: flex;
 }
 
 .right {
-  float: right;
+  display: flex;
 }
 
 .status-bar {
@@ -107,6 +108,14 @@ export default {
   font-size: 12px;
   line-height: 20px;
   height: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.document-info {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .document-info > span {
@@ -114,14 +123,15 @@ export default {
   padding: 0 .2em;
 }
 
-.view-control, .wrap-control {
+.action {
   padding: 0 .5em;
   /* margin-left: 1em; */
   cursor: pointer;
   user-select: none;
+  flex: none;
 }
 
-.view-control:hover, .wrap-control:hover {
+.action:hover {
   background: #2e2e2e;
 }
 </style>
