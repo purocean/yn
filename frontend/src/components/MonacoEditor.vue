@@ -60,11 +60,12 @@ export default {
         value: this.value,
         language: 'markdown',
         theme: 'vs-dark',
-        fontSize: '20',
+        fontSize: 18,
         wordWrap: false,
         // wordWrapColumn: 40,
         // Set this to false to not auto word wrap minified files
         wordWrapMinified: true,
+        mouseWheelZoom: true,
         // try "same", "indent" or "none"
         wrappingIndent: 'same',
         smoothScrolling: true,
