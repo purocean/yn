@@ -1,5 +1,6 @@
 <template>
   <div class="title-bar" :style="titleBarStyles">
+    <div v-if="win" class="resizer"></div>
     <h4 class="title">
       <img v-if="win" @dblclick="close" class="logo" src="~@/assets/icon.png" alt="logo">
       <span>{{statusText}}</span>
@@ -162,7 +163,6 @@ export default {
 </script>
 
 <style scoped>
-
 .title-bar {
   background: #4e4e4e;
   color: #eee;
@@ -173,6 +173,15 @@ export default {
   justify-content: center;
   -webkit-user-select: none;
   -webkit-app-region: drag;
+  position: relative;
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 20%;
+  -webkit-app-region: no-drag;
 }
 
 .title {
