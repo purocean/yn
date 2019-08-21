@@ -174,15 +174,6 @@ export default {
           { beforeText: /^\s*1. .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '1. ' } }
         ]
       })
-
-      // this.editor.addCommand(KC.Enter, () => {
-      //   const p = this.editor.getPosition()
-      //   this.editor.executeEdits('', [{
-      //     range: new window.monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
-      //     text: '\nresult',
-      //     forceMoveMarkers: true
-      //   }])
-      // })
     },
     paste (e) {
       if (this.editor.hasTextFocus()) {
