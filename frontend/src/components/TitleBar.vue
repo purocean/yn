@@ -8,16 +8,16 @@
       <div title="置顶窗口" :class="{btn: true, pin: true, ontop: isAlwaysOnTop}" @click="toggleAlwaysOnTop">
         <y-icon class="pin-icon" name="thumbtack"></y-icon>
       </div>
-      <div class="btn" @click="minimize">
+      <div title="最小化" class="btn" @click="minimize">
         <div class="icon minimize"></div>
       </div>
-      <div v-if="isMaximized" class="btn" @click="unmaximize">
+      <div title="还原" v-if="isMaximized" class="btn" @click="unmaximize">
         <div class="icon unmaximize"></div>
       </div>
-      <div v-else class="btn" @click="maximize">
+      <div title="最大化" v-else class="btn" @click="maximize">
         <div class="icon maximize"></div>
       </div>
-      <div class="btn" @click="close">
+      <div title="关闭" class="btn btn-close" @click="close">
         <div class="icon close"></div>
       </div>
     </div>
@@ -231,6 +231,10 @@ export default {
 
 .action .icon.close {
   mask: url(~@/assets/window-close.svg) no-repeat 50% 50%;
+}
+
+.action .btn.btn-close:hover {
+  background-color: rgba(232, 17, 35, .9)
 }
 
 .action .btn:hover {
