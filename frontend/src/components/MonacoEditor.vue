@@ -126,7 +126,9 @@ export default {
       })
 
       this.editor.addCommand(KM.Shift | KC.Enter, () => {
-        this.insert(this.editor.getModel().getOneIndent())
+        // getOneIndent 接口被移除了 https://github.com/microsoft/monaco-editor/issues/1565
+        // this.insert(this.editor.getModel().getOneIndent())
+        this.insert('    ')
       })
 
       this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
