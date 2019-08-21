@@ -111,7 +111,12 @@ export default {
         })
       }
     },
-    filterFiles (files, search) {
+    filterFiles (files, search, fuzzy) {
+      if (!fuzzy) {
+        search = search.toLowerCase()
+        return files.filter(x => x.path.toLowerCase().indexOf(search) > -1)
+      }
+
       const tmp = []
 
       files.forEach(x => {
@@ -126,7 +131,7 @@ export default {
     },
     updateDataSource () {
       if (this.currentTab === 'file') {
-        this.list = this.filterFiles(this.files, this.searchText.trim())
+        this.list = this.filterFiles(this.files, this.searchText.trim(), false)
         this.sortList()
       } else {
         this.list = null
