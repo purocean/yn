@@ -159,7 +159,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta7.10](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.10) 2019-08-20
+### [v2.0.0-beta7.11](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.11) 2019-08-21
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染
@@ -169,9 +169,8 @@ yarn run start
 1. 目录树和集成终端增加拖动调整尺寸功能
 1. 使用自定义 UI 控件代替浏览器阻塞性弹出框，优化界面样式，提升交互体验
 1. 默认仓库数据和配置改为在 `<home>/yank-note` 下保存
-1. 调整在 Windows 端的仓库配置，不论是否在 WSL 环境下都使用 windows 风格的路径
 1. 重构前端代码便于拓展
-1. 前端重构文件接口，改用 TypeScript
+1. 前端重构文件接口
 
 ### [v1.23.0](https://github.com/purocean/yn/releases/tag/v1.23.0) 2019-07-09
 1. 增加转换所有外链图片到本地功能 `Ctrl + Alt + L`
