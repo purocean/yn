@@ -127,8 +127,12 @@ export default {
 
       this.editor.addCommand(KM.Shift | KC.Enter, () => {
         // getOneIndent 接口被移除了 https://github.com/microsoft/monaco-editor/issues/1565
-        // this.insert(this.editor.getModel().getOneIndent())
-        this.insert('    ')
+        const getOneIndent = editor => {
+          const options = editor.getModel().getOptions()
+          return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'
+        }
+
+        this.insert(getOneIndent(this.editor))
       })
 
       this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
