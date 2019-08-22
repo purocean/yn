@@ -25,6 +25,7 @@ export default {
     this.$bus.on('file-uploaded', this.refresh)
     this.$bus.on('file-marked', this.refresh)
     this.$bus.on('file-unmarked', this.refresh)
+    this.$bus.on('tree-refresh', this.refresh)
     this.refresh()
   },
   beforeDestroy () {
@@ -34,6 +35,7 @@ export default {
     this.$bus.off('file-uploaded', this.refresh)
     this.$bus.off('file-marked', this.refresh)
     this.$bus.off('file-unmarked', this.refresh)
+    this.$bus.off('tree-refresh', this.refresh)
   },
   methods: {
     showContextMenu () {

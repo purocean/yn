@@ -126,7 +126,13 @@ export default {
       })
 
       this.editor.addCommand(KM.Shift | KC.Enter, () => {
-        this.insert(this.editor.getModel().getOneIndent())
+        // getOneIndent 接口被移除了 https://github.com/microsoft/monaco-editor/issues/1565
+        const getOneIndent = editor => {
+          const options = editor.getModel().getOptions()
+          return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'
+        }
+
+        this.insert(getOneIndent(this.editor))
       })
 
       this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
@@ -172,15 +178,6 @@ export default {
           { beforeText: /^\s*1. .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '1. ' } }
         ]
       })
-
-      // this.editor.addCommand(KC.Enter, () => {
-      //   const p = this.editor.getPosition()
-      //   this.editor.executeEdits('', [{
-      //     range: new window.monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
-      //     text: '\nresult',
-      //     forceMoveMarkers: true
-      //   }])
-      // })
     },
     paste (e) {
       if (this.editor.hasTextFocus()) {

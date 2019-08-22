@@ -77,6 +77,7 @@ export default {
         { id: 'delete', label: '删除', onClick: () => this.deleteFile() },
         { type: 'separator' },
         { id: 'openInOS', label: '在系统中打开', onClick: () => this.revealInExplorer() },
+        { id: 'openInOS', label: '刷新目录树', onClick: () => this.$bus.emit('tree-refresh') },
       ]
 
       if (item.type === 'dir') {

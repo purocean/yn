@@ -24,9 +24,11 @@ export default {
   mounted () {
     this.mouseX = 0
     this.mouseY = 0
+    window.addEventListener('blur', this.hide)
     window.addEventListener('mousemove', this.recordMousePosition)
   },
   beforeDestroy () {
+    window.removeEventListener('blur', this.hide)
     window.removeEventListener('mousemove', this.recordMousePosition)
   },
   methods: {

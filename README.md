@@ -159,7 +159,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta7.11](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.11) 2019-08-21
+### [v2.0.0-beta7.12](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.12) 2019-08-22
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染
@@ -171,6 +171,9 @@ yarn run start
 1. 默认仓库数据和配置改为在 `<home>/yank-note` 下保存
 1. 重构前端代码便于拓展
 1. 前端重构文件接口
+
+<details>
+<summary>展开查看更多版本记录</summary>
 
 ### [v1.23.0](https://github.com/purocean/yn/releases/tag/v1.23.0) 2019-07-09
 1. 增加转换所有外链图片到本地功能 `Ctrl + Alt + L`
@@ -300,3 +303,5 @@ yarn run start
 1. 调整为暗色主题
 1. 图片新标签预览
 1. 增加文件筛选面板 Ctrl + p
+
+</details>
