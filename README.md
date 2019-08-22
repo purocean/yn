@@ -159,7 +159,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta7.11](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.11) 2019-08-21
+### [v2.0.0-beta7.12](https://github.com/purocean/yn/releases/tag/v2.0.0-beta7.12) 2019-08-22
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染
