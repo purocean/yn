@@ -37,6 +37,7 @@ export default {
         e.stopPropagation()
       } else if (e.key === 'p' && e.ctrlKey) {
         this.show = f => {
+          this.$bus.$emit('switch-repo-by-name', f.repo)
           this.$store.commit('app/setCurrentFile', f)
           this.show = false
         }
