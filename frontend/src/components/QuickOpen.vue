@@ -1,27 +1,25 @@
 <template>
-  <div @keydown.tab.stop="switchTab()" @keydown.enter="chooseItem()" @keydown.up="selectItem(-1)" @keydown.down="selectItem(1)" class="filter" @click.stop>
+  <div @keydown.tab.exact.stop="switchTab(1)" @keydown.shift.tab.exact.stop="switchTab(-1)" @keydown.enter.exact="chooseItem()" @keydown.up.exact="selectItem(-1)" @keydown.down.exact="selectItem(1)" class="filter" @click.stop>
     <div class="tab">
-      <div @click="switchTab('file')" :class="{selected: currentTab === 'file'}">快速跳转</div>
-      <div @click="switchTab('search')" :class="{selected: currentTab === 'search'}">搜索内容</div>
-      <!-- <div>标签</div> -->
+      <div v-for="tab in tabs" :key="tab.key" @click="switchTab(tab.key)" :class="{selected: currentTab === tab.key}">{{tab.label}}</div>
     </div>
     <input ref="input" v-model="searchText" type="text" class="input" @keydown.tab.prevent @keydown.up.prevent @keydown.down.prevent autofocus>
     <ul ref="result" class="result">
-      <li v-if="list === null">加载中……</li>
+      <li v-if="dataList === null">加载中……</li>
       <template v-else>
         <li
-          v-for="item in list"
-          :key="item.path"
+          v-for="item in dataList"
+          :key="item.repo + item.path"
           :class="{selected: selected === item}"
           @click="chooseItem(item)">
           <span ref="fileName">
             {{item.name}}
           </span>
           <span ref="filePath" class="path">
-            {{item.path.substr(0, item.path.lastIndexOf('/'))}}
+            [{{item.repo}}] {{item.path.substr(0, item.path.lastIndexOf('/'))}}
           </span>
         </li>
-        <li v-if="list.length < 1">无结果</li>
+        <li v-if="dataList.length < 1">无结果</li>
       </template>
     </ul>
   </div>
@@ -40,9 +38,14 @@ export default {
     return {
       selected: null,
       searchText: '',
-      currentTab: 'file',
+      currentTab: 'marked',
       list: [],
-      lastFetchTime: 0
+      lastFetchTime: 0,
+      tabs: [
+        { key: 'marked', label: '已标记' },
+        { key: 'file', label: '快速跳转' },
+        { key: 'search', label: '搜索内容' },
+      ]
     }
   },
   created () {
@@ -56,7 +59,7 @@ export default {
           call(data)
         }
       } else {
-        this.list = []
+        call([])
       }
     }, 500)
   },
@@ -131,13 +134,20 @@ export default {
     },
     updateDataSource () {
       if (this.currentTab === 'file') {
-        this.list = this.filterFiles(this.files, this.searchText.trim(), false)
-        this.sortList()
-      } else {
+        this.list = this.files
+      } else if (this.currentTab === 'marked') {
+        this.list = null
+        file.markedFiles().then(result => {
+          if (this.currentTab === 'marked') {
+            this.list = result.map(x => ({ ...x, name: file.basename(x.path) }))
+          }
+        })
+      } else if (this.currentTab === 'search') {
         this.list = null
         this.searchWithDebounce(this.searchText.trim(), data => {
-          this.list = data
-          this.sortList()
+          if (this.currentTab === 'search') {
+            this.list = data
+          }
         })
       }
 
@@ -162,21 +172,21 @@ export default {
       })
     },
     selectItem (inc) {
-      if (this.list.length < 1) {
+      if (!this.dataList || this.dataList.length < 1) {
         this.updateSelected()
         return
       }
 
-      const currentIndex = this.list.findIndex(x => this.selected === x)
+      const currentIndex = this.dataList.findIndex(x => this.selected === x)
 
       let index = currentIndex + inc
-      if (index > this.list.length - 1) {
+      if (index > this.dataList.length - 1) {
         index = 0
       } else if (index < 0) {
-        index = this.list.length - 1
+        index = this.dataList.length - 1
       }
 
-      this.updateSelected(this.list[index])
+      this.updateSelected(this.dataList[index])
     },
     chooseItem (item = null) {
       const file = item || this.selected
@@ -184,26 +194,25 @@ export default {
         this.$emit('choose-file', file)
       }
     },
-    switchTab (tab = null) {
-      if (tab) {
+    switchTab (tab) {
+      if (typeof tab === 'string') {
         this.currentTab = tab
         return
       }
 
-      if (this.currentTab === 'file') {
-        this.currentTab = 'search'
-      } else if (this.currentTab === 'search') {
-        this.currentTab = 'file'
-      }
+      const tabs = this.tabs.map(x => x.key)
+
+      const index = tabs.indexOf(this.currentTab) + tab
+      this.currentTab = tabs[index > -1 ? index : tabs.length - 1] || tabs[0]
     },
-    sortList () {
-      if (this.list === null) {
+    sortList (list) {
+      if (list === null) {
         return
       }
 
       const map = (this.recentOpenTime || {})
 
-      this.list.sort((a, b) => {
+      return list.sort((a, b) => {
         const at = map[`${a.repo}|${a.path}`] || 0
         const bt = map[`${a.repo}|${b.path}`] || 0
 
@@ -231,6 +240,17 @@ export default {
     },
     repo () {
       return this.currentRepo && this.currentRepo.name
+    },
+    dataList () {
+      if (!this.list) {
+        return null
+      }
+
+      // 筛选一下，搜索全文不筛选
+      const list = this.currentTab === 'search' ? this.list : this.filterFiles(this.list, this.searchText.trim(), false)
+
+      // 按照最近使用时间排序
+      return this.sortList(list)
     }
   }
 }
@@ -319,8 +339,13 @@ export default {
   padding: 4px 0;
   background: #403e3e;
   cursor: pointer;
-  transition: all .2s ease-in-out;
+  transition: all .1s ease-in-out;
   color: #ddd;
+  border-right: 1px #313030 solid;
+}
+
+.tab > div:last-child {
+  border-right: 0;
 }
 
 .tab > div:hover {

@@ -89,6 +89,11 @@ const unmark = async ({ path, repo }) => {
   return fetchHttp(`/api/mark?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
 }
 
+const markedFiles = async () => {
+  const { data } = await fetchHttp('/api/mark')
+  return data
+}
+
 const fetchTree = async repo => {
   const result = await fetchHttp(`/api/tree?repo=${repo}`)
   return result.data
@@ -162,4 +167,5 @@ export default {
   upload,
   mark,
   unmark,
+  markedFiles,
 }

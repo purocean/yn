@@ -22,11 +22,18 @@ export default {
     }
   },
   created () {
+    this.$bus.on('switch-repo-by-name', this.chooseRepoByName)
     this.$store.dispatch('app/fetchRepositories')
   },
   beforeDestroy () {
+    this.$bus.off('switch-repo-by-name', this.chooseRepoByName)
   },
   methods: {
+    chooseRepoByName (name) {
+      if (this.repositories[name]) {
+        this.choose({ name, path: this.repositories[name] })
+      }
+    },
     choose (repo) {
       if (repo.name !== this.currentRepo.name) {
         this.$store.commit('app/setCurrentRepo', repo)
