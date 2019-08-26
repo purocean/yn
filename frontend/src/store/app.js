@@ -52,8 +52,12 @@ export default {
       line: 0,
       column: 0
     },
+    markedFiles: [],
   },
   mutations: {
+    setMarkedFiles (state, files) {
+      state.markedFiles = files
+    },
     setPasswordHash (state, { file, passwordHash }) {
       if (file && passwordHash) {
         state.passwordHash = { ...state.passwordHash, [`${file.repo}|${file.path}`]: passwordHash }
@@ -108,6 +112,10 @@ export default {
   getters: {
   },
   actions: {
+    async fetchMarkedFiles ({ commit }) {
+      const files = (await file.markedFiles()).map(x => ({ ...x, name: file.basename(x.path) }))
+      commit('setMarkedFiles', files)
+    },
     async fetchRepositories ({ commit }) {
       const data = await file.fetchRepositories()
       commit('setRepositories', data)

@@ -63,8 +63,10 @@ export default {
       }
     }, 500)
   },
-  mounted () {
+  async mounted () {
     this.$refs.input.focus()
+    this.updateDataSource()
+    await this.$store.dispatch('app/fetchMarkedFiles')
     this.updateDataSource()
   },
   methods: {
@@ -136,12 +138,7 @@ export default {
       if (this.currentTab === 'file') {
         this.list = this.files
       } else if (this.currentTab === 'marked') {
-        this.list = null
-        file.markedFiles().then(result => {
-          if (this.currentTab === 'marked') {
-            this.list = result.map(x => ({ ...x, name: file.basename(x.path) }))
-          }
-        })
+        this.list = this.markedFiles
       } else if (this.currentTab === 'search') {
         this.list = null
         this.searchWithDebounce(this.searchText.trim(), data => {
@@ -150,18 +147,16 @@ export default {
           }
         })
       }
-
-      this.$nextTick(this.highlightText(this.searchText.trim()))
     },
     updateSelected (item = null) {
-      if (this.list === null) {
+      if (this.dataList === null) {
         return
       }
 
       if (item) {
         this.selected = item
       } else {
-        this.selected = this.list.length > 0 ? this.list[0] : null
+        this.selected = this.dataList.length > 0 ? this.dataList[0] : null
       }
 
       this.$nextTick(() => {
@@ -227,6 +222,9 @@ export default {
     searchText () {
       this.updateDataSource()
     },
+    dataList () {
+      this.$nextTick(() => this.highlightText(this.searchText.trim()))
+    },
     currentTab () {
       this.list = null
       this.$refs.input.focus()
@@ -234,7 +232,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('app', ['currentRepo', 'recentOpenTime', 'tree']),
+    ...mapState('app', ['currentRepo', 'recentOpenTime', 'tree', 'markedFiles']),
     files () {
       return this.travelFiles(this.tree || [])
     },
