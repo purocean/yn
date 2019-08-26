@@ -1,6 +1,6 @@
 {
   "name": "yank.note.yang",
-  "version": "2.0.0-beta8.0",
+  "version": "2.0.0-beta8.1",
   "description": "Yank-Note",
   "main": "dist/app.js",
   "license": "Apache-2.0",
