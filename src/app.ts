@@ -91,7 +91,8 @@ const showWindow = () => {
       win.setSkipTaskbar(false)
       win.show()
     }
-    if (win.isVisible()) {
+
+    if (win.isVisible() && win.isFocused()) {
       hide()
     } else {
       // 先隐藏再显示，以便在 windows 10 当前虚拟窗口展示
