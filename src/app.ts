@@ -188,13 +188,6 @@ if (!gotTheLock) {
       },
       { type: 'separator' },
       {
-        type: 'normal',
-        label: 'GitHub 地址',
-        click: () => {
-          opn('https://github.com/purocean/yn')
-        }
-      },
-      {
         type: 'submenu',
         label: '开发',
         submenu: [
@@ -248,6 +241,20 @@ if (!gotTheLock) {
             }
           },
         ]
+      },
+      {
+        type: 'normal',
+        label: 'GitHub',
+        click: () => {
+          opn('https://github.com/purocean/yn')
+        }
+      },
+      {
+        type: 'normal',
+        label: 'QQ 群',
+        click: () => {
+          opn('https://shang.qq.com/wpa/qunwpa?idkey=a9420c90783ac22699ff8ce1868c5a9bbc185b437f66abfe3e7d9d918b04f295')
+        }
       },
       {
         type: 'normal',
