@@ -41,7 +41,7 @@
 + 编辑优化：列表自动补全
 + 粘贴图片：粘贴剪切板里面的图片
 + 嵌入附件：可以添加附件到文档，点击在系统中打开
-+ 代码运行：支持运行 PHP，nodejs，Python，bash 代码，代码块第一行需要包含以 `--run--` 字符串，示例见 FEATURE.md，当然需要安装相关环境
++ 代码运行：支持运行 PHP，nodejs，Python，bash 代码，示例见 FEATURE.md
 + 待办列表：支持显示文档中的待办进度，点击可快速切换待办状态
 + 快速打开：可使用快捷键 `Ctrl + P` 打开文件切换面板，以便快捷打开文件，标记的文件，全文搜索文件内容
 + 内置终端：支持在编辑器打开终端，快速切换当前工作目录
@@ -49,15 +49,15 @@
 + 样式风格：Markdown 使用 GitHub 风格样式和特性
 + 数据仓库：可定义多个数据位置以便文档分类
 + 外链转换：将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
-+ TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
 + HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + B + V` 粘贴复制 HTMl 为 Markdown
-+ 嵌入小工具：文档支持内嵌 HTML 小工具，HTMl代码块第一行需要包含以 `--applet--` 字符串，其余字符串作为小工具标题，示例见 FEATURE.md
-+ 嵌入Plantuml 图形：需要安装 Java，graphviz ，示例见 FEATURE.md
++ docx 导出：后端使用 pandoc 做转换器
++ TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
++ 嵌入小工具：文档支持内嵌 HTML 小工具，示例见 FEATURE.md
++ 嵌入 Plantuml 图形：需要安装 Java，graphviz ，示例见 FEATURE.md
 + 嵌入 drawio 图形：文档支持内嵌 drawio 图形，示例见 FEATURE.md
-+ docx 格式导出：后端使用 pandoc 做转换器
-+ ECharts 图形支持：在文档中嵌入 Echarts 图形。Js 代码块第一行需要包含以 `--echarts--` 字符串，示例见 FEATURE.md
++ 嵌入 ECharts 图形：在文档中嵌入 Echarts 图形，示例见 FEATURE.md
 + 元素属性书写：可自定义元素的任意属性，示例见 FEATURE.md
-+ 表格解析增强：表格支持表格标题多行文本，列表等特性
++ 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
 
 ## 上手使用
 + 在 [最新版本](https://github.com/purocean/yn/releases) 下载对应平台应用即可
