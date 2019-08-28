@@ -33,7 +33,7 @@
       </div>
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="{top: (height - 40) + 'px'}" @click="scrollToTop">TOP</div>
-    <article ref="view" class="markdown-body" @click="handleClick"></article>
+    <article ref="view" class="markdown-body" @click.capture="handleClick"></article>
   </div>
 </template>
 
@@ -180,7 +180,7 @@ export default {
 
       if (this.fileRepo === '__help__') {
         return md.replace(/\[([^\]]*)\]\((\.\/[^)]*)\)/g, `[$1](api/help/file?path=$2)`)
-          .replace(/<img([^>]*)src=["']?([^\s'"]*)["']?/ig, `<img$1src="api/help/file?path=$2"`)
+          .replace(/<img([^>]*)src=["']?(\.\/[^\s'"]*)["']?/ig, `<img$1src="api/help/file?path=$2"`)
       }
 
       if (!this.filePath) {
@@ -267,36 +267,53 @@ export default {
       }
     },
     handleClick (e) {
-      if (e.target.tagName === 'A' && e.target.classList.contains('open')) {
-        fetch(e.target.href.replace('api/attachment', 'api/open'))
-        e.preventDefault()
-        return
-      }
+      const target = e.target
+      console.log(env.isElectron, target.tagName, target.getAttribute('href'), /^(http:|https:|ftp:)\/\//i.test(target.getAttribute('href') || ''))
 
-      if (env.isElectron && e.target.tagName === 'A' && /^(http:|https:|ftp:)\/\//i.test(e.target.getAttribute('href') || '')) {
-        env.require && env.require('opn')(e.target.href)
-        e.preventDefault()
-        return
-      }
-
-      if (e.target.tagName === 'IMG') {
-        const img = e.target
-        if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地
-          this.transformImgOutLink(img)
+      const handleLink = link => {
+        if (link.tagName === 'A' && link.classList.contains('open')) {
+          fetch(link.href.replace('api/attachment', 'api/open'))
+          e.preventDefault()
+          e.stopPropagation()
           return
         }
 
-        env.openAlwaysOnTopWindow(img.src)
+        if (env.isElectron && link.tagName === 'A' && /^(http:|https:|ftp:)\/\//i.test(link.getAttribute('href') || '')) {
+          env.require && env.require('opn')(link.href)
+          e.preventDefault()
+          e.stopPropagation()
+          return
+        }
+      }
+
+      if (target.tagName === 'A') {
+        handleLink(target)
+      }
+
+      if (target.tagName === 'IMG') {
+        const img = target
+        if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地
+          this.transformImgOutLink(img)
+        } else if (img.parentElement.tagName === 'A') {
+          handleLink(img.parentElement)
+        } else {
+          env.openAlwaysOnTopWindow(img.src)
+        }
+
+        e.stopPropagation()
         return
       }
 
-      if (e.target.tagName === 'INPUT' && e.target.parentElement.classList.contains('source-line')) {
-        this.switchTodo(parseInt(e.target.parentElement.dataset['sourceLine']), e.target.checked)
+      if (target.tagName === 'INPUT' && target.parentElement.classList.contains('source-line')) {
+        this.switchTodo(parseInt(target.parentElement.dataset['sourceLine']), target.checked)
+        e.preventDefault()
+        e.stopPropagation()
         return
       }
 
-      if (e.target.classList.contains('source-line') && window.getSelection().toString().length < 1) {
-        this.syncScroll(parseInt(e.target.dataset['sourceLine']))
+      if (target.classList.contains('source-line') && window.getSelection().toString().length < 1) {
+        this.syncScroll(parseInt(target.dataset['sourceLine']))
+        e.stopPropagation()
         e.preventDefault()
       }
     },
