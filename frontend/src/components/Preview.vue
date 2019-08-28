@@ -115,7 +115,11 @@ export default {
     }, 1000, { leading: true })
 
     this.render = _.debounce(() => {
-      this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(this.currentContent))
+      // 编辑非 markdown 文件预览直接显示代码
+      const content = (this.filePath || '').endsWith('.md')
+        ? this.currentContent
+        : '```' + file.extname(this.fileName || '').replace(/^\./, '') + '\n' + this.currentContent + '```'
+      this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(content))
       MarkdownItECharts.update()
       this.runAppletScriptDebounce()
       this.initDrawio()

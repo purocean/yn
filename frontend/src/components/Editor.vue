@@ -3,7 +3,7 @@
     <MonacoEditor
       ref="editor"
       class="editor"
-      @change="val => $store.commit('app/setCurrentContent', val)"
+      @change="setCurrentValue"
       @ready="editorReady"
       @scroll-view="syncScrollView"
       @paste-img="pasteImg"
@@ -52,6 +52,11 @@ export default {
     this.$bus.off('file-new', this.createFile)
   },
   methods: {
+    setCurrentValue ({ uri, value }) {
+      if (this.toUri(this.currentFile) === uri) {
+        this.$store.commit('app/setCurrentContent', value)
+      }
+    },
     saveFileOpenPosition (top) {
       if (this.currentFile) {
         const map = Storage.get(FILE_POSITION_KEY, {})
@@ -126,6 +131,13 @@ export default {
       this.$emit('scroll-line', line)
       this.saveFileOpenPositionDebounce(top)
     },
+    toUri (file) {
+      if (file) {
+        return `yank-note://${file.repo}/${file.path.replace(/^\//, '')}`
+      } else {
+        return 'yank-note://system/blank.md'
+      }
+    },
     async saveFile (f = null) {
       const file = f || this.currentFile
 
@@ -186,7 +198,6 @@ export default {
       this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
     },
     async changeFile (current, previous) {
-      this.$refs.editor.setScrollToTop(0)
       this.clearTimer()
 
       if (previous && previous.repo && previous.path) {
@@ -195,7 +206,7 @@ export default {
 
       if (!current) {
         this.$store.commit('app/setPreviousContent', '\n')
-        this.$refs.editor.setValue('\n')
+        this.$refs.editor.setModel(this.toUri(current), '\n')
         this.$store.commit('app/setCurrentFile', null)
         return
       }
@@ -203,7 +214,7 @@ export default {
       if (current.content) { // 系统文件
         this.$store.commit('app/setPreviousContent', current.content)
         this.$store.commit('app/setSavedAt', null)
-        this.$refs.editor.setValue(current.content)
+        this.$refs.editor.setModel(this.toUri(current), current.content)
         return
       }
 
@@ -222,7 +233,7 @@ export default {
         this.$store.commit('app/setPreviousContent', content)
         this.$store.commit('app/setPreviousHash', hash)
         this.$store.commit('app/setSavedAt', null)
-        this.$refs.editor.setValue(content)
+        this.$refs.editor.setModel(this.toUri(current), content)
       } catch (error) {
         this.$store.commit('app/setCurrentFile', null)
         this.$toast.show('warning', error.message)
