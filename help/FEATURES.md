@@ -40,9 +40,6 @@ Yank-Note 很多功能可以直接使用的快捷键操作
 a -> b
 @enduml
 
-## 导出 DOCX 文件
-使用此功能之前系统需要安装需要安装 [pandoc](https://pandoc.org/)
-
 ## 表格增强
 此功能由 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 插件提供
 支持在表格中使用多行文本和列表。支持表格说明渲染

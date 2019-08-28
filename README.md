@@ -1,5 +1,5 @@
 # Yank Note Markdown 编辑器
-> 一款面向程序员的 Markdown 编辑器
+> 一款面向程序员的 Markdown 编辑器 <a target="_blank" href="https://shang.qq.com/wpa/qunwpa?idkey=a9420c90783ac22699ff8ce1868c5a9bbc185b437f66abfe3e7d9d918b04f295"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="Yank Note 交流群" title="Yank Note 交流群"></a>
 
 [toc]{level: [2]}
 
@@ -33,18 +33,34 @@
 + [ ] 拥有更友好的配置界面
 + [ ] 可以自定义快捷键
 
+## 特色功能
++ 同步滚动：编辑区和预览区同步滚动，预览区可独立滚动
++ 目录大纲：预览区目录大纲快速跳转
++ 文件加密：以 `.c.md` 结尾的文件视为加密文件
++ 自动保存：文件编辑后自动保存，未保存文件橙色标题栏提醒（加密文档不自动保存）
++ 编辑优化：列表自动补全
++ 粘贴图片：粘贴剪切板里面的图片
++ 嵌入附件：可以添加附件到文档，点击在系统中打开
++ 代码运行：支持运行 PHP，nodejs，Python，bash 代码，示例见 FEATURE.md
++ 待办列表：支持显示文档中的待办进度，点击可快速切换待办状态
++ 快速打开：可使用快捷键 `Ctrl + P` 打开文件切换面板，以便快捷打开文件，标记的文件，全文搜索文件内容
++ 内置终端：支持在编辑器打开终端，快速切换当前工作目录
++ 公式解析：支持输入 katex 公式代码
++ 样式风格：Markdown 使用 GitHub 风格样式和特性
++ 数据仓库：可定义多个数据位置以便文档分类
++ 外链转换：将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
++ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + B + V` 粘贴复制 HTMl 为 Markdown
++ docx 导出：后端使用 pandoc 做转换器
++ TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
++ 嵌入小工具：文档支持内嵌 HTML 小工具，示例见 FEATURE.md
++ 嵌入 Plantuml 图形：需要安装 Java，graphviz ，示例见 FEATURE.md
++ 嵌入 drawio 图形：文档支持内嵌 drawio 图形，示例见 FEATURE.md
++ 嵌入 ECharts 图形：在文档中嵌入 Echarts 图形，示例见 FEATURE.md
++ 元素属性书写：可自定义元素的任意属性，示例见 FEATURE.md
++ 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
+
 ## 上手使用
 + 在 [最新版本](https://github.com/purocean/yn/releases) 下载对应平台应用即可
-+ 创建文件，点击目录“创建”按钮
-+ 在系统中打开文件/目录：`Ctrl ＋ 单击文件/目录`
-+ 删除文件/目录：`Shift + 右键文件/目录`
-+ 重命名文件/目录：`Ctrl + 右键文件/目录`
-+ 切换文档预览显示：`Alt + V` 或点击状态栏 `切换预览` 按钮
-+ 切换编辑器自动换行：`Alt + W` 或点击状态栏 `切换换行` 按钮
-+ 切换内置终端展示：`Alt + O` 或点击状态栏 `切换终端` 按钮
-+ 切换内置终端工作目录到当前目录 `Ctrl + Alt + 单击目录`
-+ 刷新目录树 `双击目录空白区域`
-+ 将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
 + 默认快捷键参考 [vscode](https://code.visualstudio.com/)
     + `Ctrl + X` 剪切所选/当前行
     + `Ctrl + C` 复制所选/当前行
@@ -77,34 +93,6 @@
     + `Ctrl + K, Ctrl + L` 转换小写
     + `Ctrl + Alt + R` 在内置终端里面运行选中内容
     + `Ctrl + B + V` 粘贴 html 富文本
-
-## 特色功能
-+ 同步预览滚动，实现得较粗糙
-+ 目录大纲展示
-+ 文件加密：以 `.c.md` 结尾的文件视为加密文件
-+ 自动保存（加密文档不自动保存）
-+ 列表自动补全
-+ 粘贴剪切板里面的图片
-+ 添加附件到文档
-+ 运行 PHP，nodejs，Python，bash 代码，**代码块第一行需要包含以 `--run--` 字符串，示例见 FEATURE.md，当然需要安装相关环境**
-+ 文档支持内嵌 HTML 小工具，**HTMl代码块第一行需要包含以 `--applet--` 字符串，其余字符串作为小工具标题，示例见 FEATURE.md**
-+ 文档支持内嵌 drawio 图形，示例见 FEATURE.md
-+ 开启了 HTML 解析，可以直接在文档里面使用 HTML 代码
-+ 待办进度条
-+ 快速跳转文件，全文搜索文件内容
-+ 多仓库切换
-+ 生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可
-+ docx 格式导出，**需要安装 [pandoc](https://pandoc.org/)**
-+ ECharts 图形支持 [ECharts](https://echarts.baidu.com/) **Js 代码块第一行需要包含以 `--echarts--` 字符串，示例见 FEATURE.md**
-+ markdown 编辑器 [monaco-editor](https://github.com/Microsoft/monaco-editor)
-+ markdown 解析 [markdown-it](https://github.com/markdown-it/markdown-it)
-+ GitHub 风格样式和特性 [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)
-+ 待办列表 [GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
-+ Plantuml 图形，**需要安装 Java，graphviz [markdown-it-plantuml](https://github.com/gmunguia/markdown-it-plantuml)**
-+ katex 公式解析 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex)
-+ 元素属性书写 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)
-+ 表格解析增强，支持表格标题多行文本，列表等特性 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table)
-+ 内置终端 [XTERM.JS](https://xtermjs.org/) [node-pty](https://github.com/Microsoft/node-pty)
 
 ## 开发
 依赖安装和编译比较麻烦，请保证自己有足够耐心且有科学上网的手段。
@@ -159,7 +147,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta8.2](https://github.com/purocean/yn/releases/tag/v2.0.0-beta8.2) 2019-08-27
+### [v2.0.0-beta8.3](https://github.com/purocean/yn/releases/tag/v2.0.0-beta8.3) 2019-08-28
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染
