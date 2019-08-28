@@ -282,7 +282,6 @@ export default {
           env.require && env.require('opn')(link.href)
           e.preventDefault()
           e.stopPropagation()
-          return
         }
       }
 
