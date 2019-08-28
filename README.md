@@ -1,5 +1,5 @@
 # Yank Note Markdown 编辑器
-> 一款面向程序员的 Markdown 编辑器 <a target="_blank" href="https://shang.qq.com/wpa/qunwpa?idkey=a9420c90783ac22699ff8ce1868c5a9bbc185b437f66abfe3e7d9d918b04f295"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="Yank Note 交流群" title="Yank Note 交流群"></a>
+> 一款面向程序员的 Markdown 编辑器 <a target="_blank" href="https://shang.qq.com/wpa/qunwpa?idkey=a9420c90783ac22699ff8ce1868c5a9bbc185b437f66abfe3e7d9d918b04f295"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" style="display: inline-block" alt="Yank Note 交流群" title="Yank Note 交流群"></a>
 
 [toc]{level: [2]}
 
