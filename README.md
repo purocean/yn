@@ -49,7 +49,7 @@
 + 样式风格：Markdown 使用 GitHub 风格样式和特性
 + 数据仓库：可定义多个数据位置以便文档分类
 + 外链转换：将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
-+ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + B + V` 粘贴复制 HTMl 为 Markdown
++ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + B + V` 粘贴复制 HTML 为 Markdown
 + docx 导出：后端使用 pandoc 做转换器
 + TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
 + 嵌入小工具：文档支持内嵌 HTML 小工具，示例见 FEATURE.md
