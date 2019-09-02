@@ -56,6 +56,7 @@
 + 嵌入 Plantuml 图形：需要安装 Java，graphviz ，示例见 FEATURE.md
 + 嵌入 drawio 图形：文档支持内嵌 drawio 图形，示例见 FEATURE.md
 + 嵌入 ECharts 图形：在文档中嵌入 Echarts 图形，示例见 FEATURE.md
++ 嵌入 Mermaid 图形：在文档中嵌入 Mermaid 图形，示例见 FEATURE.md
 + 元素属性书写：可自定义元素的任意属性，示例见 FEATURE.md
 + 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
 

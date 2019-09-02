@@ -32,6 +32,21 @@ Yank-Note 很多功能可以直接使用的快捷键操作
 2. 加密和解密过程均在前端完成
 3. 请务必保管好文档密码，密码一旦丢失就只能自己暴力破解了。
 
+## Mermaid 图形解析
+```mermaid
+sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>John: Hello John, how are you?
+    loop Healthcheck
+        John->>John: Fight against hypochondria
+    end
+    Note right of John: Rational thoughts <br/>prevail!
+    John-->>Alice: Great!
+    John->>Bob: How about you?
+    Bob-->>John: Jolly good!
+```
+
 ## Plantuml 图形解析
 系统需要有 Java 环境，并安装有 graphviz
 示例如下
