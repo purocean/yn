@@ -57,6 +57,7 @@ import SourceLinePlugin from '../plugins/SourceLinePlugin'
 import LinkTargetPlugin from '../plugins/LinkTargetPlugin'
 import DrawioPlugin from '../plugins/DrawioPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
+import MermaidPlugin from '../plugins/MermaidPlugin'
 import file from '@/lib/file'
 import env from '@/lib/env'
 
@@ -91,6 +92,7 @@ const markdown = Markdown({
   .use(MultimdTable, { enableMultilineRows: true })
   .use(MarkdownItToc)
   .use(MarkdownItECharts)
+  .use(MermaidPlugin)
 
 export default {
   name: 'xview',
@@ -115,13 +117,18 @@ export default {
     }, 1000, { leading: true })
 
     this.render = _.debounce(() => {
-      this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(this.currentContent))
-      MarkdownItECharts.update()
+      // 编辑非 markdown 文件预览直接显示代码
+      const content = (this.filePath || '').endsWith('.md')
+        ? this.currentContent
+        : '```' + file.extname(this.fileName || '').replace(/^\./, '') + '\n' + this.currentContent + '```'
+      this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(content))
       this.runAppletScriptDebounce()
       this.initDrawio()
       this.updateOutline()
       this.updateTodoCount()
       this.updatePlantumlDebounce()
+      MarkdownItECharts.update()
+      MermaidPlugin.update()
 
       for (let ele of document.querySelectorAll('code[class^="language-"]')) {
         HighlightLineNumber.lineNumbersBlock(ele)
@@ -282,7 +289,6 @@ export default {
           env.require && env.require('opn')(link.href)
           e.preventDefault()
           e.stopPropagation()
-          return
         }
       }
 
@@ -416,6 +422,7 @@ export default {
     background: #303133;
   }
 
+  .markdown-body /deep/ div.mermaid,
   .markdown-body /deep/ div.drawio-wrapper,
   .markdown-body /deep/ input,
   .markdown-body /deep/ img
@@ -424,6 +431,7 @@ export default {
     filter: brightness(70%);
   }
 
+  .markdown-body /deep/ div.mermaid:hover,
   .markdown-body /deep/ div.drawio-wrapper:hover,
   .markdown-body /deep/ img:hover
   {
@@ -682,5 +690,9 @@ button:hover {
 /* for block of code */
 .view .hljs-ln td.hljs-ln-code {
   padding-left: 10px;
+}
+
+.view .mermaid {
+  background: #fff;
 }
 </style>

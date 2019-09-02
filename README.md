@@ -49,13 +49,14 @@
 + 样式风格：Markdown 使用 GitHub 风格样式和特性
 + 数据仓库：可定义多个数据位置以便文档分类
 + 外链转换：将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
-+ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + B + V` 粘贴复制 HTMl 为 Markdown
++ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + B + V` 粘贴复制 HTML 为 Markdown
 + docx 导出：后端使用 pandoc 做转换器
 + TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
 + 嵌入小工具：文档支持内嵌 HTML 小工具，示例见 FEATURE.md
 + 嵌入 Plantuml 图形：需要安装 Java，graphviz ，示例见 FEATURE.md
 + 嵌入 drawio 图形：文档支持内嵌 drawio 图形，示例见 FEATURE.md
 + 嵌入 ECharts 图形：在文档中嵌入 Echarts 图形，示例见 FEATURE.md
++ 嵌入 Mermaid 图形：在文档中嵌入 Mermaid 图形，示例见 FEATURE.md
 + 元素属性书写：可自定义元素的任意属性，示例见 FEATURE.md
 + 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
 
@@ -147,7 +148,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.0.0-beta8.4](https://github.com/purocean/yn/releases/tag/v2.0.0-beta8.4) 2019-08-28
+### [v2.0.0-beta9.0](https://github.com/purocean/yn/releases/tag/v2.0.0-beta9.0) 2019-09-02
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染

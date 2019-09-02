@@ -43,6 +43,7 @@
 <script>
 import { mapState } from 'vuex'
 import File from '@/lib/file'
+import Extensions from '@/lib/extensions'
 import DrawioPlugin from '@/plugins/DrawioPlugin'
 import 'vue-awesome/icons/folder-plus'
 
@@ -110,14 +111,13 @@ export default {
     },
     select (item) {
       if (item.type !== 'dir') {
-        if (item.name.endsWith('.md')) {
+        if (Extensions.supported(item.name)) {
           this.$store.commit('app/setCurrentFile', item)
         } else {
           if (item.path.toLowerCase().endsWith('.drawio')) {
             DrawioPlugin.open(item)
           } else {
             File.openInOS(this.item)
-            // window.open(`api/attachment/${encodeURIComponent(item.name)}?repo=${item.repo}&path=${encodeURIComponent(item.path)}`)
           }
         }
       }

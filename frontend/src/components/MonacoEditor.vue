@@ -6,19 +6,14 @@
 import dayjs from 'dayjs'
 import TurndownService from 'turndown'
 
+const models = {}
+
 const keys = {}
 
 export default {
   name: 'monaco-editor',
-  props: {
-    value: String
-  },
-  data () {
-    return {
-      editor: null
-    }
-  },
   mounted () {
+    this.editor = null
     if (!window.require) {
       const loaderScript = document.createElement('script')
       loaderScript.type = 'text/javascript'
@@ -38,6 +33,30 @@ export default {
     window.removeEventListener('keyup', this.recordKeys)
   },
   methods: {
+    getModel (uri, value) {
+      let model = models[uri]
+
+      if (!model) {
+        model = window.monaco.editor.createModel(value, undefined, window.monaco.Uri.parse(uri))
+        model.onDidChangeContent(e => {
+          let value = model.getValue()
+          const eol = model.getEOL()
+          if (!value.endsWith(eol)) {
+            value += eol
+            model.setValue(value)
+          }
+          this.$emit('change', { uri, value })
+        })
+      }
+
+      // TODO 不用 set value 保留编辑状态
+      model.setValue(value)
+
+      // TODO 缓存 model
+      models[uri] = model
+
+      return model
+    },
     recordKeys (e) {
       if (e.type === 'keydown') {
         keys[e.key] = true
@@ -56,9 +75,12 @@ export default {
       })
     },
     initMonaco () {
+      window.supportedExtensions = window.monaco.languages.getLanguages().flatMap(x => x.extensions)
+
+      const model = this.getModel('yank-note://system/blank.md', '')
+
       this.editor = window.monaco.editor.create(window.document.getElementById('editor'), {
-        value: this.value,
-        language: 'markdown',
+        value: '',
         theme: 'vs-dark',
         fontSize: 18,
         wordWrap: false,
@@ -73,21 +95,12 @@ export default {
         scrollbar: {
           vertical: 'hidden',
           verticalScrollbarSize: 0
-        }
+        },
+        model,
       })
 
       this.editor.onDidChangeCursorSelection(e => {
         this.$emit('change-document', this.getDucumentInfo())
-      })
-
-      this.editor.onDidChangeModelContent(e => {
-        let val = this.getValue()
-        const eol = this.editor.getModel().getEOL()
-        if (!val.endsWith(eol)) {
-          val += eol
-          this.setValue(val)
-        }
-        this.$emit('change', val)
       })
 
       this.editor.onDidScrollChange(e => {
@@ -248,11 +261,12 @@ export default {
     getValue () {
       return this.editor.getModel().getValue(window.monaco.editor.DefaultEndOfLine.LF)
     },
-    setValue (val) {
-      this.editor.getModel().setValue(val)
+    setModel (uri, value) {
+      const model = this.getModel(uri, value || '')
+      this.editor.setModel(model)
     },
     replaceValue (oldValue, newValue) {
-      this.setValue(this.getValue().replace(oldValue, newValue))
+      this.editor.getModel().setValue(this.getValue().replace(oldValue, newValue))
     },
     getDucumentInfo () {
       const selection = this.editor.getSelection()
@@ -269,7 +283,7 @@ export default {
       const isWrapping = this.editor.getConfiguration().wrappingInfo.isViewportWrapping
       this.editor.updateOptions({ wordWrap: !isWrapping })
     }
-  }
+  },
 }
 </script>
 
