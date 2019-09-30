@@ -346,7 +346,12 @@ export default {
     convertFile (type) {
       MarkdownItECharts.preparePrint()
 
-      const baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
+      let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
+
+      // Windows 下偶尔解析 localhost 很耗时，这里直接用 ip 代替
+      if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
+        baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
+      }
 
       this.convert = {
         fileName: (this.fileName || '未命名') + `.${type}`,
