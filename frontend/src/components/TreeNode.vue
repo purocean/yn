@@ -14,7 +14,7 @@
             {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children.length}})</span>
           </div>
           <div class="item-action">
-            <y-icon class="icon" name="folder-plus" @click.native.exact.stop.prevent="createFile" title="创建文件"></y-icon>
+            <y-icon class="icon" name="folder-plus" @click.native.exact.stop.prevent="createFile()" title="创建文件"></y-icon>
             <!-- <EditIcon class="icon" @click.native.exact.stop.prevent="renameFile" title="重命名/移动（Ctrl + 右键）"></EditIcon>
             <ShareIcon class="icon" @click.native.exact.stop.prevent="revealInExplorer" title="系统中打开（Ctrl + 单击）"></ShareIcon>
             <TrashIcon class="icon" @click.native.exact.stop.prevent="deleteFile" title="删除（Shift + 右键）"></TrashIcon> -->
@@ -90,13 +90,39 @@ export default {
       } else {
         // markdown 文件可以被标记
         if (this.item.path.endsWith('.md')) {
-          this.$contextMenu.show([
-            { id: 'mark', label: this.item.marked ? '取消标记' : '标记文件', onClick: () => this.toggleMark() }
-          ].concat(menu))
+          const additional = [
+            { id: 'mark', label: this.item.marked ? '取消标记' : '标记文件', onClick: () => this.toggleMark() },
+          ]
+
+          // 非加密文件增加复制重复菜单
+          if (!File.isEncryptedFile(this.item)) {
+            additional.push({ id: 'duplicate', label: '重复文件', onClick: () => this.duplicateFile() })
+          }
+
+          this.$contextMenu.show(additional.concat(menu))
         } else {
           this.$contextMenu.show(menu)
         }
       }
+    },
+    async duplicateFile () {
+      let newPath = await this.$modal.input({
+        title: '重复文件',
+        hint: '目标路径',
+        content: '当前路径：' + this.item.path,
+        value: this.item.path,
+        // 默认选中文件名
+        select: [this.item.path.lastIndexOf('/') + 1, this.item.name.lastIndexOf('.') > -1 ? this.item.path.lastIndexOf('.') : this.item.path.length, 'forward']
+      })
+
+      if (!newPath) {
+        return
+      }
+
+      newPath = newPath.replace(/\/$/, '')
+
+      const { content } = await File.read({ path: this.item.path, repo: this.item.repo })
+      await this.createFile(newPath, content)
     },
     async toggleMark () {
       if (this.item.marked) {
@@ -130,23 +156,31 @@ export default {
 
       this.$bus.emit('xterm-run', `--yank-note-run-command-cd-- ${path}`)
     },
-    async createFile () {
-      let filename = await this.$modal.input({
-        title: '创建文件(加密文件以 .c.md 结尾)',
-        hint: '文件路径',
-        content: '当前路径：' + this.item.path,
-        value: 'new.md'
-      })
+    async createFile (path = null, content = null) {
+      if (path === null) {
+        let filename = await this.$modal.input({
+          title: '创建文件(加密文件以 .c.md 结尾)',
+          hint: '文件路径',
+          content: '当前路径：' + this.item.path,
+          value: 'new.md'
+        })
 
-      if (!filename) {
+        if (!filename) {
+          return
+        }
+
+        if (!filename.endsWith('.md')) {
+          filename = filename.replace(/\/$/, '') + '.md'
+        }
+
+        path = this.item.path.replace(/\/$/, '') + '/' + filename
+      }
+
+      if (!path) {
         return
       }
 
-      if (!filename.endsWith('.md')) {
-        filename = filename.replace(/\/$/, '') + '.md'
-      }
-
-      const path = this.item.path.replace(/\/$/, '') + '/' + filename
+      const filename = File.basename(path)
 
       const file = {
         type: 'file',
@@ -155,7 +189,11 @@ export default {
         name: filename,
       }
 
-      this.$bus.emit('file-new', { file, content: `# ${filename.replace(/\.md$/i, '')}\n` })
+      if (content === null) {
+        content = `# ${filename.replace(/\.md$/i, '')}\n`
+      }
+
+      this.$bus.emit('file-new', { file, content })
     },
     async renameFile () {
       if (this.item.path === '/') {
