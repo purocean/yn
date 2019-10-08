@@ -251,13 +251,6 @@ if (!gotTheLock) {
       },
       {
         type: 'normal',
-        label: 'QQ 群',
-        click: () => {
-          opn('https://shang.qq.com/wpa/qunwpa?idkey=a9420c90783ac22699ff8ce1868c5a9bbc185b437f66abfe3e7d9d918b04f295')
-        }
-      },
-      {
-        type: 'normal',
         label: `检查更新 ${app.getVersion()}`,
         click: () => {
           updater.checkForUpdates()
