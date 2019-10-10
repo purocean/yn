@@ -33,7 +33,7 @@ deploy:
     - out/Yank-Note*.*
     - out/latest*.yml
   skip_cleanup: true
-  draft: true
+  # draft: true
   on:
     repo: purocean/yn
     tags: true

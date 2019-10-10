@@ -123,7 +123,7 @@ export default {
     statusText: {
       immediate: true,
       handler (val) {
-        document.title = val + ' - Yank Note 一款面向程序员的 Markdown 编辑器'
+        document.title = this.currentFile ? (this.currentFile.name || this.currentFile.title || 'Yank Note') : '未打开文件'
       },
     },
     saved: {
