@@ -10,7 +10,7 @@
     "./frontend/dist/**",
     "./node_modules/**"
   ],
-  "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
+  "artifactName": "Yank-Note-${os}-${arch}-${version}.${ext}",
   "directories": {
     "app": "./",
     "output": "./out/"
