@@ -251,7 +251,7 @@ if (!gotTheLock) {
       },
       {
         type: 'normal',
-        label: `检查更新 ${app.getVersion()}`,
+        label: `版本 ${app.getVersion()}`,
         click: () => {
           updater.checkForUpdates()
         }

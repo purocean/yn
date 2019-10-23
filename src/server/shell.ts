@@ -8,7 +8,17 @@ const CD_COMMAND_PREFIX = '--yank-note-run-command-cd--'
 const defaultShell = os.platform() === 'win32' ? 'cmd.exe' : 'bash'
 
 const getShell = () => {
-  return config.get(configKey, defaultShell).toLowerCase()
+  const shell = config.get(configKey, defaultShell)
+
+  // 使用全路径，不然 appx 运行报找不到文件
+  // TODO 这里可以使用更好的路径查找方式
+  if (os.platform() === 'win32') {
+    if (shell.toLocaleLowerCase() === 'cmd.exe' || shell.toLocaleLowerCase() === 'wsl.exe') {
+      return `C:\\Windows\\System32\\${shell}`
+    }
+  }
+
+  return shell
 }
 
 const transformCdCommand = (command: string) => {

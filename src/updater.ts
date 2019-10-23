@@ -13,7 +13,14 @@ const store = new Store()
 let progressBar: any = null
 let cancellationToken: CancellationToken = null
 
+// 否是从微软应用商店安装，简单的判断路径中是否包含 WindowsApps
+const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
+
 const init = (call: () => void) => {
+  if (isAppx) {
+    return
+  }
+
   autoUpdater.setFeedURL({ provider: 'github', owner: 'purocean', repo: 'yn'})
   autoUpdater.autoDownload = false
 
@@ -96,6 +103,10 @@ const init = (call: () => void) => {
 }
 
 const checkForUpdates = () => {
+  if (isAppx) {
+    return
+  }
+
   store.set('dontCheckUpdates', false)
   autoUpdater.once('update-not-available', () => {
     dialog.showMessageBox({
@@ -109,6 +120,10 @@ const checkForUpdates = () => {
 }
 
 const autoCheckForUpdates = () => {
+  if (isAppx) {
+    return
+  }
+
   if (!store.get('dontCheckUpdates')) {
     autoUpdater.checkForUpdates()
   }
