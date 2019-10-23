@@ -1,5 +1,5 @@
-# Yank Note Markdown 编辑器
-> 一款面向程序员的 Markdown 编辑器
+# Yank Note
+> 一款面向程序员的 Markdown 笔记应用 [Windows 商店下载](https://www.microsoft.com/store/apps/9N08BQ8K8681)
 
 [toc]{level: [2]}
 
@@ -147,6 +147,8 @@ yarn run start
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+[Windows 商店下载](https://www.microsoft.com/store/apps/9N08BQ8K8681)
 
 ### [v2.0.0-beta9.5](https://github.com/purocean/yn/releases/tag/v2.0.0-beta9.5) 2019-10-10
 1. 增加 2.0 计划
