@@ -1,5 +1,5 @@
 # Yank Note
-> 一款面向程序员的 Markdown 笔记应用 [Windows 商店下载](https://www.microsoft.com/store/apps/9N08BQ8K8681)
+> 一款面向程序员的 Markdown 笔记应用 [Windows 商店下载](https://www.microsoft.com/zh-cn/p/yank-note-%e4%b8%80%e6%ac%be%e9%9d%a2%e5%90%91%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84-markdown-%e7%ac%94%e8%ae%b0%e5%ba%94%e7%94%a8/9n08bq8k8681?rtc=1#activetab=pivot:overviewtab)
 
 [toc]{level: [2]}
 
@@ -148,7 +148,7 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-[Windows 商店下载](https://www.microsoft.com/store/apps/9N08BQ8K8681)
+[Windows 商店下载](https://www.microsoft.com/zh-cn/p/yank-note-%e4%b8%80%e6%ac%be%e9%9d%a2%e5%90%91%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84-markdown-%e7%ac%94%e8%ae%b0%e5%ba%94%e7%94%a8/9n08bq8k8681?rtc=1#activetab=pivot:overviewtab)
 
 ### [v2.0.0-beta9.6](https://github.com/purocean/yn/releases/tag/v2.0.0-beta9.6) 2019-11-15
 1. 增加 2.0 计划
