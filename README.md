@@ -150,7 +150,7 @@ yarn run start
 
 [Windows 商店下载](https://www.microsoft.com/store/apps/9N08BQ8K8681)
 
-### [v2.0.0-beta9.5](https://github.com/purocean/yn/releases/tag/v2.0.0-beta9.5) 2019-10-10
+### [v2.0.0-beta9.6](https://github.com/purocean/yn/releases/tag/v2.0.0-beta9.6) 2019-11-15
 1. 增加 2.0 计划
 1. Electron 打包
 1. 增加 HTML 小工具渲染
