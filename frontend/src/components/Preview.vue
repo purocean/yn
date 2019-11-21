@@ -194,9 +194,16 @@ export default {
         return md
       }
 
-      const basePath = this.filePath.substr(0, this.filePath.lastIndexOf('/'))
+      const basePath = file.dirname(this.filePath)
       const repo = this.fileRepo
-      return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\/([^)/]+)\)/g, `[$1](api/attachment/$3?repo=${repo}&path=${encodeURI(basePath)}%2F$2%2F$3)`)
+
+      return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\)/g, (match, alt, path) => {
+        path = decodeURI(path) // 提前解码一次，有的链接已经预先编码
+        const fileName = file.basename(path)
+        const filePath = `${basePath}/${path}`
+
+        return `[${alt}](api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURI(filePath)})`
+      })
     },
     updatePlantuml () {
       const nodes = this.$refs.view.querySelectorAll('img[data-plantuml-src]')
@@ -655,6 +662,10 @@ button:hover {
 @media screen {
   .view table.hljs-ln {
     max-height: 400px;
+  }
+
+  .view img {
+    background-color: #fff !important;
   }
 }
 
