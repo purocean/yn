@@ -663,6 +663,10 @@ button:hover {
   .view table.hljs-ln {
     max-height: 400px;
   }
+
+  .view img {
+    background-color: #fff !important;
+  }
 }
 
 @media print {
