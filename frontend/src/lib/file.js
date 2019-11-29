@@ -35,6 +35,14 @@ const extname = path => {
   return path.substr(path.lastIndexOf('.'))
 }
 
+const toUri = (file) => {
+  if (file && file.repo && file.path) {
+    return encodeURI(`yank-note://${file.repo}/${file.path.replace(/^\//, '')}`)
+  } else {
+    return 'yank-note://system/blank.md'
+  }
+}
+
 const decrypt = (content, password) => {
   if (!password) {
     throw new Error('未输入解密密码')
@@ -153,6 +161,7 @@ export default {
   dirname,
   basename,
   extname,
+  toUri,
   decrypt,
   encrypt,
   read,
