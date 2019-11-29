@@ -27,7 +27,7 @@
 + [x] 使用 `Electron` 构建为桌面应用。不追求完全做成客户端，还是可以沿用 CS 架构。同样可以在浏览器中使用
 + [x] 支持嵌入 `draw.io` 文档
 + [x] 文件目录增加右键菜单
-+ [ ] 支持打开多个文件
++ [x] 支持多标签打开多个文件
 + [ ] 支持使用快捷键打开常用文档
 + [ ] 全局剪切板功能
 + [ ] 拥有更友好的配置界面
@@ -150,12 +150,15 @@ yarn run start
 
 [Windows 商店下载](https://www.microsoft.com/zh-cn/p/yank-note-%e4%b8%80%e6%ac%be%e9%9d%a2%e5%90%91%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84-markdown-%e7%ac%94%e8%ae%b0%e5%ba%94%e7%94%a8/9n08bq8k8681?rtc=1#activetab=pivot:overviewtab)
 
-### [v2.0.2](https://github.com/purocean/yn/releases/tag/v2.0.2) 2019-11-21
-1. 修复相对链接解析
-1. 图片增加背景色便于透明图片的阅读
+### [v2.1.0](https://github.com/purocean/yn/releases/tag/v2.1.0) 2019-11-21
+1. 增加多标签同时打开多个文件
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.0.2](https://github.com/purocean/yn/releases/tag/v2.0.2) 2019-11-21
+1. 修复相对链接解析
+1. 图片增加背景色便于透明图片的阅读
 
 ### [v2.0.1](https://github.com/purocean/yn/releases/tag/v2.0.1) 2019-11-20
 1. 增加 2.0 计划
