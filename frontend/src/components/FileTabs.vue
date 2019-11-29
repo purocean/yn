@@ -1,5 +1,5 @@
 <template>
-  <Tabs :list="list" :value="current" @remove="removeTabs" @switch="switchTab"></Tabs>
+  <Tabs :list="list" :value="current" @remove="removeTabs" @switch="switchTab" @change-list="changeList"></Tabs>
 </template>
 
 <script>
@@ -19,6 +19,9 @@ export default {
     }
   },
   methods: {
+    changeList (list) {
+      this.list = list
+    },
     switchTab (item) {
       this.switchFile(item.payload.file)
     },

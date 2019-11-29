@@ -1,10 +1,11 @@
 <template>
-  <div class="tabs">
+  <div ref="tabs" class="tabs">
     <div
       v-for="item in list"
       :key="item.key"
       :class="{tab: true, current: item.key === value}"
       :title="item.description"
+      :data-key="item.key"
       @contextmenu.exact.prevent.stop="showContextMenu(item)"
       @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
@@ -16,6 +17,7 @@
 </template>
 
 <script>
+import Sortable from 'sortablejs'
 import 'vue-awesome/icons/times'
 
 export default {
@@ -23,6 +25,16 @@ export default {
   props: {
     value: String,
     list: Array,
+  },
+  mounted () {
+    Sortable.create(this.$refs.tabs, {
+      animation: 250,
+      ghostClass: 'on-sort',
+      direction: 'horizontal',
+      onEnd: ({ oldIndex, newIndex }) => {
+        this.swapTab(oldIndex, newIndex)
+      }
+    })
   },
   methods: {
     showContextMenu (item) {
@@ -55,6 +67,13 @@ export default {
     removeTabs (items) {
       this.$emit('remove', items)
     },
+    swapTab (oldIndex, newIndex) {
+      const list = this.list
+      const tmp = list[oldIndex]
+      list[oldIndex] = list[newIndex]
+      list[newIndex] = tmp
+      this.$emit('change-list', list)
+    }
   },
 }
 </script>
@@ -110,5 +129,9 @@ export default {
 
 .close-icon {
   zoom: .6;
+}
+
+.tab.on-sort {
+  background: rgb(112, 112, 112);
 }
 </style>
