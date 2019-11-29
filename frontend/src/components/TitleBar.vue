@@ -1,6 +1,6 @@
 <template>
   <div class="title-bar" :style="titleBarStyles">
-    <div v-if="win" class="resizer"></div>
+    <div v-if="win && !isMaximized" class="resizer"></div>
     <h4 class="title">
       <img v-if="win" @dblclick="close" class="logo" src="~@/assets/icon.png" alt="logo">
       <span>{{statusText}}</span>
