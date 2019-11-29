@@ -5,9 +5,10 @@
       :key="item.key"
       :class="{tab: true, current: item.key === value}"
       :title="item.description"
+      @contextmenu.exact.prevent.stop="showContextMenu(item)"
       @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
-      <div class="close" @click.prevent.stop="removeTab(item)">
+      <div class="close" @click.prevent.stop="removeTabs([item])">
         <y-icon class="close-icon" name="times" title="关闭"></y-icon>
       </div>
     </div>
@@ -24,13 +25,36 @@ export default {
     list: Array,
   },
   methods: {
-    switchTab (item) {
-      this.$emit('input', item.key)
-      this.$emit('switch', item)
+    showContextMenu (item) {
+      this.$contextMenu.show([
+        { id: 'close', label: '关闭', onClick: () => this.removeTabs([item]) },
+        { id: 'close-other', label: '关闭其他', onClick: () => this.removeOther(item) },
+        { id: 'close-right', label: '关闭到右侧', onClick: () => this.removeRight(item) },
+        { id: 'close-left', label: '关闭到左侧', onClick: () => this.removeLeft(item) },
+        { id: 'close-all', label: '全部关闭', onClick: () => this.removeAll(item) },
+      ])
     },
-    removeTab (item) {
-      this.$emit('remove', item)
-    }
+    switchTab (item) {
+      if (item.key !== this.value) {
+        this.$emit('input', item.key)
+        this.$emit('switch', item)
+      }
+    },
+    removeOther (item) {
+      this.removeTabs(this.list.filter(x => x.key !== item.key))
+    },
+    removeRight (item) {
+      this.removeTabs(this.list.slice(this.list.findIndex(x => x.key === item.key) + 1))
+    },
+    removeLeft (item) {
+      this.removeTabs(this.list.slice(0, this.list.findIndex(x => x.key === item.key)))
+    },
+    removeAll () {
+      this.removeTabs(this.list)
+    },
+    removeTabs (items) {
+      this.$emit('remove', items)
+    },
   },
 }
 </script>

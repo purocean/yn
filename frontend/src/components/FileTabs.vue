@@ -1,5 +1,5 @@
 <template>
-  <Tabs :list="list" :value="current" @remove="removeTab" @switch="switchTab"></Tabs>
+  <Tabs :list="list" :value="current" @remove="removeTabs" @switch="switchTab"></Tabs>
 </template>
 
 <script>
@@ -22,10 +22,9 @@ export default {
     switchTab (item) {
       this.switchFile(item.payload.file)
     },
-    removeTab (item) {
-      const uri = File.toUri(item.payload.file)
-      const list = this.list.filter(x => x.key !== uri)
-      this.list = list
+    removeTabs (items) {
+      const keys = items.map(x => x.key)
+      this.list = this.list.filter(x => keys.indexOf(x.key) === -1)
     },
     addTab (item) {
       const tab = this.list.find(x => item.key === x.key)
