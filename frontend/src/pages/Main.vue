@@ -5,10 +5,10 @@
       <StatusBar slot="footer"></StatusBar>
       <Tree slot="left"></Tree>
       <Xterm slot="terminal"></Xterm>
-      <Editor
-        ref="editor"
-        slot="editor"
-        @scroll-line="line => $refs.preview.revealLine(line)" />
+      <template slot="editor">
+        <FileTabs />
+        <Editor ref="editor" @scroll-line="line => $refs.preview.revealLine(line)" />
+      </template>
       <Preview
         ref="preview"
         slot="preview"
@@ -23,6 +23,7 @@
 import { mapState } from 'vuex'
 import Layout from '@/components/Layout'
 import TitleBar from '@/components/TitleBar'
+import FileTabs from '@/components/FileTabs'
 import StatusBar from '@/components/StatusBar'
 import Tree from '@/components/Tree'
 import Editor from '@/components/Editor'
@@ -33,7 +34,7 @@ import Xterm from '@/components/Xterm'
 
 export default {
   name: 'x-main',
-  components: { Layout, TitleBar, StatusBar, Tree, Editor, Preview, XFilter, Xterm },
+  components: { Layout, TitleBar, StatusBar, Tree, Editor, Preview, XFilter, Xterm, FileTabs },
   mounted () {
     RunPlugin.clearCache()
     this.$bus.on('editor-ready', this.init)
