@@ -174,6 +174,7 @@ export default {
   -webkit-user-select: none;
   -webkit-app-region: drag;
   position: relative;
+  z-index: 199999;
 }
 
 .resizer {
