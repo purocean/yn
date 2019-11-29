@@ -97,6 +97,7 @@ export default {
   cursor: default;
   font-size: 12px;
   background: #282828;
+  overflow: hidden;
 }
 
 .label {
