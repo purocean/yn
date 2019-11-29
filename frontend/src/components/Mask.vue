@@ -47,7 +47,7 @@ export default {
   height: 100%;
   background: rgba(255, 255, 255, 0.089);
   z-index: 99999;
-  padding-top: 4em;
+  padding-top: 6em;
 }
 
 .fade-enter-active, .fade-leave-active {
