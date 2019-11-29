@@ -1,5 +1,5 @@
 <template>
-  <Tabs :list="list" :value="current" @remove="removeTabs" @switch="switchTab" @change-list="changeList"></Tabs>
+  <Tabs :list="tabs" :value="current" @remove="removeTabs" @switch="switchTab" @change-list="setTabs"></Tabs>
 </template>
 
 <script>
@@ -19,22 +19,23 @@ export default {
     }
   },
   methods: {
-    changeList (list) {
-      this.list = list
+    setTabs (list) {
+      this.$store.commit('app/setTabs', list)
     },
     switchTab (item) {
       this.switchFile(item.payload.file)
     },
     removeTabs (items) {
       const keys = items.map(x => x.key)
-      this.list = this.list.filter(x => keys.indexOf(x.key) === -1)
+      const tabs = this.tabs.filter(x => keys.indexOf(x.key) === -1)
+      this.setTabs(tabs)
     },
     addTab (item) {
-      const tab = this.list.find(x => item.key === x.key)
+      const tab = this.tabs.find(x => item.key === x.key)
 
       // 没有打开此 Tab，新建一个
       if (!tab) {
-        this.list = this.list.concat([item])
+        this.setTabs(this.tabs.concat([item]))
       }
 
       this.current = item.key
@@ -44,7 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('app', ['currentFile'])
+    ...mapState('app', ['currentFile', 'tabs'])
   },
   watch: {
     currentFile: {
@@ -61,7 +62,7 @@ export default {
         this.addTab(item)
       }
     },
-    list (list) {
+    tabs (list) {
       if (list.length < 1) {
         this.addTab({
           key: blankUri,

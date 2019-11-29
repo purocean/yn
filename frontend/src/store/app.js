@@ -44,6 +44,7 @@ export default {
     currentRepo: Storage.get('currentRepo'),
     currentFile: getLastOpenFile(Storage.get('currentRepo')),
     recentOpenTime: Storage.get('recentOpenTime', {}),
+    tabs: Storage.get('tabs', []),
     passwordHash: {},
     documentInfo: {
       textLength: 0,
@@ -76,6 +77,10 @@ export default {
     setShowSide (state, data) {
       state.showSide = data
       Storage.set('showSide', data)
+    },
+    setTabs (state, data) {
+      state.tabs = data
+      Storage.set('tabs', data)
     },
     setShowXterm (state, data) {
       state.showXterm = data
