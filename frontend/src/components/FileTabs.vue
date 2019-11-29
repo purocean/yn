@@ -1,34 +1,80 @@
 <template>
-  <Tabs :list="list" v-model="current" @remove="removeTab"></Tabs>
+  <Tabs :list="list" :value="current" @remove="removeTab" @switch="switchTab"></Tabs>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Tabs from './Tabs'
+import File from '@/lib/file'
+
+const blankUri = File.toUri(null)
 
 export default {
   name: 'file-tabs',
   components: { Tabs },
   data () {
     return {
-      list: [
-        { key: 'test1', label: 'TEST1', description: 'TTEESSTT2' },
-        { key: 'test2', label: 'TEST2', description: 'TTEESSTT3' },
-        { key: 'test3', label: 'TEST3', description: 'TTEESSTT4' },
-        { key: 'test4', label: 'TEST4', description: 'TTEESSTT5' },
-      ],
-      current: 'test1'
+      list: [],
+      current: blankUri
     }
   },
   methods: {
+    switchTab (item) {
+      this.switchFile(item.payload.file)
+    },
     removeTab (item) {
-      const list = this.list.filter(x => x.key !== item.key)
-      if (list.length > 0) {
-        setTimeout(() => {
-          this.current = list[list.length - 1].key
-        }, 50)
-      }
+      const uri = File.toUri(item.payload.file)
+      const list = this.list.filter(x => x.key !== uri)
       this.list = list
+    },
+    addTab (item) {
+      const tab = this.list.find(x => item.key === x.key)
+
+      // 没有打开此 Tab，新建一个
+      if (!tab) {
+        this.list = this.list.concat([item])
+      }
+
+      this.current = item.key
+    },
+    switchFile (file) {
+      this.$store.commit('app/setCurrentFile', file)
     }
   },
+  computed: {
+    ...mapState('app', ['currentFile'])
+  },
+  watch: {
+    currentFile: {
+      immediate: true,
+      handler (file) {
+        const uri = File.toUri(file)
+        const item = {
+          key: uri,
+          label: file ? file.name : '空白页',
+          description: file ? file.path : '空白页',
+          payload: { file },
+        }
+
+        this.addTab(item)
+      }
+    },
+    list (list) {
+      if (list.length < 1) {
+        this.addTab({
+          key: blankUri,
+          label: '空白页',
+          description: '空白页',
+          payload: { file: null }
+        })
+      }
+
+      const tab = list.find(x => x.key === this.current)
+      if (!tab) {
+        const currentFile = list.length > 0 ? list[list.length - 1].payload.file : null
+        this.switchFile(currentFile)
+      }
+    }
+  }
 }
 </script>

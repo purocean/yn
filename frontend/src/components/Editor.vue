@@ -132,11 +132,7 @@ export default {
       this.saveFileOpenPositionDebounce(top)
     },
     toUri (file) {
-      if (file) {
-        return `yank-note://${file.repo}/${file.path.replace(/^\//, '')}`
-      } else {
-        return 'yank-note://system/blank.md'
-      }
+      return File.toUri(file)
     },
     async saveFile (f = null) {
       const file = f || this.currentFile

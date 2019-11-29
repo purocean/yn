@@ -5,9 +5,9 @@
       :key="item.key"
       :class="{tab: true, current: item.key === value}"
       :title="item.description"
-      @click="chooseTab(item)">
+      @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
-      <div class="close" @click="removeTab(item)">
+      <div class="close" @click.prevent.stop="removeTab(item)">
         <y-icon class="close-icon" name="times" title="关闭"></y-icon>
       </div>
     </div>
@@ -24,8 +24,9 @@ export default {
     list: Array,
   },
   methods: {
-    chooseTab (item) {
+    switchTab (item) {
       this.$emit('input', item.key)
+      this.$emit('switch', item)
     },
     removeTab (item) {
       this.$emit('remove', item)
@@ -57,6 +58,9 @@ export default {
 
 .label {
   padding: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tab.current {
