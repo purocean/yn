@@ -248,7 +248,7 @@ export default {
       const list = this.currentTab === 'search' ? this.list : this.filterFiles(this.list, this.searchText.trim(), false)
 
       // 按照最近使用时间排序
-      return this.sortList(list)
+      return this.sortList(list).slice(0, 70)
     }
   }
 }

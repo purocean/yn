@@ -99,7 +99,7 @@ export default {
             additional.push({ id: 'duplicate', label: '重复文件', onClick: () => this.duplicateFile() })
           }
 
-          this.$contextMenu.show(additional.concat(menu))
+          this.$contextMenu.show(additional.concat(menu, [{ id: 'create', label: '当前目录创建新文件', onClick: () => this.createFile() }]))
         } else {
           this.$contextMenu.show(menu)
         }
@@ -158,10 +158,12 @@ export default {
     },
     async createFile (path = null, content = null) {
       if (path === null) {
+        const currentPath = this.item.type === 'dir' ? this.item.path : File.dirname(this.item.path)
+
         let filename = await this.$modal.input({
           title: '创建文件(加密文件以 .c.md 结尾)',
           hint: '文件路径',
-          content: '当前路径：' + this.item.path,
+          content: '当前路径：' + currentPath,
           value: 'new.md'
         })
 
@@ -173,7 +175,7 @@ export default {
           filename = filename.replace(/\/$/, '') + '.md'
         }
 
-        path = this.item.path.replace(/\/$/, '') + '/' + filename
+        path = currentPath.replace(/\/$/, '') + '/' + filename
       }
 
       if (!path) {

@@ -58,9 +58,6 @@ export default {
     }
   },
   watch: {
-    file (f) {
-      this.$emit('input', f)
-    },
     currentRepo () {
       this.refresh()
     }
