@@ -134,15 +134,8 @@ export default {
         HighlightLineNumber.lineNumbersBlock(ele)
       }
 
-      for (let ele of document.getElementsByTagName('a')) {
-        const href = ele.getAttribute('href')
-        if (href && href.startsWith('#')) {
-          ele.onclick = () => {
-            document.getElementById(href.replace(/^#/, '')).scrollIntoView()
-            return false
-          }
-        }
-      }
+      // 渲染完成后触发渲染完成事件
+      this.$nextTick(() => this.$bus.emit('preview-rendered'))
     }, 500, { leading: true })
 
     this.render()
@@ -201,6 +194,16 @@ export default {
         path = decodeURI(path) // 提前解码一次，有的链接已经预先编码
         const fileName = file.basename(path)
         const filePath = `${basePath}/${path}`
+
+        // md 文件不替换
+        if (fileName.endsWith('.md')) {
+          return match
+        }
+
+        // 路径中有 hash 不替换
+        if (path.indexOf('#') > -1) {
+          return match
+        }
 
         return `[${alt}](api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURI(filePath)})`
       })
@@ -282,25 +285,76 @@ export default {
     },
     handleClick (e) {
       const target = e.target
-      console.log(env.isElectron, target.tagName, target.getAttribute('href'), /^(http:|https:|ftp:)\/\//i.test(target.getAttribute('href') || ''))
+
+      const preventEvent = () => {
+        e.preventDefault()
+        e.stopPropagation()
+      }
 
       const handleLink = link => {
-        if (link.tagName === 'A' && link.classList.contains('open')) {
+        // 系统中打开附件
+        if (link.classList.contains('open')) {
           fetch(link.href.replace('api/attachment', 'api/open'))
-          e.preventDefault()
-          e.stopPropagation()
-          return
+          return preventEvent()
         }
 
-        if (env.isElectron && link.tagName === 'A' && /^(http:|https:|ftp:)\/\//i.test(link.getAttribute('href') || '')) {
-          env.require && env.require('opn')(link.href)
-          e.preventDefault()
-          e.stopPropagation()
+        const href = link.getAttribute('href') || ''
+
+        if (/^(http:|https:|ftp:)\/\//i.test(href)) { // 处理外链
+          // Electron 中打开外链
+          if (env.isElectron) {
+            env.require && env.require('opn')(link.href)
+            preventEvent()
+          }
+        } else { // 处理相对链接
+          if (/(\.md$|\.md#)/.test(href)) { // 处理打开相对 md 文件
+            const tmp = href.split('#')
+
+            let path = tmp[0]
+            if (path.startsWith('.')) { // 将相对路径转换为绝对路径
+              path = file.dirname(this.filePath || '') + path.replace('.', '')
+            }
+
+            // 打开文件
+            this.$store.commit('app/setCurrentFile', {
+              path,
+              name: file.basename(path),
+              repo: this.fileRepo,
+              type: 'file'
+            })
+
+            // 跳转锚点
+            const hash = tmp[1]
+            if (hash) {
+              this.$bus.once('preview-rendered', () => {
+                const el = document.getElementById(hash)
+                if (el) {
+                  // 如果是标题的话，也顺便将编辑器滚动到可视区域
+                  if (hash.startsWith('h-')) {
+                    el.click()
+                  } else {
+                    el.scrollIntoView()
+                  }
+                }
+              })
+            }
+
+            preventEvent()
+          } else if (href && href.startsWith('#')) { // 处理 TOC 跳转
+            document.getElementById(href.replace(/^#/, '')).scrollIntoView()
+            preventEvent()
+          }
         }
       }
 
       if (target.tagName === 'A') {
         handleLink(target)
+      }
+
+      // 复制标题链接
+      if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && e.ctrlKey) {
+        this.$bus.emit('copy-text', encodeURI(this.filePath) + '#' + target.id)
+        return preventEvent()
       }
 
       if (target.tagName === 'IMG') {

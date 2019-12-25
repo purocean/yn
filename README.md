@@ -50,6 +50,7 @@
 + HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + B + V` 粘贴复制 HTML 为 Markdown
 + docx 导出：后端使用 pandoc 做转换器
 + TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
++ 复制标题链接：`Ctrl + 单击标题` 复制标题链接路径到剪切板，便于插入到其他文件
 + 嵌入小工具：文档支持内嵌 HTML 小工具，示例见 FEATURE.md
 + 嵌入 Plantuml 图形：需要安装 Java，graphviz ，示例见 FEATURE.md
 + 嵌入 drawio 图形：文档支持内嵌 drawio 图形，示例见 FEATURE.md
@@ -57,6 +58,7 @@
 + 嵌入 Mermaid 图形：在文档中嵌入 Mermaid 图形，示例见 FEATURE.md
 + 元素属性书写：可自定义元素的任意属性，示例见 FEATURE.md
 + 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
++ 文档交叉链接跳转：支持在文档中引入其他文档，互相跳转
 
 ## 上手使用
 + 在 [最新版本](https://github.com/purocean/yn/releases) 下载对应平台应用即可
@@ -148,13 +150,19 @@ yarn run start
 
 [Windows 商店下载](https://www.microsoft.com/zh-cn/p/yank-note-%e4%b8%80%e6%ac%be%e9%9d%a2%e5%90%91%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84-markdown-%e7%ac%94%e8%ae%b0%e5%ba%94%e7%94%a8/9n08bq8k8681?rtc=1#activetab=pivot:overviewtab)
 
+### [v2.2.0](https://github.com/purocean/yn/releases/tag/v2.2.0) 2019-12-25
+1. 增加文档之间跳转功能
+1. 增加复制文档标题链接功能
+1. 调整文档插入选择面板
+1. 修复高分辨率下目录树箭头消失问题
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v2.1.1](https://github.com/purocean/yn/releases/tag/v2.1.1) 2019-12-24
 1. 增加在当前目录创建文件菜单
 1. 限制快捷跳转列表数量以提高性能
 1. 标题栏最大化窗口后移除尺寸调节
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v2.1.0](https://github.com/purocean/yn/releases/tag/v2.1.0) 2019-11-29
 1. 增加多标签同时打开多个文件
