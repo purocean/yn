@@ -325,7 +325,6 @@ export default {
 summary.folder::-webkit-details-marker {
   flex: none;
   width: 10px;
-  position: relative;
   margin: 0;
   margin-right: 5px;
 }
