@@ -1,6 +1,6 @@
 <template>
   <XMask :show="!!show" @close="show = false">
-    <QuickOpen @choose-file="show" @close="show = false"></QuickOpen>
+    <QuickOpen @choose-file="show" @close="show = false" :with-marked="show && show.withMarked"></QuickOpen>
   </XMask>
 </template>
 
@@ -33,14 +33,15 @@ export default {
           }
           this.show = false
         }
+        this.show.withMarked = false
         e.preventDefault()
         e.stopPropagation()
       } else if (e.key === 'p' && e.ctrlKey) {
         this.show = f => {
-          this.$bus.$emit('switch-repo-by-name', f.repo)
           this.$store.commit('app/setCurrentFile', f)
           this.show = false
         }
+        this.show.withMarked = true
         e.preventDefault()
         e.stopPropagation()
       }

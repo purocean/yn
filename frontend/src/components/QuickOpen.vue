@@ -34,6 +34,12 @@ import fuzzyMatch from '@/lib/fuzzyMatch'
 export default {
   name: 'quick-open',
   components: {},
+  props: {
+    withMarked: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data () {
     return {
       selected: null,
@@ -41,11 +47,6 @@ export default {
       currentTab: 'marked',
       list: [],
       lastFetchTime: 0,
-      tabs: [
-        { key: 'marked', label: '已标记' },
-        { key: 'file', label: '快速跳转' },
-        { key: 'search', label: '搜索内容' },
-      ]
     }
   },
   created () {
@@ -216,6 +217,14 @@ export default {
     }
   },
   watch: {
+    withMarked: {
+      immediate: true,
+      handler (val) {
+        if (!val && this.currentTab === 'marked') {
+          this.currentTab = 'file'
+        }
+      }
+    },
     list () {
       this.updateSelected()
     },
@@ -233,6 +242,18 @@ export default {
   },
   computed: {
     ...mapState('app', ['currentRepo', 'recentOpenTime', 'tree', 'markedFiles']),
+    tabs () {
+      const tabs = [
+        { key: 'file', label: '快速跳转' },
+        { key: 'search', label: '搜索内容' },
+      ]
+
+      if (this.withMarked) {
+        tabs.unshift({ key: 'marked', label: '已标记' })
+      }
+
+      return tabs
+    },
     files () {
       return this.travelFiles(this.tree || [])
     },
