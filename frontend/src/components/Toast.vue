@@ -12,7 +12,6 @@ export default {
   },
   methods: {
     show (type, content, timeout = 2000) {
-      // TODO 暂时只有 warning type
       this.toast = { type, content }
 
       setTimeout(() => {
@@ -40,6 +39,11 @@ export default {
 
 .toast-warning {
   background: #d46b08;
+  color: #f9ebeb;
+}
+
+.toast-info {
+  background: #07bd52;
   color: #f9ebeb;
 }
 </style>

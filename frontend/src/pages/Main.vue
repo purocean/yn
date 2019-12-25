@@ -38,11 +38,28 @@ export default {
   mounted () {
     RunPlugin.clearCache()
     this.$bus.on('editor-ready', this.init)
+    this.$bus.on('copy-text', this.copyText)
   },
   beforeDestroy () {
     this.$bus.off('editor-ready', this.init)
+    this.$bus.off('copy-text', this.copyText)
   },
   methods: {
+    copyText (text) {
+      const input = document.createElement('input')
+      input.style.position = 'absolute'
+      input.style.background = 'red'
+      input.style.left = '-999999px'
+      input.style.top = '-999999px'
+      input.style.zIndex = -1000
+      input.style.opacity = 0
+      input.value = text
+      document.body.appendChild(input)
+      input.select()
+      document.execCommand('copy')
+      document.body.removeChild(input)
+      this.$toast.show('info', '已复制')
+    },
     init () {
       if (!this.currentFile) {
         this.$store.dispatch('app/showHelp', 'README.md')

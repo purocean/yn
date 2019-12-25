@@ -350,6 +350,12 @@ export default {
         handleLink(target)
       }
 
+      // 复制标题链接
+      if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && e.ctrlKey) {
+        this.$bus.emit('copy-text', encodeURI(this.filePath) + '#' + target.id)
+        return preventEvent()
+      }
+
       if (target.tagName === 'IMG') {
         const img = target
         if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地

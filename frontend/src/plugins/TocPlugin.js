@@ -131,6 +131,10 @@ export default (md, o) => {
       header.attrSet('id', slug)
     }
 
+    if (header.attrIndex('title') < 0) {
+      header.attrSet('title', 'Ctrl + 单击复制链接')
+    }
+
     return injectLineNumbers(tokens, idx, opt, env, slf)
   }
 
