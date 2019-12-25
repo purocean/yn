@@ -1,5 +1,7 @@
 // https://github.com/Oktavilla/markdown-it-table-of-contents
 
+import { injectLineNumbers } from './SourceLinePlugin'
+
 const slugify = s => 'h-' + encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
 
 const defaults = {
@@ -109,18 +111,30 @@ export default (md, o) => {
       var tokenLength = gstate && gstate.tokens && gstate.tokens.length
 
       while (pos < tokenLength) {
-        var tocHierarchy = renderChildsTokens(pos, gstate.tokens)
+        var tocHierarchy = renderChildrenTokens(pos, gstate.tokens)
         pos = tocHierarchy[0]
         tocBody += tocHierarchy[1]
       }
 
       return tocBody
     } else {
-      return renderChildsTokens(0, gstate.tokens)[1]
+      return renderChildrenTokens(0, gstate.tokens)[1]
     }
   }
 
-  function renderChildsTokens (pos, tokens) {
+  md.renderer.rules.heading_open = function (tokens, idx, opt, env, slf) {
+    const header = tokens[idx]
+    const headContent = tokens[idx + 1]
+    const slug = options.slugify(headContent.content)
+
+    if (header.attrIndex('id') < 0) {
+      header.attrSet('id', slug)
+    }
+
+    return injectLineNumbers(tokens, idx, opt, env, slf)
+  }
+
+  function renderChildrenTokens (pos, tokens) {
     let headings = []
     let buffer = ''
     let currentLevel
@@ -129,7 +143,6 @@ export default (md, o) => {
     let i = pos
     while (i < size) {
       var token = tokens[i]
-      const header = tokens[i - 2]
       var heading = tokens[i - 1]
       var level = token.tag && parseInt(token.tag.substr(1, 1))
       if (token.type !== 'heading_close' || options.level.indexOf(level) === -1 || heading.type !== 'inline') {
@@ -140,7 +153,7 @@ export default (md, o) => {
         currentLevel = level // We init with the first found level
       } else {
         if (level > currentLevel) {
-          subHeadings = renderChildsTokens(i, tokens)
+          subHeadings = renderChildrenTokens(i, tokens)
           buffer += subHeadings[1]
           i = subHeadings[0]
           continue
@@ -161,10 +174,6 @@ export default (md, o) => {
       // 给标题加上 id
 
       const slug = options.slugify(heading.content)
-
-      if (header.attrIndex('id') < 0) {
-        header.attrSet('id', slug)
-      }
 
       buffer = `<li><a href="#${slug}">`
       buffer += typeof options.format === 'function' ? options.format(heading.content) : heading.content
