@@ -328,12 +328,13 @@ export default {
             if (hash) {
               this.$bus.once('preview-rendered', () => {
                 const el = document.getElementById(hash)
-
-                // 如果是标题的话，也顺便将编辑器滚动到可视区域
-                if (hash.startsWith('h-')) {
-                  el.click()
-                } else {
-                  el.scrollIntoView()
+                if (el) {
+                  // 如果是标题的话，也顺便将编辑器滚动到可视区域
+                  if (hash.startsWith('h-')) {
+                    el.click()
+                  } else {
+                    el.scrollIntoView()
+                  }
                 }
               })
             }
