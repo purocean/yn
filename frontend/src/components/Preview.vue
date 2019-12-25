@@ -134,15 +134,8 @@ export default {
         HighlightLineNumber.lineNumbersBlock(ele)
       }
 
-      for (let ele of document.getElementsByTagName('a')) {
-        const href = ele.getAttribute('href')
-        if (href && href.startsWith('#')) {
-          ele.onclick = () => {
-            document.getElementById(href.replace(/^#/, '')).scrollIntoView()
-            return false
-          }
-        }
-      }
+      // 渲染完成后触发渲染完成事件
+      this.$nextTick(() => this.$bus.emit('preview-rendered'))
     }, 500, { leading: true })
 
     this.render()
@@ -293,13 +286,16 @@ export default {
     handleClick (e) {
       const target = e.target
 
+      const preventEvent = () => {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+
       const handleLink = link => {
         // 系统中打开附件
         if (link.classList.contains('open')) {
           fetch(link.href.replace('api/attachment', 'api/open'))
-          e.preventDefault()
-          e.stopPropagation()
-          return
+          return preventEvent()
         }
 
         const href = link.getAttribute('href') || ''
@@ -308,8 +304,7 @@ export default {
           // Electron 中打开外链
           if (env.isElectron) {
             env.require && env.require('opn')(link.href)
-            e.preventDefault()
-            e.stopPropagation()
+            preventEvent()
           }
         } else { // 处理相对链接
           if (/(\.md$|\.md#)/.test(href)) { // 处理打开相对 md 文件
@@ -328,8 +323,25 @@ export default {
               type: 'file'
             })
 
-            e.preventDefault()
-            e.stopPropagation()
+            // 跳转锚点
+            const hash = tmp[1]
+            if (hash) {
+              this.$bus.once('preview-rendered', () => {
+                const el = document.getElementById(hash)
+
+                // 如果是标题的话，也顺便将编辑器滚动到可视区域
+                if (hash.startsWith('h-')) {
+                  el.click()
+                } else {
+                  el.scrollIntoView()
+                }
+              })
+            }
+
+            preventEvent()
+          } else if (href && href.startsWith('#')) { // 处理 TOC 跳转
+            document.getElementById(href.replace(/^#/, '')).scrollIntoView()
+            preventEvent()
           }
         }
       }
