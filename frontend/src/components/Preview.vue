@@ -202,6 +202,16 @@ export default {
         const fileName = file.basename(path)
         const filePath = `${basePath}/${path}`
 
+        // md 文件不替换
+        if (fileName.endsWith('.md')) {
+          return match
+        }
+
+        // 路径中有 hash 不替换
+        if (path.indexOf('#') > -1) {
+          return match
+        }
+
         return `[${alt}](api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURI(filePath)})`
       })
     },
@@ -282,20 +292,45 @@ export default {
     },
     handleClick (e) {
       const target = e.target
-      console.log(env.isElectron, target.tagName, target.getAttribute('href'), /^(http:|https:|ftp:)\/\//i.test(target.getAttribute('href') || ''))
 
       const handleLink = link => {
-        if (link.tagName === 'A' && link.classList.contains('open')) {
+        // 系统中打开附件
+        if (link.classList.contains('open')) {
           fetch(link.href.replace('api/attachment', 'api/open'))
           e.preventDefault()
           e.stopPropagation()
           return
         }
 
-        if (env.isElectron && link.tagName === 'A' && /^(http:|https:|ftp:)\/\//i.test(link.getAttribute('href') || '')) {
-          env.require && env.require('opn')(link.href)
-          e.preventDefault()
-          e.stopPropagation()
+        const href = link.getAttribute('href') || ''
+
+        if (/^(http:|https:|ftp:)\/\//i.test(href)) { // 处理外链
+          // Electron 中打开外链
+          if (env.isElectron) {
+            env.require && env.require('opn')(link.href)
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        } else { // 处理相对链接
+          if (/(\.md$|\.md#)/.test(href)) { // 处理打开相对 md 文件
+            const tmp = href.split('#')
+
+            let path = tmp[0]
+            if (path.startsWith('.')) { // 将相对路径转换为绝对路径
+              path = file.dirname(this.filePath || '') + path.replace('.', '')
+            }
+
+            // 打开文件
+            this.$store.commit('app/setCurrentFile', {
+              path,
+              name: file.basename(path),
+              repo: this.fileRepo,
+              type: 'file'
+            })
+
+            e.preventDefault()
+            e.stopPropagation()
+          }
         }
       }
 
