@@ -150,14 +150,18 @@ yarn run start
 
 [Windows 商店下载](https://www.microsoft.com/zh-cn/p/yank-note-%e4%b8%80%e6%ac%be%e9%9d%a2%e5%90%91%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84-markdown-%e7%ac%94%e8%ae%b0%e5%ba%94%e7%94%a8/9n08bq8k8681?rtc=1#activetab=pivot:overviewtab)
 
+### [v2.2.1](https://github.com/purocean/yn/releases/tag/v2.2.1) 2019-12-25
+1. 修复跳转中文路径处理
+1. 优化插入文档文件链接
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v2.2.0](https://github.com/purocean/yn/releases/tag/v2.2.0) 2019-12-25
 1. 增加文档之间跳转功能
 1. 增加复制文档标题链接功能
 1. 调整文档插入选择面板
 1. 修复高分辨率下目录树箭头消失问题
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v2.1.1](https://github.com/purocean/yn/releases/tag/v2.1.1) 2019-12-24
 1. 增加在当前目录创建文件菜单
