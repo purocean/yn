@@ -60,6 +60,7 @@ import PlantumlPlugin from '../plugins/PlantumlPlugin'
 import MermaidPlugin from '../plugins/MermaidPlugin'
 import file from '@/lib/file'
 import env from '@/lib/env'
+import { encodeMarkdownLink } from '@/lib/utils'
 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
@@ -205,7 +206,7 @@ export default {
           return match
         }
 
-        return `[${alt}](api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURI(filePath)})`
+        return `[${alt}](api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)})`
       })
     },
     updatePlantuml () {
@@ -273,12 +274,12 @@ export default {
         img.src.startsWith('http://') ||
         img.src.startsWith('https://')
       ) {
-        window.fetch(`api/proxy?url=${encodeURI(img.src)}`).then(r => {
+        window.fetch(`api/proxy?url=${encodeURIComponent(img.src)}`).then(r => {
           r.blob().then(async blob => {
             const imgFile = new File([blob], 'file.' + mime.extension(r.headers.get('content-type')))
             const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
             this.$bus.emit('tree-refresh')
-            this.$bus.emit('editor-replace-value', img.src, encodeURI(relativePath))
+            this.$bus.emit('editor-replace-value', img.src, encodeMarkdownLink(relativePath))
           })
         })
       }
@@ -308,7 +309,7 @@ export default {
           }
         } else { // 处理相对链接
           if (/(\.md$|\.md#)/.test(href)) { // 处理打开相对 md 文件
-            const tmp = href.split('#')
+            const tmp = decodeURI(href).split('#')
 
             let path = tmp[0]
             if (path.startsWith('.')) { // 将相对路径转换为绝对路径
@@ -324,17 +325,18 @@ export default {
             })
 
             // 跳转锚点
-            const hash = tmp[1]
+            const hash = tmp.slice(1).join('#')
             if (hash) {
               this.$bus.once('preview-rendered', () => {
-                const el = document.getElementById(hash)
+                const el = document.getElementById(hash) ||
+                  document.getElementById(encodeURIComponent(hash))
+
                 if (el) {
                   // 如果是标题的话，也顺便将编辑器滚动到可视区域
                   if (hash.startsWith('h-')) {
                     el.click()
-                  } else {
-                    el.scrollIntoView()
                   }
+                  el.scrollIntoView()
                 }
               })
             }
@@ -353,7 +355,7 @@ export default {
 
       // 复制标题链接
       if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && e.ctrlKey) {
-        this.$bus.emit('copy-text', encodeURI(this.filePath) + '#' + target.id)
+        this.$bus.emit('copy-text', encodeMarkdownLink(this.filePath) + '#' + encodeMarkdownLink(decodeURIComponent(target.id)))
         return preventEvent()
       }
 

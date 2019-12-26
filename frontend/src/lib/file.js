@@ -133,7 +133,10 @@ const upload = async (repo, belongPath, uploadFile, name = null) => {
         const filename = name || Crypto.binMd5(fr.result).substr(0, 8) + extname(uploadFile.name)
 
         const formData = new FormData()
-        const path = belongPath.replace(/\/([^/]*)$/, (_, capture) => `/FILES/${slugify(capture)}/` + filename)
+        const path = belongPath.replace(/\/([^/]*)$/, (_, capture) => {
+          const dirName = slugify(capture)
+          return `/FILES/${dirName.startsWith('.') ? 'upload' : dirName}/` + filename
+        })
         formData.append('repo', repo)
         formData.append('path', path)
         formData.append('attachment', uploadFile)
