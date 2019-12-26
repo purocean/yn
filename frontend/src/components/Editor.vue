@@ -20,6 +20,7 @@ import { mapState } from 'vuex'
 import dayjs from 'dayjs'
 import File from '@/lib/file'
 import Storage from '@/lib/Storage'
+import { encodeMarkdownLink } from '@/lib/utils'
 import MonacoEditor from './MonacoEditor'
 
 const FILE_POSITION_KEY = 'filePosition'
@@ -185,13 +186,13 @@ export default {
     async pasteImg (file) {
       const { relativePath } = await File.upload(this.currentFile.repo, this.currentFile.path, file)
       this.$bus.emit('file-uploaded', relativePath)
-      this.$refs.editor.insert(`![图片](${encodeURI(relativePath)})\n`)
+      this.$refs.editor.insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
     },
     async uploadFile (file) {
       const filename = `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`
       const { relativePath } = await File.upload(this.currentFile.repo, this.currentFile.path, file, filename)
       this.$bus.emit('file-uploaded', relativePath)
-      this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeURI(relativePath).replace('(', '%28').replace(')', '%29')}){class=open target=_blank}\n`)
+      this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
     },
     async changeFile (current, previous) {
       this.clearTimer()
