@@ -225,13 +225,11 @@ export default {
         }
       }
     },
-    list () {
-      this.updateSelected()
-    },
     searchText () {
       this.updateDataSource()
     },
     dataList () {
+      this.updateSelected()
       this.$nextTick(() => this.highlightText(this.searchText.trim()))
     },
     currentTab () {
