@@ -103,8 +103,8 @@ export default {
         this.$refs.fileName.concat(this.$refs.filePath).forEach(function (it) {
           let text = ''
 
-          it.innerText.toLowerCase().split('').forEach(char => {
-            if (search.indexOf(char) > -1) {
+          it.innerText.split('').forEach(char => {
+            if (search.indexOf(char.toLowerCase()) > -1) {
               text += `${openF}${char}${closeF}`
             } else {
               text += char
