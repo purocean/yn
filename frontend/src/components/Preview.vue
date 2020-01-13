@@ -58,6 +58,7 @@ import LinkTargetPlugin from '../plugins/LinkTargetPlugin'
 import DrawioPlugin from '../plugins/DrawioPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
 import MermaidPlugin from '../plugins/MermaidPlugin'
+import CodePlugin from '../plugins/CodePlugin'
 import file from '@/lib/file'
 import env from '@/lib/env'
 import { encodeMarkdownLink } from '@/lib/utils'
@@ -94,6 +95,7 @@ const markdown = Markdown({
   .use(MarkdownItToc)
   .use(MarkdownItECharts)
   .use(MermaidPlugin)
+  .use(CodePlugin)
 
 export default {
   name: 'xview',
