@@ -150,11 +150,14 @@ yarn run start
 
 [Windows 商店下载](https://www.microsoft.com/zh-cn/p/yank-note-%e4%b8%80%e6%ac%be%e9%9d%a2%e5%90%91%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84-markdown-%e7%ac%94%e8%ae%b0%e5%ba%94%e7%94%a8/9n08bq8k8681?rtc=1#activetab=pivot:overviewtab)
 
-### [v2.2.5](https://github.com/purocean/yn/releases/tag/v2.2.5) 2020-01-14
-1. 修复 frontend yarn.lock 问题
+### [v2.2.6](https://github.com/purocean/yn/releases/tag/v2.2.6) 2020-01-16
+1. 修复插入文档名称问题
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.2.5](https://github.com/purocean/yn/releases/tag/v2.2.5) 2020-01-14
+1. 修复 frontend yarn.lock 问题
 
 ### [v2.2.4](https://github.com/purocean/yn/releases/tag/v2.2.4) 2020-01-14
 1. 修复 frontend yarn.lock 问题
