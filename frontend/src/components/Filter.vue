@@ -30,7 +30,7 @@ export default {
         this.show = f => {
           if (this.currentFile) {
             const relativePath = f.path.replace(this.currentFile.path.substr(0, this.currentFile.path.lastIndexOf('/')), '.')
-            this.$bus.emit('editor-insert-value', `[${f.name.replace(/\.[^.]$/, '')}](${encodeMarkdownLink(relativePath)})`)
+            this.$bus.emit('editor-insert-value', `[${f.name.replace(/\.[^.]+$/, '')}](${encodeMarkdownLink(relativePath)})`)
           }
           this.show = false
         }
