@@ -683,6 +683,10 @@ button:hover {
   box-sizing: border-box;
 }
 
+.view .markdown-body table {
+  display: table;
+}
+
 .view .markdown-body hr {
   border-bottom: 1px solid;
 }
