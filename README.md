@@ -1,5 +1,5 @@
 # Yank Note
-> 一款面向程序员的 Markdown 笔记应用 [Windows 商店下载](https://www.microsoft.com/zh-cn/p/yank-note-%e4%b8%80%e6%ac%be%e9%9d%a2%e5%90%91%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84-markdown-%e7%ac%94%e8%ae%b0%e5%ba%94%e7%94%a8/9n08bq8k8681?rtc=1#activetab=pivot:overviewtab)
+> 一款面向程序员的 Markdown 笔记应用
 
 [toc]{level: [2]}
 
@@ -130,14 +130,6 @@ yarn run start
 ### OSX
     TODO 手头没有环境，待完善
 
-## 捐赠
-如果我的工作对您有帮助，请我喝杯咖啡吧 ^_^。**附言可以留下您的 github 用户名或网站连接**。
-
-<img alt="微信" src="./help/wechat.png" width="17%" style="display: inline-block">　<img alt="支付宝" src="./help/alipay.jpg" width="17%" style="display: inline-block">　<img alt="支付宝红包" src="./help/hb.jpg" width="17%" style="display: inline-block">
-
-1. [wangyedong66](https://github.com/wangyedong66) 2元
-1. [yubingcen](https://github.com/yubingcen) 0.1元
-
 ## 界面截图
 ![截图](./help/3.png)
 ![截图](./help/5.png)
@@ -147,8 +139,6 @@ yarn run start
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
-
-[Windows 商店下载](https://www.microsoft.com/zh-cn/p/yank-note-%e4%b8%80%e6%ac%be%e9%9d%a2%e5%90%91%e7%a8%8b%e5%ba%8f%e5%91%98%e7%9a%84-markdown-%e7%ac%94%e8%ae%b0%e5%ba%94%e7%94%a8/9n08bq8k8681?rtc=1#activetab=pivot:overviewtab)
 
 ### [v2.2.7](https://github.com/purocean/yn/releases/tag/v2.2.7) 2020-01-19
 1. 调整渲染的表格宽度
