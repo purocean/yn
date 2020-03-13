@@ -94,6 +94,7 @@
     + `Ctrl + K, Ctrl + L` 转换小写
     + `Ctrl + Alt + R` 在内置终端里面运行选中内容
     + `Ctrl + B + V` 粘贴 html 富文本
+    + `Ctrl + Alt + Left/Right` 切换编辑器 Tab
 
 ## 开发
 依赖安装和编译比较麻烦，请保证自己有足够耐心且有科学上网的手段。

@@ -18,7 +18,46 @@ export default {
       current: blankUri
     }
   },
+  created () {
+    window.addEventListener('keydown', this.keydownHandler, true)
+  },
+  beforeDestroy () {
+    window.removeEventListener('keydown', this.keydownHandler)
+  },
   methods: {
+    keydownHandler (e) {
+      const findTab = offset => {
+        const tabs = [...this.tabs]
+
+        if (tabs.length < 1) {
+          return null
+        }
+
+        const currentIndex = tabs.findIndex(x => x.key === this.current)
+        let index = currentIndex + offset
+
+        if (index < 0) {
+          index = tabs.length - 1
+        }
+
+        if (index >= tabs.length) {
+          index = 0
+        }
+
+        return tabs[index]
+      }
+
+      // 快捷键切换最近文档
+      if (e.altKey && e.ctrlKey) {
+        if (e.key === 'ArrowLeft') {
+          const prev = findTab(-1)
+          prev && this.switchTab(prev)
+        } else if (e.key === 'ArrowRight') {
+          const next = findTab(1)
+          next && this.switchTab(next)
+        }
+      }
+    },
     setTabs (list) {
       this.$store.commit('app/setTabs', list)
     },
