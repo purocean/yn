@@ -210,7 +210,7 @@ export default {
 
       return list.sort((a, b) => {
         const at = map[`${a.repo}|${a.path}`] || 0
-        const bt = map[`${a.repo}|${b.path}`] || 0
+        const bt = map[`${b.repo}|${b.path}`] || 0
 
         return bt - at
       })

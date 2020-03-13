@@ -94,6 +94,7 @@
     + `Ctrl + K, Ctrl + L` 转换小写
     + `Ctrl + Alt + R` 在内置终端里面运行选中内容
     + `Ctrl + B + V` 粘贴 html 富文本
+    + `Ctrl + Alt + Left/Right` 切换编辑器 Tab
 
 ## 开发
 依赖安装和编译比较麻烦，请保证自己有足够耐心且有科学上网的手段。
@@ -140,11 +141,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.2.7](https://github.com/purocean/yn/releases/tag/v2.2.7) 2020-01-19
-1. 调整渲染的表格宽度
+### [v2.2.8](https://github.com/purocean/yn/releases/tag/v2.2.8) 2020-03-13
+1. 增加切换编辑器标签快捷键 `Ctrl + Alt + Left/Right`
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.2.7](https://github.com/purocean/yn/releases/tag/v2.2.7) 2020-01-19
+1. 调整渲染的表格宽度
 
 ### [v2.2.6](https://github.com/purocean/yn/releases/tag/v2.2.6) 2020-01-16
 1. 修复插入文档名称问题
