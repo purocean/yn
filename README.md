@@ -141,11 +141,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.2.8](https://github.com/purocean/yn/releases/tag/v2.2.8) 2020-03-13
-1. 增加切换编辑器标签快捷键 `Ctrl + Alt + Left/Right`
+### [v2.2.9](https://github.com/purocean/yn/releases/tag/v2.2.9) 2020-03-17
+1. 修复公式解析问题
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.2.8](https://github.com/purocean/yn/releases/tag/v2.2.8) 2020-03-13
+1. 增加切换编辑器标签快捷键 `Ctrl + Alt + Left/Right`
 
 ### [v2.2.7](https://github.com/purocean/yn/releases/tag/v2.2.7) 2020-01-19
 1. 调整渲染的表格宽度
