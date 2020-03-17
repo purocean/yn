@@ -15,7 +15,7 @@
     "github-markdown-css": "^3.0.1",
     "highlight": "^0.2.4",
     "highlight.js": "^9.15.6",
-    "katex": "^0.10.1",
+    "katex": "^0.6.0",
     "markdown-it": "^8.4.2",
     "markdown-it-attrs": "^2.3.2",
     "markdown-it-katex": "^2.0.3",

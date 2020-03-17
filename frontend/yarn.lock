@@ -5634,12 +5634,6 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-katex@^0.10.1:
-  version "0.10.1"
-  resolved "https://registry.npmjs.org/katex/-/katex-0.10.1.tgz#5bb0b72bf19cecfc1fa217a9261760e5d301efff"
-  dependencies:
-    commander "^2.19.0"
-
 katex@^0.6.0:
   version "0.6.0"
   resolved "https://registry.npmjs.org/katex/-/katex-0.6.0.tgz#12418e09121c05c92041b6b3b9fb6bab213cb6f3"

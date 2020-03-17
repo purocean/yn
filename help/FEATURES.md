@@ -78,6 +78,12 @@ $$\begin{array}{c}
 \nabla \cdot \vec{\mathbf{B}} & = 0
 \end{array}$$
 
+equation | description
+----------|------------
+$\nabla \cdot \vec{\mathbf{B}}  = 0$ | divergence of $\vec{\mathbf{B}}$ is zero
+$\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t}  = \vec{\mathbf{0}}$ |  curl of $\vec{\mathbf{E}}$ is proportional to the rate of change of $\vec{\mathbf{B}}$
+$\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} = \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} = 4 \pi \rho$ | _wha?_
+
 ## 运行代码
 支持运行 `PHP` `nodejs` `Python` `bash` `bat` 代码。
 此功能执行外部命令实现，所以需要安装相应环境。
