@@ -300,7 +300,8 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 1. 转换所有外链图片到本地 `Ctrl + Alt + L`
 1. 切换文档预览显示：`Alt + V` 或点击状态栏 `切换预览` 按钮
 1. 切换编辑器自动换行：`Alt + W` 或点击状态栏 `切换换行` 按钮
-1. 粘贴 HTML 富文本为 Markdown `Ctrl + B + V`
+1. 粘贴 HTML 富文本为 Markdown `Ctrl + M + V`
+1. 粘贴图片为 Base64 `Ctrl + B + V`
 1. 打开文件快速切换面板 `Ctrl + P`
 1. 复制文档标题链接 `Ctrl + 单击标题`
 1. 切换编辑器 Tab `Ctrl + Alt + Left/Right`

@@ -37,7 +37,7 @@
 + 文件加密：以 `.c.md` 结尾的文件视为加密文件
 + 自动保存：文件编辑后自动保存，未保存文件橙色标题栏提醒（加密文档不自动保存）
 + 编辑优化：列表自动补全
-+ 粘贴图片：粘贴剪切板里面的图片
++ 粘贴图片：`Ctrl + V` 粘贴剪切板里面的图片，使用快捷键 `Ctrl + B + V` 作为 Base64 形式粘贴
 + 嵌入附件：可以添加附件到文档，点击在系统中打开
 + 代码运行：支持运行 PHP，nodejs，Python，bash 代码，示例见 FEATURE.md
 + 待办列表：支持显示文档中的待办进度，点击可快速切换待办状态
@@ -47,7 +47,7 @@
 + 样式风格：Markdown 使用 GitHub 风格样式和特性
 + 数据仓库：可定义多个数据位置以便文档分类
 + 外链转换：将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
-+ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + B + V` 粘贴复制 HTML 为 Markdown
++ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + M + V` 粘贴复制 HTML 为 Markdown
 + docx 导出：后端使用 pandoc 做转换器
 + TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
 + 复制标题链接：`Ctrl + 单击标题` 复制标题链接路径到剪切板，便于插入到其他文件
@@ -93,7 +93,8 @@
     + `Ctrl + K, Ctrl + U` 转换大写
     + `Ctrl + K, Ctrl + L` 转换小写
     + `Ctrl + Alt + R` 在内置终端里面运行选中内容
-    + `Ctrl + B + V` 粘贴 html 富文本
+    + `Ctrl + M + V` 粘贴 html 富文本
+    + `Ctrl + B + V` 粘贴图片为 Base64
     + `Ctrl + Alt + Left/Right` 切换编辑器 Tab
 
 ## 开发
@@ -141,11 +142,15 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.2.9](https://github.com/purocean/yn/releases/tag/v2.2.9) 2020-03-17
-1. 修复公式解析问题
+### [v2.2.10](https://github.com/purocean/yn/releases/tag/v2.2.10) 2020-04-07
+1. 新增粘贴图片为 Base64 形式快捷键 `Ctrl + B + V`
+2. 更改粘贴富文本为 Markdown 快捷键为 `Ctrl + M + V`
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.2.9](https://github.com/purocean/yn/releases/tag/v2.2.9) 2020-03-17
+1. 修复公式解析问题
 
 ### [v2.2.8](https://github.com/purocean/yn/releases/tag/v2.2.8) 2020-03-13
 1. 增加切换编辑器标签快捷键 `Ctrl + Alt + Left/Right`

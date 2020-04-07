@@ -183,10 +183,16 @@ export default {
         console.error(error)
       }
     },
-    async pasteImg (file) {
-      const { relativePath } = await File.upload(this.currentFile.repo, this.currentFile.path, file)
-      this.$bus.emit('file-uploaded', relativePath)
-      this.$refs.editor.insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
+    async pasteImg (file, asBase64) {
+      console.log(file, asBase64)
+      if (asBase64) {
+        const uri = await File.toBase64URL(file)
+        this.$refs.editor.insert(`![图片](${uri})\n`)
+      } else {
+        const { relativePath } = await File.upload(this.currentFile.repo, this.currentFile.path, file)
+        this.$bus.emit('file-uploaded', relativePath)
+        this.$refs.editor.insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
+      }
     },
     async uploadFile (file) {
       const filename = `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`
