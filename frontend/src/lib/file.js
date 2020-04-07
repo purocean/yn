@@ -157,6 +157,13 @@ const openInOS = async ({ repo, path }) => {
   return fetchHttp(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
 }
 
+const toBase64URL = async file => new Promise((resolve, reject) => {
+  const fr = new FileReader()
+  fr.readAsDataURL(file)
+  fr.onload = () => resolve(fr.result)
+  fr.onerror = error => reject(error)
+})
+
 export default {
   isBelongTo,
   isSameFile,
@@ -180,4 +187,5 @@ export default {
   mark,
   unmark,
   markedFiles,
+  toBase64URL,
 }

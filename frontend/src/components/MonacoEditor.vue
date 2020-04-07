@@ -195,7 +195,7 @@ export default {
     paste (e) {
       if (this.editor.hasTextFocus()) {
         const items = e.clipboardData.items
-        if (keys['b'] || keys['B']) { // 粘贴 HTML 转为 markdown
+        if (keys['m'] || keys['M']) { // 粘贴 HTML 转为 markdown
           for (let i = 0; i < items.length; i++) {
             if (items[i].type.match(/^text\/html$/i)) {
               items[i].getAsString(str => {
@@ -209,8 +209,10 @@ export default {
           e.stopPropagation()
         } else {
           for (let i = 0; i < items.length; i++) {
-            if (items[i].type.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
-              this.$emit('paste-img', items[i].getAsFile())
+            const fileType = items[i].type
+            if (fileType.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
+              const asBase64 = keys['b'] || keys['B'] // Ctrl + v 粘贴的同时 按下了 B 键，就粘贴 base64 图像
+              this.$emit('paste-img', items[i].getAsFile(), asBase64)
             }
           }
         }
