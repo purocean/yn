@@ -93,7 +93,8 @@
     + `Ctrl + K, Ctrl + U` 转换大写
     + `Ctrl + K, Ctrl + L` 转换小写
     + `Ctrl + Alt + R` 在内置终端里面运行选中内容
-    + `Ctrl + B + V` 粘贴 html 富文本
+    + `Ctrl + M + V` 粘贴 html 富文本
+    + `Ctrl + B + V` 粘贴图片为 Base64
     + `Ctrl + Alt + Left/Right` 切换编辑器 Tab
 
 ## 开发
@@ -141,11 +142,15 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.2.9](https://github.com/purocean/yn/releases/tag/v2.2.9) 2020-03-17
-1. 修复公式解析问题
+### [v2.2.10](https://github.com/purocean/yn/releases/tag/v2.2.10) 2020-04-07
+1. 新增粘贴图片为 Base64 形式快捷键 `Ctrl + B + V`
+2. 更改粘贴富文本为 Markdown 快捷键为 `Ctrl + M + V`
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.2.9](https://github.com/purocean/yn/releases/tag/v2.2.9) 2020-03-17
+1. 修复公式解析问题
 
 ### [v2.2.8](https://github.com/purocean/yn/releases/tag/v2.2.8) 2020-03-13
 1. 增加切换编辑器标签快捷键 `Ctrl + Alt + Left/Right`
