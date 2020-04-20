@@ -63,8 +63,9 @@ const buildSrcdoc = async ({ repo, path, content }) => {
     lightbox: false,
     nav: true,
     resize: true,
-    toolbar: 'zoom layers',
-    xml: content
+    toolbar: 'pages zoom layers',
+    page: 1,
+    xml: content,
   })
 
   return `
