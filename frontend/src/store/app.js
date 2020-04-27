@@ -124,8 +124,19 @@ export default {
       commit('setMarkedFiles', files)
     },
     async fetchRepositories ({ commit }) {
-      const data = await file.fetchRepositories()
-      commit('setRepositories', data)
+      const initReposParam = window.$args().get('init-repos')
+
+      let initRepos = null
+      if (initReposParam) {
+        try {
+          initRepos = JSON.parse(initReposParam)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+
+      const repos = initRepos || (await file.fetchRepositories())
+      commit('setRepositories', repos)
     },
     async fetchTree ({ commit }, repo) {
       if (!repo) {

@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div class="footer">
+    <div class="footer" v-if="showFooter">
       <slot name="footer"></slot>
     </div>
   </div>
@@ -115,7 +115,10 @@ export default {
     }
   },
   computed: {
-    ...mapState('app', ['showView', 'showXterm', 'showSide'])
+    ...mapState('app', ['showView', 'showXterm', 'showSide']),
+    showFooter () {
+      return window.$args().get('show-status-bar') !== 'false'
+    }
   }
 }
 </script>

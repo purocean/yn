@@ -10,6 +10,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import file from '@/lib/file'
 
 export default {
   name: 'repository-switch',
@@ -23,12 +24,26 @@ export default {
   },
   created () {
     this.$bus.on('switch-repo-by-name', this.chooseRepoByName)
+    this.$bus.on('editor-ready', this.initRepo)
     this.$store.dispatch('app/fetchRepositories')
   },
   beforeDestroy () {
     this.$bus.off('switch-repo-by-name', this.chooseRepoByName)
+    this.$bus.off('editor-ready', this.initRepo)
   },
   methods: {
+    initRepo () {
+      const initRepoName = window.$args().get('init-repo')
+      const initFilePath = window.$args().get('init-file')
+
+      if (initRepoName) {
+        this.chooseRepoByName(initRepoName)
+      }
+
+      if (initFilePath) {
+        this.$store.commit('app/setCurrentFile', { repo: this.currentRepo.name, name: file.basename(initFilePath), path: initFilePath })
+      }
+    },
     chooseRepoByName (name) {
       if (this.repositories[name]) {
         this.choose({ name, path: this.repositories[name] })

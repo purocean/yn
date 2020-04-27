@@ -14,6 +14,10 @@ Vue.use(contextMenu)
 Vue.use(toast)
 Vue.component('y-icon', Icon)
 
+window.$args = () => {
+  return new URLSearchParams(location.search)
+}
+
 const appVm = new Vue({
   router,
   store,

@@ -1,6 +1,6 @@
 {
   "name": "yank.note.yang",
-  "version": "2.2.11",
+  "version": "2.3.0",
   "description": "Yank Note 一款面向程序员的 Markdown 笔记应用",
   "main": "dist/app.js",
   "license": "Apache-2.0",
@@ -31,7 +31,8 @@
     "opn": "^5.3.0",
     "request": "^2.88.0",
     "safe-buffer": "^5.1.2",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^8.0.0",
@@ -40,6 +41,7 @@
     "@types/mime": "^2.0.1",
     "@types/node": "^12.6.1",
     "@types/request": "^2.48.2",
+    "@types/yargs": "^15.0.4",
     "electron": "^7.1.1",
     "electron-builder": "^21.2.0",
     "ts-node": "^8.3.0",

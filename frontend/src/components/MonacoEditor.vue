@@ -97,6 +97,7 @@ export default {
           verticalScrollbarSize: 0
         },
         model,
+        readOnly: window.$args().get('readonly') === 'true',
       })
 
       this.editor.onDidChangeCursorSelection(e => {
