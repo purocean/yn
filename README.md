@@ -142,11 +142,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.2.11](https://github.com/purocean/yn/releases/tag/v2.2.11) 2020-04-20
-1. Drawio 文件渲染增加翻页按钮
+### [v2.3.0](https://github.com/purocean/yn/releases/tag/v2.3.0) 2020-04-27
+1. 增加启动命令行参数
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.2.11](https://github.com/purocean/yn/releases/tag/v2.2.11) 2020-04-20
+1. Drawio 文件渲染增加翻页按钮
 
 ### [v2.2.10](https://github.com/purocean/yn/releases/tag/v2.2.10) 2020-04-07
 1. 新增粘贴图片为 Base64 形式快捷键 `Ctrl + B + V`
