@@ -24,7 +24,7 @@ const getPath = (name: string) => {
     return /^[a-zA-Z]:/.test(p) ? toWslPath(p) : path.join(MAIN_REPO_DIR, p)
   }
 
-  return path.isAbsolute(p) ? p : path.join(MAIN_REPO_DIR, p)
+  return path.isAbsolute(p) ? p : path.resolve(p)
 }
 
 const getTrashPath = (name: string) => {

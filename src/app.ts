@@ -10,6 +10,7 @@ const opn = require('opn')
 
 let isDev = false
 
+const showTray = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || 3044
 const devFrontendPort = 8066
 
@@ -17,7 +18,6 @@ const getUrl = () => {
   const args = Object.entries(yargs.argv).filter(x => [
     'readonly',
     'show-status-bar',
-    'init-repos',
     'init-repo',
     'init-file',
   ].includes(x[0]))
@@ -66,8 +66,10 @@ const createWindow = () => {
   }, 0)
 
   win.on('close', e => {
-    hide()
-    e.preventDefault()
+    if (showTray) {
+      hide()
+      e.preventDefault()
+    }
   })
 
   win.on('closed', () => {
@@ -176,116 +178,118 @@ if (!gotTheLock) {
       'open-in-browser': () => opn(getUrl())
     })
 
-    const contextMenu = Menu.buildFromTemplate([
-      {
-        type: 'normal',
-        label: '打开主界面',
-        accelerator: getAccelerator('show-main-window'),
-        click: () => {
-          showWindow()
-        }
-      },
-      {
-        type: 'normal',
-        label: '浏览器中打开',
-        accelerator: getAccelerator('open-in-browser'),
-        click: () => {
-          opn(getUrl())
-        }
-      },
-      {
-        type: 'normal',
-        label: '打开主目录',
-        click: () => {
-          opn(USER_DIR)
-        }
-      },
-      { type: 'separator' },
-      {
-        type: 'submenu',
-        label: '开发',
-        submenu: [
-          {
-            type: 'radio',
-            checked: !isDev,
-            label: `正式端口（${backendPort}）`,
-            click: () => {
-              isDev = false
-              reload()
-            }
-          },
-          {
-            type: 'radio',
-            checked: isDev,
-            label: `开发端口（${devFrontendPort}）`,
-            click: () => {
-              isDev = true
-              reload()
-            }
-          },
-          { type: 'separator' },
-          {
-            type: 'normal',
-            label: '重载页面',
-            click: () => {
-              reload()
-            }
-          },
-          {
-            type: 'normal',
-            label: '主窗口开发工具',
-            click: () => {
-              win && win.webContents.openDevTools()
-            }
-          },
-          { type: 'separator' },
-          {
-            type: 'normal',
-            label: '强制重新启动',
-            click: () => {
-              app.relaunch()
-              app.exit(1)
-            }
-          },
-          {
-            type: 'normal',
-            label: '强制退出',
-            click: () => {
-              app.exit(1)
-            }
-          },
-        ]
-      },
-      {
-        type: 'normal',
-        label: 'GitHub',
-        click: () => {
-          opn('https://github.com/purocean/yn')
-        }
-      },
-      {
-        type: 'normal',
-        label: `版本 ${app.getVersion()}`,
-        click: () => {
-          updater.checkForUpdates()
-        }
-      },
-      { type: 'separator' },
-      {
-        type: 'normal',
-        label: '退出',
-        click: () => {
-          setTimeout(() => {
-            quit()
-          }, 200)
-        }
-      },
-    ])
+    if (showTray) {
+      const contextMenu = Menu.buildFromTemplate([
+        {
+          type: 'normal',
+          label: '打开主界面',
+          accelerator: getAccelerator('show-main-window'),
+          click: () => {
+            showWindow()
+          }
+        },
+        {
+          type: 'normal',
+          label: '浏览器中打开',
+          accelerator: getAccelerator('open-in-browser'),
+          click: () => {
+            opn(getUrl())
+          }
+        },
+        {
+          type: 'normal',
+          label: '打开主目录',
+          click: () => {
+            opn(USER_DIR)
+          }
+        },
+        { type: 'separator' },
+        {
+          type: 'submenu',
+          label: '开发',
+          submenu: [
+            {
+              type: 'radio',
+              checked: !isDev,
+              label: `正式端口（${backendPort}）`,
+              click: () => {
+                isDev = false
+                reload()
+              }
+            },
+            {
+              type: 'radio',
+              checked: isDev,
+              label: `开发端口（${devFrontendPort}）`,
+              click: () => {
+                isDev = true
+                reload()
+              }
+            },
+            { type: 'separator' },
+            {
+              type: 'normal',
+              label: '重载页面',
+              click: () => {
+                reload()
+              }
+            },
+            {
+              type: 'normal',
+              label: '主窗口开发工具',
+              click: () => {
+                win && win.webContents.openDevTools()
+              }
+            },
+            { type: 'separator' },
+            {
+              type: 'normal',
+              label: '强制重新启动',
+              click: () => {
+                app.relaunch()
+                app.exit(1)
+              }
+            },
+            {
+              type: 'normal',
+              label: '强制退出',
+              click: () => {
+                app.exit(1)
+              }
+            },
+          ]
+        },
+        {
+          type: 'normal',
+          label: 'GitHub',
+          click: () => {
+            opn('https://github.com/purocean/yn')
+          }
+        },
+        {
+          type: 'normal',
+          label: `版本 ${app.getVersion()}`,
+          click: () => {
+            updater.checkForUpdates()
+          }
+        },
+        { type: 'separator' },
+        {
+          type: 'normal',
+          label: '退出',
+          click: () => {
+            setTimeout(() => {
+              quit()
+            }, 200)
+          }
+        },
+      ])
 
-    tray = new Tray(path.join(__dirname, './assets/icon.png'))
-    tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
-    tray.on('click', showWindow)
-    tray.setContextMenu(contextMenu)
+      tray = new Tray(path.join(__dirname, './assets/icon.png'))
+      tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
+      tray.on('click', showWindow)
+      tray.setContextMenu(contextMenu)
+    }
 
     updater.init(() => {
       // 立即升级，退出程序

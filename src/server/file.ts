@@ -3,11 +3,13 @@ import * as xfs from 'fs-extra'
 import * as path from 'path'
 import * as crypto from 'crypto'
 import * as NaturalOrderby from 'natural-orderby'
+import * as yargs from 'yargs'
 import * as wsl from './wsl'
 import mark, { MarkedFile } from './mark'
 import repository from './repository'
 const opn = require('opn')
 
+const readonly = !!(yargs.argv['readonly'])
 const isWsl = wsl.isWsl
 const ignorePath = /node_modules/
 
@@ -117,6 +119,8 @@ const read = (repo: string, p: string) => {
 }
 
 const write = (repo: string, p: string, content: any) => {
+  if (readonly) throw new Error('只读模式')
+
   p = resolvePath(p, repo)
 
   mkdirPSync(path.dirname(p))
@@ -127,6 +131,8 @@ const write = (repo: string, p: string, content: any) => {
 }
 
 const rm = (repo: string, p: string) => {
+  if (readonly) throw new Error('只读模式')
+
   if (resolvePath(p) !== resolvePath('', repo)) {
     const newPath = path.join(repository.getTrashPath(repo), p.replace(/\.\./g, '')) + '.' + (new Date).getTime()
 
@@ -141,6 +147,8 @@ const rm = (repo: string, p: string) => {
 }
 
 const mv = (repo: string, oldPath: string, newPath: string) => {
+  if (readonly) throw new Error('只读模式')
+
   oldPath = resolvePath(oldPath, repo)
   newPath = resolvePath(newPath, repo)
 
@@ -169,6 +177,7 @@ const checkHash = (repo: string, p: string, oldHash: string) => {
 }
 
 const upload = (repo: string, file: any, path: string) => {
+  if (readonly) throw new Error('只读模式')
   write(repo, path, fs.readFileSync(file.path))
 }
 
