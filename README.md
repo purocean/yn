@@ -142,11 +142,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.3.0](https://github.com/purocean/yn/releases/tag/v2.3.0) 2020-04-27
-1. 增加启动命令行参数
+### [v2.3.1](https://github.com/purocean/yn/releases/tag/v2.3.1) 2020-04-27
+1. 增加配置监听端口命令行参数 `--port=8080`
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.3.0](https://github.com/purocean/yn/releases/tag/v2.3.0) 2020-04-27
+1. 增加启动命令行参数
 
 ### [v2.2.11](https://github.com/purocean/yn/releases/tag/v2.2.11) 2020-04-20
 1. Drawio 文件渲染增加翻页按钮
