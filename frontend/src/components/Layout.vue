@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div class="footer" v-if="showFooter">
+    <div class="footer" v-show="showFooter">
       <slot name="footer"></slot>
     </div>
   </div>

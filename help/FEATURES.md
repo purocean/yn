@@ -301,9 +301,10 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 名称               | 作用         | 默认值 | 说明                    | 示例
 ----------------- | ------------ | ----- | ----------------------- | ----
 --port            | 服务器监听端口 | 3044 | 端口                      | --port=8080
+--disable-tray    | 禁用常驻托盘   | false | true/false              | --disable-tray
 --readonly        | 编辑器只读    | false | true/false               | --readonly
 --show-status-bar | 显示状态栏    | true  | true/false               | --show-status-bar=false
---init-repos      | 初始仓库列表  | 无     | json 字符串，注意命令行转义 | --init-repos='{\"test\":\"D:/test\",\"b\":\"E:/test\"}'
+--data-dir        | 数据目录      | 无     | 目录路径字符串            | --data-dir='./.data'
 --init-repo       | 初始仓库名    | 无    | 字符串                    | --init-repo='test'
 --init-file       | 加载文件路径  | 无    | 文件路径，相对于仓库路径     | --init-file='/1.md'
 
