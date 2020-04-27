@@ -10,7 +10,7 @@ const opn = require('opn')
 
 let isDev = false
 
-const backendPort = 3044
+const backendPort = Number(yargs.argv.port) || 3044
 const devFrontendPort = 8066
 
 const getUrl = () => {

@@ -299,12 +299,13 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 在向别人交接文档的时候，可以使用脚本，自定义命令行参数启动程序，方便对方查看文档。
 
 名称               | 作用         | 默认值 | 说明                    | 示例
------------------ | ----------- | ----- | ----------------------- | ----
---readonly        | 编辑器只读   | false | true/false               | --readonly
---show-status-bar | 显示状态栏   | true  | true/false               | --show-status-bar=false
---init-repos      | 初始仓库列表 | 无     | json 字符串，注意命令行转义 | --init-repos='{\"test\":\"D:/test\",\"b\":\"E:/test\"}'
---init-repo       | 初始仓库名   | 无    | 字符串                    | --init-repo='test'
---init-file       | 加载文件路径 | 无    | 文件路径，相对于仓库路径     | --init-file='/1.md'
+----------------- | ------------ | ----- | ----------------------- | ----
+--port            | 服务器监听端口 | 3044 | 端口                      | --port=8080
+--readonly        | 编辑器只读    | false | true/false               | --readonly
+--show-status-bar | 显示状态栏    | true  | true/false               | --show-status-bar=false
+--init-repos      | 初始仓库列表  | 无     | json 字符串，注意命令行转义 | --init-repos='{\"test\":\"D:/test\",\"b\":\"E:/test\"}'
+--init-repo       | 初始仓库名    | 无    | 字符串                    | --init-repo='test'
+--init-file       | 加载文件路径  | 无    | 文件路径，相对于仓库路径     | --init-file='/1.md'
 
 ## 其他
 1. 转换单个外链图片到本地：`Ctrl + Shift + 单击图片`
