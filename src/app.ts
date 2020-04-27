@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu, Tray } from 'electron'
 import * as path from 'path'
 import { dialog } from 'electron'
+import * as yargs from 'yargs'
 import server from './server/main'
 import { USER_DIR } from './server/constant'
 import * as updater from './updater'
@@ -11,7 +12,20 @@ let isDev = false
 
 const backendPort = 3044
 const devFrontendPort = 8066
-const getUrl = () => `http://localhost:${isDev ? devFrontendPort : backendPort}`
+
+const getUrl = () => {
+  const args = Object.entries(yargs.argv).filter(x => [
+    'readonly',
+    'show-status-bar',
+    'init-repos',
+    'init-repo',
+    'init-file',
+  ].includes(x[0]))
+
+  const query = (new URLSearchParams(args as any)).toString()
+
+  return `http://localhost:${isDev ? devFrontendPort : backendPort}` + (query ? `?${query}` : '')
+}
 
 // 去掉每个窗口默认的菜单
 Menu.setApplicationMenu(null)
