@@ -142,11 +142,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.3.2](https://github.com/purocean/yn/releases/tag/v2.3.2) 2020-04-27
-1. 调整启动命令行参数
+### [v2.3.3](https://github.com/purocean/yn/releases/tag/v2.3.3) 2020-06-11
+1. 修正标题过长导致大纲目录样式异常
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.3.2](https://github.com/purocean/yn/releases/tag/v2.3.2) 2020-04-27
+1. 调整启动命令行参数
 
 ### [v2.3.1](https://github.com/purocean/yn/releases/tag/v2.3.1) 2020-04-27
 1. 增加配置监听端口命令行参数 `--port=8080`
