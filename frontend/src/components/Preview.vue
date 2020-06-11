@@ -593,6 +593,8 @@ button:hover {
 
 .outline > .catalog > div {
   padding: .5em;
+  display: flex;
+  align-items: center;
 }
 
 .outline > .catalog > div:hover {
