@@ -154,7 +154,8 @@ const convertFile = async (ctx: any, next: any) => {
 const proxy = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/proxy')) {
     const url = ctx.query.url
-    ctx.body = request(url)
+    const headers = ctx.query.headers ? JSON.parse(ctx.query.headers) : undefined
+    ctx.body = request(url, {headers})
   } else {
     await next()
   }

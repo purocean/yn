@@ -159,14 +159,24 @@ export default {
       this.width = this.$refs['view-wrapper'].clientWidth
       this.height = this.$refs['view-wrapper'].clientHeight
     },
-    keydownHandler (e) {
+    async keydownHandler (e) {
       // 转换所有外链图片到本地
       if (e.key === 'l' && e.ctrlKey && e.altKey) {
-        this.$refs.view.querySelectorAll('img').forEach(img => {
-          this.transformImgOutLink(img)
-        })
         e.preventDefault()
         e.stopPropagation()
+        const result = []
+        const imgList = [...this.$refs.view.querySelectorAll('img')]
+        for (let i = 0; i < imgList.length; i++) {
+          this.$toast.show('info', `正在转换外链图片 ${i + 1}/${imgList.length}`)
+
+          const img = imgList[i]
+          const data = await this.transformImgOutLink(img)
+          if (data) {
+            result.push(data)
+          }
+        }
+        result.forEach(data => this.$bus.emit('editor-replace-value', data.oldLink, data.replacedLink))
+        this.$bus.emit('tree-refresh')
       }
     },
     handleScroll (e) {
@@ -256,37 +266,43 @@ export default {
       this.todoCount = this.$refs.view.querySelectorAll('input[type=checkbox]').length
       this.todoDoneCount = this.$refs.view.querySelectorAll('input[type=checkbox][checked]').length
     },
-    transformImgOutLink (img) {
+    async transformImgOutLink (img) {
       const transform = ximg => {
         const canvas = document.createElement('canvas')
         canvas.width = ximg.naturalWidth
         canvas.height = ximg.naturalHeight
         canvas.getContext('2d').drawImage(ximg, 0, 0)
-        canvas.toBlob(async blob => {
-          const imgFile = new File([blob], 'file.png')
-          const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
-          this.$bus.emit('tree-refresh')
-          this.$bus.emit('editor-replace-value', img.src, relativePath)
-        })
-      }
-
-      if (img.src.startsWith('data:')) {
-        transform(img)
-      } else if (
-        img.src.startsWith('http://') ||
-        img.src.startsWith('https://')
-      ) {
-        window.fetch(`api/proxy?url=${encodeURIComponent(img.src)}`).then(r => {
-          r.blob().then(async blob => {
-            const imgFile = new File([blob], 'file.' + mime.extension(r.headers.get('content-type')))
-            const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
-            this.$bus.emit('tree-refresh')
-            this.$bus.emit('editor-replace-value', img.src, encodeMarkdownLink(relativePath))
+        return new Promise((resolve, reject) => {
+          canvas.toBlob(async blob => {
+            try {
+              const imgFile = new File([blob], 'file.png')
+              const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
+              resolve(relativePath)
+            } catch (error) {
+              reject(error)
+            }
           })
         })
       }
+
+      let replacedLink = null
+      if (img.src.startsWith('data:')) {
+        replacedLink = await transform(img)
+      } else if (img.getAttribute('src').startsWith('http://') || img.getAttribute('src').startsWith('https://')) {
+        const res = await window.fetch(`api/proxy?url=${encodeURIComponent(img.src)}&headers=${img.getAttribute('headers') || ''}`)
+        const blob = await res.blob()
+        const imgFile = new File([blob], 'file.' + mime.extension(res.headers.get('content-type')))
+        const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
+        replacedLink = relativePath
+      }
+
+      if (replacedLink) {
+        return { oldLink: img.src, replacedLink: encodeMarkdownLink(replacedLink) }
+      }
+
+      return null
     },
-    handleClick (e) {
+    async handleClick (e) {
       const target = e.target
 
       const preventEvent = () => {
@@ -364,7 +380,11 @@ export default {
       if (target.tagName === 'IMG') {
         const img = target
         if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地
-          this.transformImgOutLink(img)
+          const data = await this.transformImgOutLink(img)
+          if (data) {
+            this.$bus.emit('tree-refresh')
+            this.$bus.emit('editor-replace-value', data.oldLink, data.replacedLink)
+          }
         } else if (img.parentElement.tagName === 'A') {
           handleLink(img.parentElement)
         } else {
