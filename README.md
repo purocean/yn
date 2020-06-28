@@ -142,11 +142,15 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.3.3](https://github.com/purocean/yn/releases/tag/v2.3.3) 2020-06-11
-1. 修正标题过长导致大纲目录样式异常
+### [v2.3.4](https://github.com/purocean/yn/releases/tag/v2.3.4) 2020-06-28
+1. 优化图片相对链接解析
+2. 优化转换外链图片为本地图片功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.3.3](https://github.com/purocean/yn/releases/tag/v2.3.3) 2020-06-11
+1. 修正标题过长导致大纲目录样式异常
 
 ### [v2.3.2](https://github.com/purocean/yn/releases/tag/v2.3.2) 2020-04-27
 1. 调整启动命令行参数
