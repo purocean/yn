@@ -219,6 +219,11 @@ export default {
         }
 
         return `[${alt}](api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)})`
+      }).replace(/<img([^>]*)src=["']?(\.\/[^\s'"]*)["']?/ig, (match, _, path) => {
+        path = decodeURI(path) // 提前解码一次，有的链接已经预先编码
+        const fileName = file.basename(path)
+        const filePath = `${basePath}/${path}`
+        return `<img${_}origin-src="${path}" src="api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}"`
       })
     },
     updatePlantuml () {
