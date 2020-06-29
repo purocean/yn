@@ -59,6 +59,7 @@
 + 元素属性书写：可自定义元素的任意属性，示例见 FEATURE.md
 + 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
 + 文档交叉链接跳转：支持在文档中引入其他文档，互相跳转
++ 脚注功能：支持在文档中书写脚注
 
 ## 上手使用
 + 在 [最新版本](https://github.com/purocean/yn/releases) 下载对应平台应用即可
@@ -142,12 +143,15 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.3.4](https://github.com/purocean/yn/releases/tag/v2.3.4) 2020-06-28
-1. 优化图片相对链接解析
-2. 优化转换外链图片为本地图片功能
+### [v2.3.5](https://github.com/purocean/yn/releases/tag/v2.3.5) 2020-06-29
+1. 增加脚注功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.3.4](https://github.com/purocean/yn/releases/tag/v2.3.4) 2020-06-28
+1. 优化图片相对链接解析
+2. 优化转换外链图片为本地图片功能
 
 ### [v2.3.3](https://github.com/purocean/yn/releases/tag/v2.3.3) 2020-06-11
 1. 修正标题过长导致大纲目录样式异常
