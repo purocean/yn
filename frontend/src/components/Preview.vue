@@ -46,6 +46,7 @@ import TaskLists from 'markdown-it-task-lists'
 import katex from 'markdown-it-katex'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
+import Footnote from 'markdown-it-footnote'
 import Highlight from 'highlight.js'
 
 import HighlightLineNumber from '../plugins/HightLightNumberPlugin'
@@ -90,6 +91,7 @@ const markdown = Markdown({
   .use(SourceLinePlugin)
   .use(MarkdownItAttrs)
   .use(LinkTargetPlugin)
+  .use(Footnote)
   .use(DrawioPlugin)
   .use(MultimdTable, { enableMultilineRows: true })
   .use(MarkdownItToc)

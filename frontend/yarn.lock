@@ -5915,6 +5915,10 @@ markdown-it-attrs@^2.3.2:
   version "2.3.2"
   resolved "https://registry.npmjs.org/markdown-it-attrs/-/markdown-it-attrs-2.3.2.tgz#7068c40571735e1b0f5c412ac802627a9fd0db01"
 
+markdown-it-footnote@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/markdown-it-footnote/-/markdown-it-footnote-3.0.2.tgz#1575ee7a093648d4e096aa33386b058d92ac8bc1"
+
 markdown-it-katex@^2.0.3:
   version "2.0.3"
   resolved "https://registry.npmjs.org/markdown-it-katex/-/markdown-it-katex-2.0.3.tgz#d7b86a1aea0b9d6496fab4e7919a18fdef589c39"
