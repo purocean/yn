@@ -143,11 +143,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.3.5](https://github.com/purocean/yn/releases/tag/v2.3.5) 2020-06-29
-1. 增加脚注功能
+### [v2.3.6](https://github.com/purocean/yn/releases/tag/v2.3.6) 2020-06-30
+1. 升级 Electron 到 9.0.5
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.3.5](https://github.com/purocean/yn/releases/tag/v2.3.5) 2020-06-29
+1. 增加脚注功能
 
 ### [v2.3.4](https://github.com/purocean/yn/releases/tag/v2.3.4) 2020-06-28
 1. 优化图片相对链接解析
