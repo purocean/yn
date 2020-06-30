@@ -12,9 +12,9 @@
 + **支持加密**：用来保存账号等隐私文件，文件可单独设置密码
 
 ## 注意事项
-+ Yank Note 是一款**针对程序员**的 Markdown 编辑器，目标应用场景为在本机写文章，日志，笔记，小工具。
++ Yank Note 是一款**针对程序员**的 Markdown 编辑器，目标应用场景为在本机写文章、日志、笔记，编写小工具。
 + 为了更高的拓展性和方便性，Yank Note 牺牲了安全防护（命令执行，任意文件读写）。如果要用它打开外来 Markdown 文件，**请务必仔细甄别文件内容是值得信任的**。
-+ 如果要改造为对外的 Web 服务，本工具可能不太适合。或者请运行在可隔离控制的环境下。
++ 如果要改造为对外的 Web 服务，请运行在隔离可控的环境下，注意应用安全。
 + 加密文件的加密解密操作均在前端完成，请**务必保管好自己的密码**。一旦密码丢失，就只能暴力破解了。
 
 ## Yank-Note 2.0 开发计划
@@ -143,11 +143,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.3.5](https://github.com/purocean/yn/releases/tag/v2.3.5) 2020-06-29
-1. 增加脚注功能
+### [v2.3.6](https://github.com/purocean/yn/releases/tag/v2.3.6) 2020-06-30
+1. 升级 Electron 到 9.0.5
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.3.5](https://github.com/purocean/yn/releases/tag/v2.3.5) 2020-06-29
+1. 增加脚注功能
 
 ### [v2.3.4](https://github.com/purocean/yn/releases/tag/v2.3.4) 2020-06-28
 1. 优化图片相对链接解析
