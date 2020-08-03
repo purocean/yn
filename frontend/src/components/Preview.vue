@@ -560,6 +560,7 @@ button:hover {
   box-sizing: border-box;
   z-index: 1000;
   margin-top: -1.8em;
+  pointer-events: none;
 }
 
 .action-bar > div {
@@ -630,6 +631,7 @@ button:hover {
 
 .convert {
   font-size: 14px;
+  pointer-events: initial;
 }
 
 .scroll-to-top {
