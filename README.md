@@ -143,11 +143,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.3.7](https://github.com/purocean/yn/releases/tag/v2.3.7) 2020-08-03
-1. 优化预览鼠标事件响应
+### [v2.3.8](https://github.com/purocean/yn/releases/tag/v2.3.8) 2020-09-01
+1. 增加开机自动启动功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.3.8](https://github.com/purocean/yn/releases/tag/v2.3.7) 2020-08-03
+1. 优化预览鼠标事件响应
 
 ### [v2.3.6](https://github.com/purocean/yn/releases/tag/v2.3.6) 2020-06-30
 1. 升级 Electron 到 9.0.5

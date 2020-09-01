@@ -203,6 +203,15 @@ if (!gotTheLock) {
             opn(USER_DIR)
           }
         },
+        {
+          type: 'checkbox',
+          label: '开机启动',
+          checked: app.getLoginItemSettings().openAtLogin,
+          click: x => {
+            app.setLoginItemSettings({ openAtLogin: x.checked })
+            x.checked = app.getLoginItemSettings().openAtLogin
+          }
+        },
         { type: 'separator' },
         {
           type: 'submenu',
