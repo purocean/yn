@@ -1,5 +1,5 @@
 <template>
-  <div ref="tabs" class="tabs">
+  <div ref="refTabs" class="tabs">
     <div
       v-for="item in list"
       :key="item.key"
@@ -10,72 +10,97 @@
       @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
       <div class="close" @click.prevent.stop="removeTabs([item])">
-        <y-icon class="close-icon" name="times" title="关闭"></y-icon>
+        <svg-icon name="times-solid" title="关闭" style="width: 12px; height: 12px;" />
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Sortable from 'sortablejs'
-import 'vue-awesome/icons/times'
+import { defineComponent, onMounted, ref } from 'vue'
+import { useContextMenu } from '../useful/context-menu'
+import { Components } from '../types'
+import SvgIcon from './SvgIcon.vue'
 
-export default {
+export default defineComponent({
   name: 'tabs',
+  components: { SvgIcon },
   props: {
     value: String,
-    list: Array,
+    list: {
+      type: Array as () => Components.Tabs.Item[],
+      required: true,
+    },
   },
-  mounted () {
-    Sortable.create(this.$refs.tabs, {
-      animation: 250,
-      ghostClass: 'on-sort',
-      direction: 'horizontal',
-      onEnd: ({ oldIndex, newIndex }) => {
-        this.swapTab(oldIndex, newIndex)
+  setup (props, { emit }) {
+    const refTabs = ref<HTMLElement | null>(null)
+    const contextMenu = useContextMenu()
+
+    function switchTab (item: Components.Tabs.Item) {
+      if (item.key !== props.value) {
+        emit('input', item.key)
+        emit('switch', item)
       }
-    })
-  },
-  methods: {
-    showContextMenu (item) {
-      this.$contextMenu.show([
-        { id: 'close', label: '关闭', onClick: () => this.removeTabs([item]) },
-        { id: 'close-other', label: '关闭其他', onClick: () => this.removeOther(item) },
-        { id: 'close-right', label: '关闭到右侧', onClick: () => this.removeRight(item) },
-        { id: 'close-left', label: '关闭到左侧', onClick: () => this.removeLeft(item) },
-        { id: 'close-all', label: '全部关闭', onClick: () => this.removeAll(item) },
-      ])
-    },
-    switchTab (item) {
-      if (item.key !== this.value) {
-        this.$emit('input', item.key)
-        this.$emit('switch', item)
-      }
-    },
-    removeOther (item) {
-      this.removeTabs(this.list.filter(x => x.key !== item.key))
-    },
-    removeRight (item) {
-      this.removeTabs(this.list.slice(this.list.findIndex(x => x.key === item.key) + 1))
-    },
-    removeLeft (item) {
-      this.removeTabs(this.list.slice(0, this.list.findIndex(x => x.key === item.key)))
-    },
-    removeAll () {
-      this.removeTabs(this.list)
-    },
-    removeTabs (items) {
-      this.$emit('remove', items)
-    },
-    swapTab (oldIndex, newIndex) {
-      const list = this.list
+    }
+
+    function removeTabs (items: Components.Tabs.Item[]) {
+      emit('remove', items)
+    }
+
+    function removeOther (item: Components.Tabs.Item) {
+      removeTabs(props.list.filter(x => x.key !== item.key))
+    }
+
+    function removeRight (item: Components.Tabs.Item) {
+      removeTabs(props.list.slice(props.list.findIndex(x => x.key === item.key) + 1))
+    }
+
+    function removeLeft (item: Components.Tabs.Item) {
+      removeTabs(props.list.slice(0, props.list.findIndex(x => x.key === item.key)))
+    }
+
+    function removeAll () {
+      removeTabs(props.list)
+    }
+
+    function swapTab (oldIndex: number, newIndex: number) {
+      const list = props.list
       const tmp = list[oldIndex]
       list[oldIndex] = list[newIndex]
       list[newIndex] = tmp
-      this.$emit('change-list', list)
+      emit('change-list', list)
     }
-  },
-}
+
+    function showContextMenu (item: Components.Tabs.Item) {
+      contextMenu.show([
+        { id: 'close', label: '关闭', onClick: () => removeTabs([item]) },
+        { id: 'close-other', label: '关闭其他', onClick: () => removeOther(item) },
+        { id: 'close-right', label: '关闭到右侧', onClick: () => removeRight(item) },
+        { id: 'close-left', label: '关闭到左侧', onClick: () => removeLeft(item) },
+        { id: 'close-all', label: '全部关闭', onClick: () => removeAll() },
+      ])
+    }
+
+    onMounted(() => {
+      Sortable.create(refTabs.value!!, {
+        animation: 250,
+        ghostClass: 'on-sort',
+        direction: 'horizontal',
+        onEnd: ({ oldIndex, newIndex }: { oldIndex?: number; newIndex?: number }) => {
+          swapTab(oldIndex || 0, newIndex || 0)
+        }
+      })
+    })
+
+    return {
+      refTabs,
+      switchTab,
+      showContextMenu,
+      removeTabs,
+    }
+  }
+})
 </script>
 
 <style scoped>
@@ -124,12 +149,8 @@ export default {
 }
 
 .close:hover {
-  color: #aaa;
+  color: rgb(212, 212, 212);
   background: #444;
-}
-
-.close-icon {
-  zoom: .6;
 }
 
 .tab.on-sort {

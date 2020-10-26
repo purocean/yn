@@ -3,19 +3,19 @@
     <div class="tab">
       <div v-for="tab in tabs" :key="tab.key" @click="switchTab(tab.key)" :class="{selected: currentTab === tab.key}">{{tab.label}}</div>
     </div>
-    <input ref="input" v-model="searchText" type="text" class="input" @keydown.tab.prevent @keydown.up.prevent @keydown.down.prevent autofocus>
-    <ul ref="result" class="result">
+    <input ref="refInput" v-model="searchText" type="text" class="input" @keydown.tab.prevent @keydown.up.prevent @keydown.down.prevent>
+    <ul ref="refResult" class="result">
       <li v-if="dataList === null">加载中……</li>
       <template v-else>
         <li
-          v-for="item in dataList"
+          v-for="(item, i) in dataList"
           :key="item.repo + item.path"
           :class="{selected: selected === item}"
           @click="chooseItem(item)">
-          <span ref="fileName">
+          <span :ref="el => refFilename[i] = el">
             {{item.name}}
           </span>
-          <span ref="filePath" class="path">
+          <span :ref="el => refFilepath[i] = el" class="path">
             [{{item.repo}}] {{item.path.substr(0, item.path.lastIndexOf('/'))}}
           </span>
         </li>
@@ -25,85 +25,154 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash'
-import { mapState } from 'vuex'
-import file from '@/lib/file'
-import fuzzyMatch from '@/lib/fuzzyMatch'
+import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } from 'vue'
+import { useStore } from 'vuex'
+import file from '../useful/file'
+import fuzzyMatch from '../useful/fuzzy-match'
 
-export default {
+type TabKey = 'marked' | 'search' | 'file'
+
+export default defineComponent({
   name: 'quick-open',
-  components: {},
   props: {
     withMarked: {
       type: Boolean,
       default: true,
     },
   },
-  data () {
-    return {
-      selected: null,
-      searchText: '',
-      currentTab: 'marked',
-      list: [],
-      lastFetchTime: 0,
+  setup (props, { emit }) {
+    const store = useStore()
+
+    const refInput = ref<HTMLInputElement | null>(null)
+    const refResult = ref<HTMLUListElement | null>(null)
+    const refFilename = ref<HTMLElement[]>([])
+    const refFilepath = ref<HTMLElement[]>([])
+
+    const { currentRepo, recentOpenTime, tree, markedFiles } = toRefs(store.state)
+
+    const selected = ref<any>(null)
+    const searchText = ref('')
+    const currentTab = ref<TabKey>('marked')
+    const list = ref<any>([])
+    const lastFetchTime = ref(0)
+
+    const repo = computed(() => currentRepo.value?.name)
+
+    const tabs = computed(() => {
+      const arr: {key: TabKey; label: string}[] = [
+        { key: 'file', label: '快速跳转' },
+        { key: 'search', label: '搜索内容' },
+      ]
+
+      if (props.withMarked) {
+        arr.unshift({ key: 'marked', label: '已标记' })
+      }
+
+      return arr
+    })
+
+    const files = computed(() => {
+      const travelFiles = (tree: any) => {
+        let tmp: any[] = []
+
+        tree.forEach((node: any) => {
+          if (node.type === 'file' && node.path.endsWith('.md')) {
+            tmp.push(node)
+          }
+
+          if (Array.isArray(node.children)) {
+            tmp = tmp.concat(travelFiles(node.children))
+          }
+        })
+
+        return tmp
+      }
+
+      return travelFiles(tree.value || [])
+    })
+
+    function sortList (list: any) {
+      if (list === null) {
+        return
+      }
+
+      const map = (recentOpenTime.value || {})
+
+      return list.sort((a: any, b: any) => {
+        const at = map[`${a.repo}|${a.path}`] || 0
+        const bt = map[`${b.repo}|${b.path}`] || 0
+
+        return bt - at
+      })
     }
-  },
-  created () {
-    this.searchWithDebounce = _.debounce(async (text, call) => {
-      if (this.repo && text.trim()) {
+
+    function filterFiles (files: any[], search: string, fuzzy: boolean) {
+      if (!fuzzy) {
+        search = search.toLowerCase()
+        return files.filter(x => x.path.toLowerCase().indexOf(search) > -1)
+      }
+
+      const tmp: any[] = []
+
+      files.forEach(x => {
+        const result = fuzzyMatch(search, x.path)
+
+        if (result.matched) {
+          tmp.push({ ...x })
+        }
+      })
+
+      return tmp.sort((a, b) => b.score - a.score)
+    }
+
+    const dataList = computed(() => {
+      if (!list.value) {
+        return null
+      }
+
+      // 筛选一下，搜索全文不筛选
+      const arr = currentTab.value === 'search' ? list.value : filterFiles(list.value, searchText.value.trim(), false)
+
+      // 按照最近使用时间排序
+      return sortList(arr).slice(0, 70)
+    })
+
+    const searchWithDebounce = _.debounce(async (text: string, call: Function) => {
+      if (repo.value && text.trim()) {
         const fetchTime = new Date().getTime()
-        this.lastFetchTime = fetchTime
-        const data = await file.search(this.repo, text.trim())
+        lastFetchTime.value = fetchTime
+        const data = await file.search(repo.value, text.trim())
         // 总是保证最后的搜索结果出现在列表
-        if (fetchTime >= this.lastFetchTime) {
+        if (fetchTime >= lastFetchTime.value) {
           call(data)
         }
       } else {
         call([])
       }
     }, 500)
-  },
-  async mounted () {
-    this.$refs.input.focus()
-    this.updateDataSource()
-    await this.$store.dispatch('app/fetchMarkedFiles')
-    this.updateDataSource()
-  },
-  methods: {
-    travelFiles (tree) {
-      let tmp = []
 
-      tree.forEach(node => {
-        if (node.type === 'file' && node.path.endsWith('.md')) {
-          tmp.push(node)
-        }
-
-        if (Array.isArray(node.children)) {
-          tmp = tmp.concat(this.travelFiles(node.children))
-        }
-      })
-
-      return tmp
-    },
-    highlightText (search) {
-      if (this.$refs.fileName && this.$refs.filePath) {
+    function highlightText (search: string) {
+      if (refFilename.value && refFilepath.value) {
         search = search.toLowerCase()
 
         const openF = '(#$*B'
         const closeF = '#$*B)'
 
-        const escape = function (s) {
-          return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
-        }
+        const escape = (s: string) => s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 
         const openR = new RegExp(escape(openF), 'g')
         const closeR = new RegExp(escape(closeF), 'g')
 
-        this.$refs.fileName.concat(this.$refs.filePath).forEach(function (it) {
+        ;(refFilename.value || []).concat(refFilepath.value || []).forEach(function (it: any) {
+          if (!it) {
+            return
+          }
+
           let text = ''
 
-          it.innerText.split('').forEach(char => {
+          it.innerText.split('').forEach((char: string) => {
             if (search.indexOf(char.toLowerCase()) > -1) {
               text += `${openF}${char}${closeF}`
             } else {
@@ -116,161 +185,125 @@ export default {
           it.innerHTML = it.innerHTML.replace(openR, '<b>').replace(closeR, '</b>')
         })
       }
-    },
-    filterFiles (files, search, fuzzy) {
-      if (!fuzzy) {
-        search = search.toLowerCase()
-        return files.filter(x => x.path.toLowerCase().indexOf(search) > -1)
-      }
+    }
 
-      const tmp = []
-
-      files.forEach(x => {
-        const result = fuzzyMatch(search, x.path)
-
-        if (result.matched) {
-          tmp.push({ ...x })
-        }
-      })
-
-      return tmp.sort((a, b) => b.score - a.score)
-    },
-    updateDataSource () {
-      if (this.currentTab === 'file') {
-        this.list = this.files
-      } else if (this.currentTab === 'marked') {
-        this.list = this.markedFiles
-      } else if (this.currentTab === 'search') {
-        this.list = null
-        this.searchWithDebounce(this.searchText.trim(), data => {
-          if (this.currentTab === 'search') {
-            this.list = data
+    function updateDataSource () {
+      if (currentTab.value === 'file') {
+        list.value = files.value
+      } else if (currentTab.value === 'marked') {
+        list.value = markedFiles.value
+      } else if (currentTab.value === 'search') {
+        list.value = null
+        searchWithDebounce(searchText.value.trim(), (data: any[]) => {
+          if (currentTab.value === 'search') {
+            list.value = data
           }
         })
       }
-    },
-    updateSelected (item = null) {
-      if (this.dataList === null) {
+    }
+
+    function updateSelected (item: any = null) {
+      if (dataList.value === null) {
         return
       }
 
       if (item) {
-        this.selected = item
+        selected.value = item
       } else {
-        this.selected = this.dataList.length > 0 ? this.dataList[0] : null
+        selected.value = dataList.value.length > 0 ? dataList.value[0] : null
       }
 
-      this.$nextTick(() => {
-        const li = this.$refs.result.querySelector('li.selected')
-        if (li) {
-          li.scrollIntoViewIfNeeded()
+      nextTick(() => {
+        if (refResult.value) {
+          const li = refResult.value.querySelector<any>('li.selected')
+          if (li) {
+            li.scrollIntoViewIfNeeded()
+          }
         }
       })
-    },
-    selectItem (inc) {
-      if (!this.dataList || this.dataList.length < 1) {
-        this.updateSelected()
+    }
+
+    function selectItem (inc: number) {
+      if (!dataList.value || dataList.value.length < 1) {
+        updateSelected()
         return
       }
 
-      const currentIndex = this.dataList.findIndex(x => this.selected === x)
+      const currentIndex = dataList.value.findIndex((x: any) => selected.value === x)
 
       let index = currentIndex + inc
-      if (index > this.dataList.length - 1) {
+      if (index > dataList.value.length - 1) {
         index = 0
       } else if (index < 0) {
-        index = this.dataList.length - 1
+        index = dataList.value.length - 1
       }
 
-      this.updateSelected(this.dataList[index])
-    },
-    chooseItem (item = null) {
-      const file = item || this.selected
+      updateSelected(dataList.value[index])
+    }
+
+    function chooseItem (item: any = null) {
+      const file = item || selected.value
       if (file) {
-        this.$emit('choose-file', file)
+        emit('choose-file', file)
       }
-    },
-    switchTab (tab) {
+    }
+
+    function switchTab (tab: TabKey| number) {
       if (typeof tab === 'string') {
-        this.currentTab = tab
+        currentTab.value = tab
         return
       }
 
-      const tabs = this.tabs.map(x => x.key)
+      const arr = tabs.value.map(x => x.key)
 
-      const index = tabs.indexOf(this.currentTab) + tab
-      this.currentTab = tabs[index > -1 ? index : tabs.length - 1] || tabs[0]
-    },
-    sortList (list) {
-      if (list === null) {
-        return
+      const index = arr.indexOf(currentTab.value) + tab
+      currentTab.value = arr[index > -1 ? index : arr.length - 1] || arr[0]
+    }
+
+    watch(() => props.withMarked, val => {
+      if (!val && currentTab.value === 'marked') {
+        currentTab.value = 'file'
       }
+    }, { immediate: true })
 
-      const map = (this.recentOpenTime || {})
+    watch(searchText, () => updateDataSource())
 
-      return list.sort((a, b) => {
-        const at = map[`${a.repo}|${a.path}`] || 0
-        const bt = map[`${b.repo}|${b.path}`] || 0
+    watch(dataList, () => {
+      updateSelected()
+      if (currentTab.value !== 'search') { // 搜索模式不高亮字符
+        nextTick(() => highlightText(searchText.value.trim()))
+      }
+    })
 
-        return bt - at
-      })
+    watch(currentTab, () => {
+      list.value = null
+      refInput.value!!.focus()
+      updateDataSource()
+    })
+
+    onMounted(async () => {
+      refInput.value!!.focus()
+      updateDataSource()
+      await store.dispatch('fetchMarkedFiles')
+      updateDataSource()
+    })
+
+    return {
+      refInput,
+      refResult,
+      refFilename,
+      refFilepath,
+      tabs,
+      currentTab,
+      searchText,
+      dataList,
+      selected,
+      selectItem,
+      chooseItem,
+      switchTab,
     }
   },
-  watch: {
-    withMarked: {
-      immediate: true,
-      handler (val) {
-        if (!val && this.currentTab === 'marked') {
-          this.currentTab = 'file'
-        }
-      }
-    },
-    searchText () {
-      this.updateDataSource()
-    },
-    dataList () {
-      this.updateSelected()
-      this.$nextTick(() => this.highlightText(this.searchText.trim()))
-    },
-    currentTab () {
-      this.list = null
-      this.$refs.input.focus()
-      this.updateDataSource()
-    }
-  },
-  computed: {
-    ...mapState('app', ['currentRepo', 'recentOpenTime', 'tree', 'markedFiles']),
-    tabs () {
-      const tabs = [
-        { key: 'file', label: '快速跳转' },
-        { key: 'search', label: '搜索内容' },
-      ]
-
-      if (this.withMarked) {
-        tabs.unshift({ key: 'marked', label: '已标记' })
-      }
-
-      return tabs
-    },
-    files () {
-      return this.travelFiles(this.tree || [])
-    },
-    repo () {
-      return this.currentRepo && this.currentRepo.name
-    },
-    dataList () {
-      if (!this.list) {
-        return null
-      }
-
-      // 筛选一下，搜索全文不筛选
-      const list = this.currentTab === 'search' ? this.list : this.filterFiles(this.list, this.searchText.trim(), false)
-
-      // 按照最近使用时间排序
-      return this.sortList(list).slice(0, 70)
-    }
-  }
-}
+})
 </script>
 
 <style scoped>
@@ -333,12 +366,12 @@ export default {
   padding-left: .3em;
 }
 
-.result li span.path /deep/ b {
+.result li span.path ::v-deep b {
   color: #ababab;
   font-weight: bold;
 }
 
-.result li /deep/ b {
+.result li ::v-deep(b) {
   color: #c6d2ca;
   font-weight: normal;
 }

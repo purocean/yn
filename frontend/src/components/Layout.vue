@@ -30,69 +30,56 @@
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
+<script lang="ts">
+import { defineComponent, onBeforeUnmount, onMounted, nextTick, ref, toRefs } from 'vue'
+import { useStore } from 'vuex'
+import { useBus } from '../useful/bus'
+import { $args } from '../useful/global-args'
 
-let resizeOrigin = null
+let resizeOrigin: any = null
 
-export default {
+export default defineComponent({
   name: 'layout',
-  mounted () {
-    window.addEventListener('resize', this.emitResize)
-    window.document.addEventListener('mousemove', this.resizeFrame)
-    this.$bus.on('toggle-view', this.toggleView)
-    this.$bus.on('toggle-side', this.toggleSide)
-    this.$bus.on('toggle-xterm', this.toggleXterm)
-  },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.emitResize)
-    window.document.removeEventListener('mousemove', this.resizeFrame)
-    this.$bus.off('toggle-side', this.toggleSide)
-    this.$bus.off('toggle-view', this.toggleView)
-    this.$bus.off('toggle-xterm', this.toggleXterm)
-  },
-  methods: {
-    emitResize () {
-      this.$bus.emit('resize')
-    },
-    toggleSide () {
-      this.$store.commit('app/setShowSide', !this.showSide)
-      this.$nextTick(() => this.$bus.emit('resize'), 500)
-    },
-    toggleView () {
-      this.$store.commit('app/setShowView', !this.showView)
-      this.$nextTick(() => this.$bus.emit('resize'), 500)
-    },
-    toggleXterm (val) {
-      const showXterm = typeof val === 'boolean' ? val : !this.showXterm
+  setup () {
+    const bus = useBus()
+    const store = useStore()
 
-      this.$store.commit('app/setShowXterm', showXterm)
+    const { showView, showXterm, showSide } = toRefs(store.state)
 
-      this.$nextTick(() => {
-        this.$nextTick(() => this.$bus.emit('resize'), 500)
+    const aside = ref(null)
+    const editor = ref(null)
+    const terminal = ref(null)
+    const refs: any = { aside, editor, terminal }
 
-        if (showXterm) {
-          this.$bus.emit('xterm-init')
+    function toggleSide () {
+      store.commit('setShowSide', !showSide.value)
+      nextTick(() => bus.emit('resize'))
+    }
+
+    function toggleView () {
+      store.commit('setShowView', !showView.value)
+      nextTick(() => bus.emit('resize'))
+    }
+
+    function toggleXterm (val?: boolean) {
+      const show = typeof val === 'boolean' ? val : !showXterm.value
+
+      store.commit('setShowXterm', show)
+
+      nextTick(() => {
+        nextTick(() => bus.emit('resize'))
+
+        if (showXterm.value) {
+          bus.emit('xterm-init')
         }
       })
-    },
-    initResize (type, ref, min, max, e) {
-      if (!resizeOrigin && type) {
-        resizeOrigin = {
-          min,
-          max,
-          type,
-          ref,
-          mouseX: e.clientX,
-          mouseY: e.clientY,
-          targetWidth: this.$refs[ref].clientWidth,
-          targetHeight: this.$refs[ref].clientHeight,
-          targetLeft: this.$refs[ref].clientLeft,
-          targetTop: this.$refs[ref].clientTop,
-        }
-      }
-    },
-    resizeFrame (e) {
+    }
+
+    function emitResize () {
+      bus.emit('resize')
+    }
+
+    function resizeFrame (e: MouseEvent) {
       if (e.buttons !== 1) {
         resizeOrigin = null
         return
@@ -102,25 +89,70 @@ export default {
         return
       }
 
+      const ref = refs[resizeOrigin.ref].value
+
       if (resizeOrigin.type === 'right') {
         const offsetX = e.clientX - resizeOrigin.mouseX
         const width = (resizeOrigin.targetWidth + offsetX)
-        this.$refs[resizeOrigin.ref].style.width = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, width)) + 'px'
+        ref.style.width = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, width)) + 'px'
       } else if (resizeOrigin.type === 'top') {
         const offsetY = -(e.clientY - resizeOrigin.mouseY)
         const height = (resizeOrigin.targetHeight + offsetY)
-        this.$refs[resizeOrigin.ref].style.height = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, height)) + 'px'
+        ref.style.height = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, height)) + 'px'
       }
-      this.$bus.emit('resize')
+      bus.emit('resize')
+    }
+
+    function initResize (type: any, ref: any, min: any, max: any, e: any) {
+      const refEl = refs[ref].value
+      if (!resizeOrigin && type) {
+        resizeOrigin = {
+          min,
+          max,
+          type,
+          ref,
+          mouseX: e.clientX,
+          mouseY: e.clientY,
+          targetWidth: refEl.clientWidth,
+          targetHeight: refEl.clientHeight,
+          targetLeft: refEl.clientLeft,
+          targetTop: refEl.clientTop,
+        }
+      }
+    }
+
+    onMounted(() => {
+      bus.on('toggle-view', toggleView)
+      bus.on('toggle-side', toggleSide)
+      bus.on('toggle-xterm', toggleXterm)
+
+      window.addEventListener('resize', emitResize)
+      window.document.addEventListener('mousemove', resizeFrame)
+    })
+
+    onBeforeUnmount(() => {
+      bus.off('toggle-side', toggleSide)
+      bus.off('toggle-view', toggleView)
+      bus.off('toggle-xterm', toggleXterm)
+
+      window.removeEventListener('resize', emitResize)
+      window.document.removeEventListener('mousemove', resizeFrame)
+    })
+
+    const showFooter = $args().get('show-status-bar') !== 'false'
+
+    return {
+      initResize,
+      showSide,
+      showXterm,
+      showFooter,
+      showView,
+      aside,
+      editor,
+      terminal,
     }
   },
-  computed: {
-    ...mapState('app', ['showView', 'showXterm', 'showSide']),
-    showFooter () {
-      return window.$args().get('show-status-bar') !== 'false'
-    }
-  }
-}
+})
 </script>
 
 <style scoped>

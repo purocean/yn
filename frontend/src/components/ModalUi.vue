@@ -1,9 +1,9 @@
 <template>
-  <XMask :show="show" @close="cancel" @enter="ok" :mask-closeable="false" esc-closeable>
+  <XMask :show="show" @close="cancel" @key-enter="ok" :mask-closeable="false" esc-closeable>
     <div class="wrapper" @click.stop>
       <h4>{{title}}</h4>
       <p v-if="content">{{content}}</p>
-      <input v-if="type === 'input'" ref="input" :type="inputType" :placeholder="inputHint" v-model="inputValue">
+      <input v-if="type === 'input'" ref="refInput" :type="inputType" :placeholder="inputHint" v-model="inputValue">
       <div class="action">
         <button @click="cancel">取消</button>
         <button class="primary" @click="ok">确定</button>
@@ -12,77 +12,101 @@
   </XMask>
 </template>
 
-<script>
-import XMask from './Mask'
+<script lang="ts">
+import { defineComponent, nextTick, ref } from 'vue'
+import XMask from './Mask.vue'
+import { Components } from '../types'
 
-export default {
+type ModalType = '' | 'confirm' | 'input'
+
+export default defineComponent({
   name: 'modal-input',
   components: { XMask },
-  data () {
-    return {
-      type: '',
-      show: false,
-      title: '',
-      content: '',
-      inputType: '',
-      inputValue: '',
-      inputHint: '',
-    }
-  },
-  methods: {
-    handle (val) {
-      this.show = false
-      this.inputValue = ''
+  setup () {
+    const refInput = ref<HTMLInputElement | null>(null)
+
+    const type = ref<ModalType>('')
+    const show = ref(false)
+    const title = ref('')
+    const content = ref('')
+    const inputType = ref('')
+    const inputValue = ref('')
+    const inputHint = ref('')
+
+    let resolveFun: Function | null = null
+
+    function handle (val: any) {
+      show.value = false
+      inputValue.value = ''
+
       try {
-        this.resolve && this.resolve(val)
-      } catch (error) {
-        throw error
+        resolveFun && resolveFun(val)
       } finally {
-        this.resolve = null
+        resolveFun = null
       }
-    },
-    cancel () {
-      this.handle(this.type === 'input' ? null : false)
-    },
-    ok () {
-      this.handle(this.type === 'input' ? this.inputValue : true)
-    },
-    confirm ({ title, content }) {
-      this.type = 'confirm'
-      this.title = title || '提示'
-      this.content = content || ''
-      this.show = true
+    }
+
+    function cancel () {
+      handle(type.value === 'input' ? null : false)
+    }
+
+    function ok () {
+      handle(type.value === 'input' ? inputValue.value : true)
+    }
+
+    function confirm (params: Components.Modal.ConfirmModalParams): Promise<boolean> {
+      type.value = 'confirm'
+      title.value = params.title || '提示'
+      content.value = params.content || ''
+      show.value = true
 
       return new Promise(resolve => {
-        this.resolve = resolve
+        resolveFun = resolve
       })
-    },
-    input ({ type, title, hint, value, content, select = true }) {
-      this.type = 'input'
-      this.title = title || '请输入'
-      this.content = content || ''
-      this.inputType = type || 'text'
-      this.inputValue = value || ''
-      this.inputHint = hint || ''
+    }
 
-      this.show = true
-      this.$nextTick(() => {
-        this.$refs.input.focus()
+    function input (params: Components.Modal.InputModalParams): Promise<string> {
+      type.value = 'input'
+      title.value = params.title || '请输入'
+      content.value = params.content || ''
+      inputType.value = params.type || 'text'
+      inputValue.value = params.value || ''
+      inputHint.value = params.hint || ''
 
-        if (select) {
-          this.$refs.input.select()
-          if (Array.isArray(select)) {
-            this.$refs.input.setSelectionRange(...select)
+      show.value = true
+
+      nextTick(() => {
+        refInput.value!!.focus()
+
+        if (params.select) {
+          refInput.value!!.select()
+          if (Array.isArray(params.select)) {
+            refInput.value!!.setSelectionRange(...params.select)
           }
         }
       })
 
       return new Promise(resolve => {
-        this.resolve = resolve
+        resolveFun = resolve
       })
     }
+
+    return {
+      refInput,
+      ok,
+      cancel,
+      confirm,
+      input,
+      type,
+      show,
+      title,
+      content,
+      inputType,
+      inputValue,
+      inputHint,
+    }
   },
-}
+})
 </script>
 
 <style scoped>

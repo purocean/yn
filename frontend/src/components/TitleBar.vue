@@ -1,13 +1,13 @@
 <template>
   <div class="title-bar" :style="titleBarStyles">
-    <div v-if="win && !isMaximized" class="resizer"></div>
+    <div v-if="hasWin && !isMaximized" class="resizer"></div>
     <h4 class="title">
-      <img v-if="win" @dblclick="close" class="logo" src="~@/assets/icon.png" alt="logo">
+      <img v-if="hasWin" @dblclick="close" class="logo" src="~@/assets/icon.png" alt="logo">
       <span>{{statusText}}</span>
     </h4>
-    <div class="action" v-if="win">
+    <div class="action" v-if="hasWin">
       <div title="置顶窗口" :class="{btn: true, pin: true, ontop: isAlwaysOnTop}" @click="toggleAlwaysOnTop">
-        <y-icon class="pin-icon" name="thumbtack"></y-icon>
+        <svg-icon color="hsla(0, 0%, 100%, .5)" name="thumbtack-solid"></svg-icon>
       </div>
       <div title="最小化" class="btn" @click="minimize">
         <div class="icon minimize"></div>
@@ -25,141 +25,160 @@
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import env from '@/lib/env'
-import 'vue-awesome/icons/thumbtack'
+<script lang="ts">
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
+import { useStore } from 'vuex'
+import env from '../useful/env'
+import SvgIcon from './SvgIcon.vue'
 
 const isElectron = env.isElectron
 
-export default {
+export default defineComponent({
   name: 'title-bar',
-  data () {
-    return {
-      win: null,
-      isMaximized: false,
-      isAlwaysOnTop: false,
-      isFocused: false,
-    }
-  },
-  mounted () {
-    if (!isElectron) {
-      window.onbeforeunload = () => {
-        return !this.saved || null
+  components: { SvgIcon },
+  setup () {
+    const store = useStore()
+
+    const { currentFile, savedAt, currentContent, previousContent } = toRefs(store.state)
+    const saved = computed(() => currentContent.value === previousContent.value)
+
+    let win: any = null
+
+    const hasWin = ref(false)
+    const isMaximized = ref(false)
+    const isAlwaysOnTop = ref(false)
+    const isFocused = ref(false)
+
+    function updateWindowStatus () {
+      if (win) {
+        isMaximized.value = win.isMaximized()
+        isAlwaysOnTop.value = win.isAlwaysOnTop()
+        isFocused.value = win.isFocused()
       }
     }
 
-    if (isElectron && env.require) {
-      this.win = env.require('electron').remote.getCurrentWindow()
-      this.updateWindowStatus()
-      this.win.on('maximize', this.updateWindowStatus)
-      this.win.on('restore', this.updateWindowStatus)
-      this.win.on('unmaximize', this.updateWindowStatus)
-      this.win.on('always-on-top-changed', this.updateWindowStatus)
-      this.win.on('focus', this.updateWindowStatus)
-      this.win.on('blur', this.updateWindowStatus)
-    }
-  },
-  beforeDestroy () {
-    if (!isElectron) {
-      window.onbeforeunload = null
+    function toggleAlwaysOnTop () {
+      win && win.setAlwaysOnTop(!win.isAlwaysOnTop())
     }
 
-    if (this.win) {
-      this.win.removeListener('maximize', this.updateWindowStatus)
-      this.win.removeListener('restore', this.updateWindowStatus)
-      this.win.removeListener('unmaximize', this.updateWindowStatus)
-      this.win.removeListener('minimize', this.updateWindowStatus)
-      this.win.removeListener('always-on-top-changed', this.updateWindowStatus)
-      this.win.removeListener('focus', this.updateWindowStatus)
-      this.win.removeListener('blur', this.updateWindowStatus)
+    function unmaximize () {
+      win && win.unmaximize()
     }
 
-    this.win = null
-  },
-  computed: {
-    ...mapState('app', ['currentFile', 'savedAt', 'previousContent', 'currentContent']),
-    titleBarStyles () {
-      if (isElectron && !this.isFocused) {
-        return { background: '#818181' }
+    function minimize () {
+      win && win.minimize()
+    }
+
+    function maximize () {
+      // 最大化后取消窗口置顶
+      win && win.maximize()
+      win && win.setAlwaysOnTop(false)
+    }
+
+    function close () {
+      win && win.close()
+    }
+
+    onMounted(() => {
+      if (!isElectron) {
+        window.onbeforeunload = () => {
+          return !saved.value || null
+        }
       }
 
-      if (!this.saved) {
-        return { background: '#ff9800ad' }
+      if (isElectron && env.require) {
+        win = env.require('electron').remote.getCurrentWindow()
+        hasWin.value = true
+        updateWindowStatus()
+        win.on('maximize', updateWindowStatus)
+        win.on('restore', updateWindowStatus)
+        win.on('unmaximize', updateWindowStatus)
+        win.on('always-on-top-changed', updateWindowStatus)
+        win.on('focus', updateWindowStatus)
+        win.on('blur', updateWindowStatus)
+      }
+    })
+
+    onBeforeUnmount(() => {
+      if (!isElectron) {
+        window.onbeforeunload = null
       }
 
-      return null
-    },
-    saved () {
-      return this.previousContent === this.currentContent
-    },
-    status () {
-      if (this.savedAt === null && this.currentFile) {
-        return '加载完毕'
-      } else if (this.savedAt) {
-        return '保存于：' + this.savedAt.toLocaleString()
+      if (win) {
+        win.removeListener('maximize', updateWindowStatus)
+        win.removeListener('restore', updateWindowStatus)
+        win.removeListener('unmaximize', updateWindowStatus)
+        win.removeListener('minimize', updateWindowStatus)
+        win.removeListener('always-on-top-changed', updateWindowStatus)
+        win.removeListener('focus', updateWindowStatus)
+        win.removeListener('blur', updateWindowStatus)
       }
 
-      return ''
-    },
-    statusText () {
-      const file = this.currentFile
+      win = null
+      hasWin.value = false
+    })
+
+    const statusText = computed(() => {
+      let status = ''
+
+      if (savedAt.value === null && currentFile.value) {
+        status = '加载完毕'
+      } else if (savedAt.value) {
+        status = '保存于：' + savedAt.value.toLocaleString()
+      }
+
+      const file = currentFile.value
       if (file) {
         if (file.repo === '__help__') {
           return file.title
         }
 
         if (file.path && file.repo) {
-          return `${file.path}-${this.status} [${file.repo}]`
+          return `${file.path}-${status} [${file.repo}]`
         } else {
           return file.name
         }
       } else {
         return '未打开文件'
       }
+    })
+
+    const titleBarStyles = computed(() => {
+      if (isElectron && !isFocused.value) {
+        return { background: '#818181' }
+      }
+
+      if (!saved.value) {
+        return { background: '#ff9800ad' }
+      }
+
+      return null
+    })
+
+    watch(statusText, () => {
+      document.title = currentFile.value ? (currentFile.value.name || currentFile.value.title || 'Yank Note') : '未打开文件'
+    }, { immediate: true })
+
+    watch(saved, val => {
+      // 暴露文档保存状态给 Electron 用
+      (window as any).documentSaved = val
+    }, { immediate: true })
+
+    return {
+      hasWin,
+      isMaximized,
+      isAlwaysOnTop,
+      isFocused,
+      toggleAlwaysOnTop,
+      maximize,
+      unmaximize,
+      minimize,
+      close,
+      statusText,
+      titleBarStyles,
     }
   },
-  watch: {
-    statusText: {
-      immediate: true,
-      handler (val) {
-        document.title = this.currentFile ? (this.currentFile.name || this.currentFile.title || 'Yank Note') : '未打开文件'
-      },
-    },
-    saved: {
-      immediate: true,
-      handler (val) {
-        window.documentSaved = val
-      },
-    },
-  },
-  methods: {
-    updateWindowStatus () {
-      if (this.win) {
-        this.isMaximized = this.win.isMaximized()
-        this.isAlwaysOnTop = this.win.isAlwaysOnTop()
-        this.isFocused = this.win.isFocused()
-      }
-    },
-    toggleAlwaysOnTop () {
-      this.win && this.win.setAlwaysOnTop(!this.win.isAlwaysOnTop())
-    },
-    unmaximize () {
-      this.win && this.win.unmaximize()
-    },
-    minimize () {
-      this.win && this.win.minimize()
-    },
-    maximize () {
-      // 最大化后取消窗口置顶
-      this.win && this.win.maximize()
-      this.win && this.win.setAlwaysOnTop(false)
-    },
-    close () {
-      this.win && this.win.close()
-    },
-  },
-}
+})
 </script>
 
 <style scoped>
@@ -259,9 +278,5 @@ export default {
 
 .action .btn.pin.ontop {
   background-color: hsla(0, 0%, 100%, .3)
-}
-
-.action .btn.pin .pin-icon {
-  fill: hsla(0, 0%, 100%, .5)
 }
 </style>

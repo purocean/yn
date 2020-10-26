@@ -1,55 +1,67 @@
 <template>
-  <XMask :show="!!show" @close="show = false">
-    <QuickOpen @choose-file="show" @close="show = false" :with-marked="show && show.withMarked"></QuickOpen>
+  <XMask :show="show" @close="callback = null">
+    <QuickOpen @choose-file="callback" @close="callback = false" :with-marked="withMarked"></QuickOpen>
   </XMask>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import XMask from './Mask'
-import QuickOpen from './QuickOpen'
-import { encodeMarkdownLink } from '@/lib/utils'
+<script lang="ts">
+import { useStore } from 'vuex'
+import { computed, defineComponent, onMounted, onUnmounted, ref, toRef } from 'vue'
+import { encodeMarkdownLink } from '../useful/utils'
+import { useBus } from '../useful/bus'
+import XMask from './Mask.vue'
+import QuickOpen from './QuickOpen.vue'
 
-export default {
+export default defineComponent({
   name: 'x-filter',
   components: { QuickOpen, XMask },
-  data () {
-    return {
-      show: false,
-    }
-  },
-  mounted () {
-    window.addEventListener('keydown', this.keydownHandler, true)
-  },
-  beforeDestroy () {
-    window.removeEventListener('keydown', this.keydownHandler)
-  },
-  methods: {
-    keydownHandler (e) {
+  setup () {
+    const store = useStore()
+    const bus = useBus()
+
+    const currentFile = toRef(store.state, 'currentFile')
+    const callback = ref<Function | null>(null)
+    const withMarked = ref(true)
+
+    function keydownHandler (e: KeyboardEvent) {
       if (e.key === 'i' && e.ctrlKey && e.altKey) {
-        this.show = f => {
-          if (this.currentFile) {
-            const relativePath = f.path.replace(this.currentFile.path.substr(0, this.currentFile.path.lastIndexOf('/')), '.')
-            this.$bus.emit('editor-insert-value', `[${f.name.replace(/\.[^.]+$/, '')}](${encodeMarkdownLink(relativePath)})`)
+        callback.value = (f: any) => {
+          const file = currentFile.value
+          if (file) {
+            const relativePath = f.path.replace(file.path.substr(0, file.path.lastIndexOf('/')), '.')
+            bus.emit('editor-insert-value', `[${f.name.replace(/\.[^.]+$/, '')}](${encodeMarkdownLink(relativePath)})`)
           }
-          this.show = false
+          callback.value = null
         }
-        this.show.withMarked = false
+        withMarked.value = false
         e.preventDefault()
         e.stopPropagation()
       } else if (e.key === 'p' && e.ctrlKey) {
-        this.show = f => {
-          this.$store.commit('app/setCurrentFile', f)
-          this.show = false
+        callback.value = (f: any) => {
+          store.commit('setCurrentFile', f)
+          callback.value = null
         }
-        this.show.withMarked = true
+        withMarked.value = true
         e.preventDefault()
         e.stopPropagation()
       }
-    },
+    }
+
+    onMounted(() => {
+      window.addEventListener('keydown', keydownHandler, true)
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('keydown', keydownHandler)
+    })
+
+    const show = computed(() => !!callback.value)
+
+    return {
+      show,
+      callback,
+      withMarked,
+    }
   },
-  computed: {
-    ...mapState('app', ['currentFile'])
-  }
-}
+})
 </script>
