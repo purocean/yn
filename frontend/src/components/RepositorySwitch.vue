@@ -8,68 +8,74 @@
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import file from '@/lib/file'
+<script lang="ts">
+import { defineComponent, onBeforeMount, onBeforeUnmount, toRefs, watch } from 'vue'
+import { useStore } from 'vuex'
+import file from '../useful/file'
+import { useBus } from '../useful/bus'
+import { $args } from '../useful/global-args'
 
-export default {
+export default defineComponent({
   name: 'repository-switch',
-  components: {},
-  props: {
-  },
-  data () {
-    return {
-      current: null,
+  setup () {
+    const store = useStore()
+    const bus = useBus()
+
+    const { currentRepo, repositories } = toRefs(store.state)
+
+    function choose (repo: any) {
+      if (repo.name !== currentRepo.value?.name) {
+        store.commit('setCurrentRepo', repo)
+      }
     }
-  },
-  created () {
-    this.$bus.on('switch-repo-by-name', this.chooseRepoByName)
-    this.$bus.on('editor-ready', this.initRepo)
-    this.$store.dispatch('app/fetchRepositories')
-  },
-  beforeDestroy () {
-    this.$bus.off('switch-repo-by-name', this.chooseRepoByName)
-    this.$bus.off('editor-ready', this.initRepo)
-  },
-  methods: {
-    initRepo () {
-      const initRepoName = window.$args().get('init-repo')
-      const initFilePath = window.$args().get('init-file')
+
+    function chooseRepoByName (name?: string) {
+      if (name && repositories.value[name]) {
+        choose({ name, path: repositories.value[name] })
+      }
+    }
+
+    function initRepo () {
+      const initRepoName = $args().get('init-repo')
+      const initFilePath = $args().get('init-file')
 
       if (initRepoName) {
-        this.chooseRepoByName(initRepoName)
+        chooseRepoByName(initRepoName)
       }
 
       if (initFilePath) {
-        this.$store.commit('app/setCurrentFile', { repo: this.currentRepo.name, name: file.basename(initFilePath), path: initFilePath })
-      }
-    },
-    chooseRepoByName (name) {
-      if (this.repositories[name]) {
-        this.choose({ name, path: this.repositories[name] })
-      }
-    },
-    choose (repo) {
-      if (repo.name !== this.currentRepo.name) {
-        this.$store.commit('app/setCurrentRepo', repo)
-      }
-    },
-  },
-  watch: {
-    repositories (val) {
-      const keys = Object.keys(val)
-      if (!this.currentRepo || keys.indexOf(this.currentRepo.name) < 0) {
-        if (keys.length > 0) {
-          const name = keys[0]
-          this.$store.commit('app/setCurrentRepo', { name, path: val[name] })
-        }
+        store.commit('setCurrentFile', { repo: currentRepo.value.name, name: file.basename(initFilePath), path: initFilePath })
       }
     }
+
+    onBeforeMount(() => {
+      bus.on('switch-repo-by-name', chooseRepoByName)
+      bus.on('editor-ready', initRepo)
+      store.dispatch('fetchRepositories')
+    })
+
+    onBeforeUnmount(() => {
+      bus.off('switch-repo-by-name', chooseRepoByName)
+      bus.off('editor-ready', initRepo)
+    })
+
+    watch(repositories, val => {
+      const keys = Object.keys(val)
+      if (!currentRepo.value || keys.indexOf(currentRepo.value.name) < 0) {
+        if (keys.length > 0) {
+          const name = keys[0]
+          store.commit('setCurrentRepo', { name, path: val[name] })
+        }
+      }
+    })
+
+    return {
+      currentRepo,
+      repositories,
+      choose,
+    }
   },
-  computed: {
-    ...mapState('app', ['currentRepo', 'repositories']),
-  }
-}
+})
 </script>
 
 <style scoped>

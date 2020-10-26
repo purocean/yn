@@ -1,7 +1,7 @@
 <template>
   <div class="context-menu">
     <div class="mask" v-if="isShow" @click="hide" @contextmenu.prevent.stop="hide"></div>
-    <ul class="menu" ref="menu" :style="{visibility: isShow ? 'visible' : 'hidden'}">
+    <ul class="menu" ref="refMenu" :style="{visibility: isShow ? 'visible' : 'hidden'}">
       <template v-for="item in items">
         <li v-if="item.type === 'separator'" :key="item.id" :class="item.type || 'normal'"></li>
         <li v-else :key="item.id" @click="handleClick(item)" :class="item.type || 'normal'">{{item.label}}</li>
@@ -10,66 +10,86 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { Components } from '../types'
+
+export default defineComponent({
   name: 'context-menu',
-  props: {
-  },
-  data () {
-    return {
-      items: [], // [{ type: normal | 'separator', id: string, label: string, onClick: item => void }]
-      isShow: false,
+  setup () {
+    const refMenu = ref<HTMLUListElement | null>(null)
+    const items = ref<Components.ContextMenu.Item[]>([])
+    const isShow = ref(false)
+
+    let mouseX = 0
+    let mouseY = 0
+
+    function hideMenu () {
+      isShow.value = false
     }
-  },
-  mounted () {
-    this.mouseX = 0
-    this.mouseY = 0
-    window.addEventListener('blur', this.hide)
-    window.addEventListener('mousemove', this.recordMousePosition)
-  },
-  beforeDestroy () {
-    window.removeEventListener('blur', this.hide)
-    window.removeEventListener('mousemove', this.recordMousePosition)
-  },
-  methods: {
-    handleClick (item) {
+
+    function hide () {
+      items.value = []
+      hideMenu()
+    }
+
+    function handleClick (item: Components.ContextMenu.NormalItem) {
       item.onClick(item)
-      this.hide()
-    },
-    recordMousePosition (e) {
-      this.mouseX = e.clientX
-      this.mouseY = e.clientY
-    },
-    showMenu () {
+      hide()
+    }
+
+    function recordMousePosition (e: MouseEvent) {
+      mouseX = e.clientX
+      mouseY = e.clientY
+    }
+
+    function showMenu () {
+      if (!refMenu.value) {
+        return
+      }
+
       const windowWidth = window.innerWidth
       const windowHeight = window.innerHeight
 
-      const menuWidth = this.$refs.menu.offsetWidth
-      const menuHeight = this.$refs.menu.offsetHeight
+      const menuWidth = refMenu.value.offsetWidth
+      const menuHeight = refMenu.value.offsetHeight
 
-      const x = this.mouseX + menuWidth > windowWidth ? this.mouseX - menuWidth : this.mouseX
-      const y = this.mouseY + menuHeight > windowHeight ? this.mouseY - menuHeight : this.mouseY
+      const x = mouseX + menuWidth > windowWidth ? mouseX - menuWidth : mouseX
+      const y = mouseY + menuHeight > windowHeight ? mouseY - menuHeight : mouseY
 
-      this.$refs.menu.style.left = x + 'px'
-      this.$refs.menu.style.top = y + 'px'
+      refMenu.value.style.left = x + 'px'
+      refMenu.value.style.top = y + 'px'
 
-      this.isShow = true
-    },
-    hideMenu () {
-      this.isShow = false
-    },
-    show (items) {
-      this.items = items
-      this.$nextTick(() => {
-        this.showMenu()
+      isShow.value = true
+    }
+
+    function show (menuItems: Components.ContextMenu.Item[]) {
+      items.value = menuItems
+      nextTick(() => {
+        showMenu()
       })
-    },
-    hide () {
-      this.items = []
-      this.hideMenu()
+    }
+
+    onMounted(() => {
+      window.addEventListener('blur', hide)
+      window.addEventListener('mousemove', recordMousePosition)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('blur', hide)
+      window.removeEventListener('mousemove', recordMousePosition)
+    })
+
+    return {
+      refMenu,
+      isShow,
+      items,
+      hide,
+      show,
+      handleClick,
     }
   },
-}
+})
 </script>
 
 <style scoped>

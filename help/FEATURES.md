@@ -36,18 +36,65 @@ Yank-Note 很多功能可以直接使用的快捷键操作
 支持使用脚注[^1]语法[^2]
 
 ## Mermaid 图形解析
+
+```mermaid
+graph LR
+A[Hard] -->|Text| B(Round)
+B --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
+```
+
 ```mermaid
 sequenceDiagram
-    participant Alice
-    participant Bob
-    Alice->>John: Hello John, how are you?
-    loop Healthcheck
-        John->>John: Fight against hypochondria
-    end
-    Note right of John: Rational thoughts <br/>prevail!
-    John-->>Alice: Great!
-    John->>Bob: How about you?
-    Bob-->>John: Jolly good!
+Alice->>John: Hello John, how are you?
+loop Healthcheck
+    John->>John: Fight against hypochondria
+end
+Note right of John: Rational thoughts!
+John-->>Alice: Great!
+John->>Bob: How about you?
+Bob-->>John: Jolly good!
+```
+
+```mermaid
+gantt
+section Section
+Completed :done,    des1, 2014-01-06,2014-01-08
+Active        :active,  des2, 2014-01-07, 3d
+Parallel 1   :         des3, after des1, 1d
+Parallel 2   :         des4, after des1, 1d
+Parallel 3   :         des5, after des3, 1d
+Parallel 4   :         des6, after des4, 1d
+```
+
+```mermaid
+stateDiagram-v2
+[*] --> Still
+Still --> [*]
+Still --> Moving
+Moving --> Still
+Moving --> Crash
+Crash --> [*]
+```
+
+```mermaid
+pie
+"Dogs" : 386
+"Cats" : 85
+"Rats" : 15
+```
+
+```mermaid
+journey
+    title My working day
+    section Go to work
+      Make tea: 5: Me
+      Go upstairs: 3: Me
+      Do work: 1: Me, Cat
+    section Go home
+      Go downstairs: 5: Me
+      Sit down: 3: Me
 ```
 
 ## Plantuml 图形解析
@@ -253,10 +300,10 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 ```
 
 ### 嵌入本地 drawio 文件
-链接标题（title）需要是 `--drawio--` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
+链接属性 `link-type` 值需要是 `drawio` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
 ```markdown
-[drawio](./test.drawio "--drawio--")
+[drawio](./test.drawio){link-type="drawio"}
 ```
 
 ## 编辑器快捷键
@@ -291,7 +338,8 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
     + `Ctrl + K, Ctrl + U` 转换大写
     + `Ctrl + K, Ctrl + L` 转换小写
     + `Ctrl + Alt + R` 在内置终端里面运行选中内容
-    + `Ctrl + B + V` 粘贴 HTML 富文本
+    + `Ctrl + M + V` 粘贴 HTML 富文本
+    + `Ctrl + B + V` 粘贴图片为 base64 链接
 
 ## 元素属性书写
 此功能使用如下库实现 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)

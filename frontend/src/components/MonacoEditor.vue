@@ -1,51 +1,42 @@
 <template>
-  <div id="editor"></div>
+  <div id="editor" ref="refEditor"></div>
 </template>
 
-<script>
+<script lang="ts">
 import dayjs from 'dayjs'
 import TurndownService from 'turndown'
+import * as monaco from 'monaco-editor'
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import { $args } from '../useful/global-args'
+import env from '../useful/env'
 
-const models = {}
+const models: {[key: string]: monaco.editor.ITextModel} = {}
 
-const keys = {}
+const keys: {[key: string]: boolean} = {}
 
-export default {
+export default defineComponent({
   name: 'monaco-editor',
-  mounted () {
-    this.editor = null
-    if (!window.require) {
-      const loaderScript = document.createElement('script')
-      loaderScript.type = 'text/javascript'
-      loaderScript.src = 'vs/loader.js'
-      loaderScript.addEventListener('load', this.onGotAmdLoader)
-      document.body.appendChild(loaderScript)
-    } else {
-      this.onGotAmdLoader()
-    }
+  setup (_, { emit }) {
+    let editor: monaco.editor.IStandaloneCodeEditor | null = null
+    const refEditor = ref<HTMLElement | null>(null)
 
-    window.addEventListener('keydown', this.recordKeys, true)
-    window.addEventListener('keyup', this.recordKeys, true)
-  },
-  beforeDestroy () {
-    window.removeEventListener('paste', this.paste)
-    window.removeEventListener('keydown', this.recordKeys)
-    window.removeEventListener('keyup', this.recordKeys)
-  },
-  methods: {
-    getModel (uri, value) {
+    const getMonaco = () => (window as any).monaco
+    const getEditor = () => editor!!
+    const resize = () => editor && editor.layout()
+
+    function getModel (uri: string, value: string) {
       let model = models[uri]
 
       if (!model) {
-        model = window.monaco.editor.createModel(value, undefined, window.monaco.Uri.parse(uri))
-        model.onDidChangeContent(e => {
+        model = getMonaco().editor.createModel(value, undefined, getMonaco().Uri.parse(uri))
+        model.onDidChangeContent(() => {
           let value = model.getValue()
           const eol = model.getEOL()
           if (!value.endsWith(eol)) {
             value += eol
             model.setValue(value)
           }
-          this.$emit('change', { uri, value })
+          emit('change', { uri, value })
         })
       }
 
@@ -56,34 +47,213 @@ export default {
       models[uri] = model
 
       return model
-    },
-    recordKeys (e) {
+    }
+
+    function setModel (uri: string, value: string) {
+      const model = getModel(uri, value || '')
+      getEditor().setModel(model)
+    }
+
+    function addAttachment () {
+      const input = window.document.createElement('input')
+      input.type = 'file'
+      input.onchange = () => {
+        for (let i = 0; i < input.files!!.length; i++) {
+          emit('upload-file', input.files!![i])
+        }
+      }
+      input.click()
+    }
+
+    function insert (text: string) {
+      const selection = getEditor().getSelection()!!
+      getEditor().executeEdits('', [
+        {
+          range: new (getMonaco().Range)(selection.endLineNumber, selection.endColumn, selection.endLineNumber, selection.endColumn),
+          text,
+          forceMoveMarkers: true
+        }
+      ])
+    }
+
+    function keyBind () {
+      const KM = getMonaco().KeyMod
+      const KC = getMonaco().KeyCode
+
+      getEditor().addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_F, addAttachment)
+
+      getEditor().addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_D, () => {
+        insert(dayjs().format('YYYY-MM-DD'))
+      })
+
+      getEditor().addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_T, () => {
+        insert(dayjs().format('HH:mm:ss'))
+      })
+
+      getEditor().addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_R, () => {
+        emit('xterm-run', getEditor().getModel()!!.getValueInRange(getEditor().getSelection()!!))
+      })
+
+      getEditor().addCommand(KM.CtrlCmd | KC.Enter, () => {
+        insert(getEditor().getModel()!!.getEOL())
+      })
+
+      getEditor().addCommand(KM.Shift | KC.Enter, () => {
+        // getOneIndent 接口被移除了 https://github.com/microsoft/monaco-editor/issues/1565
+        const getOneIndent = (editor: monaco.editor.IStandaloneCodeEditor) => {
+          const options = getEditor().getModel()!!.getOptions()
+          return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'
+        }
+
+        insert(getOneIndent(getEditor()))
+      })
+
+      getEditor().addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
+        getEditor().getAction('editor.action.moveLinesUpAction').run()
+      })
+
+      getEditor().addCommand(KM.CtrlCmd | KM.Shift | KC.DownArrow, () => {
+        getEditor().getAction('editor.action.moveLinesDownAction').run()
+      })
+
+      getEditor().addCommand(KM.CtrlCmd | KM.Shift | KC.KEY_D, () => {
+        getEditor().getAction('editor.action.copyLinesDownAction').run()
+      })
+
+      getEditor().addCommand(KM.CtrlCmd | KC.KEY_S, () => {
+        emit('save')
+      })
+
+      getEditor().addCommand(KM.CtrlCmd | KC.KEY_J, () => {
+        getEditor().getAction('editor.action.joinLines').run()
+      })
+
+      getEditor().addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_U), () => {
+        getEditor().getAction('editor.action.transformToUppercase').run()
+      })
+
+      getEditor().addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_L), () => {
+        getEditor().getAction('editor.action.transformToLowercase').run()
+      })
+
+      getMonaco().languages.setLanguageConfiguration('markdown', {
+        onEnterRules: [
+          { beforeText: /^\s*> .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '> ' } },
+          { beforeText: /^\s*\+ \[ \] .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '+ [ ] ' } },
+          { beforeText: /^\s*- \[ \] .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '- [ ] ' } },
+          { beforeText: /^\s*\* \[ \] .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '* [ ] ' } },
+          { beforeText: /^\s*\+ \[x\] .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '+ [ ] ' } },
+          { beforeText: /^\s*- \[x\] .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '- [ ] ' } },
+          { beforeText: /^\s*\* \[x\] .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '* [ ] ' } },
+          { beforeText: /^\s*\+ .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '+ ' } },
+          { beforeText: /^\s*- .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '- ' } },
+          { beforeText: /^\s*\* .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '* ' } },
+          { beforeText: /^\s*1. .*$/, action: { indentAction: getMonaco().languages.IndentAction.None, appendText: '1. ' } }
+        ]
+      })
+    }
+
+    function paste (e: ClipboardEvent) {
+      if (getEditor().hasTextFocus()) {
+        const items = e.clipboardData!!.items
+        if (keys.m || keys.M) { // 粘贴 HTML 转为 markdown
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.match(/^text\/html$/i)) {
+              items[i].getAsString(str => {
+                const md = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', bulletListMarker: '+' }).turndown(str)
+                insert(md)
+              })
+            }
+          }
+
+          e.preventDefault()
+          e.stopPropagation()
+        } else {
+          for (let i = 0; i < items.length; i++) {
+            const fileType = items[i].type
+            if (fileType.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
+              const asBase64 = keys.b || keys.B // Ctrl + v 粘贴的同时 按下了 B 键，就粘贴 base64 图像
+              emit('paste-img', items[i].getAsFile(), asBase64)
+            }
+          }
+        }
+      }
+    }
+
+    function replaceLine (line: number, text: string) {
+      const length = getEditor().getModel()!!.getLineLength(line)
+
+      getEditor().executeEdits('', [
+        { range: new (getMonaco().Range)(line, 1, line, length + 1), text }
+      ])
+    }
+
+    function revealLineInCenter (line: number) {
+      getEditor().revealLineInCenter(line)
+    }
+
+    function revealLine (line: number) {
+      getEditor().revealLine(line)
+    }
+
+    function setScrollToTop (top: number) {
+      getEditor().setScrollTop(top)
+    }
+
+    function switchTodo (line: number, checked: boolean) {
+      if (checked) {
+        const value = getEditor().getModel()!!.getLineContent(line).replace('[ ]', `[x] ~~${dayjs().format('YYYY-MM-DD HH:mm')}~~`)
+        replaceLine(line, value)
+      } else {
+        const value = getEditor().getModel()!!.getLineContent(line).replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
+        replaceLine(line, value)
+      }
+    }
+
+    function getValue () {
+      return getEditor().getModel()!!.getValue(getMonaco().editor.DefaultEndOfLine.LF)
+    }
+
+    function replaceValue (oldValue: string, newValue: string) {
+      getEditor().getModel()!!.setValue(getValue().replace(oldValue, newValue))
+    }
+
+    function getDucumentInfo () {
+      const selection = getEditor().getSelection()!!
+
+      return {
+        line: selection.positionLineNumber,
+        column: selection.positionColumn,
+        lineCount: getEditor().getModel()!!.getLineCount(),
+        textLength: getValue().length,
+        selectedLength: getEditor().getModel()!!.getValueInRange(selection).length
+      }
+    }
+
+    function toggleWrap () {
+      const isWrapping = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo).isViewportWrapping
+      getEditor().updateOptions({ wordWrap: (isWrapping ? 'off' : 'on') })
+    }
+
+    function recordKeys (e: KeyboardEvent) {
       if (e.type === 'keydown') {
         keys[e.key] = true
       } else {
         keys[e.key] = false
       }
-    },
-    resize () {
-      if (this.editor) {
-        this.editor.layout()
-      }
-    },
-    onGotAmdLoader () {
-      window.require(['vs/editor/editor.main'], () => {
-        this.initMonaco()
-      })
-    },
-    initMonaco () {
-      window.supportedExtensions = window.monaco.languages.getLanguages().flatMap(x => x.extensions)
+    }
 
-      const model = this.getModel('yank-note://system/blank.md', '')
+    function initMonaco () {
+      // window.supportedExtensions = getMonaco().languages.getLanguages().flatMap(x => x.extensions)
 
-      this.editor = window.monaco.editor.create(window.document.getElementById('editor'), {
+      const model = getModel('yank-note://system/blank.md', '')
+
+      editor = (window as any).monaco.editor.create(refEditor.value, {
         value: '',
         theme: 'vs-dark',
         fontSize: 18,
         wordWrap: false,
+        links: !env.isElectron,
         // wordWrapColumn: 40,
         // Set this to false to not auto word wrap minified files
         wordWrapMinified: true,
@@ -97,197 +267,66 @@ export default {
           verticalScrollbarSize: 0
         },
         model,
-        readOnly: window.$args().get('readonly') === 'true',
+        readOnly: $args().get('readonly') === 'true',
       })
 
-      this.editor.onDidChangeCursorSelection(e => {
-        this.$emit('change-document', this.getDucumentInfo())
+      getEditor().onDidChangeCursorSelection(() => {
+        emit('change-document', getDucumentInfo())
       })
 
-      this.editor.onDidScrollChange(e => {
-        const line = this.editor.getVisibleRanges()[0].startLineNumber
-        const top = this.editor.getScrollTop()
-        this.$emit('scroll-view', { line, top })
+      getEditor().onDidScrollChange(() => {
+        const line = getEditor().getVisibleRanges()[0].startLineNumber
+        const top = getEditor().getScrollTop()
+        emit('scroll-view', { line, top })
       })
 
-      this.keyBind()
-      window.addEventListener('paste', this.paste, true)
+      keyBind()
+      window.addEventListener('paste', paste as any, true)
 
       setTimeout(() => {
-        this.$emit('ready')
+        emit('ready')
       }, 500)
-    },
-    keyBind () {
-      const KM = window.monaco.KeyMod
-      const KC = window.monaco.KeyCode
-
-      this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_F, this.addAttachment)
-
-      this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_D, () => {
-        this.insert(dayjs().format('YYYY-MM-DD'))
-      })
-
-      this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_T, () => {
-        this.insert(dayjs().format('HH:mm:ss'))
-      })
-
-      this.editor.addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_R, () => {
-        this.$emit('xterm-run', this.editor.getModel().getValueInRange(this.editor.getSelection()))
-      })
-
-      this.editor.addCommand(KM.CtrlCmd | KC.Enter, () => {
-        this.insert(this.editor.getModel().getEOL())
-      })
-
-      this.editor.addCommand(KM.Shift | KC.Enter, () => {
-        // getOneIndent 接口被移除了 https://github.com/microsoft/monaco-editor/issues/1565
-        const getOneIndent = editor => {
-          const options = editor.getModel().getOptions()
-          return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'
-        }
-
-        this.insert(getOneIndent(this.editor))
-      })
-
-      this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
-        this.editor.getAction('editor.action.moveLinesUpAction').run()
-      })
-
-      this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.DownArrow, () => {
-        this.editor.getAction('editor.action.moveLinesDownAction').run()
-      })
-
-      this.editor.addCommand(KM.CtrlCmd | KM.Shift | KC.KEY_D, () => {
-        this.editor.getAction('editor.action.copyLinesDownAction').run()
-      })
-
-      this.editor.addCommand(KM.CtrlCmd | KC.KEY_S, () => {
-        this.$emit('save')
-      })
-
-      this.editor.addCommand(KM.CtrlCmd | KC.KEY_J, () => {
-        this.editor.getAction('editor.action.joinLines').run()
-      })
-
-      this.editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_U), () => {
-        this.editor.getAction('editor.action.transformToUppercase').run()
-      })
-
-      this.editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_L), () => {
-        this.editor.getAction('editor.action.transformToLowercase').run()
-      })
-
-      window.monaco.languages.setLanguageConfiguration('markdown', {
-        onEnterRules: [
-          { beforeText: /^\s*> .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '> ' } },
-          { beforeText: /^\s*\+ \[ \] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] ' } },
-          { beforeText: /^\s*- \[ \] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] ' } },
-          { beforeText: /^\s*\* \[ \] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] ' } },
-          { beforeText: /^\s*\+ \[x\] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '+ [ ] ' } },
-          { beforeText: /^\s*- \[x\] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '- [ ] ' } },
-          { beforeText: /^\s*\* \[x\] .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '* [ ] ' } },
-          { beforeText: /^\s*\+ .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '+ ' } },
-          { beforeText: /^\s*- .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '- ' } },
-          { beforeText: /^\s*\* .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '* ' } },
-          { beforeText: /^\s*1. .*$/, action: { indentAction: window.monaco.languages.IndentAction.None, appendText: '1. ' } }
-        ]
-      })
-    },
-    paste (e) {
-      if (this.editor.hasTextFocus()) {
-        const items = e.clipboardData.items
-        if (keys['m'] || keys['M']) { // 粘贴 HTML 转为 markdown
-          for (let i = 0; i < items.length; i++) {
-            if (items[i].type.match(/^text\/html$/i)) {
-              items[i].getAsString(str => {
-                const md = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', bulletListMarker: '+' }).turndown(str)
-                this.insert(md)
-              })
-            }
-          }
-
-          e.preventDefault()
-          e.stopPropagation()
-        } else {
-          for (let i = 0; i < items.length; i++) {
-            const fileType = items[i].type
-            if (fileType.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
-              const asBase64 = keys['b'] || keys['B'] // Ctrl + v 粘贴的同时 按下了 B 键，就粘贴 base64 图像
-              this.$emit('paste-img', items[i].getAsFile(), asBase64)
-            }
-          }
-        }
-      }
-    },
-    addAttachment () {
-      const input = window.document.createElement('input')
-      input.type = 'file'
-      input.onchange = () => {
-        for (let i = 0; i < input.files.length; i++) {
-          this.$emit('upload-file', input.files[i])
-        }
-      }
-      input.click()
-    },
-    insert (text) {
-      const selection = this.editor.getSelection()
-      this.editor.executeEdits('', [
-        {
-          range: new window.monaco.Range(selection.endLineNumber, selection.endColumn, selection.endLineNumber, selection.endColumn),
-          text,
-          forceMoveMarkers: true
-        }
-      ])
-    },
-    replaceLine (line, text) {
-      const length = this.editor.getModel().getLineLength(line)
-
-      this.editor.executeEdits('', [
-        { range: new window.monaco.Range(line, 1, line, length + 1), text }
-      ])
-    },
-    revealLineInCenter (line) {
-      this.editor.revealLineInCenter(line)
-    },
-    setScrollToTop (top) {
-      this.editor.setScrollTop(top)
-    },
-    switchTodo (line, checked) {
-      if (checked) {
-        const value = this.editor.getModel().getLineContent(line).replace('[ ]', `[x] ~~${dayjs().format('YYYY-MM-DD HH:mm')}~~`)
-        this.replaceLine(line, value)
-      } else {
-        const value = this.editor.getModel().getLineContent(line).replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
-        this.replaceLine(line, value)
-      }
-    },
-    getValue () {
-      return this.editor.getModel().getValue(window.monaco.editor.DefaultEndOfLine.LF)
-    },
-    setModel (uri, value) {
-      const model = this.getModel(uri, value || '')
-      this.editor.setModel(model)
-    },
-    replaceValue (oldValue, newValue) {
-      this.editor.getModel().setValue(this.getValue().replace(oldValue, newValue))
-    },
-    getDucumentInfo () {
-      const selection = this.editor.getSelection()
-
-      return {
-        line: selection.positionLineNumber,
-        column: selection.positionColumn,
-        lineCount: this.editor.getModel().getLineCount(),
-        textLength: this.getValue().length,
-        selectedLength: this.editor.getModel().getValueInRange(selection).length
-      }
-    },
-    toggleWrap () {
-      const isWrapping = this.editor.getConfiguration().wrappingInfo.isViewportWrapping
-      this.editor.updateOptions({ wordWrap: !isWrapping })
     }
-  },
-}
+
+    function onGotAmdLoader () {
+      (window as any).require(['vs/editor/editor.main'], initMonaco)
+    }
+
+    onMounted(() => {
+      if (!window.require) {
+        const loaderScript = document.createElement('script')
+        loaderScript.type = 'text/javascript'
+        loaderScript.src = 'vs/loader.js'
+        loaderScript.addEventListener('load', onGotAmdLoader)
+        document.body.appendChild(loaderScript)
+      } else {
+        onGotAmdLoader()
+      }
+
+      window.addEventListener('keydown', recordKeys, true)
+      window.addEventListener('keyup', recordKeys, true)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('paste', paste as any)
+      window.removeEventListener('keydown', recordKeys)
+      window.removeEventListener('keyup', recordKeys)
+    })
+
+    return {
+      refEditor,
+      resize,
+      revealLine,
+      revealLineInCenter,
+      setScrollToTop,
+      switchTodo,
+      replaceValue,
+      toggleWrap,
+      setModel,
+      insert,
+    }
+  }
+})
 </script>
 
 <style scoped>

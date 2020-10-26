@@ -2,24 +2,33 @@
   <div v-if="toast" :class="{toast: true, [`toast-${toast.type}`]: true}">{{toast.content}}</div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
+import { Components } from '../types'
+
+interface ToastData {
+  type: Components.Toast.ToastType;
+  content: string;
+}
+
+export default defineComponent({
   name: 'toast',
-  data () {
-    return {
-      toast: null
-    }
-  },
-  methods: {
-    show (type, content, timeout = 2000) {
-      this.toast = { type, content }
+  setup () {
+    const toast = ref<ToastData | null>()
+
+    function show (type: Components.Toast.ToastType, content: string, timeout = 2000) {
+      toast.value = { type, content }
 
       setTimeout(() => {
-        this.toast = null
+        toast.value = null
       }, timeout)
-    },
+    }
+
+    return { toast, show }
   },
-}
+  methods: {
+  },
+})
 </script>
 
 <style scoped>

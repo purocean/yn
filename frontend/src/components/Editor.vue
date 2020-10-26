@@ -1,152 +1,125 @@
 <template>
   <div class="editor">
     <MonacoEditor
-      ref="editor"
+      ref="refEditor"
       class="editor"
       @change="setCurrentValue"
       @ready="editorReady"
       @scroll-view="syncScrollView"
       @paste-img="pasteImg"
       @upload-file="uploadFile"
-      @change-document="val => $store.commit('app/setDocumentInfo', val)"
+      @change-document="val => $store.commit('setDocumentInfo', val)"
       @xterm-run="val => $bus.emit('xterm-run', val)"
       @save="saveFile"></MonacoEditor>
   </div>
 </template>
 
-<script>
-import _ from 'lodash'
-import { mapState } from 'vuex'
+<script lang="ts">
+import lodash from 'lodash'
 import dayjs from 'dayjs'
-import File from '@/lib/file'
-import Storage from '@/lib/Storage'
-import { encodeMarkdownLink } from '@/lib/utils'
-import MonacoEditor from './MonacoEditor'
+import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch } from 'vue'
+import { useStore } from 'vuex'
+import { encodeMarkdownLink } from '../useful/utils'
+import { useBus } from '../useful/bus'
+import { useModal } from '../useful/modal'
+import { useToast } from '../useful/toast'
+import File from '../useful/file'
+import Storage from '../useful/storage'
+import MonacoEditor from './MonacoEditor.vue'
 
 const FILE_POSITION_KEY = 'filePosition'
 
-export default {
+export default defineComponent({
   name: 'editor',
   components: { MonacoEditor },
-  data () {
-    return {
-      timer: null
-    }
-  },
-  mounted () {
-    this.$bus.on('resize', this.$refs.editor.resize)
-    this.$bus.on('editor-insert-value', this.$refs.editor.insert)
-    this.$bus.on('editor-replace-value', this.$refs.editor.replaceValue)
-    this.$bus.on('editor-toggle-wrap', this.$refs.editor.toggleWrap)
-    this.$bus.on('file-new', this.createFile)
-    this.restartTimer()
+  setup (_, { emit }) {
+    const bus = useBus()
+    const store = useStore()
+    const modal = useModal()
+    const toast = useToast()
 
-    this.saveFileOpenPositionDebounce = _.debounce(line => {
-      this.saveFileOpenPosition(line)
-    }, 1000)
-  },
-  beforeDestroy () {
-    this.$bus.off('resize', this.$refs.editor.resize)
-    this.$bus.off('editor-insert-value', this.$refs.editor.insert)
-    this.$bus.off('editor-replace-value', this.$refs.editor.replaceValue)
-    this.$bus.off('editor-toggle-wrap', this.$refs.editor.toggleWrap)
-    this.$bus.off('file-new', this.createFile)
-  },
-  methods: {
-    setCurrentValue ({ uri, value }) {
-      if (this.toUri(this.currentFile) === uri) {
-        this.$store.commit('app/setCurrentContent', value)
-      }
-    },
-    saveFileOpenPosition (top) {
-      if (this.currentFile) {
-        const map = Storage.get(FILE_POSITION_KEY, {})
-        map[`${this.currentFile.repo}|${this.currentFile.path}`] = top
-        Storage.set(FILE_POSITION_KEY, map)
-      }
-    },
-    async createFile ({ file, content }) {
-      try {
-        // 加密文件内容
-        if (File.isEncryptedFile(file)) {
-          const password = await this.inputPassword('[创建] 请输入密码', file.name)
-          const encrypted = File.encrypt(content, password)
-          content = encrypted.content
-          // 储存这次解密文件密码的 hash，用于下次判断是否输入了相同密码
-          this.$store.commit('app/setPasswordHash', file, encrypted.passwordHash)
-        }
+    let timer: number | null = null
+    const refEditor = ref<any>(null)
+    const { currentFile, currentContent, previousContent, previousHash, passwordHash } = toRefs(store.state)
 
-        await File.write(file, content, 'new')
+    const getEditor = () => refEditor.value
+    const revealLine = (line: number) => getEditor().revealLine(line)
+    const revealLineInCenter = (line: number) => getEditor().revealLineInCenter(line)
+    const switchTodo = (line: number, checked: boolean) => getEditor().switchTodo(line, checked)
+    const toUri = (file: any) => File.toUri(file)
 
-        this.$bus.emit('file-created', file)
-        this.$store.commit('app/setCurrentFile', file)
-      } catch (error) {
-        this.$toast.show('warning', error.message)
-        console.error(error)
-      }
-    },
-    async inputPassword (title, filename) {
-      const password = await this.$modal.input({ title, type: 'password', hint: filename })
+    async function inputPassword (title: string, filename: string) {
+      const password = await modal.input({ title, type: 'password', hint: filename })
       if (!password) {
         throw new Error('未输入密码')
       }
 
       return password
-    },
-    clearTimer () {
-      if (this.timer) {
-        window.clearTimeout(this.timer)
-      }
-    },
-    restartTimer () {
-      this.clearTimer()
+    }
 
-      if (!(this.currentFile && this.currentFile.repo && this.currentFile.path)) {
-        return
+    function saveFileOpenPosition (top: number) {
+      if (currentFile.value) {
+        const map = Storage.get(FILE_POSITION_KEY, {})
+        map[`${currentFile.value.repo}|${currentFile.value.path}`] = top
+        Storage.set(FILE_POSITION_KEY, map)
       }
+    }
 
-      this.timer = window.setTimeout(() => {
-        if (!this.currentFile || File.isEncryptedFile(this.currentFile)) { // 加密文件不自动保存
-          return
+    const saveFileOpenPositionDebounce = lodash.debounce((line: number) => {
+      saveFileOpenPosition(line)
+    }, 1000)
+
+    function setCurrentValue ({ uri, value }: { uri: string; value: any}) {
+      if (toUri(currentFile.value) === uri) {
+        store.commit('setCurrentContent', value)
+      }
+    }
+
+    function syncScrollView ({ line, top }: { line: number; top: number }) {
+      emit('scroll-line', line)
+      saveFileOpenPositionDebounce(top)
+    }
+
+    async function createFile ({ file, content }: {file: any; content: any}) {
+      try {
+        // 加密文件内容
+        if (File.isEncryptedFile(file)) {
+          const password = await inputPassword('[创建] 请输入密码', file.name)
+          const encrypted = File.encrypt(content, password)
+          content = encrypted.content
+          // 储存这次解密文件密码的 hash，用于下次判断是否输入了相同密码
+          store.commit('setPasswordHash', { file, passwordHash: encrypted.passwordHash })
         }
 
-        this.saveFile()
-      }, 2000)
-    },
-    editorReady () {
-      this.$bus.emit('editor-ready')
-      if (this.currentFile) {
-        this.changeFile(this.currentFile)
+        await File.write(file, content, 'new')
+
+        bus.emit('file-created', file)
+        store.commit('setCurrentFile', file)
+      } catch (error) {
+        toast.show('warning', error.message)
+        console.error(error)
       }
-    },
-    revealLine (line) {
-      this.$refs.editor.revealLine(line)
-    },
-    revealLineInCenter (line) {
-      this.$refs.editor.revealLineInCenter(line)
-    },
-    switchTodo (line, checked) {
-      this.$refs.editor.switchTodo(line, checked)
-    },
-    syncScrollView ({ line, top }) {
-      this.$emit('scroll-line', line)
-      this.saveFileOpenPositionDebounce(top)
-    },
-    toUri (file) {
-      return File.toUri(file)
-    },
-    async saveFile (f = null) {
-      const file = f || this.currentFile
+    }
+
+    function clearTimer () {
+      if (timer) {
+        window.clearTimeout(timer)
+        timer = null
+      }
+    }
+
+    async function saveFile (f: any = null) {
+      const file = f || currentFile.value
 
       if (!(file && file.repo && file.path)) {
         return
       }
 
-      if (this.previousContent === this.currentContent) {
+      if (previousContent.value === currentContent.value) {
         return
       }
 
-      if (!this.currentContent) {
+      if (!currentContent.value) {
         return
       }
 
@@ -155,69 +128,87 @@ export default {
       }
 
       try {
-        let content = this.currentContent
+        let content = currentContent.value
 
         // 加密文件内容
         if (File.isEncryptedFile(file)) {
-          const password = await this.inputPassword('[保存] 请输入密码', file.name)
+          const password = await inputPassword('[保存] 请输入密码', file.name)
           const encrypted = File.encrypt(content, password)
-          const oldPasswdHash = this.passwordHash[`${file.repo}|${file.path}`]
+          const oldPasswdHash = passwordHash.value[`${file.repo}|${file.path}`]
           if (oldPasswdHash !== encrypted.passwordHash) {
-            if (!(await this.$modal.confirm({ title: '提示', content: '密码和上一次输入的密码不一致，是否用新密码保存？' }))) {
+            if (!(await modal.confirm({ title: '提示', content: '密码和上一次输入的密码不一致，是否用新密码保存？' }))) {
               return
             }
           }
 
           content = encrypted.content
           // 储存这次解密文件密码的 hash，用于下次判断是否输入了相同密码
-          this.$store.commit('app/setPasswordHash', file, encrypted.passwordHash)
+          store.commit('setPasswordHash', { file, passwordHash: encrypted.passwordHash })
         }
 
-        const { hash } = await File.write(file, content, this.previousHash)
+        const { hash } = await File.write(file, content, previousHash.value)
 
-        this.$store.commit('app/setPreviousHash', hash)
-        this.$store.commit('app/setPreviousContent', this.currentContent)
-        this.$store.commit('app/setSavedAt', new Date())
+        store.commit('setPreviousHash', hash)
+        store.commit('setPreviousContent', currentContent.value)
+        store.commit('setSavedAt', new Date())
       } catch (error) {
-        this.$toast.show('warning', error.message)
+        toast.show('warning', error.message)
         console.error(error)
       }
-    },
-    async pasteImg (file, asBase64) {
-      console.log(file, asBase64)
+    }
+
+    function restartTimer () {
+      clearTimer()
+
+      if (!(currentFile.value && currentFile.value.repo && currentFile.value.path)) {
+        return
+      }
+
+      timer = window.setTimeout(() => {
+        if (!currentFile.value || File.isEncryptedFile(currentFile.value)) { // 加密文件不自动保存
+          return
+        }
+
+        saveFile()
+      }, 2000)
+    }
+
+    async function pasteImg (file: any, asBase64: boolean) {
       if (asBase64) {
         const uri = await File.toBase64URL(file)
-        this.$refs.editor.insert(`![图片](${uri})\n`)
+        getEditor().insert(`![图片](${uri})\n`)
       } else {
-        const { relativePath } = await File.upload(this.currentFile.repo, this.currentFile.path, file)
-        this.$bus.emit('file-uploaded', relativePath)
-        this.$refs.editor.insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
+        const { relativePath } = await File.upload(currentFile.value.repo, currentFile.value.path, file)
+        bus.emit('file-uploaded', relativePath)
+        getEditor().insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
       }
-    },
-    async uploadFile (file) {
+    }
+
+    async function uploadFile (file: any) {
       const filename = `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`
-      const { relativePath } = await File.upload(this.currentFile.repo, this.currentFile.path, file, filename)
-      this.$bus.emit('file-uploaded', relativePath)
-      this.$refs.editor.insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
-    },
-    async changeFile (current, previous) {
-      this.clearTimer()
+      const { relativePath } = await File.upload(currentFile.value.repo, currentFile.value.path, file, filename)
+      bus.emit('file-uploaded', relativePath)
+      getEditor().insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
+    }
+
+    async function changeFile (current: any, previous?: any) {
+      clearTimer()
 
       if (previous && previous.repo && previous.path) {
-        await this.saveFile(previous)
+        await saveFile(previous)
       }
 
       if (!current) {
-        this.$store.commit('app/setPreviousContent', '\n')
-        this.$refs.editor.setModel(this.toUri(current), '\n')
-        this.$store.commit('app/setCurrentFile', null)
+        store.commit('setPreviousContent', '\n')
+        getEditor().setModel(toUri(current), '\n')
+        store.commit('setCurrentFile', null)
         return
       }
 
       if (current.content) { // 系统文件
-        this.$store.commit('app/setPreviousContent', current.content)
-        this.$store.commit('app/setSavedAt', null)
-        this.$refs.editor.setModel(this.toUri(current), current.content)
+        store.commit('setPreviousContent', current.content)
+        store.commit('setSavedAt', null)
+        getEditor().setModel(toUri(current), current.content)
         return
       }
 
@@ -226,40 +217,81 @@ export default {
 
         // 解密文件内容
         if (File.isEncryptedFile(current)) {
-          const password = await this.inputPassword('[打开] 请输入密码', current.name)
+          const password = await inputPassword('[打开] 请输入密码', current.name)
           const decrypted = File.decrypt(content, password)
           content = decrypted.content
           // 储存这次解密文件密码的 hash，用于下次判断是否输入了相同密码
-          this.$store.commit('app/setPasswordHash', { file: current, passwordHash: decrypted.passwordHash })
+          store.commit('setPasswordHash', { file: current, passwordHash: decrypted.passwordHash })
         }
 
-        this.$store.commit('app/setPreviousContent', content)
-        this.$store.commit('app/setPreviousHash', hash)
-        this.$store.commit('app/setSavedAt', null)
-        this.$refs.editor.setModel(this.toUri(current), content)
+        store.commit('setPreviousContent', content)
+        store.commit('setPreviousHash', hash)
+        store.commit('setSavedAt', null)
+        getEditor().setModel(toUri(current), content)
       } catch (error) {
-        this.$store.commit('app/setCurrentFile', null)
-        this.$toast.show('warning', error.message)
+        store.commit('setCurrentFile', null)
+        toast.show('warning', error.message)
         console.error(error)
       }
 
-      // 切换文件时候定位
-      const top = Storage.get(FILE_POSITION_KEY, {})[`${current.repo}|${current.path}`] || 1
-      this.$refs.editor.setScrollToTop(top)
+      // 切换文件时候保留定位
+      nextTick(() => {
+        const top = Storage.get(FILE_POSITION_KEY, {})[`${current.repo}|${current.path}`] || 1
+        getEditor().setScrollToTop(top)
+      })
     }
-  },
-  computed: {
-    ...mapState('app', ['currentFile', 'currentContent', 'previousContent', 'previousHash', 'passwordHash'])
-  },
-  watch: {
-    currentFile (current, previous) {
-      this.changeFile(current, previous)
-    },
-    currentContent () {
-      this.restartTimer()
+
+    function editorReady () {
+      bus.emit('editor-ready')
+      if (currentFile.value) {
+        changeFile(currentFile.value)
+      }
+    }
+
+    watch(currentFile, changeFile)
+    watch(currentContent, restartTimer)
+
+    const resize = () => nextTick(() => getEditor().resize())
+    const insert = (text?: string) => getEditor().insert(text)
+    const replaceValue = (value?: { search: string; replace: string }) => {
+      if (value) {
+        getEditor().replaceValue(value.search, value.replace)
+      }
+    }
+
+    const toggleWrap = () => getEditor().toggleWrap()
+
+    onMounted(() => {
+      bus.on('resize', resize)
+      bus.on('editor-insert-value', insert)
+      bus.on('editor-replace-value', replaceValue)
+      bus.on('editor-toggle-wrap', toggleWrap)
+      bus.on('file-new', createFile as any)
+      restartTimer()
+    })
+
+    onBeforeMount(() => {
+      bus.off('resize', resize)
+      bus.off('editor-insert-value', insert)
+      bus.off('editor-replace-value', replaceValue)
+      bus.off('editor-toggle-wrap', toggleWrap)
+      bus.off('file-new', createFile as any)
+    })
+
+    return {
+      refEditor,
+      revealLine,
+      revealLineInCenter,
+      switchTodo,
+      setCurrentValue,
+      syncScrollView,
+      pasteImg,
+      uploadFile,
+      editorReady,
+      saveFile,
     }
   }
-}
+})
 </script>
 
 <style scoped>

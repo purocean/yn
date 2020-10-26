@@ -19,76 +19,95 @@
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import RepositorySwitch from './RepositorySwitch'
+<script lang="ts">
+import { defineComponent, onBeforeUnmount, onMounted, toRef } from 'vue'
+import { useStore } from 'vuex'
+import { useBus } from '../useful/bus'
+import RepositorySwitch from './RepositorySwitch.vue'
 
-export default {
+export default defineComponent({
   name: 'status-bar',
   components: { RepositorySwitch },
-  created () {
-    window.addEventListener('keydown', this.keydownHandler, true)
-  },
-  beforeDestroy () {
-    window.removeEventListener('keydown', this.keydownHandler)
-  },
-  methods: {
-    toggleSide () {
-      this.$bus.emit('toggle-side')
-    },
-    toggleView () {
-      this.$bus.emit('toggle-view')
-    },
-    toggleXterm () {
-      this.$bus.emit('toggle-xterm')
-    },
-    toggleFeature () {
-      this.$store.dispatch('app/showHelp', 'FEATURES.md')
-    },
-    toggleReadme () {
-      this.$store.dispatch('app/showHelp', 'README.md')
-    },
-    toggleWrap () {
-      this.$bus.emit('editor-toggle-wrap')
-    },
-    keydownHandler (e) {
+  setup () {
+    const bus = useBus()
+    const store = useStore()
+    const documentInfo = toRef(store.state, 'documentInfo')
+
+    function toggleSide () {
+      bus.emit('toggle-side')
+    }
+
+    function toggleView () {
+      bus.emit('toggle-view')
+    }
+
+    function toggleXterm () {
+      bus.emit('toggle-xterm')
+    }
+
+    function toggleFeature () {
+      store.dispatch('showHelp', 'FEATURES.md')
+    }
+
+    function toggleReadme () {
+      store.dispatch('showHelp', 'README.md')
+    }
+
+    function toggleWrap () {
+      bus.emit('editor-toggle-wrap')
+    }
+
+    function keydownHandler (e: KeyboardEvent) {
       if (e.key === 'e' && e.altKey) {
-        this.toggleSide()
+        toggleSide()
         e.preventDefault()
         e.stopPropagation()
       }
 
       if (e.key === 'v' && e.altKey) {
-        this.toggleView()
+        toggleView()
         e.preventDefault()
         e.stopPropagation()
       }
 
       if (e.key === 'o' && e.altKey) {
-        this.toggleXterm()
+        toggleXterm()
         e.preventDefault()
         e.stopPropagation()
       }
 
       if (e.key === 'w' && e.altKey) {
-        this.toggleWrap()
+        toggleWrap()
         e.preventDefault()
         e.stopPropagation()
       }
 
       if (e.key === 'h' && e.altKey) {
-        this.toggleReadme()
+        toggleReadme()
         e.preventDefault()
         e.stopPropagation()
       }
     }
+
+    onMounted(() => {
+      window.addEventListener('keydown', keydownHandler, true)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('keydown', keydownHandler)
+    })
+
+    return {
+      documentInfo,
+      toggleSide,
+      toggleWrap,
+      toggleView,
+      toggleXterm,
+      toggleReadme,
+      toggleFeature,
+    }
   },
-  watch: {
-  },
-  computed: {
-    ...mapState('app', ['documentInfo'])
-  }
-}
+})
 </script>
 
 <style scoped>

@@ -6,6 +6,6 @@ dist
 vs
 out
 bin
-.yarnrc
+# .yarnrc
 b.bat
 *.pfx

@@ -1,5 +1,5 @@
 <template>
-  <div ref="view-wrapper" class="view" @scroll="handleScroll">
+  <div ref="refViewWrapper" class="view" @scroll="handleScroll">
     <div class="action-bar" :style="{width: (width - 50) + 'px'}">
       <div :style="{background: todoCount ? '#4e4e4e' : 'transparent'}">
         <div v-if="todoCount" class="todo-progress">
@@ -13,7 +13,7 @@
         <div v-else></div>
         <div class="convert">
           <iframe width="0" height="0" hidden id="preview_download" name="preview_download"></iframe>
-          <form ref="convertForm" :action="`/api/convert/${convert.fileName}`" method="post" target="preview_download">
+          <form ref="refConvertForm" :action="`/api/convert/${convert.fileName}`" method="post" target="preview_download">
             <input type="hidden" name="html" :value="convert.html">
             <input type="hidden" name="type" :value="convert.type">
             <!-- <button type="button" @click="convertFile('pdf')">pdf</button> -->
@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div ref="outline" class="outline">
+    <div class="outline">
       <div style="padding: .5em;"><b>目录</b></div>
       <div class="catalog" :style="{maxHeight: (height - 120) + 'px'}">
         <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level + 1}em`}" @click="syncScroll(head.sourceLine)">
@@ -33,13 +33,14 @@
       </div>
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="{top: (height - 40) + 'px'}" @click="scrollToTop">TOP</div>
-    <article ref="view" class="markdown-body" @click.capture="handleClick"></article>
+    <article ref="refView" class="markdown-body" @click.capture="handleClick"></article>
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import _ from 'lodash'
+<script lang="ts">
+import loadsh from 'lodash'
+import { useStore } from 'vuex'
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import mime from 'mime-types'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
@@ -60,20 +61,22 @@ import DrawioPlugin from '../plugins/DrawioPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
 import MermaidPlugin from '../plugins/MermaidPlugin'
 import CodePlugin from '../plugins/CodePlugin'
-import file from '@/lib/file'
-import env from '@/lib/env'
-import { encodeMarkdownLink } from '@/lib/utils'
+import file from '../useful/file'
+import env from '../useful/env'
+import { encodeMarkdownLink } from '../useful/utils'
 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
+import { useBus } from '../useful/bus'
+import { useToast } from '../useful/toast'
 HighlightLineNumber.addStyles()
 
 const markdown = Markdown({
   linkify: true,
   breaks: true,
   html: true,
-  highlight: (str, lang) => {
+  highlight: (str: string, lang: string) => {
     if (lang && Highlight.getLanguage(lang)) {
       try {
         return Highlight.highlight(lang, str).value
@@ -93,117 +96,82 @@ const markdown = Markdown({
   .use(LinkTargetPlugin)
   .use(Footnote)
   .use(DrawioPlugin)
-  .use(MultimdTable, { enableMultilineRows: true })
+  .use(MultimdTable, { multiline: true })
   .use(MarkdownItToc)
   .use(MarkdownItECharts)
   .use(MermaidPlugin)
   .use(CodePlugin)
 
-export default {
+export default defineComponent({
   name: 'xview',
-  data () {
-    return {
-      width: 1024,
-      height: 1024,
-      heads: [],
-      convert: {},
-      todoCount: 0,
-      todoDoneCount: 0,
-      scrollTop: 0,
+  setup (_, { emit }) {
+    const bus = useBus()
+    const store = useStore()
+    const toast = useToast()
+
+    const { currentContent, currentFile } = toRefs(store.state)
+    const fileRepo = computed(() => currentFile.value?.repo)
+    const fileName = computed(() => currentFile.value?.name)
+    const filePath = computed(() => currentFile.value?.path)
+
+    const refViewWrapper = ref<HTMLElement | null>(null)
+    const refView = ref<HTMLElement | null>(null)
+    const refConvertForm = ref<HTMLFormElement | null>(null)
+
+    const width = ref(1024)
+    const height = ref(1024)
+    const heads = ref<{
+      tag: string;
+      text: string;
+      level: number;
+      sourceLine: number;
+    }[]>([])
+    const convert = ref({ fileName: '', html: '', type: '' })
+    const todoCount = ref(0)
+    const todoDoneCount = ref(0)
+    const scrollTop = ref(0)
+
+    function resizeHandler () {
+      width.value = refViewWrapper.value!!.clientWidth
+      height.value = refViewWrapper.value!!.clientHeight
     }
-  },
-  mounted () {
-    this.updatePlantumlDebounce = _.debounce(() => {
-      this.updatePlantuml()
+
+    function updatePlantuml () {
+      const nodes = refView.value!!.querySelectorAll<HTMLImageElement>('img[data-plantuml-src]')
+      nodes.forEach(el => {
+        el.src = el.dataset.plantumlSrc || ''
+      })
+    }
+
+    function runAppletScript () {
+      const nodes = refView.value!!.querySelectorAll<HTMLElement>('.applet[data-code]')
+      nodes.forEach(AppletPlugin.runScript)
+    }
+
+    const updatePlantumlDebounce = loadsh.debounce(() => {
+      updatePlantuml()
     }, 3000, { leading: true })
 
-    this.runAppletScriptDebounce = _.debounce(() => {
-      this.runAppletScript()
+    const runAppletScriptDebounce = loadsh.debounce(() => {
+      runAppletScript()
     }, 1000, { leading: true })
 
-    this.render = _.debounce(() => {
-      // 编辑非 markdown 文件预览直接显示代码
-      const content = (this.filePath || '').endsWith('.md')
-        ? this.currentContent
-        : '```' + file.extname(this.fileName || '').replace(/^\./, '') + '\n' + this.currentContent + '```'
-      this.$refs.view.innerHTML = markdown.render(this.replaceRelativeLink(content))
-      this.runAppletScriptDebounce()
-      this.initDrawio()
-      this.updateOutline()
-      this.updateTodoCount()
-      this.updatePlantumlDebounce()
-      MarkdownItECharts.update()
-      MermaidPlugin.update()
-
-      for (let ele of document.querySelectorAll('code[class^="language-"]')) {
-        HighlightLineNumber.lineNumbersBlock(ele)
-      }
-
-      // 渲染完成后触发渲染完成事件
-      this.$nextTick(() => this.$bus.emit('preview-rendered'))
-    }, 500, { leading: true })
-
-    this.render()
-    setTimeout(() => {
-      this.updatePlantuml()
-    }, 100)
-
-    window.addEventListener('keydown', this.keydownHandler, true)
-    this.$bus.on('resize', this.resizeHandler)
-    this.resizeHandler()
-  },
-  beforeDestroy () {
-    window.removeEventListener('keydown', this.keydownHandler)
-    this.$bus.off('resize', this.resizeHandler)
-  },
-  methods: {
-    resizeHandler () {
-      this.width = this.$refs['view-wrapper'].clientWidth
-      this.height = this.$refs['view-wrapper'].clientHeight
-    },
-    async keydownHandler (e) {
-      // 转换所有外链图片到本地
-      if (e.key === 'l' && e.ctrlKey && e.altKey) {
-        e.preventDefault()
-        e.stopPropagation()
-        const result = []
-        const imgList = [...this.$refs.view.querySelectorAll('img')]
-        for (let i = 0; i < imgList.length; i++) {
-          this.$toast.show('info', `正在转换外链图片 ${i + 1}/${imgList.length}`)
-
-          const img = imgList[i]
-          const data = await this.transformImgOutLink(img)
-          if (data) {
-            result.push(data)
-          }
-        }
-        result.forEach(data => this.$bus.emit('editor-replace-value', data.oldLink, data.replacedLink))
-        this.$bus.emit('tree-refresh')
-      }
-    },
-    handleScroll (e) {
-      this.scrollTop = e.target.scrollTop
-    },
-    scrollToTop () {
-      this.$refs['view-wrapper'].scrollTo(0, 0)
-      this.syncScroll(1)
-    },
-    replaceRelativeLink (md) {
-      if (!this.fileRepo) {
+    function replaceRelativeLink (md: string) {
+      if (!fileRepo.value) {
         return md
       }
 
-      if (this.fileRepo === '__help__') {
-        return md.replace(/\[([^\]]*)\]\((\.\/[^)]*)\)/g, `[$1](api/help/file?path=$2)`)
-          .replace(/<img([^>]*)src=["']?(\.\/[^\s'"]*)["']?/ig, `<img$1src="api/help/file?path=$2"`)
+      if (fileRepo.value === '__help__') {
+        return md.replace(/\[([^\]]*)\]\((\.\/[^)]*)\)/g, '[$1](api/help/file?path=$2)')
+          .replace(/<img([^>]*)src=["']?(\.\/[^\s'"]*)["']?/ig, '<img$1src="api/help/file?path=$2"')
       }
 
-      if (!this.filePath) {
+      if (!filePath.value) {
         return md
       }
 
-      const basePath = file.dirname(this.filePath)
-      const repo = this.fileRepo
+      const basePath = file.dirname(filePath.value)
+      const repo = fileRepo.value
 
       return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\)/g, (match, alt, path) => {
         path = decodeURI(path) // 提前解码一次，有的链接已经预先编码
@@ -227,63 +195,79 @@ export default {
         const filePath = `${basePath}/${path}`
         return `<img${_}origin-src="${path}" src="api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}"`
       })
-    },
-    updatePlantuml () {
-      const nodes = this.$refs.view.querySelectorAll('img[data-plantuml-src]')
-      for (let ele of nodes) {
-        ele.src = ele.dataset['plantumlSrc']
-      }
-    },
-    runAppletScript () {
-      const nodes = this.$refs.view.querySelectorAll('.applet[data-code]')
-      for (const el of nodes) {
-        AppletPlugin.runScript(el)
-      }
-    },
-    initDrawio () {
-      if (!this.$refs.view) {
+    }
+
+    function initDrawio () {
+      if (!refView.value) {
         return
       }
 
-      const nodes = this.$refs.view.querySelectorAll('.drawio[data-file]')
-      for (const el of nodes) {
-        let originPath = el.dataset.file
-        if (originPath) {
-          originPath = decodeURI(originPath)
-          const filepath = originPath.startsWith('/') ? originPath : (file.dirname(this.filePath) + '/' + originPath.replace(/^.\//, ''))
-          DrawioPlugin.load(el, this.fileRepo, filepath)
+      const nodes = refView.value!!.querySelectorAll<HTMLIFrameElement>('.drawio[data-url]')
+      nodes.forEach(el => {
+        const url = el.dataset.url
+        if (url) {
+          DrawioPlugin.load(el, url)
         } else {
           DrawioPlugin.load(el)
         }
-      }
-    },
-    updateOutline () {
+      })
+    }
+
+    function updateOutline () {
       const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-      const nodes = this.$refs.view.querySelectorAll(tags.join(','))
-      this.heads = Array.from(nodes).map(node => {
+      const nodes = refView.value!!.querySelectorAll<HTMLHeadElement>(tags.join(','))
+      heads.value = Array.from(nodes).map(node => {
         return {
           tag: node.tagName.toLowerCase(),
           text: node.innerText,
           level: tags.indexOf(node.tagName.toLowerCase()),
-          sourceLine: parseInt(node.dataset['sourceLine'])
+          sourceLine: parseInt(node.dataset.sourceLine || '0')
         }
       })
-    },
-    updateTodoCount () {
-      this.todoCount = this.$refs.view.querySelectorAll('input[type=checkbox]').length
-      this.todoDoneCount = this.$refs.view.querySelectorAll('input[type=checkbox][checked]').length
-    },
-    async transformImgOutLink (img) {
-      const transform = ximg => {
+    }
+
+    function updateTodoCount () {
+      todoCount.value = refView.value!!.querySelectorAll('input[type=checkbox]').length
+      todoDoneCount.value = refView.value!!.querySelectorAll('input[type=checkbox][checked]').length
+    }
+
+    function hightCode () {
+      const nodes = refView.value!!.querySelectorAll<HTMLImageElement>('code[class^="language-"]')
+      nodes.forEach(el => {
+        HighlightLineNumber.lineNumbersBlock(el)
+      })
+    }
+
+    const render = loadsh.debounce(() => {
+      // 编辑非 markdown 文件预览直接显示代码
+      const content = (filePath.value || '').endsWith('.md')
+        ? currentContent.value
+        : '```' + file.extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '```'
+      refView.value!!.innerHTML = markdown.render(replaceRelativeLink(content))
+      runAppletScriptDebounce()
+      initDrawio()
+      updateOutline()
+      updateTodoCount()
+      updatePlantumlDebounce()
+      hightCode()
+      MarkdownItECharts.update()
+      MermaidPlugin.update()
+
+      // 渲染完成后触发渲染完成事件
+      nextTick(() => bus.emit('preview-rendered'))
+    }, 500, { leading: true })
+
+    async function transformImgOutLink (img: HTMLImageElement) {
+      const transform = (ximg: HTMLImageElement): Promise<string> => {
         const canvas = document.createElement('canvas')
         canvas.width = ximg.naturalWidth
         canvas.height = ximg.naturalHeight
-        canvas.getContext('2d').drawImage(ximg, 0, 0)
+        canvas.getContext('2d')!!.drawImage(ximg, 0, 0)
         return new Promise((resolve, reject) => {
           canvas.toBlob(async blob => {
             try {
-              const imgFile = new File([blob], 'file.png')
-              const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
+              const imgFile = new File([blob!!], 'file.png')
+              const { relativePath } = await file.upload(fileRepo.value, filePath.value, imgFile)
               resolve(relativePath)
             } catch (error) {
               reject(error)
@@ -292,14 +276,15 @@ export default {
         })
       }
 
-      let replacedLink = null
+      let replacedLink = ''
+      const imgAttrSrc = img.getAttribute('src') || ''
       if (img.src.startsWith('data:')) {
         replacedLink = await transform(img)
-      } else if (img.getAttribute('src').startsWith('http://') || img.getAttribute('src').startsWith('https://')) {
+      } else if (imgAttrSrc.startsWith('http://') || imgAttrSrc.startsWith('https://')) {
         const res = await window.fetch(`api/proxy?url=${encodeURIComponent(img.src)}&headers=${img.getAttribute('headers') || ''}`)
         const blob = await res.blob()
-        const imgFile = new File([blob], 'file.' + mime.extension(res.headers.get('content-type')))
-        const { relativePath } = await file.upload(this.fileRepo, this.filePath, imgFile)
+        const imgFile = new File([blob!!], 'file.' + mime.extension(res.headers.get('content-type')!!))
+        const { relativePath } = await file.upload(fileRepo.value, filePath.value, imgFile)
         replacedLink = relativePath
       }
 
@@ -308,16 +293,55 @@ export default {
       }
 
       return null
-    },
-    async handleClick (e) {
-      const target = e.target
+    }
+
+    async function keydownHandler (e: KeyboardEvent) {
+      // 转换所有外链图片到本地
+      if (e.key === 'l' && e.ctrlKey && e.altKey) {
+        e.preventDefault()
+        e.stopPropagation()
+        const result = []
+        const imgList = refView.value!!.querySelectorAll('img')
+        for (let i = 0; i < imgList.length; i++) {
+          toast.show('info', `正在转换外链图片 ${i + 1}/${imgList.length}`)
+
+          const img = imgList[i]
+          const data = await transformImgOutLink(img)
+          if (data) {
+            result.push(data)
+          }
+        }
+        result.forEach(data => bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink }))
+        bus.emit('tree-refresh')
+      }
+    }
+
+    function handleScroll (e: any) {
+      scrollTop.value = e.target.scrollTop
+    }
+
+    function syncScroll (line: number) {
+      emit('sync-scroll', line)
+    }
+
+    function switchTodo (line: number, checked: boolean) {
+      emit('switch-todo', line, checked)
+    }
+
+    function scrollToTop () {
+      refViewWrapper.value!!.scrollTo(0, 0)
+      syncScroll(1)
+    }
+
+    async function handleClick (e: MouseEvent) {
+      const target = e.target as HTMLElement
 
       const preventEvent = () => {
         e.preventDefault()
         e.stopPropagation()
       }
 
-      const handleLink = link => {
+      const handleLink = (link: HTMLAnchorElement) => {
         // 系统中打开附件
         if (link.classList.contains('open')) {
           fetch(link.href.replace('api/attachment', 'api/open'))
@@ -338,21 +362,21 @@ export default {
 
             let path = tmp[0]
             if (path.startsWith('.')) { // 将相对路径转换为绝对路径
-              path = file.dirname(this.filePath || '') + path.replace('.', '')
+              path = file.dirname(filePath.value || '') + path.replace('.', '')
             }
 
             // 打开文件
-            this.$store.commit('app/setCurrentFile', {
+            store.commit('setCurrentFile', {
               path,
               name: file.basename(path),
-              repo: this.fileRepo,
+              repo: fileRepo.value,
               type: 'file'
             })
 
             // 跳转锚点
             const hash = tmp.slice(1).join('#')
             if (hash) {
-              this.$bus.once('preview-rendered', () => {
+              bus.once('preview-rendered', () => {
                 const el = document.getElementById(hash) ||
                   document.getElementById(encodeURIComponent(hash))
 
@@ -368,32 +392,35 @@ export default {
 
             preventEvent()
           } else if (href && href.startsWith('#')) { // 处理 TOC 跳转
-            document.getElementById(href.replace(/^#/, '')).scrollIntoView()
+            const el = document.getElementById(href.replace(/^#/, ''))
+            if (el) {
+              el.scrollIntoView()
+            }
             preventEvent()
           }
         }
       }
 
       if (target.tagName === 'A') {
-        handleLink(target)
+        handleLink(target as HTMLAnchorElement)
       }
 
       // 复制标题链接
       if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && e.ctrlKey) {
-        this.$bus.emit('copy-text', encodeMarkdownLink(this.filePath) + '#' + encodeMarkdownLink(decodeURIComponent(target.id)))
+        bus.emit('copy-text', encodeMarkdownLink(filePath.value) + '#' + encodeMarkdownLink(decodeURIComponent(target.id)))
         return preventEvent()
       }
 
       if (target.tagName === 'IMG') {
-        const img = target
+        const img = target as HTMLImageElement
         if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地
-          const data = await this.transformImgOutLink(img)
+          const data = await transformImgOutLink(img)
           if (data) {
-            this.$bus.emit('tree-refresh')
-            this.$bus.emit('editor-replace-value', data.oldLink, data.replacedLink)
+            bus.emit('tree-refresh')
+            bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink })
           }
-        } else if (img.parentElement.tagName === 'A') {
-          handleLink(img.parentElement)
+        } else if (img.parentElement!!.tagName === 'A') {
+          handleLink(img.parentElement as HTMLAnchorElement)
         } else {
           env.openAlwaysOnTopWindow(img.src)
         }
@@ -402,40 +429,37 @@ export default {
         return
       }
 
-      if (target.tagName === 'INPUT' && target.parentElement.classList.contains('source-line')) {
-        this.switchTodo(parseInt(target.parentElement.dataset['sourceLine']), target.checked)
+      if (target.tagName === 'INPUT' && target.parentElement!!.classList.contains('source-line')) {
+        switchTodo(parseInt(target.parentElement!!.dataset.sourceLine || '0'), (target as HTMLInputElement).checked)
         e.preventDefault()
         e.stopPropagation()
         return
       }
 
-      if (target.classList.contains('source-line') && window.getSelection().toString().length < 1) {
-        this.syncScroll(parseInt(target.dataset['sourceLine']))
+      if (target.classList.contains('source-line') && window.getSelection()!!.toString().length < 1) {
+        syncScroll(parseInt(target.dataset.sourceLine || '0'))
         e.stopPropagation()
         e.preventDefault()
       }
-    },
-    syncScroll (line) {
-      this.$emit('sync-scroll', line)
-    },
-    switchTodo (line, checked) {
-      this.$emit('switch-todo', line, checked)
-    },
-    revealLine (line) {
+    }
+
+    function revealLine (line: number) {
       if (line <= 1) {
-        this.$refs['view-wrapper'].scrollTo(0, 0)
+        refViewWrapper.value!!.scrollTo(0, 0)
         return
       }
 
-      const nodes = this.$refs['view-wrapper'].querySelectorAll('.view .source-line')
-      for (let ele of nodes) {
-        if (parseInt(ele.dataset['sourceLine']) >= line) {
-          ele.scrollIntoView()
+      const nodes = refViewWrapper.value!!.querySelectorAll<HTMLElement>('.view .source-line')
+      for (let i = 0; i < nodes.length; i++) {
+        const el = nodes[i]
+        if (parseInt(el.dataset.sourceLine || '0') >= line) {
+          el.scrollIntoView()
           break
         }
       }
-    },
-    convertFile (type) {
+    }
+
+    function convertFile (type: string) {
       MarkdownItECharts.preparePrint()
 
       let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
@@ -445,43 +469,64 @@ export default {
         baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
       }
 
-      this.convert = {
-        fileName: (this.fileName || '未命名') + `.${type}`,
-        html: this.$refs.view.outerHTML.replace(/src="api/g, `src="${baseUrl}api`),
+      convert.value = {
+        fileName: (fileName.value || '未命名') + `.${type}`,
+        html: refView.value!!.outerHTML.replace(/src="api/g, `src="${baseUrl}api`),
         type
       }
       MarkdownItECharts.update()
       setTimeout(() => {
-        this.$refs.convertForm.submit()
+        refConvertForm.value!!.submit()
       }, 300)
-    },
-    print () {
+    }
+
+    function print () {
       window.print()
     }
-  },
-  computed: {
-    ...mapState('app', ['currentContent', 'currentFile']),
-    fileRepo () {
-      return this.currentFile && this.currentFile.repo
-    },
-    fileName () {
-      return this.currentFile && this.currentFile.name
-    },
-    filePath () {
-      return this.currentFile && this.currentFile.path
-    },
-  },
-  watch: {
-    currentContent () {
-      this.render()
-    },
-    filePath () {
+
+    onMounted(() => {
+      render()
       setTimeout(() => {
-        this.updatePlantuml()
+        updatePlantuml()
       }, 100)
+
+      window.addEventListener('keydown', keydownHandler, true)
+      bus.on('resize', resizeHandler)
+      resizeHandler()
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('keydown', keydownHandler)
+      bus.off('resize', resizeHandler)
+    })
+
+    watch(currentContent, render)
+    watch(filePath, () => {
+      setTimeout(() => {
+        updatePlantuml()
+      }, 100)
+    })
+
+    return {
+      refViewWrapper,
+      refView,
+      width,
+      height,
+      heads,
+      convert,
+      todoCount,
+      todoDoneCount,
+      scrollTop,
+      print,
+      convertFile,
+      handleScroll,
+      scrollToTop,
+      handleClick,
+      revealLine,
+      syncScroll,
     }
-  }
-}
+  },
+})
 </script>
 
 <style scoped>
@@ -495,42 +540,42 @@ export default {
     margin-top: 1em;
   }
 
-  .markdown-body /deep/ a {
+  .markdown-body ::v-deep(a) {
     color: #4c93e2;
   }
 
-  .markdown-body /deep/ tr {
+  .markdown-body ::v-deep(tr) {
     background: inherit;
   }
 
-  .markdown-body /deep/ * {
+  .markdown-body ::v-deep(*) {
     border-color: #8b8d90;
     background: inherit;
   }
 
-  .markdown-body /deep/ code {
+  .markdown-body ::v-deep(code) {
     background: #464648;
   }
 
-  .markdown-body /deep/ table tr:nth-child(2n),
-  .markdown-body /deep/ pre,
-  .markdown-body /deep/ pre > code
+  .markdown-body ::v-deep(table tr:nth-child(2n)),
+  .markdown-body ::v-deep(pre),
+  .markdown-body ::v-deep(pre > code)
   {
     background: #303133;
   }
 
-  .markdown-body /deep/ div.mermaid,
-  .markdown-body /deep/ div.drawio-wrapper,
-  .markdown-body /deep/ input,
-  .markdown-body /deep/ img
+  .markdown-body ::v-deep(div.mermaid),
+  .markdown-body ::v-deep(div.drawio-wrapper),
+  .markdown-body ::v-deep(input),
+  .markdown-body ::v-deep(img)
   {
     transition: all .3s ease-in-out;
     filter: brightness(70%);
   }
 
-  .markdown-body /deep/ div.mermaid:hover,
-  .markdown-body /deep/ div.drawio-wrapper:hover,
-  .markdown-body /deep/ img:hover
+  .markdown-body ::v-deep(div.mermaid:hover),
+  .markdown-body ::v-deep(div.drawio-wrapper:hover),
+  .markdown-body ::v-deep(img:hover)
   {
     filter: none;
   }
@@ -669,17 +714,17 @@ button:hover {
   right: -60px;
 }
 
-.markdown-body /deep/ table.hljs-ln tbody {
+.markdown-body ::v-deep(table.hljs-ln tbody) {
   display: table;
   min-width: 100%;
 }
 
-.markdown-body /deep/ fieldset {
+.markdown-body ::v-deep(fieldset) {
   border-style: solid;
   margin: 20px 0;
 }
 
-.markdown-body /deep/ legend {
+.markdown-body ::v-deep(legend) {
   padding: 0 .2em;
 }
 

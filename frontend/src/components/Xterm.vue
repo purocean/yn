@@ -1,35 +1,45 @@
 <template>
   <div class="xterm">
-    <div ref="xterm" style="height: 100%"></div>
+    <div ref="refXterm" style="height: 100%"></div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import io from 'socket.io-client'
+import { defineComponent, nextTick, onBeforeMount, onBeforeUnmount, ref } from 'vue'
+import { useStore } from 'vuex'
 import { Terminal } from 'xterm'
-import * as fit from 'xterm/lib/addons/fit/fit'
-import 'xterm/src/xterm.css'
+import { FitAddon } from 'xterm-addon-fit'
+import { useBus } from '../useful/bus'
 
-Terminal.applyAddon(fit)
-
-let xterm = null
-let socket = null
-
-export default {
+export default defineComponent({
   name: 'xterm',
-  created () {
-    window.runInXterm = this.runInXterm
-    this.$bus.on('xterm-run', this.handleRunInXterm)
-    this.$bus.on('xterm-init', this.init)
-  },
-  beforeDestroy () {
-    window.runInXterm = null
-    this.$bus.off('xterm-init', this.init)
-    this.$bus.off('xterm-run', this.handleRunInXterm)
-    this.$bus.off('resize', this.handleRunInXterm)
-  },
-  methods: {
-    init () {
+  setup () {
+    const bus = useBus()
+    const store = useStore()
+
+    const refXterm = ref<HTMLElement | null>(null)
+
+    let xterm: Terminal | null = null
+    let socket: SocketIOClient.Socket | null = null
+
+    const fitAddon = new FitAddon()
+
+    function fitXterm () {
+      if (store.state.showXterm) {
+        fitAddon.fit()
+      }
+    }
+
+    function input (data: string) {
+      socket!!.emit('input', data)
+    }
+
+    function focus () {
+      xterm!!.focus()
+    }
+
+    function init () {
       if (!xterm) {
         xterm = new Terminal({
           cols: 80,
@@ -43,20 +53,22 @@ export default {
           }
         })
 
-        xterm.open(this.$refs.xterm)
-        xterm.fit()
-        this.$bus.on('resize', this.fitXterm)
+        xterm.loadAddon(fitAddon)
+
+        xterm.open(refXterm.value!!)
+        fitAddon.fit()
+        bus.on('resize', fitXterm)
       }
 
       if (!socket) {
         socket = io({ path: '/ws' })
 
-        xterm.on('resize', size => socket.emit('resize', [size.cols, size.rows]))
-        xterm.on('data', data => this.input(data))
-        socket.on('output', arrayBuffer => xterm.write(arrayBuffer))
+        xterm.onResize(size => socket!!.emit('resize', [size.cols, size.rows]))
+        xterm.onData(input)
+        socket.on('output', (arrayBuffer: any) => xterm!!.write(arrayBuffer))
         socket.on('disconnect', () => {
-          xterm.clear()
-          this.$bus.emit('toggle-xterm', false)
+          xterm!!.clear()
+          bus.emit('toggle-xterm', false)
         })
       }
 
@@ -64,26 +76,15 @@ export default {
         socket.connect()
       }
 
-      this.focus()
-    },
-    fitXterm () {
-      xterm.fit()
-    },
-    input (data) {
-      socket.emit('input', data)
-    },
-    focus () {
-      xterm.focus()
-    },
-    handleRunInXterm (code) {
-      this.runInXterm(null, code, false)
-    },
-    runInXterm (language, code, exit = true) {
-      this.$bus.emit('toggle-xterm', true)
-      this.$nextTick(() => {
-        this.init()
+      focus()
+    }
 
-        const map = {
+    function runInXterm (language: string, code: string, exit = true) {
+      bus.emit('toggle-xterm', true)
+      nextTick(() => {
+        init()
+
+        const map: {[key: string]: {start: string; exit: string; eol: string}} = {
           bat: { start: 'cmd.exe', exit: 'exit', eol: '\r\n' },
           bash: { start: 'bash', exit: 'exit', eol: '\n' },
           php: { start: 'php -a', exit: 'exit', eol: '\n' },
@@ -92,38 +93,60 @@ export default {
           js: { start: 'node', exit: '.exit', eol: '\n' }
         }
 
-        const run = (code, eol) => {
-          code.split('\n').forEach((x, i) => {
-            this.input(x.trim())
-            this.input(eol)
+        const run = (code: string, eol: string) => {
+          code.split('\n').forEach(x => {
+            input(x.trim())
+            input(eol)
           })
         }
 
-        if (!language) {
+        if (!language || language === '_') {
           run(code, '\n')
         } else if (map[language]) {
-          this.input(map[language].start)
-          this.input(map[language].eol)
+          input(map[language].start)
+          input(map[language].eol)
 
           // 延迟一下等待子进程启动
           setTimeout(() => {
             run(code, map[language].eol)
 
             if (exit) {
-              this.input(map[language].exit)
-              this.input(map[language].eol)
+              input(map[language].exit)
+              input(map[language].eol)
             }
           }, 400)
         } else {
-          xterm.write(`不支持 ${language} 语言\n`)
+          xterm!!.write(`不支持 ${language} 语言\n`)
         }
       })
     }
-  }
-}
+
+    function handleRunInXterm (code?: string) {
+      runInXterm('_', code || '', false)
+    }
+
+    onBeforeMount(() => {
+      (window as any).runInXterm = runInXterm
+      bus.on('xterm-run', handleRunInXterm)
+      bus.on('xterm-init', init)
+    })
+
+    onBeforeUnmount(() => {
+      (window as any).runInXterm = null
+      bus.off('xterm-init', init)
+      bus.off('xterm-run', handleRunInXterm)
+    })
+
+    return {
+      refXterm,
+    }
+  },
+})
 </script>
 
 <style scoped>
+@import url('~xterm/css/xterm.css');
+
 .xterm {
   box-sizing: border-box;
   padding: 5px;

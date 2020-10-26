@@ -1,5 +1,5 @@
 <template>
-  <aside class="side" @contextmenu.exact.prevent="showContextMenu" @dblclick="refresh();refreshRepo()" title="双击此处刷新目录树">
+  <aside class="side" @contextmenu.exact.prevent="showContextMenu" @dblclick="refreshRepo" title="双击此处刷新目录树">
     <div class="loading" v-if="tree === null"> 加载中 </div>
     <template v-else>
       <TreeNode v-for="item in tree" :item="item" :key="item.path" />
@@ -7,65 +7,72 @@
   </aside>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import TreeNode from './TreeNode'
+<script lang="ts">
+import { defineComponent, onBeforeMount, onBeforeUnmount, toRefs, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useBus } from '../useful/bus'
+import { useContextMenu } from '../useful/context-menu'
+import TreeNode from './TreeNode.vue'
 
-export default {
+export default defineComponent({
   name: 'tree',
   components: { TreeNode },
-  data () {
-    return {
+  setup () {
+    const bus = useBus()
+    const store = useStore()
+    const contextMenu = useContextMenu()
+
+    const { currentRepo, tree } = toRefs(store.state)
+
+    function refreshTree () {
+      store.dispatch('fetchTree', currentRepo.value)
     }
-  },
-  created () {
-    this.$bus.on('file-created', this.refresh)
-    this.$bus.on('file-moved', this.refresh)
-    this.$bus.on('file-deleted', this.refresh)
-    this.$bus.on('file-uploaded', this.refresh)
-    this.$bus.on('file-marked', this.refresh)
-    this.$bus.on('file-unmarked', this.refresh)
-    this.$bus.on('tree-refresh', this.refresh)
-    this.refresh()
-  },
-  beforeDestroy () {
-    this.$bus.off('file-created', this.refresh)
-    this.$bus.off('file-moved', this.refresh)
-    this.$bus.off('file-deleted', this.refresh)
-    this.$bus.off('file-uploaded', this.refresh)
-    this.$bus.off('file-marked', this.refresh)
-    this.$bus.off('file-unmarked', this.refresh)
-    this.$bus.off('tree-refresh', this.refresh)
-  },
-  methods: {
-    showContextMenu () {
-      this.$contextMenu.show([
+
+    function refreshRepo () {
+      refreshTree()
+      store.dispatch('fetchRepositories')
+    }
+
+    function showContextMenu () {
+      contextMenu.show([
         {
           id: 'refresh',
           label: '刷新目录树',
-          onClick: () => {
-            this.refresh()
-            this.refreshRepo()
-          }
+          onClick: refreshRepo
         }
       ])
-    },
-    refresh () {
-      this.$store.dispatch('app/fetchTree', this.currentRepo)
-    },
-    refreshRepo () {
-      this.$store.dispatch('app/fetchRepositories')
+    }
+
+    onBeforeMount(() => {
+      bus.on('file-created', refreshTree)
+      bus.on('file-moved', refreshTree)
+      bus.on('file-deleted', refreshTree)
+      bus.on('file-uploaded', refreshTree)
+      bus.on('file-marked', refreshTree)
+      bus.on('file-unmarked', refreshTree)
+      bus.on('tree-refresh', refreshTree)
+      refreshTree()
+    })
+
+    onBeforeUnmount(() => {
+      bus.off('file-created', refreshTree)
+      bus.off('file-moved', refreshTree)
+      bus.off('file-deleted', refreshTree)
+      bus.off('file-uploaded', refreshTree)
+      bus.off('file-marked', refreshTree)
+      bus.off('file-unmarked', refreshTree)
+      bus.off('tree-refresh', refreshTree)
+    })
+
+    watch(currentRepo, refreshTree)
+
+    return {
+      tree,
+      refreshRepo,
+      showContextMenu,
     }
   },
-  watch: {
-    currentRepo () {
-      this.refresh()
-    }
-  },
-  computed: {
-    ...mapState('app', ['currentRepo', 'tree']),
-  }
-}
+})
 </script>
 
 <style scoped>

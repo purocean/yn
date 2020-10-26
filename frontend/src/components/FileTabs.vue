@@ -2,108 +2,110 @@
   <Tabs :list="tabs" :value="current" @remove="removeTabs" @switch="switchTab" @change-list="setTabs"></Tabs>
 </template>
 
-<script>
-import { mapState } from 'vuex'
-import Tabs from './Tabs'
-import File from '@/lib/file'
+<script lang="ts">
+import { useStore } from 'vuex'
+import Tabs from './Tabs.vue'
+import File from '../useful/file'
+import { defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
+import { Components } from '../types'
 
 const blankUri = File.toUri(null)
 
-export default {
+export default defineComponent({
   name: 'file-tabs',
   components: { Tabs },
-  data () {
-    return {
-      list: [],
-      current: blankUri
-    }
-  },
-  created () {
-    window.addEventListener('keydown', this.keydownHandler, true)
-  },
-  beforeDestroy () {
-    window.removeEventListener('keydown', this.keydownHandler)
-  },
-  methods: {
-    keydownHandler (e) {
-      const findTab = offset => {
-        const tabs = [...this.tabs]
+  setup () {
+    const store = useStore()
 
-        if (tabs.length < 1) {
+    const { currentFile, tabs } = toRefs(store.state)
+    const list = ref<Components.FileTabs.Item[]>([])
+    const current = ref(blankUri)
+
+    function setTabs (list: Components.FileTabs.Item[]) {
+      store.commit('setTabs', list)
+    }
+
+    function switchFile (file: any) {
+      store.commit('setCurrentFile', file)
+    }
+
+    function switchTab (item: Components.FileTabs.Item) {
+      switchFile(item.payload.file)
+    }
+
+    function removeTabs (items: Components.FileTabs.Item[]) {
+      const keys = items.map(x => x.key)
+      setTabs(tabs.value.filter((x: any) => keys.indexOf(x.key) === -1))
+    }
+
+    function addTab (item: Components.FileTabs.Item) {
+      const tab = tabs.value.find((x: any) => item.key === x.key)
+
+      // 没有打开此 Tab，新建一个
+      if (!tab) {
+        setTabs(tabs.value.concat([item]))
+      }
+
+      current.value = item.key
+    }
+
+    function keydownHandler (e: KeyboardEvent) {
+      const findTab = (offset: number) => {
+        const list = [...tabs.value]
+
+        if (list.length < 1) {
           return null
         }
 
-        const currentIndex = tabs.findIndex(x => x.key === this.current)
+        const currentIndex = list.findIndex(x => x.key === current.value)
         let index = currentIndex + offset
 
         if (index < 0) {
-          index = tabs.length - 1
+          index = list.length - 1
         }
 
-        if (index >= tabs.length) {
+        if (index >= list.length) {
           index = 0
         }
 
-        return tabs[index]
+        return list[index]
       }
 
       // 快捷键切换最近文档
       if (e.altKey && e.ctrlKey) {
         if (e.key === 'ArrowLeft') {
           const prev = findTab(-1)
-          prev && this.switchTab(prev)
+          prev && switchTab(prev)
         } else if (e.key === 'ArrowRight') {
           const next = findTab(1)
-          next && this.switchTab(next)
+          next && switchTab(next)
         }
       }
-    },
-    setTabs (list) {
-      this.$store.commit('app/setTabs', list)
-    },
-    switchTab (item) {
-      this.switchFile(item.payload.file)
-    },
-    removeTabs (items) {
-      const keys = items.map(x => x.key)
-      const tabs = this.tabs.filter(x => keys.indexOf(x.key) === -1)
-      this.setTabs(tabs)
-    },
-    addTab (item) {
-      const tab = this.tabs.find(x => item.key === x.key)
-
-      // 没有打开此 Tab，新建一个
-      if (!tab) {
-        this.setTabs(this.tabs.concat([item]))
-      }
-
-      this.current = item.key
-    },
-    switchFile (file) {
-      this.$store.commit('app/setCurrentFile', file)
     }
-  },
-  computed: {
-    ...mapState('app', ['currentFile', 'tabs'])
-  },
-  watch: {
-    currentFile: {
-      immediate: true,
-      handler (file) {
-        const uri = File.toUri(file)
-        const item = {
-          key: uri,
-          label: file ? file.name : '空白页',
-          description: file ? file.path : '空白页',
-          payload: { file },
-        }
 
-        this.addTab(item)
+    onBeforeMount(() => {
+      window.addEventListener('keydown', keydownHandler, true)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('keydown', keydownHandler)
+    })
+
+    watch(currentFile, file => {
+      const uri = File.toUri(file)
+      const item = {
+        key: uri,
+        label: file ? file.name : '空白页',
+        description: file ? file.path : '空白页',
+        payload: { file },
       }
-    },
-    tabs (list) {
+
+      addTab(item)
+    }, { immediate: true })
+
+    watch(tabs, list => {
       if (list.length < 1) {
-        this.addTab({
+        addTab({
           key: blankUri,
           label: '空白页',
           description: '空白页',
@@ -111,12 +113,21 @@ export default {
         })
       }
 
-      const tab = list.find(x => x.key === this.current)
+      const tab = list.find((x: any) => x.key === current.value)
       if (!tab) {
         const currentFile = list.length > 0 ? list[list.length - 1].payload.file : null
-        this.switchFile(currentFile)
+        switchFile(currentFile)
       }
+    })
+
+    return {
+      list,
+      current,
+      tabs,
+      removeTabs,
+      switchTab,
+      setTabs,
     }
-  }
-}
+  },
+})
 </script>

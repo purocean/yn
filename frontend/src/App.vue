@@ -1,22 +1,10 @@
 <template>
-  <div id="app">
-    <router-view/>
-  </div>
+  <router-view />
 </template>
 
-<script>
-import 'normalize.css/normalize.css'
-import Vue from 'vue'
-import VueBus from 'vue-bus'
+<style lang="scss">
+@import url('~normalize.css/normalize.css');
 
-Vue.use(VueBus)
-
-export default {
-  name: 'App'
-}
-</script>
-
-<style>
 * {
   outline: none;
 }

@@ -6,8 +6,10 @@
   </transition>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, onBeforeUnmount, onMounted } from 'vue'
+
+export default defineComponent({
   name: 'x-mask',
   props: {
     show: Boolean,
@@ -20,22 +22,24 @@ export default {
       default: true,
     },
   },
-  mounted () {
-    window.addEventListener('keydown', this.keydownHandler, true)
-  },
-  beforeDestroy () {
-    window.removeEventListener('keydown', this.keydownHandler)
-  },
-  methods: {
-    keydownHandler (e) {
-      if (e.key === 'Escape' && this.show) {
-        this.escClooseable && this.$emit('close')
-      } else if (e.key === 'Enter' && this.show) {
-        this.$emit('enter')
+  setup (props, { emit }) {
+    function keydownHandler (e: KeyboardEvent) {
+      if (e.key === 'Escape' && props.show) {
+        props.escClooseable && emit('close')
+      } else if (e.key === 'Enter' && props.show) {
+        emit('key-enter')
       }
-    },
+    }
+
+    onMounted(() => {
+      window.addEventListener('keydown', keydownHandler, true)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('keydown', keydownHandler)
+    })
   },
-}
+})
 </script>
 
 <style scoped>
