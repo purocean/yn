@@ -1,5 +1,7 @@
 # Yank Note
-> 一款面向程序员的 Markdown 笔记应用 ![CI](https://github.com/purocean/yn/workflows/CI/badge.svg)
+> 一款面向程序员的 Markdown 笔记应用 
+
+![Release](https://github.com/purocean/yn/workflows/Release/badge.svg)
 
 [toc]{level: [2]}
 
