@@ -1,6 +1,4 @@
-# This is a basic workflow to help you get started with Actions
-
-name: CI
+name: Release
 
 on:
   push:
@@ -18,15 +16,14 @@ jobs:
         uses: actions/setup-node@v2.1.2
         with:
           node-version: 12.x
-      
+
       - name: Install
         run: |
-          npm install -g yarn
           ./win-install.bat
           cd frontend
           yarn
           cd ..
-          
+
       - name: Build
         run: |
           cd frontend
@@ -36,8 +33,9 @@ jobs:
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
             out/Yank-Note*.*
             out/latest*.yml
-
