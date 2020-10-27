@@ -366,7 +366,7 @@ export default defineComponent({
   padding-left: .3em;
 }
 
-.result li span.path ::v-deep b {
+.result li span.path ::v-deep(b) {
   color: #ababab;
   font-weight: bold;
 }
