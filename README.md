@@ -1,5 +1,5 @@
 # Yank Note
-> 一款面向程序员的 Markdown 笔记应用 
+> 一款面向程序员的 Markdown 笔记应用
 
 [![Release](https://github.com/purocean/yn/workflows/Release/badge.svg)](https://github.com/purocean/yn/releases)
 
@@ -145,13 +145,16 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.4.1](https://github.com/purocean/yn/releases/tag/v2.4.1) 2020-10-27
+1. 在 Electron 环境中开启缩放页面功能
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v2.4.0](https://github.com/purocean/yn/releases/tag/v2.4.0) 2020-10-26
 1. Vue 框架升级到 3.0
 2. 升级 Electron 版本
 3. 升级前端依赖，更好的支持 Mermaid 图形
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v2.3.8](https://github.com/purocean/yn/releases/tag/v2.3.8) 2020-09-01
 1. 增加开机自动启动功能
