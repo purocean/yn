@@ -83,8 +83,6 @@ export default defineComponent({
           select: true
         })
 
-        console.log('filename', filename)
-
         if (!filename) {
           return
         }

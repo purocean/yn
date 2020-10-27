@@ -3,9 +3,10 @@ import mitt, { Emitter, EventType, Handler, WildcardHandler } from 'mitt'
 
 const emitter = mitt()
 
-emitter.on('*', (type, payload) => {
-  console.log('debug bus >', type, payload)
-})
+// debug
+// emitter.on('*', (type, payload) => {
+//   console.log('debug bus >', type, payload)
+// })
 
 interface XEmitter extends Emitter {
   once<T = any>(type: EventType, handler: Handler<T>): void;
