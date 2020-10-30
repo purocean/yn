@@ -259,5 +259,13 @@ export default defineComponent({
   .layout {
     height: auto;
   }
+
+  .right {
+    display: block;
+  }
+
+  .content {
+    height: initial;
+  }
 }
 </style>
