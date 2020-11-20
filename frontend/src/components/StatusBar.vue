@@ -15,23 +15,26 @@
       <div class="action" @click="toggleXterm" title="Alt + o">切换终端</div>
       <div class="action" @click="toggleReadme" title="Alt + h">README</div>
       <div class="action" @click="toggleFeature">特色功能说明</div>
+      <div class="action" @click="toggleRender">{{autoPreview ? '同步渲染-已开启' : '同步渲染-已关闭'}}</div>
+      <svg-icon v-if="!autoPreview" class="action action-icon" name="sync-alt-solid" @click="rerenderView" title="强制重新渲染" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted, toRef } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, toRefs } from 'vue'
 import { useStore } from 'vuex'
 import { useBus } from '../useful/bus'
 import RepositorySwitch from './RepositorySwitch.vue'
+import SvgIcon from '../components/SvgIcon.vue'
 
 export default defineComponent({
   name: 'status-bar',
-  components: { RepositorySwitch },
+  components: { RepositorySwitch, SvgIcon },
   setup () {
     const bus = useBus()
     const store = useStore()
-    const documentInfo = toRef(store.state, 'documentInfo')
+    const { documentInfo, autoPreview } = toRefs(store.state)
 
     function toggleSide () {
       bus.emit('toggle-side')
@@ -55,6 +58,14 @@ export default defineComponent({
 
     function toggleWrap () {
       bus.emit('editor-toggle-wrap')
+    }
+
+    function toggleRender () {
+      store.commit('setAutoPreview', !autoPreview.value)
+    }
+
+    function rerenderView () {
+      bus.emit('view-rerender')
     }
 
     function keydownHandler (e: KeyboardEvent) {
@@ -99,12 +110,15 @@ export default defineComponent({
 
     return {
       documentInfo,
+      autoPreview,
       toggleSide,
       toggleWrap,
       toggleView,
       toggleXterm,
       toggleReadme,
       toggleFeature,
+      toggleRender,
+      rerenderView,
     }
   },
 })
@@ -148,6 +162,11 @@ export default defineComponent({
   cursor: pointer;
   user-select: none;
   flex: none;
+}
+
+.action-icon {
+  width: 10px;
+  height: 20px;
 }
 
 .action:hover {

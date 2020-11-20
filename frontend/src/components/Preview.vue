@@ -109,7 +109,7 @@ export default defineComponent({
     const store = useStore()
     const toast = useToast()
 
-    const { currentContent, currentFile } = toRefs(store.state)
+    const { currentContent, currentFile, autoPreview } = toRefs(store.state)
     const fileRepo = computed(() => currentFile.value?.repo)
     const fileName = computed(() => currentFile.value?.name)
     const filePath = computed(() => currentFile.value?.path)
@@ -492,16 +492,20 @@ export default defineComponent({
 
       window.addEventListener('keydown', keydownHandler, true)
       bus.on('resize', resizeHandler)
+      bus.on('view-rerender', render)
       resizeHandler()
     })
 
     onBeforeUnmount(() => {
       window.removeEventListener('keydown', keydownHandler)
       bus.off('resize', resizeHandler)
+      bus.off('view-rerender', render)
     })
 
-    watch(currentContent, render)
+    watch(currentContent, () => autoPreview.value && render())
     watch(filePath, () => {
+      // 切换文件后，开启自动预览
+      store.commit('setAutoPreview', true)
       setTimeout(() => {
         updatePlantuml()
       }, 100)
