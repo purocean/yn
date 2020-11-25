@@ -809,6 +809,23 @@ button:hover {
   .view img {
     background-color: #fff !important;
   }
+
+  table tbody {
+    counter-reset: tr-number;
+  }
+
+  table tbody tr:hover {
+    outline: 2px #b3833b dashed;
+  }
+
+  table:hover tbody tr td:first-child:before {
+    counter-increment: tr-number;
+    content: counter(tr-number);
+    position: absolute;
+    right: 100%;
+    padding-right: 5px;
+    color: #999;
+  }
 }
 
 @media print {
