@@ -145,12 +145,15 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.4.2](https://github.com/purocean/yn/releases/tag/v2.4.2) 2020-11-20
-1. 新增同步渲染按钮
-2. 调整打印样式
+### [v2.4.3](https://github.com/purocean/yn/releases/tag/v2.4.3) 2020-11-25
+1. 表格新增悬停样式：行号，突出当前行
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.4.2](https://github.com/purocean/yn/releases/tag/v2.4.2) 2020-11-20
+1. 新增同步渲染按钮
+2. 调整打印样式
 
 ### [v2.4.1](https://github.com/purocean/yn/releases/tag/v2.4.1) 2020-10-27
 1. 在 Electron 环境中开启缩放页面功能
