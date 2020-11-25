@@ -3,7 +3,7 @@
 ## TOC 生成
 需要生成目录的地方写入 `[toc]{type: "ul", level: [1,2,3]}`
 可以控制目录样式 `ul` 或 `ol` 和级别
-[toc]{type: "ul", level: [1,2,3]}
+[toc]{type: "ol", level: [2,3]}
 
 ## 系统配置
 1. 用户数据目录存放在 `<home>/yank-note` 下面

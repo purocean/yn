@@ -771,6 +771,26 @@ button:hover {
   border-bottom: 1px solid;
 }
 
+.view .markdown-body .table-of-contents ol {
+  counter-reset: ol-number;
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.view .markdown-body .table-of-contents li > ol {
+  padding-left: 2em;
+}
+
+.view .markdown-body .table-of-contents ol > li::before {
+  counter-increment: ol-number;
+  content: counters(ol-number, ".") " ";
+}
+
+.view .markdown-body .table-of-contents > ol > li::before {
+  counter-increment: ol-number;
+  content: counter(ol-number) ". ";
+}
+
 .view img {
   display: block;
   margin-left: auto;
