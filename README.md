@@ -52,6 +52,7 @@
 + HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + M + V` 粘贴复制 HTML 为 Markdown
 + docx 导出：后端使用 pandoc 做转换器
 + TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
++ 编辑表格单元格：`Ctrl + 单击单元格` 快捷编辑表格单元格
 + 复制标题链接：`Ctrl + 单击标题` 复制标题链接路径到剪切板，便于插入到其他文件
 + 嵌入小工具：文档支持内嵌 HTML 小工具，示例见 FEATURE.md
 + 嵌入 Plantuml 图形：需要安装 Java，graphviz ，示例见 FEATURE.md
@@ -145,11 +146,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.4.5](https://github.com/purocean/yn/releases/tag/v2.4.5) 2020-11-26
-1. 移除代码表格的悬停样式
+### [v2.4.6](https://github.com/purocean/yn/releases/tag/v2.4.6) 2020-11-26
+1. 增加编辑单元格内容功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.4.5](https://github.com/purocean/yn/releases/tag/v2.4.5) 2020-11-26
+1. 移除代码表格的悬停样式
 
 ### [v2.4.4](https://github.com/purocean/yn/releases/tag/v2.4.4) 2020-11-25
 1. 更改 TOC 标号样式

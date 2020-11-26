@@ -200,12 +200,16 @@ export default defineComponent({
       getEditor().setScrollTop(top)
     }
 
+    function getLineContent (line: number) {
+      return getEditor().getModel()!!.getLineContent(line)
+    }
+
     function switchTodo (line: number, checked: boolean) {
       if (checked) {
-        const value = getEditor().getModel()!!.getLineContent(line).replace('[ ]', `[x] ~~${dayjs().format('YYYY-MM-DD HH:mm')}~~`)
+        const value = getLineContent(line).replace('[ ]', `[x] ~~${dayjs().format('YYYY-MM-DD HH:mm')}~~`)
         replaceLine(line, value)
       } else {
-        const value = getEditor().getModel()!!.getLineContent(line).replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
+        const value = getLineContent(line).replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
         replaceLine(line, value)
       }
     }
@@ -321,9 +325,11 @@ export default defineComponent({
       setScrollToTop,
       switchTodo,
       replaceValue,
+      replaceLine,
       toggleWrap,
       setModel,
       insert,
+      getLineContent,
     }
   }
 })

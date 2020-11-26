@@ -436,6 +436,12 @@ export default defineComponent({
         return
       }
 
+      if (target.tagName === 'TD' && target.classList.contains('yank-td') && e.ctrlKey) {
+        const start = parseInt(target.dataset.sourceLine || '0')
+        const end = parseInt(target.dataset.sourceLineEnd || '0')
+        bus.emit('editor-edit-table-cell', { start, end, cellIndex: (target as HTMLTableDataCellElement).cellIndex })
+      }
+
       if (target.classList.contains('source-line') && window.getSelection()!!.toString().length < 1) {
         syncScroll(parseInt(target.dataset.sourceLine || '0'))
         e.stopPropagation()

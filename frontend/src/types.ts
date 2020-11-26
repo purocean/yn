@@ -8,6 +8,7 @@ export namespace Components {
       content?: string;
       value?: string;
       hint?: string;
+      modalWidth?: string,
       select?: boolean | [number, number, 'forward' | 'backward' | 'none'];
     }
   }
