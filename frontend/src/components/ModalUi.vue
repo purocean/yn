@@ -1,9 +1,12 @@
 <template>
-  <XMask :show="show" @close="cancel" @key-enter="ok" :mask-closeable="false" esc-closeable>
-    <div class="wrapper" @click.stop>
+  <XMask :show="show" @close="cancel" @key-enter="inputType !== 'textarea' && ok()" :mask-closeable="false" esc-closeable>
+    <div class="wrapper" :style="{width: modalWidth}" @click.stop>
       <h4>{{title}}</h4>
       <p v-if="content">{{content}}</p>
-      <input v-if="type === 'input'" ref="refInput" :type="inputType" :placeholder="inputHint" v-model="inputValue">
+      <template v-if="type === 'input'">
+        <textarea v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" v-model="inputValue"></textarea>
+        <input v-else ref="refInput" :type="inputType" :placeholder="inputHint" v-model="inputValue">
+      </template>
       <div class="action">
         <button @click="cancel">取消</button>
         <button class="primary" @click="ok">确定</button>
@@ -32,6 +35,7 @@ export default defineComponent({
     const inputType = ref('')
     const inputValue = ref('')
     const inputHint = ref('')
+    const modalWidth = ref<string | undefined>(undefined)
 
     let resolveFun: Function | null = null
 
@@ -59,6 +63,7 @@ export default defineComponent({
       title.value = params.title || '提示'
       content.value = params.content || ''
       show.value = true
+      modalWidth.value = undefined
 
       return new Promise(resolve => {
         resolveFun = resolve
@@ -72,6 +77,8 @@ export default defineComponent({
       inputType.value = params.type || 'text'
       inputValue.value = params.value || ''
       inputHint.value = params.hint || ''
+      modalWidth.value = params.modalWidth
+      console.log(params)
 
       show.value = true
 
@@ -104,6 +111,7 @@ export default defineComponent({
       inputType,
       inputValue,
       inputHint,
+      modalWidth,
     }
   },
 })
@@ -117,7 +125,12 @@ export default defineComponent({
   padding: 10px;
 }
 
-input {
+textarea {
+  max-width: 100%;
+  min-width: 100%;
+}
+
+input, textarea {
   display: block;
   width: 100%;
   margin: 0;

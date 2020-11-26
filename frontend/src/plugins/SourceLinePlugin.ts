@@ -1,20 +1,27 @@
 import Markdown from 'markdown-it'
 import Renderer from 'markdown-it/lib/renderer'
 
-export const injectLineNumbers: Renderer.RenderRule = (tokens, idx, options, _, slf) => {
-  if (tokens[idx].map) {
-    const line = tokens[idx].map!![0]
-    tokens[idx].attrJoin('class', 'source-line')
-    tokens[idx].attrSet('data-source-line', String(line + 1))
+const buildFunction = (className: string): Renderer.RenderRule => {
+  return (tokens, idx, options, _, slf) => {
+    if (tokens[idx].map) {
+      const lineStart = tokens[idx].map!![0]
+      const lineEnd = tokens[idx].map!![1]
+      tokens[idx].attrJoin('class', className)
+      tokens[idx].attrSet('data-source-line', String(lineStart + 1))
+      tokens[idx].attrSet('data-source-line-end', String(lineEnd + 1))
+    }
+    return slf.renderToken(tokens, idx, options)
   }
-  return slf.renderToken(tokens, idx, options)
 }
+
+export const injectLineNumbers = buildFunction('source-line')
 
 const SourceLinePlugin = (md: Markdown) => {
   md.renderer.rules.paragraph_open = injectLineNumbers
   md.renderer.rules.heading_open = injectLineNumbers
   md.renderer.rules.list_item_open = injectLineNumbers
   md.renderer.rules.table_open = injectLineNumbers
+  md.renderer.rules.td_open = buildFunction('yank-td')
 }
 
 export default SourceLinePlugin

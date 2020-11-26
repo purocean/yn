@@ -261,11 +261,88 @@ export default defineComponent({
 
     const toggleWrap = () => getEditor().toggleWrap()
 
+    const editTableCell = async (params?: { start: number; end: number; cellIndex: number }) => {
+      if (!params) {
+        return
+      }
+
+      const { start, end, cellIndex } = params
+      if (end - start !== 1) {
+        toast.show('warning', '暂只支持编辑单行文本')
+        return
+      }
+
+      const escapedSplit = (str: string) => {
+        const result = []
+        const max = str.length
+        let pos = 0
+        let ch = str.charCodeAt(pos)
+        let isEscaped = false
+        let lastPos = 0
+        let current = ''
+
+        while (pos < max) {
+          if (ch === 0x7c/* | */) {
+            if (!isEscaped) {
+              // pipe separating cells, '|'
+              result.push(current + str.substring(lastPos, pos))
+              current = ''
+              lastPos = pos + 1
+            } else {
+              // escaped pipe, '\|'
+              current += str.substring(lastPos, pos - 1)
+              lastPos = pos
+            }
+          }
+
+          isEscaped = (ch === 0x5c/* \ */)
+          pos++
+
+          ch = str.charCodeAt(pos)
+        }
+
+        result.push(current + str.substring(lastPos))
+
+        if (result.length && result[0] === '') result.shift()
+        if (result.length && result[result.length - 1] === '') result.pop()
+
+        return result
+      }
+
+      const text = getEditor().getLineContent(start).trim()
+      const columns = escapedSplit(text)
+      const cellText = columns[cellIndex].replace(/(^ | $)/g, '')
+
+      if (typeof cellText !== 'string') {
+        toast.show('warning', '编辑错误')
+        return
+      }
+
+      let value = await modal.input({
+        title: '编辑单元格',
+        type: 'textarea',
+        value: cellText,
+        modalWidth: '600px',
+        hint: '单元格内容',
+      })
+      if (typeof value !== 'string') {
+        toast.show('warning', '取消编辑')
+        return
+      }
+
+      if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
+      if (!value.endsWith(' ') && cellIndex < columns.length - 1) value += ' '
+      columns[cellIndex] = value.replace(/\n/g, ' ')
+
+      getEditor().replaceLine(start, columns.join('|'))
+    }
+
     onMounted(() => {
       bus.on('resize', resize)
       bus.on('editor-insert-value', insert)
       bus.on('editor-replace-value', replaceValue)
       bus.on('editor-toggle-wrap', toggleWrap)
+      bus.on('editor-edit-table-cell', editTableCell)
       bus.on('file-new', createFile as any)
       restartTimer()
     })
@@ -276,6 +353,7 @@ export default defineComponent({
       bus.off('editor-replace-value', replaceValue)
       bus.off('editor-toggle-wrap', toggleWrap)
       bus.off('file-new', createFile as any)
+      bus.off('editor-edit-table-cell', editTableCell)
     })
 
     return {

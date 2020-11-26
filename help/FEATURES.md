@@ -109,6 +109,8 @@ a -> b
 此功能由 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 插件提供
 支持在表格中使用多行文本和列表。支持表格说明渲染
 
+另外您可以使用：`Ctrl + 单击单元格` 快捷编辑表格单元格内容
+
 First header | Second header
 -------------|---------------
 List:        | More  \
@@ -369,6 +371,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 1. 打开文件快速切换面板 `Ctrl + P`
 1. 复制文档标题链接 `Ctrl + 单击标题`
 1. 切换编辑器 Tab `Ctrl + Alt + Left/Right`
+1. 编辑表格单元格：`Ctrl + 单击单元格`
 
 [^1]: 这是一个脚注
 [^2]: 这也是一个脚注
