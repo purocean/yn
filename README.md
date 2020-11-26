@@ -145,11 +145,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.4.4](https://github.com/purocean/yn/releases/tag/v2.4.4) 2020-11-25
-1. 更改 TOC 标号样式
+### [v2.4.5](https://github.com/purocean/yn/releases/tag/v2.4.5) 2020-11-26
+1. 移除代码表格的悬停样式
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.4.4](https://github.com/purocean/yn/releases/tag/v2.4.4) 2020-11-25
+1. 更改 TOC 标号样式
 
 ### [v2.4.3](https://github.com/purocean/yn/releases/tag/v2.4.3) 2020-11-25
 1. 表格新增悬停样式：行号，突出当前行
