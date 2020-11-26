@@ -830,15 +830,15 @@ button:hover {
     background-color: #fff !important;
   }
 
-  table tbody {
+  table.source-line tbody {
     counter-reset: tr-number;
   }
 
-  table tbody tr:hover {
+  table.source-line tbody tr:hover {
     outline: 2px #b3833b dashed;
   }
 
-  table:hover tbody tr td:first-child:before {
+  table.source-line:hover tbody tr td:first-child:before {
     counter-increment: tr-number;
     content: counter(tr-number);
     position: absolute;
