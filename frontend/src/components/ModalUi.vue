@@ -78,7 +78,6 @@ export default defineComponent({
       inputValue.value = params.value || ''
       inputHint.value = params.hint || ''
       modalWidth.value = params.modalWidth
-      console.log(params)
 
       show.value = true
 
