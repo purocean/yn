@@ -332,7 +332,7 @@ export default defineComponent({
 
       if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
       if (!value.endsWith(' ') && cellIndex < columns.length - 1) value += ' '
-      columns[cellIndex] = value.replace(/\n/g, ' ')
+      columns[cellIndex] = value.replace(/\|/g, '\\|').replace(/\n/g, ' ')
 
       getEditor().replaceLine(start, columns.join('|'))
     }
