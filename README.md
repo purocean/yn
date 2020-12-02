@@ -146,11 +146,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.4.6](https://github.com/purocean/yn/releases/tag/v2.4.6) 2020-11-26
-1. 增加编辑单元格内容功能
+### [v2.4.7](https://github.com/purocean/yn/releases/tag/v2.4.7) 2020-12-02
+1. 修复编辑表格跨列单元格问题
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.4.6](https://github.com/purocean/yn/releases/tag/v2.4.6) 2020-11-26
+1. 增加编辑单元格内容功能
 
 ### [v2.4.5](https://github.com/purocean/yn/releases/tag/v2.4.5) 2020-11-26
 1. 移除代码表格的悬停样式
