@@ -439,7 +439,11 @@ export default defineComponent({
       if (target.tagName === 'TD' && target.classList.contains('yank-td') && e.ctrlKey) {
         const start = parseInt(target.dataset.sourceLine || '0')
         const end = parseInt(target.dataset.sourceLineEnd || '0')
-        bus.emit('editor-edit-table-cell', { start, end, cellIndex: (target as HTMLTableDataCellElement).cellIndex })
+        const td = target as HTMLTableDataCellElement
+        const cellIndex = [...td.parentElement!.children as any]
+          .slice(0, td.cellIndex)
+          .reduce((prev, current) => prev + current.colSpan, 0)
+        bus.emit('editor-edit-table-cell', { start, end, cellIndex })
       }
 
       if (target.classList.contains('source-line') && window.getSelection()!!.toString().length < 1) {
