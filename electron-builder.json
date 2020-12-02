@@ -23,6 +23,15 @@
     ],
     "icon": "./build/icon.ico"
   },
+  "linux": {
+    "executableName": "yank-note",
+    "category": "Markdown",
+    "maintainer": "purocean <purocean@outlook.com>",
+    "icon": "./build/icon.png",
+    "target": [
+      "deb"
+    ]
+  },
   "nsis": {
     "perMachine": false
   },
