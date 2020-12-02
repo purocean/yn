@@ -311,7 +311,7 @@ export default defineComponent({
 
       const text = getEditor().getLineContent(start).trim()
       const columns = escapedSplit(text)
-      const cellText = columns[cellIndex].replace(/(^ | $)/g, '')
+      const cellText = columns[cellIndex]
 
       if (typeof cellText !== 'string') {
         toast.show('warning', '编辑错误')
@@ -332,9 +332,13 @@ export default defineComponent({
 
       if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
       if (!value.endsWith(' ') && cellIndex < columns.length - 1) value += ' '
-      columns[cellIndex] = value.replace(/\n/g, ' ')
+      columns[cellIndex] = value.replace(/\|/g, '\\|').replace(/\n/g, ' ')
 
-      getEditor().replaceLine(start, columns.join('|'))
+      let content = columns.join('|').trim()
+      if (text.startsWith('|')) content = '| ' + content
+      if (text.endsWith('|')) content += ' |'
+
+      getEditor().replaceLine(start, content)
     }
 
     onMounted(() => {
