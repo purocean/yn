@@ -55,9 +55,14 @@ const binMd5 = (data: any) => {
   return md5(CryptoJS.enc.Latin1.parse(data))
 }
 
+export const strToBase64 = (str: string) => {
+  return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(str))
+}
+
 export default {
   encrypt,
   decrypt,
   md5,
-  binMd5
+  binMd5,
+  strToBase64,
 }

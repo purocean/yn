@@ -1,0 +1,155 @@
+import Markdown from 'markdown-it'
+import Renderer from 'markdown-it/lib/renderer'
+import crypto from '@/useful/crypto'
+import { dataURItoBlobLink, openInNewWindow } from '@/useful/utils'
+
+const renderRule: Renderer.RenderRule = (tokens, idx, options, { source }, slf) => {
+  const token = tokens[idx]
+  const nextToken = tokens[idx + 1]
+  if (token.level === 0 && token.map && nextToken && nextToken.attrGet('class')?.includes('mindmap')) {
+    const content = source
+      .split('\n')
+      .slice(token.map[0], token.map[1])
+      .join('\n')
+      .replace(/\{.mindmap[^}]*\}/gm, '')
+      .replace(/^(\s*)([+-]*|\d+.) /gm, '$1')
+
+    token.attrJoin('class', 'mindmap-list')
+    token.attrSet('data-mindmap-source', content)
+  }
+
+  return slf.renderToken(tokens, idx, options)
+}
+
+const Plugin = (md: Markdown) => {
+  md.renderer.rules.bullet_list_open = renderRule
+}
+
+const buildSrcdoc = (json: string) => {
+  return `
+    <html>
+      <head>
+        <link rel="stylesheet" href="${location.origin}/kityminder.core.css" rel="stylesheet">
+        <script src="${location.origin}/kity.min.js"></script>
+        <script src="${location.origin}/kityminder.core.min.js"></script>
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+          }
+
+          #minder-view {
+            position: absolute;
+            border: 1px solid #ccc;
+            left: 10px;
+            top: 10px;
+            bottom: 10px;
+            right: 10px;
+          }
+        </style>
+      </head>
+      <body style="width: 100%; height: 100vh; padding: 0; margin: 0">
+        <script id="minder-view" type="application/kityminder" minder-data-type="json">${json}</script>
+        <script type="text/javascript">
+          var km = window.km = new kityminder.Minder();
+          km.setup('#minder-view');
+          km.disable();
+          km.execCommand('hand');
+        </script>
+      </body>
+    </html>
+  `
+}
+
+Plugin.render = async (ele: HTMLElement) => {
+  const code = (ele.dataset.mindmapSource || '').trim()
+
+  const div = document.createElement('div')
+  div.setAttribute('minder-data-type', 'text')
+  div.style.position = 'relative'
+  div.style.height = '400px'
+  ele.replaceWith(div)
+
+  const km = new (window as any).kityminder.Minder()
+  km.setup(div)
+  km.disable()
+  try {
+    await km.importData('text', code)
+    km.useTemplate('default')
+  } catch (error) {
+    await km.importData('text', '转换错误\n    1. 请保证大纲只有一个根项目\n    2. 请保证大纲层级正确')
+    km.useTemplate('structure')
+  }
+
+  km.execCommand('hand')
+  km.useTheme('fresh-green-compat')
+  km.execCommand('camera')
+
+  const tplList = ['default', 'right', 'structure', 'filetree', 'tianpan', 'fish-bone']
+  const switchLayout = () => {
+    const tpl = km.getTemplate()
+    const index = tplList.indexOf(tpl)
+    const nextIndex = index > tplList.length - 2 ? 0 : index + 1
+    km.useTemplate(tplList[nextIndex])
+    km.execCommand('camera')
+  }
+
+  const switchCompat = () => {
+    const theme = km.getTheme().split('-')
+    if (theme[theme.length - 1] === 'compat') {
+      theme.pop()
+    } else {
+      theme.push('compat')
+    }
+
+    km.useTheme(theme.join('-'))
+    km.execCommand('camera')
+  }
+
+  const exportData = async (type: 'png' | 'svg' | 'km') => {
+    const download = (url: string, name: string) => {
+      const link = document.createElement('a')
+      link.href = dataURItoBlobLink(url)
+      link.target = '_blank'
+      link.download = name
+      link.click()
+    }
+
+    switch (type) {
+      case 'svg':
+        download('data:image/svg+xml;base64,' + crypto.strToBase64(await km.exportData('svg')), 'mindmap.svg')
+        break
+      case 'km':
+        download('data:application/octet-stream;base64,' + crypto.strToBase64(await km.exportData('json')), 'mindmap.km')
+        break
+      case 'png':
+        download(await km.exportData('png'), 'mindmap.png')
+        break
+      default:
+        break
+    }
+  }
+
+  const buildButton = (text: string, fun: () => void) => {
+    const button = document.createElement('button')
+    button.style.cssText = 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
+    button.innerText = text
+    button.onclick = fun
+    return button
+  }
+
+  const action = document.createElement('div')
+  action.className = 'no-print'
+  action.style.cssText = 'position: absolute; right: 15px; top: 3px; z-index: 1;'
+  action.appendChild(buildButton('导出 PNG', () => exportData('png')))
+  action.appendChild(buildButton('导出 SVG', () => exportData('svg')))
+  action.appendChild(buildButton('导出 KM', () => exportData('km')))
+  action.appendChild(buildButton('新窗口打开', () => openInNewWindow(buildSrcdoc(JSON.stringify(km.exportJson())))))
+  action.appendChild(buildButton('切换布局', switchLayout))
+  action.appendChild(buildButton('紧凑/宽松', switchCompat))
+
+  div.appendChild(action)
+}
+
+export default Plugin
