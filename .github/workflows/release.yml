@@ -6,7 +6,19 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+        - os: windows-latest
+          platform: 'win'
+        - os: ubuntu-latest
+          platform: 'linux'
+    runs-on: ${{ matrix.os }}
+    env:
+      npm_config_disturl: https://atom.io/download/electron
+      npm_config_target: 9.3.1
+      npm_config_runtime: "electron"
 
     steps:
       - name: Checkout
@@ -19,7 +31,8 @@ jobs:
 
       - name: Install
         run: |
-          ./win-install.bat
+          yarn
+          yarn run download-pandoc
           cd frontend
           yarn
           cd ..
@@ -29,7 +42,8 @@ jobs:
           cd frontend
           yarn run build
           cd ..
-          ./win-build.bat
+          yarn run build
+          yarn run electron-builder --${{ matrix.platform }} -p never
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5

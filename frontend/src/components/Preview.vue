@@ -61,6 +61,7 @@ import DrawioPlugin from '../plugins/DrawioPlugin'
 import PlantumlPlugin from '../plugins/PlantumlPlugin'
 import MermaidPlugin from '../plugins/MermaidPlugin'
 import CodePlugin from '../plugins/CodePlugin'
+import MindMapPlugin from '../plugins/MindMapPlugin'
 import file from '../useful/file'
 import env from '../useful/env'
 import { encodeMarkdownLink } from '../useful/utils'
@@ -101,6 +102,7 @@ const markdown = Markdown({
   .use(MarkdownItECharts)
   .use(MermaidPlugin)
   .use(CodePlugin)
+  .use(MindMapPlugin)
 
 export default defineComponent({
   name: 'xview',
@@ -148,12 +150,21 @@ export default defineComponent({
       nodes.forEach(AppletPlugin.runScript)
     }
 
+    function renderMindMap () {
+      const nodes = refView.value!!.querySelectorAll<HTMLElement>('.mindmap-list[data-mindmap-source]')
+      nodes.forEach(MindMapPlugin.render)
+    }
+
     const updatePlantumlDebounce = loadsh.debounce(() => {
       updatePlantuml()
     }, 3000, { leading: true })
 
     const runAppletScriptDebounce = loadsh.debounce(() => {
       runAppletScript()
+    }, 1000, { leading: true })
+
+    const renderMindmapDebounce = loadsh.debounce(() => {
+      renderMindMap()
     }, 1000, { leading: true })
 
     function replaceRelativeLink (md: string) {
@@ -243,8 +254,11 @@ export default defineComponent({
       const content = (filePath.value || '').endsWith('.md')
         ? currentContent.value
         : '```' + file.extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '```'
-      refView.value!!.innerHTML = markdown.render(replaceRelativeLink(content))
+
+      const source = replaceRelativeLink(content)
+      refView.value!!.innerHTML = markdown.render(source, { source })
       runAppletScriptDebounce()
+      renderMindmapDebounce()
       initDrawio()
       updateOutline()
       updateTodoCount()

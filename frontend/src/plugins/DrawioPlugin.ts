@@ -1,7 +1,7 @@
 import Markdown from 'markdown-it'
 import file from '@/useful/file'
-import env from '@/useful/env'
 import { useBus } from '@/useful/bus'
+import { openInNewWindow } from '@/useful/utils'
 
 const Plugin = (md: Markdown) => {
   const renderHtml = ({ url, content }: any) => {
@@ -117,30 +117,6 @@ const buildSrcdoc = async ({ repo, path, content, url }: F) => {
     ${div.outerHTML}
     <script src="${location.origin}/viewer.min.js"></script>
   `
-}
-
-const openInNewWindow = (srcdoc: string) => {
-  const opener = env.openAlwaysOnTopWindow('about:blank')
-  const frame = document.createElement('iframe')
-  frame.width = '100%'
-  frame.height = '100%'
-  frame.frameBorder = '0'
-  frame.srcdoc = srcdoc
-
-  if (env.isElectron) {
-    const json = JSON.stringify(frame.outerHTML)
-    opener.eval(`
-      document.title = '查看图形'
-      document.body.style.height = '100vh'
-      document.body.style.margin = '0'
-      document.body.innerHTML = ${json}
-    `)
-  } else {
-    opener.document.title = '查看图形'
-    opener.document.body.style.height = '100vh'
-    opener.document.body.style.margin = '0'
-    opener.document.body.appendChild(frame)
-  }
 }
 
 Plugin.load = async (el: HTMLIFrameElement, url?: string) => {

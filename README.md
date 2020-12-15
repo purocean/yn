@@ -59,6 +59,7 @@
 + 嵌入 drawio 图形：文档支持内嵌 drawio 图形，示例见 FEATURE.md
 + 嵌入 ECharts 图形：在文档中嵌入 Echarts 图形，示例见 FEATURE.md
 + 嵌入 Mermaid 图形：在文档中嵌入 Mermaid 图形，示例见 FEATURE.md
++ 嵌套列表转脑图展示：可将嵌套列表用脑图的方式展示，示例见 FEATURE.md
 + 元素属性书写：可自定义元素的任意属性，示例见 FEATURE.md
 + 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
 + 文档交叉链接跳转：支持在文档中引入其他文档，互相跳转
@@ -146,11 +147,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.4.7](https://github.com/purocean/yn/releases/tag/v2.4.7) 2020-12-02
-1. 修复编辑表格跨列单元格问题
+### [v2.4.8](https://github.com/purocean/yn/releases/tag/v2.4.8) 2020-12-15
+1. 增加大纲列表脑图展示功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.4.7](https://github.com/purocean/yn/releases/tag/v2.4.7) 2020-12-02
+1. 修复编辑表格跨列单元格问题
 
 ### [v2.4.6](https://github.com/purocean/yn/releases/tag/v2.4.6) 2020-11-26
 1. 增加编辑单元格内容功能
