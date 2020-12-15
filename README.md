@@ -147,11 +147,14 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.4.7](https://github.com/purocean/yn/releases/tag/v2.4.7) 2020-12-02
-1. 修复编辑表格跨列单元格问题
+### [v2.4.8](https://github.com/purocean/yn/releases/tag/v2.4.8) 2020-12-15
+1. 增加大纲列表脑图展示功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.4.7](https://github.com/purocean/yn/releases/tag/v2.4.7) 2020-12-02
+1. 修复编辑表格跨列单元格问题
 
 ### [v2.4.6](https://github.com/purocean/yn/releases/tag/v2.4.6) 2020-11-26
 1. 增加编辑单元格内容功能
