@@ -19,12 +19,9 @@ module.exports = {
       args[0][0].from = 'node_modules/monaco-editor/min/vs'
       args[0][0].to = 'vs'
       args[0][1] = {
-        from: 'public/viewer.min.js',
-        to: 'viewer.min.js'
-      }
-      args[0][2] = {
-        from: 'public/favicon.ico',
-        to: 'favicon.ico'
+        from: 'public/*.*',
+        to: '[name].[ext]',
+        toType: 'template'
       }
       return args
     })
