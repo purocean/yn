@@ -25,7 +25,7 @@ const Plugin = (md: Markdown) => {
   md.renderer.rules.bullet_list_open = renderRule
 }
 
-const buildSrcdoc = (json: string) => {
+const buildSrcdoc = (json: string, btns: string) => {
   return `
     <html>
       <head>
@@ -50,12 +50,37 @@ const buildSrcdoc = (json: string) => {
         </style>
       </head>
       <body style="width: 100%; height: 100vh; padding: 0; margin: 0">
+        ${btns}
         <script id="minder-view" type="application/kityminder" minder-data-type="json">${json}</script>
         <script type="text/javascript">
           var km = window.km = new kityminder.Minder();
           km.setup('#minder-view');
           km.disable();
           km.execCommand('hand');
+
+          const switchLayout = () => {
+            const tplList = ['default', 'right', 'structure', 'filetree', 'tianpan', 'fish-bone']
+            const tpl = km.getTemplate()
+            const index = tplList.indexOf(tpl)
+            const nextIndex = index > tplList.length - 2 ? 0 : index + 1
+            km.useTemplate(tplList[nextIndex])
+            km.execCommand('camera')
+          }
+
+          const switchCompat = () => {
+            const theme = km.getTheme().split('-')
+            if (theme[theme.length - 1] === 'compat') {
+              theme.pop()
+            } else {
+              theme.push('compat')
+            }
+
+            km.useTheme(theme.join('-'))
+            km.execCommand('camera')
+          }
+
+          const zoomOut = () => km.execCommand('zoomOut')
+          const zoomIn = () => km.execCommand('zoomIn')
         </script>
       </body>
     </html>
@@ -72,6 +97,8 @@ Plugin.render = async (ele: HTMLElement) => {
   ele.replaceWith(div)
 
   const km = new (window as any).kityminder.Minder()
+  // Hack 一下，防止脑图自动聚焦
+  km.focus = () => 0
   km.setup(div)
   km.disable()
   try {
@@ -86,8 +113,8 @@ Plugin.render = async (ele: HTMLElement) => {
   km.useTheme('fresh-green-compat')
   km.execCommand('camera')
 
-  const tplList = ['default', 'right', 'structure', 'filetree', 'tianpan', 'fish-bone']
   const switchLayout = () => {
+    const tplList = ['default', 'right', 'structure', 'filetree', 'tianpan', 'fish-bone']
     const tpl = km.getTemplate()
     const index = tplList.indexOf(tpl)
     const nextIndex = index > tplList.length - 2 ? 0 : index + 1
@@ -106,6 +133,9 @@ Plugin.render = async (ele: HTMLElement) => {
     km.useTheme(theme.join('-'))
     km.execCommand('camera')
   }
+
+  const zoomOut = () => km.execCommand('zoomOut')
+  const zoomIn = () => km.execCommand('zoomIn')
 
   const exportData = async (type: 'png' | 'svg' | 'km') => {
     const download = (url: string, name: string) => {
@@ -131,23 +161,30 @@ Plugin.render = async (ele: HTMLElement) => {
     }
   }
 
-  const buildButton = (text: string, fun: () => void) => {
+  const buildButton = (text: string, fun: () => void, onclick = '') => {
     const button = document.createElement('button')
     button.style.cssText = 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
     button.innerText = text
     button.onclick = fun
+    button.dataset.onclick = `${onclick}()`
     return button
   }
 
   const action = document.createElement('div')
   action.className = 'no-print'
   action.style.cssText = 'position: absolute; right: 15px; top: 3px; z-index: 1;'
+  action.appendChild(buildButton('放大', zoomIn, 'zoomIn'))
+  action.appendChild(buildButton('缩小', zoomOut, 'zoomOut'))
+  action.appendChild(buildButton('切换布局', switchLayout, 'switchLayout'))
+  action.appendChild(buildButton('紧凑/宽松', switchCompat, 'switchCompat'))
+  const actionsStr = action.outerHTML.replace(/data-onclick/g, 'onclick')
+  action.appendChild(buildButton('新窗口打开', () => {
+    const srcdoc = buildSrcdoc(JSON.stringify(km.exportJson()), actionsStr)
+    openInNewWindow(srcdoc)
+  }))
   action.appendChild(buildButton('导出 PNG', () => exportData('png')))
   action.appendChild(buildButton('导出 SVG', () => exportData('svg')))
   action.appendChild(buildButton('导出 KM', () => exportData('km')))
-  action.appendChild(buildButton('新窗口打开', () => openInNewWindow(buildSrcdoc(JSON.stringify(km.exportJson())))))
-  action.appendChild(buildButton('切换布局', switchLayout))
-  action.appendChild(buildButton('紧凑/宽松', switchCompat))
 
   div.appendChild(action)
 }
