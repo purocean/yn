@@ -537,6 +537,7 @@ export default defineComponent({
 
     return {
       refViewWrapper,
+      refConvertForm,
       refView,
       width,
       height,
