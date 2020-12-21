@@ -25,7 +25,7 @@
     </div>
     <div class="outline">
       <div style="padding: .5em;"><b>目录</b></div>
-      <div class="catalog" :style="{maxHeight: (height - 120) + 'px'}">
+      <div class="catalog" :style="{maxHeight: `min(${(height - 120) + 'px'}, 70vh)`}">
         <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level + 1}em`}" @click="syncScroll(head.sourceLine)">
           {{ head.text }}
           <span style="color: #666;font-size: 12px;padding-left: .5em">{{head.tag}}</span>
@@ -537,6 +537,7 @@ export default defineComponent({
 
     return {
       refViewWrapper,
+      refConvertForm,
       refView,
       width,
       height,

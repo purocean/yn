@@ -147,11 +147,15 @@ yarn run start
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.4.10](https://github.com/purocean/yn/releases/tag/v2.4.10) 2020-12-16
-1. 优化脑图使用体验
+### [v2.4.11](https://github.com/purocean/yn/releases/tag/v2.4.11) 2020-12-21
+1. 修复不能导出 docx 问题
+1. 修复大纲目录高度不正确
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.4.10](https://github.com/purocean/yn/releases/tag/v2.4.10) 2020-12-16
+1. 优化脑图使用体验
 
 ### [v2.4.9](https://github.com/purocean/yn/releases/tag/v2.4.9) 2020-12-15
 1. 增加大纲列表脑图展示功能
