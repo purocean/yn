@@ -46,7 +46,7 @@ export default defineComponent({
           rows: 24,
           fontSize: 18,
           cursorStyle: 'underline',
-          fontFamily: 'Consolas',
+          // fontFamily: 'Consolas',
           fontWeightBold: '500',
           theme: {
             background: 'rgb(30, 31, 32)'
