@@ -9,3 +9,4 @@ bin
 # .yarnrc
 b.bat
 *.pfx
+.DS_Store
