@@ -102,41 +102,6 @@
     + `Ctrl + B + V` 粘贴图片为 Base64
     + `Ctrl + Alt + Left/Right` 切换编辑器 Tab
 
-## 开发
-依赖安装和编译比较麻烦，请保证自己有足够耐心且有科学上网的手段。
-
-### Windows
-Windows 上安装 node-pty 需要费一番功夫，请参考 https://github.com/microsoft/node-pty#windows 配置编译环境。
-
-```bat
-REM Node 版本要求 12 v12.7.0
-node -v
-
-REM 前端
-cd frontend
-REM 安装依赖
-yarn
-REM 打包
-yarn run dist
-REM 开发
-yarn run serve
-
-REM Electron 端
-cd ../
-REM 安装依赖
-win-install.bat
-REM 打包 打包前请在前端目录运行打包命令
-win-build.bat
-REM 开发
-yarn run start
-```
-
-### Liunx
-    TODO 手头没有环境，待完善
-
-### OSX
-    TODO 手头没有环境，待完善
-
 ## 界面截图
 ![截图](./help/3.png)
 ![截图](./help/5.png)
