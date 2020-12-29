@@ -184,6 +184,8 @@ if (!gotTheLock) {
       'open-in-browser': () => opn(getUrl())
     })
 
+    powerMonitor.on('shutdown', quit)
+
     if (showTray) {
       const contextMenu = Menu.buildFromTemplate([
         {
@@ -323,5 +325,3 @@ if (!gotTheLock) {
     }
   })
 }
-
-powerMonitor.on('shutdown', quit)
