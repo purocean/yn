@@ -295,7 +295,7 @@ if (!gotTheLock) {
         },
       ])
 
-      tray = new Tray(path.join(__dirname, './assets/icon.png'))
+      tray = new Tray(path.join(__dirname, './assets/tray.png'))
       tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
       tray.on('click', showWindow)
       tray.setContextMenu(contextMenu)
