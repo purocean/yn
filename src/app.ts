@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu, Tray } from 'electron'
 import * as path from 'path'
+import * as os from 'os'
 import { dialog } from 'electron'
 import * as yargs from 'yargs'
 import server from './server/main'
@@ -7,6 +8,8 @@ import { USER_DIR } from './server/constant'
 import * as updater from './updater'
 import { getAccelerator, registerShortcut } from './shortcut'
 const opn = require('opn')
+
+const isMacos = os.platform() === 'darwin'
 
 let isDev = false
 
@@ -105,6 +108,8 @@ const createWindow = () => {
 const showWindow = () => {
   if (win) {
     const show = () => {
+      // macos 上隐藏图标
+      isMacos && app.dock.hide()
       win.setSkipTaskbar(false)
       win.show()
     }
