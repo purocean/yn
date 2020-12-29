@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, Tray } from 'electron'
+import { app, BrowserWindow, Menu, Tray, powerMonitor } from 'electron'
 import * as path from 'path'
 import * as os from 'os'
 import { dialog } from 'electron'
@@ -323,3 +323,5 @@ if (!gotTheLock) {
     }
   })
 }
+
+powerMonitor.on('shutdown', quit)
