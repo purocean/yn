@@ -41,7 +41,11 @@ const runCode = (language: string, code: string) => {
       return execFileSync('wsl.exe', ['--', runParams.cmd].concat(runParams.args).concat([code])).toString()
     }
 
-    return execFileSync(runParams.cmd, runParams.args.concat([code])).toString()
+    return execFileSync(
+      runParams.cmd,
+      runParams.args.concat([code]),
+      { env: process.env }
+    ).toString()
   } catch (e) {
     return e.message
   }
