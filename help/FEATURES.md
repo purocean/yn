@@ -14,12 +14,8 @@
 1. 在配置文件 `<home/yank-note/config.json>` 中可以配置多个仓库，或者自定义 `main` 仓库路径
 
 ## 文件管理
-Yank-Note 很多功能可以直接使用的快捷键操作
-1. 在系统中打开文件/目录：`Ctrl ＋ 单击文件/目录`
-1. 删除文件/目录：`Shift + 右键文件/目录`。文件并没有真正删除，还可以从 `<home>/yank-note/trash` 目录下面恢复
-1. 重命名文件/目录：`Ctrl + 右键文件/目录`
-1. 刷新目录树 `双击目录空白区域`
-1. 文件标记 `右键菜单点击标记`
+右键目录树可看到文件相关操作选项。
+进行删除文件/目录操作后，文件并没有真正删除，还可以从 `<home>/yank-note/trash` 目录下面恢复
 
 ## 待办切换
 在预览界面打勾试试
@@ -126,7 +122,7 @@ a -> b
 此功能由 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 插件提供
 支持在表格中使用多行文本和列表。支持表格说明渲染
 
-另外您可以使用：`Ctrl + 单击单元格` 快捷编辑表格单元格内容
+另外您可以使用：`Ctrl/Cmd + 单击单元格` 快捷编辑表格单元格内容
 
 First header | Second header
 -------------|---------------
@@ -184,9 +180,9 @@ REM --run--
 ```
 
 ## 集成终端
-1. 使用 `Alt + O` 或者点击状态栏 **切换终端** 菜单唤起集成终端
-1. 支持在编辑器中选中一段代码后按下 `Ctrl+Alt+R` 直接在终端中运行命令。免去复制粘贴。
-1. 切换内置终端工作目录到当前目录 `Ctrl + Alt + 单击目录`
+1. 使用 `Alt/Option + T` 或者点击状态栏 **切换终端** 菜单唤起集成终端
+1. 支持在编辑器中选中一段代码后按下 `Shift + Alt/Option + R` 直接在终端中运行命令。免去复制粘贴。
+1. 切换内置终端工作目录到当前目录 `右键目录`
 
 ## 小工具
 支持在文档中嵌入 HTML 小工具。
@@ -325,40 +321,47 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 [drawio](./test.drawio){link-type="drawio"}
 ```
 
-## 编辑器快捷键
-+ 默认快捷键参考 [vscode](https://code.visualstudio.com/)
-    + `Ctrl + X` 剪切所选/当前行
-    + `Ctrl + C` 复制所选/当前行
-    + `Ctrl + Z` 撤消
-    + `Ctrl + Shift + Z` 反撤消
-    + `Ctrl + /` 注释行
-    + `Ctrl + Shift + A` 注释段
-    + `Ctrl + K, Ctrl + X` 删除尾部空格
-    + `Alt + Click` 插入光标
-    + `Shift + Alt + ↑/↓` 在相邻行插入光标
-    + `Ctrl + U` 取消最后添加的光标
-    + `Shift + Alt + I` 在选中区的所有行的最后添加光标
-    + `Ctrl + D` 为下一个匹配项添加光标
-    + `Ctrl + F` 查找
-    + `Ctrl + H` 替换
-+ 自定义编辑器快捷键
-    + `Ctrl + P` 打开文件快速跳转面板
-    + `Ctrl + S` 保存文档
-    + `Ctrl + Enter` 强制插入新行，忽略预置补全规则
-    + `Shift + Enter` 强制插入 Tab，忽略预置补全规则
-    + `Ctrl + Shift + Up` 当前行上移
-    + `Ctrl + Shift + Down` 当前行下移
-    + `Ctrl + Shift + D` 重复当前行
-    + `Ctrl + Alt + D` 插入当前日期
-    + `Ctrl + Alt + T` 插入当前时间
-    + `Ctrl + Alt + F` 插入文件附件
-    + `Ctrl + Alt + I` 插入文档链接
-    + `Ctrl + J` 连接行 join lines
-    + `Ctrl + K, Ctrl + U` 转换大写
-    + `Ctrl + K, Ctrl + L` 转换小写
-    + `Ctrl + Alt + R` 在内置终端里面运行选中内容
-    + `Ctrl + M + V` 粘贴 HTML 富文本
-    + `Ctrl + B + V` 粘贴图片为 base64 链接
+## 快捷键
+
+这里仅列出部分常用快捷键和自定义快捷键，默认编辑器快捷键参考 [vscode](https://code.visualstudio.com/)。
+
+功能 | Windows | macOS
+---- | ------ | -----
+剪切所选/当前行 | Ctrl + X | Cmd + X
+复制所选/当前行 | Ctrl + C | Cmd + X
+撤销 | Ctrl + Z | Cmd + Z
+重做 | Ctrl + Shift + Z | Cmd + Shift + Z
+在选中区的所有行的最后添加光标 | Shift + Alt + I | Shift + Option + I
+在相邻行插入光标 | Ctrl + Alt + ↑/↓ | Cmd + Option + ↑/↓
+为下一个匹配项添加光标 | Ctrl + D | Cmd + D
+查找 | Ctrl + F | Cmd + F
+打开文件快速跳转面板 | Ctrl + P | Cmd + P
+插入文档链接 | Ctrl + Alt + I | Cmd + Option + I
+保存文档 | Ctrl + S | Cmd + S
+连接行 | Ctrl + J | Cmd + J
+强制插入新行，忽略预置补全规则 | Ctrl + Enter | Cmd + Enter
+强制插入 Tab，忽略预置补全规则 | Shift + Enter | Shift + Enter
+当前行上移 | Ctrl + Shift + Up | Cmd + Shift + Up
+当前行下移 | Ctrl + Shift + Down | Cmd + Shift + Down
+重复当前行 | Ctrl + Shift + D | Cmd + Shift + D
+插入当前日期 | Shift + Alt + D | Shift + Option + D
+插入当前时间 | Shift + Alt + T | Shift + Option + T
+插入文件附件 | Shift + Alt + F | Shift + Option + F
+在内置终端里面运行选中内容 | Shift + Alt + R | Shift + Option + R
+转换大写 | Ctrl + K, Ctrl + U | Cmd + K, Cmd + U
+转换小写 | Ctrl + K, Ctrl + L | Cmd + K, Cmd + K
+粘贴 HTML 富文本 | Ctrl + D + V | Cmd + D + V
+粘贴图片为 base64 链接 | Ctrl + B + V | Cmd + B + V
+转换单个外链图片到本地 | Ctrl + Shift + 单击图片 | Cmd + Shift + 单击图片
+转换所有外链图片到本地 | Ctrl + Shift + L | Cmd + Shift + L
+编辑表格单元格 | Ctrl + 单击单元格 | Cmd + 单击单元格
+复制文档标题链接 | Ctrl + 单击标题 | Cmd + 单击标题
+切换编辑器 Tab | Ctrl + Alt + Left/Right | Ctrl + Option + Left/Rig
+切换侧栏 | Alt + E | Option + E
+切换编辑器自动换行 | Alt + W | Option + W
+切换文档预览显示 | Alt + V | Option + V
+切换终端 | Alt + T | Option + T
+查看 Readme | Alt + H | Option + H
 
 ## 元素属性书写
 此功能使用如下库实现 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)
@@ -377,18 +380,6 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 --data-dir        | 数据目录      | 无     | 目录路径字符串            | --data-dir='./.data'
 --init-repo       | 初始仓库名    | 无    | 字符串                    | --init-repo='test'
 --init-file       | 加载文件路径  | 无    | 文件路径，相对于仓库路径     | --init-file='/1.md'
-
-## 其他
-1. 转换单个外链图片到本地：`Ctrl + Shift + 单击图片`
-1. 转换所有外链图片到本地 `Ctrl + Alt + L`
-1. 切换文档预览显示：`Alt + V` 或点击状态栏 `切换预览` 按钮
-1. 切换编辑器自动换行：`Alt + W` 或点击状态栏 `切换换行` 按钮
-1. 粘贴 HTML 富文本为 Markdown `Ctrl + M + V`
-1. 粘贴图片为 Base64 `Ctrl + B + V`
-1. 打开文件快速切换面板 `Ctrl + P`
-1. 复制文档标题链接 `Ctrl + 单击标题`
-1. 切换编辑器 Tab `Ctrl + Alt + Left/Right`
-1. 编辑表格单元格：`Ctrl + 单击单元格`
 
 [^1]: 这是一个脚注
 [^2]: 这也是一个脚注
