@@ -3,6 +3,7 @@ import { useBus } from './bus'
 import RunPlugin from '@/plugins/RunPlugin'
 import { copyText } from './copy-text'
 import env from './env'
+import { hasCtrlCmd } from './shortcut'
 
 export default function startup () {
   const bus = useBus()
@@ -35,7 +36,7 @@ export default function startup () {
     }
 
     window.addEventListener('keydown', e => {
-      if (e.ctrlKey || e.metaKey) {
+      if (hasCtrlCmd(e)) {
         if (e.key === '0') {
           webContents.setZoomFactor(1)
         } else if (e.key === '=') {
@@ -49,7 +50,7 @@ export default function startup () {
     window.addEventListener('mousewheel', event => {
       const e = event as WheelEvent
 
-      if (e.ctrlKey || e.metaKey) {
+      if (hasCtrlCmd(e)) {
         changeZoomFactor(e.deltaY < 0)
       }
     })

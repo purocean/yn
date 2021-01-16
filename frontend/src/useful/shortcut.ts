@@ -27,6 +27,8 @@ const actions = {
 
 type ActionName = keyof typeof actions
 
+export const hasCtrlCmd = (e: KeyboardEvent | MouseEvent) => isMacOS ? e.metaKey : e.ctrlKey
+
 export const getKeyLabel = (key: XKey | string | number) => {
   switch (key) {
     case CtrlCmd:
@@ -44,8 +46,6 @@ export const getActionLabel = (name: ActionName) => {
   const keys: any[] = actions[name]
   return keys.map(getKeyLabel).join(' + ')
 }
-
-export const hasCtrlCmd = (e: KeyboardEvent | MouseEvent) => isMacOS ? e.metaKey : e.ctrlKey
 
 export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)[]) => {
   for (const key of keys) {
