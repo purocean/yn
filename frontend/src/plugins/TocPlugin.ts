@@ -1,6 +1,7 @@
 // https://github.com/Oktavilla/markdown-it-table-of-contents
 
 import Markdown from 'markdown-it'
+import { getKeyLabel } from '@/useful/shortcut'
 
 import { injectLineNumbers } from './SourceLinePlugin'
 
@@ -185,7 +186,7 @@ export default (md: Markdown, o: any) => {
     }
 
     if (header.attrIndex('title') < 0) {
-      header.attrSet('title', 'Ctrl + 单击复制链接')
+      header.attrSet('title', getKeyLabel('CtrlCmd') + ' + 单击复制链接')
     }
 
     return injectLineNumbers(tokens, idx, opt, env, slf)

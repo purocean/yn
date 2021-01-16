@@ -35,7 +35,7 @@ export default function startup () {
     }
 
     window.addEventListener('keydown', e => {
-      if (e.ctrlKey) {
+      if (e.ctrlKey || e.metaKey) {
         if (e.key === '0') {
           webContents.setZoomFactor(1)
         } else if (e.key === '=') {
@@ -49,7 +49,7 @@ export default function startup () {
     window.addEventListener('mousewheel', event => {
       const e = event as WheelEvent
 
-      if (e.ctrlKey) {
+      if (e.ctrlKey || e.metaKey) {
         changeZoomFactor(e.deltaY < 0)
       }
     })

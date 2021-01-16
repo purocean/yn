@@ -12,7 +12,7 @@ import env from '../useful/env'
 
 const models: {[key: string]: monaco.editor.ITextModel} = {}
 
-const keys: {[key: string]: boolean} = {}
+let keys: {[key: string]: boolean} = {}
 
 export default defineComponent({
   name: 'monaco-editor',
@@ -80,17 +80,17 @@ export default defineComponent({
       const KM = getMonaco().KeyMod
       const KC = getMonaco().KeyCode
 
-      getEditor().addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_F, addAttachment)
+      getEditor().addCommand(KM.Shift | KM.Alt | KC.KEY_F, addAttachment)
 
-      getEditor().addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_D, () => {
+      getEditor().addCommand(KM.Shift | KM.Alt | KC.KEY_D, () => {
         insert(dayjs().format('YYYY-MM-DD'))
       })
 
-      getEditor().addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_T, () => {
+      getEditor().addCommand(KM.Shift | KM.Alt | KC.KEY_T, () => {
         insert(dayjs().format('HH:mm:ss'))
       })
 
-      getEditor().addCommand(KM.CtrlCmd | KM.Alt | KC.KEY_R, () => {
+      getEditor().addCommand(KM.Shift | KM.Alt | KC.KEY_R, () => {
         emit('xterm-run', getEditor().getModel()!!.getValueInRange(getEditor().getSelection()!!))
       })
 
@@ -156,7 +156,7 @@ export default defineComponent({
     function paste (e: ClipboardEvent) {
       if (getEditor().hasTextFocus()) {
         const items = e.clipboardData!!.items
-        if (keys.m || keys.M) { // 粘贴 HTML 转为 markdown
+        if (keys.d || keys.D) { // 粘贴 HTML 转为 markdown
           for (let i = 0; i < items.length; i++) {
             if (items[i].type.match(/^text\/html$/i)) {
               items[i].getAsString(str => {
@@ -172,7 +172,7 @@ export default defineComponent({
           for (let i = 0; i < items.length; i++) {
             const fileType = items[i].type
             if (fileType.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
-              const asBase64 = keys.b || keys.B // Ctrl + v 粘贴的同时 按下了 B 键，就粘贴 base64 图像
+              const asBase64 = keys.b || keys.B // 粘贴的同时 按下了 B 键，就粘贴 base64 图像
               emit('paste-img', items[i].getAsFile(), asBase64)
             }
           }
@@ -243,7 +243,7 @@ export default defineComponent({
       if (e.type === 'keydown') {
         keys[e.key] = true
       } else {
-        keys[e.key] = false
+        keys = {}
       }
     }
 
