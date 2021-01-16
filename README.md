@@ -34,26 +34,28 @@
 + [ ] 可以自定义快捷键
 
 ## 特色功能
+部分功能需要相关快捷键配合，可参考[特色功能说明](./help/FEATURE.md)
+
 + 同步滚动：编辑区和预览区同步滚动，预览区可独立滚动
 + 目录大纲：预览区目录大纲快速跳转
 + 文件加密：以 `.c.md` 结尾的文件视为加密文件
 + 自动保存：文件编辑后自动保存，未保存文件橙色标题栏提醒（加密文档不自动保存）
 + 编辑优化：列表自动补全
-+ 粘贴图片：`Ctrl + V` 粘贴剪切板里面的图片，使用快捷键 `Ctrl + B + V` 作为 Base64 形式粘贴
++ 粘贴图片：可快速粘贴剪切板里面的图片，可作为文件或 Base64 形式插入
 + 嵌入附件：可以添加附件到文档，点击在系统中打开
 + 代码运行：支持运行 PHP，nodejs，Python，bash 代码，示例见 FEATURE.md
 + 待办列表：支持显示文档中的待办进度，点击可快速切换待办状态
-+ 快速打开：可使用快捷键 `Ctrl + P` 打开文件切换面板，以便快捷打开文件，标记的文件，全文搜索文件内容
++ 快速打开：可使用快捷键打开文件切换面板，以便快捷打开文件，标记的文件，全文搜索文件内容
 + 内置终端：支持在编辑器打开终端，快速切换当前工作目录
 + 公式解析：支持输入 katex 公式代码
 + 样式风格：Markdown 使用 GitHub 风格样式和特性
 + 数据仓库：可定义多个数据位置以便文档分类
-+ 外链转换：将外链或 BASE64 图片转换为本地图片：`Ctrl + Shift + 单击图片` `Ctrl + Alt + L` 转换所有外链图片到本地
-+ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键 `Ctrl + M + V` 粘贴复制 HTML 为 Markdown
++ 外链转换：将外链或 BASE64 图片转换为本地图片
++ HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键粘贴复制 HTML 为 Markdown
 + docx 导出：后端使用 pandoc 做转换器
 + TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可，，示例见 FEATURE.md
-+ 编辑表格单元格：`Ctrl + 单击单元格` 快捷编辑表格单元格
-+ 复制标题链接：`Ctrl + 单击标题` 复制标题链接路径到剪切板，便于插入到其他文件
++ 编辑表格单元格：快捷编辑表格单元格
++ 复制标题链接：复制标题链接路径到剪切板，便于插入到其他文件
 + 嵌入小工具：文档支持内嵌 HTML 小工具，示例见 FEATURE.md
 + 嵌入 Plantuml 图形：需要安装 Java，graphviz ，示例见 FEATURE.md
 + 嵌入 drawio 图形：文档支持内嵌 drawio 图形，示例见 FEATURE.md
@@ -64,43 +66,6 @@
 + 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
 + 文档交叉链接跳转：支持在文档中引入其他文档，互相跳转
 + 脚注功能：支持在文档中书写脚注
-
-## 上手使用
-+ 在 [最新版本](https://github.com/purocean/yn/releases) 下载对应平台应用即可
-+ 默认快捷键参考 [vscode](https://code.visualstudio.com/)
-    + `Ctrl + X` 剪切所选/当前行
-    + `Ctrl + C` 复制所选/当前行
-    + `Ctrl + Z` 撤消
-    + `Ctrl + Shift + Z` 反撤消
-    + `Ctrl + /` 注释行
-    + `Ctrl + Shift + A` 注释段
-    + `Ctrl + K, Ctrl + X` 删除尾部空格
-    + `Alt + Click` 插入光标
-    + `Shift + Alt + ↑/↓` 在相邻行插入光标
-    + `Ctrl + U` 取消最后添加的光标
-    + `Shift + Alt + I` 在选中区的所有行的最后添加光标
-    + `Ctrl + D` 为下一个匹配项添加光标
-    + `Ctrl + F` 查找
-    + `Ctrl + H` 替换
-+ 自定义编辑器快捷键
-    + `Ctrl + P` 打开文件快速跳转面板
-    + `Ctrl + S` 保存文档
-    + `Ctrl + Enter` 强制插入新行，忽略预置补全规则
-    + `Shift + Enter` 强制插入 Tab，忽略预置补全规则
-    + `Ctrl + Shift + Up` 当前行上移
-    + `Ctrl + Shift + Down` 当前行下移
-    + `Ctrl + Shift + D` 重复当前行
-    + `Ctrl + Alt + D` 插入当前日期
-    + `Ctrl + Alt + T` 插入当前时间
-    + `Ctrl + Alt + F` 插入文件附件
-    + `Ctrl + Alt + I` 插入文档链接
-    + `Ctrl + J` 连接行 join lines
-    + `Ctrl + K, Ctrl + U` 转换大写
-    + `Ctrl + K, Ctrl + L` 转换小写
-    + `Ctrl + Alt + R` 在内置终端里面运行选中内容
-    + `Ctrl + M + V` 粘贴 html 富文本
-    + `Ctrl + B + V` 粘贴图片为 Base64
-    + `Ctrl + Alt + Left/Right` 切换编辑器 Tab
 
 ## 界面截图
 ![截图](./help/3.png)
