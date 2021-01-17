@@ -169,6 +169,9 @@ if (!gotTheLock) {
   })
 
   app.on('ready', () => {
+    // macos 上隐藏图标
+    isMacos && app.dock.hide()
+
     // 打开后端服务器
     try {
       server(backendPort)
