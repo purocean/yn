@@ -77,7 +77,7 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.5.0](https://github.com/purocean/yn/releases/tag/v2.5.0) 2021-01-17
+### [v2.5.1](https://github.com/purocean/yn/releases/tag/v2.5.1) 2021-01-17
 1. 支持 macOS
 2. 调整部分快捷键
 
