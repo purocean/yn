@@ -35,7 +35,7 @@ export const getKeyLabel = (key: XKey | string | number) => {
       return isMacOS ? 'Cmd' : 'Ctrl'
 
     case Alt:
-      return isMacOS ? 'Option' : 'Ctrl'
+      return isMacOS ? 'Option' : 'Alt'
 
     default:
       return key.toString().toUpperCase()
