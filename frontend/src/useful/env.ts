@@ -28,7 +28,7 @@ const openAlwaysOnTopWindow = (url: string, target = '_blank') => {
       }
 
       window.addEventListener('keydown', e => {
-        if (e.ctrlKey) {
+        if (e.ctrlKey || e.metaKey) {
           if (e.key === '0') {
             webContents.setZoomFactor(1)
           } else if (e.key === '=') {
@@ -40,7 +40,7 @@ const openAlwaysOnTopWindow = (url: string, target = '_blank') => {
       })
 
       window.addEventListener('mousewheel', e => {
-        if (e.ctrlKey) {
+        if (e.ctrlKey || e.metaKey) {
           changeZoomFactor(e.deltaY < 0)
         }
       })

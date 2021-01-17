@@ -71,6 +71,8 @@ import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
 import { useBus } from '../useful/bus'
 import { useToast } from '../useful/toast'
+import { hasCtrlCmd, isAction } from '../useful/shortcut'
+
 HighlightLineNumber.addStyles()
 
 const markdown = Markdown({
@@ -311,7 +313,7 @@ export default defineComponent({
 
     async function keydownHandler (e: KeyboardEvent) {
       // 转换所有外链图片到本地
-      if (e.key === 'l' && e.ctrlKey && e.altKey) {
+      if (isAction(e, 'transform-img-link')) {
         e.preventDefault()
         e.stopPropagation()
         const result = []
@@ -420,14 +422,19 @@ export default defineComponent({
       }
 
       // 复制标题链接
-      if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && e.ctrlKey) {
+      if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && hasCtrlCmd(e)) {
         bus.emit('copy-text', encodeMarkdownLink(filePath.value) + '#' + encodeMarkdownLink(decodeURIComponent(target.id)))
         return preventEvent()
       }
 
+      // 复制内容
+      if (target.classList.contains('copy-inner-text')) {
+        bus.emit('copy-text', target.innerText)
+      }
+
       if (target.tagName === 'IMG') {
         const img = target as HTMLImageElement
-        if (e.ctrlKey && e.shiftKey) { // 转换外链图片到本地
+        if (isAction(e, 'transform-img-link-by-click')) { // 转换外链图片到本地
           const data = await transformImgOutLink(img)
           if (data) {
             bus.emit('tree-refresh')
@@ -450,7 +457,7 @@ export default defineComponent({
         return
       }
 
-      if (target.tagName === 'TD' && target.classList.contains('yank-td') && e.ctrlKey) {
+      if (target.tagName === 'TD' && target.classList.contains('yank-td') && hasCtrlCmd(e)) {
         const start = parseInt(target.dataset.sourceLine || '0')
         const end = parseInt(target.dataset.sourceLineEnd || '0')
         const td = target as HTMLTableDataCellElement

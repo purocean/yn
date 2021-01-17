@@ -44,3 +44,18 @@ export const dataURItoBlobLink = (dataURI: string) => {
   const blob = new Blob([ab], { type: mimeString })
   return window.URL.createObjectURL(blob)
 }
+
+export const getLogger = (subject: string) => {
+  const logger = (level: string) => (...args: any) => {
+    const time = `${new Date().toLocaleString()}.${Date.now() % 1000}`
+    ;(console as any)[level](`[${time}] ${subject} >`, ...args)
+  }
+
+  return {
+    debug: logger('debug'),
+    log: logger('log'),
+    info: logger('info'),
+    warn: logger('warn'),
+    error: logger('error')
+  }
+}

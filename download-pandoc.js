@@ -16,5 +16,5 @@ if (fs.existsSync(filePath)) {
   console.warn('Pandoc exists. Skip download.', filePath)
 } else {
   console.info('Download pandoc', downloadUrl, filename, filePath)
-  request(downloadUrl).pipe(fs.createWriteStream(filePath))
+  request(downloadUrl).pipe(fs.createWriteStream(filePath, { mode: 0o755 }))
 }

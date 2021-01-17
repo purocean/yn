@@ -1,10 +1,11 @@
+import { getKeyLabel } from '@/useful/shortcut'
 import Markdown from 'markdown-it'
 
 export default (md: Markdown) => {
   const Fun = (fn: Function) => (tokens: any, idx: any, options: any, env: any, slf: any) => {
     if (tokens[idx].attrIndex('title') < 0) {
-      tokens[idx].attrPush(['title', 'Ctrl + 单击复制代码'])
-      tokens[idx].attrPush(['onclick', "event.ctrlKey && window.globalBus.emit('copy-text', this.innerText)"])
+      tokens[idx].attrJoin('class', 'copy-inner-text')
+      tokens[idx].attrPush(['title', getKeyLabel('CtrlCmd') + ' + 单击复制'])
     }
 
     return (fn)(tokens, idx, options, env, slf)

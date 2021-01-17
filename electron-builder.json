@@ -32,6 +32,11 @@
       "deb"
     ]
   },
+  "mac": {
+    "target": [
+      "dmg"
+    ]
+  },
   "nsis": {
     "perMachine": false
   },

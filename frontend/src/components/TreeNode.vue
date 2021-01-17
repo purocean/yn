@@ -1,14 +1,10 @@
 <template>
   <div class="tree-node">
-    <details ref="refDir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name + '\n\n' + dirTitle" :open="item.path === '/'">
+    <details ref="refDir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name" :open="item.path === '/'">
       <summary
         class="folder"
         :style="{background: selected ? '#313131' : 'none'}"
-        @click.ctrl.exact.prevent="revealInExplorer"
-        @click.ctrl.alt.exact.prevent="revealInXterminal"
-        @contextmenu.exact.prevent.stop="showContextMenu(item)"
-        @contextmenu.ctrl.exact.prevent.stop="renameFile"
-        @contextmenu.shift.exact.prevent.stop="deleteFile">
+        @contextmenu.exact.prevent.stop="showContextMenu(item)">
         <div class="item">
           <div class="item-label">
             {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children.length}})</span>
@@ -26,10 +22,7 @@
       :class="{name: true, 'file-name': true, selected}"
       :title="item.name + '\n\n' + fileTitle"
       @click.exact.prevent="select(item)"
-      @click.ctrl.exact.prevent="revealInExplorer"
-      @contextmenu.exact.prevent.stop="showContextMenu(item)"
-      @contextmenu.ctrl.exact.prevent.stop="renameFile"
-      @contextmenu.shift.exact.prevent.stop="deleteFile">
+      @contextmenu.exact.prevent.stop="showContextMenu(item)">
       <div class="item">
         <div :class="{'item-label': true, marked}"> {{ item.name }} </div>
       </div>
@@ -313,27 +306,14 @@ export default defineComponent({
       }
     }, { immediate: true })
 
-    const dirTitle = computed(() => [
-      '"Ctrl + 右键" 重命名目录',
-      '"Shift + 右键" 删除目录',
-      '"Ctrl + 单击" 在操作系统中打开目录',
-      '"Ctrl + Alt + 单击" 在终端中打开'
-    ].join('\n'))
-
     const fileTitle = computed(() => [
       `创建于：${props.item.birthtime ? new Date(props.item.birthtime).toLocaleString() : '无'}`,
       `更新于：${props.item.mtime ? new Date(props.item.mtime).toLocaleString() : '无'}`,
-      '',
-      '"Ctrl + 右键" 重命名文件',
-      '"Shift + 右键" 删除文件',
-      '"Ctrl + 单击" 使用系统程序打开文件',
-      '".c.md" 结尾的文件为加密文件'
     ].join('\n'))
 
     return {
       refDir,
       refFile,
-      dirTitle,
       fileTitle,
       currentRepoName,
       selected,

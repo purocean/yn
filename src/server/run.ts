@@ -6,6 +6,7 @@ import * as wsl from './wsl'
 import config from './config'
 
 const isWsl = wsl.isWsl
+const isWin = os.platform() === 'win32'
 
 const runCode = (language: string, code: string) => {
   try {
@@ -17,7 +18,7 @@ const runCode = (language: string, code: string) => {
       js: { cmd: 'node', args: ['-e'] },
     } as {[key: string]: {cmd: string, args: string[]}}
 
-    if (language === 'bat') {
+    if (language === 'bat' && isWin) {
       const fileName = 'yn-run-cmd.bat'
       code = code.split('\n').slice(1).join('\n') // 去掉第一行的注释
       if (isWsl) {
@@ -36,12 +37,22 @@ const runCode = (language: string, code: string) => {
       return `不支持 ${language} 语言`
     }
 
-    const useWsl = os.platform() === 'win32' && config.get('runCodeUseWsl', false)
+    const useWsl = isWin && config.get('runCodeUseWsl', false)
     if (useWsl) {
       return execFileSync('wsl.exe', ['--', runParams.cmd].concat(runParams.args).concat([code])).toString()
     }
 
-    return execFileSync(runParams.cmd, runParams.args.concat([code])).toString()
+    const env = { ...process.env }
+    const extPath = '/usr/local/bin'
+    if (!isWin && env.PATH.indexOf(extPath) < 0) {
+      env.PATH = `${extPath}:${env.PATH}`
+    }
+
+    return execFileSync(
+      runParams.cmd,
+      runParams.args.concat([code]),
+      { env }
+    ).toString()
   } catch (e) {
     return e.message
   }

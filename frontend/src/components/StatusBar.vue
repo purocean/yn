@@ -9,11 +9,11 @@
         <span>字符数：{{documentInfo.textLength}}</span>
         <span v-if="documentInfo.selectedLength > 0">已选中：{{documentInfo.selectedLength}}</span>
       </div>
-      <div class="action" @click="toggleSide" title="Alt + e">切换侧栏</div>
-      <div class="action" @click="toggleWrap" title="Alt + w">切换换行</div>
-      <div class="action" @click="toggleView" title="Alt + v">切换预览</div>
-      <div class="action" @click="toggleXterm" title="Alt + o">切换终端</div>
-      <div class="action" @click="toggleReadme" title="Alt + h">README</div>
+      <div class="action" @click="toggleSide" :title="getActionLabel('toggle-side')">切换侧栏</div>
+      <div class="action" @click="toggleWrap" :title="getActionLabel('toggle-wrap')">切换换行</div>
+      <div class="action" @click="toggleView" :title="getActionLabel('toggle-view')">切换预览</div>
+      <div class="action" @click="toggleXterm" :title="getActionLabel('toggle-xterm')">切换终端</div>
+      <div class="action" @click="toggleReadme" :title="getActionLabel('toggle-readme')">README</div>
       <div class="action" @click="toggleFeature">特色功能说明</div>
       <div class="action" @click="toggleRender">{{autoPreview ? '同步渲染-已开启' : '同步渲染-已关闭'}}</div>
       <svg-icon v-if="!autoPreview" class="action action-icon" name="sync-alt-solid" @click="rerenderView" title="强制重新渲染" />
@@ -27,6 +27,7 @@ import { useStore } from 'vuex'
 import { useBus } from '../useful/bus'
 import RepositorySwitch from './RepositorySwitch.vue'
 import SvgIcon from '../components/SvgIcon.vue'
+import { isAction, getActionLabel } from '../useful/shortcut'
 
 export default defineComponent({
   name: 'status-bar',
@@ -69,31 +70,31 @@ export default defineComponent({
     }
 
     function keydownHandler (e: KeyboardEvent) {
-      if (e.key === 'e' && e.altKey) {
+      if (isAction(e, 'toggle-side')) {
         toggleSide()
         e.preventDefault()
         e.stopPropagation()
       }
 
-      if (e.key === 'v' && e.altKey) {
+      if (isAction(e, 'toggle-view')) {
         toggleView()
         e.preventDefault()
         e.stopPropagation()
       }
 
-      if (e.key === 'o' && e.altKey) {
+      if (isAction(e, 'toggle-xterm')) {
         toggleXterm()
         e.preventDefault()
         e.stopPropagation()
       }
 
-      if (e.key === 'w' && e.altKey) {
+      if (isAction(e, 'toggle-wrap')) {
         toggleWrap()
         e.preventDefault()
         e.stopPropagation()
       }
 
-      if (e.key === 'h' && e.altKey) {
+      if (isAction(e, 'toggle-readme')) {
         toggleReadme()
         e.preventDefault()
         e.stopPropagation()
@@ -119,6 +120,7 @@ export default defineComponent({
       toggleFeature,
       toggleRender,
       rerenderView,
+      getActionLabel,
     }
   },
 })

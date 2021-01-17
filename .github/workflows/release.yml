@@ -8,8 +8,10 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
         include:
+        - os: macos-latest
+          platform: 'mac'
         - os: windows-latest
           platform: 'win'
         - os: ubuntu-latest

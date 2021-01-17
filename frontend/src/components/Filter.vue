@@ -8,6 +8,7 @@
 import { useStore } from 'vuex'
 import { computed, defineComponent, onMounted, onUnmounted, ref, toRef } from 'vue'
 import { encodeMarkdownLink } from '../useful/utils'
+import { getCurrentAction } from '../useful/shortcut'
 import { useBus } from '../useful/bus'
 import XMask from './Mask.vue'
 import QuickOpen from './QuickOpen.vue'
@@ -24,26 +25,29 @@ export default defineComponent({
     const withMarked = ref(true)
 
     function keydownHandler (e: KeyboardEvent) {
-      if (e.key === 'i' && e.ctrlKey && e.altKey) {
-        callback.value = (f: any) => {
-          const file = currentFile.value
-          if (file) {
-            const relativePath = f.path.replace(file.path.substr(0, file.path.lastIndexOf('/')), '.')
-            bus.emit('editor-insert-value', `[${f.name.replace(/\.[^.]+$/, '')}](${encodeMarkdownLink(relativePath)})`)
+      switch (getCurrentAction(e)) {
+        case 'insert-document':
+          callback.value = (f: any) => {
+            const file = currentFile.value
+            if (file) {
+              const relativePath = f.path.replace(file.path.substr(0, file.path.lastIndexOf('/')), '.')
+              bus.emit('editor-insert-value', `[${f.name.replace(/\.[^.]+$/, '')}](${encodeMarkdownLink(relativePath)})`)
+            }
+            callback.value = null
           }
-          callback.value = null
-        }
-        withMarked.value = false
-        e.preventDefault()
-        e.stopPropagation()
-      } else if (e.key === 'p' && e.ctrlKey) {
-        callback.value = (f: any) => {
-          store.commit('setCurrentFile', f)
-          callback.value = null
-        }
-        withMarked.value = true
-        e.preventDefault()
-        e.stopPropagation()
+          withMarked.value = false
+          e.preventDefault()
+          e.stopPropagation()
+          break
+        case 'show-quick-open':
+          callback.value = (f: any) => {
+            store.commit('setCurrentFile', f)
+            callback.value = null
+          }
+          withMarked.value = true
+          e.preventDefault()
+          e.stopPropagation()
+          break
       }
     }
 

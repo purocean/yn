@@ -8,6 +8,7 @@ import Tabs from './Tabs.vue'
 import File from '../useful/file'
 import { defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
 import { Components } from '../types'
+import { isAction } from '../useful/shortcut'
 
 const blankUri = File.toUri(null)
 
@@ -72,14 +73,14 @@ export default defineComponent({
       }
 
       // 快捷键切换最近文档
-      if (e.altKey && e.ctrlKey) {
-        if (e.key === 'ArrowLeft') {
-          const prev = findTab(-1)
-          prev && switchTab(prev)
-        } else if (e.key === 'ArrowRight') {
-          const next = findTab(1)
-          next && switchTab(next)
-        }
+      if (isAction(e, 'file-tabs-switch-left')) {
+        const prev = findTab(-1)
+        prev && switchTab(prev)
+      }
+
+      if (isAction(e, 'file-tabs-switch-right')) {
+        const next = findTab(1)
+        next && switchTab(next)
       }
     }
 

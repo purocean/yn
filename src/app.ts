@@ -1,5 +1,6 @@
-import { app, BrowserWindow, Menu, Tray } from 'electron'
+import { app, BrowserWindow, Menu, Tray, powerMonitor } from 'electron'
 import * as path from 'path'
+import * as os from 'os'
 import { dialog } from 'electron'
 import * as yargs from 'yargs'
 import server from './server/main'
@@ -7,6 +8,8 @@ import { USER_DIR } from './server/constant'
 import * as updater from './updater'
 import { getAccelerator, registerShortcut } from './shortcut'
 const opn = require('opn')
+
+const isMacos = os.platform() === 'darwin'
 
 let isDev = false
 
@@ -105,6 +108,8 @@ const createWindow = () => {
 const showWindow = () => {
   if (win) {
     const show = () => {
+      // macos 上隐藏图标
+      isMacos && app.dock.hide()
       win.setSkipTaskbar(false)
       win.show()
     }
@@ -164,6 +169,9 @@ if (!gotTheLock) {
   })
 
   app.on('ready', () => {
+    // macos 上隐藏图标
+    isMacos && app.dock.hide()
+
     // 打开后端服务器
     try {
       server(backendPort)
@@ -178,6 +186,8 @@ if (!gotTheLock) {
       'show-main-window': () => showWindow(),
       'open-in-browser': () => opn(getUrl())
     })
+
+    powerMonitor.on('shutdown', quit)
 
     if (showTray) {
       const contextMenu = Menu.buildFromTemplate([
@@ -295,7 +305,7 @@ if (!gotTheLock) {
         },
       ])
 
-      tray = new Tray(path.join(__dirname, './assets/icon.png'))
+      tray = new Tray(path.join(__dirname, './assets/tray.png'))
       tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
       tray.on('click', showWindow)
       tray.setContextMenu(contextMenu)
