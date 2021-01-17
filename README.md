@@ -77,12 +77,16 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.4.11](https://github.com/purocean/yn/releases/tag/v2.4.11) 2020-12-21
-1. 修复不能导出 docx 问题
-1. 修复大纲目录高度不正确
+### [v2.5.0](https://github.com/purocean/yn/releases/tag/v2.5.0) 2021-01-17
+1. 支持 macOS
+2. 调整部分快捷键
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.4.11](https://github.com/purocean/yn/releases/tag/v2.4.11) 2020-12-21
+1. 修复不能导出 docx 问题
+2. 修复大纲目录高度不正确
 
 ### [v2.4.10](https://github.com/purocean/yn/releases/tag/v2.4.10) 2020-12-16
 1. 优化脑图使用体验
