@@ -48,7 +48,8 @@
       "out/mac/Yank Note.app/Contents/Resources/app.asar.unpacked/bin/darwin-pandoc-2.7.3"
     ],
     "target": [
-      "dmg"
+      "dmg",
+      "zip"
     ]
   },
   "afterSign": "build/notarize.js",
