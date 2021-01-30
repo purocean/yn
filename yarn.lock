@@ -982,6 +982,14 @@ electron-log@^4.2.2:
   resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-4.2.2.tgz#b358dc6d1e4772465609ee3d8ad9f594d9e742c8"
   integrity sha512-lBpLh1Q8qayrTxFIrTPcNjSHsosvUfOYyZ8glhiLcx7zCNPDGuj8+nXlEaaSS6LRiQQbLgLG+wKpuvztNzBIrA==
 
+electron-notarize@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/electron-notarize/-/electron-notarize-1.0.0.tgz#bc925b1ccc3f79e58e029e8c4706572b01a9fd8f"
+  integrity sha512-dsib1IAquMn0onCrNMJ6gtEIZn/azG8hZMCYOuZIMVMUeRMgBYHK1s5TK9P8xAcrAjh/2aN5WYHzgVSWX314og==
+  dependencies:
+    debug "^4.1.1"
+    fs-extra "^9.0.1"
+
 electron-progressbar@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/electron-progressbar/-/electron-progressbar-1.2.0.tgz#3628ee759da5c4b6ae08887843b54d7364477310"
@@ -1254,6 +1262,16 @@ fs-extra@^9.0.0:
     graceful-fs "^4.2.0"
     jsonfile "^6.0.1"
     universalify "^1.0.0"
+
+fs-extra@^9.0.1:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-9.1.0.tgz#5954460c764a8da2094ba3554bf839e6b9a7c86d"
+  integrity sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==
+  dependencies:
+    at-least-node "^1.0.0"
+    graceful-fs "^4.2.0"
+    jsonfile "^6.0.1"
+    universalify "^2.0.0"
 
 get-caller-file@^2.0.1:
   version "2.0.5"
@@ -2726,6 +2744,11 @@ universalify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-1.0.0.tgz#b61a1da173e8435b2fe3c67d29b9adf8594bd16d"
   integrity sha512-rb6X1W158d7pRQBg5gkR8uPaSfiids68LTJQYOtEUhoJUWBdaQHsuT/EUduxXYxcrt4r5PJ4fuHW1MHT6p0qug==
+
+universalify@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.0.tgz#75a4984efedc4b08975c5aeb73f530d02df25717"
+  integrity sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
 
 unpipe@1.0.0:
   version "1.0.0"

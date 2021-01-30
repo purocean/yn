@@ -44,6 +44,7 @@
     "@types/yargs": "^15.0.4",
     "electron": "^9.3.1",
     "electron-builder": "^22.7.0",
+    "electron-notarize": "^1.0.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.9.5"
   }
