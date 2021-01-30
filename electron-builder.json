@@ -42,7 +42,7 @@
       "dmg"
     ]
   },
-  "afterSign": "scripts/notarize.js",
+  "afterSign": "build/notarize.js",
   "nsis": {
     "perMachine": false
   },
