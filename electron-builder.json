@@ -2,7 +2,14 @@
   "appId": "yank.note",
   "productName": "Yank Note",
   "copyright": "Copyright 2019 purocean@outlook.com",
-  "asar": false,
+  "asar": true,
+  "asarUnpack": [
+    "bin/**/*",
+    "help/**/*",
+    "dist/assets/*.docx",
+    "**/*.jar",
+    "**/*.exe"
+  ],
   "files": [
     "./bin/**",
     "./help/**",
