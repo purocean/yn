@@ -10,3 +10,4 @@ bin
 b.bat
 *.pfx
 .DS_Store
+.env
