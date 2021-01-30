@@ -15,4 +15,4 @@ export const HELP_DIR = path.join(__dirname, '../../help')
 export const ASSETS_DIR = path.join(__dirname, '../assets')
 
 export const BIN_DIR = path.join(__dirname, '../../bin').replace('app.asar', 'app.asar.unpacked')
-export const RESOURCES_DIR = path.join(__dirname, '../../resources').replace('app.asar', 'app.asar.unpacked')
+export const RESOURCES_DIR = path.join(__dirname, '../resources').replace('app.asar', 'app.asar.unpacked')

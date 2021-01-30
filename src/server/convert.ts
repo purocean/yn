@@ -12,7 +12,7 @@ const convert = async (html: string, type: string) => {
     const path = os.tmpdir() + `/yn_convert_${new Date().getTime()}.${type}`
 
     return new Promise((resolve, reject) => {
-      const args =  ['-f', 'html', '-o', path, '--reference-doc', docxTplPath]
+      const args = ['-f', 'html', '-o', path, '--reference-doc', docxTplPath]
       console.log(binPath, args)
       const process = spawn(binPath, args)
 
