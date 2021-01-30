@@ -46,7 +46,7 @@ jobs:
           yarn run build
           cd ..
           yarn run build
-          yarn run electron-builder --${{ matrix.platform }} -p never
+          yarn run electron-builder --${{ matrix.platform }} -p never | sed 's/identityName=.*$//'
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5
