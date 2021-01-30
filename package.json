@@ -11,7 +11,7 @@
   "scripts": {
     "download-pandoc": "node download-pandoc.js",
     "copy-assets": "node copy-assets.js",
-    "build": "tsc && npm run copy-assets",
+    "build": "tsc && yarn run copy-assets",
     "serve": "ts-node src/server/main.ts",
     "start": "npm run build && electron ./dist/app.js"
   },

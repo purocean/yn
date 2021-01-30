@@ -6,9 +6,8 @@
   "asarUnpack": [
     "bin/**/*",
     "help/**/*",
-    "dist/assets/*.docx",
-    "**/*.jar",
-    "**/*.exe"
+    "dist/resources/**/*",
+    "node_modules/node-plantuml/**/*"
   ],
   "files": [
     "./bin/**",
