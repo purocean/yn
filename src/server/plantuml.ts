@@ -1,13 +1,23 @@
-import config from './config'
 import * as request from 'request'
-const plantuml = require('node-plantuml')
+import { PlantUmlPipe } from 'plantuml-pipe'
+import { addDefaultsToOptions } from 'plantuml-pipe/dist/plantuml_pipe_options'
+import config from './config'
+import { convertAppPath } from '../helper'
 
 const generate = (data: any) => {
   const api = config.get('plantuml-api', 'local')
 
   if (api === 'local') {
-    const gen = plantuml.generate(data, {format: 'png', charset: 'UTF-8'});
-    return gen.out
+    const puml = new PlantUmlPipe({
+      outputFormat: 'png',
+      plantUmlArgs: [ '-charset', 'UTF-8' ],
+      jarPath: convertAppPath(addDefaultsToOptions({}).jarPath)
+    })
+
+    puml.in.write(data)
+    puml.in.end()
+
+    return puml.out
   } else {
     return request(api.replace('{data}', encodeURIComponent(data)))
   }

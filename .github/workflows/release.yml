@@ -19,8 +19,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       npm_config_disturl: https://atom.io/download/electron
-      npm_config_target: 9.3.1
+      npm_config_target: 9.4.0
       npm_config_runtime: "electron"
+      APPLEID: ${{ secrets.APPLEID }}
+      APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      CSC_LINK: ${{ secrets.CSC_LINK }}
 
     steps:
       - name: Checkout
@@ -45,7 +49,7 @@ jobs:
           yarn run build
           cd ..
           yarn run build
-          yarn run electron-builder --${{ matrix.platform }} -p never
+          yarn run electron-builder --${{ matrix.platform }} -p never | sed 's/identityName=.*$//'
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5

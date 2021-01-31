@@ -2,7 +2,13 @@
   "appId": "yank.note",
   "productName": "Yank Note",
   "copyright": "Copyright 2019 purocean@outlook.com",
-  "asar": false,
+  "asar": true,
+  "asarUnpack": [
+    "bin/**/*",
+    "help/**/*",
+    "dist/resources/**/*",
+    "node_modules/plantuml-pipe/**/*"
+  ],
   "files": [
     "./bin/**",
     "./help/**",
@@ -33,10 +39,19 @@
     ]
   },
   "mac": {
+    "gatekeeperAssess": false,
+    "hardenedRuntime": true,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist",
+    "binaries": [
+      "out/mac/Yank Note.app/Contents/Resources/app.asar.unpacked/bin/darwin-pandoc-2.7.3"
+    ],
     "target": [
-      "dmg"
+      "dmg",
+      "zip"
     ]
   },
+  "afterSign": "build/notarize.js",
   "nsis": {
     "perMachine": false
   },
