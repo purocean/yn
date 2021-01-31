@@ -77,12 +77,17 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.5.1](https://github.com/purocean/yn/releases/tag/v2.5.1) 2021-01-17
-1. 支持 macOS
-2. 调整部分快捷键
+### [v2.5.2](https://github.com/purocean/yn/releases/tag/v2.5.2) 2021-01-31
+1. macOS 打包增加签名公证
+2. 调整打包流程
+3. 替换 plantuml 库
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.5.1](https://github.com/purocean/yn/releases/tag/v2.5.1) 2021-01-17
+1. 支持 macOS
+2. 调整部分快捷键
 
 ### [v2.4.11](https://github.com/purocean/yn/releases/tag/v2.4.11) 2020-12-21
 1. 修复不能导出 docx 问题
