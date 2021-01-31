@@ -53,6 +53,8 @@ const createWindow = () => {
     minHeight: 500,
     frame: false,
     backgroundColor: '#282a2b',
+    titleBarStyle: isMacos ? 'hidden' : undefined,
+    fullscreenable: false,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
