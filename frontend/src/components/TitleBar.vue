@@ -1,5 +1,5 @@
 <template>
-  <div class="title-bar" :style="titleBarStyles">
+  <div :class="{'title-bar': true, 'in-electron': hasWin, 'is-macos': isMacOS}" :style="titleBarStyles">
     <div v-if="hasWin && !isMaximized" class="resizer"></div>
     <h4 class="title">
       <img v-if="hasWin" @dblclick="close" class="logo" src="~@/assets/icon.png" alt="logo">
@@ -31,7 +31,7 @@ import { useStore } from 'vuex'
 import env from '../useful/env'
 import SvgIcon from './SvgIcon.vue'
 
-const isElectron = env.isElectron
+const { isElectron, isMacOS } = env
 
 export default defineComponent({
   name: 'title-bar',
@@ -166,6 +166,7 @@ export default defineComponent({
 
     return {
       hasWin,
+      isMacOS,
       isMaximized,
       isAlwaysOnTop,
       isFocused,
@@ -221,6 +222,7 @@ export default defineComponent({
 
 .action {
   display: flex;
+  justify-content: flex-end;
   flex-grow: 0;
   flex-shrink: 0;
   text-align: center;
@@ -278,5 +280,16 @@ export default defineComponent({
 
 .action .btn.pin.ontop {
   background-color: hsla(0, 0%, 100%, .3)
+}
+
+.title-bar.in-electron.is-macos .title {
+  justify-content: center;
+  padding-left: 138px;
+  width: 100%;
+}
+
+.title-bar.in-electron.is-macos .title .logo,
+.title-bar.in-electron.is-macos .action .btn:not(.pin) {
+  display: none;
 }
 </style>
