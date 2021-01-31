@@ -9,6 +9,7 @@ const nodeModule = window && (window.module || _window.nodeModule)
 const nodeRequire = window && (window.require || _window.nodeRequire)
 
 const isElectron = !!(nodeProcess?.versions?.electron)
+const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)
 
 const openAlwaysOnTopWindow = (url: string, target = '_blank') => {
   if (isElectron) {
@@ -59,5 +60,6 @@ export default {
   module: nodeModule,
   require: nodeRequire,
   isElectron,
+  isMacOS,
   openAlwaysOnTopWindow,
 }

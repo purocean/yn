@@ -34,7 +34,7 @@
 + [ ] 可以自定义快捷键
 
 ## 特色功能
-部分功能需要相关快捷键配合，可参考[特色功能说明](./help/FEATURE.md)
+部分功能需要相关快捷键配合，可参考[特色功能说明](./help/FEATURES.md)
 
 + 同步滚动：编辑区和预览区同步滚动，预览区可独立滚动
 + 目录大纲：预览区目录大纲快速跳转
@@ -77,12 +77,18 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.5.1](https://github.com/purocean/yn/releases/tag/v2.5.1) 2021-01-17
-1. 支持 macOS
-2. 调整部分快捷键
+### [v2.5.4](https://github.com/purocean/yn/releases/tag/v2.5.4) 2021-01-31
+1. 调整 macOS 上应用边框样式
+2. macOS 打包增加签名公证
+3. 调整打包流程
+4. 替换 plantuml 库
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.5.1](https://github.com/purocean/yn/releases/tag/v2.5.1) 2021-01-17
+1. 支持 macOS
+2. 调整部分快捷键
 
 ### [v2.4.11](https://github.com/purocean/yn/releases/tag/v2.4.11) 2020-12-21
 1. 修复不能导出 docx 问题

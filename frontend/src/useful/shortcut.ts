@@ -1,8 +1,9 @@
 import { getLogger } from './utils'
+import env from './env'
 
 const logger = getLogger('shortcut')
 
-const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)
+const isMacOS = env.isMacOS
 const Ctrl = 'Ctrl'
 const CtrlCmd = 'CtrlCmd'
 const Alt = 'Alt'

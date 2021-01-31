@@ -1,14 +1,16 @@
-const os = require('os')
 const path = require('path')
 const fs = require('fs-extra')
 
-const assetsPath = path.join(__dirname, 'dist/assets')
-try {
-  fs.unlinkSync(assetsPath)
-} catch {
-}
+const dirs = [ 'assets', 'resources' ]
 
-fs.copySync(path.join(__dirname, 'src/assets'), assetsPath)
+dirs.forEach(dir => {
+  const origin = path.join(__dirname, 'src/' + dir)
+  const dist = path.join(__dirname, 'dist/' + dir)
+  if(fs.existsSync(dist)) {
+    fs.removeSync(dist)
+  }
+  fs.copySync(origin, dist)
+})
 
 // 复制 markdown，处理相对路径
 const md = fs.readFileSync('README.md').toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')

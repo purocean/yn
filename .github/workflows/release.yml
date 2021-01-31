@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       npm_config_disturl: https://atom.io/download/electron
-      npm_config_target: 9.3.1
+      npm_config_target: 9.4.0
       npm_config_runtime: "electron"
 
     steps:
@@ -39,13 +39,21 @@ jobs:
           yarn
           cd ..
 
+      - name: Set env
+        if: matrix.platform == 'mac'
+        run: |
+          echo "APPLEID=${{ secrets.APPLEID }}" >> $GITHUB_ENV
+          echo "APPLEIDPASS=${{ secrets.APPLEIDPASS }}" >> $GITHUB_ENV
+          echo "CSC_LINK=${{ secrets.CSC_LINK }}" >> $GITHUB_ENV
+          echo "CSC_KEY_PASSWORD=${{ secrets.CSC_KEY_PASSWORD }}" >> $GITHUB_ENV
+
       - name: Build
         run: |
           cd frontend
           yarn run build
           cd ..
           yarn run build
-          yarn run electron-builder --${{ matrix.platform }} -p never
+          yarn run electron-builder --${{ matrix.platform }} -p never | sed 's/identityName=.*$//'
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5
