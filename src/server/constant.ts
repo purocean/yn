@@ -2,6 +2,7 @@ import * as path from 'path'
 import * as os from 'os'
 import * as yargs from 'yargs'
 import { isWsl, toWslPath, getWinHomePath } from './wsl'
+import { convertAppPath } from '../helper'
 
 const homedir = isWsl ? toWslPath(getWinHomePath()) : os.homedir()
 
@@ -14,5 +15,5 @@ export const STATIC_DIR = path.join(__dirname, '../../frontend/dist')
 export const HELP_DIR = path.join(__dirname, '../../help')
 export const ASSETS_DIR = path.join(__dirname, '../assets')
 
-export const BIN_DIR = path.join(__dirname, '../../bin').replace('app.asar', 'app.asar.unpacked')
-export const RESOURCES_DIR = path.join(__dirname, '../resources').replace('app.asar', 'app.asar.unpacked')
+export const BIN_DIR = convertAppPath(path.join(__dirname, '../../bin'))
+export const RESOURCES_DIR = convertAppPath(path.join(__dirname, '../resources'))
