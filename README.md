@@ -77,14 +77,17 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.5.5](https://github.com/purocean/yn/releases/tag/v2.5.5) 2021-02-03
+1. 调整预览文字选择颜色
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v2.5.4](https://github.com/purocean/yn/releases/tag/v2.5.4) 2021-01-31
 1. 调整 macOS 上应用边框样式
 2. macOS 打包增加签名公证
 3. 调整打包流程
 4. 替换 plantuml 库
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v2.5.1](https://github.com/purocean/yn/releases/tag/v2.5.1) 2021-01-17
 1. 支持 macOS
