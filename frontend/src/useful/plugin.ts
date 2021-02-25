@@ -40,10 +40,16 @@ export const init = () => {
   logger.debug('init')
 
   const localPlugins = [
-    require('@/plugins/TransformImgOutLink').plugin
+    require('@/plugins/TransformImgOutLink')
   ]
 
-  localPlugins.forEach(register)
+  localPlugins.forEach((plugin) => {
+    if (plugin.__esModule && plugin.default) {
+      register(plugin.default)
+    } else {
+      register(plugin)
+    }
+  })
 }
 
 export const triggerHook = async (type: HookType, ...args: any[]) => {

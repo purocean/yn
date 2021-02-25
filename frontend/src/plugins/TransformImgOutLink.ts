@@ -52,7 +52,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
 const actionKeydown = 'transform-img-link'
 const actionClick = 'transform-img-link-by-click'
 
-export const plugin = {
+export default {
   name: 'transform-img-out-link',
   register: (ctx: Ctx) => {
     ctx.registerShortcutAction(actionKeydown, [CtrlCmd, Shift, 'l'])
