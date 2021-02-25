@@ -41,7 +41,6 @@
 import loadsh from 'lodash'
 import { useStore } from 'vuex'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
-import mime from 'mime-types'
 import Markdown from 'markdown-it'
 import TaskLists from 'markdown-it-task-lists'
 import katex from 'markdown-it-katex'
@@ -65,13 +64,13 @@ import MindMapPlugin from '../plugins/MindMapPlugin'
 import file from '../useful/file'
 import env from '../useful/env'
 import { encodeMarkdownLink } from '../useful/utils'
+import { triggerHook } from '../useful/plugin'
 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
 import { useBus } from '../useful/bus'
-import { useToast } from '../useful/toast'
-import { hasCtrlCmd, isAction } from '../useful/shortcut'
+import { hasCtrlCmd } from '../useful/shortcut'
 
 HighlightLineNumber.addStyles()
 
@@ -111,7 +110,6 @@ export default defineComponent({
   setup (_, { emit }) {
     const bus = useBus()
     const store = useStore()
-    const toast = useToast()
 
     const { currentContent, currentFile, autoPreview } = toRefs(store.state)
     const fileRepo = computed(() => currentFile.value?.repo)
@@ -273,63 +271,9 @@ export default defineComponent({
       nextTick(() => bus.emit('preview-rendered'))
     }, 500, { leading: true })
 
-    async function transformImgOutLink (img: HTMLImageElement) {
-      const transform = (ximg: HTMLImageElement): Promise<string> => {
-        const canvas = document.createElement('canvas')
-        canvas.width = ximg.naturalWidth
-        canvas.height = ximg.naturalHeight
-        canvas.getContext('2d')!!.drawImage(ximg, 0, 0)
-        return new Promise((resolve, reject) => {
-          canvas.toBlob(async blob => {
-            try {
-              const imgFile = new File([blob!!], 'file.png')
-              const { relativePath } = await file.upload(fileRepo.value, filePath.value, imgFile)
-              resolve(relativePath)
-            } catch (error) {
-              reject(error)
-            }
-          })
-        })
-      }
-
-      let replacedLink = ''
-      const imgAttrSrc = img.getAttribute('src') || ''
-      if (img.src.startsWith('data:')) {
-        replacedLink = await transform(img)
-      } else if (imgAttrSrc.startsWith('http://') || imgAttrSrc.startsWith('https://')) {
-        const res = await window.fetch(`api/proxy?url=${encodeURIComponent(img.src)}&headers=${img.getAttribute('headers') || ''}`)
-        const blob = await res.blob()
-        const imgFile = new File([blob!!], 'file.' + mime.extension(res.headers.get('content-type')!!))
-        const { relativePath } = await file.upload(fileRepo.value, filePath.value, imgFile)
-        replacedLink = relativePath
-      }
-
-      if (replacedLink) {
-        return { oldLink: img.src, replacedLink: encodeMarkdownLink(replacedLink) }
-      }
-
-      return null
-    }
-
     async function keydownHandler (e: KeyboardEvent) {
-      // 转换所有外链图片到本地
-      if (isAction(e, 'transform-img-link')) {
-        e.preventDefault()
-        e.stopPropagation()
-        const result = []
-        const imgList = refView.value!!.querySelectorAll('img')
-        for (let i = 0; i < imgList.length; i++) {
-          toast.show('info', `正在转换外链图片 ${i + 1}/${imgList.length}`)
-
-          const img = imgList[i]
-          const data = await transformImgOutLink(img)
-          if (data) {
-            result.push(data)
-          }
-        }
-        result.forEach(data => bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink }))
-        bus.emit('tree-refresh')
-      }
+      const getRefview = () => refView.value
+      triggerHook('ON_VIEW_KEY_DOWN', e, getRefview())
     }
 
     function handleScroll (e: any) {
@@ -350,6 +294,8 @@ export default defineComponent({
     }
 
     async function handleClick (e: MouseEvent) {
+      triggerHook('ON_VIEW_ELEMENT_CLICK', e)
+
       const target = e.target as HTMLElement
 
       const preventEvent = () => {
@@ -430,24 +376,6 @@ export default defineComponent({
       // 复制内容
       if (target.classList.contains('copy-inner-text')) {
         bus.emit('copy-text', target.innerText)
-      }
-
-      if (target.tagName === 'IMG') {
-        const img = target as HTMLImageElement
-        if (isAction(e, 'transform-img-link-by-click')) { // 转换外链图片到本地
-          const data = await transformImgOutLink(img)
-          if (data) {
-            bus.emit('tree-refresh')
-            bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink })
-          }
-        } else if (img.parentElement!!.tagName === 'A') {
-          handleLink(img.parentElement as HTMLAnchorElement)
-        } else {
-          env.openAlwaysOnTopWindow(img.src)
-        }
-
-        e.stopPropagation()
-        return
       }
 
       if (target.tagName === 'INPUT' && target.parentElement!!.classList.contains('source-line')) {
