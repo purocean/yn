@@ -38,10 +38,10 @@ import { useToast } from '../useful/toast'
 import { useModal } from '../useful/modal'
 import { useContextMenu } from '../useful/context-menu'
 import File from '../useful/file'
-import { Components } from '../types'
 import Extensions from '../useful/extensions'
+import { triggerHook } from '../useful/plugin'
+import { Components } from '../types'
 import SvgIcon from './SvgIcon.vue'
-import DrawioPlugin from '../plugins/DrawioPlugin'
 
 export default defineComponent({
   name: 'tree-node',
@@ -139,14 +139,12 @@ export default defineComponent({
       }
     }
 
-    function select (item: any) {
+    async function select (item: any) {
       if (item.type !== 'dir') {
         if (Extensions.supported(item.name)) {
           store.commit('setCurrentFile', item)
         } else {
-          if (item.path.toLowerCase().endsWith('.drawio')) {
-            DrawioPlugin.open(item)
-          } else {
+          if (!(await triggerHook('ON_TREE_NODE_SELECT', item))) {
             File.openInOS(props.item)
           }
         }

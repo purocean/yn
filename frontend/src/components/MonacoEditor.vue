@@ -204,16 +204,6 @@ export default defineComponent({
       return getEditor().getModel()!!.getLineContent(line)
     }
 
-    function switchTodo (line: number, checked: boolean) {
-      if (checked) {
-        const value = getLineContent(line).replace('[ ]', `[x] ~~${dayjs().format('YYYY-MM-DD HH:mm')}~~`)
-        replaceLine(line, value)
-      } else {
-        const value = getLineContent(line).replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
-        replaceLine(line, value)
-      }
-    }
-
     function getValue () {
       return getEditor().getModel()!!.getValue(getMonaco().editor.DefaultEndOfLine.LF)
     }
@@ -323,7 +313,6 @@ export default defineComponent({
       revealLine,
       revealLineInCenter,
       setScrollToTop,
-      switchTodo,
       replaceValue,
       replaceLine,
       toggleWrap,

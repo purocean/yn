@@ -1,15 +1,14 @@
 import { useStore } from 'vuex'
 import { useBus } from './bus'
-import RunPlugin from '@/plugins/RunPlugin'
-import { copyText } from './copy-text'
 import env from './env'
 import { hasCtrlCmd } from './shortcut'
+import { triggerHook } from './plugin'
 
 export default function startup () {
   const bus = useBus()
   const store = useStore()
 
-  RunPlugin.clearCache()
+  triggerHook('ON_STARTUP')
 
   bus.on('editor-ready', () => {
     const { currentFile } = store.state
@@ -19,8 +18,6 @@ export default function startup () {
       store.dispatch('showHelp', 'README.md')
     }
   })
-
-  bus.on('copy-text', copyText)
 
   // 在 Electron 环境中开启缩放页面功能
   if (env.isElectron) {

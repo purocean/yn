@@ -1,5 +1,6 @@
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
+import { Plugin } from '@/useful/plugin'
 
 const cachePrefix = 'run_code_result_'
 
@@ -60,7 +61,7 @@ const RunPlugin = (md: Markdown) => {
   }
 }
 
-RunPlugin.clearCache = () => {
+const clearCache = () => {
   Object.keys(localStorage).forEach(key => {
     if (key.startsWith(cachePrefix)) {
       localStorage.removeItem(key)
@@ -68,4 +69,10 @@ RunPlugin.clearCache = () => {
   })
 }
 
-export default RunPlugin
+export default {
+  name: 'run-code',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(RunPlugin)
+    ctx.registerHook('ON_STARTUP', clearCache)
+  }
+} as Plugin

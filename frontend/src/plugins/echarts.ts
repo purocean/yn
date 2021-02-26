@@ -1,6 +1,7 @@
 import echarts from 'echarts'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
+import { Plugin } from '@/useful/plugin'
 
 const renderHtml = (code: string) => {
   const id = `echart-${CryptoJS.MD5(code).toString()}-${Math.random().toString(36).substr(2)}`
@@ -24,7 +25,7 @@ const EChartsPlugin = (md: Markdown) => {
 
 let charts: {[key: string]: any} = {}
 
-EChartsPlugin.update = (theme = 'dark', animation: boolean | undefined = undefined, renderImg = false) => {
+const update = (theme = 'dark', animation: boolean | undefined = undefined, renderImg = false) => {
   Object.values(charts).forEach(x => x.chart.dispose())
   charts = {}
 
@@ -60,8 +61,8 @@ EChartsPlugin.update = (theme = 'dark', animation: boolean | undefined = undefin
   }
 }
 
-EChartsPlugin.preparePrint = () => {
-  EChartsPlugin.update('light', false, true)
+const preparePrint = () => {
+  update('light', false, true)
 
   for (const ele of document.getElementsByClassName('echarts')) {
     while (ele.firstChild) {
@@ -81,7 +82,19 @@ window.addEventListener('resize', () => {
 })
 
 window.addEventListener('beforeprint', () => {
-  EChartsPlugin.update('light', false)
+  update('light', false)
 })
 
-export default EChartsPlugin
+export default {
+  name: 'markdown-toc',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(EChartsPlugin)
+    ctx.registerHook('ON_VIEW_RENDER', () => {
+      update()
+    })
+    ctx.registerHook('ON_VIEW_BEFORE_CONVERT', () => {
+      preparePrint() // 转换成图片形式，设置主题
+      setTimeout(() => update(), 0) // 恢复
+    })
+  }
+} as Plugin

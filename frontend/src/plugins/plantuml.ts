@@ -1,7 +1,9 @@
 // https://github.com/DeepElement/markdown-it-plantuml-offline
+import lodash from 'lodash'
 import Markdown from 'markdown-it'
+import { Plugin } from '@/useful/plugin'
 
-export default function umlPlugin (md: Markdown, options: any) {
+const MarkdownItPlugin = function umlPlugin (md: Markdown, options: any) {
   function generateSourceDefault (umlCode: string) {
     return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
   }
@@ -136,3 +138,30 @@ export default function umlPlugin (md: Markdown, options: any) {
   })
   md.renderer.rules.uml_diagram = render
 }
+
+export default {
+  name: 'markdown-plantuml',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(MarkdownItPlugin)
+
+    const updatePlantuml = ({ getViewDom }: any) => {
+      const refView: HTMLElement = getViewDom()
+      const nodes = refView.querySelectorAll<HTMLImageElement>('img[data-plantuml-src]')
+      nodes.forEach(el => {
+        el.src = el.dataset.plantumlSrc || ''
+      })
+    }
+
+    const quickUpdateFun = (params: any) => {
+      setTimeout(() => {
+        ctx.registerHook('ON_VIEW_RENDERED', () => {
+          updatePlantuml(params)
+        }, true)
+      }, 0)
+    }
+
+    ctx.registerHook('ON_VIEW_MOUNTED', quickUpdateFun)
+    ctx.registerHook('ON_VIEW_FILE_CHANGE', quickUpdateFun)
+    ctx.registerHook('ON_VIEW_RENDERED', lodash.debounce(updatePlantuml, 3000, { leading: true }))
+  }
+} as Plugin

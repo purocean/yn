@@ -1,5 +1,6 @@
-import Markdown from 'markdown-it'
+import lodash from 'lodash'
 import Renderer from 'markdown-it/lib/renderer'
+import { Plugin } from '@/useful/plugin'
 import crypto from '@/useful/crypto'
 import { dataURItoBlobLink, openInNewWindow } from '@/useful/utils'
 
@@ -19,10 +20,6 @@ const renderRule: Renderer.RenderRule = (tokens, idx, options, { source }, slf) 
   }
 
   return slf.renderToken(tokens, idx, options)
-}
-
-const Plugin = (md: Markdown) => {
-  md.renderer.rules.bullet_list_open = renderRule
 }
 
 const buildSrcdoc = (json: string, btns: string) => {
@@ -87,7 +84,7 @@ const buildSrcdoc = (json: string, btns: string) => {
   `
 }
 
-Plugin.render = async (ele: HTMLElement) => {
+const render = async (ele: HTMLElement) => {
   const code = (ele.dataset.mindmapSource || '').trim()
 
   const div = document.createElement('div')
@@ -189,4 +186,19 @@ Plugin.render = async (ele: HTMLElement) => {
   div.appendChild(action)
 }
 
-export default Plugin
+export default {
+  name: 'mind-map',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(md => {
+      md.renderer.rules.bullet_list_open = renderRule
+    })
+
+    function renderMindMap ({ getViewDom }: any) {
+      const refView: HTMLElement = getViewDom()
+      const nodes = refView.querySelectorAll<HTMLElement>('.mindmap-list[data-mindmap-source]')
+      nodes.forEach(render)
+    }
+
+    ctx.registerHook('ON_VIEW_RENDER', lodash.debounce(renderMindMap, 1000, { leading: true }))
+  }
+} as Plugin
