@@ -1,6 +1,7 @@
 import { addAction } from './shortcut'
 import { getLogger } from './utils'
 import Markdown from 'markdown-it'
+import { useBus } from './bus'
 
 export type HookType = 'ON_STARTUP'
   | 'ON_VIEW_ELEMENT_CLICK'
@@ -17,15 +18,31 @@ export interface Plugin {
   register?: (ctx: Ctx) => void;
 }
 
-type HookFun = (...args: any[]) => boolean | void | Promise<boolean | void>
+export type HookFun = (...args: any[]) => boolean | void | Promise<boolean | void>
+
+export type StatusBarMenuItem = {
+  id: string;
+  type: 'normal';
+  title: string;
+  tips?: string;
+  onClick?: (item: StatusBarMenuItem) => void;
+}
+
+export interface StatusBarMenu {
+  id: string;
+  title: string;
+  tips?: string;
+  onClick?: (menu: StatusBarMenu) => void;
+  list?: (StatusBarMenuItem | { type: 'separator' })[];
+}
 
 const logger = getLogger('plugin')
+const bus = useBus()
 
 const plugins: {[name: string]: Plugin} = {}
-
 const hooks: { [key in HookType]?: {fun: HookFun; once: boolean}[] } = {}
-
 const markdownItPlugins: {plugin: any; params: any}[] = []
+const statusBarMenus: { [key: string]: StatusBarMenu } = {}
 
 const ctx = {
   registerShortcutAction (name: string, keys: (string | number)[]) {
@@ -45,6 +62,14 @@ const ctx = {
   },
   registerMarkdownItPlugin: (plugin: (md: Markdown, ...args: any) => void, params?: any) => {
     markdownItPlugins.push({ plugin, params })
+  },
+  updateStatusBarMenu: (menu: StatusBarMenu) => {
+    statusBarMenus[menu.id] = menu
+    bus.emit('status-bar-menu-update', menu)
+  },
+  removeStatusBarMenu: (id: string) => {
+    delete statusBarMenus[id]
+    bus.emit('status-bar-menu-update')
   }
 }
 
@@ -60,6 +85,7 @@ export const init = () => {
   logger.debug('init')
 
   const localPlugins = [
+    require('@/plugins/repository-switch'),
     require('@/plugins/markdown-source-line'),
     require('@/plugins/markdown-toc'),
     require('@/plugins/markdown-code'),
@@ -100,5 +126,6 @@ export const triggerHook = async (type: HookType, ...args: any[]) => {
 }
 
 export const getMarkdownItPlugins = () => markdownItPlugins
+export const getStatusBarMenus = () => Object.values(statusBarMenus)
 
 init()

@@ -36,7 +36,7 @@ const getLastOpenFile = (repoName?: string) => {
 
 export default createStore({
   state: {
-    repositories: {},
+    repositories: {} as any,
     tree: null,
     showSide: Storage.get('showSide', true),
     showView: Storage.get('showView', true),

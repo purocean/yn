@@ -1,6 +1,6 @@
 <template>
   <div class="status-bar">
-    <RepositorySwitch class="left"></RepositorySwitch>
+    <StatusBarMenu class="left" />
     <div class="right">
       <div class="document-info">
         <span>行：{{documentInfo.line}}</span>
@@ -25,13 +25,13 @@
 import { defineComponent, onBeforeUnmount, onMounted, toRefs } from 'vue'
 import { useStore } from 'vuex'
 import { useBus } from '../useful/bus'
-import RepositorySwitch from './RepositorySwitch.vue'
+import StatusBarMenu from './StatusBarMenu.vue'
 import SvgIcon from '../components/SvgIcon.vue'
 import { isAction, getActionLabel } from '../useful/shortcut'
 
 export default defineComponent({
   name: 'status-bar',
-  components: { RepositorySwitch, SvgIcon },
+  components: { StatusBarMenu, SvgIcon },
   setup () {
     const bus = useBus()
     const store = useStore()
