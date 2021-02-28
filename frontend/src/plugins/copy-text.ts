@@ -31,7 +31,7 @@ export default {
       }
 
       // 复制内容
-      if (target.classList.contains('copy-inner-text')) {
+      if (target.classList.contains('copy-inner-text') && hasCtrlCmd(e)) {
         bus.emit('copy-text', target.innerText)
         return preventEvent()
       }
