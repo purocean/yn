@@ -77,13 +77,17 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.6.1](https://github.com/purocean/yn/releases/tag/v2.6.1) 2021-03-04
+1. 修正一点界面问题
+2. 调整 macOS 升级逻辑
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v2.6.0](https://github.com/purocean/yn/releases/tag/v2.6.0) 2021-03-04
 1. 内部功能插件化，增强拓展性
 2. 微调界面样式
 3. 修复复制代码快捷键不正确问题
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v2.5.5](https://github.com/purocean/yn/releases/tag/v2.5.5) 2021-02-03
 1. 调整预览文字选择颜色
