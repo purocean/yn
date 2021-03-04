@@ -4,29 +4,26 @@ import env from './env'
 const logger = getLogger('shortcut')
 
 const isMacOS = env.isMacOS
-const Ctrl = 'Ctrl'
-const CtrlCmd = 'CtrlCmd'
-const Alt = 'Alt'
-const Shift = 'Shift'
-const LeftClick = 0
+export const Ctrl = 'Ctrl'
+export const CtrlCmd = 'CtrlCmd'
+export const Alt = 'Alt'
+export const Shift = 'Shift'
+export const LeftClick = 0
 
 type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 
-const actions = {
-  'toggle-side': [Alt, 'e'],
-  'toggle-wrap': [Alt, 'w'],
-  'toggle-view': [Alt, 'v'],
-  'toggle-xterm': [Alt, 't'],
-  'toggle-readme': [Alt, 'h'],
+const defaultActions = {
   'insert-document': [CtrlCmd, Alt, 'i'],
   'show-quick-open': [CtrlCmd, 'p'],
-  'transform-img-link-by-click': [CtrlCmd, Shift, LeftClick],
-  'transform-img-link': [CtrlCmd, Shift, 'l'],
   'file-tabs-switch-left': [Ctrl, Alt, 'ArrowLeft'],
   'file-tabs-switch-right': [Ctrl, Alt, 'ArrowRight'],
 }
 
-type ActionName = keyof typeof actions
+const actions: {[key: string]: (string | number)[]} = {
+  ...defaultActions
+}
+
+type ActionName = keyof typeof defaultActions
 
 export const hasCtrlCmd = (e: KeyboardEvent | MouseEvent) => isMacOS ? e.metaKey : e.ctrlKey
 
@@ -41,11 +38,6 @@ export const getKeyLabel = (key: XKey | string | number) => {
     default:
       return key.toString().toUpperCase()
   }
-}
-
-export const getActionLabel = (name: ActionName) => {
-  const keys: any[] = actions[name]
-  return keys.map(getKeyLabel).join(' + ')
 }
 
 export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)[]) => {
@@ -80,7 +72,22 @@ export const getCurrentAction = (e: KeyboardEvent | MouseEvent) => {
   return (Object.keys(actions) as ActionName[]).find(action => matchKeys(e, actions[action]))
 }
 
-export const isAction = (e: KeyboardEvent | MouseEvent, name: ActionName) => {
+export function isAction (e: KeyboardEvent | MouseEvent, name: ActionName): boolean
+export function isAction (e: KeyboardEvent | MouseEvent, name: string): boolean
+export function isAction (e: KeyboardEvent | MouseEvent, name: string) {
   logger.debug('isAction', name, e)
   return matchKeys(e, actions[name])
+}
+
+export function getActionLabel (name: ActionName): string
+export function getActionLabel (name: string): string
+export function getActionLabel (name: string): string {
+  const keys: any[] = actions[name]
+  return keys.map(getKeyLabel).join(' + ')
+}
+
+export function addAction (name: ActionName, keys: (string | number)[]): void
+export function addAction (name: string, keys: (string | number)[]): void
+export function addAction (name: string, keys: (string | number)[]): void {
+  actions[name] = keys
 }

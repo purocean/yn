@@ -2,8 +2,9 @@
 
 import Markdown from 'markdown-it'
 import { getKeyLabel } from '@/useful/shortcut'
+import { Plugin } from '@/useful/plugin'
 
-import { injectLineNumbers } from './SourceLinePlugin'
+import { injectLineNumbers } from './markdown-source-line'
 
 const slugify = (s: string) => 'h-' + encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
 
@@ -19,7 +20,7 @@ const defaults = {
   containerFooterHtml: undefined
 }
 
-export default (md: Markdown, o: any) => {
+const MarkdownItPlugin = (md: Markdown, o: any) => {
   const options = Object.assign({}, defaults, o)
   const tocRegexp = options.markerPattern
   let gstate: any
@@ -201,3 +202,10 @@ export default (md: Markdown, o: any) => {
   // Insert TOC
   md.inline.ruler.after('emphasis', 'toc', toc)
 }
+
+export default {
+  name: 'markdown-toc',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(MarkdownItPlugin)
+  }
+} as Plugin

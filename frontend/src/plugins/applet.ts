@@ -1,7 +1,9 @@
 import CryptoJS from 'crypto-js'
+import lodash from 'lodash'
 import dayjs from 'dayjs'
 import Markdown from 'markdown-it'
 import { useBus } from '@/useful/bus'
+import { Plugin } from '@/useful/plugin'
 
 const RunPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!!.bind(md.renderer.rules)
@@ -33,7 +35,7 @@ const RunPlugin = (md: Markdown) => {
   }
 }
 
-RunPlugin.runScript = (el: HTMLElement) => {
+const runScript = (el: HTMLElement) => {
   const appletId = el.id
   const appletCode = el.dataset.code
   if (!appletCode) {
@@ -44,7 +46,7 @@ RunPlugin.runScript = (el: HTMLElement) => {
   iframe.srcdoc = `
     <style>
       ::selection {
-        background: #d3d3d3;
+        background: #515455;
       }
 
       ::-webkit-scrollbar {
@@ -140,4 +142,17 @@ RunPlugin.runScript = (el: HTMLElement) => {
   el.appendChild(iframe)
 }
 
-export default RunPlugin
+export default {
+  name: 'applet',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(RunPlugin)
+
+    function runAppletScript ({ getViewDom }: any) {
+      const refView: HTMLElement = getViewDom()
+      const nodes = refView.querySelectorAll<HTMLElement>('.applet[data-code]')
+      nodes.forEach(runScript)
+    }
+
+    ctx.registerHook('ON_VIEW_RENDER', lodash.debounce(runAppletScript, 1000, { leading: true }))
+  }
+} as Plugin

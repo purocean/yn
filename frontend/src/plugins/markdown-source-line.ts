@@ -1,4 +1,4 @@
-import Markdown from 'markdown-it'
+import { Plugin } from '@/useful/plugin'
 import Renderer from 'markdown-it/lib/renderer'
 
 const buildFunction = (className: string): Renderer.RenderRule => {
@@ -16,12 +16,15 @@ const buildFunction = (className: string): Renderer.RenderRule => {
 
 export const injectLineNumbers = buildFunction('source-line')
 
-const SourceLinePlugin = (md: Markdown) => {
-  md.renderer.rules.paragraph_open = injectLineNumbers
-  md.renderer.rules.heading_open = injectLineNumbers
-  md.renderer.rules.list_item_open = injectLineNumbers
-  md.renderer.rules.table_open = injectLineNumbers
-  md.renderer.rules.td_open = buildFunction('yank-td')
-}
-
-export default SourceLinePlugin
+export default {
+  name: 'markdown-source-line',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(md => {
+      md.renderer.rules.paragraph_open = injectLineNumbers
+      md.renderer.rules.heading_open = injectLineNumbers
+      md.renderer.rules.list_item_open = injectLineNumbers
+      md.renderer.rules.table_open = injectLineNumbers
+      md.renderer.rules.td_open = buildFunction('yank-td')
+    })
+  }
+} as Plugin

@@ -19,8 +19,7 @@
     <template v-slot:preview>
       <Preview
         ref="refPreview"
-        @sync-scroll="line => refEditor.revealLineInCenter(line)"
-        @switch-todo="(line, checked) => refEditor.switchTodo(line, checked)" />
+        @sync-scroll="line => refEditor.revealLineInCenter(line)" />
     </template>
   </Layout>
   <XFilter />

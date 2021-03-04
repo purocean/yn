@@ -1,9 +1,10 @@
 import Markdown from 'markdown-it'
+import { Plugin } from '@/useful/plugin'
 import file from '@/useful/file'
 import { useBus } from '@/useful/bus'
 import { openInNewWindow } from '@/useful/utils'
 
-const Plugin = (md: Markdown) => {
+const MarkdownItPlugin = (md: Markdown) => {
   const renderHtml = ({ url, content }: any) => {
     const iframe = document.createElement('iframe')
     iframe.className = 'drawio'
@@ -119,7 +120,7 @@ const buildSrcdoc = async ({ repo, path, content, url }: F) => {
   `
 }
 
-Plugin.load = async (el: HTMLIFrameElement, url?: string) => {
+const load = async (el: HTMLIFrameElement, url?: string) => {
   const bus = useBus()
   const content = el.dataset.content || ''
 
@@ -154,9 +155,33 @@ Plugin.load = async (el: HTMLIFrameElement, url?: string) => {
   el.parentElement!!.appendChild(action)
 }
 
-Plugin.open = async (file: F) => {
-  const srcdoc = await buildSrcdoc(file)
-  openInNewWindow(srcdoc)
-}
+export default {
+  name: 'drawio',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(MarkdownItPlugin)
 
-export default Plugin
+    ctx.registerHook('ON_VIEW_RENDER', ({ getViewDom }) => {
+      const refView: HTMLElement = getViewDom()
+      const nodes = refView.querySelectorAll<HTMLIFrameElement>('.drawio[data-url]')
+      nodes.forEach(el => {
+        const url = el.dataset.url
+        if (url) {
+          load(el, url)
+        } else {
+          load(el)
+        }
+      })
+    })
+
+    ctx.registerHook('ON_TREE_NODE_SELECT', async (item: any) => {
+      if (item.path.toLowerCase().endsWith('.drawio')) {
+        const srcdoc = await buildSrcdoc(item)
+        openInNewWindow(srcdoc)
+
+        return true
+      }
+
+      return false
+    })
+  }
+} as Plugin

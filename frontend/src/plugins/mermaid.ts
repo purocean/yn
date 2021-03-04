@@ -1,5 +1,6 @@
 import Markdown from 'markdown-it'
 import mermaid from 'mermaid'
+import { Plugin } from '@/useful/plugin'
 
 const mermaidChart = (code: string) => {
   try {
@@ -28,8 +29,10 @@ const MermaidPlugin = (md: Markdown) => {
   }
 }
 
-MermaidPlugin.update = () => {
-  mermaid.init('.mermaid')
-}
-
-export default MermaidPlugin
+export default {
+  name: 'mermaid',
+  register: ctx => {
+    ctx.registerMarkdownItPlugin(MermaidPlugin)
+    ctx.registerHook('ON_VIEW_RENDER', () => mermaid.init('.mermaid'))
+  }
+} as Plugin

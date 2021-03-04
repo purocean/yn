@@ -2,6 +2,8 @@
 
 // https://github.com/wcoder/highlightjs-line-numbers.js
 
+import { Plugin } from '@/useful/plugin'
+
 const TABLE_NAME = 'hljs-ln'
 const LINE_NAME = 'hljs-ln-line'
 const CODE_BLOCK_NAME = 'hljs-ln-code'
@@ -149,4 +151,14 @@ function format (format: string, args: any) {
   })
 }
 
-export default { addStyles, lineNumbersBlock }
+export default {
+  name: 'markdown-toc',
+  register: ctx => {
+    ctx.registerHook('ON_STARTUP', addStyles)
+    ctx.registerHook('ON_VIEW_RENDER', ({ getViewDom }) => {
+      const refView: HTMLElement = getViewDom()
+      const nodes = refView.querySelectorAll<HTMLImageElement>('code[class^="language-"]')
+      nodes.forEach(lineNumbersBlock)
+    })
+  }
+} as Plugin
