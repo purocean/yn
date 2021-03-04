@@ -188,7 +188,7 @@ export default defineComponent({
   right: 0;
   top: 0;
   width: 4px;
-  cursor: w-resize;
+  cursor: ew-resize;
 }
 
 .sash-top {
@@ -198,7 +198,7 @@ export default defineComponent({
   left: 0;
   top: 0;
   height: 4px;
-  cursor: s-resize;
+  cursor: ns-resize;
 }
 
 .right {
