@@ -109,7 +109,7 @@ export default defineComponent({
   left: -99999px;
   top: -99999px;
   visibility: hidden;
-  background: #696969;
+  background: #3d4042;
   border: 1px #333 solid;
   border-left: 0;
   border-top: 0;
@@ -120,8 +120,8 @@ export default defineComponent({
 }
 
 .menu > li.separator {
-  border-top: 1px #888888 solid;
-  border-bottom: 1px #646464 solid;
+  border-top: 1px #666 solid;
+  border-bottom: 1px #444 solid;
   margin: 3px 0;
 }
 
