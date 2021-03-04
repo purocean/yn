@@ -343,7 +343,8 @@ export default defineComponent({
   user-select: none;
 }
 
-summary.folder::-webkit-details-marker {
+summary.folder::-webkit-details-marker,
+summary.folder::marker {
   flex: none;
   width: 10px;
   margin: 0;
@@ -351,7 +352,6 @@ summary.folder::-webkit-details-marker {
 }
 
 .folder {
-  display: flex;
   align-items: center;
 }
 
@@ -363,7 +363,8 @@ summary.folder::-webkit-details-marker {
 }
 
 summary > .item {
-  width: calc(100% - 15px);
+  display: inline-flex;
+  width: calc(100% - 20px);
 }
 
 .item-label {
