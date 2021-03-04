@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onBeforeUnmount, ref } from 'vue'
+import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useBus } from '../useful/bus'
 import { getStatusBarMenus, StatusBarMenuItem } from '../useful/plugin'
 
@@ -24,9 +24,9 @@ export default defineComponent({
     const handleItemClick = (item: StatusBarMenuItem) => {
       item.onClick && item.onClick(item)
       showList.value = false
-      nextTick(() => {
+      setTimeout(() => {
         showList.value = true
-      })
+      }, 0)
     }
 
     const updateMenu = () => {
