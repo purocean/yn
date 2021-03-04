@@ -89,7 +89,9 @@ export const init = () => {
   logger.debug('init')
 
   const localPlugins = [
-    require('@/plugins/repository-switch'),
+    require('@/plugins/status-bar-repository-switch'),
+    require('@/plugins/status-bar-view'),
+    require('@/plugins/status-bar-help'),
     require('@/plugins/markdown-source-line'),
     require('@/plugins/markdown-toc'),
     require('@/plugins/markdown-code'),

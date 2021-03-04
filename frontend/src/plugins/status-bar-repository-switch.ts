@@ -5,7 +5,7 @@ import { $args } from '@/useful/global-args'
 import file from '@/useful/file'
 
 export default {
-  name: 'repository-switch',
+  name: 'status-bar-repository-switch',
   register: ctx => {
     const bus = useBus()
 
@@ -41,7 +41,7 @@ export default {
     function updateMenu () {
       const { currentRepo, repositories } = store.state
       ctx.updateStatusBarMenu({
-        id: 'repository-switch',
+        id: 'status-bar-repository-switch',
         location: 'status-bar',
         position: 'left',
         title: currentRepo ? `仓库: ${currentRepo.name}` : '未选择仓库',

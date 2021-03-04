@@ -13,11 +13,6 @@ export const LeftClick = 0
 type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 
 const defaultActions = {
-  'toggle-side': [Alt, 'e'],
-  'toggle-wrap': [Alt, 'w'],
-  'toggle-view': [Alt, 'v'],
-  'toggle-xterm': [Alt, 't'],
-  'toggle-readme': [Alt, 'h'],
   'insert-document': [CtrlCmd, Alt, 'i'],
   'show-quick-open': [CtrlCmd, 'p'],
   'file-tabs-switch-left': [Ctrl, Alt, 'ArrowLeft'],

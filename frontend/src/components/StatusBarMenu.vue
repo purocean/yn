@@ -55,16 +55,21 @@ export default defineComponent({
 
 <style scoped>
 .status-bar-menu {
-  width: 100px;
   cursor: pointer;
   user-select: none;
+  z-index: 9999999999;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .title {
-  padding: 0 .3em;
+  width: 100%;
+  padding: 0 .8em;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  box-sizing: border-box;
+  width: fit-content;
 }
 
 .status-bar-menu:hover {
@@ -88,7 +93,7 @@ export default defineComponent({
 }
 
 .list li {
-  padding: 4px .6em;
+  padding: 4px .8em;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
