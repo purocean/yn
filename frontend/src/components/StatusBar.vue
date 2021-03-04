@@ -1,7 +1,8 @@
 <template>
   <div class="status-bar">
-    <StatusBarMenu class="left" />
+    <StatusBarMenu class="left" position="left" />
     <div class="right">
+      <StatusBarMenu class="right" position="right" />
       <div class="document-info">
         <span>行：{{documentInfo.line}}</span>
         <span>列：{{documentInfo.column}}</span>

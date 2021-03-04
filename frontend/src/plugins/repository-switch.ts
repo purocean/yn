@@ -42,6 +42,8 @@ export default {
       const { currentRepo, repositories } = store.state
       ctx.updateStatusBarMenu({
         id: 'repository-switch',
+        location: 'status-bar',
+        position: 'left',
         title: currentRepo ? `仓库: ${currentRepo.name}` : '未选择仓库',
         list: Object.keys(repositories).map(name => {
           const path = repositories[name]

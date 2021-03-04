@@ -16,9 +16,15 @@ import { getStatusBarMenus, StatusBarMenuItem } from '../useful/plugin'
 
 export default defineComponent({
   name: 'status-bar-menu',
-  setup () {
+  props: {
+    position: {
+      type: String,
+      default: 'left'
+    }
+  },
+  setup (props) {
     const bus = useBus()
-    const list = ref(getStatusBarMenus())
+    const list = ref(getStatusBarMenus('status-bar', props.position))
     const showList = ref(true)
 
     const handleItemClick = (item: StatusBarMenuItem) => {
@@ -30,8 +36,7 @@ export default defineComponent({
     }
 
     const updateMenu = () => {
-      list.value = getStatusBarMenus()
-      console.log('rest', getStatusBarMenus())
+      list.value = getStatusBarMenus('status-bar', props.position)
     }
 
     bus.on('status-bar-menu-update', updateMenu)

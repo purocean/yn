@@ -28,10 +28,14 @@ export type StatusBarMenuItem = {
   onClick?: (item: StatusBarMenuItem) => void;
 }
 
+export type MenuLocation = 'status-bar'
+
 export interface StatusBarMenu {
   id: string;
   title: string;
   tips?: string;
+  location: MenuLocation;
+  position: 'left' | 'right';
   onClick?: (menu: StatusBarMenu) => void;
   list?: (StatusBarMenuItem | { type: 'separator' })[];
 }
@@ -126,6 +130,7 @@ export const triggerHook = async (type: HookType, ...args: any[]) => {
 }
 
 export const getMarkdownItPlugins = () => markdownItPlugins
-export const getStatusBarMenus = () => Object.values(statusBarMenus)
+export const getStatusBarMenus = (location: MenuLocation, position: string) =>
+  Object.values(statusBarMenus).filter(x => x.location === location && x.position === position)
 
 init()
