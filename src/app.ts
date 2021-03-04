@@ -315,7 +315,9 @@ if (!gotTheLock) {
 
     updater.init(() => {
       // 立即升级，退出程序
-      app.exit(0)
+      if (!isMacos) {
+        app.exit(0)
+      }
     })
     setTimeout(() => {
       updater.autoCheckForUpdates()
