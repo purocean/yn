@@ -48,7 +48,7 @@ export default {
     ctx.updateStatusBarMenu({
       id: 'status-bar-view',
       location: 'status-bar',
-      position: 'right',
+      position: 'left',
       title: '视图',
       list: Object.entries(actions).map(([key, item]) => {
         return {
