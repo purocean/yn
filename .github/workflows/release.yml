@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       npm_config_disturl: https://atom.io/download/electron
-      npm_config_target: 9.4.0
+      npm_config_target: 11.4.2
       npm_config_runtime: "electron"
 
     steps:
@@ -53,7 +53,18 @@ jobs:
           yarn run build
           cd ..
           yarn run build
+
+      - name: Electron-Win-Linux
+        if: matrix.platform != 'mac'
+        run: |
           yarn run electron-builder --${{ matrix.platform }} -p never | sed 's/identityName=.*$//'
+
+      - name: Electron-Mac
+        if: matrix.platform == 'mac'
+        run: |
+          yarn run electron-builder --${{ matrix.platform }} --x64 -p never | sed 's/identityName=.*$//'
+          cp ./files/*pty.node ./node_modules/node-pty/build/Release/pty.node
+          yarn run electron-builder --${{ matrix.platform }} --arm64 -p never | sed 's/identityName=.*$//'
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5

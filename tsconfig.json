@@ -4,7 +4,8 @@
     "target": "es2017",
     "noImplicitAny": true,
     "outDir": "./dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true
   },
   "typeRoots": [
     "node_modules/@types",

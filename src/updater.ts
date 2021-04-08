@@ -1,5 +1,6 @@
 import { dialog, app } from 'electron'
-import { autoUpdater, CancellationToken } from 'electron-updater'
+import { autoUpdater } from 'electron-updater'
+import { CancellationToken } from 'builder-util-runtime'
 const ProgressBar = require('electron-progressbar')
 const Store = require('electron-store')
 const opn = require('opn')
