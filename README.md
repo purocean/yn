@@ -77,16 +77,16 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.6.1](https://github.com/purocean/yn/releases/tag/v2.6.1) 2021-03-04
-1. 修正一点界面问题
-2. 调整 macOS 升级逻辑
+### [v2.7.0](https://github.com/purocean/yn/releases/tag/v2.7.0) 2021-04-08
+1. 升级 Electron 到 11.4.2
+2. 增加 Mac arm64 打包
 
 <details>
 <summary>展开查看更多版本记录</summary>
 
-### [v2.7.0](https://github.com/purocean/yn/releases/tag/v2.7.0) 2021-04-08
-1. 升级 Electron 到 11.4.2
-2. 增加 Mac arm64 打包
+### [v2.6.1](https://github.com/purocean/yn/releases/tag/v2.6.1) 2021-03-04
+1. 修正一点界面问题
+2. 调整 macOS 升级逻辑
 
 ### [v2.6.0](https://github.com/purocean/yn/releases/tag/v2.6.0) 2021-03-04
 1. 内部功能插件化，增强拓展性
