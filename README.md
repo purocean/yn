@@ -77,7 +77,7 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.7.0](https://github.com/purocean/yn/releases/tag/v2.7.0) 2021-04-08
+### [v2.7.1](https://github.com/purocean/yn/releases/tag/v2.7.1) 2021-04-08
 1. 升级 Electron 到 11.4.2
 2. 增加 Mac arm64 打包
 
