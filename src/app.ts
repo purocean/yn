@@ -42,6 +42,7 @@ const hide = () => {
   if (win) {
     win.hide()
     win.setSkipTaskbar(true)
+    isMacos && app.dock.hide()
   }
 }
 
@@ -107,21 +108,26 @@ const createWindow = () => {
   })
 }
 
-const showWindow = () => {
+const showWindow = (forceShow?: boolean) => {
   if (win) {
     const show = () => {
-      // macos 上隐藏图标
-      isMacos && app.dock.hide()
+      // macos 上展示图标
+      isMacos && app.dock.show()
       win.setSkipTaskbar(false)
       win.show()
+      win.focus()
     }
 
-    if (win.isVisible() && win.isFocused()) {
+    if (win.isVisible() && win.isFocused() && !forceShow) {
       hide()
     } else {
-      // 先隐藏再显示，以便在 windows 10 当前虚拟窗口展示
-      hide()
-      setTimeout(show, 100)
+      if (isMacos) {
+        show()
+      } else {
+        // 先隐藏再显示，以便在 windows 10 当前虚拟窗口展示
+        hide()
+        setTimeout(show, 100)
+      }
     }
   } else {
     createWindow()
@@ -171,9 +177,6 @@ if (!gotTheLock) {
   })
 
   app.on('ready', () => {
-    // macos 上隐藏图标
-    isMacos && app.dock.hide()
-
     // 打开后端服务器
     try {
       server(backendPort)
@@ -198,7 +201,7 @@ if (!gotTheLock) {
           label: '打开主界面',
           accelerator: getAccelerator('show-main-window'),
           click: () => {
-            showWindow()
+            showWindow(true)
           }
         },
         {
@@ -309,7 +312,11 @@ if (!gotTheLock) {
 
       tray = new Tray(path.join(__dirname, './assets/tray.png'))
       tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
-      tray.on('click', showWindow)
+      if (isMacos) {
+        tray.on('click', function() { this.popUpContextMenu() })
+      } else {
+        tray.on('click', () => showWindow())
+      }
       tray.setContextMenu(contextMenu)
     }
 
@@ -325,10 +332,6 @@ if (!gotTheLock) {
   })
 
   app.on('activate', () => {
-    // 在macOS上，当单击dock图标并且没有其他窗口打开时，
-    // 通常在应用程序中重新创建一个窗口。
-    if (win === null) {
-      createWindow()
-    }
+    showWindow()
   })
 }
