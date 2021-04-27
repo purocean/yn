@@ -241,7 +241,7 @@ export default defineComponent({
         { id: 'rename', label: '重命名 / 移动', onClick: () => renameFile() },
         { type: 'separator' },
         { id: 'openInOS', label: '在系统中打开', onClick: () => revealInExplorer() },
-        { id: 'openInOS', label: '刷新目录树', onClick: () => bus.emit('tree-refresh') },
+        { id: 'refreshTree', label: '刷新目录树', onClick: () => bus.emit('tree-refresh') },
       ]
 
       if (item.type === 'dir') {
