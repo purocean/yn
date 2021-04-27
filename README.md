@@ -10,7 +10,7 @@
 ## 特色
 + **使用方便**：使用 Monaco 编辑器（VSCode 编辑器内核）编辑，针对 Markdown 文件添加了快捷键和补全规则
 + **兼容性强**：资源保存本地，Markdown 文件可简单处理离线工作；拓展功能尽量用 Markdown 原有的语法实现
-+ **高拓展性**：可在文档中嵌入小工具、可运行的代码块、ECharts 图形、Plantuml 图形、Drawio 图形等
++ **高拓展性**：可在文档中嵌入小工具、可运行的代码块、ECharts 图形、Plantuml 图形、Drawio 图形等、可自定义插件拓展编辑器功能
 + **支持加密**：用来保存账号等隐私文件，文件可单独设置密码
 
 ## 注意事项
@@ -66,6 +66,7 @@
 + 表格解析增强：表格支持表格标题多行文本，列表等特性，示例见 FEATURE.md
 + 文档交叉链接跳转：支持在文档中引入其他文档，互相跳转
 + 脚注功能：支持在文档中书写脚注
++ 自定义插件：支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中，文档待完善
 
 ## 界面截图
 ![截图](./help/3.png)
@@ -77,11 +78,15 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.7.2](https://github.com/purocean/yn/releases/tag/v2.7.2) 2021-04-09
-1. 优化 macOS 上的窗口体验
+### [v2.8.0](https://github.com/purocean/yn/releases/tag/v2.8.0) 2021-04-27
+1. 增加自定义插件功能
+2. 微调窗口管理逻辑
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.7.2](https://github.com/purocean/yn/releases/tag/v2.7.2) 2021-04-09
+1. 优化 macOS 上的窗口体验
 
 ### [v2.7.1](https://github.com/purocean/yn/releases/tag/v2.7.1) 2021-04-08
 1. 升级 Electron 到 11.4.2
