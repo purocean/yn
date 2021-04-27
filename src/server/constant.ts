@@ -14,6 +14,7 @@ export const CONFIG_FILE = path.join(USER_DIR, 'config.json')
 export const STATIC_DIR = path.join(__dirname, '../../frontend/dist')
 export const HELP_DIR = path.join(__dirname, '../../help')
 export const ASSETS_DIR = path.join(__dirname, '../assets')
+export const USER_PLUGIN_DIR = path.join(USER_DIR, './plugins')
 
 export const BIN_DIR = convertAppPath(path.join(__dirname, '../../bin'))
 export const RESOURCES_DIR = convertAppPath(path.join(__dirname, '../resources'))

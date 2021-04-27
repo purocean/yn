@@ -1,6 +1,7 @@
 import * as shortcut from '@/useful/shortcut'
 import { getLogger } from '@/useful/utils'
 import { useBus } from '@/useful/bus'
+import { useToast } from '@/useful/toast'
 import buildInPlugins from './build-in'
 import store from '@/store'
 import * as tree from './tree'
@@ -27,6 +28,9 @@ const ctx = {
   bus,
   store,
   shortcut,
+  ui: {
+    useToast,
+  },
   registerHook: (type: HookType, fun: HookFun, once = false) => {
     if (Array.isArray(hooks[type])) {
       hooks[type] = [...hooks[type]!!, { fun, once }]
@@ -73,6 +77,12 @@ export const init = () => {
       register(plugin)
     }
   })
+
+  ;(window as any).registerPlugin = register
+
+  const script = window.document.createElement('script')
+  script.src = '/api/plugins'
+  window.document.body.appendChild(script)
 }
 
 export const triggerHook = ctx.triggerHook

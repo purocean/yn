@@ -6,7 +6,7 @@ import * as xStatic from 'koa-static'
 import * as mime from 'mime'
 import * as request from 'request'
 import * as pty from 'node-pty'
-import { STATIC_DIR, HOME_DIR, HELP_DIR } from './constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR } from './constant'
 import init from './init'
 import file from './file'
 import dataRepository from './repository'
@@ -176,6 +176,24 @@ const readme = async (ctx: any, next: any) => {
   }
 }
 
+const userPlugin = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/plugins')) {
+    ctx.type = 'application/javascript; charset=utf-8';
+
+    let code = ''
+    fs.readdirSync(USER_PLUGIN_DIR, { withFileTypes: true })
+      .filter(x => x.isFile && x.name.endsWith('.js'))
+      .forEach(x => {
+        code += `// ===== ${x.name} =====\n`
+          + fs.readFileSync(path.join(USER_PLUGIN_DIR, x.name))
+          + '\n// ===== end =====\n\n'
+      })
+    ctx.body = code
+  } else {
+    await next()
+  }
+}
+
 const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
@@ -207,6 +225,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, markFile))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
 
   app.use(async (ctx: any, next: any) => {
     if (ctx.path.startsWith('/static')) {
