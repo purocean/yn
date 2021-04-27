@@ -50,6 +50,7 @@ const ctx = {
 
     return false
   },
+  tree: tree.ctx,
   markdown: markdown.ctx,
   statusBar: statusBar.ctx
 }
