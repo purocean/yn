@@ -12,7 +12,7 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useBus } from '../useful/bus'
-import { getStatusBarMenus, StatusBarMenuItem } from '../useful/plugin'
+import { getMenus, MenuItem } from '../useful/plugin/status-bar'
 
 export default defineComponent({
   name: 'status-bar-menu',
@@ -24,10 +24,10 @@ export default defineComponent({
   },
   setup (props) {
     const bus = useBus()
-    const list = ref(getStatusBarMenus('status-bar', props.position))
+    const list = ref(getMenus(props.position))
     const showList = ref(true)
 
-    const handleItemClick = (item: StatusBarMenuItem) => {
+    const handleItemClick = (item: MenuItem) => {
       item.onClick && item.onClick(item)
       showList.value = false
       setTimeout(() => {
@@ -36,7 +36,7 @@ export default defineComponent({
     }
 
     const updateMenu = () => {
-      list.value = getStatusBarMenus('status-bar', props.position)
+      list.value = getMenus(props.position)
     }
 
     bus.on('status-bar-menu-update', updateMenu)

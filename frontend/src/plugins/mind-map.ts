@@ -189,7 +189,7 @@ const render = async (ele: HTMLElement) => {
 export default {
   name: 'mind-map',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(md => {
+    ctx.markdown.registerPlugin(md => {
       md.renderer.rules.bullet_list_open = renderRule
     })
 

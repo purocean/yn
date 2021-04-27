@@ -206,6 +206,6 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
 export default {
   name: 'markdown-toc',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(MarkdownItPlugin)
+    ctx.markdown.registerPlugin(MarkdownItPlugin)
   }
 } as Plugin

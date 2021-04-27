@@ -32,7 +32,7 @@ const MermaidPlugin = (md: Markdown) => {
 export default {
   name: 'mermaid',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(MermaidPlugin)
+    ctx.markdown.registerPlugin(MermaidPlugin)
     ctx.registerHook('ON_VIEW_RENDER', () => mermaid.init('.mermaid'))
   }
 } as Plugin

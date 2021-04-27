@@ -173,7 +173,7 @@ if (!gotTheLock) {
   app.exit()
 } else {
   app.on('second-instance', (event, commandLine, workingDirectory) => {
-    showWindow()
+    showWindow(true)
   })
 
   app.on('ready', () => {
@@ -184,7 +184,7 @@ if (!gotTheLock) {
       app.exit(-1)
     }
 
-    showWindow()
+    showWindow(true)
 
     // 注册快捷键
     registerShortcut({
@@ -332,6 +332,6 @@ if (!gotTheLock) {
   })
 
   app.on('activate', () => {
-    showWindow()
+    showWindow(true)
   })
 }

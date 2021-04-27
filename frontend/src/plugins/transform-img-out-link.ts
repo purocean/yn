@@ -55,8 +55,8 @@ const actionClick = 'transform-img-link-by-click'
 export default {
   name: 'transform-img-out-link',
   register: (ctx: Ctx) => {
-    ctx.registerShortcutAction(actionKeydown, [CtrlCmd, Shift, 'l'])
-    ctx.registerShortcutAction(actionClick, [CtrlCmd, Shift, LeftClick])
+    ctx.shortcut.addAction(actionKeydown, [CtrlCmd, Shift, 'l'])
+    ctx.shortcut.addAction(actionClick, [CtrlCmd, Shift, LeftClick])
 
     ctx.registerHook('ON_VIEW_KEY_DOWN', async (e: KeyboardEvent, refView: HTMLElement) => {
       const toast = useToast()

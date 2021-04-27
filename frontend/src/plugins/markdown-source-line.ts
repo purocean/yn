@@ -19,7 +19,7 @@ export const injectLineNumbers = buildFunction('source-line')
 export default {
   name: 'markdown-source-line',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(md => {
+    ctx.markdown.registerPlugin(md => {
       md.renderer.rules.paragraph_open = injectLineNumbers
       md.renderer.rules.heading_open = injectLineNumbers
       md.renderer.rules.list_item_open = injectLineNumbers

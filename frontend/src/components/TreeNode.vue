@@ -42,6 +42,7 @@ import Extensions from '../useful/extensions'
 import { triggerHook } from '../useful/plugin'
 import { Components } from '../types'
 import SvgIcon from './SvgIcon.vue'
+import { registerContextMenu, getContextMenuItems } from '../useful/plugin/tree'
 
 export default defineComponent({
   name: 'tree-node',
@@ -231,20 +232,24 @@ export default defineComponent({
     }
 
     function showContextMenu (item: any) {
+      contextMenu.show(getContextMenuItems(item))
+    }
+
+    function buildContextMenu (item: any) {
       const menu: Components.ContextMenu.Item[] = [
         { id: 'delete', label: '删除', onClick: () => deleteFile() },
         { id: 'rename', label: '重命名 / 移动', onClick: () => renameFile() },
         { type: 'separator' },
         { id: 'openInOS', label: '在系统中打开', onClick: () => revealInExplorer() },
-        { id: 'openInOS', label: '刷新目录树', onClick: () => bus.emit('tree-refresh') },
+        { id: 'refreshTree', label: '刷新目录树', onClick: () => bus.emit('tree-refresh') },
       ]
 
       if (item.type === 'dir') {
-        contextMenu.show([
+        return [
           { id: 'create', label: '创建新文件', onClick: () => createFile() },
           ...menu,
           { id: 'openInTerminal', label: '在终端中打开', onClick: () => revealInXterminal() }
-        ])
+        ]
       } else {
         // markdown 文件可以被标记
         if (props.item.path.endsWith('.md')) {
@@ -257,16 +262,18 @@ export default defineComponent({
             additional.push({ id: 'duplicate', label: '重复文件', onClick: () => duplicateFile() })
           }
 
-          contextMenu.show([
+          return [
             ...additional,
             ...menu,
             { id: 'create', label: '当前目录创建新文件', onClick: () => createFile() }
-          ])
+          ]
         } else {
-          contextMenu.show(menu)
+          return menu
         }
       }
     }
+
+    registerContextMenu((_, item) => buildContextMenu(item))
 
     const currentRepoName = computed(() => currentRepo.value?.name ?? '/')
 

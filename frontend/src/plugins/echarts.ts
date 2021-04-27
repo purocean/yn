@@ -88,7 +88,7 @@ window.addEventListener('beforeprint', () => {
 export default {
   name: 'markdown-toc',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(EChartsPlugin)
+    ctx.markdown.registerPlugin(EChartsPlugin)
     ctx.registerHook('ON_VIEW_RENDER', () => {
       update()
     })

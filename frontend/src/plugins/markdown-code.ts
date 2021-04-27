@@ -4,7 +4,7 @@ import { Plugin, Ctx } from '@/useful/plugin'
 export default {
   name: 'markdown-code',
   register: (ctx: Ctx) => {
-    ctx.registerMarkdownItPlugin(md => {
+    ctx.markdown.registerPlugin(md => {
       const Fun = (fn: Function) => (tokens: any, idx: any, options: any, env: any, slf: any) => {
         if (tokens[idx].attrIndex('title') < 0) {
           tokens[idx].attrJoin('class', 'copy-inner-text')

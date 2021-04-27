@@ -91,7 +91,7 @@ export default {
       return false
     })
 
-    ctx.registerMarkdownItPlugin(md => {
+    ctx.markdown.registerPlugin(md => {
       md.renderer.rules.link_open = (tokens, idx, options, _, slf) => {
         if (tokens[idx].attrIndex('target') < 0) {
           tokens[idx].attrPush(['target', '_blank'])

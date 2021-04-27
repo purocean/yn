@@ -142,7 +142,7 @@ const MarkdownItPlugin = function umlPlugin (md: Markdown, options: any) {
 export default {
   name: 'markdown-plantuml',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(MarkdownItPlugin)
+    ctx.markdown.registerPlugin(MarkdownItPlugin)
 
     const updatePlantuml = ({ getViewDom }: any) => {
       const refView: HTMLElement = getViewDom()

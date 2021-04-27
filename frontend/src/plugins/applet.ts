@@ -145,7 +145,7 @@ const runScript = (el: HTMLElement) => {
 export default {
   name: 'applet',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(RunPlugin)
+    ctx.markdown.registerPlugin(RunPlugin)
 
     function runAppletScript ({ getViewDom }: any) {
       const refView: HTMLElement = getViewDom()
