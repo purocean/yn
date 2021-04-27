@@ -72,7 +72,7 @@ const clearCache = () => {
 export default {
   name: 'run-code',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(RunPlugin)
+    ctx.markdown.registerPlugin(RunPlugin)
     ctx.registerHook('ON_STARTUP', clearCache)
   }
 } as Plugin

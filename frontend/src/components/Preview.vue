@@ -50,7 +50,8 @@ import Footnote from 'markdown-it-footnote'
 import Highlight from 'highlight.js'
 
 import file from '../useful/file'
-import { getMarkdownItPlugins, triggerHook } from '../useful/plugin'
+import { triggerHook } from '../useful/plugin'
+import { getPlugins as getMarkdownItPlugins } from '../useful/plugin/markdown'
 import { useBus } from '../useful/bus'
 
 import 'github-markdown-css/github-markdown.css'

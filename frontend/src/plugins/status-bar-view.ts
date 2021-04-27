@@ -30,7 +30,7 @@ export default {
       },
     }
 
-    Object.entries(actions).forEach(([key, item]) => ctx.registerShortcutAction(key, item.shortcut))
+    Object.entries(actions).forEach(([key, item]) => ctx.shortcut.addAction(key, item.shortcut))
 
     function keydownHandler (e: KeyboardEvent) {
       for (const [key, item] of Object.entries(actions)) {
@@ -45,9 +45,8 @@ export default {
 
     window.addEventListener('keydown', keydownHandler, true)
 
-    ctx.updateStatusBarMenu({
+    ctx.statusBar.updateMenu({
       id: 'status-bar-view',
-      location: 'status-bar',
       position: 'left',
       title: '视图',
       list: Object.entries(actions).map(([key, item]) => {

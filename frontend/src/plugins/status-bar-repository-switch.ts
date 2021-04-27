@@ -1,4 +1,5 @@
-import { Plugin, StatusBarMenu } from '@/useful/plugin'
+import { Plugin } from '@/useful/plugin'
+import { Menu as StatusBarMenu } from '@/useful/plugin/status-bar'
 import store from '@/store'
 import { useBus } from '@/useful/bus'
 import { $args } from '@/useful/global-args'
@@ -40,14 +41,13 @@ export default {
 
     const menu = {
       id: 'status-bar-repository-switch',
-      location: 'status-bar',
       position: 'left',
       title: '仓库',
     } as StatusBarMenu
 
     function updateMenu () {
       const { currentRepo, repositories } = store.state
-      ctx.updateStatusBarMenu({
+      ctx.statusBar.updateMenu({
         ...menu,
         title: currentRepo ? `仓库: ${currentRepo.name}` : '未选择仓库',
         list: Object.keys(repositories).map(name => {
@@ -64,7 +64,7 @@ export default {
       })
     }
 
-    ctx.updateStatusBarMenu(menu)
+    ctx.statusBar.updateMenu(menu)
 
     bus.on('switch-repo-by-name', chooseRepoByName)
     bus.on('editor-ready', initRepo)

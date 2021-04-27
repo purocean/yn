@@ -19,7 +19,7 @@ export default {
     }
 
     Object.entries(actions).forEach(([key, item]) => {
-      item.shortcut && ctx.registerShortcutAction(key, item.shortcut)
+      item.shortcut && ctx.shortcut.addAction(key, item.shortcut)
     })
 
     function keydownHandler (e: KeyboardEvent) {
@@ -35,9 +35,8 @@ export default {
 
     window.addEventListener('keydown', keydownHandler, true)
 
-    ctx.updateStatusBarMenu({
+    ctx.statusBar.updateMenu({
       id: 'status-bar-help',
-      location: 'status-bar',
       position: 'right',
       title: '帮助',
       list: Object.entries(actions).map(([key, item]) => {

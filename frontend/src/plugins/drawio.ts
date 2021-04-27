@@ -158,7 +158,7 @@ const load = async (el: HTMLIFrameElement, url?: string) => {
 export default {
   name: 'drawio',
   register: ctx => {
-    ctx.registerMarkdownItPlugin(MarkdownItPlugin)
+    ctx.markdown.registerPlugin(MarkdownItPlugin)
 
     ctx.registerHook('ON_VIEW_RENDER', ({ getViewDom }) => {
       const refView: HTMLElement = getViewDom()
