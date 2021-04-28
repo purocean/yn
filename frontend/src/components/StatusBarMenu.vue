@@ -1,8 +1,12 @@
 <template>
   <div class="status-bar-menu-wrapper">
-    <div class="status-bar-menu" v-for="menu in list" :key="menu.id">
+    <div
+      class="status-bar-menu"
+      v-for="menu in list"
+      :key="menu.id"
+      @click="menu.onClick && menu.onClick(menu)">
       <div class="title">{{menu.title}}</div>
-      <ul class="list" v-if="showList">
+      <ul class="list" v-if="showList && menu.list && menu.list.length">
         <li v-for="item in menu.list" :key="item.id" :title="item.tips" @click="handleItemClick(item)">{{item.title}}</li>
       </ul>
     </div>
