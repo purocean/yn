@@ -42,7 +42,7 @@ import Extensions from '../useful/extensions'
 import { triggerHook } from '../useful/plugin'
 import { Components } from '../types'
 import SvgIcon from './SvgIcon.vue'
-import { registerContextMenu, getContextMenuItems } from '../useful/plugin/tree'
+import { getContextMenuItems } from '../useful/plugin/tree'
 
 export default defineComponent({
   name: 'tree-node',
@@ -231,10 +231,6 @@ export default defineComponent({
       }
     }
 
-    function showContextMenu (item: any) {
-      contextMenu.show(getContextMenuItems(item))
-    }
-
     function buildContextMenu (item: any) {
       const menu: Components.ContextMenu.Item[] = [
         { id: 'delete', label: '删除', onClick: () => deleteFile() },
@@ -273,7 +269,10 @@ export default defineComponent({
       }
     }
 
-    registerContextMenu((_, item) => buildContextMenu(item))
+    function showContextMenu (item: any) {
+      const buildInMenuItems = buildContextMenu(item)
+      contextMenu.show(buildInMenuItems.concat(getContextMenuItems(item)))
+    }
 
     const currentRepoName = computed(() => currentRepo.value?.name ?? '/')
 
