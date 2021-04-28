@@ -78,12 +78,16 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.8.0](https://github.com/purocean/yn/releases/tag/v2.8.0) 2021-04-27
-1. 增加自定义插件功能
-2. 微调窗口管理逻辑
+### [v2.8.1](https://github.com/purocean/yn/releases/tag/v2.8.1) 2021-04-28
+1. 修正目录树菜单不正确问题
+2. 修正状态栏菜单无子菜单不能点击问题
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.8.0](https://github.com/purocean/yn/releases/tag/v2.8.0) 2021-04-27
+1. 增加自定义插件功能
+2. 微调窗口管理逻辑
 
 ### [v2.7.2](https://github.com/purocean/yn/releases/tag/v2.7.2) 2021-04-09
 1. 优化 macOS 上的窗口体验
