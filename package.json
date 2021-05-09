@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "description": "Yank Note 一款面向程序员的 Markdown 笔记应用",
   "main": "dist/app.js",
   "license": "Apache-2.0",
@@ -42,7 +42,7 @@
     "@types/node": "^14.14.37",
     "@types/request": "^2.48.2",
     "@types/yargs": "^16.0.1",
-    "electron": "^11.4.2",
+    "electron": "^11.4.5",
     "electron-builder": "^22.10.5",
     "electron-notarize": "^1.0.0",
     "ts-node": "^8.3.0",

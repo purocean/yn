@@ -76,7 +76,7 @@ export function isAction (e: KeyboardEvent | MouseEvent, name: ActionName): bool
 export function isAction (e: KeyboardEvent | MouseEvent, name: string): boolean
 export function isAction (e: KeyboardEvent | MouseEvent, name: string) {
   logger.debug('isAction', name, e)
-  return matchKeys(e, actions[name])
+  return !!actions[name] && matchKeys(e, actions[name])
 }
 
 export function getActionLabel (name: ActionName): string
