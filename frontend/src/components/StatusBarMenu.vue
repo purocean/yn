@@ -87,8 +87,11 @@ export default defineComponent({
 .title-icon {
   width: 12px;
   height: 20px;
-  padding-right: 4px;
   display: block;
+}
+
+.title-icon + .title-text {
+  padding-left: 4px;
 }
 
 .title-text {
