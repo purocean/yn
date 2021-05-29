@@ -12,8 +12,10 @@ export type MenuItem = {
 
 export interface Menu {
   id: string;
-  title: string;
+  title?: string;
   tips?: string;
+  icon?: string;
+  hidden?: boolean;
   position: 'left' | 'right';
   onClick?: (menu: Menu) => void;
   list?: (MenuItem | { type: 'separator' })[];

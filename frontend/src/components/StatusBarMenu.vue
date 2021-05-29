@@ -1,11 +1,14 @@
 <template>
   <div class="status-bar-menu-wrapper">
     <div
-      class="status-bar-menu"
+      :class="{'status-bar-menu': true, hidden: menu.hidden}"
       v-for="menu in list"
       :key="menu.id"
       @click="menu.onClick && menu.onClick(menu)">
-      <div class="title">{{menu.title}}</div>
+      <div class="title" :title="menu.tips">
+        <svg-icon v-if="menu.icon" :name="menu.icon" class="title-icon" />
+        <div v-if="menu.title" class="title-text">{{menu.title}}</div>
+      </div>
       <ul class="list" v-if="showList && menu.list && menu.list.length">
         <li v-for="item in menu.list" :key="item.id" :title="item.tips" @click="handleItemClick(item)">{{item.title}}</li>
       </ul>
@@ -17,8 +20,10 @@
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useBus } from '../useful/bus'
 import { getMenus, MenuItem } from '../useful/plugin/status-bar'
+import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
+  components: { SvgIcon },
   name: 'status-bar-menu',
   props: {
     position: {
@@ -66,14 +71,30 @@ export default defineComponent({
   overflow-x: hidden;
 }
 
+.status-bar-menu.hidden {
+  display: none;
+}
+
 .title {
   width: 100%;
   padding: 0 .8em;
+  box-sizing: border-box;
+  width: fit-content;
+  display: flex;
+  align-content: center;
+}
+
+.title-icon {
+  width: 12px;
+  height: 20px;
+  padding-right: 4px;
+  display: block;
+}
+
+.title-text {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  box-sizing: border-box;
-  width: fit-content;
 }
 
 .status-bar-menu:hover {
