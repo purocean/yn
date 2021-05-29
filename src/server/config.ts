@@ -16,14 +16,20 @@ const readJson = () => {
   }
 }
 
+const getAll = () => readJson() || {}
+
+const setAll = (data: any) => {
+  writeJson(data)
+}
+
 const set = (key: string, value: any) => {
-  const config = readJson() || {}
+  const config = getAll()
   config[key] = value
-  writeJson(config)
+  setAll(config)
 }
 
 const get = (key: string, defaultVal: any = null) => {
-  const config = readJson() || {}
+  const config = getAll()
 
   if (config[key] === undefined) {
     set(key, defaultVal) // 写入默认值到配置文件
@@ -35,5 +41,7 @@ const get = (key: string, defaultVal: any = null) => {
 
 export default {
   set,
-  get
+  get,
+  getAll,
+  setAll
 }

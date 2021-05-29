@@ -42,6 +42,7 @@ export default createStore({
     showView: Storage.get('showView', true),
     showXterm: false,
     autoPreview: true,
+    showSetting: false,
     savedAt: null,
     currentContent: '',
     previousContent: '',
@@ -82,6 +83,9 @@ export default createStore({
     setShowSide (state, data) {
       state.showSide = data
       Storage.set('showSide', data)
+    },
+    setShowSetting (state, data) {
+      state.showSetting = data
     },
     setAutoPreview (state, data) {
       state.autoPreview = data

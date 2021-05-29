@@ -23,6 +23,7 @@
     </template>
   </Layout>
   <XFilter />
+  <SettingPanel />
 </template>
 
 <script lang="ts">
@@ -37,7 +38,7 @@ import FileTabs from '../components/FileTabs.vue'
 import Editor from '../components/Editor.vue'
 import Preview from '../components/Preview.vue'
 
-// import RunPlugin from ''../plugins/RunPlugin'
+import SettingPanel from '../components/SettingPanel.vue'
 import XFilter from '../components/Filter.vue'
 
 export default defineComponent({
@@ -52,6 +53,7 @@ export default defineComponent({
     Editor,
     Preview,
     XFilter,
+    SettingPanel
   },
   setup () {
     const refEditor = ref<any>(null)

@@ -8,6 +8,7 @@ import { USER_DIR } from './server/constant'
 import * as updater from './updater'
 import { getAccelerator, registerShortcut } from './shortcut'
 import { mainMenus, inputMenu, selectionMenu } from './menus';
+import { bus } from './bus'
 const opn = require('opn')
 
 const isMacos = os.platform() === 'darwin'
@@ -170,6 +171,13 @@ if (!gotTheLock) {
     }
 
     showWindow(true)
+
+    bus.on('show-main-window', showWindow)
+
+    bus.on('show-open-dialog', ({args: [ params ], callback }: any) => {
+      const data = dialog.showOpenDialog(win, params);
+      callback && callback(data);
+    })
 
     // 注册快捷键
     registerShortcut({

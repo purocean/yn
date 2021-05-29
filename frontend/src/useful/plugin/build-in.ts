@@ -1,4 +1,5 @@
 export default [
+  require('@/plugins/status-bar-setting'),
   require('@/plugins/status-bar-repository-switch'),
   require('@/plugins/status-bar-view'),
   require('@/plugins/status-bar-help'),

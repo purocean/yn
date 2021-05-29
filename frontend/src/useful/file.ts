@@ -1,5 +1,6 @@
 import Crypto from './crypto'
 import { slugify } from 'transliteration'
+import env from './env'
 
 // TODO 文件类型
 type F = { repo: string; path: string };
@@ -120,6 +121,29 @@ const fetchRepositories = async () => {
   return result.data
 }
 
+const fetchSettings = async () => {
+  const result = await fetchHttp('/api/settings')
+  return result.data
+}
+
+const writeSettings = (body: any) => {
+  return fetchHttp('/api/settings', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+}
+
+const choosePath = async (args: any) => {
+  const from = env.isElectron ? 'electron' : 'browser'
+  const result = await fetchHttp(`/api/choose?from=${from}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(args)
+  })
+  return result.data
+}
+
 const search = async (repo: string, text: string) => {
   const result = await fetchHttp(`/api/search?repo=${repo}&search=${encodeURIComponent(text)}`)
   return result.data
@@ -184,6 +208,9 @@ export default {
   fetchTree,
   fetchRepositories,
   fetchHelpContent,
+  fetchSettings,
+  writeSettings,
+  choosePath,
   openInOS,
   search,
   upload,

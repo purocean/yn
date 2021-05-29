@@ -15,6 +15,8 @@ import convert from './convert'
 import plantuml from './plantuml'
 import shell from './shell'
 import mark from './mark'
+import config from './config'
+import { call, bus } from '../bus'
 
 const result = (status: 'ok' | 'error' = 'ok', message = '操作成功', data: any = null) => {
   return { status, message, data }
@@ -194,6 +196,47 @@ const userPlugin = async (ctx: any, next: any) => {
   }
 }
 
+const setting = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/settings')) {
+    if (ctx.method === 'GET') {
+      ctx.body = result('ok', '获取成功', config.getAll())
+    } else if (ctx.method === 'POST') {
+      const data = { ...config.getAll(), ...ctx.request.body }
+      config.setAll(data);
+      ctx.body = result('ok', '设置成功')
+    }
+  } else {
+    await next()
+  }
+}
+
+let chooseLock = false;
+const choose = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/choose')) {
+    if (ctx.method === 'POST') {
+      const { from } = ctx.query
+      const body = ctx.request.body
+
+      if (chooseLock) {
+        throw new Error('当前正在选择文件');
+      }
+
+      try {
+        chooseLock = true
+        from === 'browser' && bus.emit('show-main-window', true);
+        const data = await call('show-open-dialog', body);
+        from === 'browser' && bus.emit('show-main-window', false);
+        chooseLock = false
+        ctx.body = result('ok', '完成', data)
+      } catch (error) {
+        throw error
+      }
+    }
+  } else {
+    await next()
+  }
+}
+
 const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
@@ -226,6 +269,8 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, markFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
 
   // 静态文件
   app.use(async (ctx: any, next: any) => {
