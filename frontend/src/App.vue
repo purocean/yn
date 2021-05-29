@@ -14,18 +14,18 @@
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 3px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 3px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.09);
   box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
 }
