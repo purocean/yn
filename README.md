@@ -78,12 +78,18 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.8.2](https://github.com/purocean/yn/releases/tag/v2.8.2) 2021-05-09
-1. 修正快捷键判断问题
-2. 升级 Electron 版本到 11.4.5
+### [v2.8.3](https://github.com/purocean/yn/releases/tag/v2.8.3) 2021-05-29
+1. 修正长时间运行后静态文件不能访问问题
+2. 修正应用选中文字颜色不正确问题
+3. 应用增加编辑菜单，以支持 macOS 上的复制粘贴快捷键
+4. 微调滚动条样式
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.8.2](https://github.com/purocean/yn/releases/tag/v2.8.2) 2021-05-09
+1. 修正快捷键判断问题
+2. 升级 Electron 版本到 11.4.5
 
 ### [v2.8.1](https://github.com/purocean/yn/releases/tag/v2.8.1) 2021-04-28
 1. 修正目录树菜单不正确问题
