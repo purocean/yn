@@ -10,8 +10,6 @@
         <span v-if="documentInfo.selectedLength > 0">已选中：{{documentInfo.selectedLength}}</span>
       </div>
       <StatusBarMenu class="right" position="right" />
-      <div class="action" @click="toggleRender">{{autoPreview ? '同步渲染-已开启' : '同步渲染-已关闭'}}</div>
-      <svg-icon v-if="!autoPreview" class="action action-icon" name="sync-alt-solid" @click="rerenderView" title="强制重新渲染" />
     </div>
   </div>
 </template>
@@ -19,32 +17,16 @@
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '../useful/bus'
 import StatusBarMenu from './StatusBarMenu.vue'
-import SvgIcon from '../components/SvgIcon.vue'
 
 export default defineComponent({
   name: 'status-bar',
-  components: { StatusBarMenu, SvgIcon },
+  components: { StatusBarMenu },
   setup () {
-    const bus = useBus()
     const store = useStore()
     const { documentInfo, autoPreview } = toRefs(store.state)
 
-    function toggleRender () {
-      store.commit('setAutoPreview', !autoPreview.value)
-    }
-
-    function rerenderView () {
-      bus.emit('view-rerender')
-    }
-
-    return {
-      documentInfo,
-      autoPreview,
-      toggleRender,
-      rerenderView,
-    }
+    return { documentInfo, autoPreview }
   },
 })
 </script>

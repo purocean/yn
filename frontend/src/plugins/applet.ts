@@ -81,7 +81,7 @@ const runScript = (el: HTMLElement) => {
           color: #ccc;
           cursor: pointer;
           border-radius: 2px;
-          transition: all .3s ease-in-out;
+          transition: all .1s ease-in-out;
           line-height: 28px;
           margin: 5px 0;
         }

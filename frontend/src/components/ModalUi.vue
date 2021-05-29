@@ -119,7 +119,7 @@ export default defineComponent({
 <style scoped>
 .wrapper {
   width: 400px;
-  background: #2b2a2a;
+  background: #383a39;
   margin: auto;
   padding: 10px;
 }
@@ -138,13 +138,13 @@ input, textarea {
   line-height: 1.4em;
   padding: 6px;
   box-sizing: border-box;
-  background: #3a3939;
+  background: #303233;
   color: #ddd;
   transition: all .1s ease-in-out;
 }
 
 .input:focus {
-  background: #242222;
+  background: #222324;
 }
 
 h4 {
@@ -166,7 +166,7 @@ button {
   color: #ccc;
   cursor: pointer;
   border-radius: 2px;
-  transition: all .3s ease-in-out;
+  transition: all .1s ease-in-out;
   margin-left: 10px;
 }
 
@@ -179,6 +179,6 @@ button:hover {
 }
 
 p {
-  color: #bbbaba;
+  color: #babbbb;
 }
 </style>

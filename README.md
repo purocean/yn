@@ -30,7 +30,7 @@
 + [x] 文件目录增加右键菜单
 + [x] 支持多标签打开多个文件
 + [x] 自定义插件
-+ [ ] 拥有更友好的配置界面
++ [x] 拥有更友好的配置界面
 + [ ] 可以自定义快捷键
 
 ## 特色功能
@@ -78,14 +78,18 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v2.9.0](https://github.com/purocean/yn/releases/tag/v2.9.0) 2021-05-29
+1. 新增设置面板，更方便添加仓库
+2. 微调部分控件的颜色和动画速度
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v2.8.3](https://github.com/purocean/yn/releases/tag/v2.8.3) 2021-05-29
 1. 修正长时间运行后静态文件不能访问问题
 2. 修正应用选中文字颜色不正确问题
 3. 应用增加编辑菜单，以支持 macOS 上的复制粘贴快捷键
 4. 微调滚动条样式
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v2.8.2](https://github.com/purocean/yn/releases/tag/v2.8.2) 2021-05-09
 1. 修正快捷键判断问题

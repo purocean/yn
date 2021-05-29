@@ -160,7 +160,7 @@ const render = async (ele: HTMLElement) => {
 
   const buildButton = (text: string, fun: () => void, onclick = '') => {
     const button = document.createElement('button')
-    button.style.cssText = 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .3s ease-in-out; line-height: 24px;'
+    button.style.cssText = 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .1s ease-in-out; line-height: 24px;'
     button.innerText = text
     button.onclick = fun
     button.dataset.onclick = `${onclick}()`

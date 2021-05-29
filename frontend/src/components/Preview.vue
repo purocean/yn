@@ -345,7 +345,7 @@ export default defineComponent({
   .markdown-body ::v-deep(input),
   .markdown-body ::v-deep(img)
   {
-    transition: all .3s ease-in-out;
+    transition: all .1s ease-in-out;
     filter: brightness(70%);
   }
 
@@ -364,7 +364,7 @@ button {
   color: #ccc;
   cursor: pointer;
   border-radius: 2px;
-  transition: all .3s ease-in-out;
+  transition: all .1s ease-in-out;
   margin-left: 4px;
 }
 
@@ -409,7 +409,7 @@ button:hover {
   color: #ddd;
   text-align: right;
   box-sizing: border-box;
-  transition: all .3s ease-in-out;
+  transition: all .1s ease-in-out;
   white-space: nowrap;
 }
 

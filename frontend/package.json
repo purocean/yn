@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@json-editor/json-editor": "^2.5.4",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
     "dayjs": "^1.9.3",

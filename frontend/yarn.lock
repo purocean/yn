@@ -911,6 +911,13 @@
     cssnano-preset-default "^4.0.0"
     postcss "^7.0.0"
 
+"@json-editor/json-editor@^2.5.4":
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/@json-editor/json-editor/-/json-editor-2.5.4.tgz#ec17f0187054e2e5564f0b543eaa7bd260411457"
+  integrity sha512-P1T7ixZ1vaS5pdQlkaLXH0B8f2AQOpHEOE3oKjMcQaLHkdGHEc225sknbRk+RLNUeG/zvCuMGUaxbE5WPPzAXg==
+  dependencies:
+    core-js "^3.6.5"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
