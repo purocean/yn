@@ -72,7 +72,11 @@ const init = (call: () => void) => {
   })
 
   autoUpdater.on('error', e => {
-    progressBar && (progressBar.detail = '下载失败： ' + e)
+    try {
+      progressBar && (progressBar.detail = '下载失败： ' + e)
+    } catch (error) {
+      console.error(error)
+    }
   })
 
   autoUpdater.on('download-progress', e => {
