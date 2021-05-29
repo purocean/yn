@@ -27,9 +27,9 @@
 + [x] 重构前端项目结构，便于拓展：引入 `vuex`，使用 `async await` 代替可怕的回调，规范文件接口
 + [x] 暴露 Api 接口可以在文档中嵌入轻量应用，以便构建一些小工具
 + [x] 使用 `Electron` 构建为桌面应用。不追求完全做成客户端，还是可以沿用 CS 架构。同样可以在浏览器中使用
-+ [x] 支持嵌入 `draw.io` 文档
 + [x] 文件目录增加右键菜单
 + [x] 支持多标签打开多个文件
++ [x] 自定义插件
 + [ ] 拥有更友好的配置界面
 + [ ] 可以自定义快捷键
 
@@ -78,12 +78,22 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.8.1](https://github.com/purocean/yn/releases/tag/v2.8.1) 2021-04-28
-1. 修正目录树菜单不正确问题
-2. 修正状态栏菜单无子菜单不能点击问题
+### [v2.8.3](https://github.com/purocean/yn/releases/tag/v2.8.3) 2021-05-29
+1. 修正长时间运行后静态文件不能访问问题
+2. 修正应用选中文字颜色不正确问题
+3. 应用增加编辑菜单，以支持 macOS 上的复制粘贴快捷键
+4. 微调滚动条样式
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.8.2](https://github.com/purocean/yn/releases/tag/v2.8.2) 2021-05-09
+1. 修正快捷键判断问题
+2. 升级 Electron 版本到 11.4.5
+
+### [v2.8.1](https://github.com/purocean/yn/releases/tag/v2.8.1) 2021-04-28
+1. 修正目录树菜单不正确问题
+2. 修正状态栏菜单无子菜单不能点击问题
 
 ### [v2.8.0](https://github.com/purocean/yn/releases/tag/v2.8.0) 2021-04-27
 1. 增加自定义插件功能

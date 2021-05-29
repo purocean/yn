@@ -2,10 +2,10 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as Koa from 'koa'
 import * as bodyParser from 'koa-body'
-import * as xStatic from 'koa-static'
 import * as mime from 'mime'
 import * as request from 'request'
 import * as pty from 'node-pty'
+import { promisify } from 'util';
 import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR } from './constant'
 import init from './init'
 import file from './file'
@@ -227,21 +227,35 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, markFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
 
+  // 静态文件
   app.use(async (ctx: any, next: any) => {
-    if (ctx.path.startsWith('/static')) {
-      ctx.response.redirect(ctx.path.replace(/^\/static/, ''))
-    } else {
-      await next()
+    const urlPath = decodeURIComponent(ctx.path).replace(/^(\/static\/|\/)/, '');
+    const sendFile = async (filePath: string, fullback = true) => {
+      if (!fs.existsSync(filePath)) {
+        if (fullback) {
+          await sendFile(path.resolve(STATIC_DIR, 'index.html'), false);
+        } else {
+          next()
+        }
+
+        return;
+      }
+
+      const fileStat = fs.statSync(filePath)
+      if (fileStat.isDirectory()) {
+        await sendFile(path.resolve(filePath, 'index.html'));
+        return;
+      }
+
+      ctx.body = await promisify(fs.readFile)(filePath);
+      ctx.set('Content-Length', fileStat.size);
+      ctx.set('Last-Modified', fileStat.mtime.toUTCString())
+      ctx.set('Cache-Control', 'max-age=0')
+      ctx.type = path.extname(filePath)
     }
-  })
 
-  app.use(xStatic(STATIC_DIR))
-  app.use(async (ctx: any, next: any) => {
-    ctx.url = '/index.html'
-    await next()
+    await sendFile(path.resolve(STATIC_DIR, urlPath), true);
   })
-  app.use(xStatic(STATIC_DIR))
-
 
   const server = require('http').createServer(app.callback())
   const io = require('socket.io')(server, {path: '/ws'})

@@ -7,6 +7,7 @@ import server from './server/main'
 import { USER_DIR } from './server/constant'
 import * as updater from './updater'
 import { getAccelerator, registerShortcut } from './shortcut'
+import { mainMenus, inputMenu, selectionMenu } from './menus';
 const opn = require('opn')
 
 const isMacos = os.platform() === 'darwin'
@@ -30,8 +31,7 @@ const getUrl = () => {
   return `http://localhost:${isDev ? devFrontendPort : backendPort}` + (query ? `?${query}` : '')
 }
 
-// 去掉每个窗口默认的菜单
-Menu.setApplicationMenu(null)
+Menu.setApplicationMenu(mainMenus)
 
 // 主窗口
 let win: BrowserWindow | null = null
@@ -82,21 +82,6 @@ const createWindow = () => {
   win.on('closed', () => {
     win = null
   })
-
-  const selectionMenu = Menu.buildFromTemplate([
-    { role: 'copy', label: '复制' },
-  ])
-
-  const inputMenu = Menu.buildFromTemplate([
-    { role: 'copy', label: '复制' },
-    { role: 'paste', label: '粘贴' },
-    { role: 'cut', label: '剪切' },
-    { type: 'separator' },
-    { role: 'undo' , label: '撤销' },
-    { role: 'redo', label: '重做'},
-    { type: 'separator' },
-    { role: 'selectAll', label: '全选' },
-  ])
 
   win.webContents.on('context-menu', (e, props) => {
     const { selectionText, isEditable } = props
