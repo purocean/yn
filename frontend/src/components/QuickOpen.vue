@@ -309,7 +309,7 @@ export default defineComponent({
 <style scoped>
 .filter {
   width: 600px;
-  background: #403e3e;
+  background: #383a39;
   margin: auto;
   padding: 10px;
 }
@@ -323,13 +323,13 @@ export default defineComponent({
   line-height: 1.4em;
   padding: 6px;
   box-sizing: border-box;
-  background: #333030;
+  background: #303233;
   color: #ddd;
   transition: all .1s ease-in-out;
 }
 
 .input:focus {
-  background: #242222;
+  background: #222324;
 }
 
 .result {
@@ -352,7 +352,7 @@ export default defineComponent({
 .result li.selected,
 .result li:hover {
   padding: 2px 6px;
-  background: #333030;
+  background: #303133;
   color: #eee;
 }
 
@@ -387,11 +387,11 @@ export default defineComponent({
   line-height: 1.5em;
   font-size: 12px;
   padding: 4px 0;
-  background: #403e3e;
+  background: #3e3f40;
   cursor: pointer;
   transition: all .1s ease-in-out;
   color: #ddd;
-  border-right: 1px #313030 solid;
+  border-right: 1px #303031 solid;
 }
 
 .tab > div:last-child {
@@ -399,10 +399,10 @@ export default defineComponent({
 }
 
 .tab > div:hover {
-  background: #444141;
+  background: #414244;
 }
 
 .tab > div.selected {
-  background: #333030;
+  background: #303133;
 }
 </style>

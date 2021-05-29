@@ -66,7 +66,7 @@ export default defineComponent({
 .status-bar-menu {
   cursor: pointer;
   user-select: none;
-  z-index: 9999999999;
+  z-index: 99999;
   position: relative;
   overflow-x: hidden;
 }
