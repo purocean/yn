@@ -4,6 +4,8 @@ import { Plugin } from '@/useful/plugin'
 import crypto from '@/useful/crypto'
 import { dataURItoBlobLink, openInNewWindow } from '@/useful/utils'
 
+const layoutStorageKey = 'mind-map-layout'
+
 const renderRule: Renderer.RenderRule = (tokens, idx, options, { source }, slf) => {
   const token = tokens[idx]
   const nextToken = tokens[idx + 1]
@@ -100,7 +102,7 @@ const render = async (ele: HTMLElement) => {
   km.disable()
   try {
     await km.importData('text', code)
-    km.useTemplate('default')
+    km.useTemplate(localStorage.getItem(layoutStorageKey) || 'default')
   } catch (error) {
     await km.importData('text', '转换错误\n    1. 请保证大纲只有一个根项目\n    2. 请保证大纲层级正确')
     km.useTemplate('structure')
@@ -115,7 +117,9 @@ const render = async (ele: HTMLElement) => {
     const tpl = km.getTemplate()
     const index = tplList.indexOf(tpl)
     const nextIndex = index > tplList.length - 2 ? 0 : index + 1
-    km.useTemplate(tplList[nextIndex])
+    const layout = tplList[nextIndex]
+    localStorage.setItem(layoutStorageKey, layout)
+    km.useTemplate(layout)
     km.execCommand('camera')
   }
 
