@@ -8,7 +8,7 @@ export namespace Components {
       content?: string;
       value?: string;
       hint?: string;
-      modalWidth?: string,
+      modalWidth?: string;
       select?: boolean | [number, number, 'forward' | 'backward' | 'none'];
     }
   }
@@ -36,6 +36,7 @@ export namespace Components {
       label: string;
       description?: string;
       payload: any;
+      fixed?: boolean;
     }
   }
 
