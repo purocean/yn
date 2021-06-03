@@ -1,15 +1,15 @@
 <template>
   <div ref="refTabs" class="tabs">
     <div
-      v-for="item in list"
+      v-for="item in tabList"
       :key="item.key"
-      :class="{tab: true, current: item.key === value}"
+      :class="{tab: true, current: item.key === value, fixed: item.fixed}"
       :title="item.description"
       :data-key="item.key"
       @contextmenu.exact.prevent.stop="showContextMenu(item)"
       @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
-      <div class="close" @click.prevent.stop="removeTabs([item])">
+      <div v-if="!item.fixed" class="close" @click.prevent.stop="removeTabs([item])">
         <svg-icon name="times-solid" title="关闭" style="width: 12px; height: 12px;" />
       </div>
     </div>
@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import Sortable from 'sortablejs'
-import { defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, ref, watch } from 'vue'
 import { useContextMenu } from '../useful/context-menu'
 import { Components } from '../types'
 import SvgIcon from './SvgIcon.vue'
@@ -37,6 +37,10 @@ export default defineComponent({
     const refTabs = ref<HTMLElement | null>(null)
     const contextMenu = useContextMenu()
 
+    function sortTabs (tabs?: Components.Tabs.Item[]) {
+      return tabs?.sort((a, b) => Number(b.fixed || 0) - Number(a.fixed || 0))
+    }
+
     function switchTab (item: Components.Tabs.Item) {
       if (item.key !== props.value) {
         emit('input', item.key)
@@ -49,15 +53,24 @@ export default defineComponent({
     }
 
     function removeOther (item: Components.Tabs.Item) {
-      removeTabs(props.list.filter(x => x.key !== item.key))
+      removeTabs(props.list.filter(x => x.key !== item.key && !x.fixed))
     }
 
     function removeRight (item: Components.Tabs.Item) {
-      removeTabs(props.list.slice(props.list.findIndex(x => x.key === item.key) + 1))
+      if (item.fixed) {
+        removeTabs(props.list.filter(x => !x.fixed))
+      } else {
+        removeTabs(props.list.slice(props.list.findIndex(x => x.key === item.key) + 1))
+      }
     }
 
     function removeLeft (item: Components.Tabs.Item) {
-      removeTabs(props.list.slice(0, props.list.findIndex(x => x.key === item.key)))
+      if (item.fixed) {
+        return
+      }
+
+      const start = props.list.findIndex(x => !x.fixed)
+      removeTabs(props.list.slice(start, props.list.findIndex(x => x.key === item.key)))
     }
 
     function removeAll () {
@@ -69,7 +82,36 @@ export default defineComponent({
       const tmp = list[oldIndex]
       list[oldIndex] = list[newIndex]
       list[newIndex] = tmp
-      emit('change-list', list)
+      emit('change-list', sortTabs(list))
+    }
+
+    let sortable: Sortable
+    function initSortable () {
+      sortable && sortable.destroy()
+      nextTick(() => {
+        sortable = Sortable.create(refTabs.value!!, {
+          animation: 250,
+          ghostClass: 'on-sort',
+          direction: 'horizontal',
+          onEnd: ({ oldIndex, newIndex }: { oldIndex?: number; newIndex?: number }) => {
+            swapTab(oldIndex || 0, newIndex || 0)
+          },
+          onMove (event) {
+            if (event.related && event.dragged) {
+              if (event.related.classList.contains('fixed') !== event.dragged.classList.contains('fixed')) {
+                return false
+              }
+            }
+          }
+        })
+      })
+    }
+
+    function toggleFix (item: Components.Tabs.Item) {
+      emit('change-list', props.list.map(x => ({
+        ...x,
+        fixed: x.key === item.key ? !item.fixed : x.fixed
+      })))
     }
 
     function showContextMenu (item: Components.Tabs.Item) {
@@ -79,25 +121,27 @@ export default defineComponent({
         { id: 'close-right', label: '关闭到右侧', onClick: () => removeRight(item) },
         { id: 'close-left', label: '关闭到左侧', onClick: () => removeLeft(item) },
         { id: 'close-all', label: '全部关闭', onClick: () => removeAll() },
+        { type: 'separator' },
+        { id: 'fix', label: item.fixed ? '取消固定' : '固定', onClick: () => toggleFix(item) },
       ])
     }
 
     onMounted(() => {
-      Sortable.create(refTabs.value!!, {
-        animation: 250,
-        ghostClass: 'on-sort',
-        direction: 'horizontal',
-        onEnd: ({ oldIndex, newIndex }: { oldIndex?: number; newIndex?: number }) => {
-          swapTab(oldIndex || 0, newIndex || 0)
-        }
-      })
+      initSortable()
     })
+
+    watch(() => props.list, () => {
+      initSortable()
+    })
+
+    const tabList = computed(() => sortTabs(props.list))
 
     return {
       refTabs,
       switchTab,
       showContextMenu,
       removeTabs,
+      tabList
     }
   }
 })
@@ -155,5 +199,10 @@ export default defineComponent({
 
 .tab.on-sort {
   background: rgb(112, 112, 112);
+}
+
+.tab.fixed {
+  font-weight: bold;
+  border-left: 2px #7b7c7d solid;
 }
 </style>
