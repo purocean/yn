@@ -78,12 +78,15 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.9.1](https://github.com/purocean/yn/releases/tag/v2.9.1) 2021-06-02
-1. 新增脑图保留上次使用布局
-2. 修正 macOS 更新升级错误问题
+### [v2.9.2](https://github.com/purocean/yn/releases/tag/v2.9.2) 2021-06-03
+1. 新增固定标签页功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.9.1](https://github.com/purocean/yn/releases/tag/v2.9.1) 2021-06-02
+1. 新增脑图保留上次使用布局
+2. 修正 macOS 更新升级错误问题
 
 ### [v2.9.0](https://github.com/purocean/yn/releases/tag/v2.9.0) 2021-05-29
 1. 新增设置面板，更方便添加仓库
