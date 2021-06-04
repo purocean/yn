@@ -75,7 +75,7 @@ export default defineComponent({
     }
 
     function removeAll () {
-      removeTabs(props.list)
+      removeTabs(props.list.filter(x => !x.fixed))
     }
 
     function swapTab (oldIndex: number, newIndex: number) {
