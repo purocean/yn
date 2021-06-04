@@ -3,6 +3,7 @@
     <div
       v-for="item in tabList"
       :key="item.key"
+      :data-id="item.key"
       :class="{tab: true, current: item.key === value, fixed: item.fixed}"
       :title="item.description"
       :data-key="item.key"
@@ -82,28 +83,25 @@ export default defineComponent({
       const tmp = list[oldIndex]
       list[oldIndex] = list[newIndex]
       list[newIndex] = tmp
-      emit('change-list', sortTabs(list))
+      emit('change-list', sortTabs([...list]))
     }
 
     let sortable: Sortable
     function initSortable () {
-      sortable && sortable.destroy()
-      nextTick(() => {
-        sortable = Sortable.create(refTabs.value!!, {
-          animation: 250,
-          ghostClass: 'on-sort',
-          direction: 'horizontal',
-          onEnd: ({ oldIndex, newIndex }: { oldIndex?: number; newIndex?: number }) => {
-            swapTab(oldIndex || 0, newIndex || 0)
-          },
-          onMove (event) {
-            if (event.related && event.dragged) {
-              if (event.related.classList.contains('fixed') !== event.dragged.classList.contains('fixed')) {
-                return false
-              }
+      sortable = Sortable.create(refTabs.value!!, {
+        animation: 250,
+        ghostClass: 'on-sort',
+        direction: 'horizontal',
+        onEnd: ({ oldIndex, newIndex }: { oldIndex?: number; newIndex?: number }) => {
+          swapTab(oldIndex || 0, newIndex || 0)
+        },
+        onMove (event) {
+          if (event.related && event.dragged) {
+            if (event.related.classList.contains('fixed') !== event.dragged.classList.contains('fixed')) {
+              return false
             }
           }
-        })
+        }
       })
     }
 
@@ -130,11 +128,15 @@ export default defineComponent({
       initSortable()
     })
 
-    watch(() => props.list, () => {
-      initSortable()
-    })
-
     const tabList = computed(() => sortTabs(props.list))
+
+    watch(tabList, (val) => {
+      if (sortable && val) {
+        nextTick(() => {
+          sortable.sort(val.map(x => x.key))
+        })
+      }
+    })
 
     return {
       refTabs,
