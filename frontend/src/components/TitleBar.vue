@@ -228,7 +228,6 @@ export default defineComponent({
   text-align: center;
   position: relative;
   z-index: 3000;
-  -webkit-app-region: no-drag;
   height: 100%;
   width: 138px;
   margin-left: auto;
