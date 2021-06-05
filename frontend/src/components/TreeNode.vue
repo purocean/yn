@@ -43,6 +43,7 @@ import { triggerHook } from '../useful/plugin'
 import { Components } from '../types'
 import SvgIcon from './SvgIcon.vue'
 import { getContextMenuItems } from '../useful/plugin/tree'
+import { FLAG_DISABLE_XTERM } from '../useful/global-args'
 
 export default defineComponent({
   name: 'tree-node',
@@ -241,10 +242,12 @@ export default defineComponent({
       ]
 
       if (item.type === 'dir') {
+        const other = FLAG_DISABLE_XTERM ? [] : [{ id: 'openInTerminal', label: '在终端中打开', onClick: () => revealInXterminal() }]
+
         return [
           { id: 'create', label: '创建新文件', onClick: () => createFile() },
           ...menu,
-          { id: 'openInTerminal', label: '在终端中打开', onClick: () => revealInXterminal() }
+          ...other
         ]
       } else {
         // markdown 文件可以被标记

@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <Layout :class="classes">
     <template v-slot:header>
       <TitleBar />
     </template>
@@ -29,6 +29,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import startup from '../useful/startup'
+import { FLAG_DISABLE_XTERM } from '../useful/global-args'
 import Layout from '../components/Layout.vue'
 import TitleBar from '../components/TitleBar.vue'
 import StatusBar from '../components/StatusBar.vue'
@@ -61,7 +62,17 @@ export default defineComponent({
 
     onMounted(startup)
 
-    return { refEditor, refPreview }
+    const classes = {
+      'flag-disable-xterm': FLAG_DISABLE_XTERM
+    }
+
+    return { refEditor, refPreview, classes }
   }
 })
 </script>
+
+<style scoped>
+.flag-disable-xterm :deep(.run-in-xterm){
+  display: none;
+}
+</style>

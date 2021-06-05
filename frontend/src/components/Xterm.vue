@@ -11,6 +11,10 @@ import { useStore } from 'vuex'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { useBus } from '../useful/bus'
+import { FLAG_DISABLE_XTERM } from '../useful/global-args'
+import { getLogger } from '../useful/utils'
+
+const logger = getLogger('component-x-term')
 
 export default defineComponent({
   name: 'xterm',
@@ -40,6 +44,11 @@ export default defineComponent({
     }
 
     function init () {
+      if (FLAG_DISABLE_XTERM) {
+        logger.warn('xterm disabled')
+        return
+      }
+
       if (!xterm) {
         xterm = new Terminal({
           cols: 80,
@@ -80,6 +89,11 @@ export default defineComponent({
     }
 
     function runInXterm (language: string, code: string, exit = true) {
+      if (FLAG_DISABLE_XTERM) {
+        logger.warn('xterm disabled')
+        return
+      }
+
       bus.emit('toggle-xterm', true)
       nextTick(() => {
         init()

@@ -34,7 +34,7 @@
 import { defineComponent, onBeforeUnmount, onMounted, nextTick, ref, toRefs } from 'vue'
 import { useStore } from 'vuex'
 import { useBus } from '../useful/bus'
-import { $args } from '../useful/global-args'
+import { $args, FLAG_DISABLE_XTERM } from '../useful/global-args'
 
 let resizeOrigin: any = null
 
@@ -144,7 +144,7 @@ export default defineComponent({
     return {
       initResize,
       showSide,
-      showXterm,
+      showXterm: FLAG_DISABLE_XTERM ? false : showXterm,
       showFooter,
       showView,
       aside,

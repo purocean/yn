@@ -1,6 +1,7 @@
 import { Plugin } from '@/useful/plugin'
 import { useBus } from '@/useful/bus'
 import { Alt, getActionLabel, isAction } from '@/useful/shortcut'
+import { FLAG_DISABLE_XTERM } from '@/useful/global-args'
 
 export default {
   name: 'status-bar-view',
@@ -28,6 +29,10 @@ export default {
         action: () => bus.emit('editor-toggle-wrap'),
         shortcut: [Alt, 'w'],
       },
+    }
+
+    if (FLAG_DISABLE_XTERM) {
+      delete (actions as any)['toggle-xterm']
     }
 
     Object.entries(actions).forEach(([key, item]) => ctx.shortcut.addAction(key, item.shortcut))

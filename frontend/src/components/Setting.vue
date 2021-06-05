@@ -14,6 +14,7 @@ import { useStore } from 'vuex'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 import file from '../useful/file'
+import { FLAG_DISABLE_XTERM } from '../useful/global-args'
 
 JSONEditor.defaults.language = 'zh'
 JSONEditor.defaults.languages.zh = { ...JSONEditor.defaults.languages.en }
@@ -45,6 +46,10 @@ const schema = {
       type: 'string',
     },
   }
+}
+
+if (FLAG_DISABLE_XTERM) {
+  delete schema.properties.shell
 }
 
 export default defineComponent({
