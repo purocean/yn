@@ -1,15 +1,13 @@
 import { dialog, app } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { CancellationToken } from 'builder-util-runtime'
+import store from './storage'
 const ProgressBar = require('electron-progressbar')
-const Store = require('electron-store')
 const opn = require('opn')
 import logger from 'electron-log'
 
 logger.transports.file.level = 'info'
 autoUpdater.logger = logger
-
-const store = new Store()
 
 let progressBar: any = null
 let cancellationToken: CancellationToken = null
