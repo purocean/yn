@@ -1,5 +1,4 @@
-import * as fs from 'fs'
-import * as xfs from 'fs-extra'
+import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as crypto from 'crypto'
 import * as NaturalOrderby from 'natural-orderby'
@@ -27,145 +26,58 @@ interface TreeItem extends XFile {
   children?: XFile[]
 }
 
-const mkdirPSync = (location: string) => {
-  let normalizedPath = path.normalize(location)
-  let parsedPathObj = path.parse(normalizedPath)
-  let curDir = parsedPathObj.root
-  let folders = parsedPathObj.dir.split(path.sep)
-  folders.push(parsedPathObj.base)
-  for(let part of folders) {
-    if (part.indexOf(':') > -1) { // 修复 Windows 下面路径错误
-      continue
-    }
-
-    curDir = path.join(curDir, part)
-    if (!fs.existsSync(curDir)) {
-      fs.mkdirSync(curDir)
-    }
-  }
-}
-
-const rmRecursiveSync = (location: string) => {
-  if (fs.statSync(location).isDirectory()) {
-    let _ = fs.readdirSync(location)
-    _.forEach(childItemName => {
-      rmRecursiveSync(path.join(location, childItemName))
-    })
-    fs.rmdirSync(location)
-  } else {
-    fs.unlinkSync(location)
-  }
-}
-
-const resolvePath = (p: string, repo = 'main') => {
-  p = p.replace(/\.\./g, '')
-
-  const basePath = repository.getPath(repo)
-  if (!basePath) {
+const withRepo = (repo = 'main', callback: (repoPath: string, ...targetPath: string[]) => any, ...target: string[]) => {
+  const repoPath = repository.getPath(repo)
+  if (!repoPath) {
     throw new Error(`仓库 ${repo} 不存在`)
   }
 
-  return path.join(basePath, p)
-}
+  return callback(repoPath, ...target.map(x => {
+    const targetPath = path.join(repoPath, x)
 
-const travels = (location: string, repo: string, basePath: string = null, markedFiles: MarkedFile[] | null = null): any => {
-  if (!basePath) {
-    basePath = resolvePath('', repo)
-  }
+    if (!targetPath.startsWith(repoPath)) {
+      throw new Error('路径错误')
+    }
 
-  if (!fs.statSync(location).isDirectory()) {
-    return []
-  }
-
-  const list = fs.readdirSync(location).filter(x => !x.startsWith('.') && !ignorePath.test(x))
-
-  const sortOptions = [(v: string) => v && v.charCodeAt(0) > 255 ? 1 : 0, (v: string) => v]
-
-  const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()), sortOptions)
-  const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()), sortOptions)
-
-  markedFiles = markedFiles || mark.list()
-
-  return dirs.map(x => {
-    const p = path.join(location, x)
-    const xpath = p.replace(basePath, '').replace(/\\/g, '/')
-
-    return {
-      name: x,
-      path: xpath,
-      type: 'dir',
-      repo: repo,
-      children: travels(p, repo, basePath, markedFiles)
-    } as TreeItem
-  }).concat(files.map(x => {
-    const p = path.join(location, x)
-    const xpath = p.replace(basePath, '').replace(/\\/g, '/')
-    const stat = fs.statSync(p)
-
-    return {
-      name: x,
-      path: xpath,
-      type: 'file',
-      repo: repo,
-      marked: markedFiles.findIndex(f => f.path === xpath && f.repo === repo) > -1,
-      birthtime: stat.birthtimeMs,
-      mtime: stat.mtimeMs
-    } as TreeItem
+    return targetPath
   }))
 }
 
-const read = (repo: string, p: string) => {
-  return fs.readFileSync(resolvePath(p, repo))
-}
+const read = (repo: string, p: string) => withRepo(repo, (_, targetPath) => fs.readFileSync(targetPath), p)
 
 const write = (repo: string, p: string, content: any) => {
   if (readonly) throw new Error('只读模式')
 
-  p = resolvePath(p, repo)
+  return withRepo(repo, (_, filePath) => {
+    fs.ensureFileSync(filePath)
+    fs.writeFileSync(filePath, content)
 
-  mkdirPSync(path.dirname(p))
-
-  fs.writeFileSync(p, content)
-
-  return crypto.createHash('md5').update(content).digest('hex')
+    return crypto.createHash('md5').update(content).digest('hex')
+  }, p)
 }
 
 const rm = (repo: string, p: string) => {
   if (readonly) throw new Error('只读模式')
 
-  if (resolvePath(p) !== resolvePath('', repo)) {
-    const newPath = path.join(repository.getTrashPath(repo), p.replace(/\.\./g, '')) + '.' + (new Date).getTime()
-
-    mkdirPSync(path.dirname(newPath))
-
-    try {
-      fs.renameSync(resolvePath(p, repo), newPath)
-    } catch (error) {
-      xfs.moveSync(resolvePath(p, repo), newPath)
+  withRepo(repo, (repoPath, targetPath) => {
+    if (targetPath !== repoPath) {
+      const newPath = path.join(repository.getTrashPath(repo), p.replace(/\.\./g, '')) + '.' + (new Date).getTime()
+      fs.moveSync(targetPath, newPath)
     }
-  }
+  }, p)
 }
 
 const mv = (repo: string, oldPath: string, newPath: string) => {
   if (readonly) throw new Error('只读模式')
 
-  oldPath = resolvePath(oldPath, repo)
-  newPath = resolvePath(newPath, repo)
-
-  if (oldPath !== newPath) {
-    mkdirPSync(path.dirname(newPath))
-
-    try {
-      fs.renameSync(oldPath, newPath)
-    } catch (error) {
-      xfs.moveSync(oldPath, newPath)
+  withRepo(repo, (_, oldP, newP) => {
+    if (oldPath !== newP) {
+      fs.moveSync(oldP, newP)
     }
-  }
+  }, oldPath, newPath)
 }
 
-const exists = (repo: string, p: string) => {
-  return fs.existsSync(resolvePath(p, repo))
-}
+const exists = (repo: string, p: string) => withRepo(repo, (_, targetPath) => fs.existsSync(targetPath), p)
 
 const hash = (repo: string, p: string) => {
   const content = read(repo, p)
@@ -181,24 +93,66 @@ const upload = (repo: string, file: any, path: string) => {
   write(repo, path, fs.readFileSync(file.path))
 }
 
+const travels = (location: string, repo: string, basePath: string, markedFiles: MarkedFile[] | null = null): any => {
+  if (!fs.statSync(location).isDirectory()) {
+    return []
+  }
+
+  const list = fs.readdirSync(location).filter(x => !x.startsWith('.') && !ignorePath.test(x))
+
+  const sortOptions = [(v: string) => v && v.charCodeAt(0) > 255 ? 1 : 0, (v: string) => v]
+
+  const dirs = NaturalOrderby.orderBy(list.filter(x => fs.statSync(path.join(location, x)).isDirectory()), sortOptions)
+  const files = NaturalOrderby.orderBy(list.filter(x => !fs.statSync(path.join(location, x)).isDirectory()), sortOptions)
+
+  markedFiles = markedFiles || mark.list()
+
+  return dirs.map(x => {
+    const p = path.join(location, x)
+    const xpath = path.relative(basePath, p).replace(/\\/g, '/')
+
+    return {
+      name: x,
+      path: xpath,
+      type: 'dir',
+      repo: repo,
+      children: travels(p, repo, basePath, markedFiles)
+    } as TreeItem
+  }).concat(files.map(x => {
+    const p = path.join(location, x)
+    const xpath = path.relative(basePath, p).replace(/\\/g, '/')
+    const stat = fs.statSync(p)
+
+    return {
+      name: x,
+      path: xpath,
+      type: 'file',
+      repo: repo,
+      marked: markedFiles.findIndex(f => f.path === xpath && f.repo === repo) > -1,
+      birthtime: stat.birthtimeMs,
+      mtime: stat.mtimeMs
+    } as TreeItem
+  }))
+}
+
 const tree = (repo: string) => {
-  return [{
+  return withRepo(repo, repoPath => [{
     name: '/',
     type: 'dir',
     path: '/',
     repo: repo,
-    children: travels(resolvePath('', repo), repo)
-  }]
+    children: travels(repoPath, repo, repoPath)
+  }])
 }
 
 const open = (repo: string, p: string) => {
-  let path = resolvePath(p, repo)
+  withRepo(repo, (_, targetPath) => {
+    if (isWsl) {
+      targetPath = wsl.toWinPath(targetPath)
+    }
 
-  if (isWsl) {
-    path = wsl.toWinPath(path)
-  }
-
-  opn(path)
+    opn(targetPath)
+  }, p)
 }
 
 const search = (repo: string, str: string) => {
@@ -208,13 +162,12 @@ const search = (repo: string, str: string) => {
   }
 
   const files = [] as any
-  const basePath = resolvePath('', repo)
 
   const match = (p: string, str: string) => {
     return p.endsWith('.md') && !p.endsWith('.c.md') && new RegExp(str, 'i').test(fs.readFileSync(p, 'utf-8'))
   }
 
-  const travelFiles = (location: string) => {
+  const travelFiles = (location: string, basePath: string) => {
     if (!fs.statSync(location).isDirectory()) {
       return
     }
@@ -225,13 +178,13 @@ const search = (repo: string, str: string) => {
       const p = path.join(location, x)
 
       if (fs.statSync(p).isDirectory()) {
-        travelFiles(p)
+        travelFiles(p, basePath)
       } else if (fs.statSync(p).isFile()) {
         if (match(p, str)) {
           files.push({
             repo,
             name: x,
-            path: p.replace(basePath, '').replace(/\\/g, '/'),
+            path: path.relative(basePath, p).replace(/\\/g, '/'),
             type: 'file',
           })
         }
@@ -239,7 +192,9 @@ const search = (repo: string, str: string) => {
     })
   }
 
-  travelFiles(resolvePath('', repo))
+  withRepo(repo, repoPath => {
+    travelFiles(repoPath, repoPath)
+  })
 
   return files
 }
