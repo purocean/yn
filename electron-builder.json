@@ -39,6 +39,7 @@
     ]
   },
   "mac": {
+    "icon": "./build/icon.icns",
     "gatekeeperAssess": false,
     "hardenedRuntime": true,
     "entitlements": "build/entitlements.mac.plist",
