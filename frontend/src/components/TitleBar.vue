@@ -1,5 +1,8 @@
 <template>
-  <div :class="{'title-bar': true, 'in-electron': hasWin, 'is-macos': isMacOS}" :style="titleBarStyles">
+  <div
+    :class="{'title-bar': true, 'in-electron': hasWin, 'is-macos': isMacOS}"
+    :style="titleBarStyles"
+    @dblclick.capture="toggleMaximize">
     <div v-if="hasWin && !isMaximized" class="resizer"></div>
     <h4 class="title">
       <img v-if="hasWin" @dblclick="close" class="logo" src="~@/assets/icon.png" alt="logo">
@@ -73,6 +76,16 @@ export default defineComponent({
       // 最大化后取消窗口置顶
       win && win.maximize()
       win && win.setAlwaysOnTop(false)
+    }
+
+    function toggleMaximize () {
+      if (hasWin.value && isMacOS) {
+        if (isMaximized.value) {
+          unmaximize()
+        } else {
+          maximize()
+        }
+      }
     }
 
     function close () {
@@ -177,6 +190,7 @@ export default defineComponent({
       close,
       statusText,
       titleBarStyles,
+      toggleMaximize
     }
   },
 })
@@ -228,7 +242,6 @@ export default defineComponent({
   text-align: center;
   position: relative;
   z-index: 3000;
-  -webkit-app-region: no-drag;
   height: 100%;
   width: 138px;
   margin-left: auto;
