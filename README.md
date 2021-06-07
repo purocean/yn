@@ -78,12 +78,15 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.9.5](https://github.com/purocean/yn/releases/tag/v2.9.5) 2021-06-07
-1. 新增窗口应用菜单
-2. 增加添加仓库提示，弃用默认仓库
+### [v2.9.6](https://github.com/purocean/yn/releases/tag/v2.9.6) 2021-06-07
+1. 修正 macOS 更新升级问题
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.9.5](https://github.com/purocean/yn/releases/tag/v2.9.5) 2021-06-07
+1. 新增窗口应用菜单
+2. 增加添加仓库提示，弃用默认仓库
 
 ### [v2.9.4](https://github.com/purocean/yn/releases/tag/v2.9.4) 2021-06-06
 1. 优化 macOS 上标题栏使用体验
