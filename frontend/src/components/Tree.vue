@@ -1,14 +1,20 @@
 <template>
-  <aside class="side" @contextmenu.exact.prevent="showContextMenu" @dblclick="refreshRepo" title="双击此处刷新目录树">
+  <aside v-if="hasRepo" class="side" @contextmenu.exact.prevent="showContextMenu" @dblclick="refreshRepo" title="双击此处刷新目录树">
     <div class="loading" v-if="tree === null"> 加载中 </div>
     <template v-else>
       <TreeNode v-for="item in tree" :item="item" :key="item.path" />
     </template>
   </aside>
+  <aside v-else class="side">
+    <div class="add-repo-btn" @click="showSetting">
+      添加仓库
+      <div class="add-repo-desc">选择一个位置保存笔记</div>
+    </div>
+  </aside>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, onBeforeUnmount, toRefs, watch } from 'vue'
+import { computed, defineComponent, onBeforeMount, onBeforeUnmount, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useBus } from '../useful/bus'
 import { useContextMenu } from '../useful/context-menu'
@@ -22,7 +28,7 @@ export default defineComponent({
     const store = useStore()
     const contextMenu = useContextMenu()
 
-    const { currentRepo, tree } = toRefs(store.state)
+    const { currentRepo, tree, repositories } = toRefs(store.state)
 
     function refreshTree () {
       store.dispatch('fetchTree', currentRepo.value)
@@ -41,6 +47,10 @@ export default defineComponent({
           onClick: refreshRepo
         }
       ])
+    }
+
+    function showSetting () {
+      bus.emit('show-setting')
     }
 
     onBeforeMount(() => {
@@ -66,10 +76,14 @@ export default defineComponent({
 
     watch(currentRepo, refreshTree)
 
+    const hasRepo = computed(() => Object.keys(repositories.value).length > 0)
+
     return {
       tree,
       refreshRepo,
       showContextMenu,
+      showSetting,
+      hasRepo
     }
   },
 })
@@ -88,6 +102,21 @@ export default defineComponent({
   font-size: 24px;
   text-align: center;
   padding-top: 50%;
-  color: #848181;
+  color: #818284;
+}
+
+.add-repo-desc {
+  color: #69696b;
+  text-align: center;
+  font-size: 14px;
+  padding-top: 10px;
+}
+
+.add-repo-btn {
+  cursor: pointer;
+  font-size: 24px;
+  text-align: center;
+  color: #818284;
+  margin-top: 20vh;
 }
 </style>
