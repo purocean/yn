@@ -20,6 +20,7 @@ export const mainMenus = Menu.buildFromTemplate([
   {
     label: "Application",
     submenu: [
+      { type: 'normal', label: '偏好设置', click: () => bus.emit('show-setting', false) },
       { type: 'normal', label: '关闭窗口', accelerator: "Command+W", click: () => bus.emit('show-main-window', false) },
       { type: 'normal', label: '退出', accelerator: "Command+Q", click: () => bus.emit('quit-app') }
     ]

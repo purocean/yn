@@ -4,12 +4,14 @@ import { Plugin } from '@/useful/plugin'
 export default {
   name: 'status-bar-setting',
   register: ctx => {
+    const showSetting = () => store.commit('setShowSetting', true)
+    ctx.bus.on('show-setting', showSetting)
     ctx.statusBar.updateMenu({
       id: 'status-bar-setting',
       position: 'left',
       tips: '设置',
       icon: 'cog',
-      onClick: () => store.commit('setShowSetting', !store.state.showSetting)
+      onClick: showSetting
     })
   }
 } as Plugin
