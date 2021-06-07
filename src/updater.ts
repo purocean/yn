@@ -96,10 +96,10 @@ const init = (call: () => void) => {
       message: '新版本下载完成，是否要立即安装？'
     }).then(result => {
       if (result.response === 0) {
-        setImmediate(() => {
+        setTimeout(() => {
           autoUpdater.quitAndInstall()
           call()
-        })
+        }, 500)
       }
     })
   })
