@@ -108,13 +108,13 @@ export default defineComponent({
 .add-repo-desc {
   color: #69696b;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   padding-top: 10px;
 }
 
 .add-repo-btn {
   cursor: pointer;
-  font-size: 24px;
+  font-size: 20px;
   text-align: center;
   color: #818284;
   margin-top: 20vh;
