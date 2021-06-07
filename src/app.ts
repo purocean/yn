@@ -153,6 +153,8 @@ const quit = () => {
   }
 }
 
+bus.on('quit-app', quit);
+
 const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {

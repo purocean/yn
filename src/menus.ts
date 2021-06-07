@@ -1,4 +1,5 @@
 import { Menu } from 'electron'
+import { bus } from './bus'
 
 export const selectionMenu = Menu.buildFromTemplate([
   { role: 'copy' },
@@ -19,7 +20,8 @@ export const mainMenus = Menu.buildFromTemplate([
   {
     label: "Application",
     submenu: [
-      { role: "quit", accelerator: "Command+Q" }
+      { type: 'normal', label: '关闭窗口', accelerator: "Command+W", click: () => bus.emit('show-main-window', false) },
+      { type: 'normal', label: '退出', accelerator: "Command+Q", click: () => bus.emit('quit-app') }
     ]
   },
   {
