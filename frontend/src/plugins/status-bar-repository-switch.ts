@@ -80,6 +80,8 @@ export default {
         if (keys.length > 0) {
           const name = keys[0]
           store.commit('setCurrentRepo', { name, path: val[name] })
+        } else {
+          store.commit('setCurrentRepo', undefined)
         }
       }
     })

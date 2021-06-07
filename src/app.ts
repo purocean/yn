@@ -153,6 +153,18 @@ const quit = () => {
   }
 }
 
+const showSetting = () => {
+  if (!win || !win.webContents) {
+    return
+  }
+
+  showWindow(true)
+  win.webContents.executeJavaScript('globalBus.emit("show-setting");', true)
+}
+
+bus.on('show-setting', showSetting);
+bus.on('quit-app', quit);
+
 const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
@@ -211,6 +223,11 @@ if (!gotTheLock) {
           click: () => {
             opn(USER_DIR)
           }
+        },
+        {
+          type: 'normal',
+          label: '偏好设置',
+          click: showSetting
         },
         {
           type: 'checkbox',
