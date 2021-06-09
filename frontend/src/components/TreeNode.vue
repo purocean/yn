@@ -158,7 +158,7 @@ export default defineComponent({
     }
 
     function revealInXterminal () {
-      const path = currentRepo.value ? currentRepo.value.path + props.item.path : ''
+      const path = currentRepo.value ? currentRepo.value.path + '/' + props.item.path : ''
 
       bus.emit('xterm-run', `--yank-note-run-command-cd-- ${path}`)
     }
