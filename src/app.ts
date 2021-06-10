@@ -37,12 +37,16 @@ const getUrl = (mode?: typeof urlMode) => {
     'init-file',
   ].includes(x[0]))
 
-  const query = (new URLSearchParams(args as any)).toString()
+  const searchParams = new URLSearchParams(args as any)
+
+  if (mode === 'scheme') {
+    searchParams.set('port', backendPort.toString());
+  }
+
+  const query = searchParams.toString()
 
   const proto = mode === 'scheme' ? APP_NAME : 'http'
-  const port = mode === 'dev' ? devFrontendPort : backendPort
-
-  console.log(mode, `${proto}://localhost:${port}` + (query ? `?${query}` : ''))
+  const port = proto === 'http' ? (mode === 'dev' ? devFrontendPort : backendPort) : ''
 
   return `${proto}://localhost:${port}` + (query ? `?${query}` : '')
 }
