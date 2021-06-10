@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { CONFIG_FILE } from './constant'
+import { CONFIG_FILE } from '../constant'
 
 const configFile = CONFIG_FILE
 

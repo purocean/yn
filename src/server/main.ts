@@ -6,7 +6,7 @@ import * as mime from 'mime'
 import * as request from 'request'
 import * as pty from 'node-pty'
 import { promisify } from 'util';
-import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR } from './constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR } from '../constant'
 import init from './init'
 import file from './file'
 import dataRepository from './repository'

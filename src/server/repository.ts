@@ -1,7 +1,7 @@
 import * as path from 'path'
 import config from './config'
-import { TRASH_DIR } from './constant'
-import { isWsl, toWslPath } from './wsl'
+import { TRASH_DIR } from '../constant'
+import { isWsl, toWslPath } from '../wsl'
 
 const configKey = 'repositories'
 

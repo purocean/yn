@@ -1,6 +1,6 @@
 import * as os from 'os'
 import config from './config'
-import { toWslPath } from './wsl'
+import { toWslPath } from '../wsl'
 
 const configKey = 'shell'
 

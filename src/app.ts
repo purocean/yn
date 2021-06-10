@@ -4,11 +4,11 @@ import * as os from 'os'
 import { dialog } from 'electron'
 import * as yargs from 'yargs'
 import server from './server/main'
-import { USER_DIR } from './server/constant'
+import { APP_NAME, USER_DIR } from './constant'
 import * as updater from './updater'
 import { getAccelerator, registerShortcut } from './shortcut'
-import { mainMenus, inputMenu, selectionMenu } from './menus';
-import { SCHEME, transformProtocolRequest } from './protocol';
+import { mainMenus, inputMenu, selectionMenu } from './menus'
+import { transformProtocolRequest } from './protocol'
 import { bus } from './bus'
 const opn = require('opn')
 
@@ -39,7 +39,7 @@ const getUrl = (mode?: typeof urlMode) => {
 
   const query = (new URLSearchParams(args as any)).toString()
 
-  const proto = mode === 'scheme' ? SCHEME : 'http'
+  const proto = mode === 'scheme' ? APP_NAME : 'http'
   const port = mode === 'dev' ? devFrontendPort : backendPort
 
   console.log(mode, `${proto}://localhost:${port}` + (query ? `?${query}` : ''))
