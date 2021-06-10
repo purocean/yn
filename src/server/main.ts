@@ -302,7 +302,8 @@ const server = (port = 3000) => {
     await sendFile(path.resolve(STATIC_DIR, urlPath), true);
   })
 
-  const server = require('http').createServer(app.callback())
+  const callback = app.callback()
+  const server = require('http').createServer(callback)
   const io = require('socket.io')(server, {path: '/ws'})
 
   io.on('connection', (socket: any) => {
@@ -329,6 +330,8 @@ const server = (port = 3000) => {
   server.listen(port, 'localhost')
 
   console.log(`访问地址：http://localhost:${port}`)
+
+  return callback
 }
 
 if (require.main === module) {

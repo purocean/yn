@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, Tray, powerMonitor } from 'electron'
+import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor } from 'electron'
 import * as path from 'path'
 import * as os from 'os'
 import { dialog } from 'electron'
@@ -8,18 +8,28 @@ import { USER_DIR } from './server/constant'
 import * as updater from './updater'
 import { getAccelerator, registerShortcut } from './shortcut'
 import { mainMenus, inputMenu, selectionMenu } from './menus';
+import { SCHEME, transformProtocolRequest } from './protocol';
 import { bus } from './bus'
 const opn = require('opn')
 
 const isMacos = os.platform() === 'darwin'
 
-let isDev = false
+let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
 
 const showTray = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || 3044
 const devFrontendPort = 8066
 
-const getUrl = () => {
+Menu.setApplicationMenu(mainMenus)
+
+// 主窗口
+let win: BrowserWindow | null = null
+// 系统托盘
+let tray = null
+
+const getUrl = (mode?: typeof urlMode) => {
+  mode = mode ?? urlMode
+
   const args = Object.entries(yargs.argv).filter(x => [
     'readonly',
     'show-status-bar',
@@ -29,15 +39,15 @@ const getUrl = () => {
 
   const query = (new URLSearchParams(args as any)).toString()
 
-  return `http://localhost:${isDev ? devFrontendPort : backendPort}` + (query ? `?${query}` : '')
+  const proto = mode === 'scheme' ? SCHEME : 'http'
+  const port = mode === 'dev' ? devFrontendPort : backendPort
+
+  console.log(mode, `${proto}://localhost:${port}` + (query ? `?${query}` : ''))
+
+  return `${proto}://localhost:${port}` + (query ? `?${query}` : '')
 }
 
-Menu.setApplicationMenu(mainMenus)
-
-// 主窗口
-let win: BrowserWindow | null = null
-// 系统托盘
-let tray = null
+const openInBrowser = () => opn(getUrl('prod'))
 
 const hide = () => {
   if (win) {
@@ -177,7 +187,18 @@ if (!gotTheLock) {
   app.on('ready', () => {
     // 打开后端服务器
     try {
-      server(backendPort)
+      const handler = server(backendPort)
+      protocol.registerStreamProtocol('yank-note', async (request, callback) => {
+        // 自定义 protocol 协议转换为 koa 请求
+        const { req, res, out } = await transformProtocolRequest(request)
+
+        await handler(req, res)
+        callback({
+          headers: res.getHeaders() as any,
+          statusCode: res.statusCode,
+          data: out,
+        })
+      })
     } catch (error) {
       app.exit(-1)
     }
@@ -194,7 +215,7 @@ if (!gotTheLock) {
     // 注册快捷键
     registerShortcut({
       'show-main-window': () => showWindow(),
-      'open-in-browser': () => opn(getUrl())
+      'open-in-browser': () => openInBrowser()
     })
 
     powerMonitor.on('shutdown', quit)
@@ -213,9 +234,7 @@ if (!gotTheLock) {
           type: 'normal',
           label: '浏览器中打开',
           accelerator: getAccelerator('open-in-browser'),
-          click: () => {
-            opn(getUrl())
-          }
+          click: openInBrowser
         },
         {
           type: 'normal',
@@ -245,19 +264,28 @@ if (!gotTheLock) {
           submenu: [
             {
               type: 'radio',
-              checked: !isDev,
-              label: `正式端口（${backendPort}）`,
+              checked: urlMode === 'scheme',
+              label: `正式端口（Schema）`,
               click: () => {
-                isDev = false
+                urlMode = 'scheme'
                 reload()
               }
             },
             {
               type: 'radio',
-              checked: isDev,
+              checked: urlMode === 'prod',
+              label: `正式端口（${backendPort}）`,
+              click: () => {
+                urlMode = 'prod'
+                reload()
+              }
+            },
+            {
+              type: 'radio',
+              checked: urlMode === 'dev',
               label: `开发端口（${devFrontendPort}）`,
               click: () => {
-                isDev = true
+                urlMode = 'dev'
                 reload()
               }
             },
