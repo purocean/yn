@@ -1,5 +1,6 @@
 import * as os from 'os'
 import { globalShortcut, dialog } from 'electron'
+import { FLAG_DISABLE_SERVER } from './constant'
 const platform = os.platform()
 
 type AcceleratorType = 'show-main-window' | 'open-in-browser'
@@ -11,6 +12,10 @@ export const getAccelerator = (type: AcceleratorType) => {
 }
 
 export const registerShortcut = (shortcuts: {[key in AcceleratorType]: () => void}) => {
+  if (FLAG_DISABLE_SERVER) {
+    delete shortcuts['open-in-browser']
+  }
+
   Object.keys(shortcuts).forEach((key: AcceleratorType) => {
     const accelerator = getAccelerator(key)
     if (!accelerator) {

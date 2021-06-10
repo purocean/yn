@@ -4,7 +4,6 @@ import * as Koa from 'koa'
 import * as bodyParser from 'koa-body'
 import * as mime from 'mime'
 import * as request from 'request'
-import * as pty from 'node-pty'
 import { promisify } from 'util';
 import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR } from '../constant'
 import init from './init'
@@ -17,6 +16,7 @@ import shell from './shell'
 import mark from './mark'
 import config from './config'
 import { call, bus } from '../bus'
+import { FLAG_DISABLE_SERVER } from '../constant'
 
 const result = (status: 'ok' | 'error' = 'ok', message = '操作成功', data: any = null) => {
   return { status, message, data }
@@ -303,8 +303,14 @@ const server = (port = 3000) => {
   })
 
   const callback = app.callback()
+
+  if (FLAG_DISABLE_SERVER) {
+    return callback
+  }
+
   const server = require('http').createServer(callback)
   const io = require('socket.io')(server, {path: '/ws'})
+  const pty = require('node-pty')
 
   io.on('connection', (socket: any) => {
     const ptyProcess = pty.spawn(shell.getShell(), [], {
@@ -314,8 +320,8 @@ const server = (port = 3000) => {
       cwd: HOME_DIR,
       env: process.env
     })
-    ptyProcess.on('data', (data: any) => socket.emit('output', data))
-    ptyProcess.on('exit', () => socket.disconnect())
+    ptyProcess.onData((data: any) => socket.emit('output', data))
+    ptyProcess.onExit(() => socket.disconnect())
     socket.on('input', (data: any) => {
       if (data.startsWith(shell.CD_COMMAND_PREFIX)) {
         ptyProcess.write(shell.transformCdCommand(data.toString()))

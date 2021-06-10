@@ -10,6 +10,7 @@ import { getAccelerator, registerShortcut } from './shortcut'
 import { mainMenus, inputMenu, selectionMenu } from './menus'
 import { transformProtocolRequest } from './protocol'
 import { bus } from './bus'
+import { FLAG_DISABLE_DEVTOOL, FLAG_DISABLE_SERVER } from './constant'
 const opn = require('opn')
 
 const isMacos = os.platform() === 'darwin'
@@ -238,6 +239,7 @@ if (!gotTheLock) {
           type: 'normal',
           label: '浏览器中打开',
           accelerator: getAccelerator('open-in-browser'),
+          visible: !FLAG_DISABLE_SERVER,
           click: openInBrowser
         },
         {
@@ -265,6 +267,7 @@ if (!gotTheLock) {
         {
           type: 'submenu',
           label: '开发',
+          visible: !FLAG_DISABLE_DEVTOOL,
           submenu: [
             {
               type: 'radio',
