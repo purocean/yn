@@ -2,11 +2,10 @@ import { protocol, session, ProtocolRequest, UploadData } from 'electron'
 import { IncomingMessage, ServerResponse } from 'http'
 import { Readable } from 'stream'
 import { Transform } from 'stream'
-
-export const SCHEME = 'yank-note'
+import { APP_NAME } from './constant'
 
 protocol.registerSchemesAsPrivileged([{
-  scheme: SCHEME,
+  scheme: APP_NAME,
   privileges: {
     supportFetchAPI: true,
     standard: true,
@@ -39,7 +38,7 @@ export async function transformProtocolRequest (request: ProtocolRequest) {
   const req = new IncomingMessage(null)
 
   req.method = request.method
-  req.url = request.url.replace('yank-note', 'http')
+  req.url = request.url.replace(APP_NAME, 'http')
 
   Object.keys(request.headers).forEach(key => {
     req.headers[key.toLowerCase()] = request.headers[key]

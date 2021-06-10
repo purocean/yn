@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as crypto from 'crypto'
 import * as NaturalOrderby from 'natural-orderby'
 import * as yargs from 'yargs'
-import * as wsl from './wsl'
+import * as wsl from '../wsl'
 import mark, { MarkedFile } from './mark'
 import repository from './repository'
 const opn = require('opn')

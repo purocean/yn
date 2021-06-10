@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import { execFileSync } from 'child_process'
-import * as wsl from './wsl'
+import * as wsl from '../wsl'
 import config from './config'
 
 const isWsl = wsl.isWsl

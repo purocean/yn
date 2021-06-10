@@ -4,12 +4,13 @@ import * as os from 'os'
 import { dialog } from 'electron'
 import * as yargs from 'yargs'
 import server from './server/main'
-import { USER_DIR } from './server/constant'
+import { APP_NAME, USER_DIR } from './constant'
 import * as updater from './updater'
 import { getAccelerator, registerShortcut } from './shortcut'
-import { mainMenus, inputMenu, selectionMenu } from './menus';
-import { SCHEME, transformProtocolRequest } from './protocol';
+import { mainMenus, inputMenu, selectionMenu } from './menus'
+import { transformProtocolRequest } from './protocol'
 import { bus } from './bus'
+import { FLAG_DISABLE_DEVTOOL, FLAG_DISABLE_SERVER } from './constant'
 const opn = require('opn')
 
 const isMacos = os.platform() === 'darwin'
@@ -37,12 +38,16 @@ const getUrl = (mode?: typeof urlMode) => {
     'init-file',
   ].includes(x[0]))
 
-  const query = (new URLSearchParams(args as any)).toString()
+  const searchParams = new URLSearchParams(args as any)
 
-  const proto = mode === 'scheme' ? SCHEME : 'http'
-  const port = mode === 'dev' ? devFrontendPort : backendPort
+  if (mode === 'scheme') {
+    searchParams.set('port', backendPort.toString());
+  }
 
-  console.log(mode, `${proto}://localhost:${port}` + (query ? `?${query}` : ''))
+  const query = searchParams.toString()
+
+  const proto = mode === 'scheme' ? APP_NAME : 'http'
+  const port = proto === 'http' ? (mode === 'dev' ? devFrontendPort : backendPort) : ''
 
   return `${proto}://localhost:${port}` + (query ? `?${query}` : '')
 }
@@ -234,6 +239,7 @@ if (!gotTheLock) {
           type: 'normal',
           label: '浏览器中打开',
           accelerator: getAccelerator('open-in-browser'),
+          visible: !FLAG_DISABLE_SERVER,
           click: openInBrowser
         },
         {
@@ -261,6 +267,7 @@ if (!gotTheLock) {
         {
           type: 'submenu',
           label: '开发',
+          visible: !FLAG_DISABLE_DEVTOOL,
           submenu: [
             {
               type: 'radio',

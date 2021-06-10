@@ -11,7 +11,7 @@ import { useStore } from 'vuex'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { useBus } from '../useful/bus'
-import { FLAG_DISABLE_XTERM } from '../useful/global-args'
+import { $args, FLAG_DISABLE_XTERM } from '../useful/global-args'
 import { getLogger } from '../useful/utils'
 
 const logger = getLogger('component-x-term')
@@ -70,7 +70,10 @@ export default defineComponent({
       }
 
       if (!socket) {
-        socket = io({ path: '/ws' })
+        const uri = location.protocol.startsWith('http')
+          ? location.origin
+          : 'http://' + location.hostname + ':' + $args().get('port')
+        socket = io(uri, { path: '/ws' })
 
         xterm.onResize(size => socket!!.emit('resize', [size.cols, size.rows]))
         xterm.onData(input)
