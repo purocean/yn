@@ -1,9 +1,9 @@
 {
   "name": "yank.note",
-  "version": "2.9.8",
+  "version": "2.9.9",
   "description": "Yank Note 一款面向程序员的 Markdown 笔记应用",
   "main": "dist/app.js",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0",
   "author": {
     "name": "purocean",
     "email": "purocean@outlook.com"
