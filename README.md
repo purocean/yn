@@ -78,11 +78,14 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.9.7](https://github.com/purocean/yn/releases/tag/v2.9.7) 2021-06-09
-1. 修复在终端中打开路径错误问题
+### [v2.9.8](https://github.com/purocean/yn/releases/tag/v2.9.8) 2021-06-10
+1. Electron 中打开页面增加 Scheme 模式
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.9.7](https://github.com/purocean/yn/releases/tag/v2.9.7) 2021-06-09
+1. 修复在终端中打开路径错误问题
 
 ### [v2.9.6](https://github.com/purocean/yn/releases/tag/v2.9.6) 2021-06-07
 1. 修正 macOS 更新升级问题
