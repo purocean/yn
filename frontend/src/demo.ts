@@ -4,6 +4,7 @@ import file from './useful/file'
 
 if (FLAG_DEMO) {
   const xFetch = window.fetch
+  const cache: {[key: string]: string} = {}
 
   file.upload = (repo, path, fileData: File) => Promise.resolve({
     repo,
@@ -58,14 +59,26 @@ if (FLAG_DEMO) {
         if (method === 'POST') {
           return Promise.resolve({ status: 'ok', message: '保存成功' })
         } else if (method === 'GET') {
-          return xFetch('/' + (url.searchParams.get('doc') || 'FEATURES.md')).then(res => res.text()).then(md => ({
+          const path = '/' + (url.searchParams.get('doc') || 'FEATURES.md')
+          const data = {
             status: 'ok',
             message: '获取成功',
             data: {
-              content: md,
+              content: '',
               hash: 'test'
             }
-          }))
+          }
+
+          if (cache[path]) {
+            data.data.content = cache[path]
+            return Promise.resolve(data)
+          }
+
+          return xFetch(path).then(res => res.text()).then(md => {
+            cache[path] = md
+            data.data.content = md
+            return data
+          })
         }
       }
 
