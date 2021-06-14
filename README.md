@@ -1,5 +1,5 @@
 # Yank Note
-> 一款面向程序员的 Markdown 笔记应用
+> 一款面向程序员的 Markdown 笔记应用 **[在线体验>>>](https://yn-phi.vercel.app/)**
 
 [![Release](https://github.com/purocean/yn/workflows/Release/badge.svg)](https://github.com/purocean/yn/releases)
 

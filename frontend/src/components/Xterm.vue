@@ -11,7 +11,7 @@ import { useStore } from 'vuex'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { useBus } from '../useful/bus'
-import { $args, FLAG_DISABLE_XTERM } from '../useful/global-args'
+import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '../useful/global-args'
 import { getLogger } from '../useful/utils'
 
 const logger = getLogger('component-x-term')
@@ -67,6 +67,12 @@ export default defineComponent({
         xterm.open(refXterm.value!!)
         fitAddon.fit()
         bus.on('resize', fitXterm)
+
+        if (FLAG_DEMO) {
+          const message = 'DEMO 模式终端不可用'
+          xterm.write(message)
+          return
+        }
       }
 
       if (!socket) {
