@@ -229,7 +229,7 @@ export default defineComponent({
         getEditor().setModel(toUri(current), content)
       } catch (error) {
         store.commit('setCurrentFile', null)
-        toast.show('warning', error.message)
+        toast.show('warning', error.message.includes('Malformed') ? '密码错误' : error.message)
         console.error(error)
       }
 

@@ -92,7 +92,11 @@ export default defineComponent({
       window.removeEventListener('keydown', keydownHandler)
     })
 
-    watch(currentFile, file => {
+    watch(currentFile, (file, prevFile) => {
+      if (!file && File.isEncryptedFile(prevFile)) {
+        setTabs(tabs.value.filter((x: any) => !File.isSameFile(x.payload.file, prevFile)))
+      }
+
       const uri = File.toUri(file)
       const item = {
         key: uri,
