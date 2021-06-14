@@ -3,6 +3,8 @@
 
 [![Release](https://github.com/purocean/yn/workflows/Release/badge.svg)](https://github.com/purocean/yn/releases)
 
+[![Download](./help/mas_en.svg)](https://apps.apple.com/cn/app/yank-note/id1551528618)
+
 [toc]{level: [2]}
 
 ![截图](./help/0.png)
