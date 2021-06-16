@@ -78,11 +78,14 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.9.9](https://github.com/purocean/yn/releases/tag/v2.9.9) 2021-06-10
-1. 修复 Scheme 模式下终端不能使用问题
+### [v2.9.10](https://github.com/purocean/yn/releases/tag/v2.9.10) 2021-06-16
+1. 增加双击编辑表格单元格功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.9.9](https://github.com/purocean/yn/releases/tag/v2.9.9) 2021-06-10
+1. 修复 Scheme 模式下终端不能使用问题
 
 ### [v2.9.8](https://github.com/purocean/yn/releases/tag/v2.9.8) 2021-06-10
 1. 应用中打开页面增加 Scheme 模式
