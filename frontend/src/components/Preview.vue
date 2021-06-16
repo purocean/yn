@@ -33,7 +33,7 @@
       </div>
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="{top: (height - 40) + 'px'}" @click="scrollToTop">TOP</div>
-    <article ref="refView" class="markdown-body" @click.capture="handleClick"></article>
+    <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick"></article>
   </div>
 </template>
 
@@ -176,7 +176,7 @@ export default defineComponent({
       todoDoneCount.value = refView.value!!.querySelectorAll('input[type=checkbox][checked]').length
     }
 
-    const render = lodash.debounce(() => {
+    const render = () => {
       // 编辑非 markdown 文件预览直接显示代码
       const content = (filePath.value || '').endsWith('.md')
         ? currentContent.value
@@ -189,7 +189,9 @@ export default defineComponent({
 
       triggerHook('ON_VIEW_RENDER', { getViewDom })
       nextTick(() => triggerHook('ON_VIEW_RENDERED', { getViewDom }))
-    }, 500, { leading: true })
+    }
+
+    const renderDebonce = lodash.debounce(render, 500, { leading: true })
 
     async function keydownHandler (e: KeyboardEvent) {
       triggerHook('ON_VIEW_KEY_DOWN', e, getViewDom())
@@ -206,6 +208,10 @@ export default defineComponent({
     function scrollToTop () {
       refViewWrapper.value!!.scrollTo(0, 0)
       syncScroll(1)
+    }
+
+    function handleDbClick (e: MouseEvent) {
+      triggerHook('ON_VIEW_ELEMENT_DBCLICK', e)
     }
 
     async function handleClick (e: MouseEvent) {
@@ -261,7 +267,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      nextTick(render)
+      nextTick(renderDebonce)
       triggerHook('ON_VIEW_MOUNTED', { getViewDom })
       window.addEventListener('keydown', keydownHandler, true)
       bus.on('resize', resizeHandler)
@@ -275,7 +281,7 @@ export default defineComponent({
       bus.off('view-rerender', render)
     })
 
-    watch(currentContent, () => autoPreview.value && render())
+    watch(currentContent, () => autoPreview.value && renderDebonce())
     watch(filePath, () => {
       // 切换文件后，开启自动预览
       store.commit('setAutoPreview', true)
@@ -298,6 +304,7 @@ export default defineComponent({
       handleScroll,
       scrollToTop,
       handleClick,
+      handleDbClick,
       revealLine,
       syncScroll,
     }

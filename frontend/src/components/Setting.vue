@@ -36,8 +36,21 @@ const schema = {
         type: 'object',
         title: '仓库',
         properties: {
-          name: { type: 'string', title: '仓库名' },
-          path: { type: 'string', title: '路径', readonly: true }
+          name: {
+            type: 'string',
+            title: '仓库名',
+            options: {
+              inputAttributes: { placeholder: '请输入' }
+            },
+          },
+          path: {
+            type: 'string',
+            title: '路径',
+            readonly: true,
+            options: {
+              inputAttributes: { placeholder: '请选择' }
+            },
+          }
         }
       },
     },

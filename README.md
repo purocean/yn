@@ -1,7 +1,7 @@
 # Yank Note
-> 一款面向程序员的 Markdown 笔记应用
+> 一款面向程序员的 Markdown 笔记应用 **[在线体验>>>](https://yn-phi.vercel.app/)**
 
-[![Release](https://github.com/purocean/yn/workflows/Release/badge.svg)](https://github.com/purocean/yn/releases)
+[![Download](./help/mas_en.svg)](https://apps.apple.com/cn/app/yank-note/id1551528618)
 
 [toc]{level: [2]}
 
@@ -54,7 +54,7 @@
 + HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键粘贴复制 HTML 为 Markdown
 + docx 导出：后端使用 pandoc 做转换器
 + TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可
-+ 编辑表格单元格：快捷编辑表格单元格
++ 编辑表格单元格：双击表格单元格即可快速编辑
 + 复制标题链接：复制标题链接路径到剪切板，便于插入到其他文件
 + 嵌入小工具：文档支持内嵌 HTML 小工具
 + 嵌入 Plantuml 图形：需要安装 Java，graphviz
@@ -78,11 +78,14 @@
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v2.9.9](https://github.com/purocean/yn/releases/tag/v2.9.9) 2021-06-10
-1. 修复 Scheme 模式下终端不能使用问题
+### [v2.9.10](https://github.com/purocean/yn/releases/tag/v2.9.10) 2021-06-16
+1. 增加双击编辑表格单元格功能
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v2.9.9](https://github.com/purocean/yn/releases/tag/v2.9.9) 2021-06-10
+1. 修复 Scheme 模式下终端不能使用问题
 
 ### [v2.9.8](https://github.com/purocean/yn/releases/tag/v2.9.8) 2021-06-10
 1. 应用中打开页面增加 Scheme 模式

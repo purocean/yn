@@ -13,5 +13,6 @@ dirs.forEach(dir => {
 })
 
 // 复制 markdown，处理相对路径
-const md = fs.readFileSync('README.md').toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')
+const readme = path.join(__dirname, 'README.md')
+const md = fs.readFileSync(readme).toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')
 fs.writeFileSync(path.join(__dirname, './help/README.md'), md)

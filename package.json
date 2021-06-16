@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "2.9.9",
+  "version": "2.9.10",
   "description": "Yank Note 一款面向程序员的 Markdown 笔记应用",
   "main": "dist/app.js",
   "license": "GPL-3.0",

@@ -4,13 +4,14 @@ import { Plugin, Ctx } from '@/useful/plugin'
 import { hasCtrlCmd } from '@/useful/shortcut'
 import { useToast } from '@/useful/toast'
 
-const editTableCell = async (start: number, end: number, cellIndex: number) => {
+const editTableCell = async (start: number, end: number, cellIndex: number, input: HTMLTextAreaElement | null) => {
   const toast = useToast()
   const modal = useModal()
   const bus = useBus()
 
   if (end - start !== 1) {
     toast.show('warning', '暂只支持编辑单行文本')
+    input && input.remove()
     return
   }
 
@@ -55,23 +56,58 @@ const editTableCell = async (start: number, end: number, cellIndex: number) => {
   bus.emit('editor-get-line', { line: start, callback: (val: string) => { text = val.trim() } })
 
   const columns = escapedSplit(text)
-  const cellText = columns[cellIndex]
+  const cellText = columns[cellIndex].trim()
 
   if (typeof cellText !== 'string') {
     toast.show('warning', '编辑错误')
     return
   }
 
-  let value = await modal.input({
-    title: '编辑单元格',
-    type: 'textarea',
-    value: cellText,
-    modalWidth: '600px',
-    hint: '单元格内容',
-  })
-  if (typeof value !== 'string') {
-    toast.show('warning', '取消编辑')
-    return
+  let value = cellText
+  if (input) {
+    input.value = cellText
+    value = await (new Promise((resolve) => {
+      const cancel = () => {
+        input.onblur = () => undefined
+        input.remove()
+      }
+
+      const ok = () => {
+        if (input.value === cellText) {
+          cancel()
+        } else {
+          resolve(input.value)
+          bus.emit('view-rerender')
+        }
+      }
+
+      input.onblur = ok
+
+      input.onkeydown = e => {
+        if (e.key === 'Escape') {
+          cancel()
+        }
+
+        if (e.key === 'Enter' && hasCtrlCmd(e)) {
+          ok()
+        }
+      }
+    }))
+  } else {
+    const inputVal = await modal.input({
+      title: '编辑单元格',
+      type: 'textarea',
+      value: cellText,
+      modalWidth: '600px',
+      hint: '单元格内容',
+    })
+
+    if (typeof inputVal !== 'string') {
+      toast.show('warning', '取消编辑')
+      return
+    }
+
+    value = inputVal
   }
 
   if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
@@ -88,7 +124,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number) => {
 export default {
   name: 'table-cell-edit',
   register: (ctx: Ctx) => {
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
+    const handleClick = async (e: MouseEvent, modal: boolean) => {
       const target = e.target as HTMLElement
 
       const preventEvent = () => {
@@ -97,7 +133,11 @@ export default {
         return true
       }
 
-      if (target.tagName === 'TD' && target.classList.contains('yank-td') && hasCtrlCmd(e)) {
+      if (['TD', 'TH'].includes(target.tagName) && target.classList.contains('yank-table-cell')) {
+        if ((hasCtrlCmd(e) && !modal) || (!hasCtrlCmd(e) && modal)) {
+          return false
+        }
+
         const start = parseInt(target.dataset.sourceLine || '0')
         const end = parseInt(target.dataset.sourceLineEnd || '0')
         const td = target as HTMLTableDataCellElement
@@ -105,12 +145,45 @@ export default {
           .slice(0, td.cellIndex)
           .reduce((prev, current) => prev + current.colSpan, 0)
 
-        editTableCell(start, end, cellIndex)
+        const input = modal ? null : document.createElement('textarea')
+
+        if (input) {
+          target.style.position = 'relative'
+          input.style.left = '0'
+          input.style.top = '0'
+          input.style.height = '100%'
+          input.style.width = '100%'
+          input.style.boxSizing = 'border-box'
+          input.style.color = '#fff'
+          input.style.borderColor = '#93e632'
+          input.style.backgroundColor = '#272a2b'
+          input.style.position = 'absolute'
+          input.style.display = 'block'
+          input.style.padding = '4px'
+          input.autofocus = true
+          input.placeholder = 'ESC 取消'
+          setTimeout(() => {
+            input.focus()
+          }, 0)
+
+          target.appendChild(input)
+        }
+
+        editTableCell(start, end, cellIndex, input)
 
         return preventEvent()
       }
 
       return false
+    }
+
+    ctx.registerHook('ON_VIEW_ELEMENT_DBCLICK', e => handleClick(e, false))
+    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', e => handleClick(e, true))
+    ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
+      const view: HTMLElement = getViewDom()
+      view.querySelectorAll('.yank-table-cell').forEach(td => {
+        (td as HTMLElement).title = '双击编辑'
+      })
     })
   }
 } as Plugin

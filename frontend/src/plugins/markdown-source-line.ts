@@ -24,7 +24,8 @@ export default {
       md.renderer.rules.heading_open = injectLineNumbers
       md.renderer.rules.list_item_open = injectLineNumbers
       md.renderer.rules.table_open = injectLineNumbers
-      md.renderer.rules.td_open = buildFunction('yank-td')
+      md.renderer.rules.td_open = buildFunction('yank-table-cell')
+      md.renderer.rules.th_open = buildFunction('yank-table-cell')
     })
   }
 } as Plugin

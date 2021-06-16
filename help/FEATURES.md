@@ -354,7 +354,8 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 粘贴图片为 base64 链接 | Ctrl + B + V | Cmd + B + V
 转换单个外链图片到本地 | Ctrl + Shift + 单击图片 | Cmd + Shift + 单击图片
 转换所有外链图片到本地 | Ctrl + Shift + L | Cmd + Shift + L
-编辑表格单元格 | Ctrl + 单击单元格 | Cmd + 单击单元格
+编辑表格单元格 | 双击单元格 | 双击单元格
+编辑表格单元格(弹出框) | Ctrl + 单击单元格 | Cmd + 单击单元格 或
 复制文档标题链接 | Ctrl + 单击标题 | Cmd + 单击标题
 切换编辑器 Tab | Ctrl + Alt + Left/Right | Ctrl + Option + Left/Rig
 切换侧栏 | Alt + E | Option + E

@@ -109,7 +109,7 @@ export default defineComponent({
 }
 
 .list {
-  width: 100px;
+  min-width: 70px;
   margin: 0;
   list-style: none;
   background: #37393a;

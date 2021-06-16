@@ -4,6 +4,7 @@ export default [
   require('@/plugins/status-bar-view'),
   require('@/plugins/status-bar-help'),
   require('@/plugins/status-bar-refresh'),
+  require('@/plugins/status-bar-get'),
   require('@/plugins/markdown-source-line'),
   require('@/plugins/markdown-toc'),
   require('@/plugins/markdown-code'),
