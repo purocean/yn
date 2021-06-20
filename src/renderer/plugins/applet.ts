@@ -5,7 +5,7 @@ import Markdown from 'markdown-it'
 import { useBus } from '@fe/useful/bus'
 import { Plugin } from '@fe/useful/plugin'
 
-const RunPlugin = (md: Markdown) => {
+const MarkdownItPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
   md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
     const token = tokens[idx]
@@ -145,7 +145,7 @@ const runScript = (el: HTMLElement) => {
 export default {
   name: 'applet',
   register: ctx => {
-    ctx.markdown.registerPlugin(RunPlugin)
+    ctx.markdown.registerPlugin(MarkdownItPlugin)
 
     function runAppletScript ({ getViewDom }: any) {
       const refView: HTMLElement = getViewDom()

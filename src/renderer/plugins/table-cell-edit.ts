@@ -74,12 +74,12 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
       }
 
       const ok = () => {
-        if (input.value === cellText) {
-          cancel()
-        } else {
+        if (input.value !== cellText) {
           resolve(input.value)
           bus.emit('view-rerender')
         }
+
+        cancel()
       }
 
       input.onblur = ok

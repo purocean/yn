@@ -1,6 +1,7 @@
 // https://github.com/Oktavilla/markdown-it-table-of-contents
 
 import Markdown from 'markdown-it'
+import StateInline from 'markdown-it/lib/rules_inline/state_inline'
 import { getKeyLabel } from '@fe/useful/shortcut'
 import { Plugin } from '@fe/useful/plugin'
 
@@ -16,8 +17,8 @@ const defaults = {
   type: 'ul',
   format: undefined,
   forceFullToc: false,
-  containerHeaderHtml: undefined,
-  containerFooterHtml: undefined
+  containerHeaderHtml: '',
+  containerFooterHtml: ''
 }
 
 const MarkdownItPlugin = (md: Markdown, o: any) => {
@@ -25,8 +26,7 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
   const tocRegexp = options.markerPattern
   let gstate: any
 
-  function toc (state: any, silent: any) {
-    let token
+  function toc (state: StateInline, silent: any) {
     let match
 
     // Reject if the token does not start with [
@@ -57,10 +57,9 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
     }
 
     // Build content
-    token = state.push('toc_open', 'toc', 1)
+    const token = state.push('toc_body', 'toc', 0)
     token.markup = '[[toc]]'
-    token = state.push('toc_body', '', 0)
-    token = state.push('toc_close', 'toc', -1)
+    token.block = true
 
     // Update pos so the parser can continue
     const newline = state.src.indexOf('\n', state.pos)
@@ -124,27 +123,9 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
     return [i, `<${options.type}>${headings.join('')}</${options.type}>`]
   }
 
-  md.renderer.rules.toc_open = function () {
-    let tocOpenHtml = `<div class="${options.containerClass}">`
-
-    if (options.containerHeaderHtml) {
-      tocOpenHtml += options.containerHeaderHtml
-    }
-
-    return tocOpenHtml
-  }
-
-  md.renderer.rules.toc_close = function () {
-    let tocFooterHtml = ''
-
-    if (options.containerFooterHtml) {
-      tocFooterHtml = options.containerFooterHtml
-    }
-
-    return tocFooterHtml + '</div>'
-  }
-
   md.renderer.rules.toc_body = function () {
+    let tocBody = ''
+
     if (options.forceFullToc) {
       /*
 
@@ -161,7 +142,6 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
       - heading 1
 
       */
-      let tocBody = ''
       let pos = 0
       const tokenLength = gstate && gstate.tokens && gstate.tokens.length
 
@@ -170,11 +150,15 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
         pos = tocHierarchy[0]
         tocBody += tocHierarchy[1]
       }
-
-      return tocBody
     } else {
-      return renderChildrenTokens(0, gstate.tokens)[1]
+      tocBody = renderChildrenTokens(0, gstate.tokens)[1]
     }
+
+    return `<div class="${options.containerClass}">
+        ${options.containerHeaderHtml}
+        ${tocBody}
+        ${options.containerFooterHtml}
+      </div>`
   }
 
   md.renderer.rules.heading_open = function (tokens, idx, opt, env, slf) {

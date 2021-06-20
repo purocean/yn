@@ -47,7 +47,6 @@ import Markdown from 'markdown-it'
 import katex from 'markdown-it-katex'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
-import Footnote from 'markdown-it-footnote'
 import Highlight from 'highlight.js'
 
 import file from '@fe/useful/file'
@@ -76,7 +75,6 @@ const markdown = Markdown({
 })
   .use(katex)
   .use(MarkdownItAttrs)
-  .use(Footnote)
   .use(MultimdTable, { multiline: true })
 
 getMarkdownItPlugins().forEach(({ plugin, params }) => {
