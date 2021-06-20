@@ -160,7 +160,7 @@ export default {
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
 
-    ctx.registerHook('ON_VIEW_RENDER', ({ getViewDom }) => {
+    ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
       const refView: HTMLElement = getViewDom()
       const nodes = refView.querySelectorAll<HTMLIFrameElement>('.drawio[data-url]')
       nodes.forEach(el => {

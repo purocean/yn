@@ -155,7 +155,7 @@ export default {
   name: 'markdown-toc',
   register: ctx => {
     ctx.registerHook('ON_STARTUP', addStyles)
-    ctx.registerHook('ON_VIEW_RENDER', ({ getViewDom }) => {
+    ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
       const refView: HTMLElement = getViewDom()
       const nodes = refView.querySelectorAll<HTMLImageElement>('code[class^="language-"]')
       nodes.forEach(lineNumbersBlock)

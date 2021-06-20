@@ -203,6 +203,6 @@ export default {
       nodes.forEach(render)
     }
 
-    ctx.registerHook('ON_VIEW_RENDER', debounce(renderMindMap, 1000, { leading: true }))
+    ctx.registerHook('ON_VIEW_RENDERED', debounce(renderMindMap, 1000, { leading: true }))
   }
 } as Plugin

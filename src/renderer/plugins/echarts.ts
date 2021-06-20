@@ -89,7 +89,7 @@ export default {
   name: 'markdown-toc',
   register: ctx => {
     ctx.markdown.registerPlugin(EChartsPlugin)
-    ctx.registerHook('ON_VIEW_RENDER', () => {
+    ctx.registerHook('ON_VIEW_RENDERED', () => {
       update()
     })
     ctx.registerHook('ON_VIEW_BEFORE_CONVERT', () => {

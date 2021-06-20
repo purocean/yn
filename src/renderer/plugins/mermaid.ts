@@ -33,6 +33,6 @@ export default {
   name: 'mermaid',
   register: ctx => {
     ctx.markdown.registerPlugin(MermaidPlugin)
-    ctx.registerHook('ON_VIEW_RENDER', () => mermaid.init('.mermaid'))
+    ctx.registerHook('ON_VIEW_RENDERED', () => mermaid.init('.mermaid'))
   }
 } as Plugin

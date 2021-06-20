@@ -33,7 +33,9 @@
       </div>
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="{top: (height - 40) + 'px'}" @click="scrollToTop">TOP</div>
-    <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick" />
+    <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick">
+      <Render @render="handleRender" @rendered="handleRendered" :content="renderContent" />
+    </article>
   </div>
 </template>
 
@@ -48,10 +50,11 @@ import MultimdTable from 'markdown-it-multimd-table'
 import Footnote from 'markdown-it-footnote'
 import Highlight from 'highlight.js'
 
-import file from '../useful/file'
-import { triggerHook } from '../useful/plugin'
-import { getPlugins as getMarkdownItPlugins } from '../useful/plugin/markdown'
-import { useBus } from '../useful/bus'
+import file from '@fe/useful/file'
+import { triggerHook } from '@fe/useful/plugin'
+import { getPlugins as getMarkdownItPlugins } from '@fe/useful/plugin/markdown'
+import { useBus } from '@fe/useful/bus'
+import Render from './Render.vue'
 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
@@ -82,6 +85,7 @@ getMarkdownItPlugins().forEach(({ plugin, params }) => {
 
 export default defineComponent({
   name: 'xview',
+  components: { Render },
   setup (_, { emit }) {
     const bus = useBus()
     const store = useStore()
@@ -94,6 +98,8 @@ export default defineComponent({
     const refViewWrapper = ref<HTMLElement | null>(null)
     const refView = ref<HTMLElement | null>(null)
     const refConvertForm = ref<HTMLFormElement | null>(null)
+
+    const renderContent = ref()
 
     const getViewDom = () => refView.value
 
@@ -174,19 +180,24 @@ export default defineComponent({
       todoDoneCount.value = refView.value!.querySelectorAll('input[type=checkbox][checked]').length
     }
 
-    const render = () => {
+    function handleRender () {
+      triggerHook('ON_VIEW_RENDER', { getViewDom })
+    }
+
+    function handleRendered () {
+      updateOutline()
+      updateTodoCount()
+      triggerHook('ON_VIEW_RENDERED', { getViewDom })
+    }
+
+    function render () {
       // 编辑非 markdown 文件预览直接显示代码
       const content = (filePath.value || '').endsWith('.md')
         ? currentContent.value
         : '```' + file.extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '```'
 
       const source = replaceRelativeLink(content)
-      refView.value!.innerHTML = markdown.render(source, { source })
-      updateOutline()
-      updateTodoCount()
-
-      triggerHook('ON_VIEW_RENDER', { getViewDom })
-      nextTick(() => triggerHook('ON_VIEW_RENDERED', { getViewDom }))
+      renderContent.value = markdown.render(source, { source })
     }
 
     const renderDebonce = debounce(render, 500, { leading: true })
@@ -290,6 +301,7 @@ export default defineComponent({
       refViewWrapper,
       refConvertForm,
       refView,
+      renderContent,
       width,
       height,
       heads,
@@ -300,6 +312,8 @@ export default defineComponent({
       print,
       convertFile,
       handleScroll,
+      handleRender,
+      handleRendered,
       scrollToTop,
       handleClick,
       handleDbClick,

@@ -153,6 +153,6 @@ export default {
       nodes.forEach(runScript)
     }
 
-    ctx.registerHook('ON_VIEW_RENDER', debounce(runAppletScript, 1000, { leading: true }))
+    ctx.registerHook('ON_VIEW_RENDERED', debounce(runAppletScript, 1000, { leading: true }))
   }
 } as Plugin
