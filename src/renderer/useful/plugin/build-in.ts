@@ -4,6 +4,7 @@ import statusBarView from '@fe/plugins/status-bar-view'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarRefresh from '@fe/plugins/status-bar-refresh'
 import statusBarGet from '@fe/plugins/status-bar-get'
+import markdownRenderVnode from '@/renderer/plugins/markdown-render-vnode'
 import markdownSourceLine from '@fe/plugins/markdown-source-line'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCode from '@fe/plugins/markdown-code'
@@ -29,6 +30,7 @@ export default [
   statusBarHelp,
   statusBarRefresh,
   statusBarGet,
+  markdownRenderVnode,
   markdownSourceLine,
   markdownToc,
   markdownCode,
