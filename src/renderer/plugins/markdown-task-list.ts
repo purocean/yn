@@ -11,14 +11,10 @@ import Markdown from 'markdown-it'
 import { Plugin } from '@fe/useful/plugin'
 
 let disableCheckboxes = true
-let useLabelWrapper = false
-let useLabelAfter = false
 
 function MarkdownItPlugin (md: Markdown, options: { enabled: any; label: any; labelAfter: any }) {
   if (options) {
     disableCheckboxes = !options.enabled
-    useLabelWrapper = !!options.label
-    useLabelAfter = !!options.labelAfter
   }
 
   md.core.ruler.after('inline', 'github-task-lists', function (state: { tokens: any; Token: any }) {
@@ -67,20 +63,6 @@ function todoify (token: { children: any[]; content: string | any[] }, TokenCons
   token.children.unshift(makeCheckbox(token, TokenConstructor))
   token.children[1].content = token.children[1].content.slice(3)
   token.content = token.content.slice(3)
-
-  if (useLabelWrapper) {
-    if (useLabelAfter) {
-      token.children.pop()
-
-      // Use large random number as id property of the checkbox.
-      const id = 'task-item-' + Math.ceil(Math.random() * (10000 * 1000) - 1000)
-      token.children[0].content = token.children[0].content.slice(0, -1) + ' id="' + id + '">'
-      token.children.push(afterLabel(token.content, id, TokenConstructor))
-    } else {
-      token.children.unshift(beginLabel(TokenConstructor))
-      token.children.push(endLabel(TokenConstructor))
-    }
-  }
 }
 
 function makeCheckbox (token: { content: string | string[] }, TokenConstructor: new (arg0: string, arg1: string, arg2: number) => any) {
@@ -92,27 +74,6 @@ function makeCheckbox (token: { content: string | string[] }, TokenConstructor: 
     checkbox.content = '<input class="task-list-item-checkbox" checked=""' + disabledAttr + 'type="checkbox">'
   }
   return checkbox
-}
-
-// these next two functions are kind of hacky; probably should really be a
-// true block-level token with .tag=='label'
-function beginLabel (TokenConstructor: new (arg0: string, arg1: string, arg2: number) => any) {
-  const token = new TokenConstructor('html_inline', '', 0)
-  token.content = '<label>'
-  return token
-}
-
-function endLabel (TokenConstructor: new (arg0: string, arg1: string, arg2: number) => any) {
-  const token = new TokenConstructor('html_inline', '', 0)
-  token.content = '</label>'
-  return token
-}
-
-function afterLabel (content: any, id: string, TokenConstructor: new (arg0: string, arg1: string, arg2: number) => any) {
-  const token = new TokenConstructor('html_inline', '', 0)
-  token.content = '<label class="task-list-item-label" for="' + id + '">' + content + '</label>'
-  token.attrs = [{ for: id }]
-  return token
 }
 
 function isInline (token: { type: string }) { return token.type === 'inline' }
