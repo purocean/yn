@@ -60,7 +60,7 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/eslint-config-typescript": "^5.0.2",
     "autoprefixer": "^10.2.6",
-    "crypto-js": "^4.0.0",
+    "crypto-js": "^3.3.0",
     "dayjs": "^1.10.5",
     "echarts": "^5.1.2",
     "electron": "11.4.6",
