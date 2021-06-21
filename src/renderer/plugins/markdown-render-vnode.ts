@@ -25,7 +25,7 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
   const info = token.info ? unescapeAll(token.info).trim() : ''
   let langName = ''
   let langAttrs = ''
-  let highlighted; let i; let arr; let tmpAttrs; let tmpToken
+  let highlighted: any; let i; let arr; let tmpAttrs; let tmpToken
 
   if (info) {
     arr = info.split(/(\s+)/g)
@@ -43,7 +43,11 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
     return highlighted + '\n'
   }
 
-  const renderAttrs = Renderer.prototype.renderAttrs.bind(slf)
+  const buildVNode = (arrts: any) => createVNode(
+    'pre',
+    {},
+    [createVNode('code', { key: highlighted, ...arrts, innerHTML: highlighted }, [])]
+  )
 
   // If language exists, inject class gently, without modifying original token.
   // May be, one day we will add .deepClone() for token and simplify this part, but
@@ -64,14 +68,10 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
       attrs: tmpAttrs
     }
 
-    return '<pre><code' + renderAttrs(tmpToken as any) + '>' +
-          highlighted +
-          '</code></pre>\n'
+    return buildVNode(slf.renderAttrs(tmpToken as any))
   }
 
-  return '<pre><code' + renderAttrs(token) + '>' +
-        highlighted +
-        '</code></pre>\n'
+  return buildVNode(slf.renderAttrs(token))
 }
 
 defaultRules.image = function (tokens: Token[], idx: number, options: any, env: any, slf: Renderer) {

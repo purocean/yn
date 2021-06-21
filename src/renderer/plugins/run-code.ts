@@ -1,8 +1,82 @@
+import { computed, defineComponent, h, ref, VNode } from 'vue'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/useful/plugin'
 
 const cachePrefix = 'run_code_result_'
+
+const RunCode = defineComponent({
+  name: 'run-code',
+  props: {
+    code: {
+      type: String,
+      default: ''
+    },
+    language: String,
+  },
+  setup (props) {
+    const result = ref('')
+
+    const hash = computed(() => CryptoJS.MD5(props.code).toString())
+
+    const run = async () => {
+      const { code, language } = props
+
+      result.value = '运行中……'
+
+      fetch('/api/run', {
+        method: 'post',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ language, code })
+      }).then(res => {
+        res.json().then(({ data, status, message }) => {
+          if (status === 'ok') {
+            result.value = data
+            localStorage.setItem(`${cachePrefix}${hash.value}`, data)
+          } else {
+            result.value = message
+          }
+        }).catch(e => {
+          result.value = e.message
+        })
+      }).catch(e => {
+        result.value = e.message
+      })
+    }
+
+    const runInXterm = (e: MouseEvent) => {
+      (window as any).runInXterm(props.language, props.code, e.ctrlKey)
+    }
+
+    return () => {
+      const runResult = result.value || localStorage[`${cachePrefix}${hash.value}`] || ''
+
+      return h(
+        'div',
+        {
+          class: 'run-code',
+          style: 'position: relative;border-top: dashed 1px #888; padding: .5em 0; margin-top: 1.5em;'
+        },
+        [
+          h('div', { class: 'run-code-result', style: 'padding: .5em 0', innerHTML: runResult }),
+          h('button', {
+            title: '运行代码',
+            style: 'position: absolute; top: -.7em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none',
+            onClick: run
+          }),
+          h('button', {
+            title: '在终端中运行代码，Ctrl + 单击不退出解释器',
+            style: 'position: absolute; top: -.25em; right: -0.4em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none;transform: rotate(90deg);',
+            onClick: runInXterm
+          }),
+        ]
+      )
+    }
+  }
+})
 
 const RunPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
@@ -15,49 +89,16 @@ const RunPlugin = (md: Markdown) => {
       return temp(tokens, idx, options, env, slf)
     }
 
-    const hash = CryptoJS.MD5(code).toString()
+    const codeNode: VNode = temp(tokens, idx, options, env, slf) as any
 
-    const click = `
-      var code = '${encodeURIComponent(code).replace(/'/g, '\\\'')}'
-      code = decodeURIComponent(code)
-      var resultDiv = this.parentElement.firstChild
-      resultDiv.innerText = '运行中……'
+    if (codeNode && Array.isArray(codeNode.children)) {
+      codeNode.children.push(h(RunCode, {
+        code,
+        language: token.info
+      }))
+    }
 
-      fetch('/api/run', {
-        method: 'post',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({language: '${token.info}', code: code})
-      }).then(res => {
-        res.json().then(result => {
-          if (result.status === 'ok') {
-            resultDiv.innerText = result.data
-            localStorage.setItem('${cachePrefix}${hash}', resultDiv.innerHTML)
-          } else {
-            resultDiv.innerText = result.message
-          }
-        }).catch(e => {
-          resultDiv.innerText = e.message
-        })
-      }).catch(e => {
-        resultDiv.innerText = e.message
-      })
-    `
-    const runInXterm = `
-      var code = '${encodeURIComponent(code).replace(/'/g, '\\\'')}'
-      code = decodeURIComponent(code)
-      runInXterm('${token.info}', code, !arguments[0].ctrlKey)
-    `
-
-    const result = localStorage[`${cachePrefix}${hash}`] || ''
-
-    const resultDiv = `<div id="run-result-${hash}" style="position: relative;border-top: dashed 1px #888; padding: .5em 0; margin-top: 1.5em;"><div style="padding: .5em 0">${result}</div><button title="运行代码" style="position: absolute; top: -.7em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none" onclick="${click}"></button><button title="在终端中运行代码，Ctrl + 单击不退出解释器" style="position: absolute; top: -.25em; right: -0.4em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none;transform: rotate(90deg);" onclick="${runInXterm}" class="run-in-xterm"></button></div>`
-
-    const codeContent = temp(tokens, idx, options, env, slf).trim().replace(/<\/pre>$/, '')
-
-    return `${codeContent}${resultDiv}</pre>`
+    return codeNode as any
   }
 }
 
