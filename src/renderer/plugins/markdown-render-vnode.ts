@@ -93,11 +93,35 @@ defaultRules.text = function (tokens: Token[], idx: number) {
 }
 
 defaultRules.html_block = function (tokens: Token[], idx: number) {
-  return createVNode('div', { innerHTML: tokens[idx].content })
+  return createHtmlVNode(tokens[idx].content)
 }
 
 defaultRules.html_inline = function (tokens: Token[], idx: number) {
-  return createVNode('span', { innerHTML: tokens[idx].content })
+  return createHtmlVNode(tokens[idx].content)
+}
+
+function createHtmlVNode (html: string) {
+  const div = document.createElement('div')
+  div.innerHTML = html
+  const children = []
+  for (let i = 0; i < div.children.length; i++) {
+    const element = div.children[i]
+    const tagName = element.tagName.toLowerCase()
+    const attrs: Record<string, any> = {
+      key: element.outerHTML
+    }
+
+    for (let j = 0; j < element.attributes.length; j++) {
+      const attr = element.attributes[j]
+      attrs[attr.name] = attr.value
+    }
+
+    attrs.innerHTML = element.innerHTML
+
+    children.push(createVNode(tagName, attrs))
+  }
+
+  return createVNode(Fragment, {}, children)
 }
 
 function renderToken (this: Renderer, tokens: Token[], idx: number): any {
@@ -145,7 +169,7 @@ function render (this: Renderer, tokens: Token[], options: any, env: any) {
     } else if (rules[type]) {
       const result = rules[type](tokens, i, options, env, this)
       if (typeof result === 'string') {
-        vnode = createVNode(token.block ? 'div' : 'span', { innerHTML: result })
+        vnode = createHtmlVNode(result)
       } else if (result && result.node && result.parent) {
         parent = result.parent
         vnode = result.node
