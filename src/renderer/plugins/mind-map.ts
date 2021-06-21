@@ -1,3 +1,4 @@
+import { defineComponent, h, onMounted, ref, watch } from 'vue'
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/useful/plugin'
@@ -5,24 +6,6 @@ import crypto from '@fe/useful/crypto'
 import { dataURItoBlobLink, openInNewWindow } from '@fe/useful/utils'
 
 const layoutStorageKey = 'mind-map-layout'
-
-const renderRule: Renderer.RenderRule = (tokens, idx, options, { source }, slf) => {
-  const token = tokens[idx]
-  const nextToken = tokens[idx + 1]
-  if (token.level === 0 && token.map && nextToken && nextToken.attrGet('class')?.includes('mindmap')) {
-    const content = source
-      .split('\n')
-      .slice(token.map[0], token.map[1])
-      .join('\n')
-      .replace(/\{.mindmap[^}]*\}/gm, '')
-      .replace(/^(\s*)([+-]*|\d+.) /gm, '$1')
-
-    token.attrJoin('class', 'mindmap-list')
-    token.attrSet('data-mindmap-source', content)
-  }
-
-  return slf.renderToken(tokens, idx, options)
-}
 
 const buildSrcdoc = (json: string, btns: string) => {
   return `
@@ -86,14 +69,15 @@ const buildSrcdoc = (json: string, btns: string) => {
   `
 }
 
-const render = async (ele: HTMLElement) => {
-  const code = (ele.dataset.mindmapSource || '').trim()
+const render = async (ele: HTMLElement, content: string) => {
+  const code = (content || '').trim()
 
   const div = document.createElement('div')
   div.setAttribute('minder-data-type', 'text')
   div.style.position = 'relative'
   div.style.height = '400px'
-  ele.replaceWith(div)
+  ele.innerHTML = ''
+  ele.appendChild(div)
 
   const km = new (window as any).kityminder.Minder()
   // Hack 一下，防止脑图自动聚焦
@@ -190,19 +174,51 @@ const render = async (ele: HTMLElement) => {
   div.appendChild(action)
 }
 
+const MindMap = defineComponent({
+  name: 'mind-map',
+  props: {
+    content: {
+      type: String,
+      default: ''
+    }
+  },
+  setup (props) {
+    const container = ref<HTMLElement>()
+
+    const renderMindMap = debounce(() => {
+      container.value && render(container.value, props.content)
+    }, 1000, { leading: true })
+
+    watch(() => props.content, renderMindMap)
+
+    onMounted(renderMindMap)
+
+    return () => h('div', { ref: container, class: 'mind-map' })
+  }
+})
+
+const renderRule: Renderer.RenderRule = (tokens, idx, options, { source }, slf) => {
+  const token = tokens[idx]
+  const nextToken = tokens[idx + 1]
+  if (token.level === 0 && token.map && nextToken && nextToken.attrGet('class')?.includes('mindmap')) {
+    const content = source
+      .split('\n')
+      .slice(token.map[0], token.map[1])
+      .join('\n')
+      .replace(/\{.mindmap[^}]*\}/gm, '')
+      .replace(/^(\s*)([+-]*|\d+.) /gm, '$1')
+
+    return h(MindMap, { content }) as any
+  }
+
+  return slf.renderToken(tokens, idx, options)
+}
+
 export default {
   name: 'mind-map',
   register: ctx => {
     ctx.markdown.registerPlugin(md => {
       md.renderer.rules.bullet_list_open = renderRule
     })
-
-    function renderMindMap ({ getViewDom }: any) {
-      const refView: HTMLElement = getViewDom()
-      const nodes = refView.querySelectorAll<HTMLElement>('.mindmap-list[data-mindmap-source]')
-      nodes.forEach(render)
-    }
-
-    ctx.registerHook('ON_VIEW_RENDERED', debounce(renderMindMap, 1000, { leading: true }))
   }
 } as Plugin
