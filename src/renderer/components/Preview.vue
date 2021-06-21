@@ -198,7 +198,7 @@ export default defineComponent({
       renderContent.value = markdown.render(source, { source })
     }
 
-    const renderDebonce = debounce(render, 500, { leading: true })
+    const renderDebonce = debounce(render, 100, { leading: true })
 
     async function keydownHandler (e: KeyboardEvent) {
       triggerHook('ON_VIEW_KEY_DOWN', e, getViewDom())
