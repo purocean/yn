@@ -43,6 +43,8 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
     return highlighted + '\n'
   }
 
+  const renderAttrs = Renderer.prototype.renderAttrs.bind(slf)
+
   // If language exists, inject class gently, without modifying original token.
   // May be, one day we will add .deepClone() for token and simplify this part, but
   // now we prefer to keep things local.
@@ -62,12 +64,12 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
       attrs: tmpAttrs
     }
 
-    return '<pre><code' + slf.renderAttrs(tmpToken as any) + '>' +
+    return '<pre><code' + renderAttrs(tmpToken as any) + '>' +
           highlighted +
           '</code></pre>\n'
   }
 
-  return '<pre><code' + slf.renderAttrs(token) + '>' +
+  return '<pre><code' + renderAttrs(token) + '>' +
         highlighted +
         '</code></pre>\n'
 }
