@@ -11,7 +11,6 @@ import markdownCode from '@fe/plugins/markdown-code'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
 import markdownFootnote from '@/renderer/plugins/markdown-footnote'
-import codeLineNumber from '@fe/plugins/code-line-number'
 import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import copyText from '@fe/plugins/copy-text'
 import tableCellEdit from '@fe/plugins/table-cell-edit'
@@ -38,7 +37,6 @@ export default [
   markdownLink,
   markdownTaskList,
   markdownFootnote,
-  codeLineNumber,
   transformImgOutLink,
   copyText,
   tableCellEdit,

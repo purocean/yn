@@ -46,7 +46,7 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
   const buildVNode = (arrts: any) => createVNode(
     'pre',
     {},
-    [createVNode('code', { key: highlighted, ...arrts, innerHTML: highlighted }, [])]
+    [createVNode('code', { ...arrts, innerHTML: highlighted }, [])]
   )
 
   // If language exists, inject class gently, without modifying original token.

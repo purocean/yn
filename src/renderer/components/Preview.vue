@@ -47,7 +47,6 @@ import Markdown from 'markdown-it'
 import katex from 'markdown-it-katex'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
-import Highlight from 'highlight.js'
 
 import file from '@fe/useful/file'
 import { triggerHook } from '@fe/useful/plugin'
@@ -59,20 +58,7 @@ import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
 
-const markdown = Markdown({
-  linkify: true,
-  breaks: true,
-  html: true,
-  highlight: (str: string, lang: string) => {
-    if (lang && Highlight.getLanguage(lang)) {
-      try {
-        return Highlight.highlight(lang, str).value
-      } catch (__) {}
-    }
-
-    return ''
-  }
-})
+const markdown = Markdown({ linkify: true, breaks: true, html: true, })
   .use(katex)
   .use(MarkdownItAttrs)
   .use(MultimdTable, { multiline: true })
