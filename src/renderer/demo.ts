@@ -3,6 +3,8 @@ import { useToast } from './useful/toast'
 import file from './useful/file'
 
 if (FLAG_DEMO) {
+  localStorage.clear()
+
   const xFetch = window.fetch
   const cache: {[key: string]: string} = {}
 
