@@ -637,10 +637,6 @@ button:hover {
   padding-bottom: 10px;
 }
 
-.view table.hljs-ln tr:nth-child(even) {
-  background: rgba(110, 110, 110, .05)
-}
-
 .view .hljs-ln td.hljs-ln-numbers {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
