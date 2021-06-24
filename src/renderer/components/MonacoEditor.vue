@@ -269,7 +269,7 @@ export default defineComponent({
       })
 
       getEditor().onDidScrollChange(() => {
-        const line = getEditor().getVisibleRanges()[0].startLineNumber
+        const line = Math.max(1, getEditor().getVisibleRanges()[0].startLineNumber - 2)
         const top = getEditor().getScrollTop()
         emit('scroll-view', { line, top })
       })
