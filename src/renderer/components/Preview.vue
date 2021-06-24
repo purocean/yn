@@ -160,8 +160,16 @@ export default defineComponent({
     }
 
     function updateTodoCount () {
-      todoCount.value = refView.value!.querySelectorAll('input[type=checkbox]').length
-      todoDoneCount.value = refView.value!.querySelectorAll('input[type=checkbox][checked]').length
+      const nodes = refView.value!.querySelectorAll<HTMLInputElement>('input[type=checkbox]')
+      todoCount.value = nodes.length
+
+      let done = 0
+      nodes.forEach(node => {
+        if (node.checked) {
+          done++
+        }
+      })
+      todoDoneCount.value = done
     }
 
     function handleRender () {
