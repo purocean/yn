@@ -49,7 +49,10 @@ function htmlInline (state: StateInline): boolean {
   const content = state.src.slice(pos, pos + match[0].length)
 
   // ignore comment
-  if (content.startsWith('<!--')) { return false }
+  if (content.startsWith('<!--')) {
+    state.pos += match[0].length
+    return true
+  }
 
   const tag = (match[1] || match[2] || '').toLowerCase()
   if (!tag) { return false }
