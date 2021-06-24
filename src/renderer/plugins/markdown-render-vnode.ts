@@ -16,7 +16,7 @@ defaultRules.code_block = function (tokens: Token[], idx: number, _: any, __: an
   return createVNode(
     'pre',
     slf.renderAttrs(token) as any,
-    createVNode('code', {}, token.content)
+    [createVNode('code', {}, token.content)]
   )
 }
 
