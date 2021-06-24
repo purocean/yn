@@ -34,12 +34,6 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-@media screen {
-  body {
-    background: #282a2b;
-  }
-}
-
 @media print {
   .no-print {
     display: none;
