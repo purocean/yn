@@ -192,7 +192,6 @@ function render (this: Renderer, tokens: Token[], options: any, env: any) {
 
     if (token.nesting === 1) {
       if (parent) {
-        console.log(tokens, parent, vnode)
         vNodeParents.push(parent)
       } else if (vnode) {
         vNodeParents.push(vnode)
