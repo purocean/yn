@@ -14,6 +14,7 @@ import opn from 'opn'
 import startup from './startup'
 
 const isMacos = os.platform() === 'darwin'
+const isLinux = os.platform() === 'linux'
 
 let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
 
@@ -77,6 +78,8 @@ const createWindow = () => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+    // Linux 上设置窗口图标
+    ...(isLinux ? { icon: path.join(__dirname, './assets/icon.png') } : undefined)
   })
 
   // win.maximize()

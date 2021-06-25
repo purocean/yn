@@ -30,7 +30,7 @@
     "executableName": "yank-note",
     "category": "Markdown",
     "maintainer": "purocean <purocean@outlook.com>",
-    "icon": "./build/icon.png",
+    "icon": "./build/icon.icns",
     "target": [
       "deb"
     ]
