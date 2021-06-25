@@ -342,6 +342,10 @@ export default defineComponent({
     background: #464648;
   }
 
+  .markdown-body ::v-deep(.katex) {
+    background: initial;
+  }
+
   .markdown-body ::v-deep(table tr:nth-child(2n)),
   .markdown-body ::v-deep(pre),
   .markdown-body ::v-deep(pre > code)
