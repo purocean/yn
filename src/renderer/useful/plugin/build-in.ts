@@ -13,6 +13,7 @@ import markdownLink from '@fe/plugins/markdown-link'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
 import markdownFootnote from '@/renderer/plugins/markdown-footnote'
 import transformImgOutLink from '@fe/plugins/transform-img-out-link'
+import markdownItKatex from '@/renderer/plugins/markdown-it-katex'
 import copyText from '@fe/plugins/copy-text'
 import tableCellEdit from '@fe/plugins/table-cell-edit'
 import switchTodo from '@fe/plugins/switch-todo'
@@ -39,6 +40,7 @@ export default [
   markdownLink,
   markdownTaskList,
   markdownFootnote,
+  markdownItKatex,
   transformImgOutLink,
   copyText,
   tableCellEdit,

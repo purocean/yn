@@ -1456,6 +1456,11 @@ commander@^5.0.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
   integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
 
+commander@^6.0.0:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
+  integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
+
 component-bind@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/component-bind/-/component-bind-1.0.0.tgz#00c608ab7dcd93897c0009651b1d3a8e1e73bbd1"
@@ -3731,12 +3736,12 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-katex@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/katex/-/katex-0.6.0.tgz#12418e09121c05c92041b6b3b9fb6bab213cb6f3"
-  integrity sha1-EkGOCRIcBckgQbazuftrqyE8tvM=
+katex@^0.13.11:
+  version "0.13.11"
+  resolved "https://registry.yarnpkg.com/katex/-/katex-0.13.11.tgz#66138ebf173f25ef130cd3a3ea3ea1d12a3f1362"
+  integrity sha512-yJBHVIgwlAaapzlbvTpVF/ZOs8UkTj/sd46Fl8+qAf2/UiituPYVeapVD8ADZtqyRg/qNWUKt7gJoyYVWLrcXw==
   dependencies:
-    match-at "^0.1.0"
+    commander "^6.0.0"
 
 keygrip@~1.1.0:
   version "1.1.0"
@@ -3967,13 +3972,6 @@ markdown-it-attrs@^4.0.0:
   resolved "https://registry.yarnpkg.com/markdown-it-attrs/-/markdown-it-attrs-4.0.0.tgz#eadae3ea0c7d17c5e83b98a4ec95a47f4e4960f5"
   integrity sha512-uLjtdCmhhmL3BuZsReYkFxk74qKjj5ahe34teBpOCJ4hYZZl7/ftLyXWLowngC2moRkbLEvKwN/7TMwbhbHE/A==
 
-markdown-it-katex@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/markdown-it-katex/-/markdown-it-katex-2.0.3.tgz#d7b86a1aea0b9d6496fab4e7919a18fdef589c39"
-  integrity sha1-17hqGuoLnWSW+rTnkZoY/e9YnDk=
-  dependencies:
-    katex "^0.6.0"
-
 markdown-it-multimd-table@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/markdown-it-multimd-table/-/markdown-it-multimd-table-4.1.0.tgz#5c23eba9ceda580dc5c7301927a01610e0ee37b9"
@@ -4002,11 +4000,6 @@ markdown-it@^12.0.6:
     linkify-it "^3.0.1"
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
-
-match-at@^0.1.0:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/match-at/-/match-at-0.1.1.tgz#25d040d291777704d5e6556bbb79230ec2de0540"
-  integrity sha512-h4Yd392z9mST+dzc+yjuybOGFNOZjmXIPKWjxBd1Bb23r4SmDOsk2NYCU2BMUBGbSpZqwVsZYNq26QS3xfaT3Q==
 
 matcher@^3.0.0:
   version "3.0.0"

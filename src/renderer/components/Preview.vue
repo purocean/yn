@@ -44,7 +44,6 @@ import { debounce } from 'lodash-es'
 import { useStore } from 'vuex'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import Markdown from 'markdown-it'
-import katex from 'markdown-it-katex'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MultimdTable from 'markdown-it-multimd-table'
 
@@ -59,7 +58,6 @@ import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
 
 const markdown = Markdown({ linkify: true, breaks: true, html: true, })
-  .use(katex)
   .use(MarkdownItAttrs)
   .use(MultimdTable, { multiline: true })
 
