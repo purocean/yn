@@ -71,14 +71,16 @@ if (FLAG_DEMO) {
             }
           }
 
+          const message = (url.searchParams.get('doc') ? '' : '当前处于 DEMO 模式，部分功能不可用{style="color: red; font-size: 30px"}\n\n')
+
           if (cache[path]) {
-            data.data.content = cache[path]
+            data.data.content = message + cache[path]
             return Promise.resolve(data)
           }
 
           return xFetch(path).then(res => res.text()).then(md => {
             cache[path] = md
-            data.data.content = md
+            data.data.content = message + md
             return data
           })
         }
