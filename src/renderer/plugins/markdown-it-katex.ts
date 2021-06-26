@@ -14,6 +14,7 @@ for rendering output.
 
 import katex from 'katex'
 import { Plugin } from '@fe/useful/plugin'
+import { h } from 'vue'
 
 // Test if potential opening or closing delimieter
 // Assumes that there is a "$" at state.src[pos]
@@ -97,6 +98,11 @@ function math_inline (state: any, silent: boolean) {
     token = state.push('math_inline', 'math', 0)
     token.markup = '$'
     token.content = state.src.slice(start, match)
+
+    // 如果本行字符串以 $ 结尾，避免 markdown-it-attrs 解析，插入一个空白节点
+    if (state.src.endsWith('$')) {
+      state.push('text', '', 0)
+    }
   }
 
   state.pos = match + 1
@@ -164,8 +170,8 @@ function math_plugin (md: any, options: any) {
     try {
       return katex.renderToString(latex, options)
     } catch (error) {
-      if (options.throwOnError) { console.log(error) }
-      return latex
+      if (options.throwOnError) { console.error(error) }
+      return h('code', {}, `${error.message} [${latex}]`)
     }
   }
 
@@ -178,9 +184,8 @@ function math_plugin (md: any, options: any) {
     try {
       return '<p>' + katex.renderToString(latex, options) + '</p>'
     } catch (error) {
-      console.log(error)
-      if (options.throwOnError) { console.log(error) }
-      return latex
+      if (options.throwOnError) { console.error(error) }
+      return h('code', {}, `${error.message} [${latex}]`)
     }
   }
 
@@ -199,6 +204,6 @@ function math_plugin (md: any, options: any) {
 export default {
   name: 'markdown-toc',
   register: ctx => {
-    ctx.markdown.registerPlugin(math_plugin)
+    ctx.markdown.registerPlugin(math_plugin, { throwOnError: true })
   }
 } as Plugin

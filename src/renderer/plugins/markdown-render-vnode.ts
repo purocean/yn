@@ -4,6 +4,7 @@ import Renderer from 'markdown-it/lib/renderer'
 import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
 import { Plugin } from '@fe/useful/plugin'
 
+const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*/
 const defaultRules = {} as any
 
 defaultRules.code_inline = function (tokens: Token[], idx: number, _: any, __: any, slf: Renderer) {
@@ -149,7 +150,9 @@ function renderAttrs (this: Renderer, token: Token) {
   const result: any = {}
 
   token.attrs.forEach(token => {
-    result[token[0]] = token[1]
+    if (attrNameReg.test(token[0])) {
+      result[token[0]] = token[1]
+    }
   })
 
   return result
