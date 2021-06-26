@@ -122,9 +122,13 @@ const repository = async (ctx: any, next: any) => {
 
 const plantumlGen = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/plantuml/png')) {
-    ctx.set('cache-control', 'max-age=86400') // 一天过期
     ctx.type = 'image/png'
-    ctx.body = plantuml.generate(ctx.query.data)
+    try {
+      ctx.body = await plantuml(ctx.query.data)
+      ctx.set('cache-control', 'max-age=86400') // 一天过期
+    } catch (error) {
+      ctx.body = error
+    }
   } else {
     await next()
   }

@@ -19,6 +19,7 @@
     "lint": "eslint src/ --ext .tsx,.ts,.vue"
   },
   "dependencies": {
+    "command-exists": "^1.2.9",
     "electron-log": "^4.3.5",
     "electron-progressbar": "^2.0.1",
     "electron-store": "^5.2.0",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@json-editor/json-editor": "^2.5.4",
+    "@types/command-exists": "^1.2.0",
     "@types/crypto-js": "^4.0.1",
     "@types/fs-extra": "^9.0.11",
     "@types/koa": "^2.0.49",
