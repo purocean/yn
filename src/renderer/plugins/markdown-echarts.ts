@@ -2,11 +2,13 @@ import * as echarts from 'echarts'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/useful/plugin'
+import { h } from 'vue'
 
-const renderHtml = (code: string) => {
+const render = (code: string) => {
   const id = `echart-${CryptoJS.MD5(code).toString()}-${Math.random().toString(36).substr(2)}`
 
-  return `<div class="echarts" id="${id}" data-code="${encodeURIComponent(code)}"></div>`
+  return h(
+    'div', { class: 'echarts', id, 'data-code': encodeURIComponent(code) })
 }
 
 const EChartsPlugin = (md: Markdown) => {
@@ -16,7 +18,7 @@ const EChartsPlugin = (md: Markdown) => {
     const token = tokens[idx]
     const code = token.content.trim()
     if (token.info === 'js' && code.split(/\n/)[0].trim().includes('--echarts--')) {
-      return renderHtml(code)
+      return render(code) as any
     }
 
     return temp(tokens, idx, options, env, slf)
