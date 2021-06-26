@@ -3,23 +3,67 @@ import { Plugin } from '@fe/useful/plugin'
 import file from '@fe/useful/file'
 import { useBus } from '@fe/useful/bus'
 import { openInNewWindow } from '@fe/useful/utils'
+import { defineComponent, h, ref, watch } from 'vue'
+
+const Drawio = defineComponent({
+  name: 'drawio',
+  props: {
+    url: String,
+    content: String
+  },
+  setup (props) {
+    const bus = useBus()
+    const srcdoc = ref('')
+    const iframe = ref<HTMLIFrameElement>()
+
+    watch(props, async () => {
+      srcdoc.value = await buildSrcdoc({ url: props.url, content: props.content || '' })
+    }, { immediate: true })
+
+    const resize = () => {
+      iframe.value!.contentDocument!.body.style.height = 'auto'
+      iframe.value!.contentDocument!.documentElement.style.height = 'auto'
+      iframe.value!.height = iframe.value!.contentDocument!.documentElement.offsetHeight + 'px'
+      iframe.value!.contentDocument!.body.style.height = iframe.value!.contentDocument!.body.clientHeight + 'px'
+      iframe.value!.contentDocument!.documentElement.style.height = '100%'
+      bus.emit('resize')
+    }
+
+    const button = (text: string, onClick: any) => h('button', {
+      style: 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .1s ease-in-out; line-height: 24px;',
+      onClick
+    }, text)
+
+    return () => h('div', { class: 'drawio-wrapper', style: 'position: relative' }, [
+      h(
+        'div',
+        {
+          class: 'no-print',
+          style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
+        },
+        [
+          button('适应高度', resize),
+          button('新窗口打开', () => openInNewWindow(srcdoc.value)),
+        ]
+      ),
+      h(
+        'iframe',
+        {
+          ref: iframe,
+          class: 'drawio',
+          frameBorder: '0',
+          width: '100%',
+          height: '300px',
+          srcdoc: srcdoc.value,
+          onLoad: resize
+        }
+      ),
+    ])
+  }
+})
 
 const MarkdownItPlugin = (md: Markdown) => {
-  const renderHtml = ({ url, content }: any) => {
-    const iframe = document.createElement('iframe')
-    iframe.className = 'drawio'
-    iframe.style.border = '0'
-    iframe.width = '100%'
-    iframe.height = '300px'
-    iframe.dataset.url = url || ''
-    iframe.dataset.content = content || ''
-
-    return `
-      <div class="drawio-wrapper" style="position: relative">
-        ${iframe.outerHTML}
-      </div>
-    `
-  }
+  const render = ({ url, content }: any) => h(Drawio, { url, content })
 
   const linkTemp = md.renderer.rules.link_open!.bind(md.renderer.rules)
   md.renderer.rules.link_open = (tokens, idx, options, env, slf) => {
@@ -35,7 +79,7 @@ const MarkdownItPlugin = (md: Markdown) => {
       nextToken.content = ''
     }
 
-    return renderHtml({ url })
+    return render({ url }) as any
   }
 
   const fenceTemp = md.renderer.rules.fence!.bind(md.renderer.rules)
@@ -48,13 +92,13 @@ const MarkdownItPlugin = (md: Markdown) => {
       return fenceTemp(tokens, idx, options, env, slf)
     }
 
-    return renderHtml({ content: code })
+    return render({ content: code }) as any
   }
 }
 
 type F = { repo?: string; path?: string; url?: string; content: string }
 
-const buildSrcdoc = async ({ repo, path, content, url }: F) => {
+async function buildSrcdoc ({ repo, path, content, url }: F) {
   if (url) {
     content = await (await fetch(url)).text()
   } else if (!content && repo && path) {
@@ -120,58 +164,10 @@ const buildSrcdoc = async ({ repo, path, content, url }: F) => {
   `
 }
 
-const load = async (el: HTMLIFrameElement, url?: string) => {
-  const bus = useBus()
-  const content = el.dataset.content || ''
-
-  const srcdoc = await buildSrcdoc({ content, url })
-
-  const resize = () => {
-    el.contentDocument!.body.style.height = 'auto'
-    el.contentDocument!.documentElement.style.height = 'auto'
-    el.height = el.contentDocument!.documentElement.offsetHeight + 'px'
-    el.contentDocument!.body.style.height = el.contentDocument!.body.clientHeight + 'px'
-    el.contentDocument!.documentElement.style.height = '100%'
-    bus.emit('resize')
-  }
-
-  el.onload = () => setTimeout(resize, 300)
-  el.srcdoc = srcdoc
-
-  const button1 = document.createElement('button')
-  button1.style.cssText = 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .1s ease-in-out; line-height: 24px;'
-  button1.innerText = '适应高度'
-  button1.onclick = resize
-  const button2 = document.createElement('button')
-  button2.style.cssText = 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .1s ease-in-out; line-height: 24px;'
-  button2.innerText = '新窗口打开'
-  button2.onclick = () => openInNewWindow(srcdoc)
-
-  const action = document.createElement('div')
-  action.className = 'no-print'
-  action.style.cssText = 'position: absolute; right: 15px; top: 3px; z-index: 1;'
-  action.appendChild(button2)
-  action.appendChild(button1)
-  el.parentElement!.appendChild(action)
-}
-
 export default {
   name: 'drawio',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
-
-    ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
-      const refView: HTMLElement = getViewDom()
-      const nodes = refView.querySelectorAll<HTMLIFrameElement>('.drawio[data-url]')
-      nodes.forEach(el => {
-        const url = el.dataset.url
-        if (url) {
-          load(el, url)
-        } else {
-          load(el)
-        }
-      })
-    })
 
     ctx.registerHook('ON_TREE_NODE_SELECT', async (item: any) => {
       if (item.path.toLowerCase().endsWith('.drawio')) {
