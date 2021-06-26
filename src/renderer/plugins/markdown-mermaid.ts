@@ -1,13 +1,13 @@
 import Markdown from 'markdown-it'
 import mermaid from 'mermaid/dist/mermaid.js'
 import { Plugin } from '@fe/useful/plugin'
+import { h } from 'vue'
 
-const mermaidChart = (code: string) => {
+const mermaidChart: any = (code: string) => {
   try {
-    mermaid.parse(code)
-    return `<div class="mermaid">${code}</div>`
-  } catch ({ str, hash }) {
-    return `<pre>${str}</pre>`
+    return h('div', { class: 'mermaid' }, code)
+  } catch ({ str }) {
+    return h('pre', str)
   }
 }
 
