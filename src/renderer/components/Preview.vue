@@ -611,7 +611,7 @@ button:hover {
     max-height: 400px;
   }
 
-  .view img {
+  .view img:not(.plantuml-img) {
     background-color: #fff !important;
   }
 
