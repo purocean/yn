@@ -4,26 +4,26 @@ import statusBarView from '@fe/plugins/status-bar-view'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarRefresh from '@fe/plugins/status-bar-refresh'
 import statusBarGet from '@fe/plugins/status-bar-get'
-import markdownHtml from '@/renderer/plugins/markdown-html'
-import markdownRenderVnode from '@/renderer/plugins/markdown-render-vnode'
+import copyText from '@fe/plugins/copy-text'
+import transformImgOutLink from '@fe/plugins/transform-img-out-link'
+import switchTodo from '@fe/plugins/switch-todo'
+import tableCellEdit from '@fe/plugins/table-cell-edit'
+import markdownHtml from '@fe/plugins/markdown-html'
+import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownSourceLine from '@fe/plugins/markdown-source-line'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCode from '@fe/plugins/markdown-code'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
-import markdownFootnote from '@/renderer/plugins/markdown-footnote'
-import transformImgOutLink from '@fe/plugins/transform-img-out-link'
-import markdownItKatex from '@/renderer/plugins/markdown-it-katex'
-import copyText from '@fe/plugins/copy-text'
-import tableCellEdit from '@fe/plugins/table-cell-edit'
-import switchTodo from '@fe/plugins/switch-todo'
-import runCode from '@fe/plugins/run-code'
-import plantuml from '@fe/plugins/plantuml'
-import drawio from '@fe/plugins/drawio'
-import mindMap from '@fe/plugins/mind-map'
-import mermaid from '@fe/plugins/mermaid'
-import applet from '@fe/plugins/applet'
-import echarts from '@fe/plugins/echarts'
+import markdownFootnote from '@fe/plugins/markdown-footnote'
+import markdownItKatex from '@fe/plugins/markdown-it-katex'
+import markdownRunCode from '@fe/plugins/markdown-run-code'
+import markdownPlantuml from '@fe/plugins/markdown-plantuml'
+import markdownDrawio from '@fe/plugins/markdown-drawio'
+import markdownMindMap from '@fe/plugins/markdown-mind-map'
+import markdownMermaid from '@fe/plugins/markdown-mermaid'
+import markdownApplet from '@fe/plugins/markdown-applet'
+import markdownEcharts from '@fe/plugins/markdown-echarts'
 
 export default [
   statusBarSetting,
@@ -32,6 +32,10 @@ export default [
   statusBarHelp,
   statusBarRefresh,
   statusBarGet,
+  transformImgOutLink,
+  copyText,
+  tableCellEdit,
+  switchTodo,
   markdownHtml,
   markdownRenderVnode,
   markdownSourceLine,
@@ -41,15 +45,11 @@ export default [
   markdownTaskList,
   markdownFootnote,
   markdownItKatex,
-  transformImgOutLink,
-  copyText,
-  tableCellEdit,
-  switchTodo,
-  runCode,
-  plantuml,
-  drawio,
-  mindMap,
-  mermaid,
-  applet,
-  echarts,
+  markdownRunCode,
+  markdownPlantuml,
+  markdownDrawio,
+  markdownMindMap,
+  markdownMermaid,
+  markdownApplet,
+  markdownEcharts,
 ]
