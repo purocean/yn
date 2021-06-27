@@ -3,6 +3,7 @@
 ## TOC 生成
 需要生成目录的地方写入 `[toc]{type: "ul", level: [1,2,3]}`
 可以控制目录样式 `ul` 或 `ol` 和级别
+
 [toc]{type: "ol", level: [2,3]}
 
 ## 系统配置
@@ -119,7 +120,7 @@ a -> b
 @enduml
 
 ## 表格增强
-此功能由 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 插件提供
+此功能使用 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 实现
 支持在表格中使用多行文本和列表。支持表格说明渲染
 
 另外您可以使用：`Ctrl/Cmd + 单击单元格` 快捷编辑表格单元格内容
@@ -130,7 +131,7 @@ List:        | More  \
 - [ ] over   | data  \
 - several    |
 ----- | -----
-ds | fsfdd
+Test | Test
 [测试表格]
 
 ## Katex 公式解析
@@ -365,7 +366,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 查看 Readme | Alt + H | Option + H
 
 ## 元素属性书写
-此功能使用如下库实现 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs)
+此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
 示例红色文字：
 **test**{style="color:red"}
 
