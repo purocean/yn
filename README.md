@@ -77,6 +77,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.0.1](https://github.com/purocean/yn/releases/tag/v3.0.1) 2021-06-27
+1. 修复 Electron Scheme 模式下可能上传文件不成功问题
+
 ### [v3.0.0](https://github.com/purocean/yn/releases/tag/v3.0.0) 2021-06-27
 1. 大幅优化 Markdown 渲染性能，编辑更流畅
 2. 修复部分遗留问题，增强 Katex 公式渲染，文件相对路径解析
