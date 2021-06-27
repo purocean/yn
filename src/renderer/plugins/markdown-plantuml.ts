@@ -9,7 +9,7 @@ const emptySrc = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
 
 const MarkdownItPlugin = function umlPlugin (md: Markdown, options: any) {
   function generateSourceDefault (umlCode: string) {
-    return 'api/plantuml/png?data=' + encodeURIComponent(umlCode)
+    return location.origin + '/api/plantuml/png?data=' + encodeURIComponent(umlCode)
   }
 
   options = options || {}
