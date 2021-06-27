@@ -88,9 +88,9 @@ const checkHash = (repo: string, p: string, oldHash: string) => {
   return oldHash === hash(repo, p)
 }
 
-const upload = (repo: string, file: any, path: string) => {
+const upload = (repo: string, buffer: Buffer, path: string) => {
   if (readonly) throw new Error('只读模式')
-  write(repo, path, fs.readFileSync(file.path))
+  write(repo, path, buffer)
 }
 
 const travels = (location: string, repo: string, basePath: string, markedFiles: MarkedFile[] | null = null): any => {

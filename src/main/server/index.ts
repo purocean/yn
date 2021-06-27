@@ -63,7 +63,9 @@ const attachment = async (ctx: any, next: any) => {
     if (ctx.method === 'POST') {
       const path = ctx.request.body.path
       const repo = ctx.request.body.repo
-      file.upload(repo, ctx.request.files.attachment, path)
+      const attachment = ctx.request.body.attachment
+      const buffer = Buffer.from(attachment.substring(attachment.indexOf(',') + 1), 'base64')
+      file.upload(repo, buffer, path)
       ctx.body = result('ok', '上传成功', path)
     } else if (ctx.method === 'GET') {
       ctx.type = mime.getType(ctx.query.path)
@@ -251,7 +253,10 @@ const server = (port = 3000) => {
     multipart: true,
     formLimit: '20mb',
     jsonLimit: '20mb',
-    textLimit: '20mb'
+    textLimit: '20mb',
+    formidable: {
+      maxFieldsSize: 268435456
+    }
   }))
 
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, fileContent))

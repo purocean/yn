@@ -137,7 +137,7 @@ const search = async (repo: string, text: string) => {
 const upload = async (repo: string, belongPath: string, uploadFile: any, name: string | null = null): Promise<{repo: string; path: string; relativePath: string}> => {
   return new Promise((resolve, reject) => {
     const fr = new FileReader()
-    fr.readAsBinaryString(uploadFile)
+    fr.readAsDataURL(uploadFile)
     fr.onloadend = async () => {
       try {
         const filename = name || Crypto.binMd5(fr.result).substr(0, 8) + extname(uploadFile.name)
@@ -152,7 +152,7 @@ const upload = async (repo: string, belongPath: string, uploadFile: any, name: s
         )
         formData.append('repo', repo)
         formData.append('path', path)
-        formData.append('attachment', uploadFile)
+        formData.append('attachment', fr.result as string)
 
         await fetchHttp('/api/attachment', { method: 'POST', body: formData })
 

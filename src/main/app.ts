@@ -285,7 +285,7 @@ if (!gotTheLock) {
             {
               type: 'radio',
               checked: urlMode === 'scheme',
-              label: '正式端口（Schema）',
+              label: '正式端口（Scheme）',
               click: () => {
                 urlMode = 'scheme'
                 reload()
