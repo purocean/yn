@@ -1,6 +1,6 @@
 <template>
   <XMask :show="show" @close="callback = null">
-    <QuickOpen @choose-file="callback ?? undefined" @close="callback = null" :with-marked="withMarked"></QuickOpen>
+    <QuickOpen @choose-file="chooseFile" @close="callback = null" :with-marked="withMarked"></QuickOpen>
   </XMask>
 </template>
 
@@ -51,6 +51,12 @@ export default defineComponent({
       }
     }
 
+    function chooseFile (file: any) {
+      if (callback.value) {
+        callback.value(file)
+      }
+    }
+
     onMounted(() => {
       window.addEventListener('keydown', keydownHandler, true)
     })
@@ -64,6 +70,7 @@ export default defineComponent({
     return {
       show,
       callback,
+      chooseFile,
       withMarked,
     }
   },
