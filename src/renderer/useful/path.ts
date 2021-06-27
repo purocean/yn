@@ -4,9 +4,15 @@ export const {
   basename,
   extname,
   dirname,
-  relative,
   join,
 } = Path
+
+export function relative (from: string, to: string) {
+  return Path.relative(
+    from.startsWith('/') ? from : ('/' + from),
+    to.startsWith('/') ? to : ('/' + to)
+  )
+}
 
 export function isBelongTo (path: string, sub: string) {
   return sub.startsWith(path.replace(/\/$/, '') + '/')

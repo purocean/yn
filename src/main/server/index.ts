@@ -239,6 +239,7 @@ const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
   } catch (error) {
+    console.error(error)
     ctx.body = result('error', error.message)
   }
 }

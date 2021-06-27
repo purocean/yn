@@ -1,7 +1,7 @@
 import Crypto from './crypto'
 import { slugify } from 'transliteration'
 import env from './env'
-import { basename, relative, extname, join } from './path'
+import { basename, relative, extname, join, dirname } from './path'
 
 // TODO 文件类型
 type F = { repo: string; path: string };
@@ -144,14 +144,19 @@ const upload = async (repo: string, belongPath: string, uploadFile: any, name: s
 
         const formData = new FormData()
         const dirName = slugify(basename(belongPath))
-        const path = join(belongPath, 'FILES', dirName.startsWith('.') ? 'upload' : dirName, filename)
+        const parentPath = dirname(belongPath)
+        const path = join(
+          parentPath,
+          'FILES',
+          dirName.startsWith('.') ? 'upload' : dirName, filename
+        )
         formData.append('repo', repo)
         formData.append('path', path)
         formData.append('attachment', uploadFile)
 
         await fetchHttp('/api/attachment', { method: 'POST', body: formData })
 
-        const relativePath = relative(belongPath, path)
+        const relativePath = relative(parentPath, path)
         resolve({ repo, path, relativePath })
       } catch (error) {
         reject(error)
