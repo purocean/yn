@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2017",
-    "noImplicitAny": true,
-    "outDir": "./dist",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
     "sourceMap": true,
-    "skipLibCheck": true
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@fe/*": ["src/renderer/*"],
+      "@main/*": ["src/main/*"]
+    },
   },
-  "typeRoots": [
-    "node_modules/@types",
-    "global.d.ts"
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
