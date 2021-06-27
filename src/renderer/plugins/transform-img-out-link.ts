@@ -1,7 +1,7 @@
 import mime from 'mime-types'
 import file from '@fe/useful/file'
 import { Plugin, Ctx } from '@fe/useful/plugin'
-import { CtrlCmd, isAction, LeftClick, Shift } from '@fe/useful/shortcut'
+import { CtrlCmd, getActionLabel, isAction, LeftClick, Shift } from '@fe/useful/shortcut'
 import { encodeMarkdownLink } from '@fe/useful/utils'
 import { useBus } from '@fe/useful/bus'
 import env from '@fe/useful/env'
@@ -51,6 +51,62 @@ async function transformImgOutLink (img: HTMLImageElement) {
 
 const actionKeydown = 'transform-img-link'
 const actionClick = 'transform-img-link-by-click'
+let refView: HTMLElement
+
+async function transformAll () {
+  if (!refView) {
+    return
+  }
+
+  const toast = useToast()
+  const bus = useBus()
+
+  const result = []
+  const imgList = refView.querySelectorAll('img')
+  for (let i = 0; i < imgList.length; i++) {
+    toast.show('info', `正在转换外链图片 ${i + 1}/${imgList.length}`)
+
+    const img = imgList[i]
+    const data = await transformImgOutLink(img)
+    if (data) {
+      result.push(data)
+    }
+  }
+  result.forEach(data => bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink }))
+  bus.emit('tree-refresh')
+}
+
+async function handleKeydown (e: KeyboardEvent) {
+  if (isAction(e, actionKeydown)) {
+    e.preventDefault()
+    e.stopPropagation()
+    transformAll()
+  }
+}
+
+async function handleClick (e: MouseEvent) {
+  const bus = useBus()
+  const target = e.target as HTMLElement
+  if (target.tagName !== 'IMG') {
+    return false
+  }
+
+  const img = target as HTMLImageElement
+  if (isAction(e, actionClick)) { // 转换外链图片到本地
+    const data = await transformImgOutLink(img)
+    if (data) {
+      bus.emit('tree-refresh')
+      bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink })
+    }
+  } else {
+    env.openAlwaysOnTopWindow(img.src)
+  }
+
+  e.stopPropagation()
+  e.preventDefault()
+
+  return true
+}
 
 export default {
   name: 'transform-img-out-link',
@@ -58,51 +114,21 @@ export default {
     ctx.shortcut.addAction(actionKeydown, [CtrlCmd, Shift, 'l'])
     ctx.shortcut.addAction(actionClick, [CtrlCmd, Shift, LeftClick])
 
-    ctx.registerHook('ON_VIEW_KEY_DOWN', async (e: KeyboardEvent, refView: HTMLElement) => {
-      const toast = useToast()
-      const bus = useBus()
-
-      if (isAction(e, actionKeydown)) {
-        e.preventDefault()
-        e.stopPropagation()
-        const result = []
-        const imgList = refView.querySelectorAll('img')
-        for (let i = 0; i < imgList.length; i++) {
-          toast.show('info', `正在转换外链图片 ${i + 1}/${imgList.length}`)
-
-          const img = imgList[i]
-          const data = await transformImgOutLink(img)
-          if (data) {
-            result.push(data)
-          }
-        }
-        result.forEach(data => bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink }))
-        bus.emit('tree-refresh')
-      }
+    ctx.registerHook('ON_VIEW_KEY_DOWN', handleKeydown)
+    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', handleClick )
+    ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
+      refView = getViewDom()
     })
 
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
-      const bus = useBus()
-      const target = e.target as HTMLElement
-      if (target.tagName !== 'IMG') {
-        return false
-      }
-
-      const img = target as HTMLImageElement
-      if (isAction(e, actionClick)) { // 转换外链图片到本地
-        const data = await transformImgOutLink(img)
-        if (data) {
-          bus.emit('tree-refresh')
-          bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink })
-        }
-      } else {
-        env.openAlwaysOnTopWindow(img.src)
-      }
-
-      e.stopPropagation()
-      e.preventDefault()
-
-      return true
+    ctx.statusBar.tapMenu('status-bar-tool', menu => {
+      menu.list?.push({
+        id: actionKeydown,
+        type: 'normal',
+        title: '转换外链图片',
+        tips: getActionLabel(actionKeydown),
+        onClick: transformAll
+      })
+      return menu
     })
   }
 } as Plugin

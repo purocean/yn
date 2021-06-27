@@ -26,14 +26,23 @@ const menus: { [key: string]: Menu } = {}
 export const getMenus = (position: string) =>
   Object.values(menus).filter(x => x.position === position)
 
+export function updateMenu (menu: Menu) {
+  menus[menu.id] = menu
+  bus.emit('status-bar-menu-update', menu)
+}
+
+export function tapMenu (id: string, fn: (menu: Menu) => Menu) {
+  updateMenu(fn(menus[id]))
+}
+
+export function removeMenu (id: string) {
+  delete menus[id]
+  bus.emit('status-bar-menu-update')
+}
+
 export const ctx = {
   getMenus,
-  updateMenu: (menu: Menu) => {
-    menus[menu.id] = menu
-    bus.emit('status-bar-menu-update', menu)
-  },
-  removeMenu: (id: string) => {
-    delete menus[id]
-    bus.emit('status-bar-menu-update')
-  },
+  tapMenu,
+  updateMenu,
+  removeMenu,
 }
