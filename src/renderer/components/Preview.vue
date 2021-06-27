@@ -44,7 +44,7 @@ import { debounce } from 'lodash-es'
 import { useStore } from 'vuex'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 
-import file from '@fe/useful/file'
+import { extname } from '@fe/useful/path'
 import { triggerHook } from '@fe/useful/plugin'
 import { useBus } from '@fe/useful/bus'
 import markdown from '@fe/useful/markdown'
@@ -62,7 +62,6 @@ export default defineComponent({
     const store = useStore()
 
     const { currentContent, currentFile, autoPreview } = toRefs(store.state)
-    const fileRepo = computed(() => currentFile.value?.repo)
     const fileName = computed(() => currentFile.value?.name)
     const filePath = computed(() => currentFile.value?.path)
 
@@ -90,47 +89,6 @@ export default defineComponent({
     function resizeHandler () {
       width.value = refViewWrapper.value!.clientWidth
       height.value = refViewWrapper.value!.clientHeight
-    }
-
-    function replaceRelativeLink (md: string) {
-      if (!fileRepo.value) {
-        return md
-      }
-
-      if (fileRepo.value === '__help__') {
-        return md.replace(/\[([^\]]*)\]\((\.\/[^)]*)\)/g, '[$1](api/help/file?path=$2)')
-          .replace(/<img([^>]*)src=["']?(\.\/[^\s'"]*)["']?/ig, '<img$1src="api/help/file?path=$2"')
-      }
-
-      if (!filePath.value) {
-        return md
-      }
-
-      const basePath = file.dirname(filePath.value)
-      const repo = fileRepo.value
-
-      return md.replace(/\[([^\]]*)\]\(\.\/([^)]*)\)/g, (match, alt, path) => {
-        path = decodeURI(path) // 提前解码一次，有的链接已经预先编码
-        const fileName = file.basename(path)
-        const filePath = `${basePath}/${path}`
-
-        // md 文件不替换
-        if (fileName.endsWith('.md')) {
-          return match
-        }
-
-        // 路径中有 hash 不替换
-        if (path.indexOf('#') > -1) {
-          return match
-        }
-
-        return `[${alt}](api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)})`
-      }).replace(/<img([^>]*)src=["']?(\.\/[^\s'"]*)["']?/ig, (match, _, path) => {
-        path = decodeURI(path) // 提前解码一次，有的链接已经预先编码
-        const fileName = file.basename(path)
-        const filePath = `${basePath}/${path}`
-        return `<img${_}origin-src="${path}" src="api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}"`
-      })
     }
 
     function updateOutline () {
@@ -173,10 +131,9 @@ export default defineComponent({
       // 编辑非 markdown 文件预览直接显示代码
       const content = (filePath.value || '').endsWith('.md')
         ? currentContent.value
-        : '```' + file.extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '```'
+        : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '```'
 
-      const source = replaceRelativeLink(content)
-      renderContent.value = markdown.render(source, { source })
+      renderContent.value = markdown.render(content, { source: content, file: currentFile.value })
     }
 
     const renderDebonce = debounce(render, 100, { leading: true })

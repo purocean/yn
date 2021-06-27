@@ -16,7 +16,7 @@
     "serve:fe": "vite preview",
     "build:main": "tsc --esModuleInterop true src/main/app.ts --outDir ./dist/main && node ./scripts/copy-assets.js",
     "build": "npm run build:fe && npm run build:main",
-    "lint": "eslint src/ --ext .tsx,.ts,.vue"
+    "lint": "vue-tsc --noEmit --esModuleInterop true && eslint src/ --ext .tsx,.ts,.vue"
   },
   "dependencies": {
     "command-exists": "^1.2.9",

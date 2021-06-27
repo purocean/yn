@@ -1,4 +1,4 @@
-import file from './file'
+import { extname } from './path'
 const extensions = [
   '.txt',
   '.gitignore',
@@ -145,7 +145,7 @@ const extensions = [
 ]
 
 const supported = (name: string) => {
-  return extensions.includes(file.extname(name.toLowerCase()))
+  return extensions.includes(extname(name.toLowerCase()))
 }
 
 export default {

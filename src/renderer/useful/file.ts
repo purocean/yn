@@ -1,6 +1,7 @@
 import Crypto from './crypto'
 import { slugify } from 'transliteration'
 import env from './env'
+import { basename, relative, extname, join } from './path'
 
 // TODO 文件类型
 type F = { repo: string; path: string };
@@ -15,28 +16,12 @@ const fetchHttp = async (input: RequestInfo, init?: RequestInit) => {
   return result
 }
 
-const isBelongTo = (path: string, sub: string) => {
-  return sub.startsWith(path.replace(/\/$/, '') + '/')
-}
-
 const isEncryptedFile = (file: any) => {
   return file && file.path.endsWith('.c.md')
 }
 
 const isSameFile = (a?: F | null, b?: F | null) => {
   return a && b && a.repo === b.repo && a.path === b.path
-}
-
-const dirname = (path: string) => {
-  return path.substr(0, path.lastIndexOf('/'))
-}
-
-const basename = (path: string) => {
-  return path.substr(path.lastIndexOf('/') + 1)
-}
-
-const extname = (path: string) => {
-  return path.substr(path.lastIndexOf('.'))
 }
 
 const toUri = (file?: F | null) => {
@@ -151,8 +136,6 @@ const search = async (repo: string, text: string) => {
 
 const upload = async (repo: string, belongPath: string, uploadFile: any, name: string | null = null): Promise<{repo: string; path: string; relativePath: string}> => {
   return new Promise((resolve, reject) => {
-    belongPath = belongPath.replace(/\\/g, '/')
-
     const fr = new FileReader()
     fr.readAsBinaryString(uploadFile)
     fr.onloadend = async () => {
@@ -160,18 +143,15 @@ const upload = async (repo: string, belongPath: string, uploadFile: any, name: s
         const filename = name || Crypto.binMd5(fr.result).substr(0, 8) + extname(uploadFile.name)
 
         const formData = new FormData()
-        const path = belongPath.replace(/\/([^/]*)$/, (_, capture) => {
-          const dirName = slugify(capture)
-          return `/FILES/${dirName.startsWith('.') ? 'upload' : dirName}/` + filename
-        })
+        const dirName = slugify(basename(belongPath))
+        const path = join(belongPath, 'FILES', dirName.startsWith('.') ? 'upload' : dirName, filename)
         formData.append('repo', repo)
         formData.append('path', path)
         formData.append('attachment', uploadFile)
 
         await fetchHttp('/api/attachment', { method: 'POST', body: formData })
 
-        // TODO 更好的相对路径算法
-        const relativePath = path.replace(belongPath.substr(0, belongPath.lastIndexOf('/')), '.')
+        const relativePath = relative(belongPath, path) // path.replace(belongPath.substr(0, belongPath.lastIndexOf('/')), '.')
         resolve({ repo, path, relativePath })
       } catch (error) {
         reject(error)
@@ -192,12 +172,8 @@ const toBase64URL = async (file: any) => new Promise((resolve, reject) => {
 })
 
 export default {
-  isBelongTo,
   isSameFile,
   isEncryptedFile,
-  dirname,
-  basename,
-  extname,
   toUri,
   decrypt,
   encrypt,

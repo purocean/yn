@@ -1,7 +1,9 @@
+import StateCore from 'markdown-it/lib/rules_core/state_core'
+import Token from 'markdown-it/lib/token'
 import { Plugin, Ctx } from '@fe/useful/plugin'
 import store from '@fe/store'
 import env from '@fe/useful/env'
-import file from '@fe/useful/file'
+import { basename, dirname, join } from '@fe/useful/path'
 
 const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
   const { currentFile } = store.state
@@ -27,13 +29,13 @@ const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
 
       let path = tmp[0]
       if (path.startsWith('.')) { // 将相对路径转换为绝对路径
-        path = file.dirname(filePath || '') + path.replace('.', '')
+        path = dirname(filePath || '') + path.replace('.', '')
       }
 
       // 打开文件
       store.commit('setCurrentFile', {
         path,
-        name: file.basename(path),
+        name: basename(path),
         repo: fileRepo,
         type: 'file'
       })
@@ -68,6 +70,68 @@ const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
   }
 }
 
+function convertLink (state: StateCore) {
+  const tags = ['audio', 'img', 'source', 'video', 'track', 'a']
+
+  const { repo, path, name } = state.env.file || {}
+  if (!repo || !path || !name) {
+    return false
+  }
+
+  const link = (token: Token) => {
+    const attrName = token.tag === 'a' ? 'href' : 'src'
+    const attrVal = decodeURIComponent(token.attrGet(attrName) || '')
+    if (!attrVal) {
+      return
+    }
+
+    if (/^[^:]*:/.test(attrVal)) { // xxx: : 开头不转换
+      return
+    }
+
+    const basePath = dirname(path)
+    const fileName = basename(attrVal)
+
+    if (token.tag === 'a') {
+      // md 文件不替换
+      if (fileName.endsWith('.md')) {
+        return
+      }
+
+      // 路径中有 hash 不替换
+      if (attrVal.indexOf('#') > -1) {
+        return
+      }
+    }
+
+    token.attrSet(`origin-${attrName}`, attrVal)
+
+    if (repo === '__help__') {
+      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(attrVal)}`)
+      return
+    }
+
+    const filePath = join(basePath, attrVal)
+    token.attrSet(attrName, `api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
+  }
+
+  const convert = (tokens: Token[]) => {
+    tokens.forEach(token => {
+      if (tags.includes(token.tag)) {
+        link(token)
+      }
+
+      if (token.children) {
+        convert(token.children)
+      }
+    })
+  }
+
+  convert(state.tokens)
+
+  return true
+}
+
 export default {
   name: 'markdown-link',
   register: (ctx: Ctx) => {
@@ -92,6 +156,7 @@ export default {
     })
 
     ctx.markdown.registerPlugin(md => {
+      md.core.ruler.push('convert_relative_path', convertLink)
       md.renderer.rules.link_open = (tokens, idx, options, _, slf) => {
         if (tokens[idx].attrIndex('target') < 0) {
           tokens[idx].attrPush(['target', '_blank'])

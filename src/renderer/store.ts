@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import Storage from '@fe/useful/storage'
 import file from '@fe/useful/file'
+import { basename } from '@fe/useful/path'
 
 /**
  * 获取上一次打开的文件
@@ -31,7 +32,7 @@ const getLastOpenFile = (repoName?: string) => {
     return null
   }
 
-  return { repo: repoName, name: file.basename(path), path }
+  return { repo: repoName, name: basename(path), path }
 }
 
 export default createStore({
@@ -132,7 +133,7 @@ export default createStore({
   },
   actions: {
     async fetchMarkedFiles ({ commit }) {
-      const files = (await file.markedFiles()).map((x: any) => ({ ...x, name: file.basename(x.path) }))
+      const files = (await file.markedFiles()).map((x: any) => ({ ...x, name: basename(x.path) }))
       commit('setMarkedFiles', files)
     },
     async fetchRepositories ({ commit }) {

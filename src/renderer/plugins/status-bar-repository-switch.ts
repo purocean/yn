@@ -3,7 +3,7 @@ import { Menu as StatusBarMenu } from '@fe/useful/plugin/status-bar'
 import store from '@fe/store'
 import { useBus } from '@fe/useful/bus'
 import { $args } from '@fe/useful/global-args'
-import file from '@fe/useful/file'
+import { basename } from '@fe/useful/path'
 
 export default {
   name: 'status-bar-repository-switch',
@@ -35,7 +35,7 @@ export default {
       }
 
       if (initFilePath) {
-        store.commit('setCurrentFile', { repo: currentRepo.name, name: file.basename(initFilePath), path: initFilePath })
+        store.commit('setCurrentFile', { repo: currentRepo.name, name: basename(initFilePath), path: initFilePath })
       }
     }
 

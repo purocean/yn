@@ -33,17 +33,18 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '../useful/bus'
-import { useToast } from '../useful/toast'
-import { useModal } from '../useful/modal'
-import { useContextMenu } from '../useful/context-menu'
-import File from '../useful/file'
-import Extensions from '../useful/extensions'
-import { triggerHook } from '../useful/plugin'
-import { Components } from '../types'
+import { useBus } from '@fe/useful/bus'
+import { useToast } from '@fe/useful/toast'
+import { useModal } from '@fe/useful/modal'
+import { useContextMenu } from '@fe/useful/context-menu'
+import File from '@fe/useful/file'
+import { basename, dirname, isBelongTo } from '@fe/useful/path'
+import Extensions from '@fe/useful/extensions'
+import { triggerHook } from '@fe/useful/plugin'
+import { getContextMenuItems } from '@fe/useful/plugin/tree'
+import { FLAG_DISABLE_XTERM } from '@fe/useful/global-args'
+import { Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
-import { getContextMenuItems } from '../useful/plugin/tree'
-import { FLAG_DISABLE_XTERM } from '../useful/global-args'
 
 export default defineComponent({
   name: 'tree-node',
@@ -68,7 +69,7 @@ export default defineComponent({
 
     async function createFile (path: string | null = null, content: string | null = null) {
       if (path === null) {
-        const currentPath = props.item.type === 'dir' ? props.item.path : File.dirname(props.item.path)
+        const currentPath = props.item.type === 'dir' ? props.item.path : dirname(props.item.path)
 
         let filename = await modal.input({
           title: '创建文件(加密文件以 .c.md 结尾)',
@@ -93,7 +94,7 @@ export default defineComponent({
         return
       }
 
-      const filename = File.basename(path)
+      const filename = basename(path)
 
       const file = {
         type: 'file',
@@ -192,7 +193,7 @@ export default defineComponent({
       // TODO 文件统一处理
       // bus.emit('file-move', {file, newPath})
       const newFile = {
-        name: File.basename(newPath),
+        name: basename(newPath),
         path: newPath,
         repo: props.item.repo,
         type: props.item.type
@@ -200,7 +201,7 @@ export default defineComponent({
 
       await File.move(props.item, newPath)
       // 重命名当前文件或父目录后，切换到新位置
-      if (currentFile.value && (File.isSameFile(props.item, currentFile.value) || (props.item.type === 'dir' && File.isBelongTo(props.item.path, currentFile.value.path)))) {
+      if (currentFile.value && (File.isSameFile(props.item, currentFile.value) || (props.item.type === 'dir' && isBelongTo(props.item.path, currentFile.value.path)))) {
         if (newFile.type === 'file') {
           store.commit('setCurrentFile', newFile)
         } else {
@@ -224,7 +225,7 @@ export default defineComponent({
         await File.delete(props.item)
 
         // 删除当前文件或父目录后，关闭当前文件
-        if (currentFile.value && (File.isSameFile(props.item, currentFile.value) || (props.item.type === 'dir' && File.isBelongTo(props.item.path, currentFile.value.path)))) {
+        if (currentFile.value && (File.isSameFile(props.item, currentFile.value) || (props.item.type === 'dir' && isBelongTo(props.item.path, currentFile.value.path)))) {
           store.commit('setCurrentFile', null)
         }
 
