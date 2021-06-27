@@ -187,7 +187,7 @@ export default defineComponent({
       const filename = `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`
       const { relativePath } = await File.upload(currentFile.value.repo, currentFile.value.path, file, filename)
       bus.emit('file-uploaded', relativePath)
-      getEditor().insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}]：[${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
+      getEditor().insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
     }
 
     async function changeFile (current: any, previous?: any) {
