@@ -7,9 +7,10 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, onMounted, onUnmounted, ref, toRef } from 'vue'
-import { encodeMarkdownLink } from '../useful/utils'
-import { getCurrentAction } from '../useful/shortcut'
-import { useBus } from '../useful/bus'
+import { encodeMarkdownLink } from '@fe/useful/utils'
+import { getCurrentAction } from '@fe/useful/shortcut'
+import { useBus } from '@fe/useful/bus'
+import { basename, dirname, isBelongTo, join, relative } from '@fe/useful/path'
 import XMask from './Mask.vue'
 import QuickOpen from './QuickOpen.vue'
 
@@ -30,8 +31,12 @@ export default defineComponent({
           callback.value = (f: any) => {
             const file = currentFile.value
             if (file) {
-              const relativePath = f.path.replace(file.path.substr(0, file.path.lastIndexOf('/')), '.')
-              bus.emit('editor-insert-value', `[${f.name.replace(/\.[^.]+$/, '')}](${encodeMarkdownLink(relativePath)})`)
+              const cwd = dirname(file.path)
+              const filePath = isBelongTo(cwd, f.path)
+                ? relative(cwd, f.path)
+                : join('/', f.path)
+              const fileName = f.name.replace(/\.[^.]*$/, '')
+              bus.emit('editor-insert-value', `[${fileName}](${encodeMarkdownLink(filePath)})`)
             }
             callback.value = null
           }

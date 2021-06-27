@@ -28,19 +28,19 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import startup from '../useful/startup'
-import { FLAG_DISABLE_XTERM } from '../useful/global-args'
-import Layout from '../components/Layout.vue'
-import TitleBar from '../components/TitleBar.vue'
-import StatusBar from '../components/StatusBar.vue'
-import Tree from '../components/Tree.vue'
-import Xterm from '../components/Xterm.vue'
-import FileTabs from '../components/FileTabs.vue'
-import Editor from '../components/Editor.vue'
-import Preview from '../components/Preview.vue'
+import startup from '@fe/useful/startup'
+import { FLAG_DISABLE_XTERM } from '@fe/useful/global-args'
+import Layout from '@fe/components/Layout.vue'
+import TitleBar from '@fe/components/TitleBar.vue'
+import StatusBar from '@fe/components/StatusBar.vue'
+import Tree from '@fe/components/Tree.vue'
+import Xterm from '@fe/components/Xterm.vue'
+import FileTabs from '@fe/components/FileTabs.vue'
+import Editor from '@fe/components/Editor.vue'
+import Preview from '@fe/components/Preview.vue'
 
-import SettingPanel from '../components/SettingPanel.vue'
-import XFilter from '../components/Filter.vue'
+import SettingPanel from '@fe/components/SettingPanel.vue'
+import XFilter from '@fe/components/Filter.vue'
 
 export default defineComponent({
   name: 'x-main',

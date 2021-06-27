@@ -28,8 +28,8 @@ const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
       const tmp = decodeURI(href).split('#')
 
       let path = tmp[0]
-      if (path.startsWith('.')) { // 将相对路径转换为绝对路径
-        path = dirname(filePath || '') + path.replace('.', '')
+      if (!path.startsWith('/')) { // 将相对路径转换为绝对路径
+        path = join(dirname(filePath || ''), path)
       }
 
       // 打开文件
