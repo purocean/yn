@@ -151,7 +151,7 @@ const upload = async (repo: string, belongPath: string, uploadFile: any, name: s
 
         await fetchHttp('/api/attachment', { method: 'POST', body: formData })
 
-        const relativePath = relative(belongPath, path) // path.replace(belongPath.substr(0, belongPath.lastIndexOf('/')), '.')
+        const relativePath = relative(belongPath, path)
         resolve({ repo, path, relativePath })
       } catch (error) {
         reject(error)
