@@ -23,11 +23,13 @@ function addStyles () {
   css.innerHTML = format(
     '.{0}{border-collapse:collapse}' +
     '.{0} td{padding:0}' +
-    '.{1}:before{content:attr({2})}',
+    '.{1}:before{content:attr({2})}' +
+    '.{3}{max-width: 45px; width: 35px}',
     [
       TABLE_NAME,
       NUMBER_LINE_NAME,
-      DATA_ATTR_NAME
+      DATA_ATTR_NAME,
+      NUMBERS_BLOCK_NAME
     ])
   document.getElementsByTagName('head')[0].appendChild(css)
 }
