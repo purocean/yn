@@ -16,7 +16,7 @@ import markdownCode from '@fe/plugins/markdown-code'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
 import markdownFootnote from '@fe/plugins/markdown-footnote'
-import markdownItKatex from '@fe/plugins/markdown-it-katex'
+import markdownKatex from '@fe/plugins/markdown-katex'
 import markdownRunCode from '@fe/plugins/markdown-run-code'
 import markdownPlantuml from '@fe/plugins/markdown-plantuml'
 import markdownDrawio from '@fe/plugins/markdown-drawio'
@@ -44,7 +44,7 @@ export default [
   markdownLink,
   markdownTaskList,
   markdownFootnote,
-  markdownItKatex,
+  markdownKatex,
   markdownRunCode,
   markdownPlantuml,
   markdownDrawio,
