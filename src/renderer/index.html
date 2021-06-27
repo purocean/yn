@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="./assets/favicon.ico">
+    <link rel="stylesheet" href="./assets/kityminder.core.css">
+    <title>Yank Note</title>
+    <script>
+      // 强制 monaco-editor 使用 浏览器模式
+      window.nodeRequire = window.require
+      window.nodeProcess = window.process
+      window.nodeModule = window.module
+      window.require = undefined
+      window.process = undefined
+      window.module = undefined
+    </script>
+    <style>
+      @media screen {
+        body {
+          background: #282a2b;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="./kity.min.js"></script>
+    <script src="./kityminder.core.min.js"></script>
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>

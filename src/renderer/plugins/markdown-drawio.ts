@@ -1,0 +1,183 @@
+import Markdown from 'markdown-it'
+import { Plugin } from '@fe/useful/plugin'
+import file from '@fe/useful/file'
+import { useBus } from '@fe/useful/bus'
+import { openInNewWindow } from '@fe/useful/utils'
+import { defineComponent, h, ref, watch } from 'vue'
+
+const Drawio = defineComponent({
+  name: 'drawio',
+  props: {
+    url: String,
+    content: String
+  },
+  setup (props) {
+    const bus = useBus()
+    const srcdoc = ref('')
+    const iframe = ref<HTMLIFrameElement>()
+
+    watch(props, async () => {
+      srcdoc.value = await buildSrcdoc({ url: props.url, content: props.content || '' })
+    }, { immediate: true })
+
+    const resize = () => {
+      iframe.value!.contentDocument!.body.style.height = 'auto'
+      iframe.value!.contentDocument!.documentElement.style.height = 'auto'
+      iframe.value!.height = iframe.value!.contentDocument!.documentElement.offsetHeight + 'px'
+      iframe.value!.contentDocument!.body.style.height = iframe.value!.contentDocument!.body.clientHeight + 'px'
+      iframe.value!.contentDocument!.documentElement.style.height = '100%'
+      bus.emit('resize')
+    }
+
+    const button = (text: string, onClick: any) => h('button', {
+      style: 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .1s ease-in-out; line-height: 24px;',
+      onClick
+    }, text)
+
+    return () => h('div', { class: 'drawio-wrapper', style: 'position: relative' }, [
+      h(
+        'div',
+        {
+          class: 'no-print',
+          style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
+        },
+        [
+          button('适应高度', resize),
+          button('新窗口打开', () => openInNewWindow(srcdoc.value)),
+        ]
+      ),
+      h(
+        'iframe',
+        {
+          ref: iframe,
+          class: 'drawio',
+          frameBorder: '0',
+          width: '100%',
+          height: '300px',
+          srcdoc: srcdoc.value,
+          onLoad: resize
+        }
+      ),
+    ])
+  }
+})
+
+const MarkdownItPlugin = (md: Markdown) => {
+  const render = ({ url, content }: any) => h(Drawio, { url, content })
+
+  const linkTemp = md.renderer.rules.link_open!.bind(md.renderer.rules)
+  md.renderer.rules.link_open = (tokens, idx, options, env, slf) => {
+    const token = tokens[idx]
+
+    if (token.attrGet('link-type') !== 'drawio') {
+      return linkTemp(tokens, idx, options, env, slf)
+    }
+
+    const url = token.attrGet('href')
+    const nextToken = tokens[idx + 1]
+    if (nextToken && nextToken.type === 'text') {
+      nextToken.content = ''
+    }
+
+    return render({ url }) as any
+  }
+
+  const fenceTemp = md.renderer.rules.fence!.bind(md.renderer.rules)
+  md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
+    const token = tokens[idx]
+
+    const code = token.content.trim()
+    const firstLine = code.split(/\n/)[0].trim()
+    if (token.info !== 'xml' || !firstLine.includes('--drawio--')) {
+      return fenceTemp(tokens, idx, options, env, slf)
+    }
+
+    return render({ content: code }) as any
+  }
+}
+
+type F = { repo?: string; path?: string; url?: string; content: string }
+
+async function buildSrcdoc ({ repo, path, content, url }: F) {
+  if (url) {
+    content = await (await fetch(url)).text()
+  } else if (!content && repo && path) {
+    content = (await file.read({ repo, path })).content
+  }
+
+  content = content.replace(/<!--.*?-->/gs, '').trim()
+
+  const div = document.createElement('div')
+  div.className = 'mxgraph'
+  div.dataset.mxgraph = JSON.stringify({
+    highlight: '#00afff',
+    lightbox: false,
+    nav: true,
+    resize: true,
+    toolbar: 'pages zoom layers',
+    page: 1,
+    xml: content,
+  })
+
+  return `
+    <style>
+      ::selection {
+        background: #d3d3d3;
+      }
+
+      ::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
+      }
+
+      ::-webkit-scrollbar-track {
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.09);
+        box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .mxgraph {
+        max-width: 100%;
+      }
+
+      .geDiagramContainer {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      body {
+        background: #fff;
+      }
+    </style>
+    ${div.outerHTML}
+    <script src="${location.origin}/viewer.min.js"></script>
+  `
+}
+
+export default {
+  name: 'drawio',
+  register: ctx => {
+    ctx.markdown.registerPlugin(MarkdownItPlugin)
+
+    ctx.registerHook('ON_TREE_NODE_SELECT', async (item: any) => {
+      if (item.path.toLowerCase().endsWith('.drawio')) {
+        const srcdoc = await buildSrcdoc(item)
+        openInNewWindow(srcdoc)
+
+        return true
+      }
+
+      return false
+    })
+  }
+} as Plugin

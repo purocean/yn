@@ -1,24 +1,21 @@
 {
   "appId": "yank.note",
   "productName": "Yank Note",
-  "copyright": "Copyright 2019 purocean@outlook.com",
+  "copyright": "Copyright 2018-2021 purocean@outlook.com",
   "asar": true,
   "asarUnpack": [
     "bin/**/*",
     "help/**/*",
-    "dist/resources/**/*",
+    "dist/main/resources/**/*",
     "node_modules/plantuml-pipe/**/*"
   ],
   "files": [
     "./bin/**",
     "./help/**",
-    "./dist/**",
-    "./frontend/dist/**",
-    "./node_modules/**"
+    "./dist/**"
   ],
   "artifactName": "Yank-Note-${os}-${arch}-${version}.${ext}",
   "directories": {
-    "app": "./",
     "output": "./out/"
   },
   "npmRebuild": false,
@@ -33,7 +30,7 @@
     "executableName": "yank-note",
     "category": "Markdown",
     "maintainer": "purocean <purocean@outlook.com>",
-    "icon": "./build/icon.png",
+    "icon": "./build/icon.icns",
     "target": [
       "deb"
     ]
@@ -52,15 +49,8 @@
       "zip"
     ]
   },
-  "afterSign": "build/notarize.js",
+  "afterSign": "scripts/notarize.js",
   "nsis": {
     "perMachine": false
-  },
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "purocean",
-      "repo": "yn"
-    }
-  ]
+  }
 }

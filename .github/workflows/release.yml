@@ -29,15 +29,12 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: 12.x
+          node-version: 14.x
 
       - name: Install
         run: |
-          yarn
-          yarn run download-pandoc
-          cd frontend
-          yarn
-          cd ..
+          yarn install
+          node scripts/download-pandoc.js
 
       - name: Set env
         if: matrix.platform == 'mac'
@@ -49,10 +46,7 @@ jobs:
 
       - name: Build
         run: |
-          cd frontend
-          yarn run build
-          cd ..
-          yarn run build
+          yarn build
 
       - name: Electron-Win-Linux
         if: matrix.platform != 'mac'
@@ -72,6 +66,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          prerelease: false
           files: |
             out/Yank-Note*.*
             out/latest*.yml
