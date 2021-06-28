@@ -77,6 +77,10 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.0.2](https://github.com/purocean/yn/releases/tag/v3.0.2) 2021-06-28
+1. 调整标题保存状态
+2. 修复可能不能打开终端问题
+
 ### [v3.0.1](https://github.com/purocean/yn/releases/tag/v3.0.1) 2021-06-27
 1. 修复 Electron Scheme 模式下可能上传文件不成功问题
 
