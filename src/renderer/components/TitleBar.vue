@@ -31,7 +31,8 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import env from '../useful/env'
+import env from '@fe/useful/env'
+import File from '@fe/useful/file'
 import SvgIcon from './SvgIcon.vue'
 
 const { isElectron, isMacOS } = env
@@ -137,7 +138,7 @@ export default defineComponent({
       if (savedAt.value === null && currentFile.value) {
         status = '加载完毕'
       } else if (savedAt.value) {
-        status = '保存于：' + savedAt.value.toLocaleString()
+        status = saved.value ? '已保存' : '未保存'
       }
 
       const file = currentFile.value
@@ -161,7 +162,7 @@ export default defineComponent({
         return { background: '#818181' }
       }
 
-      if (!saved.value) {
+      if (!saved.value && File.isEncryptedFile(currentFile.value)) {
         return { background: '#ff9800ad' }
       }
 
