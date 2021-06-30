@@ -1,5 +1,5 @@
 <template>
-  <XMask :show="showPanel" @close="close">
+  <XMask :show="showPanel" @close="close" :maskCloseable="false">
     <Setting @close="close" />
   </XMask>
 </template>
