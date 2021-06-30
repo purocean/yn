@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { USER_DIR, TRASH_DIR, USER_PLUGIN_DIR } from './constant'
+import './updater'
 
 export default function () {
   if (!fs.existsSync(USER_DIR)) {

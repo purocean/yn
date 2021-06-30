@@ -12,9 +12,10 @@ let progressBar: any = null
 
 // 否是从微软应用商店安装，简单的判断路径中是否包含 WindowsApps
 const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
+const disabled = isAppx || process.mas
 
 const init = (call: () => void) => {
-  if (isAppx) {
+  if (disabled) {
     return
   }
 
@@ -103,8 +104,8 @@ const init = (call: () => void) => {
   })
 }
 
-const checkForUpdates = () => {
-  if (isAppx) {
+export function checkForUpdates () {
+  if (disabled) {
     return
   }
 
@@ -120,8 +121,8 @@ const checkForUpdates = () => {
   autoUpdater.checkForUpdates()
 }
 
-const autoCheckForUpdates = () => {
-  if (isAppx) {
+export function autoCheckForUpdates () {
+  if (disabled) {
     return
   }
 
@@ -130,8 +131,13 @@ const autoCheckForUpdates = () => {
   }
 }
 
-export {
-  init,
-  checkForUpdates,
-  autoCheckForUpdates
-}
+app.whenReady().then(() => {
+  init(() => {
+    // 立即升级，退出程序
+    app.exit(0)
+  })
+
+  setTimeout(() => {
+    autoCheckForUpdates()
+  }, 1000)
+})

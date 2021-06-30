@@ -13,8 +13,9 @@
 import { useStore } from 'vuex'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
-import file from '../useful/file'
-import { FLAG_DISABLE_XTERM } from '../useful/global-args'
+import file from '@fe/useful/file'
+import { FLAG_DISABLE_XTERM } from '@fe/useful/global-args'
+import { useToast } from '@fe/useful/toast'
 
 JSONEditor.defaults.language = 'zh'
 JSONEditor.defaults.languages.zh = { ...JSONEditor.defaults.languages.en }
@@ -39,6 +40,7 @@ const schema = {
           name: {
             type: 'string',
             title: '仓库名',
+            maxLength: 10,
             options: {
               inputAttributes: { placeholder: '请输入' }
             },
@@ -48,7 +50,7 @@ const schema = {
             title: '路径',
             readonly: true,
             options: {
-              inputAttributes: { placeholder: '请选择' }
+              inputAttributes: { placeholder: '请选择储存位置', style: 'cursor: pointer' }
             },
           }
         }
@@ -70,6 +72,7 @@ export default defineComponent({
   components: {},
   setup (_, { emit }) {
     const store = useStore()
+    const toast = useToast()
     const refEditor = ref(null)
 
     const show = computed(() => store.state.showSetting)
@@ -94,6 +97,10 @@ export default defineComponent({
         path: data.repositories[name]
       }))
 
+      if (data.repos.length < 1) {
+        data.repos = [{ name: '', path: '' }]
+      }
+
       const value: any = {}
 
       Object.keys(schema.properties).forEach(key => {
@@ -108,7 +115,6 @@ export default defineComponent({
     }
 
     const ok = async () => {
-      emit('close')
       const value = editor && editor.getValue()
       if (value) {
         const repositories: any = {}
@@ -117,6 +123,9 @@ export default defineComponent({
           path = path.trim()
           if (name && path) {
             repositories[name] = path
+          } else if (name) {
+            toast.show('warning', '请选择储存位置')
+            throw new Error('请选择储存位置')
           }
         })
 
@@ -125,6 +134,7 @@ export default defineComponent({
         await file.writeSettings(data)
         store.dispatch('fetchRepositories')
       }
+      emit('close')
     }
 
     const onClick = async (e: Event) => {
