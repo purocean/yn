@@ -19,7 +19,7 @@
 + 如果要改造为对外的 Web 服务，请运行在隔离可控的环境下，注意应用安全。
 + 加密文件的加密解密操作均在前端完成，请**务必牢记自己的密码**。一旦密码丢失，就只能暴力破解了。
 
-## Yank-Note 3.0 开发计划
+## Yank-Note V3 开发计划
 V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown 渲染性能
 
 [V3 项目看板](https://github.com/purocean/yn/projects/5)
@@ -76,6 +76,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v3.0.3](https://github.com/purocean/yn/releases/tag/v3.0.3) 2021-06-30
+1. 优化添加仓库交互
 
 ### [v3.0.2](https://github.com/purocean/yn/releases/tag/v3.0.2) 2021-06-28
 1. 调整标题保存状态
