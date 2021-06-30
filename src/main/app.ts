@@ -1,24 +1,23 @@
-import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog } from 'electron'
+import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDialogOptions } from 'electron'
 import * as path from 'path'
 import * as os from 'os'
 
 import * as yargs from 'yargs'
 import server from './server'
-import { APP_NAME, USER_DIR, FLAG_DISABLE_DEVTOOL, FLAG_DISABLE_SERVER } from './constant'
-import * as updater from './updater'
-import { getAccelerator, registerShortcut } from './shortcut'
-import { mainMenus, inputMenu, selectionMenu } from './menus'
+import { APP_NAME } from './constant'
+import { mainMenus, inputMenu, selectionMenu, getTrayMenus } from './menus'
 import { transformProtocolRequest } from './protocol'
-import { bus } from './bus'
 import opn from 'opn'
 import startup from './startup'
+import { registerAction } from './action'
+import { registerShortcut } from './shortcut'
 
 const isMacos = os.platform() === 'darwin'
 const isLinux = os.platform() === 'linux'
 
 let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
 
-const showTray = !(yargs.argv['disable-tray'])
+const trayEnabled = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || 3044
 const devFrontendPort = 8066
 
@@ -53,9 +52,7 @@ const getUrl = (mode?: typeof urlMode) => {
   return `${proto}://localhost:${port}` + (query ? `?${query}` : '')
 }
 
-const openInBrowser = () => opn(getUrl('prod'))
-
-const hide = () => {
+const hideWindow = () => {
   if (win) {
     win.hide()
     win.setSkipTaskbar(true)
@@ -92,8 +89,8 @@ const createWindow = () => {
   }, 0)
 
   win.on('close', e => {
-    if (showTray) {
-      hide()
+    if (trayEnabled) {
+      hideWindow()
       e.preventDefault()
     }
   })
@@ -112,7 +109,7 @@ const createWindow = () => {
   })
 }
 
-const showWindow = (forceShow?: boolean) => {
+const showWindow = () => {
   if (win) {
     const show = () => {
       if (win) {
@@ -124,16 +121,12 @@ const showWindow = (forceShow?: boolean) => {
       }
     }
 
-    if (win.isVisible() && win.isFocused() && !forceShow) {
-      hide()
+    if (isMacos) {
+      show()
     } else {
-      if (isMacos) {
-        show()
-      } else {
-        // 先隐藏再显示，以便在 windows 10 当前虚拟窗口展示
-        hide()
-        setTimeout(show, 100)
-      }
+      // 先隐藏再显示，以便在 windows 10 当前虚拟窗口展示
+      hideWindow()
+      setTimeout(show, 100)
     }
   } else {
     createWindow()
@@ -182,214 +175,88 @@ const showSetting = () => {
     return
   }
 
-  showWindow(true)
+  showWindow()
   win.webContents.executeJavaScript('globalBus.emit("show-setting");', true)
 }
 
-bus.on('show-setting', showSetting)
-bus.on('quit-app', quit)
+const serve = () => {
+  try {
+    const handler = server(backendPort)
+    protocol.registerStreamProtocol('yank-note', async (request, callback) => {
+      // 自定义 protocol 协议转换为 koa 请求
+      const { req, res, out } = await transformProtocolRequest(request)
+
+      await handler(req, res)
+      callback({
+        headers: res.getHeaders() as any,
+        statusCode: res.statusCode,
+        data: out,
+      })
+    })
+  } catch (error) {
+    app.exit(-1)
+  }
+}
+
+const showOpenDialog = (params: OpenDialogOptions) => {
+  if (win) {
+    const data = dialog.showOpenDialog(win, params)
+    return data
+  }
+}
+
+const showTray = () => {
+  tray = new Tray(path.join(__dirname, './assets/tray.png'))
+  tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
+  if (isMacos) {
+    tray.on('click', function (this: Tray) { this.popUpContextMenu() })
+  } else {
+    tray.on('click', () => showWindow())
+  }
+  tray.setContextMenu(getTrayMenus())
+}
+
+const openInBrowser = () => opn(getUrl('prod'))
+
+registerAction('show-main-window', showWindow)
+registerAction('hide-main-window', hideWindow)
+registerAction('show-main-window-setting', showSetting)
+registerAction('reload-main-window', reload)
+registerAction('get-main-widow', () => win)
+registerAction('get-url-mode', () => urlMode)
+registerAction('set-url-mode', (val: typeof urlMode) => { urlMode = val })
+registerAction('get-backend-port', () => backendPort)
+registerAction('get-dev-frontend-port', () => devFrontendPort)
+registerAction('open-in-browser', openInBrowser)
+registerAction('quit', quit)
+registerAction('show-open-dialog', showOpenDialog)
+
+powerMonitor.on('shutdown', quit)
 
 const gotTheLock = app.requestSingleInstanceLock()
-
 if (!gotTheLock) {
   app.exit()
 } else {
   app.on('second-instance', () => {
-    showWindow(true)
+    showWindow()
   })
 
   app.on('ready', () => {
     startup()
+    serve()
+    showWindow()
 
-    // 打开后端服务器
-    try {
-      const handler = server(backendPort)
-      protocol.registerStreamProtocol('yank-note', async (request, callback) => {
-        // 自定义 protocol 协议转换为 koa 请求
-        const { req, res, out } = await transformProtocolRequest(request)
-
-        await handler(req, res)
-        callback({
-          headers: res.getHeaders() as any,
-          statusCode: res.statusCode,
-          data: out,
-        })
-      })
-    } catch (error) {
-      app.exit(-1)
+    if (trayEnabled) {
+      showTray()
     }
 
-    showWindow(true)
-
-    bus.on('show-main-window', showWindow)
-
-    bus.on('show-open-dialog', ({ args: [params], callback }: any) => {
-      if (win) {
-        const data = dialog.showOpenDialog(win, params)
-        callback && callback(data)
-      }
-    })
-
-    // 注册快捷键
     registerShortcut({
-      'show-main-window': () => showWindow(),
-      'open-in-browser': () => openInBrowser()
+      'show-main-window': showWindow,
+      'open-in-browser': openInBrowser
     })
-
-    powerMonitor.on('shutdown', quit)
-
-    if (showTray) {
-      const contextMenu = Menu.buildFromTemplate([
-        {
-          type: 'normal',
-          label: '打开主界面',
-          accelerator: getAccelerator('show-main-window'),
-          click: () => {
-            showWindow(true)
-          }
-        },
-        {
-          type: 'normal',
-          label: '浏览器中打开',
-          accelerator: getAccelerator('open-in-browser'),
-          visible: !FLAG_DISABLE_SERVER,
-          click: openInBrowser
-        },
-        {
-          type: 'normal',
-          label: '打开主目录',
-          click: () => {
-            opn(USER_DIR)
-          }
-        },
-        {
-          type: 'normal',
-          label: '偏好设置',
-          click: showSetting
-        },
-        {
-          type: 'checkbox',
-          label: '开机启动',
-          checked: app.getLoginItemSettings().openAtLogin,
-          click: x => {
-            app.setLoginItemSettings({ openAtLogin: x.checked })
-            x.checked = app.getLoginItemSettings().openAtLogin
-          }
-        },
-        { type: 'separator' },
-        {
-          type: 'submenu',
-          label: '开发',
-          visible: !FLAG_DISABLE_DEVTOOL,
-          submenu: [
-            {
-              type: 'radio',
-              checked: urlMode === 'scheme',
-              label: '正式端口（Scheme）',
-              click: () => {
-                urlMode = 'scheme'
-                reload()
-              }
-            },
-            {
-              type: 'radio',
-              checked: urlMode === 'prod',
-              label: `正式端口（${backendPort}）`,
-              click: () => {
-                urlMode = 'prod'
-                reload()
-              }
-            },
-            {
-              type: 'radio',
-              checked: urlMode === 'dev',
-              label: `开发端口（${devFrontendPort}）`,
-              click: () => {
-                urlMode = 'dev'
-                reload()
-              }
-            },
-            { type: 'separator' },
-            {
-              type: 'normal',
-              label: '重载页面',
-              click: () => {
-                reload()
-              }
-            },
-            {
-              type: 'normal',
-              label: '主窗口开发工具',
-              click: () => {
-                win && win.webContents.openDevTools()
-              }
-            },
-            { type: 'separator' },
-            {
-              type: 'normal',
-              label: '强制重新启动',
-              click: () => {
-                app.relaunch()
-                app.exit(1)
-              }
-            },
-            {
-              type: 'normal',
-              label: '强制退出',
-              click: () => {
-                app.exit(1)
-              }
-            },
-          ]
-        },
-        {
-          type: 'normal',
-          label: 'GitHub',
-          click: () => {
-            opn('https://github.com/purocean/yn')
-          }
-        },
-        {
-          type: 'normal',
-          label: `版本 ${app.getVersion()}`,
-          click: () => {
-            updater.checkForUpdates()
-          }
-        },
-        { type: 'separator' },
-        {
-          type: 'normal',
-          label: '退出',
-          click: () => {
-            setTimeout(() => {
-              quit()
-            }, 200)
-          }
-        },
-      ])
-
-      tray = new Tray(path.join(__dirname, './assets/tray.png'))
-      tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
-      if (isMacos) {
-        tray.on('click', function (this: Tray) { this.popUpContextMenu() })
-      } else {
-        tray.on('click', () => showWindow())
-      }
-      tray.setContextMenu(contextMenu)
-    }
-
-    updater.init(() => {
-      // 立即升级，退出程序
-      if (!isMacos) {
-        app.exit(0)
-      }
-    })
-    setTimeout(() => {
-      updater.autoCheckForUpdates()
-    }, 1000)
   })
 
   app.on('activate', () => {
-    showWindow(true)
+    showWindow()
   })
 }

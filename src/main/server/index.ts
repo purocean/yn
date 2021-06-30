@@ -14,7 +14,7 @@ import plantuml from './plantuml'
 import shell from '../shell'
 import mark from './mark'
 import config from '../config'
-import { call, bus } from '../bus'
+import { getAction } from '../action'
 
 const result = (status: 'ok' | 'error' = 'ok', message = '操作成功', data: any = null) => {
   return { status, message, data }
@@ -226,9 +226,9 @@ const choose = async (ctx: any, next: any) => {
       }
 
       chooseLock = true
-      from === 'browser' && bus.emit('show-main-window', true)
-      const data = await call('show-open-dialog', body)
-      from === 'browser' && bus.emit('show-main-window', false)
+      from === 'browser' && getAction('show-main-window')()
+      const data = await getAction('show-open-dialog')(body)
+      from === 'browser' && getAction('hide-main-window')()
       chooseLock = false
       ctx.body = result('ok', '完成', data)
     }
