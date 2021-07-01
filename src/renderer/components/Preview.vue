@@ -48,6 +48,7 @@ import { extname } from '@fe/useful/path'
 import { triggerHook } from '@fe/useful/plugin'
 import { useBus } from '@fe/useful/bus'
 import markdown from '@fe/useful/markdown'
+import { useToast } from '@fe/useful/toast'
 import Render from './Render.vue'
 
 import 'github-markdown-css/github-markdown.css'
@@ -60,6 +61,7 @@ export default defineComponent({
   setup (_, { emit }) {
     const bus = useBus()
     const store = useStore()
+    const toast = useToast()
 
     const { currentContent, currentFile, autoPreview } = toRefs(store.state)
     const fileName = computed(() => currentFile.value?.name)
@@ -189,6 +191,8 @@ export default defineComponent({
 
     function convertFile (type: string) {
       triggerHook('ON_VIEW_BEFORE_CONVERT', { getViewDom })
+
+      toast.show('info', '转换中，请稍候……')
 
       let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
 
