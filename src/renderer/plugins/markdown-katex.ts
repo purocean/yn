@@ -13,8 +13,8 @@ for rendering output.
 */
 
 import katex from 'katex'
-import { Plugin } from '@fe/useful/plugin'
 import { h } from 'vue'
+import { Plugin } from '@fe/context/plugin'
 
 // Test if potential opening or closing delimieter
 // Assumes that there is a "$" at state.src[pos]

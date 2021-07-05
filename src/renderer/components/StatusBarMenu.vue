@@ -18,8 +18,8 @@
 
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
-import { useBus } from '../useful/bus'
-import { getMenus, MenuItem } from '../useful/plugin/status-bar'
+import { getMenus, MenuItem } from '@fe/context/status-bar'
+import { hookAction } from '@fe/context/action'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -32,7 +32,6 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const bus = useBus()
     const list = ref(getMenus(props.position))
     const showList = ref(true)
 
@@ -48,9 +47,9 @@ export default defineComponent({
       list.value = getMenus(props.position)
     }
 
-    bus.on('status-bar-menu-update', updateMenu)
+    const cleanup = hookAction('before-run', 'status-bar.refresh-menu', updateMenu)
     onBeforeUnmount(() => {
-      bus.off('status-bar-menu-update', updateMenu)
+      cleanup()
     })
 
     return {

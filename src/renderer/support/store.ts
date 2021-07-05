@@ -1,15 +1,15 @@
+import { omit } from 'lodash-es'
 import { createStore } from 'vuex'
-import Storage from '@fe/useful/storage'
-import file from '@fe/useful/file'
-import { basename } from '@fe/useful/path'
+import Storage from '@fe/utils/storage'
+import { basename } from '@fe/utils/path'
+import * as api from '@fe/support/api'
+import { Doc } from './types'
 
-/**
- * 获取上一次打开的文件
- * @param repoName 仓库名称
- */
-const getLastOpenFile = (repoName?: string) => {
+export const getLastOpenFile = (repoName?: string) => {
   const currentFile = Storage.get('currentFile')
   const recentOpenTime = Storage.get('recentOpenTime', {}) as {[key: string]: number}
+
+  repoName ??= Storage.get('currentRepo')?.name
 
   if (!repoName) {
     return null
@@ -44,15 +44,11 @@ export default createStore({
     showXterm: false,
     autoPreview: true,
     showSetting: false,
-    savedAt: null,
     currentContent: '',
-    previousContent: '',
-    previousHash: '',
     currentRepo: Storage.get('currentRepo'),
-    currentFile: getLastOpenFile(Storage.get('currentRepo')?.name),
+    currentFile: null as Doc | null,
     recentOpenTime: Storage.get('recentOpenTime', {}),
     tabs: Storage.get('tabs', []),
-    passwordHash: {},
     documentInfo: {
       textLength: 0,
       selectedLength: 0,
@@ -65,11 +61,6 @@ export default createStore({
   mutations: {
     setMarkedFiles (state, files) {
       state.markedFiles = files
-    },
-    setPasswordHash (state, { file, passwordHash }) {
-      if (file && passwordHash) {
-        state.passwordHash = { ...state.passwordHash, [`${file.repo}|${file.path}`]: passwordHash }
-      }
     },
     setRepositories (state, data) {
       state.repositories = data
@@ -98,15 +89,6 @@ export default createStore({
     setShowXterm (state, data) {
       state.showXterm = data
     },
-    setPreviousHash (state, data) {
-      state.previousHash = data
-    },
-    setPreviousContent (state, data) {
-      state.previousContent = data
-    },
-    setSavedAt (state, data) {
-      state.savedAt = data
-    },
     setDocumentInfo (state, data) {
       state.documentInfo = data
     },
@@ -115,13 +97,13 @@ export default createStore({
     },
     setCurrentRepo (state, data) {
       state.currentRepo = data
-      state.currentFile = getLastOpenFile(data?.name)
       state.tree = null
       Storage.set('currentRepo', data)
     },
-    setCurrentFile (state, data) {
+    setCurrentFile (state, data: Doc | null) {
       state.currentFile = data
-      Storage.set('currentFile', data)
+
+      Storage.set('currentFile', omit(data, 'content'))
 
       if (data) {
         state.recentOpenTime = { ...(state.recentOpenTime || {}), [`${data.repo}|${data.path}`]: new Date().valueOf() }
@@ -130,34 +112,32 @@ export default createStore({
     },
   },
   getters: {
+    isSaved (state) {
+      if (!state.currentFile?.status) {
+        return true
+      }
+
+      return state.currentContent === state.currentFile?.content
+    }
   },
   actions: {
     async fetchMarkedFiles ({ commit }) {
-      const files = (await file.markedFiles()).map((x: any) => ({ ...x, name: basename(x.path) }))
+      const files = (await api.fetchMarkedFiles()).map((x: any) => ({ ...x, name: basename(x.path) }))
       commit('setMarkedFiles', files)
     },
     async fetchRepositories ({ commit }) {
-      const repos = await file.fetchRepositories()
+      const repos = await api.fetchRepositories()
       commit('setRepositories', repos)
     },
-    async fetchTree ({ commit }, repo) {
+    async fetchTree ({ commit, state }) {
+      const repo = state.currentRepo
       if (!repo) {
         console.warn('未选择仓库')
         return
       }
 
-      const tree = await file.fetchTree(repo.name)
+      const tree = await api.fetchTree(repo.name)
       commit('setTree', tree)
-    },
-    async showHelp ({ commit }, doc) {
-      const content = await file.fetchHelpContent(doc)
-      commit('setCurrentFile', {
-        repo: '__help__',
-        title: doc,
-        name: doc,
-        path: '/' + doc,
-        content
-      })
     },
   }
 })

@@ -1,32 +1,31 @@
-import { Plugin } from '@fe/useful/plugin'
-import { useBus } from '@fe/useful/bus'
-import { Alt, getActionLabel, isAction } from '@fe/useful/shortcut'
-import { FLAG_DISABLE_XTERM } from '@fe/useful/global-args'
+import { Plugin } from '@fe/context/plugin'
+import { Alt, getActionLabel, isAction } from '@fe/context/shortcut'
+import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import { toggleSide, toggleView, toggleXterm } from '@fe/context/layout'
+import { toggleWrap } from '@fe/context/editor'
 
 export default {
   name: 'status-bar-view',
   register: ctx => {
-    const bus = useBus()
-
     const actions = {
       'toggle-side': {
         title: '切换侧栏',
-        action: () => bus.emit('toggle-side'),
+        action: toggleSide,
         shortcut: [Alt, 'e'],
       },
       'toggle-view': {
         title: '切换预览',
-        action: () => bus.emit('toggle-view'),
+        action: toggleView,
         shortcut: [Alt, 'v'],
       },
       'toggle-xterm': {
         title: '切换终端',
-        action: () => bus.emit('toggle-xterm'),
+        action: () => toggleXterm(),
         shortcut: [Alt, 't'],
       },
       'toggle-wrap': {
         title: '切换换行',
-        action: () => bus.emit('editor-toggle-wrap'),
+        action: toggleWrap,
         shortcut: [Alt, 'w'],
       },
     }

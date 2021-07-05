@@ -1,13 +1,12 @@
-import { Plugin, Ctx } from '@fe/useful/plugin'
-import { useBus } from '@fe/useful/bus'
 import dayjs from 'dayjs'
+import { getLine, replaceLine } from '@fe/context/editor'
+import { Plugin, Ctx } from '@fe/context/plugin'
 
 export default {
   name: 'switch-todo',
   register: (ctx: Ctx) => {
     ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      const bus = useBus()
 
       const preventEvent = () => {
         e.preventDefault()
@@ -16,13 +15,13 @@ export default {
       }
 
       function switchTodo (line: number, checked: boolean) {
-        let lineText = ''
-        bus.emit('editor-get-line', { line, callback: (val: string) => { lineText = val } })
+        const lineText = getLine(line)
 
         const value = checked
           ? lineText.replace('[ ]', `[x] ~~${dayjs().format('YYYY-MM-DD HH:mm')}~~`)
           : lineText.replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
-        bus.emit('editor-replace-line', { line, value })
+
+        replaceLine(line, value)
       }
 
       if (target.tagName === 'INPUT' && target.parentElement!.classList.contains('source-line')) {

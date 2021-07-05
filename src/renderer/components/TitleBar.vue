@@ -31,9 +31,10 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import env from '@fe/useful/env'
-import File from '@fe/useful/file'
+import env from '@fe/utils/env'
+import { isEncrypted } from '@fe/context/document'
 import SvgIcon from './SvgIcon.vue'
+import { Doc } from '@fe/support/types'
 
 const { isElectron, isMacOS } = env
 
@@ -43,8 +44,8 @@ export default defineComponent({
   setup () {
     const store = useStore()
 
-    const { currentFile, savedAt, currentContent, previousContent } = toRefs(store.state)
-    const saved = computed(() => currentContent.value === previousContent.value)
+    const { currentFile } = toRefs(store.state)
+    const { isSaved } = toRefs(store.getters)
 
     let win: any = null
 
@@ -96,7 +97,7 @@ export default defineComponent({
     onMounted(() => {
       if (!isElectron) {
         window.onbeforeunload = () => {
-          return !saved.value || null
+          return !isSaved.value || null
         }
       }
 
@@ -135,20 +136,27 @@ export default defineComponent({
     const statusText = computed(() => {
       let status = ''
 
-      if (savedAt.value === null && currentFile.value) {
-        status = '加载完毕'
-      } else if (savedAt.value) {
-        status = saved.value ? '已保存' : '未保存'
-      }
+      const file: Doc = currentFile.value
 
-      const file = currentFile.value
       if (file) {
         if (file.repo === '__help__') {
           return file.title
         }
 
+        if (!isSaved.value) {
+          status = '未保存'
+        } else if (file.status === 'saved') {
+          status = '已保存'
+        } else if (file.status === 'save-failed') {
+          status = '保存失败！'
+        } else if (file.status === 'loaded') {
+          status = '加载完毕'
+        } else {
+          status = '加载中…'
+        }
+
         if (file.path && file.repo) {
-          return `${file.path}-${status} [${file.repo}]`
+          return `${isSaved.value ? '' : '*'}${file.path}-${status} [${file.repo}]`
         } else {
           return file.name
         }
@@ -162,7 +170,7 @@ export default defineComponent({
         return { background: '#818181' }
       }
 
-      if (!saved.value && File.isEncryptedFile(currentFile.value)) {
+      if (currentFile.value && !isSaved.value && (isEncrypted(currentFile.value) || currentFile.value.status === 'save-failed')) {
         return { background: '#ff9800ad' }
       }
 
@@ -173,9 +181,9 @@ export default defineComponent({
       document.title = currentFile.value ? (currentFile.value.name || currentFile.value.title || 'Yank Note') : '未打开文件'
     }, { immediate: true })
 
-    watch(saved, val => {
+    watch(isSaved, (val: boolean) => {
       // 暴露文档保存状态给 Electron 用
-      (window as any).documentSaved = val
+      window.documentSaved = val
     }, { immediate: true })
 
     return {

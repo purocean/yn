@@ -1,7 +1,7 @@
 import Highlight from 'highlight.js'
-import { getKeyLabel } from '@fe/useful/shortcut'
-import { Plugin, Ctx } from '@fe/useful/plugin'
-import { getLogger } from '../useful/utils'
+import { getKeyLabel } from '@fe/context/shortcut'
+import { Plugin, Ctx } from '@fe/context/plugin'
+import { getLogger } from '@fe/utils'
 
 const logger = getLogger('markdown-code')
 

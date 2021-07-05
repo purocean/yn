@@ -1,21 +1,23 @@
-import { useStore } from 'vuex'
-import { useBus } from './bus'
-import env from './env'
+import { useBus } from '@fe/support/bus'
+import env from '@fe/utils/env'
+import { triggerHook } from '@fe/context/plugin'
+import store, { getLastOpenFile } from '@fe/support/store'
+import { Doc } from '@fe/support/types'
 import { hasCtrlCmd } from './shortcut'
-import { triggerHook } from './plugin'
+import { showHelp, switchDoc, unmarkDoc } from './document'
+import { refreshTree } from './tree'
+
+const bus = useBus()
 
 export default function startup () {
-  const bus = useBus()
-  const store = useStore()
-
   triggerHook('ON_STARTUP')
 
-  bus.on('editor-ready', () => {
+  bus.on('editor.ready', () => {
     const { currentFile } = store.state
 
     if (!currentFile) {
       // 当前没打开文件，直接打开 README
-      store.dispatch('showHelp', 'README.md')
+      showHelp('README.md')
     }
   })
 
@@ -53,3 +55,18 @@ export default function startup () {
     })
   }
 }
+
+const doc = getLastOpenFile()
+switchDoc(doc)
+
+bus.on('doc.created', refreshTree)
+bus.on('doc.deleted', refreshTree)
+bus.on('doc.moved', refreshTree)
+bus.on('doc.changed', refreshTree)
+bus.on('doc.switch-failed', refreshTree)
+
+bus.on('doc.switch-failed', (payload?: { doc?: Doc | null, message: string }) => {
+  if (payload && payload.doc && payload?.message?.indexOf('NOENT')) {
+    unmarkDoc(payload.doc)
+  }
+})

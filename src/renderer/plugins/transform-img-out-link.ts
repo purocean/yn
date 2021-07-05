@@ -1,15 +1,20 @@
 import mime from 'mime-types'
-import file from '@fe/useful/file'
-import { Plugin, Ctx } from '@fe/useful/plugin'
-import { CtrlCmd, getActionLabel, isAction, LeftClick, Shift } from '@fe/useful/shortcut'
-import { encodeMarkdownLink } from '@fe/useful/utils'
-import { useBus } from '@fe/useful/bus'
-import env from '@fe/useful/env'
-import { useToast } from '@fe/useful/toast'
-import store from '@fe/store'
+import * as api from '@fe/support/api'
+import { Plugin, Ctx } from '@fe/context/plugin'
+import { CtrlCmd, getActionLabel, isAction, LeftClick, Shift } from '@fe/context/shortcut'
+import { encodeMarkdownLink } from '@fe/utils'
+import env from '@fe/utils/env'
+import { useToast } from '@fe/support/toast'
+import store from '@fe/support/store'
+import { replaceValue } from '@fe/context/editor'
+import { refreshTree } from '@fe/context/tree'
 
 async function transformImgOutLink (img: HTMLImageElement) {
   const { currentFile } = store.state
+  if (!currentFile) {
+    return
+  }
+
   const { repo, path } = currentFile
 
   const transform = (ximg: HTMLImageElement): Promise<string> => {
@@ -21,7 +26,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
       canvas.toBlob(async blob => {
         try {
           const imgFile = new File([blob!], 'file.png')
-          const { relativePath } = await file.upload(repo, path, imgFile)
+          const { relativePath } = await api.upload(repo, path, imgFile)
           resolve(relativePath)
         } catch (error) {
           reject(error)
@@ -38,7 +43,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
     const res = await window.fetch(`api/proxy?url=${encodeURIComponent(img.src)}&headers=${img.getAttribute('headers') || ''}`)
     const blob = await res.blob()
     const imgFile = new File([blob!], 'file.' + mime.extension(res.headers.get('content-type')!))
-    const { relativePath } = await file.upload(repo, path, imgFile)
+    const { relativePath } = await api.upload(repo, path, imgFile)
     replacedLink = relativePath
   }
 
@@ -59,7 +64,6 @@ async function transformAll () {
   }
 
   const toast = useToast()
-  const bus = useBus()
 
   const result = []
   const imgList = refView.querySelectorAll('img')
@@ -72,8 +76,8 @@ async function transformAll () {
       result.push(data)
     }
   }
-  result.forEach(data => bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink }))
-  bus.emit('tree-refresh')
+  result.forEach(data => replaceValue(data.oldLink, data.replacedLink))
+  refreshTree()
 }
 
 async function handleKeydown (e: KeyboardEvent) {
@@ -85,7 +89,6 @@ async function handleKeydown (e: KeyboardEvent) {
 }
 
 async function handleClick (e: MouseEvent) {
-  const bus = useBus()
   const target = e.target as HTMLElement
   if (target.tagName !== 'IMG') {
     return false
@@ -95,8 +98,8 @@ async function handleClick (e: MouseEvent) {
   if (isAction(e, actionClick)) { // 转换外链图片到本地
     const data = await transformImgOutLink(img)
     if (data) {
-      bus.emit('tree-refresh')
-      bus.emit('editor-replace-value', { search: data.oldLink, replace: data.replacedLink })
+      refreshTree()
+      replaceValue(data.oldLink, data.replacedLink)
     }
   } else {
     env.openAlwaysOnTopWindow(img.src)
@@ -115,7 +118,7 @@ export default {
     ctx.shortcut.addAction(actionClick, [CtrlCmd, Shift, LeftClick])
 
     ctx.registerHook('ON_VIEW_KEY_DOWN', handleKeydown)
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', handleClick )
+    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', handleClick)
     ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
       refView = getViewDom()
     })

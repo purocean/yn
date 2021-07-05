@@ -1,11 +1,13 @@
-import store from '@fe/store'
-import { Plugin } from '@fe/useful/plugin'
+import store from '@fe/support/store'
+import { Plugin } from '@fe/context/plugin'
 
 export default {
   name: 'status-bar-setting',
   register: ctx => {
     const showSetting = () => store.commit('setShowSetting', true)
-    ctx.bus.on('show-setting', showSetting)
+
+    ctx.action.registerAction('status-bar.show-setting', showSetting)
+
     ctx.statusBar.updateMenu({
       id: 'status-bar-setting',
       position: 'left',

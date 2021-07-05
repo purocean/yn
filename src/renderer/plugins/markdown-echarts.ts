@@ -1,8 +1,8 @@
+import { h } from 'vue'
 import * as echarts from 'echarts'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/useful/plugin'
-import { h } from 'vue'
+import { Plugin } from '@fe/context/plugin'
 
 const render = (code: string) => {
   const id = `echart-${CryptoJS.MD5(code).toString()}-${Math.random().toString(36).substr(2)}`

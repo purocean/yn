@@ -23,6 +23,7 @@ module.exports = {
     'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'comma-dangle': 'off',
+    'no-unused-expressions': 'off'
   },
   overrides: [
     {

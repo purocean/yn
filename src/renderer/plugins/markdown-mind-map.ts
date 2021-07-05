@@ -1,9 +1,9 @@
 import { defineComponent, h, onMounted, ref, watch } from 'vue'
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
-import { Plugin } from '@fe/useful/plugin'
-import crypto from '@fe/useful/crypto'
-import { dataURItoBlobLink, openInNewWindow } from '@fe/useful/utils'
+import { Plugin } from '@fe/context/plugin'
+import crypto from '@fe/utils/crypto'
+import { dataURItoBlobLink, openInNewWindow } from '@fe/utils'
 
 const layoutStorageKey = 'mind-map-layout'
 

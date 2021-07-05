@@ -7,8 +7,9 @@ import dayjs from 'dayjs'
 import TurndownService from 'turndown'
 import * as monaco from 'monaco-editor'
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
-import { $args } from '../useful/global-args'
-import env from '../useful/env'
+import { $args } from '@fe/support/global-args'
+import { getAction } from '@fe/context/action'
+import env from '@fe/utils/env'
 
 const models: {[key: string]: monaco.editor.ITextModel} = {}
 
@@ -91,7 +92,7 @@ export default defineComponent({
       })
 
       getEditor().addCommand(KM.Shift | KM.Alt | KC.KEY_R, () => {
-        emit('xterm-run', getEditor().getModel()!.getValueInRange(getEditor().getSelection()!))
+        getAction('xterm.run')(getEditor().getModel()!.getValueInRange(getEditor().getSelection()!))
       })
 
       getEditor().addCommand(KM.CtrlCmd | KC.Enter, () => {

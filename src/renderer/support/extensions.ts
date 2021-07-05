@@ -1,4 +1,4 @@
-import { extname } from './path'
+import { extname } from '@fe/utils/path'
 const extensions = [
   '.txt',
   '.gitignore',

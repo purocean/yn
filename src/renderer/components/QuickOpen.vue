@@ -29,8 +29,8 @@
 import { debounce } from 'lodash-es'
 import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import file from '../useful/file'
-import fuzzyMatch from '../useful/fuzzy-match'
+import * as api from '@fe/support/api'
+import fuzzyMatch from '@fe/utils/fuzzy-match'
 
 type TabKey = 'marked' | 'search' | 'file'
 
@@ -143,7 +143,7 @@ export default defineComponent({
       if (repo.value && text.trim()) {
         const fetchTime = new Date().getTime()
         lastFetchTime.value = fetchTime
-        const data = await file.search(repo.value, text.trim())
+        const data = await api.search(repo.value, text.trim())
         // 总是保证最后的搜索结果出现在列表
         if (fetchTime >= lastFetchTime.value) {
           call(data)

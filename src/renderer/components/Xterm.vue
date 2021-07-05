@@ -10,9 +10,11 @@ import { defineComponent, nextTick, onBeforeMount, onBeforeUnmount, ref } from '
 import { useStore } from 'vuex'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
-import { useBus } from '../useful/bus'
-import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '../useful/global-args'
-import { getLogger } from '../useful/utils'
+import { useBus } from '@fe/support/bus'
+import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import { toggleXterm } from '@fe/context/layout'
+import { registerAction, removeAction } from '@fe/context/action'
+import { getLogger } from '@fe/utils'
 import 'xterm/css/xterm.css'
 
 const logger = getLogger('component-x-term')
@@ -88,7 +90,7 @@ export default defineComponent({
         socket.on('output', (arrayBuffer: any) => xterm!.write(arrayBuffer))
         socket.on('disconnect', () => {
           xterm!.clear()
-          bus.emit('toggle-xterm', false)
+          toggleXterm(false)
         })
       }
 
@@ -105,7 +107,7 @@ export default defineComponent({
         return
       }
 
-      bus.emit('toggle-xterm', true)
+      toggleXterm(true)
       nextTick(() => {
         init()
 
@@ -151,15 +153,15 @@ export default defineComponent({
     }
 
     onBeforeMount(() => {
-      (window as any).runInXterm = runInXterm
-      bus.on('xterm-run', handleRunInXterm)
-      bus.on('xterm-init', init)
+      registerAction('xterm.run-code', runInXterm)
+      registerAction('xterm.run', handleRunInXterm)
+      registerAction('xterm.init', init)
     })
 
     onBeforeUnmount(() => {
-      (window as any).runInXterm = null
-      bus.off('xterm-init', init)
-      bus.off('xterm-run', handleRunInXterm)
+      removeAction('xterm.run-code')
+      removeAction('xterm.run')
+      removeAction('xterm.init')
     })
 
     return {

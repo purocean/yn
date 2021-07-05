@@ -176,7 +176,7 @@ const showSetting = () => {
   }
 
   showWindow()
-  win.webContents.executeJavaScript('globalBus.emit("show-setting");', true)
+  win.webContents.executeJavaScript('window.ctx.action.getAction("status-bar.show-setting")();', true)
 }
 
 const serve = () => {

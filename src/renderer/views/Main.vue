@@ -28,8 +28,8 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import startup from '@fe/useful/startup'
-import { FLAG_DISABLE_XTERM } from '@fe/useful/global-args'
+import startup from '@fe/context/startup'
+import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import Layout from '@fe/components/Layout.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
 import StatusBar from '@fe/components/StatusBar.vue'

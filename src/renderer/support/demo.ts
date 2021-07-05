@@ -1,18 +1,11 @@
-import { FLAG_DEMO } from './useful/global-args'
-import { useToast } from './useful/toast'
-import file from './useful/file'
+import { FLAG_DEMO } from './global-args'
+import { useToast } from './toast'
 
 if (FLAG_DEMO) {
   localStorage.clear()
 
   const xFetch = window.fetch
   const cache: {[key: string]: string} = {}
-
-  file.upload = (repo, path, fileData: File) => Promise.resolve({
-    repo,
-    path,
-    relativePath: URL.createObjectURL(fileData)
-  })
 
   window.addEventListener('click', e => {
     const target = e.target as HTMLElement
@@ -48,6 +41,10 @@ if (FLAG_DEMO) {
 
       const url = new URL(location.origin + uri)
       const method = (init && init.method) || 'GET'
+
+      if (uri.startsWith('/api/mark')) {
+        return Promise.resolve({ status: 'ok', message: '操作成功', data: {} })
+      }
 
       if (uri.startsWith('/api/repositories')) {
         return Promise.resolve({ status: 'ok', message: '获取成功', data: { test: '/test' } })

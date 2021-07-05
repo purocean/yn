@@ -1,9 +1,9 @@
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/useful/plugin'
-import file from '@fe/useful/file'
-import { useBus } from '@fe/useful/bus'
-import { openInNewWindow } from '@fe/useful/utils'
 import { defineComponent, h, ref, watch } from 'vue'
+import { Plugin } from '@fe/context/plugin'
+import * as api from '@fe/support/api'
+import { useBus } from '@fe/support/bus'
+import { openInNewWindow } from '@fe/utils'
 
 const Drawio = defineComponent({
   name: 'drawio',
@@ -102,7 +102,7 @@ async function buildSrcdoc ({ repo, path, content, url }: F) {
   if (url) {
     content = await (await fetch(url)).text()
   } else if (!content && repo && path) {
-    content = (await file.read({ repo, path })).content
+    content = (await api.readFile({ repo, path })).content
   }
 
   content = content.replace(/<!--.*?-->/gs, '').trim()

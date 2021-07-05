@@ -1,4 +1,4 @@
-import env from '@fe/useful/env'
+import env from './env'
 
 export const encodeMarkdownLink = (path: string) => {
   return path
@@ -43,6 +43,15 @@ export const dataURItoBlobLink = (dataURI: string) => {
 
   const blob = new Blob([ab], { type: mimeString })
   return window.URL.createObjectURL(blob)
+}
+
+export function fileToBase64URL (file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const fr = new FileReader()
+    fr.readAsDataURL(file)
+    fr.onload = () => resolve(fr.result as string)
+    fr.onerror = error => reject(error)
+  })
 }
 
 export const getLogger = (subject: string) => {

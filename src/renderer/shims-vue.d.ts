@@ -4,6 +4,13 @@ declare module '*.vue' {
   export default component
 }
 
+declare interface Window {
+  ctx: any;
+  globalBus: any;
+  registerPlugin: any;
+  documentSaved: boolean;
+}
+
 declare module 'markdown-it-task-lists'
 declare module 'markdown-it-attrs'
 declare module 'markdown-it-multimd-table'

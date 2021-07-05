@@ -27,7 +27,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 + [x] 使用 Vite 构建
 + [x] 优化 Markdown 渲染性能，支持 Vue 组件方式拓展功能
 + [x] 重构 Electron 代码
-+ [ ] 收拢业务逻辑，和组件解耦
++ [x] 重构业务逻辑，和组件解耦
 + [ ] 重构快捷键处理层，支持自定义快捷键
 + [ ] 其他 V2 未完成的功能
 + [ ] 完善自定义插件文档
@@ -76,6 +76,11 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v3.1.0](https://github.com/purocean/yn/releases/tag/v3.1.0) 2021-07-05
+1. 增加转换文档的提示
+2. 调整标题栏文件保存状态展示
+3. 重构业务逻辑，和组件解耦
 
 ### [v3.0.3](https://github.com/purocean/yn/releases/tag/v3.0.3) 2021-06-30
 1. 优化添加仓库交互

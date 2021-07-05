@@ -11,9 +11,9 @@
     "lib": ["esnext", "dom", "dom.iterable"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
       "@fe/*": ["src/renderer/*"],
-      "@main/*": ["src/main/*"]
+      "@main/*": ["src/main/*"],
+      "@/*": ["src/*"]
     },
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]

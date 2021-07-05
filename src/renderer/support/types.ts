@@ -1,3 +1,15 @@
+export interface Doc {
+  type: 'file' | 'dir';
+  name: string;
+  repo: string;
+  path: string;
+  content?: string;
+  title?: string;
+  passwordHash?: string;
+  contentHash?: string;
+  status?: 'loaded' | 'save-failed' | 'saved';
+}
+
 export namespace Components {
   export namespace Modal {
     export type ConfirmModalParams = { title?: string; content?: string }
@@ -43,7 +55,7 @@ export namespace Components {
   export namespace FileTabs {
     export interface Item extends Tabs.Item {
       payload: {
-        file: any; // TODO 文件类型
+        file: Doc | null;
       };
     }
   }
