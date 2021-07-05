@@ -9,6 +9,7 @@ import copyText from '@fe/plugins/copy-text'
 import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import switchTodo from '@fe/plugins/switch-todo'
 import tableCellEdit from '@fe/plugins/table-cell-edit'
+import imageViewer from '@fe/plugins/image-viewer'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownSourceLine from '@fe/plugins/markdown-source-line'
@@ -38,6 +39,7 @@ export default [
   copyText,
   tableCellEdit,
   switchTodo,
+  imageViewer,
   markdownHtml,
   markdownRenderVnode,
   markdownSourceLine,

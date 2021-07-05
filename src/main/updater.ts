@@ -134,7 +134,9 @@ export function autoCheckForUpdates () {
 app.whenReady().then(() => {
   init(() => {
     // 立即升级，退出程序
-    app.exit(0)
+    setTimeout(() => {
+      app.exit(0)
+    }, process.platform === 'darwin' ? 3500 : 0)
   })
 
   setTimeout(() => {

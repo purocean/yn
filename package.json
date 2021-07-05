@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Yank Note 一款面向程序员的 Markdown 笔记应用",
   "main": "dist/main/app.js",
   "license": "GPL-3.0",
@@ -92,6 +92,7 @@
     "turndown": "^7.0.0",
     "typescript": "^4.3.2",
     "utility-types": "^3.10.0",
+    "viewerjs": "^1.10.0",
     "vite": "^2.3.7",
     "vue": "^3.1.1",
     "vue-router": "^4.0.0-0",
