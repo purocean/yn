@@ -77,6 +77,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.1.1](https://github.com/purocean/yn/releases/tag/v3.1.1) 2021-07-05
+1. 增加图片预览功能
+
 ### [v3.1.0](https://github.com/purocean/yn/releases/tag/v3.1.0) 2021-07-05
 1. 增加转换文档的提示
 2. 调整标题栏文件保存状态展示
