@@ -1,12 +1,10 @@
-import { Plugin } from '@fe/useful/plugin'
-import store from '@fe/store'
-import { useBus } from '@fe/useful/bus'
+import { Plugin } from '@fe/context/plugin'
+import store from '@fe/support/store'
+import { getAction } from '@fe/context/action'
 
 export default {
   name: 'status-bar-refresh',
   register: ctx => {
-    const bus = useBus()
-
     const updateMenu = (autoPreview: boolean) => {
       ctx.statusBar.updateMenu({
         id: 'status-bar-refresh-status',
@@ -21,7 +19,7 @@ export default {
         tips: '强制渲染',
         icon: 'sync-alt-solid',
         hidden: autoPreview,
-        onClick: () => bus.emit('view-rerender')
+        onClick: () => getAction('view.refresh')()
       })
     }
 

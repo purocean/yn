@@ -1,7 +1,8 @@
 import { computed, defineComponent, h, ref, VNode } from 'vue'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/useful/plugin'
+import { Plugin } from '@fe/context/plugin'
+import { getAction } from '@fe/context/action'
 
 const cachePrefix = 'run_code_result_'
 
@@ -48,7 +49,7 @@ const RunCode = defineComponent({
     }
 
     const runInXterm = (e: MouseEvent) => {
-      (window as any).runInXterm(props.language, props.code, e.ctrlKey)
+      getAction('xterm.run-code')(props.language, props.code, e.ctrlKey)
     }
 
     return () => {

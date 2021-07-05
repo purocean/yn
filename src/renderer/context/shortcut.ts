@@ -1,5 +1,5 @@
-import { getLogger } from './utils'
-import env from './env'
+import { getLogger } from '@fe/utils'
+import env from '@fe/utils/env'
 
 const logger = getLogger('shortcut')
 

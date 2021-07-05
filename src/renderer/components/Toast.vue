@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { Components } from '../types'
+import { Components } from '@fe/support/types'
 
 interface ToastData {
   type: Components.Toast.ToastType;

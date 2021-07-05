@@ -1,15 +1,14 @@
 import { App, ComponentPublicInstance, createApp } from 'vue'
-import { Components } from '@fe/types'
-import Modal from '@fe/components/ModalUi.vue'
+import { Components } from '@fe/support/types'
+import Modal from '@fe/components/ContextMenu.vue'
 
 interface Instance extends ComponentPublicInstance {
-  confirm: (params: Components.Modal.ConfirmModalParams) => Promise<boolean>;
-  input: (params: Components.Modal.InputModalParams) => Promise<string>;
+  show: (menuItems: Components.ContextMenu.Item[]) => void;
 }
 
 let instance: Instance
 
-export function useModal (): Instance {
+export function useContextMenu (): Instance {
   return instance
 }
 

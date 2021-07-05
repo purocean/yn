@@ -31,10 +31,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted, nextTick, ref, toRefs } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '../useful/bus'
-import { $args, FLAG_DISABLE_XTERM } from '../useful/global-args'
+import { useBus } from '@fe/support/bus'
+import { $args, FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import { emitResize } from '@fe/context/layout'
 
 let resizeOrigin: any = null
 
@@ -50,34 +51,6 @@ export default defineComponent({
     const editor = ref(null)
     const terminal = ref(null)
     const refs: any = { aside, editor, terminal }
-
-    function toggleSide () {
-      store.commit('setShowSide', !showSide.value)
-      nextTick(() => bus.emit('resize'))
-    }
-
-    function toggleView () {
-      store.commit('setShowView', !showView.value)
-      nextTick(() => bus.emit('resize'))
-    }
-
-    function toggleXterm (val?: boolean) {
-      const show = typeof val === 'boolean' ? val : !showXterm.value
-
-      store.commit('setShowXterm', show)
-
-      nextTick(() => {
-        nextTick(() => bus.emit('resize'))
-
-        if (showXterm.value) {
-          bus.emit('xterm-init')
-        }
-      })
-    }
-
-    function emitResize () {
-      bus.emit('resize')
-    }
 
     function resizeFrame (e: MouseEvent) {
       if (e.buttons !== 1) {
@@ -122,19 +95,11 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      bus.on('toggle-view', toggleView)
-      bus.on('toggle-side', toggleSide)
-      bus.on('toggle-xterm', toggleXterm)
-
       window.addEventListener('resize', emitResize)
       window.document.addEventListener('mousemove', resizeFrame)
     })
 
     onBeforeUnmount(() => {
-      bus.off('toggle-side', toggleSide)
-      bus.off('toggle-view', toggleView)
-      bus.off('toggle-xterm', toggleXterm)
-
       window.removeEventListener('resize', emitResize)
       window.document.removeEventListener('mousemove', resizeFrame)
     })

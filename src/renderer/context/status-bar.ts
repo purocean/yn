@@ -1,6 +1,6 @@
-import { useBus } from '@fe/useful/bus'
+import { getAction } from './action'
 
-const bus = useBus()
+export type ActionName = 'status-bar.show-setting' | 'status-bar.refresh-menu'
 
 export type MenuItem = {
   id: string;
@@ -26,9 +26,13 @@ const menus: { [key: string]: Menu } = {}
 export const getMenus = (position: string) =>
   Object.values(menus).filter(x => x.position === position)
 
+export function refreshMenu () {
+  getAction('status-bar.refresh-menu')()
+}
+
 export function updateMenu (menu: Menu) {
   menus[menu.id] = menu
-  bus.emit('status-bar-menu-update', menu)
+  refreshMenu()
 }
 
 export function tapMenu (id: string, fn: (menu: Menu) => Menu) {
@@ -37,12 +41,5 @@ export function tapMenu (id: string, fn: (menu: Menu) => Menu) {
 
 export function removeMenu (id: string) {
   delete menus[id]
-  bus.emit('status-bar-menu-update')
-}
-
-export const ctx = {
-  getMenus,
-  tapMenu,
-  updateMenu,
-  removeMenu,
+  refreshMenu()
 }

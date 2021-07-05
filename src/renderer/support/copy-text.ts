@@ -1,4 +1,4 @@
-import { useToast } from '@fe/useful/toast'
+import { useToast } from '@fe/support/toast'
 
 export function copyText (text?: string) {
   if (text === undefined) {

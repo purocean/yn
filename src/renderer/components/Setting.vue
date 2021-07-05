@@ -13,9 +13,9 @@
 import { useStore } from 'vuex'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
-import file from '@fe/useful/file'
-import { FLAG_DISABLE_XTERM } from '@fe/useful/global-args'
-import { useToast } from '@fe/useful/toast'
+import * as api from '@fe/support/api'
+import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import { useToast } from '@fe/support/toast'
 
 JSONEditor.defaults.language = 'zh'
 JSONEditor.defaults.languages.zh = { ...JSONEditor.defaults.languages.en }
@@ -91,7 +91,7 @@ export default defineComponent({
         schema,
       })
 
-      const data = await file.fetchSettings()
+      const data = await api.fetchSettings()
       data.repos = Object.keys(data.repositories).map(name => ({
         name,
         path: data.repositories[name]
@@ -131,7 +131,7 @@ export default defineComponent({
 
         const data = { repositories, shell: value.shell }
 
-        await file.writeSettings(data)
+        await api.writeSettings(data)
         store.dispatch('fetchRepositories')
       }
       emit('close')
@@ -142,7 +142,7 @@ export default defineComponent({
       if (target.name && target.name.endsWith('[path]')) {
         const jsonPath = target.name.replace(/\]/g, '').replace(/\[/g, '.')
         const field = editor.getEditor(jsonPath)
-        const { canceled, filePaths } = await file.choosePath({
+        const { canceled, filePaths } = await api.choosePath({
           properties: ['openDirectory', 'createDirectory'],
         })
 

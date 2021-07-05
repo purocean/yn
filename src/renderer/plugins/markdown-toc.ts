@@ -2,8 +2,8 @@
 
 import Markdown from 'markdown-it'
 import StateInline from 'markdown-it/lib/rules_inline/state_inline'
-import { getKeyLabel } from '@fe/useful/shortcut'
-import { Plugin } from '@fe/useful/plugin'
+import { getKeyLabel } from '@fe/context/shortcut'
+import { Plugin } from '@fe/context/plugin'
 
 import { injectLineNumbers } from './markdown-source-line'
 

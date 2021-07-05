@@ -7,10 +7,11 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, onMounted, onUnmounted, ref, toRef } from 'vue'
-import { encodeMarkdownLink } from '@fe/useful/utils'
-import { getCurrentAction } from '@fe/useful/shortcut'
-import { useBus } from '@fe/useful/bus'
-import { basename, dirname, isBelongTo, join, relative } from '@fe/useful/path'
+import { encodeMarkdownLink } from '@fe/utils'
+import { getCurrentAction } from '@fe/context/shortcut'
+import { dirname, isBelongTo, join, relative } from '@fe/utils/path'
+import { insertValue } from '@fe/context/editor'
+import { switchDoc } from '@fe/context/document'
 import XMask from './Mask.vue'
 import QuickOpen from './QuickOpen.vue'
 
@@ -19,7 +20,6 @@ export default defineComponent({
   components: { QuickOpen, XMask },
   setup () {
     const store = useStore()
-    const bus = useBus()
 
     const currentFile = toRef(store.state, 'currentFile')
     const callback = ref<Function | null>(null)
@@ -36,7 +36,7 @@ export default defineComponent({
                 ? relative(cwd, f.path)
                 : join('/', f.path)
               const fileName = f.name.replace(/\.[^.]*$/, '')
-              bus.emit('editor-insert-value', `[${fileName}](${encodeMarkdownLink(filePath)})`)
+              insertValue(`[${fileName}](${encodeMarkdownLink(filePath)})`)
             }
             callback.value = null
           }
@@ -46,7 +46,7 @@ export default defineComponent({
           break
         case 'show-quick-open':
           callback.value = (f: any) => {
-            store.commit('setCurrentFile', f)
+            switchDoc(f)
             callback.value = null
           }
           withMarked.value = true

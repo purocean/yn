@@ -25,5 +25,5 @@ export function useBus () {
 }
 
 export default function install () {
-  (window as any).globalBus = emitter
+  window.globalBus = emitter
 }

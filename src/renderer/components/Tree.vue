@@ -14,30 +14,21 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, onBeforeUnmount, toRefs, watch } from 'vue'
+import { computed, defineComponent, onBeforeMount, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '../useful/bus'
-import { useContextMenu } from '../useful/context-menu'
+import { useContextMenu } from '@fe/support/context-menu'
+import { getAction } from '@fe/context/action'
+import { refreshRepo, refreshTree } from '@fe/context/tree'
 import TreeNode from './TreeNode.vue'
 
 export default defineComponent({
   name: 'tree',
   components: { TreeNode },
   setup () {
-    const bus = useBus()
     const store = useStore()
     const contextMenu = useContextMenu()
 
     const { currentRepo, tree, repositories } = toRefs(store.state)
-
-    function refreshTree () {
-      store.dispatch('fetchTree', currentRepo.value)
-    }
-
-    function refreshRepo () {
-      refreshTree()
-      store.dispatch('fetchRepositories')
-    }
 
     function showContextMenu () {
       contextMenu.show([
@@ -50,28 +41,11 @@ export default defineComponent({
     }
 
     function showSetting () {
-      bus.emit('show-setting')
+      getAction('status-bar.show-setting')()
     }
 
     onBeforeMount(() => {
-      bus.on('file-created', refreshTree)
-      bus.on('file-moved', refreshTree)
-      bus.on('file-deleted', refreshTree)
-      bus.on('file-uploaded', refreshTree)
-      bus.on('file-marked', refreshTree)
-      bus.on('file-unmarked', refreshTree)
-      bus.on('tree-refresh', refreshTree)
       refreshTree()
-    })
-
-    onBeforeUnmount(() => {
-      bus.off('file-created', refreshTree)
-      bus.off('file-moved', refreshTree)
-      bus.off('file-deleted', refreshTree)
-      bus.off('file-uploaded', refreshTree)
-      bus.off('file-marked', refreshTree)
-      bus.off('file-unmarked', refreshTree)
-      bus.off('tree-refresh', refreshTree)
     })
 
     watch(currentRepo, refreshTree)

@@ -43,12 +43,12 @@
 import { debounce } from 'lodash-es'
 import { useStore } from 'vuex'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
-
-import { extname } from '@fe/useful/path'
-import { triggerHook } from '@fe/useful/plugin'
-import { useBus } from '@fe/useful/bus'
-import markdown from '@fe/useful/markdown'
-import { useToast } from '@fe/useful/toast'
+import { extname } from '@fe/utils/path'
+import { markdown } from '@fe/context/markdown'
+import { triggerHook } from '@fe/context/plugin'
+import { useBus } from '@fe/support/bus'
+import { useToast } from '@fe/support/toast'
+import { registerAction, removeAction } from '@fe/context/action'
 import Render from './Render.vue'
 
 import 'github-markdown-css/github-markdown.css'
@@ -218,16 +218,16 @@ export default defineComponent({
     onMounted(() => {
       nextTick(renderDebonce)
       triggerHook('ON_VIEW_MOUNTED', { getViewDom })
+      registerAction('view.refresh', render)
       window.addEventListener('keydown', keydownHandler, true)
       bus.on('resize', resizeHandler)
-      bus.on('view-rerender', render)
       resizeHandler()
     })
 
     onBeforeUnmount(() => {
+      removeAction('view.refresh')
       window.removeEventListener('keydown', keydownHandler)
       bus.off('resize', resizeHandler)
-      bus.off('view-rerender', render)
     })
 
     watch(currentContent, () => autoPreview.value && renderDebonce())

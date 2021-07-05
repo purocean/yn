@@ -1,13 +1,13 @@
-import { useBus } from '@fe/useful/bus'
-import { useModal } from '@fe/useful/modal'
-import { Plugin, Ctx } from '@fe/useful/plugin'
-import { hasCtrlCmd } from '@fe/useful/shortcut'
-import { useToast } from '@fe/useful/toast'
+import { useModal } from '@fe/support/modal'
+import { Plugin, Ctx } from '@fe/context/plugin'
+import { hasCtrlCmd } from '@fe/context/shortcut'
+import { getAction } from '@fe/context/action'
+import { useToast } from '@fe/support/toast'
+import { getLine, replaceLine } from '@fe/context/editor'
 
 const editTableCell = async (start: number, end: number, cellIndex: number, input: HTMLTextAreaElement | null) => {
   const toast = useToast()
   const modal = useModal()
-  const bus = useBus()
 
   if (end - start !== 1) {
     toast.show('warning', '暂只支持编辑单行文本')
@@ -52,8 +52,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
     return result
   }
 
-  let text = ''
-  bus.emit('editor-get-line', { line: start, callback: (val: string) => { text = val.trim() } })
+  const text = getLine(start).trim()
 
   const columns = escapedSplit(text)
   const cellText = columns[cellIndex].trim()
@@ -76,7 +75,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
       const ok = () => {
         if (input.value !== cellText) {
           resolve(input.value)
-          bus.emit('view-rerender')
+          getAction('view.refresh')()
         }
 
         cancel()
@@ -119,7 +118,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
   if (text.startsWith('|')) content = '| ' + content
   if (text.endsWith('|')) content += ' |'
 
-  bus.emit('editor-replace-line', { line: start, value: content })
+  replaceLine(start, content)
 }
 
 export default {

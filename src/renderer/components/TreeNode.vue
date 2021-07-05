@@ -33,17 +33,14 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '@fe/useful/bus'
-import { useToast } from '@fe/useful/toast'
-import { useModal } from '@fe/useful/modal'
-import { useContextMenu } from '@fe/useful/context-menu'
-import File from '@fe/useful/file'
-import { basename, dirname, isBelongTo } from '@fe/useful/path'
-import Extensions from '@fe/useful/extensions'
-import { triggerHook } from '@fe/useful/plugin'
-import { getContextMenuItems } from '@fe/useful/plugin/tree'
-import { FLAG_DISABLE_XTERM } from '@fe/useful/global-args'
-import { Components } from '@fe/types'
+import { useContextMenu } from '@fe/support/context-menu'
+import Extensions from '@fe/support/extensions'
+import { triggerHook } from '@fe/context/plugin'
+import { getContextMenuItems, refreshTree } from '@fe/context/tree'
+import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import { Components } from '@fe/support/types'
+import { getAction } from '@fe/context/action'
+import { createDoc, deleteDoc, duplicateDoc, isEncrypted, markDoc, moveDoc, openInOS, switchDoc, unmarkDoc } from '@fe/context/document'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -52,9 +49,6 @@ export default defineComponent({
   props: ['item'],
   setup (props) {
     const store = useStore()
-    const bus = useBus()
-    const toast = useToast()
-    const modal = useModal()
     const contextMenu = useContextMenu()
 
     const refDir = ref<any>(null)
@@ -67,180 +61,67 @@ export default defineComponent({
 
     const { currentFile, currentRepo } = toRefs(store.state)
 
-    async function createFile (path: string | null = null, content: string | null = null) {
-      if (path === null) {
-        const currentPath = props.item.type === 'dir' ? props.item.path : dirname(props.item.path)
-
-        let filename = await modal.input({
-          title: '创建文件(加密文件以 .c.md 结尾)',
-          hint: '文件路径',
-          content: '当前路径：' + currentPath,
-          value: 'new.md',
-          select: true
-        })
-
-        if (!filename) {
-          return
-        }
-
-        if (!filename.endsWith('.md')) {
-          filename = filename.replace(/\/$/, '') + '.md'
-        }
-
-        path = currentPath.replace(/\/$/, '') + '/' + filename
-      }
-
-      if (!path) {
-        return
-      }
-
-      const filename = basename(path)
-
-      const file = {
-        type: 'file',
-        repo: props.item.repo,
-        path,
-        name: filename,
-      }
-
-      if (content === null) {
-        content = `# ${filename.replace(/\.md$/i, '')}\n`
-      }
-
-      bus.emit('file-new', { file, content })
+    async function createFile () {
+      await createDoc({ repo: props.item.repo }, props.item)
     }
 
     async function duplicateFile () {
-      let newPath = await modal.input({
-        title: '重复文件',
-        hint: '目标路径',
-        content: '当前路径：' + props.item.path,
-        value: props.item.path,
-        // 默认选中文件名
-        select: [props.item.path.lastIndexOf('/') + 1, props.item.name.lastIndexOf('.') > -1 ? props.item.path.lastIndexOf('.') : props.item.path.length, 'forward']
-      })
-
-      if (!newPath) {
-        return
-      }
-
-      newPath = newPath.replace(/\/$/, '')
-
-      const { content } = await File.read({ path: props.item.path, repo: props.item.repo })
-      await createFile(newPath, content)
+      await duplicateDoc(props.item)
     }
 
     async function toggleMark () {
       if (props.item.marked) {
         localMarked.value = false
-        await File.unmark(props.item)
-        bus.emit('file-unmarked', props.item)
+        await unmarkDoc(props.item)
       } else {
         localMarked.value = true
-        await File.mark(props.item)
-        bus.emit('file-marked', props.item)
+        await markDoc(props.item)
       }
     }
 
     async function select (item: any) {
       if (item.type !== 'dir') {
         if (Extensions.supported(item.name)) {
-          store.commit('setCurrentFile', item)
+          switchDoc(item)
         } else {
           if (!(await triggerHook('ON_TREE_NODE_SELECT', item))) {
-            File.openInOS(props.item)
+            openInOS(item)
           }
         }
       }
     }
 
     function revealInExplorer () {
-      File.openInOS(props.item)
+      openInOS(props.item)
     }
 
     function revealInXterminal () {
       const path = currentRepo.value ? currentRepo.value.path + '/' + props.item.path : ''
 
-      bus.emit('xterm-run', `--yank-note-run-command-cd-- ${path}`)
+      getAction('xterm.run')(`--yank-note-run-command-cd-- ${path}`)
     }
 
-    async function renameFile () {
-      if (props.item.path === '/') {
-        toast.show('warning', '不能移动根目录')
-        return
-      }
-
-      let newPath = await modal.input({
-        title: '移动文件',
-        hint: '新的路径',
-        content: '当前路径：' + props.item.path,
-        value: props.item.path,
-        // 默认选中文件名
-        select: [props.item.path.lastIndexOf('/') + 1, props.item.name.lastIndexOf('.') > -1 ? props.item.path.lastIndexOf('.') : props.item.path.length, 'forward']
-      })
-
-      if (!newPath) {
-        return
-      }
-
-      newPath = newPath.replace(/\/$/, '')
-      const oldPath = props.item.path.replace(/\/$/, '')
-
-      if (newPath === oldPath) {
-        return
-      }
-
-      // TODO 文件统一处理
-      // bus.emit('file-move', {file, newPath})
-      const newFile = {
-        name: basename(newPath),
-        path: newPath,
-        repo: props.item.repo,
-        type: props.item.type
-      }
-
-      await File.move(props.item, newPath)
-      // 重命名当前文件或父目录后，切换到新位置
-      if (currentFile.value && (File.isSameFile(props.item, currentFile.value) || (props.item.type === 'dir' && isBelongTo(props.item.path, currentFile.value.path)))) {
-        if (newFile.type === 'file') {
-          store.commit('setCurrentFile', newFile)
-        } else {
-          // TODO 切换到新位置
-          store.commit('setCurrentFile', null)
-        }
-      }
-
-      bus.emit('file-moved', newFile)
+    async function moveFile () {
+      await moveDoc(props.item)
     }
 
     async function deleteFile () {
-      if (props.item.path === '/') {
-        toast.show('warning', '不能删除根目录')
-        return
-      }
-
-      const confirm = await modal.confirm({ title: '删除文件', content: `确定要删除 [${props.item.path}] 吗？` })
-
-      if (confirm) {
-        await File.delete(props.item)
-
-        // 删除当前文件或父目录后，关闭当前文件
-        if (currentFile.value && (File.isSameFile(props.item, currentFile.value) || (props.item.type === 'dir' && isBelongTo(props.item.path, currentFile.value.path)))) {
-          store.commit('setCurrentFile', null)
-        }
-
-        bus.emit('file-deleted', props.item)
-      }
+      await deleteDoc(props.item)
     }
 
     function buildContextMenu (item: any) {
       const menu: Components.ContextMenu.Item[] = [
-        { id: 'delete', label: '删除', onClick: () => deleteFile() },
-        { id: 'rename', label: '重命名 / 移动', onClick: () => renameFile() },
         { type: 'separator' },
         { id: 'openInOS', label: '在系统中打开', onClick: () => revealInExplorer() },
-        { id: 'refreshTree', label: '刷新目录树', onClick: () => bus.emit('tree-refresh') },
+        { id: 'refreshTree', label: '刷新目录树', onClick: refreshTree },
       ]
+
+      if (item.path !== '/') {
+        menu.unshift(...[
+          { id: 'rename', label: '重命名 / 移动', onClick: () => moveFile() },
+          { id: 'delete', label: '删除', onClick: () => deleteFile() },
+        ] as Components.ContextMenu.Item[])
+      }
 
       if (item.type === 'dir') {
         const other = FLAG_DISABLE_XTERM ? [] : [{ id: 'openInTerminal', label: '在终端中打开', onClick: () => revealInXterminal() }]
@@ -258,7 +139,7 @@ export default defineComponent({
           ]
 
           // 非加密文件增加复制重复菜单
-          if (!File.isEncryptedFile(props.item)) {
+          if (!isEncrypted(props.item)) {
             additional.push({ id: 'duplicate', label: '重复文件', onClick: () => duplicateFile() })
           }
 
@@ -326,16 +207,9 @@ export default defineComponent({
       currentRepoName,
       selected,
       marked,
-
       showContextMenu,
-      duplicateFile,
-      toggleMark,
       select,
-      revealInExplorer,
-      revealInXterminal,
       createFile,
-      renameFile,
-      deleteFile
     }
   },
 })

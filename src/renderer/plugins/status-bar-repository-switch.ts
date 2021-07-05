@@ -1,9 +1,10 @@
-import { Plugin } from '@fe/useful/plugin'
-import { Menu as StatusBarMenu } from '@fe/useful/plugin/status-bar'
-import store from '@fe/store'
-import { useBus } from '@fe/useful/bus'
-import { $args } from '@fe/useful/global-args'
-import { basename } from '@fe/useful/path'
+import { Plugin } from '@fe/context/plugin'
+import { Menu as StatusBarMenu } from '@fe/context/status-bar'
+import store from '@fe/support/store'
+import { useBus } from '@fe/support/bus'
+import { $args } from '@fe/support/global-args'
+import { basename } from '@fe/utils/path'
+import { switchDoc } from '@fe/context/document'
 
 export default {
   name: 'status-bar-repository-switch',
@@ -35,7 +36,7 @@ export default {
       }
 
       if (initFilePath) {
-        store.commit('setCurrentFile', { repo: currentRepo.name, name: basename(initFilePath), path: initFilePath })
+        switchDoc({ type: 'file', repo: currentRepo.name, name: basename(initFilePath), path: initFilePath })
       }
     }
 
@@ -66,8 +67,7 @@ export default {
 
     ctx.statusBar.updateMenu(menu)
 
-    bus.on('switch-repo-by-name', chooseRepoByName)
-    bus.on('editor-ready', initRepo)
+    bus.on('editor.ready', initRepo)
     store.dispatch('fetchRepositories')
 
     store.watch(() => store.state.repositories, updateMenu)

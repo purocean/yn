@@ -1,5 +1,5 @@
-import { FLAG_DEMO, URL_GITHUB, URL_MAS } from '@fe/useful/global-args'
-import { Plugin } from '@fe/useful/plugin'
+import { FLAG_DEMO, URL_GITHUB, URL_MAS } from '@fe/support/global-args'
+import { Plugin } from '@fe/context/plugin'
 
 export default {
   name: 'status-bar-github',

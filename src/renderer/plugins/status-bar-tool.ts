@@ -1,4 +1,4 @@
-import { Plugin } from '@fe/useful/plugin'
+import { Plugin } from '@fe/context/plugin'
 
 export default {
   name: 'status-bar-tool',

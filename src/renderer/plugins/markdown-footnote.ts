@@ -6,7 +6,7 @@
 // https://github.com/markdown-it/markdown-it-footnote/blob/master/index.js
 
 import { createVNode, Fragment } from 'vue'
-import { Plugin } from '@fe/useful/plugin'
+import { Plugin } from '@fe/context/plugin'
 
 // Process footnotes
 //

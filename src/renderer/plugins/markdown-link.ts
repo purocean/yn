@@ -1,12 +1,17 @@
 import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
-import { Plugin, Ctx } from '@fe/useful/plugin'
-import store from '@fe/store'
-import env from '@fe/useful/env'
-import { basename, dirname, join } from '@fe/useful/path'
+import { Plugin, Ctx } from '@fe/context/plugin'
+import store from '@fe/support/store'
+import env from '@fe/utils/env'
+import { basename, dirname, join } from '@fe/utils/path'
+import { switchDoc } from '@fe/context/document'
 
 const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
   const { currentFile } = store.state
+  if (!currentFile) {
+    return
+  }
+
   const { repo: fileRepo, path: filePath } = currentFile
 
   // 系统中打开附件
@@ -33,7 +38,7 @@ const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
       }
 
       // 打开文件
-      store.commit('setCurrentFile', {
+      switchDoc({
         path,
         name: basename(path),
         repo: fileRepo,

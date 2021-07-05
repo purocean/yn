@@ -1,10 +1,10 @@
+import { defineComponent, h, onMounted, ref, watch } from 'vue'
 import CryptoJS from 'crypto-js'
 import { debounce } from 'lodash-es'
 import dayjs from 'dayjs'
 import Markdown from 'markdown-it'
-import { useBus } from '@fe/useful/bus'
-import { Plugin } from '@fe/useful/plugin'
-import { defineComponent, h, onMounted, ref, watch } from 'vue'
+import { useBus } from '@fe/support/bus'
+import { Plugin } from '@fe/context/plugin'
 
 const Applet = defineComponent({
   name: 'applet',

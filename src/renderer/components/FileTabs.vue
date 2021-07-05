@@ -4,19 +4,22 @@
 
 <script lang="ts">
 import { useStore } from 'vuex'
-import Tabs from './Tabs.vue'
-import File from '../useful/file'
 import { defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
-import { Components } from '../types'
-import { isAction } from '../useful/shortcut'
+import { isAction } from '@fe/context/shortcut'
+import { Components, Doc } from '@fe/support/types'
+import { useBus } from '@fe/support/bus'
+import { ensureCurrentFileSaved, isEncrypted, switchDoc, toUri } from '@fe/context/document'
+import { isBelongTo } from '@fe/utils/path'
+import Tabs from './Tabs.vue'
 
-const blankUri = File.toUri(null)
+const blankUri = toUri(null)
 
 export default defineComponent({
   name: 'file-tabs',
   components: { Tabs },
   setup () {
     const store = useStore()
+    const bus = useBus()
 
     const { currentFile, tabs } = toRefs(store.state)
     const list = ref<Components.FileTabs.Item[]>([])
@@ -27,14 +30,18 @@ export default defineComponent({
     }
 
     function switchFile (file: any) {
-      store.commit('setCurrentFile', file)
+      switchDoc(file)
     }
 
     function switchTab (item: Components.FileTabs.Item) {
       switchFile(item.payload.file)
     }
 
-    function removeTabs (items: Components.FileTabs.Item[]) {
+    async function removeTabs (items: Components.FileTabs.Item[]) {
+      if (items.find(x => x.key === current.value)) {
+        await ensureCurrentFileSaved()
+      }
+
       const keys = items.map(x => x.key)
       setTabs(tabs.value.filter((x: any) => keys.indexOf(x.key) === -1))
     }
@@ -84,24 +91,50 @@ export default defineComponent({
       }
     }
 
+    function removeFile (doc?: Doc | null) {
+      const tab = tabs.value.find((x: Components.FileTabs.Item) => {
+        return x.key === toUri(doc) || (x.payload.file && doc && isBelongTo(doc.path, x.payload.file.path))
+      })
+
+      if (tab) {
+        removeTabs([tab])
+      }
+    }
+
+    function handleSwitchFailed (payload?: { doc?: Doc | null, message: string }) {
+      if (isEncrypted(payload?.doc) || payload?.message?.indexOf('NOENT')) {
+        removeFile(payload?.doc)
+      }
+    }
+
+    function handleMoved (payload?: { oldDoc: Doc }) {
+      if (payload) {
+        removeFile(payload.oldDoc)
+      }
+    }
+
     onBeforeMount(() => {
+      bus.on('doc.created', switchFile)
+      bus.on('doc.deleted', removeFile)
+      bus.on('doc.switch-failed', handleSwitchFailed)
+      bus.on('doc.moved', handleMoved)
       window.addEventListener('keydown', keydownHandler, true)
     })
 
     onBeforeUnmount(() => {
+      bus.off('doc.created', switchFile)
+      bus.off('doc.deleted', removeFile)
+      bus.off('doc.switch-failed', handleSwitchFailed)
+      bus.off('doc.moved', handleMoved)
       window.removeEventListener('keydown', keydownHandler)
     })
 
-    watch(currentFile, (file: any, prevFile: any) => {
-      if (!file && File.isEncryptedFile(prevFile)) {
-        setTabs(tabs.value.filter((x: any) => !File.isSameFile(x.payload.file, prevFile)))
-      }
-
-      const uri = File.toUri(file)
+    watch(currentFile, (file: any) => {
+      const uri = toUri(file)
       const item = {
         key: uri,
         label: file ? file.name : '空白页',
-        description: file ? file.path : '空白页',
+        description: file ? `[${file.repo}] ${file.path}` : '空白页',
         payload: { file },
       }
 

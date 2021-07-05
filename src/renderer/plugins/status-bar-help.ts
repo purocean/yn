@@ -1,6 +1,6 @@
-import { Plugin } from '@fe/useful/plugin'
-import { Alt, getActionLabel, isAction } from '@fe/useful/shortcut'
-import store from '@fe/store'
+import { showHelp } from '@fe/context/document'
+import { Plugin } from '@fe/context/plugin'
+import { Alt, getActionLabel, isAction } from '@fe/context/shortcut'
 
 export default {
   name: 'status-bar-view',
@@ -8,12 +8,12 @@ export default {
     const actions = {
       'toggle-readme': {
         title: 'README',
-        action: () => store.dispatch('showHelp', 'README.md'),
+        action: () => showHelp('README.md'),
         shortcut: [Alt, 'h'],
       },
       'toggle-features': {
         title: '特色功能说明',
-        action: () => store.dispatch('showHelp', 'FEATURES.md'),
+        action: () => showHelp('FEATURES.md'),
         shortcut: null,
       },
     }
