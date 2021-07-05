@@ -39,4 +39,9 @@
     display: none;
   }
 }
+
+body .viewer-backdrop,
+body .viewer-navbar {
+  background: rgba(167, 167, 167, 0.6);
+}
 </style>

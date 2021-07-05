@@ -3,7 +3,6 @@ import * as api from '@fe/support/api'
 import { Plugin, Ctx } from '@fe/context/plugin'
 import { CtrlCmd, getActionLabel, isAction, LeftClick, Shift } from '@fe/context/shortcut'
 import { encodeMarkdownLink } from '@fe/utils'
-import env from '@fe/utils/env'
 import { useToast } from '@fe/support/toast'
 import store from '@fe/support/store'
 import { replaceValue } from '@fe/context/editor'
@@ -102,7 +101,7 @@ async function handleClick (e: MouseEvent) {
       replaceValue(data.oldLink, data.replacedLink)
     }
   } else {
-    env.openAlwaysOnTopWindow(img.src)
+    return false
   }
 
   e.stopPropagation()
