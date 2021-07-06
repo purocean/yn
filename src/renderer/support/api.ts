@@ -139,3 +139,12 @@ export async function upload (repo: string, belongPath: string, uploadFile: any,
 export async function openInOS ({ repo, path }: Doc) {
   return fetchHttp(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
 }
+
+export async function runCode (language: string, code: string) {
+  const { data } = await fetchHttp('/api/run', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ language, code })
+  })
+  return data
+}

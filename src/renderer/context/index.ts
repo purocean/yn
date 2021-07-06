@@ -1,6 +1,7 @@
 import { useBus } from '@fe/support/bus'
 import { useToast } from '@fe/support/toast'
 import store from '@fe/support/store'
+import * as api from '@fe/support/api'
 import * as action from './action'
 import * as shortcut from './shortcut'
 import * as view from './view'
@@ -15,6 +16,7 @@ export type CtxHookType = view.HookType | tree.HookType
 const bus = useBus()
 
 const ctx = {
+  api,
   bus,
   store,
   action,
