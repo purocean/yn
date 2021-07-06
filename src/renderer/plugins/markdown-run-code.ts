@@ -3,6 +3,7 @@ import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
 import { getAction } from '@fe/context/action'
+import * as api from '@fe/support/api'
 
 const cachePrefix = 'run_code_result_'
 
@@ -25,27 +26,12 @@ const RunCode = defineComponent({
 
       result.value = '运行中……'
 
-      fetch('/api/run', {
-        method: 'post',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ language, code })
-      }).then(res => {
-        res.json().then(({ data, status, message }) => {
-          if (status === 'ok') {
-            result.value = data
-            localStorage.setItem(`${cachePrefix}${hash.value}`, data)
-          } else {
-            result.value = message
-          }
-        }).catch(e => {
-          result.value = e.message
-        })
-      }).catch(e => {
-        result.value = e.message
-      })
+      try {
+        console.log(language)
+        result.value = await api.runCode(language!, code)
+      } catch (error) {
+        result.value = error.message
+      }
     }
 
     const runInXterm = (e: MouseEvent) => {
@@ -55,14 +41,8 @@ const RunCode = defineComponent({
     return () => {
       const runResult = result.value || localStorage[`${cachePrefix}${hash.value}`] || ''
 
-      return h(
-        'div',
-        {
-          class: 'run-code',
-          style: 'position: relative;border-top: dashed 1px #888; padding: .5em 0; margin-top: 1.5em;'
-        },
-        [
-          h('div', { class: 'run-code-result', style: 'padding: .5em 0', innerHTML: runResult }),
+      return [
+        h('div', { class: 'run-code-action', style: 'position: sticky; left: 0; border-top: dashed 1px #888; margin: 1em 0' }, [
           h('button', {
             title: '运行代码',
             style: 'position: absolute; top: -.7em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none',
@@ -73,8 +53,9 @@ const RunCode = defineComponent({
             style: 'position: absolute; top: -.25em; right: -0.4em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none;transform: rotate(90deg);',
             onClick: runInXterm
           }),
-        ]
-      )
+        ]),
+        h('div', { class: 'run-code-result', style: 'padding: .5em 0', innerHTML: runResult }),
+      ]
     }
   }
 })
