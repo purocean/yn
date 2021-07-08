@@ -202,7 +202,7 @@ function math_plugin (md: any, options: any) {
 }
 
 export default {
-  name: 'markdown-toc',
+  name: 'markdown-katex',
   register: ctx => {
     ctx.markdown.registerPlugin(math_plugin, { throwOnError: true })
   }

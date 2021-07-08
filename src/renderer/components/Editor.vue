@@ -1,29 +1,18 @@
 <template>
   <div class="editor">
-    <MonacoEditor
-      ref="refEditor"
-      class="editor"
-      @change="setCurrentValue"
-      @ready="editorReady"
-      @scroll-view="syncScrollView"
-      @paste-img="pasteImg"
-      @upload-file="uploadFile"
-      @change-document="val => store.commit('setDocumentInfo', val)"
-      @save="saveFile"></MonacoEditor>
+    <MonacoEditor ref="refEditor" class="editor" />
   </div>
 </template>
 
 <script lang="ts">
 import { debounce } from 'lodash-es'
-import dayjs from 'dayjs'
 import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { encodeMarkdownLink, fileToBase64URL } from '@fe/utils'
 import { useBus } from '@fe/support/bus'
-import * as api from '@fe/support/api'
 import Storage from '@fe/utils/storage'
-import { registerAction, removeAction } from '@fe/context/action'
 import { isEncrypted, saveDoc, toUri } from '@fe/context/document'
+import { setScrollToTop, whenEditorReady } from '@fe/context/editor'
+import { getAction } from '@fe/context/action'
 import { Doc } from '@fe/support/types'
 import MonacoEditor from './MonacoEditor.vue'
 
@@ -32,7 +21,7 @@ const FILE_POSITION_KEY = 'filePosition'
 export default defineComponent({
   name: 'editor',
   components: { MonacoEditor },
-  setup (_, { emit }) {
+  setup () {
     let editorIsReady = false
     const bus = useBus()
     const store = useStore()
@@ -42,8 +31,6 @@ export default defineComponent({
     const { currentFile, currentContent } = toRefs(store.state)
 
     const getEditor = () => refEditor.value
-    const revealLine = (line: number) => getEditor().revealLine(line)
-    const revealLineInCenter = (line: number) => getEditor().revealLineInCenter(line)
 
     function saveFileOpenPosition (top: number) {
       if (currentFile.value) {
@@ -63,8 +50,8 @@ export default defineComponent({
       }
     }
 
-    function syncScrollView ({ line, top }: { line: number; top: number }) {
-      emit('scroll-line', line)
+    function syncScrollView (line: number, top: number) {
+      getAction('view.reveal-line')(line)
       saveFileOpenPositionDebounce(top)
     }
 
@@ -113,24 +100,6 @@ export default defineComponent({
       }, 2000)
     }
 
-    async function pasteImg (file: any, asBase64: boolean) {
-      if (asBase64) {
-        const uri = await fileToBase64URL(file)
-        getEditor().insert(`![图片](${uri})\n`)
-      } else {
-        const { relativePath } = await api.upload(currentFile.value.repo, currentFile.value.path, file)
-        bus.emit('file-uploaded', relativePath)
-        getEditor().insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
-      }
-    }
-
-    async function uploadFile (file: any) {
-      const filename = `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`
-      const { relativePath } = await api.upload(currentFile.value.repo, currentFile.value.path, file, filename)
-      bus.emit('file-uploaded', relativePath)
-      getEditor().insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
-    }
-
     async function changeFile (current?: Doc | null) {
       clearTimer()
 
@@ -144,73 +113,47 @@ export default defineComponent({
         // 切换文件时候保留定位
         nextTick(() => {
           const top = Storage.get(FILE_POSITION_KEY, {})[`${current.repo}|${current.path}`] || 1
-          getEditor().setScrollToTop(top)
+          setScrollToTop(top)
         })
       }
     }
 
-    function editorReady () {
-      bus.emit('editor.ready')
-      editorIsReady = true
-      if (currentFile.value) {
-        changeFile(currentFile.value)
-      }
+    function resize () {
+      nextTick(() => getEditor().resize())
     }
 
     watch(currentFile, changeFile)
     watch(currentContent, restartTimer)
 
-    const resize = () => nextTick(() => getEditor().resize())
-    const insert = (text?: string) => getEditor().insert(text)
-
-    const replaceValue = (search: string, replace: string) => {
-      getEditor().replaceValue(search, replace)
-    }
-
-    const replaceLine = (line: number, value: string) => {
-      getEditor().replaceLine(line, value)
-    }
-
-    const getLine = (line: number) => {
-      return getEditor().getLineContent(line)
-    }
-
-    const toggleWrap = () => getEditor().toggleWrap()
-
     onMounted(() => {
-      bus.on('resize', resize)
-      registerAction('editor.get-editor', getEditor)
-      registerAction('editor.insert-value', insert)
-      registerAction('editor.replace-value', replaceValue)
-      registerAction('editor.get-line', getLine)
-      registerAction('editor.replace-line', replaceLine)
-      registerAction('editor.toggle-wrap', toggleWrap)
+      bus.on('global.resize', resize)
+      bus.on('editor.change', setCurrentValue as any)
       restartTimer()
     })
 
     onBeforeMount(() => {
-      bus.off('resize', resize)
-      removeAction('editor.get-editor')
-      removeAction('editor.insert-value')
-      removeAction('editor.replace-value')
-      removeAction('editor.get-line')
-      removeAction('editor.replace-line')
-      removeAction('editor.toggle-wrap')
+      bus.off('global.resize', resize)
+      bus.off('editor.change', setCurrentValue as any)
     })
 
-    return {
-      bus,
-      store,
-      refEditor,
-      revealLine,
-      revealLineInCenter,
-      setCurrentValue,
-      syncScrollView,
-      pasteImg,
-      uploadFile,
-      editorReady,
-      saveFile,
-    }
+    whenEditorReady().then(({ editor, monaco }) => {
+      editorIsReady = true
+      if (currentFile.value) {
+        changeFile(currentFile.value)
+      }
+
+      editor.onDidScrollChange(() => {
+        const line = Math.max(1, editor.getVisibleRanges()[0].startLineNumber - 2)
+        const top = editor.getScrollTop()
+        syncScrollView(line, top)
+      })
+
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
+        saveFile()
+      })
+    })
+
+    return { refEditor }
   }
 })
 </script>

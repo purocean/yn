@@ -6,7 +6,7 @@ import 'viewerjs/dist/viewer.css'
 let viewer: any
 
 export default {
-  name: 'mermaid',
+  name: 'image-viewer',
   register: ctx => {
     ctx.registerHook('ON_VIEW_RENDERED', debounce(({ getViewDom }) => {
       if (!viewer) {

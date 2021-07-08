@@ -3,11 +3,11 @@
     <StatusBarMenu class="left" position="left" />
     <div class="right">
       <div class="document-info">
-        <span>行：{{documentInfo.line}}</span>
-        <span>列：{{documentInfo.column}}</span>
-        <span>总行数：{{documentInfo.lineCount}}</span>
-        <span>字符数：{{documentInfo.textLength}}</span>
-        <span v-if="documentInfo.selectedLength > 0">已选中：{{documentInfo.selectedLength}}</span>
+        <span>行：{{selectionInfo.line}}</span>
+        <span>列：{{selectionInfo.column}}</span>
+        <span>总行数：{{selectionInfo.lineCount}}</span>
+        <span>字符数：{{selectionInfo.textLength}}</span>
+        <span v-if="selectionInfo.selectedLength > 0">已选中：{{selectionInfo.selectedLength}}</span>
       </div>
       <StatusBarMenu class="right" position="right" />
     </div>
@@ -24,9 +24,9 @@ export default defineComponent({
   components: { StatusBarMenu },
   setup () {
     const store = useStore()
-    const { documentInfo, autoPreview } = toRefs(store.state)
+    const { selectionInfo, autoPreview } = toRefs(store.state)
 
-    return { documentInfo, autoPreview }
+    return { selectionInfo, autoPreview }
   },
 })
 </script>

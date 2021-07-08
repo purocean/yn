@@ -215,7 +215,7 @@ const renderRule: Renderer.RenderRule = (tokens, idx, options, { source }, slf) 
 }
 
 export default {
-  name: 'mind-map',
+  name: 'markdown-mind-map',
   register: ctx => {
     ctx.markdown.registerPlugin(md => {
       md.renderer.rules.bullet_list_open = renderRule

@@ -73,7 +73,7 @@ export default defineComponent({
         const height = (resizeOrigin.targetHeight + offsetY)
         ref.style.height = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, height)) + 'px'
       }
-      bus.emit('resize')
+      bus.emit('global.resize')
     }
 
     function initResize (type: any, ref: any, min: any, max: any, e: any) {

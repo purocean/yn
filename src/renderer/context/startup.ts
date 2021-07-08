@@ -6,20 +6,12 @@ import { Doc } from '@fe/support/types'
 import { hasCtrlCmd } from './shortcut'
 import { showHelp, switchDoc, unmarkDoc } from './document'
 import { refreshTree } from './tree'
+import { getSelectionInfo, whenEditorReady } from './editor'
 
 const bus = useBus()
 
 export default function startup () {
   triggerHook('ON_STARTUP')
-
-  bus.on('editor.ready', () => {
-    const { currentFile } = store.state
-
-    if (!currentFile) {
-      // 当前没打开文件，直接打开 README
-      showHelp('README.md')
-    }
-  })
 
   // 在 Electron 环境中开启缩放页面功能
   if (env.isElectron) {
@@ -68,5 +60,18 @@ bus.on('doc.switch-failed', refreshTree)
 bus.on('doc.switch-failed', (payload?: { doc?: Doc | null, message: string }) => {
   if (payload && payload.doc && payload?.message?.indexOf('NOENT')) {
     unmarkDoc(payload.doc)
+  }
+})
+
+whenEditorReady().then(({ editor }) => {
+  editor.onDidChangeCursorSelection(() => {
+    store.commit('setSelectionInfo', getSelectionInfo())
+  })
+
+  const { currentFile } = store.state
+
+  if (!currentFile) {
+    // 当前没打开文件，直接打开 README
+    showHelp('README.md')
   }
 })

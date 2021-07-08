@@ -70,7 +70,7 @@ export default defineComponent({
 
         xterm.open(refXterm.value!)
         fitAddon.fit()
-        bus.on('resize', fitXterm)
+        bus.on('global.resize', fitXterm)
 
         if (FLAG_DEMO) {
           const message = 'DEMO 模式终端不可用'

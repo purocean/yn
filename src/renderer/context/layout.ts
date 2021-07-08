@@ -10,7 +10,7 @@ export type ActionName = 'layout.toggle-view'
 const bus = useBus()
 
 export function emitResize () {
-  nextTick(() => bus.emit('resize'))
+  nextTick(() => bus.emit('global.resize'))
 }
 
 export function toggleSide () {

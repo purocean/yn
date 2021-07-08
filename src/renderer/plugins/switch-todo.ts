@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { getLine, replaceLine } from '@fe/context/editor'
+import { getLineContent, replaceLine } from '@fe/context/editor'
 import { Plugin, Ctx } from '@fe/context/plugin'
 
 export default {
@@ -15,7 +15,7 @@ export default {
       }
 
       function switchTodo (line: number, checked: boolean) {
-        const lineText = getLine(line)
+        const lineText = getLineContent(line)
 
         const value = checked
           ? lineText.replace('[ ]', `[x] ~~${dayjs().format('YYYY-MM-DD HH:mm')}~~`)

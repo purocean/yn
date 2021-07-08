@@ -9,6 +9,7 @@ declare interface Window {
   globalBus: any;
   registerPlugin: any;
   documentSaved: boolean;
+  monaco: any;
 }
 
 declare module 'markdown-it-task-lists'
