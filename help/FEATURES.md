@@ -151,7 +151,7 @@ $\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{
 $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} = \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} = 4 \pi \rho$ | _wha?_
 
 ## 运行代码
-支持运行 `PHP` `nodejs` `Python` `bash` `bat` 代码。
+支持运行 `JavaScript` `PHP` `nodejs` `Python` `bash` `bat` 代码。
 此功能执行外部命令实现，所以需要安装相应环境。
 
 代码块第一行需要包含以 `--run--` 字符串，示例如下
