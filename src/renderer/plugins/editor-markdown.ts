@@ -86,7 +86,6 @@ export default {
           KM.Shift | KM.Alt | KC.KEY_T
         ],
         run: () => {
-          insert(dayjs().format('HH:mm:ss'))
           getAction('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))
         }
       })
