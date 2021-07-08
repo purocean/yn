@@ -118,14 +118,14 @@ export default {
     ctx.markdown.registerPlugin(RunPlugin)
     ctx.registerHook('ON_STARTUP', clearCache)
 
-    ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
-      !FLAG_DISABLE_XTERM && editor.addAction({
+    !FLAG_DISABLE_XTERM && ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
+      editor.addAction({
         id: 'plugin.editor.run-in-xterm',
         label: '终端中运行',
         contextMenuGroupId: 'other',
         precondition: 'editorHasSelection',
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_T
+          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R
         ],
         run: () => {
           getAction('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))
