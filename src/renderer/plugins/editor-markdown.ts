@@ -2,7 +2,6 @@
 import dayjs from 'dayjs'
 import { getMonaco, insert, whenEditorReady } from '@fe/context/editor'
 import type { Plugin } from '@fe/context/plugin'
-import { getAction } from '@fe/context/action'
 
 function createDependencyProposals (range: any) {
   const monaco = getMonaco()
@@ -74,19 +73,6 @@ export default {
         ],
         run: () => {
           insert(dayjs().format('HH:mm:ss'))
-        }
-      })
-
-      editor.addAction({
-        id: 'plugin.editor.run-in-xterm',
-        label: '终端中运行',
-        contextMenuGroupId: 'other',
-        precondition: 'editorHasSelection',
-        keybindings: [
-          KM.Shift | KM.Alt | KC.KEY_T
-        ],
-        run: () => {
-          getAction('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))
         }
       })
 

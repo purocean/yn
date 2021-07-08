@@ -4,6 +4,7 @@ import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
 import { getAction } from '@fe/context/action'
 import * as api from '@fe/support/api'
+import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 
 const cachePrefix = 'run_code_result_'
 
@@ -116,5 +117,20 @@ export default {
   register: ctx => {
     ctx.markdown.registerPlugin(RunPlugin)
     ctx.registerHook('ON_STARTUP', clearCache)
+
+    ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
+      !FLAG_DISABLE_XTERM && editor.addAction({
+        id: 'plugin.editor.run-in-xterm',
+        label: '终端中运行',
+        contextMenuGroupId: 'other',
+        precondition: 'editorHasSelection',
+        keybindings: [
+          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_T
+        ],
+        run: () => {
+          getAction('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))
+        }
+      })
+    })
   }
 } as Plugin
