@@ -5,6 +5,8 @@ import { getLogger } from '@fe/utils'
 
 const logger = getLogger('markdown-code')
 
+Highlight.registerAliases('node', { languageName: 'javascript' })
+
 /* eslint-disable */
 
 // https://github.com/wcoder/highlightjs-line-numbers.js

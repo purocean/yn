@@ -11,11 +11,14 @@ const isWin = os.platform() === 'win32'
 const runCode = (language: string, code: string) => {
   try {
     const languageMap = {
+      sh: { cmd: 'sh', args: ['-c'] },
+      shell: { cmd: 'sh', args: ['-c'] },
       bash: { cmd: 'bash', args: ['-c'] },
       php: { cmd: 'php', args: ['-r'] },
       python: { cmd: 'python3', args: ['-c'] },
       py: { cmd: 'python3', args: ['-c'] },
       js: { cmd: 'node', args: ['-e'] },
+      node: { cmd: 'node', args: ['-e'] },
     } as {[key: string]: {cmd: string; args: string[]}}
 
     if (language === 'bat' && isWin) {

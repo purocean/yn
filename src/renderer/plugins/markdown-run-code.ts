@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, ref, VNode } from 'vue'
+import { computed, defineComponent, h, onBeforeUnmount, ref, VNode } from 'vue'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
@@ -18,17 +18,32 @@ const RunCode = defineComponent({
   },
   setup (props) {
     const result = ref('')
-
     const hash = computed(() => CryptoJS.MD5(props.code).toString())
+    const id = Date.now()
+    let hasResult = false
+
+    let appendLog: any = (res: string) => {
+      if (hasResult) {
+        result.value += '\n' + res
+      } else {
+        result.value = res
+        hasResult = true
+      }
+
+      localStorage[`${cachePrefix}${hash.value}`] = result.value
+    }
 
     const run = async () => {
       const { code, language } = props
 
+      hasResult = false
       result.value = '运行中……'
 
       try {
-        console.log(language)
-        result.value = await api.runCode(language!, code)
+        await api.runCode(language!, code, {
+          name: `_l_${id}_${hash.value}`,
+          handler: res => appendLog && appendLog(res)
+        })
       } catch (error) {
         result.value = error.message
       }
@@ -37,6 +52,10 @@ const RunCode = defineComponent({
     const runInXterm = (e: MouseEvent) => {
       getAction('xterm.run-code')(props.language, props.code, e.ctrlKey)
     }
+
+    onBeforeUnmount(() => {
+      appendLog = undefined
+    })
 
     return () => {
       const runResult = result.value || localStorage[`${cachePrefix}${hash.value}`] || ''

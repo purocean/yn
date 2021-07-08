@@ -140,11 +140,52 @@ export async function openInOS ({ repo, path }: Doc) {
   return fetchHttp(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
 }
 
-export async function runCode (language: string, code: string) {
+export async function runCode (language: string, code: string, callback?: { name: string, handler: (res: string) => void }) {
+  if (['js', 'javascript'].includes(language.toLowerCase())) {
+    const loggerName = callback ? `${callback.name}_${Date.now()}` : ''
+    if (loggerName) {
+      Object.keys(window).forEach(key => {
+        if (key.startsWith(callback!.name)) {
+          delete (window as any)[key]
+        }
+      })
+
+      ;(window as any)[loggerName] = (...args: any[]) => {
+        callback?.handler(args.map((arg) => {
+          if (['boolean', 'number', 'bigint', 'string', 'symbol', 'function'].includes(typeof arg)) {
+            return arg.toString()
+          } else {
+            return JSON.stringify(arg)
+          }
+        }).join(' '))
+      }
+    }
+
+    await eval(`(async () => {
+      const console = new Proxy(window.console, {
+        get: (obj, prop) => ['error', 'warn', 'info', 'log', 'debug'].includes(prop)
+          ? (...args) => {
+            obj[prop](...args);
+            const loggerName = '${loggerName}';
+            if (loggerName && window[loggerName]) {
+              window[loggerName](...args)
+            }
+          }
+          : obj[prop]
+      });
+      ${code}
+    })()`)
+
+    return ''
+  }
+
   const { data } = await fetchHttp('/api/run', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ language, code })
   })
+
+  callback && callback.handler(data)
+
   return data
 }
