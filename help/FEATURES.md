@@ -162,6 +162,13 @@ echo 'HELLOWORD!';
 
 ```js
 // --run--
+await new Promise(r => setTimeout(r, 500))
+alert('hello world!')
+console.log('HELLOWORD')
+```
+
+```node
+// --run--
 console.log('HELLOWORD')
 ```
 

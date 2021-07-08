@@ -32,7 +32,7 @@ function createDependencyProposals (range: any) {
     { name: '$ Inline KaTeX', type: '行内公式', insertText: '$$1$' },
     { name: '$$ Block KaTeX', type: '块公式', insertText: '$$$1$$\n' },
     { name: '``` Code', type: '代码块', insertText: '```$1\n```\n' },
-    { name: '``` Run Code', type: '运行代码块', insertText: '```js\n// --run--\n\n${1:console.log("hello world!")}\n```\n' },
+    { name: '``` Run Code', type: '运行代码块', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500));\nconsole.log("hello world!")}\n```\n' },
     { name: '``` Applet', type: 'HTML 小工具', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="alert(`hello world!`)">TEST</button>\n```\n' },
     { name: '``` Drawio', type: 'Drawio 图形', insertText: '```xml\n<!-- --drawio-- -->\n${1:<!-- mxfile -->}\n```\n' },
     { name: '```mermaid Mermaid', type: 'Mermaid 图形', insertText: '```mermaid\ngraph LR\n${1:A[Hard] -->|Text| B(Round)}\n```\n' },
@@ -86,7 +86,6 @@ export default {
           KM.Shift | KM.Alt | KC.KEY_T
         ],
         run: () => {
-          insert(dayjs().format('HH:mm:ss'))
           getAction('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))
         }
       })

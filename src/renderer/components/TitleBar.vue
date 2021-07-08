@@ -156,7 +156,7 @@ export default defineComponent({
         }
 
         if (file.path && file.repo) {
-          return `${isSaved.value ? '' : '*'}${file.path}-${status} [${file.repo}]`
+          return `[${file.repo}] ${isSaved.value ? '' : '*'}${file.path}-${status}`
         } else {
           return file.name
         }
