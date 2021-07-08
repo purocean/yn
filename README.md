@@ -77,6 +77,13 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.2.0](https://github.com/purocean/yn/releases/tag/v3.2.0) 2021-07-08
+1. 编辑器增加右键菜单
+2. 增加 Markdown 语法补全
+3. 修复 Mermaid 图形编辑不能及时更新问题
+4. 插件可拓展 Monaco Editor 功能
+5. 重构编辑器相关代码
+
 ### [v3.1.2](https://github.com/purocean/yn/releases/tag/v3.1.2) 2021-07-06
 1. 插件 ctx 新增 api 接口
 2. 调整运行代码样式
