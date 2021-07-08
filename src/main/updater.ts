@@ -37,6 +37,7 @@ const init = (call: () => void) => {
         text: `${info.version}`,
         detail: '正在下载新版本 ',
         indeterminate: false,
+        closeOnComplete: false,
         browserWindow: {
           closable: true,
           webPreferences: {
