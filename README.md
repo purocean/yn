@@ -78,6 +78,12 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 [最新发布](https://github.com/purocean/yn/releases)
 
 ### [v3.2.0](https://github.com/purocean/yn/releases/tag/v3.2.0) 2021-07-08
+1. 运行代码功能支持运行浏览器 JS 代码
+2. 修正 Windows 更新报错问题
+3. 修复编辑器菜单“终端运行”菜单行为
+4. 调整标题仓库名展示位置
+
+### [v3.2.1](https://github.com/purocean/yn/releases/tag/v3.2.1) 2021-07-08
 1. 编辑器增加右键菜单
 2. 增加 Markdown 语法补全
 3. 修复 Mermaid 图形编辑不能及时更新问题
