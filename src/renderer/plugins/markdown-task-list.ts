@@ -86,7 +86,7 @@ function startsWithTodoMarkdown (token: { content: string | string[] }) {
 }
 
 export default {
-  name: 'markdown-toc',
+  name: 'markdown-task-list',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin, { enabled: true })
   }

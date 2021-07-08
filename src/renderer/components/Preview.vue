@@ -49,6 +49,7 @@ import { triggerHook } from '@fe/context/plugin'
 import { useBus } from '@fe/support/bus'
 import { useToast } from '@fe/support/toast'
 import { registerAction, removeAction } from '@fe/context/action'
+import { revealLineInCenter } from '@fe/context/editor'
 import Render from './Render.vue'
 
 import 'github-markdown-css/github-markdown.css'
@@ -58,7 +59,7 @@ import 'katex/dist/katex.min.css'
 export default defineComponent({
   name: 'xview',
   components: { Render },
-  setup (_, { emit }) {
+  setup () {
     const bus = useBus()
     const store = useStore()
     const toast = useToast()
@@ -149,7 +150,7 @@ export default defineComponent({
     }
 
     function syncScroll (line: number) {
-      emit('sync-scroll', line)
+      revealLineInCenter(line)
     }
 
     function scrollToTop () {
@@ -219,15 +220,17 @@ export default defineComponent({
       nextTick(renderDebonce)
       triggerHook('ON_VIEW_MOUNTED', { getViewDom })
       registerAction('view.refresh', render)
+      registerAction('view.reveal-line', revealLine)
       window.addEventListener('keydown', keydownHandler, true)
-      bus.on('resize', resizeHandler)
+      bus.on('global.resize', resizeHandler)
       resizeHandler()
     })
 
     onBeforeUnmount(() => {
       removeAction('view.refresh')
+      removeAction('view.reveal-line')
       window.removeEventListener('keydown', keydownHandler)
-      bus.off('resize', resizeHandler)
+      bus.off('global.resize', resizeHandler)
     })
 
     watch(currentContent, () => autoPreview.value && renderDebonce())
@@ -257,7 +260,6 @@ export default defineComponent({
       scrollToTop,
       handleClick,
       handleDbClick,
-      revealLine,
       syncScroll,
     }
   },

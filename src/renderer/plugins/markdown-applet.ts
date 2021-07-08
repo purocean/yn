@@ -97,7 +97,7 @@ const Applet = defineComponent({
     const onLoad = function (this: HTMLIFrameElement) {
       const resize = () => {
         iframe.value!.height = iframe.value!.contentDocument!.documentElement.scrollHeight + 'px'
-        bus.emit('resize')
+        bus.emit('global.resize')
       }
       resize()
 
@@ -125,6 +125,7 @@ const Applet = defineComponent({
             class: 'applet-iframe',
             frameBorder: '0',
             width: '100%',
+            height: '20px',
             onLoad,
           })
         )

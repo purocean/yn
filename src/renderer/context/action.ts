@@ -3,7 +3,6 @@ import { useBus } from '@fe/support/bus'
 import type { ActionName as ViewActionName } from './view'
 import type { ActionName as LayoutActionName } from './layout'
 import type { ActionName as StatusBarActionName } from './status-bar'
-import type { ActionName as EditorActionName } from './editor'
 import type { ActionName as TreeActionName } from './tree'
 import type { ActionName as DocActionName } from './document'
 
@@ -11,7 +10,7 @@ const logger = getLogger('action')
 const bus = useBus()
 
 export type ActionFun = (...args: any[]) => any
-export type ActionName = ViewActionName | LayoutActionName | StatusBarActionName | EditorActionName | TreeActionName | DocActionName
+export type ActionName = ViewActionName | LayoutActionName | StatusBarActionName | TreeActionName | DocActionName
 export type HookType = 'before-run' | 'after-run'
 
 export const actions: { [key: string]: ActionFun } = {}

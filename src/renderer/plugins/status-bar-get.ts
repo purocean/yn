@@ -2,7 +2,7 @@ import { FLAG_DEMO, URL_GITHUB, URL_MAS } from '@fe/support/global-args'
 import { Plugin } from '@fe/context/plugin'
 
 export default {
-  name: 'status-bar-github',
+  name: 'status-bar-get',
   register: ctx => {
     if (FLAG_DEMO) {
       ctx.statusBar.updateMenu({

@@ -1,16 +1,14 @@
 import { Plugin } from '@fe/context/plugin'
 import { Menu as StatusBarMenu } from '@fe/context/status-bar'
 import store from '@fe/support/store'
-import { useBus } from '@fe/support/bus'
 import { $args } from '@fe/support/global-args'
 import { basename } from '@fe/utils/path'
 import { switchDoc } from '@fe/context/document'
+import { whenEditorReady } from '@fe/context/editor'
 
 export default {
   name: 'status-bar-repository-switch',
   register: ctx => {
-    const bus = useBus()
-
     function choose (repo: any) {
       const { currentRepo } = store.state
       if (repo.name !== currentRepo.name) {
@@ -67,7 +65,7 @@ export default {
 
     ctx.statusBar.updateMenu(menu)
 
-    bus.on('editor.ready', initRepo)
+    whenEditorReady().then(initRepo)
     store.dispatch('fetchRepositories')
 
     store.watch(() => store.state.repositories, updateMenu)

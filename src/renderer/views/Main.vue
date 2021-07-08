@@ -14,12 +14,10 @@
     </template>
     <template v-slot:editor>
       <FileTabs />
-      <Editor ref="refEditor" @scroll-line="line => refPreview.revealLine(line)" />
+      <Editor />
     </template>
     <template v-slot:preview>
-      <Preview
-        ref="refPreview"
-        @sync-scroll="line => refEditor.revealLineInCenter(line)" />
+      <Preview />
     </template>
   </Layout>
   <XFilter />
@@ -27,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import startup from '@fe/context/startup'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import Layout from '@fe/components/Layout.vue'
@@ -57,16 +55,13 @@ export default defineComponent({
     SettingPanel
   },
   setup () {
-    const refEditor = ref<any>(null)
-    const refPreview = ref<any>(null)
-
     onMounted(startup)
 
     const classes = {
       'flag-disable-xterm': FLAG_DISABLE_XTERM
     }
 
-    return { refEditor, refPreview, classes }
+    return { classes }
   }
 })
 </script>

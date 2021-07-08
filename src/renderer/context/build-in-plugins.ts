@@ -5,6 +5,9 @@ import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarRefresh from '@fe/plugins/status-bar-refresh'
 import statusBarGet from '@fe/plugins/status-bar-get'
+import editorPaste from '@fe/plugins/editor-paste'
+import editorAttachment from '@fe/plugins/editor-attachment'
+import editorMarkdown from '@fe/plugins/editor-markdown'
 import copyText from '@fe/plugins/copy-text'
 import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import switchTodo from '@fe/plugins/switch-todo'
@@ -36,6 +39,9 @@ export default [
   statusBarRefresh,
   statusBarGet,
   transformImgOutLink,
+  editorPaste,
+  editorAttachment,
+  editorMarkdown,
   copyText,
   tableCellEdit,
   switchTodo,

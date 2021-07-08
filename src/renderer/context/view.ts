@@ -7,4 +7,4 @@ export type HookType = 'ON_VIEW_ELEMENT_CLICK'
   | 'ON_VIEW_FILE_CHANGE'
   | 'ON_VIEW_BEFORE_CONVERT'
 
-export type ActionName = 'view.refresh'
+export type ActionName = 'view.refresh' | 'view.reveal-line'

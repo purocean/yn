@@ -88,7 +88,7 @@ window.addEventListener('beforeprint', () => {
 })
 
 export default {
-  name: 'markdown-toc',
+  name: 'markdown-echarts',
   register: ctx => {
     ctx.markdown.registerPlugin(EChartsPlugin)
     ctx.registerHook('ON_VIEW_RENDERED', () => {

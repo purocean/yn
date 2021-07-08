@@ -3,7 +3,7 @@ import { Plugin, Ctx } from '@fe/context/plugin'
 import { hasCtrlCmd } from '@fe/context/shortcut'
 import { getAction } from '@fe/context/action'
 import { useToast } from '@fe/support/toast'
-import { getLine, replaceLine } from '@fe/context/editor'
+import { getLineContent, replaceLine } from '@fe/context/editor'
 
 const editTableCell = async (start: number, end: number, cellIndex: number, input: HTMLTextAreaElement | null) => {
   const toast = useToast()
@@ -52,7 +52,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
     return result
   }
 
-  const text = getLine(start).trim()
+  const text = getLineContent(start).trim()
 
   const columns = escapedSplit(text)
   const cellText = columns[cellIndex].trim()

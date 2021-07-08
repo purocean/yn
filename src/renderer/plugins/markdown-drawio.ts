@@ -26,7 +26,7 @@ const Drawio = defineComponent({
       iframe.value!.height = iframe.value!.contentDocument!.documentElement.offsetHeight + 'px'
       iframe.value!.contentDocument!.body.style.height = iframe.value!.contentDocument!.body.clientHeight + 'px'
       iframe.value!.contentDocument!.documentElement.style.height = '100%'
-      bus.emit('resize')
+      bus.emit('global.resize')
     }
 
     const button = (text: string, onClick: any) => h('button', {

@@ -3,7 +3,7 @@ import { Plugin } from '@fe/context/plugin'
 import { Alt, getActionLabel, isAction } from '@fe/context/shortcut'
 
 export default {
-  name: 'status-bar-view',
+  name: 'status-bar-help',
   register: ctx => {
     const actions = {
       'toggle-readme': {

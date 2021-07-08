@@ -49,7 +49,7 @@ export default createStore({
     currentFile: null as Doc | null,
     recentOpenTime: Storage.get('recentOpenTime', {}),
     tabs: Storage.get('tabs', []),
-    documentInfo: {
+    selectionInfo: {
       textLength: 0,
       selectedLength: 0,
       lineCount: 0,
@@ -89,8 +89,8 @@ export default createStore({
     setShowXterm (state, data) {
       state.showXterm = data
     },
-    setDocumentInfo (state, data) {
-      state.documentInfo = data
+    setSelectionInfo (state, data) {
+      state.selectionInfo = data
     },
     setCurrentContent (state, data) {
       state.currentContent = data
