@@ -155,21 +155,21 @@ $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\p
 此功能执行外部命令实现，所以需要安装相应环境。
 
 代码块第一行需要包含以 `--run--` 字符串，示例如下
-```php
-// --run--
-echo 'HELLOWORD!';
-```
-
 ```js
 // --run--
 await new Promise(r => setTimeout(r, 500))
-alert('hello world!')
+ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log('HELLOWORD')
 ```
 
 ```node
 // --run--
 console.log('HELLOWORD')
+```
+
+```php
+// --run--
+echo 'HELLOWORD!';
 ```
 
 ```python
