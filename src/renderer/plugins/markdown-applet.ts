@@ -109,6 +109,7 @@ const Applet = defineComponent({
       win.appletId = props.id
       win.CryptoJS = CryptoJS
       win.dayjs = dayjs
+      win.ctx = window.ctx
 
       // 调用初始化方法
       win.init && win.init()
