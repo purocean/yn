@@ -265,6 +265,11 @@ export async function ensureCurrentFileSaved () {
 export async function switchDoc (doc: Doc | null) {
   logger.debug('switchDoc', doc)
 
+  if (toUri(doc) === toUri(store.state.currentFile)) {
+    logger.debug('skip switch', doc)
+    return
+  }
+
   await ensureCurrentFileSaved()
 
   try {
@@ -274,10 +279,13 @@ export async function switchDoc (doc: Doc | null) {
       return
     }
 
-    store.commit('setCurrentFile', { ...doc, status: undefined })
+    const timer = setTimeout(() => {
+      store.commit('setCurrentFile', { ...doc, status: undefined })
+    }, 150)
 
     let passwordHash = ''
     let { content, hash } = await api.readFile(doc)
+    clearTimeout(timer)
 
     // 解密文件内容
     if (isEncrypted(doc)) {
