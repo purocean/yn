@@ -6,7 +6,7 @@ import env from '@fe/utils/env'
 import { basename, dirname, join } from '@fe/utils/path'
 import { switchDoc } from '@fe/context/document'
 
-const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
+const handleLink = (link: HTMLAnchorElement) => {
   const { currentFile } = store.state
   if (!currentFile) {
     return
@@ -48,7 +48,7 @@ const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
       // 跳转锚点
       const hash = tmp.slice(1).join('#')
       if (hash) {
-        ctx.registerHook('ON_VIEW_RENDERED', () => {
+        setTimeout(() => {
           const el = document.getElementById(hash) ||
             document.getElementById(encodeURIComponent(hash))
 
@@ -59,7 +59,7 @@ const handleLink = (link: HTMLAnchorElement, ctx: Ctx) => {
             }
             el.scrollIntoView()
           }
-        }, true)
+        }, 50)
       }
 
       return true
@@ -150,7 +150,7 @@ export default {
       }
 
       if (target.tagName === 'A' || target.parentElement?.tagName === 'A') {
-        if (handleLink(target as HTMLAnchorElement, ctx)) {
+        if (handleLink(target as HTMLAnchorElement)) {
           return preventEvent()
         } else {
           return true

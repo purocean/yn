@@ -42,7 +42,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 + 编辑优化：列表自动补全
 + 粘贴图片：可快速粘贴剪切板里面的图片，可作为文件或 Base64 形式插入
 + 嵌入附件：可以添加附件到文档，点击在系统中打开
-+ 代码运行：支持运行 PHP，nodejs，Python，bash 代码
++ 代码运行：支持运行 JavaScript、PHP、nodejs、Python、bash 代码
 + 待办列表：支持显示文档中的待办进度，点击可快速切换待办状态
 + 快速打开：可使用快捷键打开文件切换面板，以便快捷打开文件，标记的文件，全文搜索文件内容
 + 内置终端：支持在编辑器打开终端，快速切换当前工作目录
@@ -77,13 +77,19 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.2.0](https://github.com/purocean/yn/releases/tag/v3.2.0) 2021-07-08
+### [v3.2.2](https://github.com/purocean/yn/releases/tag/v3.2.2) 2021-07-09
+1. 优化文件切换体验，降低闪烁
+2. HTML 小工具增加 ctx
+3. 修复在终端中运行代码快捷键不正确
+4. 修复本文档调整锚点不工作问题
+
+### [v3.2.1](https://github.com/purocean/yn/releases/tag/v3.2.1) 2021-07-08
 1. 运行代码功能支持运行浏览器 JS 代码
 2. 修正 Windows 更新报错问题
 3. 修复编辑器菜单“终端运行”菜单行为
 4. 调整标题仓库名展示位置
 
-### [v3.2.1](https://github.com/purocean/yn/releases/tag/v3.2.1) 2021-07-08
+### [v3.2.0](https://github.com/purocean/yn/releases/tag/v3.2.0) 2021-07-08
 1. 编辑器增加右键菜单
 2. 增加 Markdown 语法补全
 3. 修复 Mermaid 图形编辑不能及时更新问题
