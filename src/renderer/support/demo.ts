@@ -1,9 +1,11 @@
+import { setTheme } from '@fe/context/theme'
 import storage from '@fe/utils/storage'
 import { FLAG_DEMO } from './global-args'
 import { useToast } from './toast'
 
 if (FLAG_DEMO) {
   storage.clear()
+  setTheme('dark')
 
   const xFetch = window.fetch
   const cache: {[key: string]: string} = {}

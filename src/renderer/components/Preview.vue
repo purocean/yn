@@ -1,7 +1,7 @@
 <template>
-  <div ref="refViewWrapper" class="view" @scroll="handleScroll">
+  <div ref="refViewWrapper" class="markdown-view" @scroll="handleScroll">
     <div class="action-bar" :style="{width: (width - 50) + 'px'}">
-      <div :style="{background: todoCount ? '#4e4e4e' : 'transparent'}">
+      <div :style="{background: todoCount ? 'var(--g-color-87)' : 'transparent'}">
         <div v-if="todoCount" class="todo-progress">
           <div :style="{
             backgroundColor: `rgb(${220 - 220 * todoDoneCount / todoCount}, ${200 * todoDoneCount / todoCount}, 0)`,
@@ -28,7 +28,7 @@
       <div class="catalog" :style="{maxHeight: `min(${(height - 120) + 'px'}, 70vh)`}">
         <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level + 1}em`}" @click="syncScroll(head.sourceLine)">
           {{ head.text }}
-          <span style="color: #666;font-size: 12px;padding-left: .5em">{{head.tag}}</span>
+          <span style="color: var(--g-color-60);font-size: 12px;padding-left: .5em">{{head.tag}}</span>
         </div>
       </div>
     </div>
@@ -180,7 +180,7 @@ export default defineComponent({
         return
       }
 
-      const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>('.view .source-line')
+      const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>('.markdown-body .source-line')
       for (let i = 0; i < nodes.length; i++) {
         const el = nodes[i]
         if (parseInt(el.dataset.sourceLine || '0') >= line) {
@@ -267,76 +267,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.markdown-body {
-  position: relative;
-}
-
-@media screen {
-  .markdown-body {
-    color: #ccc;
-    margin-top: 1em;
-  }
-
-  .markdown-body ::v-deep(a) {
-    color: #4c93e2;
-  }
-
-  .markdown-body ::v-deep(tr) {
-    background: inherit;
-  }
-
-  .markdown-body ::v-deep(*) {
-    border-color: #8b8d90;
-    background: inherit;
-  }
-
-  .markdown-body ::v-deep(code) {
-    background: #464648;
-  }
-
-  .markdown-body ::v-deep(.katex) {
-    background: initial;
-  }
-
-  .markdown-body ::v-deep(table tr:nth-child(2n)),
-  .markdown-body ::v-deep(pre),
-  .markdown-body ::v-deep(pre > code)
-  {
-    background: #303133;
-  }
-
-  .markdown-body ::v-deep(div.mermaid),
-  .markdown-body ::v-deep(div.drawio-wrapper),
-  .markdown-body ::v-deep(input),
-  .markdown-body ::v-deep(img)
-  {
-    transition: all .1s ease-in-out;
-    filter: brightness(70%);
-  }
-
-  .markdown-body ::v-deep(div.mermaid:hover),
-  .markdown-body ::v-deep(div.drawio-wrapper:hover),
-  .markdown-body ::v-deep(img:hover)
-  {
-    filter: none;
-  }
-}
-
-button {
-  background: #333030;
-  border: 0;
-  padding: 5px 10px;
-  color: #ccc;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all .1s ease-in-out;
-  margin-left: 4px;
-}
-
-button:hover {
-  background: #252525;
-}
-
 .action-bar {
   position: fixed;
   width: 27vw;
@@ -364,7 +294,7 @@ button:hover {
 .todo-progress {
   flex-grow: 1;
   margin-right: 1em;
-  background: #808080;
+  background: var(--g-color-98);
   z-index: 999;
 }
 
@@ -381,8 +311,8 @@ button:hover {
 .outline {
   position: fixed;
   right: 2em;
-  background: #333030;
-  color: #ccc;
+  background: var(--g-color-90);
+  color: var(--g-color-10);
   font-size: 14px;
   max-height: 3.2em;
   max-width: 2em;
@@ -412,7 +342,7 @@ button:hover {
 }
 
 .outline > .catalog > div:hover {
-  background: #252525;
+  background: var(--g-color-80);
 }
 
 .convert {
@@ -425,8 +355,8 @@ button:hover {
   position: fixed;
   right: 2em;
   /* bottom: 40px; */
-  background: #333030;
-  color: #ccc;
+  background: var(--g-color-90);
+  color: var(--g-color-10);
   font-size: 14px;
   overflow: hidden;
   transition: .1s ease-in-out;
@@ -441,32 +371,131 @@ button:hover {
   content: ' ';
   display: block;
   border-left: 20px transparent solid;
-  border-bottom: 7px #bbb solid;
+  border-bottom: 7px var(--g-color-40) solid;
   border-right: 20px transparent solid;
   margin-bottom: 4px;
 }
 
 .scroll-to-top:hover {
-  background: #252525;
+  background: var(--g-color-96);
 }
 
 .scroll-to-top.hide {
   opacity: 0;
   right: -60px;
 }
+</style>
 
-.markdown-body ::v-deep(table.hljs-ln tbody) {
-  display: table;
-  min-width: 100%;
+<style lang="scss">
+.markdown-view {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  padding: 40px;
+  box-sizing: border-box;
+
+  .markdown-body {
+    position: relative;
+
+    fieldset {
+      border-style: solid;
+      margin: 20px 0;
+
+      legend {
+        padding: 0 .2em;
+      }
+    }
+
+    table {
+      display: table;
+    }
+
+    hr {
+      border-bottom: 1px solid;
+    }
+
+    img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: zoom-in;
+      background-color: #fff;
+
+      &.inline {
+        display: inline;
+      }
+    }
+
+    .new-page {
+      page-break-before: always;
+    }
+  }
 }
 
-.markdown-body ::v-deep(fieldset) {
-  border-style: solid;
-  margin: 20px 0;
+@media screen {
+  html[app-theme=dark] .markdown-body {
+    .reduce-brightness, input, img {
+      transition: all .1s ease-in-out;
+      filter: brightness(70%);
+
+      &:hover {
+        filter: none;
+      }
+    }
+  }
+
+  .markdown-view .markdown-body {
+    color: var(--g-color-0);
+    margin-top: 1em;
+
+    a {
+      color: #4c93e2;
+    }
+
+    tr {
+      background: inherit;
+    }
+
+    * {
+      border-color: var(--g-color-80);
+      background: inherit;
+    }
+
+    code {
+      background: var(--g-color-80);
+    }
+
+    pre,
+    pre > code,
+    table tr:nth-child(2n) {
+      background: var(--g-color-96);
+    }
+
+    table.source-line tbody {
+      counter-reset: tr-number;
+
+      tr {
+        &:hover {
+          outline: 2px #b3833b dashed;
+        }
+
+        td:first-child:before {
+          counter-increment: tr-number;
+          content: counter(tr-number);
+          position: absolute;
+          right: 100%;
+          padding-right: 5px;
+          color: #999;
+        }
+      }
+    }
+  }
 }
 
-.markdown-body ::v-deep(legend) {
-  padding: 0 .2em;
+@media screen and (max-width: 767px) {
+  .markdown-view {
+    padding: 15px;
+  }
 }
 
 @media print {
@@ -475,152 +504,13 @@ button:hover {
   .action-bar {
     display: none;
   }
-  .view {
+
+  .markdown-view {
     min-width: 100%;
     max-width: 100%;
     width: 100%;
     height: auto;
     padding: 0;
   }
-}
-
-@media screen and (max-width: 767px) {
-  .view {
-    padding: 15px;
-  }
-}
-</style>
-
-<style>
-.view {
-  height: 100%;
-  width: 100%;
-  overflow-y: auto;
-  padding: 40px;
-  box-sizing: border-box;
-}
-
-.view .markdown-body table {
-  display: table;
-}
-
-.view .markdown-body hr {
-  border-bottom: 1px solid;
-}
-
-.view .markdown-body .table-of-contents ol {
-  counter-reset: ol-number;
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.view .markdown-body .table-of-contents li > ol {
-  padding-left: 2em;
-}
-
-.view .markdown-body .table-of-contents ol > li::before {
-  counter-increment: ol-number;
-  content: counters(ol-number, ".") " ";
-}
-
-.view .markdown-body .table-of-contents > ol > li::before {
-  counter-increment: ol-number;
-  content: counter(ol-number) ". ";
-}
-
-.view img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  cursor: zoom-in;
-}
-
-.view img.inline {
-  display: inline;
-}
-
-.view .new-page {
-  page-break-before: always;
-}
-
-.view .echarts {
-  width: 100%;
-  height: 350px;
-}
-
-.view .hljs-ln,
-.view .hljs-ln tr,
-.view .hljs-ln td {
-  border: 0;
-}
-
-.view .hljs-ln td {
-  padding: 0;
-}
-
-@media screen {
-  .view table.hljs-ln {
-    max-height: 400px;
-  }
-
-  .view img:not(.plantuml-img) {
-    background-color: #fff !important;
-  }
-
-  table.source-line tbody {
-    counter-reset: tr-number;
-  }
-
-  table.source-line tbody tr:hover {
-    outline: 2px #b3833b dashed;
-  }
-
-  table.source-line:hover tbody tr td:first-child:before {
-    counter-increment: tr-number;
-    content: counter(tr-number);
-    position: absolute;
-    right: 100%;
-    padding-right: 5px;
-    color: #999;
-  }
-}
-
-@media print {
-  .view table.hljs-ln td {
-    white-space: pre-wrap;
-  }
-
-  .view .run-in-xterm {
-    display: none;
-  }
-}
-
-.view table.hljs-ln {
-  padding-bottom: 10px;
-}
-
-.view .hljs-ln td.hljs-ln-numbers {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  text-align: center;
-  border-right: 1px solid #777;
-  vertical-align: top;
-  padding-right: 5px;
-
-  /* your custom style here */
-}
-
-/* for block of code */
-.view .hljs-ln td.hljs-ln-code {
-  padding-left: 10px;
-}
-
-.view .mermaid {
-  background: #fff;
 }
 </style>

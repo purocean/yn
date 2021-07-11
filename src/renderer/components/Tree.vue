@@ -57,7 +57,7 @@ export default defineComponent({
       refreshRepo,
       showContextMenu,
       showSetting,
-      hasRepo
+      hasRepo,
     }
   },
 })
@@ -65,7 +65,7 @@ export default defineComponent({
 
 <style scoped>
 .side {
-  color: #ddd;
+  color: var(--g-foreground-color);
   height: 100%;
   width: 100%;
   box-sizing: border-box;
@@ -76,11 +76,11 @@ export default defineComponent({
   font-size: 24px;
   text-align: center;
   padding-top: 50%;
-  color: #818284;
+  color: var(--g-color-40);
 }
 
 .add-repo-desc {
-  color: #69696b;
+  color: var(--g-color-40);
   text-align: center;
   font-size: 12px;
   padding-top: 10px;
@@ -90,7 +90,7 @@ export default defineComponent({
   cursor: pointer;
   font-size: 20px;
   text-align: center;
-  color: #818284;
+  color: var(--g-color-20);
   margin-top: 20vh;
 }
 </style>

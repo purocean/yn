@@ -149,26 +149,29 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .tabs {
   flex: none;
   height: 30px;
-  background: #333;
+  background: var(--g-background-color);
   display: flex;
+  z-index: 1;
+  box-shadow: 0px 3px 3px -3px var(--g-color-100);
 }
 
 .tab {
   width: 100%;
   max-width: 150px;
+  height: 100%;
+  margin-bottom: -3px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-right: 1px;
-  color: #888;
+  color: var(--g-color-25);
   cursor: default;
   font-size: 12px;
-  background: #282828;
-  overflow: hidden;
+  background: var(--g-color-93);
 }
 
 .label {
@@ -179,12 +182,12 @@ export default defineComponent({
 }
 
 .tab.current {
-  color: #eee;
-  background: #1d1f21;
+  color: var(--g-color-0);
+  background: var(--g-color-100);
 }
 
 .close {
-  color: #999;
+  color: var(--g-color-50);
   height: 18px;
   width: 18px;
   display: flex;
@@ -195,16 +198,16 @@ export default defineComponent({
 }
 
 .close:hover {
-  color: rgb(212, 212, 212);
-  background: #444;
+  color: var(--g-color-40);
+  background: var(--g-color-80);
 }
 
 .tab.on-sort {
-  background: rgb(112, 112, 112);
+  background: var(--g-color-75);
 }
 
 .tab.fixed {
   font-weight: bold;
-  border-left: 2px #7b7c7d solid;
+  border-left: 2px var(--g-color-70) solid;
 }
 </style>

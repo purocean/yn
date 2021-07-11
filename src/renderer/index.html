@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="./assets/favicon.ico">
     <link rel="stylesheet" href="./assets/kityminder.core.css">
+    <link rel="stylesheet" href="./styles/index.scss">
     <title>Yank Note</title>
     <script>
       // 强制 monaco-editor 使用 浏览器模式
@@ -15,14 +16,10 @@
       window.require = undefined
       window.process = undefined
       window.module = undefined
+
+      // 设置初始主题
+      window.document.documentElement.setAttribute('app-theme', JSON.parse(localStorage['app.theme'] || '"system"'))
     </script>
-    <style>
-      @media screen {
-        body {
-          background: #282a2b;
-        }
-      }
-    </style>
   </head>
   <body>
     <div id="app"></div>

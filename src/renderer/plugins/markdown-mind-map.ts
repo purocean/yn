@@ -194,7 +194,7 @@ const MindMap = defineComponent({
 
     onMounted(renderMindMap)
 
-    return () => h('div', { ref: container, class: 'mind-map' })
+    return () => h('div', { ref: container, class: 'mind-map reduce-brightness' })
   }
 })
 

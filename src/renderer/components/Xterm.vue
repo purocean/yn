@@ -16,6 +16,7 @@ import { toggleXterm } from '@fe/context/layout'
 import { registerAction, removeAction } from '@fe/context/action'
 import { getLogger } from '@fe/utils'
 import 'xterm/css/xterm.css'
+import { getColorScheme } from '@fe/context/theme'
 
 const logger = getLogger('component-x-term')
 
@@ -62,9 +63,11 @@ export default defineComponent({
           // fontFamily: 'Consolas',
           fontWeightBold: '500',
           theme: {
-            background: 'rgb(30, 31, 32)'
+            background: getColorScheme() === 'dark' ? '#2c2e2f' : '#fbfbfb'
           }
         })
+
+        xterm.setOption('theme', { background: 'rgb(0, 31, 32)' })
 
         xterm.loadAddon(fitAddon)
 
@@ -176,8 +179,8 @@ export default defineComponent({
   box-sizing: border-box;
   padding: 5px;
   padding-bottom: 20px;
-  background: rgb(29, 31, 33);
-  border: 1px solid rgb(92, 91, 100);
+  background: var(--g-color-98);
+  border: 1px solid var(--g-color-80);
   flex: 0 0 auto;
   width: 100%;
   height: 100%;

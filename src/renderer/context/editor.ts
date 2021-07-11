@@ -1,7 +1,8 @@
+import * as Monaco from 'monaco-editor'
 import { $args } from '@fe/support/global-args'
 import env from '@fe/utils/env'
-import * as Monaco from 'monaco-editor'
 import { useBus } from '@fe/support/bus'
+import { getColorScheme } from './theme'
 
 const bus = useBus()
 
@@ -10,7 +11,7 @@ let editor: Monaco.editor.IStandaloneCodeEditor
 
 export const defaultOptions: {[key: string]: any} = {
   value: '',
-  theme: 'vs-dark',
+  theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: 18,
   wordWrap: false,
   links: !env.isElectron,
@@ -108,9 +109,23 @@ bus.on('monaco.ready', (payload: any) => {
   monaco = payload.monaco
   editor = payload.editor
 
+  monaco.editor.defineTheme('vs', {
+    base: 'vs',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#F2F2F2',
+      'minimap.background': '#EEEEEE',
+    }
+  })
+
   bus.emit('editor.ready', payload)
 })
 
 bus.on('monaco.change-value', payload => {
   bus.emit('editor.change', payload)
+})
+
+bus.on('theme.change', () => {
+  monaco?.editor.setTheme(getColorScheme() === 'dark' ? 'vs-dark' : 'vs')
 })

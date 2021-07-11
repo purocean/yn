@@ -309,27 +309,9 @@ export default defineComponent({
 <style scoped>
 .filter {
   width: 600px;
-  background: #383a39;
+  background: var(--g-color-95);
   margin: auto;
   padding: 10px;
-}
-
-.input {
-  display: block;
-  width: 100%;
-  margin: 0;
-  border: 0;
-  font-size: 18px;
-  line-height: 1.4em;
-  padding: 6px;
-  box-sizing: border-box;
-  background: #303233;
-  color: #ddd;
-  transition: all .1s ease-in-out;
-}
-
-.input:focus {
-  background: #222324;
 }
 
 .result {
@@ -341,7 +323,7 @@ export default defineComponent({
 }
 
 .result li {
-  color: #999;
+  color: var(--g-color-40);
   line-height: 1.5em;
   font-size: 18px;
   padding: 2px;
@@ -352,8 +334,8 @@ export default defineComponent({
 .result li.selected,
 .result li:hover {
   padding: 2px 6px;
-  background: #303133;
-  color: #eee;
+  background: var(--g-color-80);
+  color: var(--g-color-10);
 }
 
 .result li span {
@@ -367,12 +349,12 @@ export default defineComponent({
 }
 
 .result li span.path ::v-deep(b) {
-  color: #ababab;
+  color: var(--g-color-5);
   font-weight: bold;
 }
 
 .result li ::v-deep(b) {
-  color: #c6d2ca;
+  color: var(--g-color-0);
   font-weight: normal;
 }
 
@@ -387,11 +369,11 @@ export default defineComponent({
   line-height: 1.5em;
   font-size: 12px;
   padding: 4px 0;
-  background: #3e3f40;
+  background: var(--g-color-74);;
   cursor: pointer;
   transition: all .1s ease-in-out;
-  color: #ddd;
-  border-right: 1px #303031 solid;
+  color: var(--g-color-10);
+  border-right: 1px var(--g-color-80) solid;
 }
 
 .tab > div:last-child {
@@ -399,10 +381,10 @@ export default defineComponent({
 }
 
 .tab > div:hover {
-  background: #414244;
+  background: var(--g-color-66);
 }
 
 .tab > div.selected {
-  background: #303133;
+  background: var(--g-color-60);
 }
 </style>

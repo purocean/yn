@@ -50,7 +50,7 @@ const Drawio = defineComponent({
         'iframe',
         {
           ref: iframe,
-          class: 'drawio',
+          class: 'drawio reduce-brightness',
           frameBorder: '0',
           width: '100%',
           height: '300px',

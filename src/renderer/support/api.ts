@@ -161,6 +161,7 @@ export async function runCode (language: string, code: string, callback?: { name
       }
     }
 
+    // eslint-disable-next-line no-eval
     await eval(`(async () => {
       const console = new Proxy(window.console, {
         get: (obj, prop) => ['error', 'warn', 'info', 'log', 'debug'].includes(prop)

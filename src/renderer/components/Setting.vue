@@ -3,8 +3,8 @@
     <h3>配置项</h3>
     <div ref="refEditor" class="editor" @click="onClick" />
     <div class="action">
-      <button @click="cancel">取消</button>
-      <button class="primary" @click="ok">确定</button>
+      <button class="btn" @click="cancel">取消</button>
+      <button class="btn primary" @click="ok">确定</button>
     </div>
   </div>
 </template>
@@ -16,6 +16,7 @@ import { JSONEditor } from '@json-editor/json-editor'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import { useToast } from '@fe/support/toast'
+import { getThemeName, setTheme } from '@fe/context/theme'
 
 JSONEditor.defaults.language = 'zh'
 JSONEditor.defaults.languages.zh = { ...JSONEditor.defaults.languages.en }
@@ -60,7 +61,13 @@ const schema = {
       title: '终端 Shell',
       type: 'string',
     } as any,
-  }
+    theme: {
+      title: '主题',
+      type: 'string',
+      enum: ['system', 'dark', 'light']
+    }
+  },
+  required: ['theme']
 }
 
 if (FLAG_DISABLE_XTERM) {
@@ -91,6 +98,13 @@ export default defineComponent({
         schema,
       })
 
+      editor.watch('root.theme', () => {
+        const theme = editor.getEditor('root.theme').getValue()
+        if (getThemeName() !== theme) {
+          setTheme(theme)
+        }
+      })
+
       const data = await api.fetchSettings()
       data.repos = Object.keys(data.repositories).map(name => ({
         name,
@@ -100,6 +114,8 @@ export default defineComponent({
       if (data.repos.length < 1) {
         data.repos = [{ name: '', path: '' }]
       }
+
+      data.theme = getThemeName()
 
       const value: any = {}
 
@@ -160,10 +176,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .editor-wrapper {
   width: 600px;
-  background: #383a39;
+  background: var(--g-color-95);
   margin: auto;
   padding: 10px;
-  color: #eee;
+  color: var(--g-color-5);
 
   h3 {
     margin-top: 0;
@@ -181,6 +197,10 @@ export default defineComponent({
 
   ::v-deep(.je-header) {
     margin: 0;
+  }
+
+  ::v-deep(.row) {
+    margin-bottom: 10px;
   }
 
   ::v-deep(.je-indented-panel) {
@@ -216,46 +236,11 @@ export default defineComponent({
       width: 120px;
     }
   }
-
-  ::v-deep(input),
-  ::v-deep(select),
-  ::v-deep(textarea) {
-    border: 0;
-    font-size: 18px;
-    line-height: 1.4em;
-    padding: 3px 6px;
-    box-sizing: border-box;
-    background: #545454;
-    width: 100%;
-    color: #ddd;
-    transition: all .1s ease-in-out;
-    display: block;
-  }
 }
 
 .action {
   display: flex;
   justify-content: flex-end;
   padding-top: 10px;
-}
-
-.editor ::v-deep(button),
-button {
-  background: #4c4c4c;
-  border: 0;
-  padding: 5px 10px;
-  color: #ccc;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all .1s ease-in-out;
-  margin-right: 3px;
-
-  &.primary {
-    background: #71706e;
-  }
-
-  &:hover {
-    background: #807d7d;
-  }
 }
 </style>

@@ -1,7 +1,5 @@
 <template>
-  <div class="editor">
-    <MonacoEditor ref="refEditor" class="editor" />
-  </div>
+  <MonacoEditor ref="refEditor" class="editor" />
 </template>
 
 <script lang="ts">
@@ -157,11 +155,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style scoped>
-.editor {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-</style>

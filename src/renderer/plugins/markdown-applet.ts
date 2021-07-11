@@ -1,10 +1,13 @@
-import { defineComponent, h, onMounted, ref, watch } from 'vue'
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import CryptoJS from 'crypto-js'
 import { debounce } from 'lodash-es'
 import dayjs from 'dayjs'
 import Markdown from 'markdown-it'
 import { useBus } from '@fe/support/bus'
 import { Plugin } from '@fe/context/plugin'
+import { getThemeName } from '@fe/context/theme'
+
+let cssText = ''
 
 const Applet = defineComponent({
   name: 'applet',
@@ -19,80 +22,35 @@ const Applet = defineComponent({
     const srcdoc = ref('')
 
     const setSrcdoc = () => {
+      const theme = getThemeName()
       srcdoc.value = `
-        <style>
-          ::selection {
-            background: rgba(255, 255, 255, 0.3);
-          }
+        <html app-theme="${theme}">
+          <head>
+            <style>
+              ${cssText}
 
-          ::-webkit-scrollbar {
-            width: 7px;
-            height: 7px;
-          }
+              button {
+                margin-left: 0;
+              }
 
-          ::-webkit-scrollbar-track {
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
-          }
+              input:not([type="checkbox"]):not([type="radio"]), textarea, select {
+                margin: 10px 0;
+              }
+            </style>
+          </head>
 
-          ::-webkit-scrollbar-thumb {
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.09);
-            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
-          }
-
-          ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.15);
-          }
-
-          @media screen {
-            body {
-              color: #ccc;
-            }
-            button {
-              background: #4c4c4c;
-              border: 0;
-              padding: 0 10px;
-              color: #ccc;
-              cursor: pointer;
-              border-radius: 2px;
-              transition: all .1s ease-in-out;
-              line-height: 28px;
-              margin: 5px 0;
-            }
-
-            button.primary {
-              background: #71706e;
-            }
-
-            button:hover {
-              background: #807d7d;
-            }
-
-            input, select, textarea {
-              border: 0;
-              font-size: 18px;
-              line-height: 1.4em;
-              padding: 6px;
-              box-sizing: border-box;
-              background: #3a3939;
-              color: #ddd;
-              transition: all .1s ease-in-out;
-            }
-          }
-
-          input, select, textarea {
-            margin: 5px 0;
-          }
-        </style>
-
-        ${props.code}
+          ${props.code}
+        </html>
       `
     }
 
     onMounted(setSrcdoc)
     watch(() => props.code, debounce(setSrcdoc, 1000))
+    bus.on('theme.change', setSrcdoc)
+
+    onBeforeUnmount(() => {
+      bus.off('theme.change', setSrcdoc)
+    })
 
     const onLoad = function (this: HTMLIFrameElement) {
       const resize = () => {
@@ -158,9 +116,32 @@ const MarkdownItPlugin = (md: Markdown) => {
   }
 }
 
+export function getCssText () {
+  return [].slice.call(window.document.styleSheets)
+    .map((styleSheet: CSSStyleSheet) => [].slice.call(styleSheet.cssRules))
+    .flat()
+    .filter((cssRule: any) =>
+      (
+        cssRule.conditionText && (
+          cssRule.conditionText === 'screen' ||
+          cssRule.conditionText.includes('prefers-color-scheme')
+        )
+      ) || (
+        cssRule.selectorText && (
+          cssRule.selectorText.startsWith('html') ||
+          cssRule.selectorText.startsWith(':root') ||
+          cssRule.selectorText.startsWith('::')
+        )
+      )
+    )
+    .map((cssRule: CSSRule) => cssRule.cssText)
+    .join('\n')
+}
+
 export default {
   name: 'applet',
   register: ctx => {
+    cssText = getCssText()
     ctx.markdown.registerPlugin(MarkdownItPlugin)
   }
 } as Plugin
