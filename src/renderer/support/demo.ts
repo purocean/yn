@@ -42,6 +42,13 @@ if (FLAG_DEMO) {
       const url = new URL(location.origin + uri)
       const method = (init && init.method) || 'GET'
 
+      if (uri.startsWith('/api/settings')) {
+        return Promise.resolve({ status: 'ok', message: '获取成功', data: {
+          repositories: { test: '/path_test' },
+          shell: 'bash'
+        } })
+      }
+
       if (uri.startsWith('/api/mark')) {
         return Promise.resolve({ status: 'ok', message: '操作成功', data: {} })
       }
