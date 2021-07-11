@@ -7,9 +7,9 @@ const nodeRequire = window && (window.require || _window.nodeRequire)
 const isElectron = !!(nodeProcess?.versions?.electron)
 const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)
 
-const openAlwaysOnTopWindow = (url: string, target = '_blank') => {
+const openAlwaysOnTopWindow = (url: string, target = '_blank', alwaysOnTop = true) => {
   if (isElectron) {
-    const opener: any = window.open(url, target, 'nodeIntegration=yes,frame=true,alwaysOnTop=true,enableRemoteModule=true')
+    const opener: any = window.open(url, target, `nodeIntegration=yes,frame=true,alwaysOnTop=${alwaysOnTop},enableRemoteModule=true,nodeIntegrationInSubFrames=true,experimentalFeatures=true`)
 
     const preload = `
       // 在 Electron 环境中开启鼠标滚轮缩放页面

@@ -79,6 +79,8 @@
     "highlight.js": "^11.0.1",
     "katex": "^0.13.11",
     "lodash-es": "^4.17.21",
+    "luckyexcel": "^1.0.1",
+    "luckysheet": "^2.1.13",
     "markdown-it": "^12.0.6",
     "markdown-it-attrs": "^4.0.0",
     "markdown-it-multimd-table": "^4.1.0",

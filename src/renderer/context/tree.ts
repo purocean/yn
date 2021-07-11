@@ -1,11 +1,11 @@
-import { Components } from '@fe/support/types'
+import { Components, Doc } from '@fe/support/types'
 import store from '@fe/support/store'
 import { registerAction } from './action'
 
 export type ActionName = 'tree.refresh'
 export type HookType = 'ON_TREE_NODE_SELECT'
 export type MenuItem = Components.ContextMenu.Item
-export type BuildContextMenu = (items: MenuItem[], node: any) => MenuItem[]
+export type BuildContextMenu = (items: MenuItem[], node: Doc) => MenuItem[]
 
 const contextMenuFunList: BuildContextMenu[] = []
 

@@ -9,6 +9,10 @@ fs.copySync(
   path.resolve(__dirname, 'src/renderer/public/vs')
 )
 
+fs.copySync(
+  path.resolve(__dirname, 'node_modules/luckysheet/dist'),
+  path.resolve(__dirname, 'src/renderer/public/luckysheet')
+)
 
 // https://vitejs.dev/config/
 export default defineConfig({

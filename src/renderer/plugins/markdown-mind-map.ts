@@ -166,7 +166,7 @@ const render = async (ele: HTMLElement, content: string) => {
   const actionsStr = action.outerHTML.replace(/data-onclick/g, 'onclick')
   action.appendChild(buildButton('新窗口打开', () => {
     const srcdoc = buildSrcdoc(JSON.stringify(km.exportJson()), actionsStr)
-    openInNewWindow(srcdoc)
+    openInNewWindow('查看图形', srcdoc)
   }))
   action.appendChild(buildButton('导出 PNG', () => exportData('png')))
   action.appendChild(buildButton('导出 SVG', () => exportData('svg')))

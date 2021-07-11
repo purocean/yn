@@ -34,7 +34,7 @@ const Drawio = defineComponent({
       onClick
     }, text)
 
-    return () => h('div', { class: 'drawio-wrapper', style: 'position: relative' }, [
+    return () => h('div', { class: 'drawio-wrapper reduce-brightness', style: 'position: relative' }, [
       h(
         'div',
         {
@@ -43,14 +43,14 @@ const Drawio = defineComponent({
         },
         [
           button('适应高度', resize),
-          button('新窗口打开', () => openInNewWindow(srcdoc.value)),
+          button('新窗口打开', () => openInNewWindow('查看图形', srcdoc.value)),
         ]
       ),
       h(
         'iframe',
         {
           ref: iframe,
-          class: 'drawio reduce-brightness',
+          class: 'drawio',
           frameBorder: '0',
           width: '100%',
           height: '300px',
@@ -165,14 +165,14 @@ async function buildSrcdoc ({ repo, path, content, url }: F) {
 }
 
 export default {
-  name: 'drawio',
+  name: 'markdown-drawio',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
 
     ctx.registerHook('ON_TREE_NODE_SELECT', async (item: any) => {
       if (item.path.toLowerCase().endsWith('.drawio')) {
         const srcdoc = await buildSrcdoc(item)
-        openInNewWindow(srcdoc)
+        openInNewWindow('查看图形', srcdoc)
 
         return true
       }
