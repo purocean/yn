@@ -10,7 +10,22 @@ const set = function (key: string, value: any) {
   window.localStorage[key] = JSON.stringify(value)
 }
 
+const remove = function (key: string) {
+  window.localStorage.removeItem(key)
+}
+
+const getAll = function () {
+  return window.localStorage
+}
+
+const clear = function () {
+  window.localStorage.clear()
+}
+
 export default {
+  clear,
+  remove,
+  getAll,
   set,
   get
 }

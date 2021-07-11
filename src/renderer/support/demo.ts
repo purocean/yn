@@ -1,8 +1,9 @@
+import storage from '@fe/utils/storage'
 import { FLAG_DEMO } from './global-args'
 import { useToast } from './toast'
 
 if (FLAG_DEMO) {
-  localStorage.clear()
+  storage.clear()
 
   const xFetch = window.fetch
   const cache: {[key: string]: string} = {}

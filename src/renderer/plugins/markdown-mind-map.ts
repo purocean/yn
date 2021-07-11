@@ -4,6 +4,7 @@ import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context/plugin'
 import crypto from '@fe/utils/crypto'
 import { dataURItoBlobLink, openInNewWindow } from '@fe/utils'
+import storage from '@fe/utils/storage'
 
 const layoutStorageKey = 'mind-map-layout'
 
@@ -86,7 +87,7 @@ const render = async (ele: HTMLElement, content: string) => {
   km.disable()
   try {
     await km.importData('text', code)
-    km.useTemplate(localStorage.getItem(layoutStorageKey) || 'default')
+    km.useTemplate(storage.get(layoutStorageKey, 'default'))
   } catch (error) {
     await km.importData('text', '转换错误\n    1. 请保证大纲只有一个根项目\n    2. 请保证大纲层级正确')
     km.useTemplate('structure')
@@ -102,7 +103,7 @@ const render = async (ele: HTMLElement, content: string) => {
     const index = tplList.indexOf(tpl)
     const nextIndex = index > tplList.length - 2 ? 0 : index + 1
     const layout = tplList[nextIndex]
-    localStorage.setItem(layoutStorageKey, layout)
+    storage.set(layoutStorageKey, layout)
     km.useTemplate(layout)
     km.execCommand('camera')
   }

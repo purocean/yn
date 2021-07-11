@@ -5,6 +5,7 @@ import { Plugin } from '@fe/context/plugin'
 import { getAction } from '@fe/context/action'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import storage from '@fe/utils/storage'
 
 const cachePrefix = 'run_code_result_'
 
@@ -31,7 +32,7 @@ const RunCode = defineComponent({
         hasResult = true
       }
 
-      localStorage[`${cachePrefix}${hash.value}`] = result.value
+      storage.set(`${cachePrefix}${hash.value}`, result.value)
     }
 
     const run = async () => {
@@ -59,7 +60,7 @@ const RunCode = defineComponent({
     })
 
     return () => {
-      const runResult = result.value || localStorage[`${cachePrefix}${hash.value}`] || ''
+      const runResult = result.value || storage.get(`${cachePrefix}${hash.value}`, '')
 
       return [
         h('div', { class: 'run-code-action', style: 'position: sticky; left: 0; border-top: dashed 1px #888; margin: 1em 0' }, [
@@ -105,9 +106,9 @@ const RunPlugin = (md: Markdown) => {
 }
 
 const clearCache = () => {
-  Object.keys(localStorage).forEach(key => {
+  Object.keys(storage.getAll()).forEach(key => {
     if (key.startsWith(cachePrefix)) {
-      localStorage.removeItem(key)
+      storage.remove(key)
     }
   })
 }
