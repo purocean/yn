@@ -28,7 +28,7 @@ const EChartsPlugin = (md: Markdown) => {
 
 let charts: {[key: string]: any} = {}
 
-const update = (theme: string | null = null, animation: boolean | undefined = undefined, renderImg = false) => {
+const update = (theme: string | undefined = undefined, animation: boolean | undefined = undefined, renderImg = false) => {
   theme ??= getColorScheme()
 
   Object.values(charts).forEach(x => x.chart.dispose())

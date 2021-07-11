@@ -23,7 +23,7 @@ export function getColorScheme () {
   return theme
 }
 
-export function setTheme(name: 'system' | 'dark' | 'light') {
+export function setTheme (name: 'system' | 'dark' | 'light') {
   document.documentElement.setAttribute('app-theme', name)
   bus.emit('theme.change', name)
   storage.set('app.theme', name)
@@ -39,4 +39,4 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
   if (getThemeName() === 'system') {
     setTheme('system')
   }
-});
+})
