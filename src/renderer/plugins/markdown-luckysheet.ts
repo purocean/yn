@@ -67,9 +67,9 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
         const ctrl = isMacOS ? e.metaKey : e.ctrlKey
         if (ctrl && e.code === 'KeyS') {
           save()
+          e.stopPropagation()
+          e.preventDefault()
         }
-        e.stopPropagation()
-        e.preventDefault()
       })
     `
     Object.assign(options, {})
