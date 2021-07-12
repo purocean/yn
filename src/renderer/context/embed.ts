@@ -65,6 +65,13 @@ export const IFrame = defineComponent({
     expose({
       reload: () => {
         iframe.value?.contentWindow?.location.reload()
+      },
+      close: () => {
+        const flag = iframe.value?.contentWindow?.onbeforeunload?.(null as any)
+        if (flag !== undefined && flag !== null) {
+          throw new Error('检查关闭状态失败')
+        }
+        iframe.value?.contentWindow?.close()
       }
     })
 

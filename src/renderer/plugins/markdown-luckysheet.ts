@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, ref, watch } from 'vue'
+import { defineComponent, h, ref, watch } from 'vue'
 
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
@@ -12,6 +12,7 @@ import store from '@fe/support/store'
 import * as api from '@fe/support/api'
 import { refreshTree } from '@fe/context/tree'
 import { buildSrc, IFrame } from '@fe/context/embed'
+import Mask from '@fe/components/Mask.vue'
 
 const logger = getLogger('plugin-markdown-luckysheet')
 
@@ -201,6 +202,8 @@ const LuckyComponent = defineComponent({
     logger.debug('setup', props)
     const srcdoc = ref('')
     const refIFrame = ref<any>()
+    const refFullIFrame = ref<any>()
+    const fullScreen = ref(false)
 
     const update = () => {
       srcdoc.value = buildSrcdoc(props.repo!, props.path!, false)
@@ -210,6 +213,21 @@ const LuckyComponent = defineComponent({
       refIFrame.value.reload()
     }
 
+    const open = () => {
+      fullScreen.value = true
+    }
+
+    const close = async () => {
+      try {
+        refFullIFrame.value.close()
+        fullScreen.value = false
+      } catch {
+        if (await useModal().confirm({ title: '未保存文件', content: '是否要关闭？' })) {
+          fullScreen.value = false
+        }
+      }
+    }
+
     watch(props, update, { immediate: true })
 
     const button = (text: string, onClick: any) => h('button', {
@@ -217,32 +235,54 @@ const LuckyComponent = defineComponent({
       onClick
     }, text)
 
-    return () => h('div', { class: 'lucky-sheet-wrapper reduce-brightness', style: 'position: relative' }, [
-      h(
-        'div',
-        {
-          class: 'no-print',
-          style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
-        },
-        [
-          // button('全屏查看', () => 0),
-          button('重载', reload),
-          button('新窗口编辑', () => {
-            const html = buildSrcdoc(props.repo!, props.path!, true)
-            env.openWindow(buildSrc(html, '编辑表格', false, false), '_blank', { alwaysOnTop: false })
-          }),
-        ]
-      ),
-      h(IFrame, {
-        ref: refIFrame,
-        html: srcdoc.value,
-        debounce: 1000,
-        iframeProps: {
-          class: 'lucky-sheet',
-          height: '500px'
-        }
-      })
-    ])
+    const buildIFrame = (full: boolean) => h(IFrame, {
+      ref: full ? refFullIFrame : refIFrame,
+      html: buildSrcdoc(props.repo!, props.path!, full),
+      debounce: 1000,
+      iframeProps: {
+        class: 'lucky-sheet',
+        style: 'margin: 0;display:block;height: ' + (full ? 'calc(100vh - 30px)' : '500px'),
+        width: '100%'
+      }
+    })
+
+    return () => [
+      fullScreen.value && h(Mask, {
+        show: true,
+        maskCloseable: false,
+        escCloseable: false,
+        style: { paddingTop: '30px' }
+      }, [
+        h(
+          'div',
+          {
+            class: 'no-print',
+            style: 'position: absolute; right: 15px; margin-top: 15px; z-index: 1;'
+          },
+          button('关闭', close),
+        ),
+        buildIFrame(true),
+      ]),
+
+      h('div', { class: 'lucky-sheet-wrapper reduce-brightness', style: 'position: relative' }, [
+        h(
+          'div',
+          {
+            class: 'no-print',
+            style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
+          },
+          [
+            button('编辑', open),
+            button('重载', reload),
+            button('新窗口编辑', () => {
+              const html = buildSrcdoc(props.repo!, props.path!, true)
+              env.openWindow(buildSrc(html, '编辑表格', false, false), '_blank', { alwaysOnTop: false })
+            }),
+          ]
+        ),
+        buildIFrame(false)
+      ])
+    ]
   }
 })
 

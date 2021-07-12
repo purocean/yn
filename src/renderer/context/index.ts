@@ -1,5 +1,6 @@
 import { useBus } from '@fe/support/bus'
 import { useToast } from '@fe/support/toast'
+import { useModal } from '@fe/support/modal'
 import store from '@fe/support/store'
 import storage from '@fe/utils/storage'
 import * as api from '@fe/support/api'
@@ -24,7 +25,7 @@ const ctx = {
   store,
   action,
   shortcut,
-  ui: { useToast },
+  ui: { useToast, useModal },
   tree,
   markdown,
   statusBar,
