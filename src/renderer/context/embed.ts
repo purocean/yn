@@ -21,7 +21,7 @@ export const IFrame = defineComponent({
     iframeProps: Object as PropType<IframeHTMLAttributes>,
     onLoad: Function as PropType<(iframe: HTMLIFrameElement) => void>
   },
-  setup (props) {
+  setup (props, { expose }) {
     const url = ref('')
     const iframe = ref<HTMLIFrameElement>()
 
@@ -61,6 +61,12 @@ export const IFrame = defineComponent({
       win.ctx = window.ctx
       props.onLoad?.(frame)
     }
+
+    expose({
+      reload: () => {
+        iframe.value?.contentWindow?.location.reload()
+      }
+    })
 
     return () => url.value ? h('iframe', {
       ref: iframe,

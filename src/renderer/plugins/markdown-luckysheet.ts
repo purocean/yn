@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, watch } from 'vue'
+import { computed, defineComponent, h, ref, watch } from 'vue'
 
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
@@ -200,9 +200,14 @@ const LuckyComponent = defineComponent({
   setup (props) {
     logger.debug('setup', props)
     const srcdoc = ref('')
+    const refIFrame = ref<any>()
 
     const update = () => {
       srcdoc.value = buildSrcdoc(props.repo!, props.path!, false)
+    }
+
+    const reload = () => {
+      refIFrame.value.reload()
     }
 
     watch(props, update, { immediate: true })
@@ -221,6 +226,7 @@ const LuckyComponent = defineComponent({
         },
         [
           // button('全屏查看', () => 0),
+          button('重载', reload),
           button('新窗口编辑', () => {
             const html = buildSrcdoc(props.repo!, props.path!, true)
             env.openWindow(buildSrc(html, '编辑表格', false, false), '_blank', { alwaysOnTop: false })
@@ -228,6 +234,7 @@ const LuckyComponent = defineComponent({
         ]
       ),
       h(IFrame, {
+        ref: refIFrame,
         html: srcdoc.value,
         debounce: 1000,
         iframeProps: {
