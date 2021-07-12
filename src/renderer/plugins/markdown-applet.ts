@@ -1,97 +1,9 @@
-import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { h } from 'vue'
 import CryptoJS from 'crypto-js'
-import { debounce } from 'lodash-es'
 import dayjs from 'dayjs'
 import Markdown from 'markdown-it'
-import { useBus } from '@fe/support/bus'
 import { Plugin } from '@fe/context/plugin'
-import { getThemeName } from '@fe/context/theme'
-
-let cssText = ''
-
-const Applet = defineComponent({
-  name: 'applet',
-  props: {
-    id: String,
-    code: String,
-    title: String,
-  },
-  setup (props) {
-    const bus = useBus()
-    const iframe = ref<HTMLIFrameElement>()
-    const srcdoc = ref('')
-
-    const setSrcdoc = () => {
-      const theme = getThemeName()
-      srcdoc.value = `
-        <html app-theme="${theme}">
-          <head>
-            <style>
-              ${cssText}
-
-              button {
-                margin-left: 0;
-              }
-
-              input:not([type="checkbox"]):not([type="radio"]), textarea, select {
-                margin: 10px 0;
-              }
-            </style>
-          </head>
-
-          ${props.code}
-        </html>
-      `
-    }
-
-    onMounted(setSrcdoc)
-    watch(() => props.code, debounce(setSrcdoc, 1000))
-    bus.on('theme.change', setSrcdoc)
-
-    onBeforeUnmount(() => {
-      bus.off('theme.change', setSrcdoc)
-    })
-
-    const onLoad = function (this: HTMLIFrameElement) {
-      const resize = () => {
-        iframe.value!.height = iframe.value!.contentDocument!.documentElement.scrollHeight + 'px'
-        bus.emit('global.resize')
-      }
-      resize()
-
-      const win = iframe.value!.contentWindow as any
-
-      // 注入变量
-      win.resize = resize
-      win.appletFrame = this
-      win.appletId = props.id
-      win.CryptoJS = CryptoJS
-      win.dayjs = dayjs
-      win.ctx = window.ctx
-
-      // 调用初始化方法
-      win.init && win.init()
-    }
-
-    return () => {
-      return h('fieldset', {}, [
-        h('legend', {}, `Applet: ${props.title}`),
-        h('div',
-          { class: 'applet' },
-          h('iframe', {
-            ref: iframe,
-            srcdoc: srcdoc.value,
-            class: 'applet-iframe',
-            frameBorder: '0',
-            width: '100%',
-            height: '20px',
-            onLoad,
-          })
-        )
-      ])
-    }
-  }
-})
+import { IFrame } from '@fe/context/embed'
 
 const MarkdownItPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
@@ -108,40 +20,43 @@ const MarkdownItPlugin = (md: Markdown) => {
     const appletId = `applet-${hash}-${idx}`
     const appletTitle = firstLine.replace('<!--', '').replace('-->', '').replace('--applet--', '').trim()
 
-    return h(Applet, {
-      id: appletId,
-      title: appletTitle,
-      code,
-    }) as any
-  }
-}
+    const html = `
+      <style>
+        button { margin-left: 0; }
+        input:not([type="checkbox"]):not([type="radio"]), textarea, select { margin: 10px 0; }
+      </style>
 
-export function getCssText () {
-  return [].slice.call(window.document.styleSheets)
-    .map((styleSheet: CSSStyleSheet) => [].slice.call(styleSheet.cssRules))
-    .flat()
-    .filter((cssRule: any) =>
-      (
-        cssRule.conditionText && (
-          cssRule.conditionText === 'screen' ||
-          cssRule.conditionText.includes('prefers-color-scheme')
-        )
-      ) || (
-        cssRule.selectorText && (
-          cssRule.selectorText.startsWith('html') ||
-          cssRule.selectorText.startsWith(':root') ||
-          cssRule.selectorText.startsWith('::')
-        )
+      ${code}
+    `
+
+    return h('fieldset', {}, [
+      h('legend', {}, `Applet: ${appletTitle}`),
+      h('div',
+        { class: 'applet' },
+        h(IFrame, {
+          html,
+          debounce: 1000,
+          onLoad (iframe: HTMLIFrameElement) {
+            const win = iframe.contentWindow as any
+            win.appletId = appletId
+            win.CryptoJS = CryptoJS
+            win.dayjs = dayjs
+            win.init?.()
+            win.resize()
+          },
+          iframeProps: {
+            class: 'applet-iframe',
+            height: '20px',
+          }
+        }),
       )
-    )
-    .map((cssRule: CSSRule) => cssRule.cssText)
-    .join('\n')
+    ]) as any
+  }
 }
 
 export default {
   name: 'applet',
   register: ctx => {
-    cssText = getCssText()
     ctx.markdown.registerPlugin(MarkdownItPlugin)
   }
 } as Plugin

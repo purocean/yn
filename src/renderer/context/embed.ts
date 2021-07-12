@@ -1,6 +1,6 @@
-import { useBus } from '@fe/support/bus'
 import { debounce } from 'lodash-es'
-import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { defineComponent, h, onBeforeUnmount, onMounted, PropType, ref, watch } from 'vue'
+import { useBus } from '@fe/support/bus'
 
 export function buildSrc (html: string, title = '') {
   return `/embed/?_t=${Date.now()}&title=${encodeURIComponent(title)}&html=${encodeURIComponent(html)}`
@@ -14,7 +14,8 @@ export const IFrame = defineComponent({
       default: 500
     },
     html: String,
-    iframeProps: Object
+    iframeProps: Object,
+    onLoad: Function as PropType<(iframe: HTMLIFrameElement) => void>
   },
   setup (props) {
     const url = ref('')
@@ -54,7 +55,7 @@ export const IFrame = defineComponent({
       // 注入变量
       win.resize = resize
       win.ctx = window.ctx
-      props.iframeProps?.onLoad?.call(frame)
+      props.onLoad?.(frame)
     }
 
     return () => url.value ? h('iframe', {
@@ -63,8 +64,8 @@ export const IFrame = defineComponent({
       frameBorder: '0',
       width: '100%',
       height: '100px',
-      ...props.iframeProps,
       onLoad,
+      ...props.iframeProps,
     }) : null
   }
 })

@@ -1,6 +1,7 @@
 import Markdown from 'markdown-it'
 import { defineComponent, h, ref, watch } from 'vue'
 import { Plugin } from '@fe/context/plugin'
+import { IFrame } from '@fe/context/embed'
 import * as api from '@fe/support/api'
 import { useBus } from '@fe/support/bus'
 import { openInNewWindow } from '@fe/utils'
@@ -46,18 +47,17 @@ const Drawio = defineComponent({
           button('新窗口打开', () => openInNewWindow('查看图形', srcdoc.value)),
         ]
       ),
-      h(
-        'iframe',
-        {
-          ref: iframe,
+      h(IFrame, {
+        html: srcdoc.value,
+        onLoad (frame) {
+          iframe.value = frame
+          resize()
+        },
+        iframeProps: {
           class: 'drawio',
-          frameBorder: '0',
-          width: '100%',
           height: '300px',
-          srcdoc: srcdoc.value,
-          onLoad: resize
-        }
-      ),
+        },
+      })
     ])
   }
 })
