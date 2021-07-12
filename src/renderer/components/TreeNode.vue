@@ -226,6 +226,10 @@ export default defineComponent({
   user-select: none;
 }
 
+summary {
+  outline: none;
+}
+
 summary.folder::-webkit-details-marker,
 summary.folder::marker {
   flex: none;
