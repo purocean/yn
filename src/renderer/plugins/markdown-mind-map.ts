@@ -9,66 +9,59 @@ import storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/context/embed'
 
 const layoutStorageKey = 'mind-map-layout'
+let links = ''
 
 const buildSrcdoc = (json: string, btns: string) => {
   return `
-    <html>
-      <head>
-        <link rel="stylesheet" href="${location.origin}/kityminder.core.css" rel="stylesheet">
-        <script src="${location.origin}/kity.min.js"></script>
-        <script src="${location.origin}/kityminder.core.min.js"></script>
-        <style>
-          body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-          }
+    ${links}
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
 
-          #minder-view {
-            position: absolute;
-            border: 1px solid #ccc;
-            left: 10px;
-            top: 10px;
-            bottom: 10px;
-            right: 10px;
-          }
-        </style>
-      </head>
-      <body style="width: 100%; height: 100vh; padding: 0; margin: 0">
-        ${btns}
-        <script id="minder-view" type="application/kityminder" minder-data-type="json">${json}</script>
-        <script type="text/javascript">
-          var km = window.km = new kityminder.Minder();
-          km.setup('#minder-view');
-          km.disable();
-          km.execCommand('hand');
+      #minder-view {
+        position: absolute;
+        border: 1px solid #ccc;
+        left: 10px;
+        top: 10px;
+        bottom: 10px;
+        right: 10px;
+      }
+    </style>
+    ${btns}
+    <script id="minder-view" type="application/kityminder" minder-data-type="json">${json}</script>
+    <script type="text/javascript">
+      var km = window.km = new kityminder.Minder();
+      km.setup('#minder-view');
+      km.disable();
+      km.execCommand('hand');
 
-          const switchLayout = () => {
-            const tplList = ['default', 'right', 'structure', 'filetree', 'tianpan', 'fish-bone']
-            const tpl = km.getTemplate()
-            const index = tplList.indexOf(tpl)
-            const nextIndex = index > tplList.length - 2 ? 0 : index + 1
-            km.useTemplate(tplList[nextIndex])
-            km.execCommand('camera')
-          }
+      const switchLayout = () => {
+        const tplList = ['default', 'right', 'structure', 'filetree', 'tianpan', 'fish-bone']
+        const tpl = km.getTemplate()
+        const index = tplList.indexOf(tpl)
+        const nextIndex = index > tplList.length - 2 ? 0 : index + 1
+        km.useTemplate(tplList[nextIndex])
+        km.execCommand('camera')
+      }
 
-          const switchCompat = () => {
-            const theme = km.getTheme().split('-')
-            if (theme[theme.length - 1] === 'compat') {
-              theme.pop()
-            } else {
-              theme.push('compat')
-            }
+      const switchCompat = () => {
+        const theme = km.getTheme().split('-')
+        if (theme[theme.length - 1] === 'compat') {
+          theme.pop()
+        } else {
+          theme.push('compat')
+        }
 
-            km.useTheme(theme.join('-'))
-            km.execCommand('camera')
-          }
+        km.useTheme(theme.join('-'))
+        km.execCommand('camera')
+      }
 
-          const zoomOut = () => km.execCommand('zoomOut')
-          const zoomIn = () => km.execCommand('zoomIn')
-        </script>
-      </body>
-    </html>
+      const zoomOut = () => km.execCommand('zoomOut')
+      const zoomIn = () => km.execCommand('zoomIn')
+    </script>
   `
 }
 
@@ -222,6 +215,23 @@ export default {
   register: ctx => {
     ctx.markdown.registerPlugin(md => {
       md.renderer.rules.bullet_list_open = renderRule
+
+      const style = document.createElement('link')
+      style.rel = 'stylesheet'
+      style.href = '/kity/kityminder.core.css'
+      document.getElementsByTagName('head')[0].appendChild(style)
+
+      const script1 = document.createElement('script')
+      script1.src = '/kity/kity.min.js'
+      script1.async = false
+      document.body.appendChild(script1)
+
+      const script2 = document.createElement('script')
+      script2.src = '/kity/kityminder.core.min.js'
+      script2.async = false
+      document.body.appendChild(script2)
+
+      links = [style.outerHTML, script1.outerHTML, script2.outerHTML].join('\n')
     })
   }
 } as Plugin
