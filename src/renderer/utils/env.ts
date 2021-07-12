@@ -7,13 +7,29 @@ const nodeRequire = window && (window.require || _window.nodeRequire)
 const isElectron = !!(nodeProcess?.versions?.electron)
 const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)
 
-const openAlwaysOnTopWindow = (url: string, target = '_blank', alwaysOnTop = true) => {
+const openWindow = (url: string, target = '_blank', options: Record<string, any> = {}) => {
   if (isElectron) {
-    const opener: any = window.open(url, target, `nodeIntegration=yes,frame=true,alwaysOnTop=${alwaysOnTop},enableRemoteModule=true,nodeIntegrationInSubFrames=true,experimentalFeatures=true`)
+    const [x, y] = nodeRequire('electron').remote.getCurrentWindow().getPosition()
+    const opts = {
+      x: x + 33,
+      y: y + 33,
+      nodeIntegration: true,
+      frame: true,
+      titleBarStyle: 'default',
+      alwaysOnTop: true,
+      enableRemoteModule: true,
+      nodeIntegrationInSubFrames: true,
+      experimentalFeatures: true,
+      ...options
+    }
+
+    const opener: any = window.open(url, target, Object.entries(opts).map(([k, v]) => `${k}=${v}`).join(','))
 
     const preload = `
       // 在 Electron 环境中开启鼠标滚轮缩放页面
-      const webContents = require('electron').remote.getCurrentWebContents()
+      xRequire = require || nodeRequire
+
+      const webContents = xRequire('electron').remote.getCurrentWebContents()
 
       const changeZoomFactor = zoomIn => {
         const currentZoomFactor = webContents.getZoomFactor()
@@ -57,5 +73,5 @@ export default {
   require: nodeRequire,
   isElectron,
   isMacOS,
-  openAlwaysOnTopWindow,
+  openWindow,
 }

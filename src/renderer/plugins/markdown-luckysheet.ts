@@ -1,8 +1,8 @@
-import { defineComponent, h, onMounted, ref, watch } from 'vue'
+import { defineComponent, h, ref, watch } from 'vue'
 
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
-import { getLogger, openInNewWindow } from '@fe/utils'
+import { getLogger } from '@fe/utils'
 import { Doc } from '@fe/support/types'
 import { useModal } from '@fe/support/modal'
 import { useToast } from '@fe/support/toast'
@@ -11,15 +11,11 @@ import env from '@fe/utils/env'
 import store from '@fe/support/store'
 import * as api from '@fe/support/api'
 import { refreshTree } from '@fe/context/tree'
-import { debounce } from 'lodash'
+import { buildSrc, IFrame } from '@fe/context/embed'
 
 const logger = getLogger('plugin-markdown-luckysheet')
 
 const fileExt = '.luckysheet'
-
-function openWindow (title: string, srcdoc: string) {
-  openInNewWindow(title, srcdoc, false)
-}
 
 function buildSrcdoc (repo: string, path: string, full: boolean) {
   const options = { container: 'lucky-sheet', lang: 'zh', showtoolbarConfig: { print: false } }
@@ -40,7 +36,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       ${env.isElectron
         ? `
         let closeWindow = false
-        const remote = parent.require('electron').remote
+        const remote = window.nodeRequire('electron').remote
         window.onbeforeunload = evt => {
           if (saved() || closeWindow) return null
 
@@ -96,10 +92,10 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
   }
 
   return `
-    <link rel='stylesheet' href='${location.origin}/luckysheet/plugins/css/pluginsCss.css' />
-    <link rel='stylesheet' href='${location.origin}/luckysheet/plugins/plugins.css' />
-    <link rel='stylesheet' href='${location.origin}/luckysheet/css/luckysheet.css' />
-    <link rel='stylesheet' href='${location.origin}/luckysheet/assets/iconfont/iconfont.css' />
+    <link rel='stylesheet' href='/luckysheet/plugins/css/pluginsCss.css' />
+    <link rel='stylesheet' href='/luckysheet/plugins/plugins.css' />
+    <link rel='stylesheet' href='/luckysheet/css/luckysheet.css' />
+    <link rel='stylesheet' href='/luckysheet/assets/iconfont/iconfont.css' />
     <style>
       html, body {
         height: 100%;
@@ -118,8 +114,8 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       }
     </style>
     <div id="lucky-sheet" style="height: 100%"></div>
-    <script src="${location.origin}/luckysheet/plugins/js/plugin.js"></script>
-    <script src="${location.origin}/luckysheet/luckysheet.umd.js"></script>
+    <script defer src="/luckysheet/plugins/js/plugin.js"></script>
+    <script defer src="/luckysheet/luckysheet.umd.js"></script>
     <script>
       async function fetchHttp (input, init) {
         const response = await fetch(input, init)
@@ -133,7 +129,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
 
       async function readFile (repo, path) {
         try {
-          const result = await fetchHttp(\`${location.origin}/api/file?path=\${encodeURIComponent(path)}&repo=\${encodeURIComponent(repo)}\`)
+          const result = await fetchHttp(\`/api/file?path=\${encodeURIComponent(path)}&repo=\${encodeURIComponent(repo)}\`)
           const hash = result.data.hash
           const content = result.data.content
 
@@ -147,7 +143,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
 
       async function writeFile (repo, path, content) {
         try {
-          const result = await fetchHttp('${location.origin}/api/file', {
+          const result = await fetchHttp('/api/file', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ repo, path, content, old_hash: window.hash })
@@ -204,14 +200,12 @@ const LuckyComponent = defineComponent({
   setup (props) {
     logger.debug('setup', props)
     const srcdoc = ref('')
-    const iframe = ref<HTMLElement | null>(null)
 
     const update = () => {
       srcdoc.value = buildSrcdoc(props.repo!, props.path!, false)
     }
 
-    onMounted(update)
-    watch(props, debounce(update, 500))
+    watch(props, update, { immediate: true })
 
     const button = (text: string, onClick: any) => h('button', {
       style: 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .1s ease-in-out; line-height: 24px;',
@@ -227,17 +221,20 @@ const LuckyComponent = defineComponent({
         },
         [
           // button('全屏查看', () => 0),
-          button('新窗口编辑', () => openWindow('编辑表格', buildSrcdoc(props.repo!, props.path!, true))),
+          button('新窗口编辑', () => {
+            const html = buildSrcdoc(props.repo!, props.path!, true)
+            env.openWindow(buildSrc(html, '编辑表格', false, false), '_blank', { alwaysOnTop: false })
+          }),
         ]
       ),
-      h('iframe', {
-        ref: iframe,
-        class: 'lucky-sheet',
-        frameBorder: '0',
-        width: '100%',
-        height: '500px',
-        srcdoc: srcdoc.value,
-      }),
+      h(IFrame, {
+        html: srcdoc.value,
+        debounce: 1000,
+        iframeProps: {
+          class: 'lucky-sheet',
+          height: '500px'
+        }
+      })
     ])
   }
 })
@@ -362,7 +359,7 @@ export default {
     ctx.registerHook('ON_TREE_NODE_SELECT', async (item: Doc) => {
       if (item.path.toLowerCase().endsWith(fileExt)) {
         const srcdoc = buildSrcdoc(item.repo, item.path, true)
-        openWindow('编辑表格', srcdoc)
+        env.openWindow(buildSrc(srcdoc, '编辑表格', false, false), '_blank', { alwaysOnTop: false })
 
         return true
       }

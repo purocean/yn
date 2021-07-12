@@ -36,6 +36,7 @@ const MarkdownItPlugin = (md: Markdown) => {
         h(IFrame, {
           html,
           debounce: 1000,
+          globalStyle: true,
           onLoad (iframe: HTMLIFrameElement) {
             const win = iframe.contentWindow as any
             win.appletId = appletId

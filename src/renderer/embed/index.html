@@ -13,7 +13,30 @@
     </script>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="./index.ts"></script>
+    <script>
+      const params = new URLSearchParams(location.search)
+
+      if (params.get('with-node') === 'false') {
+        window.nodeRequire = window.require
+        window.nodeProcess = window.process
+        window.nodeModule = window.module
+        window.require = undefined
+        window.process = undefined
+        window.module = undefined
+      }
+
+      const title = params.get('title')
+      if (title) {
+        document.title = title
+      }
+
+      if (params.get('with-global-style') === 'false') {
+        Array.prototype.forEach.call(document.styleSheets, (item) => {
+          item.disabled = true
+        })
+      }
+
+      document.write(params.get('html') || '')
+    </script>
   </body>
 </html>
