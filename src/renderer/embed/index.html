@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="../assets/favicon.ico">
+    <link rel="stylesheet" href="../styles/index.scss">
+    <title>Yank Note</title>
+    <script>
+      // 设置初始主题
+      window.document.documentElement.setAttribute('app-theme', JSON.parse(localStorage['app.theme'] || '"system"'))
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>

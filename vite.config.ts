@@ -43,5 +43,11 @@ export default defineConfig({
   build: {
     outDir: '../../dist/renderer',
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'src/renderer/index.html'),
+        embed: path.resolve(__dirname, 'src/renderer/embed/index.html')
+      }
+    }
   }
 })
