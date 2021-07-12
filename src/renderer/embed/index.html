@@ -14,16 +14,14 @@
   </head>
   <body>
     <script>
-      const params = new URLSearchParams(location.search)
+      window.nodeRequire = window.require
+      window.nodeProcess = window.process
+      window.nodeModule = window.module
+      window.require = undefined
+      window.process = undefined
+      window.module = undefined
 
-      if (params.get('with-node') === 'false') {
-        window.nodeRequire = window.require
-        window.nodeProcess = window.process
-        window.nodeModule = window.module
-        window.require = undefined
-        window.process = undefined
-        window.module = undefined
-      }
+      const params = new URLSearchParams(location.search)
 
       const title = params.get('title')
       if (title) {

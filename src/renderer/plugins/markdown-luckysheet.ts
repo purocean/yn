@@ -276,7 +276,7 @@ const LuckyComponent = defineComponent({
             button('重载', reload),
             button('新窗口编辑', () => {
               const html = buildSrcdoc(props.repo!, props.path!, true)
-              env.openWindow(buildSrc(html, '编辑表格', false, false), '_blank', { alwaysOnTop: false })
+              env.openWindow(buildSrc(html, '编辑表格', false), '_blank', { alwaysOnTop: false })
             }),
           ]
         ),
@@ -406,7 +406,7 @@ export default {
     ctx.registerHook('ON_TREE_NODE_SELECT', async (item: Doc) => {
       if (item.path.toLowerCase().endsWith(fileExt)) {
         const srcdoc = buildSrcdoc(item.repo, item.path, true)
-        env.openWindow(buildSrc(srcdoc, '编辑表格', false, false), '_blank', { alwaysOnTop: false })
+        env.openWindow(buildSrc(srcdoc, '编辑表格', false), '_blank', { alwaysOnTop: false })
 
         return true
       }

@@ -74,6 +74,7 @@ const createWindow = () => {
       webSecurity: false,
       nodeIntegration: true,
       enableRemoteModule: true,
+      nodeIntegrationInSubFrames: true,
     },
     // Linux 上设置窗口图标
     ...(isLinux ? { icon: path.join(__dirname, './assets/icon.png') } : undefined)

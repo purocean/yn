@@ -2,8 +2,8 @@ import { debounce } from 'lodash-es'
 import { defineComponent, h, IframeHTMLAttributes, onBeforeUnmount, onMounted, PropType, ref, watch } from 'vue'
 import { useBus } from '@fe/support/bus'
 
-export function buildSrc (html: string, title = '', globalStyle = false, withNode = true) {
-  return `/embed/?title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&with-node=${withNode}&html=${encodeURIComponent(html)}`
+export function buildSrc (html: string, title = '', globalStyle = false) {
+  return `/embed/?title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&html=${encodeURIComponent(html)}`
 }
 
 export const IFrame = defineComponent({
