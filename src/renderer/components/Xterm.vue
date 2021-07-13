@@ -41,8 +41,10 @@ export default defineComponent({
     }
 
     function changeTheme () {
-      const background = getColorScheme() === 'dark' ? '#2c2e2f' : '#fbfbfb'
-      xterm!.setOption('theme', { background })
+      const dark = getColorScheme() === 'dark'
+      const background = dark ? '#2c2e2f' : '#fbfbfb'
+      const foreground = dark ? '#fbfbfb' : '#2c2e2f'
+      xterm!.setOption('theme', { background, foreground })
     }
 
     function input (data: string) {
