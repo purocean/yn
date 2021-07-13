@@ -76,7 +76,6 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
     Object.assign(options, {})
   } else {
     Object.assign(options, {
-      showstatisticBar: false,
       showtoolbar: false,
       showinfobar: false,
       allowEdit: false,
