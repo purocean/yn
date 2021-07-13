@@ -19,7 +19,7 @@ const logger = getLogger('plugin-markdown-luckysheet')
 const fileExt = '.luckysheet'
 
 function buildSrcdoc (repo: string, path: string, full: boolean) {
-  const options = { container: 'lucky-sheet', lang: 'zh', showtoolbarConfig: { print: false } }
+  const options = { container: 'lucky-sheet', lang: 'zh', plugins: ['chart'], showtoolbarConfig: { print: false } }
   let onload = ''
 
   if (full) {
@@ -94,10 +94,11 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
   }
 
   return `
-    <link rel='stylesheet' href='/luckysheet/plugins/css/pluginsCss.css' />
-    <link rel='stylesheet' href='/luckysheet/plugins/plugins.css' />
-    <link rel='stylesheet' href='/luckysheet/css/luckysheet.css' />
-    <link rel='stylesheet' href='/luckysheet/assets/iconfont/iconfont.css' />
+    <link rel="stylesheet" href="/embed/plugins/css/pluginsCss.css" />
+    <link rel="stylesheet" href="/embed/plugins/plugins.css" />
+    <link rel="stylesheet" href="/embed/css/luckysheet.css" />
+    <link rel="stylesheet" href="/embed/assets/iconfont/iconfont.css" />
+    <link rel="stylesheet" href="/embed/expendPlugins/chart/chartmix.css" />
     <style>
       html, body {
         height: 100%;
@@ -116,8 +117,8 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       }
     </style>
     <div id="lucky-sheet" style="height: 100%"></div>
-    <script src="/luckysheet/plugins/js/plugin.js"></script>
-    <script src="/luckysheet/luckysheet.umd.js"></script>
+    <script src="/embed/plugins/js/plugin.js"></script>
+    <script src="/embed/luckysheet.umd.js"></script>
     <script>
       window.getStatus = () => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText
       window.setStatus = str => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = str
