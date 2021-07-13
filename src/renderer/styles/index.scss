@@ -3,7 +3,7 @@
 @mixin root-vars($background, $foreground) {
   --g-background-color: #{$background};
   --g-foreground-color: #{$foreground};
-  @for $i from 0 to 100 {
+  @for $i from 0 through 100 {
     --g-color-#{$i}: #{mix($background, $foreground, $i * 1%)};
   }
 

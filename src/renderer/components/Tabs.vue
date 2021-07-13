@@ -153,10 +153,10 @@ export default defineComponent({
 .tabs {
   flex: none;
   height: 30px;
-  background: var(--g-background-color);
+  background: var(--g-color-93);
   display: flex;
   z-index: 1;
-  box-shadow: 0px 3px 3px -3px var(--g-color-100);
+  box-shadow: 0px 3px 3px -3px var(--g-color-93);
 }
 
 .tab {
