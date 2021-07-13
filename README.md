@@ -78,6 +78,11 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.3.4](https://github.com/purocean/yn/releases/tag/v3.3.4) 2021-07-13
+1. 修复终端主题不正确和不能正确初始化问题
+2. 修复终端不能正确初始化问题
+3. 修复表格不能插入图表问题
+
 ### [v3.3.3](https://github.com/purocean/yn/releases/tag/v3.3.3) 2021-07-13
 1. 嵌入文档表格增加统计栏
 2. 修复表格保存校验问题
