@@ -3,7 +3,7 @@ import { defineComponent, h, IframeHTMLAttributes, onBeforeMount, onBeforeUnmoun
 import { useBus } from '@fe/support/bus'
 
 export function buildSrc (html: string, title = '', globalStyle = false) {
-  return `/embed/?title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&html=${encodeURIComponent(html)}`
+  return `/embed/#title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&html=${encodeURIComponent(html)}`
 }
 
 export const IFrame = defineComponent({
