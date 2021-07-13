@@ -78,6 +78,11 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.3.0](https://github.com/purocean/yn/releases/tag/v3.3.0) 2021-07-13
+1. 增加浅色主题
+2. 增加 Luckysheet 表格嵌入
+3. 优化应用窗口使用体验
+
 ### [v3.2.2](https://github.com/purocean/yn/releases/tag/v3.2.2) 2021-07-09
 1. 优化文件切换体验，降低闪烁
 2. HTML 小工具增加 ctx
