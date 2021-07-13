@@ -78,6 +78,11 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.3.3](https://github.com/purocean/yn/releases/tag/v3.3.3) 2021-07-13
+1. 嵌入文档表格增加统计栏
+2. 修复表格保存校验问题
+3. 修复标签颜色不正确问题
+
 ### [v3.3.2](https://github.com/purocean/yn/releases/tag/v3.3.2) 2021-07-13
 1. 增加浅色主题
 2. 增加 Luckysheet 表格嵌入
