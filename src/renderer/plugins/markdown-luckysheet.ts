@@ -119,8 +119,8 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       }
     </style>
     <div id="lucky-sheet" style="height: 100%"></div>
-    <script defer src="/luckysheet/plugins/js/plugin.js"></script>
-    <script defer src="/luckysheet/luckysheet.umd.js"></script>
+    <script src="/luckysheet/plugins/js/plugin.js"></script>
+    <script src="/luckysheet/luckysheet.umd.js"></script>
     <script>
       async function fetchHttp (input, init) {
         const response = await fetch(input, init)
