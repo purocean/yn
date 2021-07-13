@@ -30,9 +30,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       btn.onclick = save
       document.querySelector('.luckysheet_info_detail .sheet-name').after(btn)
       document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_update').innerText = '${path}'
-      document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = '未保存'
-
-      const saved = () => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText.startsWith('保存于')
+      setStatus('加载完毕')
 
       ${env.isElectron
         ? `
@@ -76,7 +74,6 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
     Object.assign(options, {})
   } else {
     Object.assign(options, {
-      showstatisticBar: false,
       showtoolbar: false,
       showinfobar: false,
       allowEdit: false,
@@ -122,6 +119,10 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
     <script src="/luckysheet/plugins/js/plugin.js"></script>
     <script src="/luckysheet/luckysheet.umd.js"></script>
     <script>
+      window.getStatus = () => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText
+      window.setStatus = str => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = str
+      window.saved = () => getStatus().startsWith('保存于') || getStatus() === '加载完毕'
+
       async function fetchHttp (input, init) {
         const response = await fetch(input, init)
         const result = await response.json()
@@ -170,12 +171,12 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
 
       async function save () {
         try {
-          document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = '保存中……'
+          setStatus('保存中……')
           await writeFile(repo, path, JSON.stringify(window.luckysheet.getAllSheets()))
-          document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = '保存于：' + (new Date()).toLocaleString()
+          setStatus('保存于：' + (new Date()).toLocaleString())
           await readFile(repo, path)
         } catch (error) {
-          document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = '保存失败：' + error.message
+          setStatus('保存失败：' + error.message)
         }
       }
 
@@ -183,6 +184,9 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
         const options = ${JSON.stringify(options)}
         options.hook = {
           workbookCreateAfter,
+          updated () {
+            setStatus('未保存')
+          }
         }
 
         const content = await readFile(repo, path)
