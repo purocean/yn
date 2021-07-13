@@ -436,7 +436,7 @@ export default defineComponent({
   html[app-theme=dark] .markdown-body {
     .reduce-brightness, input, img {
       transition: all .1s ease-in-out;
-      filter: brightness(70%);
+      filter: brightness(90%);
 
       &:hover {
         filter: none;
