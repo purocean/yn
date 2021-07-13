@@ -162,8 +162,6 @@ export default defineComponent({
 .tab {
   width: 100%;
   max-width: 150px;
-  height: 100%;
-  margin-bottom: -3px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -171,6 +169,7 @@ export default defineComponent({
   color: var(--g-color-25);
   cursor: default;
   font-size: 12px;
+  overflow: hidden;
   background: var(--g-color-93);
 }
 
