@@ -19,21 +19,64 @@ const NUMBER_LINE_NAME = 'hljs-ln-n'
 const DATA_ATTR_NAME = 'data-line-number'
 const BREAK_LINE_REGEXP = /\r\n|\r|\n/g
 
-function addStyles () {
-  var css = document.createElement('style')
-  css.type = 'text/css'
-  css.innerHTML = format(
-    '.{0}{border-collapse:collapse}' +
-    '.{0} td{padding:0}' +
-    '.{1}:before{content:attr({2})}' +
-    '.{3}{max-width: 45px; width: 35px}',
-    [
-      TABLE_NAME,
-      NUMBER_LINE_NAME,
-      DATA_ATTR_NAME,
-      NUMBERS_BLOCK_NAME
-    ])
-  document.getElementsByTagName('head')[0].appendChild(css)
+function addCustomStyles (ctx: Ctx) {
+  ctx.theme.addStyles(
+    `
+      .markdown-view .markdown-body table.${TABLE_NAME},
+      .markdown-view .markdown-body table.${TABLE_NAME} tr,
+      .markdown-view .markdown-body table.${TABLE_NAME} td {
+        border: 0;
+      }
+
+      .markdown-view .markdown-body table.${TABLE_NAME} {
+        padding-bottom: 10px;
+        border-collapse: collaps;
+      }
+
+      .markdown-view .markdown-body table.${TABLE_NAME} td {
+        padding: 0;
+      }
+
+      .markdown-view .markdown-body table.${TABLE_NAME} tbody {
+        display: table;
+        min-width: 100%;
+      }
+
+      .markdown-view .markdown-body table.${TABLE_NAME} td.${NUMBERS_BLOCK_NAME} {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        text-align: center;
+        border-right: 1px solid #777;
+        vertical-align: top;
+        padding-right: 5px;
+        max-width: 45px; width: 35px;
+      }
+
+      .markdown-view .markdown-body table.${TABLE_NAME} td.${CODE_BLOCK_NAME} {
+        padding-left: 10px;
+      }
+
+      .markdown-view .markdown-body table.${TABLE_NAME} .${NUMBER_LINE_NAME}:before{
+        content: attr(${DATA_ATTR_NAME})
+      }
+
+      @media print {
+        .markdown-view .markdown-body table.${TABLE_NAME} td {
+          white-space: pre-wrap;
+        }
+      }
+
+      @media screen {
+        .markdown-view .markdown-body table.${TABLE_NAME} {
+          max-height: 400px;
+        }
+      }
+    `
+  )
 }
 
 function lineNumbersInternal (element: any, options?: any) {
@@ -165,7 +208,7 @@ function highlight (str: string, lang: string) {
 export default {
   name: 'markdown-code',
   register: (ctx: Ctx) => {
-    ctx.registerHook('ON_STARTUP', addStyles)
+    addCustomStyles(ctx)
     ctx.markdown.registerPlugin(md => {
       const Fun = (fn: Function) => (tokens: any, idx: any, options: any, env: any, slf: any) => {
         if (tokens[idx].attrIndex('title') < 0) {

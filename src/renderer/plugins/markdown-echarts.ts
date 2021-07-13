@@ -3,6 +3,7 @@ import * as echarts from 'echarts'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
+import { getColorScheme } from '@fe/context/theme'
 
 const render = (code: string) => {
   const id = `echart-${CryptoJS.MD5(code).toString()}-${Math.random().toString(36).substr(2)}`
@@ -27,7 +28,9 @@ const EChartsPlugin = (md: Markdown) => {
 
 let charts: {[key: string]: any} = {}
 
-const update = (theme = 'dark', animation: boolean | undefined = undefined, renderImg = false) => {
+const update = (theme: string | undefined = undefined, animation: boolean | undefined = undefined, renderImg = false) => {
+  theme ??= getColorScheme()
+
   Object.values(charts).forEach(x => x.chart.dispose())
   charts = {}
 
@@ -90,6 +93,13 @@ window.addEventListener('beforeprint', () => {
 export default {
   name: 'markdown-echarts',
   register: ctx => {
+    ctx.theme.addStyles(`
+      .markdown-view .markdown-body .echarts {
+        width: 100%;
+        height: 350px;
+      }
+    `)
+
     ctx.markdown.registerPlugin(EChartsPlugin)
     ctx.registerHook('ON_VIEW_RENDERED', () => {
       update()
@@ -98,5 +108,7 @@ export default {
       preparePrint() // 转换成图片形式，设置主题
       setTimeout(() => update(), 0) // 恢复
     })
+
+    ctx.bus.on('theme.change', () => update())
   }
 } as Plugin

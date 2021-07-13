@@ -5,6 +5,7 @@ import { Plugin } from '@fe/context/plugin'
 import { getAction } from '@fe/context/action'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import storage from '@fe/utils/storage'
 
 const cachePrefix = 'run_code_result_'
 
@@ -31,7 +32,7 @@ const RunCode = defineComponent({
         hasResult = true
       }
 
-      localStorage[`${cachePrefix}${hash.value}`] = result.value
+      storage.set(`${cachePrefix}${hash.value}`, result.value)
     }
 
     const run = async () => {
@@ -59,18 +60,19 @@ const RunCode = defineComponent({
     })
 
     return () => {
-      const runResult = result.value || localStorage[`${cachePrefix}${hash.value}`] || ''
+      const runResult = result.value || storage.get(`${cachePrefix}${hash.value}`, '')
 
       return [
         h('div', { class: 'run-code-action', style: 'position: sticky; left: 0; border-top: dashed 1px #888; margin: 1em 0' }, [
-          h('button', {
+          h('div', {
             title: '运行代码',
             style: 'position: absolute; top: -.7em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none',
             onClick: run
           }),
-          h('button', {
+          h('div', {
             title: '在终端中运行代码，Ctrl + 单击不退出解释器',
-            style: 'position: absolute; top: -.25em; right: -0.4em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none;transform: rotate(90deg);',
+            class: 'no-print',
+            style: 'position: absolute; top: -.5em; right: -0; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none;transform: rotate(90deg);',
             onClick: runInXterm
           }),
         ]),
@@ -105,9 +107,9 @@ const RunPlugin = (md: Markdown) => {
 }
 
 const clearCache = () => {
-  Object.keys(localStorage).forEach(key => {
+  Object.keys(storage.getAll()).forEach(key => {
     if (key.startsWith(cachePrefix)) {
-      localStorage.removeItem(key)
+      storage.remove(key)
     }
   })
 }
@@ -115,6 +117,14 @@ const clearCache = () => {
 export default {
   name: 'run-code',
   register: ctx => {
+    ctx.theme.addStyles(`
+      @media print {
+        .markdown-view .markdown-body .run-code-result {
+          white-space: pre-wrap;
+        }
+      }
+    `)
+
     ctx.markdown.registerPlugin(RunPlugin)
     ctx.registerHook('ON_STARTUP', clearCache)
 

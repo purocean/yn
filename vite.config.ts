@@ -9,6 +9,10 @@ fs.copySync(
   path.resolve(__dirname, 'src/renderer/public/vs')
 )
 
+fs.copySync(
+  path.resolve(__dirname, 'node_modules/luckysheet/dist'),
+  path.resolve(__dirname, 'src/renderer/public/luckysheet')
+)
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -39,5 +43,11 @@ export default defineConfig({
   build: {
     outDir: '../../dist/renderer',
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'src/renderer/index.html'),
+        embed: path.resolve(__dirname, 'src/renderer/embed/index.html')
+      }
+    }
   }
 })

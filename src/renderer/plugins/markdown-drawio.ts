@@ -1,9 +1,10 @@
 import Markdown from 'markdown-it'
 import { defineComponent, h, ref, watch } from 'vue'
 import { Plugin } from '@fe/context/plugin'
+import { buildSrc, IFrame } from '@fe/context/embed'
 import * as api from '@fe/support/api'
 import { useBus } from '@fe/support/bus'
-import { openInNewWindow } from '@fe/utils'
+import env from '@fe/utils/env'
 
 const Drawio = defineComponent({
   name: 'drawio',
@@ -34,7 +35,7 @@ const Drawio = defineComponent({
       onClick
     }, text)
 
-    return () => h('div', { class: 'drawio-wrapper', style: 'position: relative' }, [
+    return () => h('div', { class: 'drawio-wrapper reduce-brightness', style: 'position: relative' }, [
       h(
         'div',
         {
@@ -43,21 +44,20 @@ const Drawio = defineComponent({
         },
         [
           button('适应高度', resize),
-          button('新窗口打开', () => openInNewWindow(srcdoc.value)),
+          button('新窗口打开', () => env.openWindow(buildSrc(srcdoc.value, '查看图形'))),
         ]
       ),
-      h(
-        'iframe',
-        {
-          ref: iframe,
+      h(IFrame, {
+        html: srcdoc.value,
+        onLoad (frame) {
+          iframe.value = frame
+          resize()
+        },
+        iframeProps: {
           class: 'drawio',
-          frameBorder: '0',
-          width: '100%',
           height: '300px',
-          srcdoc: srcdoc.value,
-          onLoad: resize
-        }
-      ),
+        },
+      })
     ])
   }
 })
@@ -165,14 +165,14 @@ async function buildSrcdoc ({ repo, path, content, url }: F) {
 }
 
 export default {
-  name: 'drawio',
+  name: 'markdown-drawio',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
 
     ctx.registerHook('ON_TREE_NODE_SELECT', async (item: any) => {
       if (item.path.toLowerCase().endsWith('.drawio')) {
         const srcdoc = await buildSrcdoc(item)
-        openInNewWindow(srcdoc)
+        env.openWindow(buildSrc(srcdoc, '查看图形'))
 
         return true
       }

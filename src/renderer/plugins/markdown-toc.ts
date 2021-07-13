@@ -190,6 +190,27 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
 export default {
   name: 'markdown-toc',
   register: ctx => {
+    ctx.theme.addStyles(`
+      .markdown-view .markdown-body .table-of-contents ol {
+        counter-reset: ol-number;
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .markdown-view .markdown-body .table-of-contents li > ol {
+        padding-left: 2em;
+      }
+
+      .markdown-view .markdown-body .table-of-contents ol > li::before {
+        counter-increment: ol-number;
+        content: counters(ol-number, ".") " ";
+      }
+
+      .markdown-view .markdown-body .table-of-contents > ol > li::before {
+        counter-increment: ol-number;
+        content: counter(ol-number) ". ";
+      }
+    `)
     ctx.markdown.registerPlugin(MarkdownItPlugin)
   }
 } as Plugin

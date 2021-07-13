@@ -204,6 +204,11 @@ function math_plugin (md: any, options: any) {
 export default {
   name: 'markdown-katex',
   register: ctx => {
+    ctx.theme.addStyles(`
+      .markdown-view .markdown-body .katex {
+        background: initial;
+      }
+    `)
     ctx.markdown.registerPlugin(math_plugin, { throwOnError: true })
   }
 } as Plugin

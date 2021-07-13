@@ -5,7 +5,7 @@ import { h } from 'vue'
 
 const mermaidChart: any = (code: string) => {
   try {
-    return h('div', { key: code, class: 'mermaid' }, code)
+    return h('div', { key: code, class: 'mermaid reduce-brightness' }, code)
   } catch ({ str }) {
     return h('pre', str)
   }
@@ -32,6 +32,11 @@ const MermaidPlugin = (md: Markdown) => {
 export default {
   name: 'markdown-mermaid',
   register: ctx => {
+    ctx.theme.addStyles(`
+      .markdown-view .markdown-body .mermaid {
+        background: #fff;
+      }
+    `)
     ctx.markdown.registerPlugin(MermaidPlugin)
     ctx.registerHook('ON_VIEW_RENDERED', () => mermaid.init('.mermaid'))
   }

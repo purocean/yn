@@ -20,7 +20,7 @@ export const inputMenu = Menu.buildFromTemplate([
   { role: 'selectAll' },
 ])
 
-export const mainMenus = Menu.buildFromTemplate([
+export const mainMenus = process.platform === 'darwin' ? Menu.buildFromTemplate([
   {
     label: 'Application',
     submenu: [
@@ -41,7 +41,7 @@ export const mainMenus = Menu.buildFromTemplate([
       { role: 'selectAll', accelerator: 'CmdOrCtrl+A' }
     ]
   }
-])
+]) : null
 
 export const getTrayMenus = () => Menu.buildFromTemplate([
   {

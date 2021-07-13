@@ -2,15 +2,14 @@
   <div class="tree-node">
     <details ref="refDir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name" :open="item.path === '/'">
       <summary
-        class="folder"
-        :style="{background: selected ? '#313131' : 'none'}"
+        :class="{folder: true, 'folder-selected': selected}"
         @contextmenu.exact.prevent.stop="showContextMenu(item)">
         <div class="item">
           <div class="item-label">
             {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children.length}})</span>
           </div>
           <div class="item-action">
-            <svg-icon class="icon" color="hsla(0, 0%, 100%, .5)" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" title="创建文件"></svg-icon>
+            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" title="创建文件"></svg-icon>
           </div>
         </div>
       </summary>
@@ -217,7 +216,7 @@ export default defineComponent({
 
 <style scoped>
 .tree-node {
-  border-left: 1px rgb(87, 87, 87) solid;
+  border-left: 1px var(--g-color-80) solid;
   font-size: 16px;
   line-height: 1.4em;
   padding-left: 1em;
@@ -225,6 +224,10 @@ export default defineComponent({
 
 .tree-node * {
   user-select: none;
+}
+
+summary {
+  outline: none;
 }
 
 summary.folder::-webkit-details-marker,
@@ -237,6 +240,10 @@ summary.folder::marker {
 
 .folder {
   align-items: center;
+}
+
+.folder-selected {
+  background: var(--g-color-90)
 }
 
 .item {
@@ -274,12 +281,12 @@ summary > .item {
   height: 14px;
   width: 14px;
   border-radius: 2px;
-  color: #999999;
+  color: var(--g-color-50);
 }
 
 .item-action .icon:hover {
-  background: #757575;
-  color: #eee;
+  background: var(--g-color-80);
+  color: var(--g-color-50);
 }
 
 .item:hover .item-action {
@@ -310,11 +317,11 @@ summary > .item {
 }
 
 .file-name.selected {
-  background: #5d5d5d;
+  background: var(--g-color-80);
 }
 
 .file-name:hover {
-  background: #5d5d5d;
+  background: var(--g-color-90);
 }
 
 .file-name:active {

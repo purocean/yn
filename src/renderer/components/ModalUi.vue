@@ -4,12 +4,12 @@
       <h4>{{title}}</h4>
       <p v-if="content">{{content}}</p>
       <template v-if="type === 'input'">
-        <textarea v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" v-model="inputValue"></textarea>
-        <input v-else ref="refInput" :type="inputType" :placeholder="inputHint" v-model="inputValue">
+        <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" v-model="inputValue"></textarea>
+        <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" v-model="inputValue">
       </template>
       <div class="action">
-        <button @click="cancel">取消</button>
-        <button class="primary" @click="ok">确定</button>
+        <button class="btn" @click="cancel">取消</button>
+        <button class="btn primary" @click="ok">确定</button>
       </div>
     </div>
   </XMask>
@@ -119,7 +119,7 @@ export default defineComponent({
 <style scoped>
 .wrapper {
   width: 400px;
-  background: #383a39;
+  background: var(--g-color-95);
   margin: auto;
   padding: 10px;
 }
@@ -129,28 +129,10 @@ textarea {
   min-width: 100%;
 }
 
-input, textarea {
-  display: block;
-  width: 100%;
-  margin: 0;
-  border: 0;
-  font-size: 18px;
-  line-height: 1.4em;
-  padding: 6px;
-  box-sizing: border-box;
-  background: #303233;
-  color: #ddd;
-  transition: all .1s ease-in-out;
-}
-
-.input:focus {
-  background: #222324;
-}
-
 h4 {
   margin: 0;
   margin-bottom: 10px;
-  color: #c7c7c7;
+  color: var(--g-color-0);
 }
 
 .action {
@@ -159,26 +141,7 @@ h4 {
   padding-top: 10px;
 }
 
-button {
-  background: #4c4c4c;
-  border: 0;
-  padding: 5px 10px;
-  color: #ccc;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all .1s ease-in-out;
-  margin-left: 10px;
-}
-
-button.primary {
-  background: #71706e;
-}
-
-button:hover {
-  background: #807d7d;
-}
-
 p {
-  color: #babbbb;
+  color: var(--g-color-37);
 }
 </style>

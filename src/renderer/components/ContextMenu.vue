@@ -109,19 +109,19 @@ export default defineComponent({
   left: -99999px;
   top: -99999px;
   visibility: hidden;
-  background: #3d4042;
-  border: 1px #333 solid;
+  background: var(--g-color-95);
+  border: 1px var(--g-color-84) solid;
   border-left: 0;
   border-top: 0;
   z-index: 9999999999;
-  color: #fafafa;
+  color: var(--g-foreground-color);
   min-width: 9em;
   cursor: default;
 }
 
 .menu > li.separator {
-  border-top: 1px #666 solid;
-  border-bottom: 1px #444 solid;
+  border-top: 1px var(--g-color-80) solid;
+  border-bottom: 1px var(--g-color-70) solid;
   margin: 3px 0;
 }
 
@@ -132,7 +132,7 @@ export default defineComponent({
 }
 
 .menu > li.normal:hover {
-  background: #333;
+  background: var(--g-color-80);
 }
 
 </style>

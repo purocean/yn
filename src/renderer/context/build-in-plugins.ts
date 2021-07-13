@@ -29,6 +29,7 @@ import markdownMindMap from '@fe/plugins/markdown-mind-map'
 import markdownMermaid from '@fe/plugins/markdown-mermaid'
 import markdownApplet from '@fe/plugins/markdown-applet'
 import markdownEcharts from '@fe/plugins/markdown-echarts'
+import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 
 export default [
   statusBarSetting,
@@ -62,4 +63,5 @@ export default [
   markdownMermaid,
   markdownApplet,
   markdownEcharts,
+  markdownLuckysheet,
 ]

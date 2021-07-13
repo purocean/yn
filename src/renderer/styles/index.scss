@@ -1,0 +1,118 @@
+@import 'normalize.css';
+
+@mixin root-vars($background, $foreground) {
+  --g-background-color: #{$background};
+  --g-foreground-color: #{$foreground};
+  @for $i from 0 to 100 {
+    --g-color-#{$i}: #{mix($background, $foreground, $i * 1%)};
+  }
+
+  --selection-color: #{rgba($foreground, 0.3)};
+
+  --scrollbar-shadow-color: #{rgba($foreground, 0.1)};
+  --scrollbar-track-background-color: #{rgba($foreground, 0.08)};
+  --scrollbar-thumb-background-color: #{rgba($foreground, 0.2)};
+  --scrollbar-thumb-hover-background-color: #{rgba($foreground, 0.3)};
+}
+
+html[app-theme=light]:root, :root {
+  @import './light.scss';
+  @include root-vars($g-background-color, $g-foreground-color);
+}
+
+html[app-theme=dark]:root {
+  @import './dark.scss';
+  @include root-vars($g-background-color, $g-foreground-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  html[app-theme=system]:root {
+    @import './dark.scss';
+    @include root-vars($g-background-color, $g-foreground-color);
+  }
+}
+
+html {
+  outline: none;
+}
+
+::selection {
+  background: var(--selection-color);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 4px;
+  background: var(--scrollbar-track-background-color);
+  box-shadow: inset 0 0 5px var(--scrollbar-shadow-color);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: var(--scrollbar-thumb-background-color);
+  box-shadow: inset 0 0 6px var(--scrollbar-shadow-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-background-color);
+}
+
+@media print {
+  .no-print {
+    display: none;
+  }
+}
+
+@media screen {
+  body {
+    background: var(--g-background-color);
+    color: var(--g-foreground-color);
+  }
+
+  input:not([type=checkbox]):not([type=radio]), textarea, select {
+    display: block;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    font-size: 18px;
+    line-height: 1.4em;
+    padding: 6px;
+    box-sizing: border-box;
+    background: var(--g-color-88);
+    color: var(--g-color-0);
+    transition: all .1s ease-in-out;
+    outline: none;
+
+    &:focus {
+      background: var(--g-color-85);
+    }
+  }
+
+  select {
+    display: initial;
+    width: initial;
+  }
+
+  button {
+    background: var(--g-color-80);
+    border: none;
+    padding: 5px 10px;
+    color: var(--g-color-0);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all .1s ease-in-out;
+    margin-left: 5px;
+
+    &.primary {
+      background: var(--g-color-65);
+    }
+
+    &:hover {
+      background: var(--g-color-60);
+    }
+  }
+}

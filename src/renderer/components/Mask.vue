@@ -1,13 +1,18 @@
 <template>
-  <transition name="fade">
-    <div v-if="show" class="mask" @click="() => maskCloseable && $emit('close')">
-      <slot></slot>
-    </div>
-  </transition>
+  <teleport to="body">
+    <transition name="fade">
+      <div v-if="show" class="mask" :style="maskStyle" @click="() => maskCloseable && $emit('close')">
+        <div class="close-btn"></div>
+        <slot></slot>
+      </div>
+    </transition>
+  </teleport>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+
+let zIndex = 199998
 
 export default defineComponent({
   name: 'x-mask',
@@ -17,19 +22,34 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    escClooseable: {
+    escCloseable: {
       type: Boolean,
       default: true,
     },
+    style: {
+      type: [Object, String],
+      default: () => ({}),
+    }
   },
   setup (props, { emit }) {
+    const zIndexRef = ref(zIndex++)
+
     function keydownHandler (e: KeyboardEvent) {
       if (e.key === 'Escape' && props.show) {
-        props.escClooseable && emit('close')
+        props.escCloseable && emit('close')
       } else if (e.key === 'Enter' && props.show) {
         emit('key-enter')
       }
     }
+
+    watch(() => props.show, (val) => {
+      if (val) {
+        zIndex++
+        zIndexRef.value = zIndex
+      }
+    })
+
+    const maskStyle = computed(() => (typeof props.style === 'string' ? props.style : { zIndex: zIndexRef.value, ...props.style }))
 
     onMounted(() => {
       window.addEventListener('keydown', keydownHandler, true)
@@ -38,6 +58,8 @@ export default defineComponent({
     onBeforeUnmount(() => {
       window.removeEventListener('keydown', keydownHandler)
     })
+
+    return { maskStyle }
   },
 })
 </script>

@@ -15,5 +15,12 @@ export default {
 
       viewer.update()
     }, 500))
+
+    ctx.theme.addStyles(`
+      body .viewer-backdrop,
+      body .viewer-navbar {
+        background: rgba(167, 167, 167, 0.6);
+      }
+    `)
   }
 } as Plugin
