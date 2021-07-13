@@ -329,6 +329,13 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 [drawio](./test.drawio){link-type="drawio"}
 ```
 
+## 嵌入 Luckysheet 表格文件
+链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
+
+```markdown
+[drawio](./test.luckysheet){link-type="luckysheet"}
+```
+
 ## 快捷键
 
 这里仅列出部分常用快捷键和自定义快捷键，默认编辑器快捷键参考 [vscode](https://code.visualstudio.com/)。
