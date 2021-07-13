@@ -1,5 +1,5 @@
 import { debounce } from 'lodash-es'
-import { defineComponent, h, IframeHTMLAttributes, onBeforeUnmount, onMounted, PropType, ref, watch } from 'vue'
+import { defineComponent, h, IframeHTMLAttributes, onBeforeMount, onBeforeUnmount, PropType, ref, watch } from 'vue'
 import { useBus } from '@fe/support/bus'
 
 export function buildSrc (html: string, title = '', globalStyle = false) {
@@ -31,7 +31,7 @@ export const IFrame = defineComponent({
       }
     }
 
-    onMounted(update)
+    onBeforeMount(update)
     watch(props, debounce(update, props.debounce))
 
     const changeTheme = (name?: string) => {

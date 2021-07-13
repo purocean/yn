@@ -37,9 +37,13 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       ${env.isElectron
         ? `
         let closeWindow = false
-        const remote = window.nodeRequire('electron').remote
+        const remote = window.nodeRequire && window.nodeRequire('electron').remote
         window.onbeforeunload = evt => {
           if (saved() || closeWindow) return null
+
+          if (!remote) {
+            return true
+          }
 
           evt.returnValue = true
 
