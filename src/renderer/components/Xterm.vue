@@ -40,6 +40,13 @@ export default defineComponent({
       }
     }
 
+    function changeTheme () {
+      const dark = getColorScheme() === 'dark'
+      const background = dark ? '#2c2e2f' : '#fbfbfb'
+      const foreground = dark ? '#fbfbfb' : '#2c2e2f'
+      xterm!.setOption('theme', { background, foreground })
+    }
+
     function input (data: string) {
       socket!.emit('input', data)
     }
@@ -62,17 +69,15 @@ export default defineComponent({
           cursorStyle: 'underline',
           // fontFamily: 'Consolas',
           fontWeightBold: '500',
-          theme: {
-            background: getColorScheme() === 'dark' ? '#2c2e2f' : '#fbfbfb'
-          }
         })
 
-        xterm.setOption('theme', { background: 'rgb(0, 31, 32)' })
+        changeTheme()
 
         xterm.loadAddon(fitAddon)
 
         xterm.open(refXterm.value!)
         fitAddon.fit()
+        bus.on('theme.change', changeTheme)
         bus.on('global.resize', fitXterm)
 
         if (FLAG_DEMO) {

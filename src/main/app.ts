@@ -98,15 +98,6 @@ const createWindow = () => {
   win.on('closed', () => {
     win = null
   })
-
-  win.webContents.on('context-menu', (e, props) => {
-    const { selectionText, isEditable } = props
-    if (isEditable) {
-      inputMenu.popup({ window: win || undefined })
-    } else if (selectionText && selectionText.trim() !== '') {
-      selectionMenu.popup({ window: win || undefined })
-    }
-  })
 }
 
 const showWindow = () => {
@@ -258,5 +249,31 @@ if (!gotTheLock) {
 
   app.on('activate', () => {
     showWindow()
+  })
+
+  app.on('web-contents-created', (_, webContents) => {
+    webContents.on('context-menu', (_, props) => {
+      const { selectionText, isEditable } = props
+      if (isEditable) {
+        inputMenu.popup({ window: win || undefined })
+      } else if (selectionText && selectionText.trim() !== '') {
+        selectionMenu.popup({ window: win || undefined })
+      }
+    })
+
+    webContents.on('new-window', (e, url) => {
+      const allowList = [
+        `${APP_NAME}://`,
+        `http://localhost:${backendPort}`,
+        `http://localhost:${devFrontendPort}`,
+        `http://127.0.0.1:${backendPort}`,
+        `http://127.0.0.1:${devFrontendPort}`,
+      ]
+
+      if (!allowList.find(x => url.startsWith(x))) {
+        e.preventDefault()
+        opn(url)
+      }
+    })
   })
 }

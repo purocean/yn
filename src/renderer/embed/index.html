@@ -21,7 +21,7 @@
       window.process = undefined
       window.module = undefined
 
-      const params = new URLSearchParams(location.search)
+      const params = new URLSearchParams(location.hash.replace('#', '?') || location.search)
 
       const title = params.get('title')
       if (title) {

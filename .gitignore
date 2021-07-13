@@ -3,7 +3,8 @@ nohup.out
 *.log
 node_modules
 dist
-vs
+src/renderer/public/vs
+src/renderer/public/embed
 out
 bin
 # .yarnrc
