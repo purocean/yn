@@ -1,4 +1,5 @@
 @import 'normalize.css';
+@import './mixins.scss';
 
 @mixin root-vars($background, $foreground) {
   --g-background-color: #{$background};
@@ -20,16 +21,9 @@ html[app-theme=light]:root, :root {
   @include root-vars($g-background-color, $g-foreground-color);
 }
 
-html[app-theme=dark]:root {
+@include dark-theme {
   @import './dark.scss';
   @include root-vars($g-background-color, $g-foreground-color);
-}
-
-@media (prefers-color-scheme: dark) {
-  html[app-theme=system]:root {
-    @import './dark.scss';
-    @include root-vars($g-background-color, $g-foreground-color);
-  }
 }
 
 html {

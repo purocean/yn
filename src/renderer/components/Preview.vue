@@ -387,6 +387,8 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+@import '@fe/styles/mixins.scss';
+
 .markdown-view {
   height: 100%;
   width: 100%;
@@ -433,10 +435,10 @@ export default defineComponent({
 }
 
 @media screen {
-  html[app-theme=dark] .markdown-body {
-    .reduce-brightness, input, img {
+  @include dark-theme {
+    .markdown-body .reduce-brightness, input, img {
       transition: all .1s ease-in-out;
-      filter: brightness(90%);
+      filter: brightness(84%);
 
       &:hover {
         filter: none;
