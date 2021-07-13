@@ -32,7 +32,7 @@ export function toggleXterm (val?: boolean) {
   nextTick(() => {
     emitResize()
 
-    if (showXterm) {
+    if (!showXterm) {
       getAction('xterm.init')()
     }
   })
