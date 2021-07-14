@@ -220,6 +220,7 @@ export default defineComponent({
   font-size: 16px;
   line-height: 1.4em;
   padding-left: 1em;
+  cursor: default;
 }
 
 .tree-node * {
