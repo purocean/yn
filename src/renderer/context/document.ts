@@ -336,7 +336,7 @@ export async function showHelp (doc: string) {
 }
 
 registerAction('doc.create', createDoc)
-registerAction('doc.create', duplicateDoc)
+registerAction('doc.duplicate', duplicateDoc)
 registerAction('doc.delete', deleteDoc)
 registerAction('doc.move', moveDoc)
 registerAction('doc.mark', markDoc)
