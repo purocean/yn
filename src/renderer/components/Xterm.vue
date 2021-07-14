@@ -15,8 +15,9 @@ import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import { toggleXterm } from '@fe/context/layout'
 import { registerAction, removeAction } from '@fe/context/action'
 import { getLogger } from '@fe/utils'
-import 'xterm/css/xterm.css'
 import { getColorScheme } from '@fe/context/theme'
+import { OneHalfLight, OneHalfDark } from 'xterm-theme'
+import 'xterm/css/xterm.css'
 
 const logger = getLogger('component-x-term')
 
@@ -42,9 +43,8 @@ export default defineComponent({
 
     function changeTheme () {
       const dark = getColorScheme() === 'dark'
-      const background = dark ? '#2c2e2f' : '#fbfbfb'
-      const foreground = dark ? '#fbfbfb' : '#2c2e2f'
-      xterm!.setOption('theme', { background, foreground })
+      OneHalfDark.background = '#2c2e2f'
+      xterm!.setOption('theme', dark ? OneHalfDark : OneHalfLight)
     }
 
     function input (data: string) {

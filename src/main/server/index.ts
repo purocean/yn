@@ -298,6 +298,7 @@ const server = (port = 3000) => {
       ctx.set('Content-Length', fileStat.size)
       ctx.set('Last-Modified', fileStat.mtime.toUTCString())
       ctx.set('Cache-Control', 'max-age=0')
+      ctx.set('X-XSS-Protection', '0')
       ctx.type = path.extname(filePath)
     }
 

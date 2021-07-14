@@ -52,11 +52,11 @@ export default defineComponent({
     const maskStyle = computed(() => (typeof props.style === 'string' ? props.style : { zIndex: zIndexRef.value, ...props.style }))
 
     onMounted(() => {
-      window.addEventListener('keydown', keydownHandler, true)
+      window.addEventListener('keypress', keydownHandler, true)
     })
 
     onBeforeUnmount(() => {
-      window.removeEventListener('keydown', keydownHandler)
+      window.removeEventListener('keypress', keydownHandler)
     })
 
     return { maskStyle }

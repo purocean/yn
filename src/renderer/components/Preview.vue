@@ -436,12 +436,14 @@ export default defineComponent({
 
 @media screen {
   @include dark-theme {
-    .markdown-body .reduce-brightness, input, img {
-      transition: all .1s ease-in-out;
-      filter: brightness(84%);
+    .markdown-body {
+      .reduce-brightness, img {
+        transition: all .1s ease-in-out;
+        filter: brightness(84%);
 
-      &:hover {
-        filter: none;
+        &:hover {
+          filter: none;
+        }
       }
     }
   }

@@ -78,6 +78,12 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.3.5](https://github.com/purocean/yn/releases/tag/v3.3.5) 2021-07-14
+1. 微调样式
+2. 图片预览去掉播放按钮
+3. 修复 Safari 不能打开嵌入页面问题
+4. 修复对话框输入框意外触发确认问题
+
 ### [v3.3.4](https://github.com/purocean/yn/releases/tag/v3.3.4) 2021-07-13
 1. 修复终端主题不正确和不能正确初始化问题
 2. 修复终端不能正确初始化问题

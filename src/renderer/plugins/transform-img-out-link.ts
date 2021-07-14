@@ -97,8 +97,8 @@ async function handleClick (e: MouseEvent) {
   if (isAction(e, actionClick)) { // 转换外链图片到本地
     const data = await transformImgOutLink(img)
     if (data) {
-      refreshTree()
       replaceValue(data.oldLink, data.replacedLink)
+      refreshTree()
     }
   } else {
     return false
