@@ -1,6 +1,7 @@
 import TurndownService from 'turndown'
 import { getEditor, insert } from '@fe/context/editor'
 import type { Plugin } from '@fe/context/plugin'
+import { refreshTree } from '@fe/context/tree'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { encodeMarkdownLink, fileToBase64URL } from '@fe/utils'
@@ -32,6 +33,7 @@ async function pasteImage (file: any, asBase64: boolean) {
     const { repo, path } = store.state.currentFile
     const { relativePath } = await api.upload(repo, path, file)
     insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
+    refreshTree()
   }
 }
 

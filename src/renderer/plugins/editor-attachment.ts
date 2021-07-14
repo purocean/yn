@@ -7,6 +7,7 @@ import { encodeMarkdownLink } from '@fe/utils'
 import { Doc } from '@fe/support/types'
 import { dirname, isBelongTo, join, relative } from '@fe/utils/path'
 import { getAction } from '@fe/context/action'
+import { refreshTree } from '@fe/context/tree'
 
 async function uploadFile (file: any, asImage: boolean) {
   if (!store.state.currentFile) {
@@ -22,6 +23,8 @@ async function uploadFile (file: any, asImage: boolean) {
   } else {
     insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
   }
+
+  refreshTree()
 }
 
 function addAttachment (asImage = false) {
