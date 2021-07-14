@@ -21,6 +21,10 @@ export default {
       body .viewer-navbar {
         background: rgba(167, 167, 167, 0.6);
       }
+
+      body .viewer-canvas > img {
+        background-color: #fff;
+      }
     `)
   }
 } as Plugin
