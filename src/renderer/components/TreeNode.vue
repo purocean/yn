@@ -330,6 +330,6 @@ summary > .item {
 }
 
 .marked {
-  color: #ffc107;
+  color: #ff5400;
 }
 </style>
