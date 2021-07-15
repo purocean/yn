@@ -37,18 +37,28 @@ export const getKeyLabel = (key: XKey | string | number) => {
 }
 
 export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)[]) => {
+  const modifiers = { metaKey: false, ctrlKey: false, altKey: false, shiftKey: false }
+
   for (const key of keys) {
     switch (key) {
       case CtrlCmd:
+        if (env.isMacOS) {
+          modifiers.metaKey = true
+        } else {
+          modifiers.ctrlKey = true
+        }
         if (!hasCtrlCmd(e)) return false
         break
       case Alt:
+        modifiers.altKey = true
         if (!e.altKey) return false
         break
       case Ctrl:
+        modifiers.ctrlKey = true
         if (!e.ctrlKey) return false
         break
       case Shift:
+        modifiers.shiftKey = true
         if (!e.shiftKey) return false
         break
       default:
@@ -60,7 +70,10 @@ export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)
     }
   }
 
-  return true
+  return modifiers.altKey === e.altKey &&
+    modifiers.ctrlKey === e.ctrlKey &&
+    modifiers.metaKey === e.metaKey &&
+    modifiers.shiftKey === e.shiftKey
 }
 
 export function getCommand (id: string): Command | undefined {
