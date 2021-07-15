@@ -1,13 +1,19 @@
 import { Plugin } from '@fe/context/plugin'
-import { Alt, getActionLabel, isAction } from '@fe/context/shortcut'
+import { Alt, CtrlCmd, getActionLabel, isAction } from '@fe/context/shortcut'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import { toggleSide, toggleView, toggleXterm } from '@fe/context/layout'
 import { toggleWrap } from '@fe/context/editor'
+import { getAction } from '@fe/context/action'
 
 export default {
   name: 'status-bar-view',
   register: ctx => {
     const actions = {
+      'show-quick-open': {
+        title: '快速跳转',
+        action: () => getAction('filter.show-quick-open')(),
+        shortcut: [CtrlCmd, 'p'],
+      },
       'toggle-side': {
         title: '切换侧栏',
         action: toggleSide,
