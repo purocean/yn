@@ -26,4 +26,4 @@ export function refreshRepo () {
   store.dispatch('fetchRepositories')
 }
 
-registerAction('tree.refresh', refreshTree)
+registerAction({ name: 'tree.refresh', handler: refreshTree })

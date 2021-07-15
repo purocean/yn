@@ -2,7 +2,7 @@ import { computed, defineComponent, h, onBeforeUnmount, ref, VNode, watch } from
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
-import { getAction } from '@fe/context/action'
+import { getActionHandler } from '@fe/context/action'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import storage from '@fe/utils/storage'
@@ -52,7 +52,7 @@ const RunCode = defineComponent({
     }
 
     const runInXterm = (e: MouseEvent) => {
-      getAction('xterm.run-code')(props.language, props.code, e.ctrlKey)
+      getActionHandler('xterm.run-code')(props.language, props.code, e.ctrlKey)
     }
 
     watch(() => props.code, () => {
@@ -142,7 +142,7 @@ export default {
           monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R
         ],
         run: () => {
-          getAction('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))
+          getActionHandler('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))
         }
       })
     })

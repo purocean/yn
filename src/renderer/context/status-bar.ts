@@ -1,5 +1,5 @@
 import { debounce } from 'lodash-es'
-import { getAction } from './action'
+import { getActionHandler } from './action'
 
 export type ActionName = 'status-bar.show-setting' | 'status-bar.refresh-menu'
 
@@ -29,7 +29,7 @@ export type MenuTapper = (menus: Menus) => void
 const menuTappers: MenuTapper[] = []
 
 export const refreshMenu = debounce(() => {
-  getAction('status-bar.refresh-menu')()
+  getActionHandler('status-bar.refresh-menu')()
 }, 10)
 
 export function tapMenus (tapper: MenuTapper) {

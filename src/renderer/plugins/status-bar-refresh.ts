@@ -1,6 +1,6 @@
 import { Plugin } from '@fe/context/plugin'
 import store from '@fe/support/store'
-import { getAction } from '@fe/context/action'
+import { getActionHandler } from '@fe/context/action'
 
 export default {
   name: 'status-bar-refresh',
@@ -20,7 +20,7 @@ export default {
         tips: '强制渲染',
         icon: 'sync-alt-solid',
         hidden: autoPreview,
-        onClick: () => getAction('view.refresh')()
+        onClick: () => getActionHandler('view.refresh')()
       }
     })
 

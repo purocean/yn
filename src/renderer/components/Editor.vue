@@ -12,7 +12,7 @@ import { useBus } from '@fe/support/bus'
 import Storage from '@fe/utils/storage'
 import { isEncrypted, saveDoc, toUri } from '@fe/context/document'
 import { setScrollToTop, whenEditorReady } from '@fe/context/editor'
-import { getAction } from '@fe/context/action'
+import { getActionHandler } from '@fe/context/action'
 import { Doc } from '@fe/support/types'
 import MonacoEditor from './MonacoEditor.vue'
 
@@ -51,7 +51,7 @@ export default defineComponent({
     }
 
     function syncScrollView (line: number, top: number) {
-      getAction('view.reveal-line')(line)
+      getActionHandler('view.reveal-line')(line)
       saveFileOpenPositionDebounce(top)
     }
 

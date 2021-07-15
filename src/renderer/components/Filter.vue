@@ -8,8 +8,9 @@
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import { switchDoc } from '@fe/context/document'
 import XMask from './Mask.vue'
-import QuickOpen from './QuickOpen.vue'
 import { registerAction, removeAction } from '@fe/context/action'
+import QuickOpen from './QuickOpen.vue'
+import { CtrlCmd } from '@fe/context/shortcut'
 
 export default defineComponent({
   name: 'x-filter',
@@ -43,8 +44,8 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      registerAction('filter.show-quick-open', showQuickOpen)
-      registerAction('filter.choose-document', chooseDocument)
+      registerAction({ name: 'filter.show-quick-open', handler: showQuickOpen, keys: [CtrlCmd, 'p'] })
+      registerAction({ name: 'filter.choose-document', handler: chooseDocument })
     })
 
     onUnmounted(() => {

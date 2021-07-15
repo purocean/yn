@@ -6,7 +6,7 @@ import store from '@fe/support/store'
 import { encodeMarkdownLink } from '@fe/utils'
 import { Doc } from '@fe/support/types'
 import { dirname, isBelongTo, join, relative } from '@fe/utils/path'
-import { getAction } from '@fe/context/action'
+import { getActionHandler } from '@fe/context/action'
 import { refreshTree } from '@fe/context/tree'
 
 async function uploadFile (file: any, asImage: boolean) {
@@ -82,7 +82,7 @@ export default {
           monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
         ],
         run: () => {
-          getAction('filter.choose-document')().then(addDocument)
+          getActionHandler('filter.choose-document')().then(addDocument)
         },
       })
     })

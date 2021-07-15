@@ -1,7 +1,8 @@
 import { nextTick } from 'vue'
 import store from '@fe/support/store'
 import { useBus } from '@fe/support/bus'
-import { getAction, registerAction } from './action'
+import { getActionHandler, registerAction } from './action'
+import { Alt } from './shortcut'
 
 export type ActionName = 'layout.toggle-view'
   | 'layout.toggle-side'
@@ -33,11 +34,11 @@ export function toggleXterm (val?: boolean) {
     emitResize()
 
     if (!showXterm) {
-      getAction('xterm.init')()
+      getActionHandler('xterm.init')()
     }
   })
 }
 
-registerAction('layout.toggle-view', toggleView)
-registerAction('layout.toggle-side', toggleSide)
-registerAction('layout.toggle-xterm', toggleXterm)
+registerAction({ name: 'layout.toggle-side', handler: toggleSide, keys: [Alt, 'e'] })
+registerAction({ name: 'layout.toggle-view', handler: toggleView, keys: [Alt, 'v'] })
+registerAction({ name: 'layout.toggle-xterm', handler: toggleXterm, keys: [Alt, 't'] })

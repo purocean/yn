@@ -161,9 +161,9 @@ export default defineComponent({
     }
 
     onBeforeMount(() => {
-      registerAction('xterm.run-code', runInXterm)
-      registerAction('xterm.run', handleRunInXterm)
-      registerAction('xterm.init', init)
+      registerAction({ name: 'xterm.run-code', handler: runInXterm })
+      registerAction({ name: 'xterm.run', handler: handleRunInXterm })
+      registerAction({ name: 'xterm.init', handler: init })
     })
 
     onBeforeUnmount(() => {

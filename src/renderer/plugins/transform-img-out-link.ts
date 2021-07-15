@@ -1,12 +1,13 @@
 import mime from 'mime-types'
 import * as api from '@fe/support/api'
-import { Plugin, Ctx } from '@fe/context/plugin'
-import { CtrlCmd, getActionLabel, isAction, LeftClick, Shift } from '@fe/context/shortcut'
 import { encodeMarkdownLink } from '@fe/utils'
 import { useToast } from '@fe/support/toast'
 import store from '@fe/support/store'
+import { CtrlCmd, getKeysLabel, isCommand, LeftClick, Shift } from '@fe/context/shortcut'
 import { replaceValue } from '@fe/context/editor'
+import { Plugin, Ctx } from '@fe/context/plugin'
 import { refreshTree } from '@fe/context/tree'
+import { getActionHandler } from '@fe/context/action'
 
 async function transformImgOutLink (img: HTMLImageElement) {
   const { currentFile } = store.state
@@ -53,8 +54,8 @@ async function transformImgOutLink (img: HTMLImageElement) {
   return null
 }
 
-const actionKeydown = 'transform-img-link'
-const actionClick = 'transform-img-link-by-click'
+const actionKeydown = 'plugin.transform-img-link'
+const actionClick = 'plugin.transform-img-link-by-click'
 let refView: HTMLElement
 
 async function transformAll () {
@@ -79,14 +80,6 @@ async function transformAll () {
   refreshTree()
 }
 
-async function handleKeydown (e: KeyboardEvent) {
-  if (isAction(e, actionKeydown)) {
-    e.preventDefault()
-    e.stopPropagation()
-    transformAll()
-  }
-}
-
 async function handleClick (e: MouseEvent) {
   const target = e.target as HTMLElement
   if (target.tagName !== 'IMG') {
@@ -94,7 +87,7 @@ async function handleClick (e: MouseEvent) {
   }
 
   const img = target as HTMLImageElement
-  if (isAction(e, actionClick)) { // 转换外链图片到本地
+  if (isCommand(e, actionClick)) { // 转换外链图片到本地
     const data = await transformImgOutLink(img)
     if (data) {
       replaceValue(data.oldLink, data.replacedLink)
@@ -113,10 +106,18 @@ async function handleClick (e: MouseEvent) {
 export default {
   name: 'transform-img-out-link',
   register: (ctx: Ctx) => {
-    ctx.shortcut.addAction(actionKeydown, [CtrlCmd, Shift, 'l'])
-    ctx.shortcut.addAction(actionClick, [CtrlCmd, Shift, LeftClick])
+    ctx.shortcut.registerCommand({
+      id: actionKeydown,
+      keys: [CtrlCmd, Shift, 'l'],
+      handler: transformAll
+    })
 
-    ctx.registerHook('ON_VIEW_KEY_DOWN', handleKeydown)
+    ctx.shortcut.registerCommand({
+      id: actionClick,
+      keys: [CtrlCmd, Shift, LeftClick],
+      handler: null
+    })
+
     ctx.registerHook('ON_VIEW_ELEMENT_CLICK', handleClick)
     ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
       refView = getViewDom()
@@ -127,8 +128,8 @@ export default {
         id: actionKeydown,
         type: 'normal',
         title: '转换外链图片',
-        tips: getActionLabel(actionKeydown),
-        onClick: transformAll
+        tips: getKeysLabel(actionKeydown),
+        onClick: getActionHandler(actionKeydown)
       })
     })
   }

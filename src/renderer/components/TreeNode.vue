@@ -38,7 +38,7 @@ import { triggerHook } from '@fe/context/plugin'
 import { getContextMenuItems, refreshTree } from '@fe/context/tree'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import { Components } from '@fe/support/types'
-import { getAction } from '@fe/context/action'
+import { getActionHandler } from '@fe/context/action'
 import { createDoc, deleteDoc, duplicateDoc, isEncrypted, markDoc, moveDoc, openInOS, switchDoc, unmarkDoc } from '@fe/context/document'
 import SvgIcon from './SvgIcon.vue'
 
@@ -97,7 +97,7 @@ export default defineComponent({
     function revealInXterminal () {
       const path = currentRepo.value ? currentRepo.value.path + '/' + props.item.path : ''
 
-      getAction('xterm.run')(`--yank-note-run-command-cd-- ${path}`)
+      getActionHandler('xterm.run')(`--yank-note-run-command-cd-- ${path}`)
     }
 
     async function moveFile () {

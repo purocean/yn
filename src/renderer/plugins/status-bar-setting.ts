@@ -6,7 +6,7 @@ export default {
   register: ctx => {
     const showSetting = () => store.commit('setShowSetting', true)
 
-    ctx.action.registerAction('status-bar.show-setting', showSetting)
+    ctx.action.registerAction({ name: 'status-bar.show-setting', handler: showSetting })
 
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-setting'] = {

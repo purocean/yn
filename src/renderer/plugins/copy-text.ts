@@ -7,7 +7,7 @@ import store from '@fe/support/store'
 export default {
   name: 'copy-text',
   register: (ctx: Ctx) => {
-    ctx.action.registerAction('app.copy-text', copyText)
+    ctx.action.registerAction({ name: 'app.copy-text', handler: copyText })
 
     ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
       const target = e.target as HTMLElement

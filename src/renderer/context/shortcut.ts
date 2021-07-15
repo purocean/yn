@@ -1,5 +1,6 @@
 import { getLogger } from '@fe/utils'
 import env from '@fe/utils/env'
+import { getActionHandler } from './action'
 
 const logger = getLogger('shortcut')
 
@@ -12,16 +13,13 @@ export const LeftClick = 0
 
 type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 
-const defaultActions = {
-  'file-tabs-switch-left': [Ctrl, Alt, 'ArrowLeft'],
-  'file-tabs-switch-right': [Ctrl, Alt, 'ArrowRight'],
+interface Command {
+  id: string,
+  keys: null | (string | number)[]
+  handler: null | string | ((...args: any[]) => void)
 }
 
-const actions: {[key: string]: (string | number)[]} = {
-  ...defaultActions
-}
-
-type ActionName = keyof typeof defaultActions
+const commands: { [key: string]: Command } = {}
 
 export const hasCtrlCmd = (e: KeyboardEvent | MouseEvent) => isMacOS ? e.metaKey : e.ctrlKey
 
@@ -65,27 +63,52 @@ export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)
   return true
 }
 
-export const getCurrentAction = (e: KeyboardEvent | MouseEvent) => {
-  logger.debug('getCurrentAction', { e })
-  return (Object.keys(actions) as ActionName[]).find(action => matchKeys(e, actions[action]))
+export function getCommand (id: string): Command | undefined {
+  return commands[id]
 }
 
-export function isAction (e: KeyboardEvent | MouseEvent, name: ActionName): boolean
-export function isAction (e: KeyboardEvent | MouseEvent, name: string): boolean
-export function isAction (e: KeyboardEvent | MouseEvent, name: string) {
-  logger.debug('isAction', name, e)
-  return !!actions[name] && matchKeys(e, actions[name])
+export function isCommand (e: KeyboardEvent | MouseEvent, id: string) {
+  const command = getCommand(id)
+  return !!(command && command.keys && matchKeys(e, command.keys))
 }
 
-export function getActionLabel (name: ActionName): string
-export function getActionLabel (name: string): string
-export function getActionLabel (name: string): string {
-  const keys: any[] = actions[name]
-  return keys.map(getKeyLabel).join(' + ')
+export function runCommand (command: Command) {
+  if (typeof command.handler === 'string') {
+    return getActionHandler(command.handler)()
+  } else {
+    return command.handler?.()
+  }
 }
 
-export function addAction (name: ActionName, keys: (string | number)[]): void
-export function addAction (name: string, keys: (string | number)[]): void
-export function addAction (name: string, keys: (string | number)[]): void {
-  actions[name] = keys
+export function getKeysLabel (id: string): string {
+  const command = getCommand(id)
+  if (!command || !command.keys) {
+    return ''
+  }
+
+  return command.keys.map(getKeyLabel).join(' + ')
 }
+
+export function registerCommand (command: Command) {
+  logger.debug('registerCommand', command)
+  commands[command.id] = command
+  return command
+}
+
+export function removeCommand (id: string) {
+  logger.debug('removeCommand', id)
+  delete commands[id]
+}
+
+function keydownHandler (e: KeyboardEvent) {
+  for (const command of Object.values(commands)) {
+    if (isCommand(e, command.id)) {
+      e.stopPropagation()
+      e.preventDefault()
+      runCommand(command)
+      break
+    }
+  }
+}
+
+window.addEventListener('keydown', keydownHandler, true)
