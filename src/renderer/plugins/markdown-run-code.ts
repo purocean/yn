@@ -76,7 +76,7 @@ const RunCode = defineComponent({
             onClick: runInXterm
           }),
         ]),
-        h('div', { class: 'run-code-result', style: 'padding: .5em 0', innerHTML: runResult }),
+        h('div', { class: 'run-code-result', style: 'padding: .5em 0 0 0', innerHTML: runResult }),
       ]
     }
   }

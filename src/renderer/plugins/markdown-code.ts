@@ -22,6 +22,10 @@ const BREAK_LINE_REGEXP = /\r\n|\r|\n/g
 function addCustomStyles (ctx: Ctx) {
   ctx.theme.addStyles(
     `
+      .markdown-view .markdown-body table.${TABLE_NAME} {
+        margin: 0;
+      }
+
       .markdown-view .markdown-body table.${TABLE_NAME},
       .markdown-view .markdown-body table.${TABLE_NAME} tr,
       .markdown-view .markdown-body table.${TABLE_NAME} td {
