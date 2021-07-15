@@ -12,7 +12,7 @@ let editor: Monaco.editor.IStandaloneCodeEditor
 export const defaultOptions: {[key: string]: any} = {
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
-  fontSize: 18,
+  fontSize: 16,
   wordWrap: false,
   links: !env.isElectron,
   // wordWrapColumn: 40,
