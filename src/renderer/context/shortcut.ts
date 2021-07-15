@@ -6,6 +6,7 @@ const logger = getLogger('shortcut')
 
 const isMacOS = env.isMacOS
 export const Ctrl = 'Ctrl'
+export const Meta = 'Meta'
 export const CtrlCmd = 'CtrlCmd'
 export const Alt = 'Alt'
 export const Shift = 'Shift'
@@ -55,6 +56,10 @@ export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)
         break
       case Ctrl:
         modifiers.ctrlKey = true
+        if (!e.ctrlKey) return false
+        break
+      case Meta:
+        modifiers.metaKey = true
         if (!e.ctrlKey) return false
         break
       case Shift:
