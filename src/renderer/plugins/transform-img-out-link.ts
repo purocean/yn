@@ -122,15 +122,14 @@ export default {
       refView = getViewDom()
     })
 
-    ctx.statusBar.tapMenu('status-bar-tool', menu => {
-      menu.list?.push({
+    ctx.statusBar.tapMenus(menus => {
+      menus['status-bar-tool']?.list?.push({
         id: actionKeydown,
         type: 'normal',
         title: '转换外链图片',
         tips: getActionLabel(actionKeydown),
         onClick: transformAll
       })
-      return menu
     })
   }
 } as Plugin

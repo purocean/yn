@@ -55,19 +55,21 @@ export default {
 
     window.addEventListener('keydown', keydownHandler, true)
 
-    ctx.statusBar.updateMenu({
-      id: 'status-bar-view',
-      position: 'left',
-      title: '视图',
-      list: Object.entries(actions).map(([key, item]) => {
-        return {
-          id: key,
-          type: 'normal',
-          title: item.title,
-          tips: getActionLabel(key),
-          onClick: item.action
-        }
-      })
+    ctx.statusBar.tapMenus(menus => {
+      menus['status-bar-view'] = {
+        id: 'status-bar-view',
+        position: 'left',
+        title: '视图',
+        list: Object.entries(actions).map(([key, item]) => {
+          return {
+            id: key,
+            type: 'normal',
+            title: item.title,
+            tips: getActionLabel(key),
+            onClick: item.action
+          }
+        })
+      }
     })
   }
 } as Plugin

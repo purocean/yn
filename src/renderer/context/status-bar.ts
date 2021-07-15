@@ -1,3 +1,4 @@
+import { debounce } from 'lodash-es'
 import { getAction } from './action'
 
 export type ActionName = 'status-bar.show-setting' | 'status-bar.refresh-menu'
@@ -21,25 +22,23 @@ export interface Menu {
   list?: MenuItem[];
 }
 
-const menus: { [key: string]: Menu } = {}
+export type Menus = { [id: string]: Menu }
 
-export const getMenus = (position: string) =>
-  Object.values(menus).filter(x => x.position === position)
+export type MenuTapper = (menus: Menus) => void
 
-export function refreshMenu () {
+const menuTappers: MenuTapper[] = []
+
+export const refreshMenu = debounce(() => {
   getAction('status-bar.refresh-menu')()
-}
+}, 10)
 
-export function updateMenu (menu: Menu) {
-  menus[menu.id] = menu
+export function tapMenus (tapper: MenuTapper) {
+  menuTappers.push(tapper)
   refreshMenu()
 }
 
-export function tapMenu (id: string, fn: (menu: Menu) => Menu) {
-  updateMenu(fn(menus[id]))
-}
-
-export function removeMenu (id: string) {
-  delete menus[id]
-  refreshMenu()
+export function getMenus (position: string) {
+  const menus: Menus = {}
+  menuTappers.forEach(tap => tap(menus))
+  return Object.values(menus).filter(x => x.position === position)
 }

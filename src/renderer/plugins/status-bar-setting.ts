@@ -8,12 +8,14 @@ export default {
 
     ctx.action.registerAction('status-bar.show-setting', showSetting)
 
-    ctx.statusBar.updateMenu({
-      id: 'status-bar-setting',
-      position: 'left',
-      tips: '设置',
-      icon: 'cog',
-      onClick: showSetting
+    ctx.statusBar.tapMenus(menus => {
+      menus['status-bar-setting'] = {
+        id: 'status-bar-setting',
+        position: 'left',
+        tips: '设置',
+        icon: 'cog',
+        onClick: showSetting
+      }
     })
   }
 } as Plugin
