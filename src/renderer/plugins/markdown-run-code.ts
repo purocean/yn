@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, onBeforeUnmount, ref, VNode } from 'vue'
+import { computed, defineComponent, h, onBeforeUnmount, ref, VNode, watch } from 'vue'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
@@ -54,6 +54,10 @@ const RunCode = defineComponent({
     const runInXterm = (e: MouseEvent) => {
       getAction('xterm.run-code')(props.language, props.code, e.ctrlKey)
     }
+
+    watch(() => props.code, () => {
+      result.value = ''
+    })
 
     onBeforeUnmount(() => {
       appendLog = undefined
