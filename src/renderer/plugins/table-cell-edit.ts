@@ -1,7 +1,7 @@
 import { useModal } from '@fe/support/modal'
 import { Plugin, Ctx } from '@fe/context/plugin'
 import { hasCtrlCmd } from '@fe/context/shortcut'
-import { getAction } from '@fe/context/action'
+import { getActionHandler } from '@fe/context/action'
 import { useToast } from '@fe/support/toast'
 import { getLineContent, replaceLine } from '@fe/context/editor'
 
@@ -75,7 +75,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
       const ok = () => {
         if (input.value !== cellText) {
           resolve(input.value)
-          getAction('view.refresh')()
+          getActionHandler('view.refresh')()
         }
 
         cancel()

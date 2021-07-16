@@ -44,6 +44,7 @@ export default defineComponent({
     function changeTheme () {
       const dark = getColorScheme() === 'dark'
       OneHalfDark.background = '#2c2e2f'
+      OneHalfLight.selection = 'rgba(0, 0, 0, .1)'
       xterm!.setOption('theme', dark ? OneHalfDark : OneHalfLight)
     }
 
@@ -161,9 +162,9 @@ export default defineComponent({
     }
 
     onBeforeMount(() => {
-      registerAction('xterm.run-code', runInXterm)
-      registerAction('xterm.run', handleRunInXterm)
-      registerAction('xterm.init', init)
+      registerAction({ name: 'xterm.run-code', handler: runInXterm })
+      registerAction({ name: 'xterm.run', handler: handleRunInXterm })
+      registerAction({ name: 'xterm.init', handler: init })
     })
 
     onBeforeUnmount(() => {

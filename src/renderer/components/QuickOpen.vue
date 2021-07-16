@@ -1,9 +1,27 @@
 <template>
-  <div @keydown.tab.exact.stop="switchTab(1)" @keydown.shift.tab.exact.stop="switchTab(-1)" @keydown.enter.exact="chooseItem()" @keydown.up.exact="selectItem(-1)" @keydown.down.exact="selectItem(1)" class="filter" @click.stop>
+  <div
+    class="filter"
+    @keydown.tab.exact.stop="switchTab(1)"
+    @keydown.shift.tab.exact.stop="switchTab(-1)"
+    @keypress.enter.exact="chooseItem()"
+    @keydown.up.exact="selectItem(-1)"
+    @keydown.down.exact="selectItem(1)"
+    @click.stop>
     <div class="tab">
-      <div v-for="tab in tabs" :key="tab.key" @click="switchTab(tab.key)" :class="{selected: currentTab === tab.key}">{{tab.label}}</div>
+      <div
+        v-for="tab in tabs"
+        :key="tab.key"
+        @click="switchTab(tab.key)"
+        :class="{selected: currentTab === tab.key}">{{tab.label}}</div>
     </div>
-    <input ref="refInput" v-model="searchText" type="text" class="input" @keydown.tab.prevent @keydown.up.prevent @keydown.down.prevent>
+    <input
+      ref="refInput"
+      v-model="searchText"
+      type="text"
+      class="input"
+      @keydown.tab.prevent
+      @keydown.up.prevent
+      @keydown.down.prevent>
     <ul ref="refResult" class="result">
       <li v-if="dataList === null">加载中……</li>
       <template v-else>

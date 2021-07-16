@@ -1,5 +1,4 @@
 import { Plugin } from '@fe/context/plugin'
-import { Menu as StatusBarMenu } from '@fe/context/status-bar'
 import store from '@fe/support/store'
 import { $args } from '@fe/support/global-args'
 import { basename } from '@fe/utils/path'
@@ -38,16 +37,12 @@ export default {
       }
     }
 
-    const menu = {
-      id: 'status-bar-repository-switch',
-      position: 'left',
-      title: '仓库',
-    } as StatusBarMenu
-
-    function updateMenu () {
+    ctx.statusBar.tapMenus(menus => {
       const { currentRepo, repositories } = store.state
-      ctx.statusBar.updateMenu({
-        ...menu,
+
+      menus['status-bar-repository-switch'] = {
+        id: 'status-bar-repository-switch',
+        position: 'left',
         title: currentRepo ? `仓库: ${currentRepo.name}` : '未选择仓库',
         list: Object.keys(repositories).map(name => {
           const path = repositories[name]
@@ -60,16 +55,14 @@ export default {
             onClick: () => choose({ name, path })
           }
         })
-      })
-    }
-
-    ctx.statusBar.updateMenu(menu)
+      }
+    })
 
     whenEditorReady().then(initRepo)
     store.dispatch('fetchRepositories')
 
-    store.watch(() => store.state.repositories, updateMenu)
-    store.watch(() => store.state.currentRepo, updateMenu)
+    store.watch(() => store.state.repositories, ctx.statusBar.refreshMenu)
+    store.watch(() => store.state.currentRepo, ctx.statusBar.refreshMenu)
 
     store.watch(() => store.state.repositories, val => {
       const { currentRepo } = store.state

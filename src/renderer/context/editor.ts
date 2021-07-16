@@ -3,6 +3,10 @@ import { $args } from '@fe/support/global-args'
 import env from '@fe/utils/env'
 import { useBus } from '@fe/support/bus'
 import { getColorScheme } from './theme'
+import { registerAction } from './action'
+import { Alt } from './shortcut'
+
+export type ActionName = 'editor.toggle-wrap'
 
 const bus = useBus()
 
@@ -12,7 +16,7 @@ let editor: Monaco.editor.IStandaloneCodeEditor
 export const defaultOptions: {[key: string]: any} = {
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
-  fontSize: 18,
+  fontSize: 16,
   wordWrap: false,
   links: !env.isElectron,
   // wordWrapColumn: 40,
@@ -104,6 +108,8 @@ export function toggleWrap () {
   const isWrapping = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo).isViewportWrapping
   getEditor().updateOptions({ wordWrap: (isWrapping ? 'off' : 'on') })
 }
+
+registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
 
 bus.on('monaco.ready', (payload: any) => {
   monaco = payload.monaco

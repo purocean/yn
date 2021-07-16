@@ -31,14 +31,19 @@ export default defineComponent({
       default: () => ({}),
     }
   },
+  emits: ['close', 'key-enter'],
   setup (props, { emit }) {
     const zIndexRef = ref(zIndex++)
+
+    function keypressHandler (e: KeyboardEvent) {
+      if (e.key === 'Enter' && props.show) {
+        emit('key-enter')
+      }
+    }
 
     function keydownHandler (e: KeyboardEvent) {
       if (e.key === 'Escape' && props.show) {
         props.escCloseable && emit('close')
-      } else if (e.key === 'Enter' && props.show) {
-        emit('key-enter')
       }
     }
 
@@ -52,11 +57,13 @@ export default defineComponent({
     const maskStyle = computed(() => (typeof props.style === 'string' ? props.style : { zIndex: zIndexRef.value, ...props.style }))
 
     onMounted(() => {
-      window.addEventListener('keypress', keydownHandler, true)
+      window.addEventListener('keypress', keypressHandler, true)
+      window.addEventListener('keydown', keydownHandler, true)
     })
 
     onBeforeUnmount(() => {
-      window.removeEventListener('keypress', keydownHandler)
+      window.removeEventListener('keypress', keypressHandler)
+      window.removeEventListener('keydown', keydownHandler)
     })
 
     return { maskStyle }

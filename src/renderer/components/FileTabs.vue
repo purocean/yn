@@ -5,10 +5,11 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
-import { isAction } from '@fe/context/shortcut'
+import { Alt, Ctrl } from '@fe/context/shortcut'
 import { Components, Doc } from '@fe/support/types'
 import { useBus } from '@fe/support/bus'
 import { ensureCurrentFileSaved, isEncrypted, switchDoc, toUri } from '@fe/context/document'
+import { registerAction, removeAction } from '@fe/context/action'
 import { isBelongTo } from '@fe/utils/path'
 import Tabs from './Tabs.vue'
 
@@ -57,38 +58,25 @@ export default defineComponent({
       current.value = item.key
     }
 
-    function keydownHandler (e: KeyboardEvent) {
-      const findTab = (offset: number) => {
-        const list = [...tabs.value]
+    function findTab (offset: number) {
+      const list = [...tabs.value]
 
-        if (list.length < 1) {
-          return null
-        }
-
-        const currentIndex = list.findIndex(x => x.key === current.value)
-        let index = currentIndex + offset
-
-        if (index < 0) {
-          index = list.length - 1
-        }
-
-        if (index >= list.length) {
-          index = 0
-        }
-
-        return list[index]
+      if (list.length < 1) {
+        return null
       }
 
-      // 快捷键切换最近文档
-      if (isAction(e, 'file-tabs-switch-left')) {
-        const prev = findTab(-1)
-        prev && switchTab(prev)
+      const currentIndex = list.findIndex(x => x.key === current.value)
+      let index = currentIndex + offset
+
+      if (index < 0) {
+        index = list.length - 1
       }
 
-      if (isAction(e, 'file-tabs-switch-right')) {
-        const next = findTab(1)
-        next && switchTab(next)
+      if (index >= list.length) {
+        index = 0
       }
+
+      return list[index]
     }
 
     function removeFile (doc?: Doc | null) {
@@ -118,7 +106,24 @@ export default defineComponent({
       bus.on('doc.deleted', removeFile)
       bus.on('doc.switch-failed', handleSwitchFailed)
       bus.on('doc.moved', handleMoved)
-      window.addEventListener('keydown', keydownHandler, true)
+
+      registerAction({
+        name: 'file-tabs.switch-left',
+        keys: [Ctrl, Alt, 'ArrowLeft'],
+        handler () {
+          const prev = findTab(-1)
+          prev && switchTab(prev)
+        },
+      })
+
+      registerAction({
+        name: 'file-tabs.switch-right',
+        handler () {
+          const next = findTab(1)
+          next && switchTab(next)
+        },
+        keys: [Ctrl, Alt, 'ArrowRight']
+      })
     })
 
     onBeforeUnmount(() => {
@@ -126,7 +131,8 @@ export default defineComponent({
       bus.off('doc.deleted', removeFile)
       bus.off('doc.switch-failed', handleSwitchFailed)
       bus.off('doc.moved', handleMoved)
-      window.removeEventListener('keydown', keydownHandler)
+      removeAction('file-tabs.switch-left')
+      removeAction('file-tabs.switch-next')
     })
 
     watch(currentFile, (file: any) => {

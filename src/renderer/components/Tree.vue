@@ -17,7 +17,7 @@
 import { computed, defineComponent, onBeforeMount, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/context-menu'
-import { getAction } from '@fe/context/action'
+import { getActionHandler } from '@fe/context/action'
 import { refreshRepo, refreshTree } from '@fe/context/tree'
 import TreeNode from './TreeNode.vue'
 
@@ -41,7 +41,7 @@ export default defineComponent({
     }
 
     function showSetting () {
-      getAction('status-bar.show-setting')()
+      getActionHandler('status-bar.show-setting')()
     }
 
     onBeforeMount(() => {

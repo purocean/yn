@@ -219,8 +219,8 @@ export default defineComponent({
     onMounted(() => {
       nextTick(renderDebonce)
       triggerHook('ON_VIEW_MOUNTED', { getViewDom })
-      registerAction('view.refresh', render)
-      registerAction('view.reveal-line', revealLine)
+      registerAction({ name: 'view.refresh', handler: render })
+      registerAction({ name: 'view.reveal-line', handler: revealLine })
       window.addEventListener('keydown', keydownHandler, true)
       bus.on('global.resize', resizeHandler)
       resizeHandler()
