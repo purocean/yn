@@ -78,6 +78,10 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.3.6](https://github.com/purocean/yn/releases/tag/v3.3.6) 2021-07-16
+1. 微调样式
+2. 修复快捷键相关问题
+
 ### [v3.3.5](https://github.com/purocean/yn/releases/tag/v3.3.5) 2021-07-14
 1. 微调样式
 2. 图片预览去掉播放按钮
