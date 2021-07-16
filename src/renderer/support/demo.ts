@@ -143,7 +143,8 @@ if (FLAG_DEMO) {
           }
 
           return xFetch(path).then(res => res.text()).then(md => {
-            cache[path] = md.replace(/```markdown\n(\[luckysheet\].+)\n```/, '$1')
+            md = md.replace(/```markdown\n(\[luckysheet\].+)\n```/, '$1')
+            cache[path] = md
             data.data.content = message + md
             return data
           })
