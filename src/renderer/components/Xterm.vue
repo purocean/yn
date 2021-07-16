@@ -44,6 +44,7 @@ export default defineComponent({
     function changeTheme () {
       const dark = getColorScheme() === 'dark'
       OneHalfDark.background = '#2c2e2f'
+      OneHalfLight.selection = 'rgba(0, 0, 0, .1)'
       xterm!.setOption('theme', dark ? OneHalfDark : OneHalfLight)
     }
 
