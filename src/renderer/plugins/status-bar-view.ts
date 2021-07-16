@@ -33,7 +33,7 @@ export default {
             tips: getKeysLabel('layout.toggle-view'),
             onClick: () => getActionHandler('layout.toggle-view')()
           },
-          ...(FLAG_DISABLE_XTERM ? [{
+          ...(!FLAG_DISABLE_XTERM ? [{
             id: 'toggle-xterm',
             type: 'normal' as any,
             title: '切换终端',
