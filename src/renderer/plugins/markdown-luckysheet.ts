@@ -13,6 +13,7 @@ import * as api from '@fe/support/api'
 import { refreshTree } from '@fe/context/tree'
 import { buildSrc, IFrame } from '@fe/context/embed'
 import Mask from '@fe/components/Mask.vue'
+import { FLAG_DEMO } from '@fe/support/global-args'
 
 const logger = getLogger('plugin-markdown-luckysheet')
 
@@ -238,6 +239,20 @@ const LuckyComponent = defineComponent({
     }
 
     watch(props, update, { immediate: true })
+
+    if (FLAG_DEMO) {
+      watch([refFullIFrame, refIFrame], () => {
+        if (refIFrame.value) {
+          refIFrame.value.reload = () => {
+            useToast().show('warning', 'DEMO 模式该功能不可用')
+          }
+        }
+
+        document.querySelectorAll('iframe.lucky-sheet').forEach(x => {
+          (x as any).contentWindow.fetch = window.fetch
+        })
+      })
+    }
 
     const button = (text: string, onClick: any) => h('button', {
       style: 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .1s ease-in-out; line-height: 24px;',
