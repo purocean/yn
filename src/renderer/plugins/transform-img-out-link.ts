@@ -7,7 +7,6 @@ import { CtrlCmd, getKeysLabel, isCommand, LeftClick, Shift } from '@fe/context/
 import { replaceValue } from '@fe/context/editor'
 import { Plugin, Ctx } from '@fe/context/plugin'
 import { refreshTree } from '@fe/context/tree'
-import { getActionHandler } from '@fe/context/action'
 
 async function transformImgOutLink (img: HTMLImageElement) {
   const { currentFile } = store.state
@@ -106,8 +105,8 @@ async function handleClick (e: MouseEvent) {
 export default {
   name: 'transform-img-out-link',
   register: (ctx: Ctx) => {
-    ctx.shortcut.registerCommand({
-      id: actionKeydown,
+    ctx.action.registerAction({
+      name: actionKeydown,
       keys: [CtrlCmd, Shift, 'l'],
       handler: transformAll
     })
@@ -129,7 +128,7 @@ export default {
         type: 'normal',
         title: '转换外链图片',
         tips: getKeysLabel(actionKeydown),
-        onClick: getActionHandler(actionKeydown)
+        onClick: ctx.action.getActionHandler(actionKeydown)
       })
     })
   }

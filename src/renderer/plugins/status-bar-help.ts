@@ -1,4 +1,3 @@
-import { getActionHandler } from '@fe/context/action'
 import { showHelp } from '@fe/context/document'
 import { Plugin } from '@fe/context/plugin'
 import { Alt, getKeysLabel } from '@fe/context/shortcut'
@@ -6,15 +5,15 @@ import { Alt, getKeysLabel } from '@fe/context/shortcut'
 export default {
   name: 'status-bar-help',
   register: ctx => {
-    const showHelpCommand = ctx.shortcut.registerCommand({
-      id: 'plugin.status-bar-help.show-readme',
+    const showHelpCommand = ctx.action.registerAction({
+      name: 'plugin.status-bar-help.show-readme',
       keys: [Alt, 'h'],
       handler: () => showHelp('README.md')
     })
 
-    const showFeaturesCommand = ctx.shortcut.registerCommand({
-      id: 'plugin.status-bar-help.show-features',
-      handler: () => showHelp('README.md'),
+    const showFeaturesCommand = ctx.action.registerAction({
+      name: 'plugin.status-bar-help.show-features',
+      handler: () => showHelp('FEATURES.md'),
       keys: null
     })
 
@@ -28,14 +27,14 @@ export default {
             id: 'toggle-readme',
             type: 'normal',
             title: 'README',
-            tips: getKeysLabel(showHelpCommand.id),
-            onClick: () => getActionHandler(showHelpCommand.id)()
+            tips: getKeysLabel(showHelpCommand.name),
+            onClick: () => ctx.action.getActionHandler(showHelpCommand.name)()
           },
           {
             id: 'toggle-features',
             type: 'normal',
             title: '特色功能说明',
-            onClick: () => getActionHandler(showFeaturesCommand.id)()
+            onClick: () => ctx.action.getActionHandler(showFeaturesCommand.name)()
           },
         ]
       }

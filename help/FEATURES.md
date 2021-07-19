@@ -333,7 +333,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
 ```markdown
-[drawio](./test.luckysheet){link-type="luckysheet"}
+[luckysheet](./test.luckysheet){link-type="luckysheet"}
 ```
 
 ## 快捷键
