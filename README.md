@@ -78,6 +78,10 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.3.7](https://github.com/purocean/yn/releases/tag/v3.3.7) 2021-07-19
+1. 修复帮助菜单不工作问题
+2. 修复工具转换外链图片菜单不工作问题
+
 ### [v3.3.6](https://github.com/purocean/yn/releases/tag/v3.3.6) 2021-07-16
 1. 微调样式
 2. 修复快捷键相关问题
