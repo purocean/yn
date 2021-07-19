@@ -177,7 +177,7 @@ echo 'HELLOWORD!';
 print('HELLOWORD')
 ```
 
-```bash
+```shell
 # --run--
 date
 ```
