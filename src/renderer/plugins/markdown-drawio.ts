@@ -4,7 +4,7 @@ import { Plugin } from '@fe/context/plugin'
 import { buildSrc, IFrame } from '@fe/context/embed'
 import * as api from '@fe/support/api'
 import { useBus } from '@fe/support/bus'
-import env from '@fe/utils/env'
+import { openWindow } from '@fe/utils/env'
 
 const Drawio = defineComponent({
   name: 'drawio',
@@ -44,7 +44,7 @@ const Drawio = defineComponent({
         },
         [
           button('适应高度', resize),
-          button('新窗口打开', () => env.openWindow(buildSrc(srcdoc.value, '查看图形'))),
+          button('新窗口打开', () => openWindow(buildSrc(srcdoc.value, '查看图形'))),
         ]
       ),
       h(IFrame, {
@@ -172,7 +172,7 @@ export default {
     ctx.registerHook('ON_TREE_NODE_SELECT', async (item: any) => {
       if (item.path.toLowerCase().endsWith('.drawio')) {
         const srcdoc = await buildSrcdoc(item)
-        env.openWindow(buildSrc(srcdoc, '查看图形'))
+        openWindow(buildSrc(srcdoc, '查看图形'))
 
         return true
       }

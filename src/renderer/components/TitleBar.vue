@@ -31,12 +31,10 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import env from '@fe/utils/env'
+import { isElectron, isMacOS, nodeRequire } from '@fe/utils/env'
 import { isEncrypted } from '@fe/context/document'
 import SvgIcon from './SvgIcon.vue'
 import { Doc } from '@fe/support/types'
-
-const { isElectron, isMacOS } = env
 
 export default defineComponent({
   name: 'title-bar',
@@ -101,8 +99,8 @@ export default defineComponent({
         }
       }
 
-      if (isElectron && env.require) {
-        win = env.require('electron').remote.getCurrentWindow()
+      if (isElectron && nodeRequire) {
+        win = nodeRequire('electron').remote.getCurrentWindow()
         hasWin.value = true
         updateWindowStatus()
         win.on('maximize', updateWindowStatus)

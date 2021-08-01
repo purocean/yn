@@ -1,10 +1,10 @@
 import { getLogger } from '@fe/utils'
-import env from '@fe/utils/env'
+import { isMacOS } from '@fe/utils/env'
 import { getActionHandler } from './action'
 
 const logger = getLogger('shortcut')
 
-const isMacOS = env.isMacOS
+export const Escape = 'Escape'
 export const Ctrl = 'Ctrl'
 export const Meta = 'Meta'
 export const CtrlCmd = 'CtrlCmd'
@@ -43,7 +43,7 @@ export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)
   for (const key of keys) {
     switch (key) {
       case CtrlCmd:
-        if (env.isMacOS) {
+        if (isMacOS) {
           modifiers.metaKey = true
         } else {
           modifiers.ctrlKey = true

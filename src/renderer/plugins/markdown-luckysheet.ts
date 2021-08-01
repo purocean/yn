@@ -7,7 +7,7 @@ import { Doc } from '@fe/support/types'
 import { useModal } from '@fe/support/modal'
 import { useToast } from '@fe/support/toast'
 import { dirname, join } from '@fe/utils/path'
-import env from '@fe/utils/env'
+import { isElectron, openWindow } from '@fe/utils/env'
 import store from '@fe/support/store'
 import * as api from '@fe/support/api'
 import { refreshTree } from '@fe/context/tree'
@@ -33,7 +33,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_update').innerText = '${path}'
       setStatus('加载完毕')
 
-      ${env.isElectron
+      ${isElectron
         ? `
         let closeWindow = false
         const remote = window.nodeRequire && window.nodeRequire('electron').remote
@@ -300,7 +300,7 @@ const LuckyComponent = defineComponent({
             button('重载', reload),
             button('新窗口编辑', () => {
               const html = buildSrcdoc(props.repo!, props.path!, true)
-              env.openWindow(buildSrc(html, '编辑表格', false), '_blank', { alwaysOnTop: false })
+              openWindow(buildSrc(html, '编辑表格', false), '_blank', { alwaysOnTop: false })
             }),
           ]
         ),
@@ -430,7 +430,7 @@ export default {
     ctx.registerHook('ON_TREE_NODE_SELECT', async (item: Doc) => {
       if (item.path.toLowerCase().endsWith(fileExt)) {
         const srcdoc = buildSrcdoc(item.repo, item.path, true)
-        env.openWindow(buildSrc(srcdoc, '编辑表格', false), '_blank', { alwaysOnTop: false })
+        openWindow(buildSrc(srcdoc, '编辑表格', false), '_blank', { alwaysOnTop: false })
 
         return true
       }

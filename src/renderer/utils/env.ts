@@ -1,13 +1,13 @@
 const _window = window as any
 
-const nodeProcess: NodeJS.Process = window && (window.process || _window.nodeProcess)
-const nodeModule = window && (window.module || _window.nodeModule)
-const nodeRequire = window && (window.require || _window.nodeRequire)
+export const nodeProcess: NodeJS.Process = window && (window.process || _window.nodeProcess)
+export const nodeModule = window && (window.module || _window.nodeModule)
+export const nodeRequire = window && (window.require || _window.nodeRequire)
 
-const isElectron = !!(nodeProcess?.versions?.electron)
-const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)
+export const isElectron = !!(nodeProcess?.versions?.electron)
+export const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)
 
-const openWindow = (url: string, target = '_blank', options: Record<string, any> = {}) => {
+export const openWindow = (url: string, target = '_blank', options: Record<string, any> = {}) => {
   if (isElectron) {
     const [x, y] = nodeRequire('electron').remote.getCurrentWindow().getPosition()
     const opts = {
@@ -65,13 +65,4 @@ const openWindow = (url: string, target = '_blank', options: Record<string, any>
   } else {
     return window.open(url, target)
   }
-}
-
-export default {
-  process: nodeProcess,
-  module: nodeModule,
-  require: nodeRequire,
-  isElectron,
-  isMacOS,
-  openWindow,
 }
