@@ -1,3 +1,4 @@
+import { upperFirst } from 'lodash-es'
 import { getLogger } from '@fe/utils'
 import { isMacOS } from '@fe/utils/env'
 import { getActionHandler } from './action'
@@ -33,7 +34,7 @@ export const getKeyLabel = (key: XKey | string | number) => {
       return isMacOS ? 'Option' : 'Alt'
 
     default:
-      return key.toString().toUpperCase()
+      return upperFirst(key.toString())
   }
 }
 
@@ -104,7 +105,7 @@ export function getKeysLabel (id: string): string {
     return ''
   }
 
-  return command.keys.map(getKeyLabel).join(' + ')
+  return command.keys.map(getKeyLabel).join('+')
 }
 
 export function registerCommand (command: Command) {

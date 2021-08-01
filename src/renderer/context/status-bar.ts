@@ -8,6 +8,7 @@ export type MenuItem = {
   type: 'normal';
   title: string;
   tips?: string;
+  subTitle?: string;
   onClick?: (item: MenuItem) => void;
 }
 

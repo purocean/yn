@@ -127,7 +127,7 @@ export default {
         id: actionKeydown,
         type: 'normal',
         title: '转换外链图片',
-        tips: getKeysLabel(actionKeydown),
+        subTitle: getKeysLabel(actionKeydown),
         onClick: ctx.action.getActionHandler(actionKeydown)
       })
     })

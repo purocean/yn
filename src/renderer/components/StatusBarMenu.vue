@@ -10,7 +10,10 @@
         <div v-if="menu.title" class="title-text">{{menu.title}}</div>
       </div>
       <ul class="list" v-if="showList && menu.list && menu.list.length">
-        <li v-for="item in menu.list" :key="item.id" :title="item.tips" @click="handleItemClick(item)">{{item.title}}</li>
+        <li v-for="item in menu.list" :key="item.id" :title="item.tips" @click="handleItemClick(item)">
+          <div class="menu-item-title">{{item.title}}</div>
+          <div v-if="item.subTitle" class="menu-item-sub-title">{{item.subTitle}}</div>
+        </li>
       </ul>
     </div>
   </div>
@@ -61,7 +64,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .status-bar-menu {
   cursor: pointer;
   user-select: none;
@@ -124,6 +127,14 @@ export default defineComponent({
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+
+  .menu-item-sub-title {
+    font-size: 12px;
+    color: var(--g-color-50);
+    margin-left: 1em;
+  }
 }
 
 .list li:hover {
