@@ -21,6 +21,13 @@ export function toggleSide () {
 
 export function toggleView () {
   store.commit('setShowView', !store.state.showView)
+  store.commit('setShowEditor', true)
+  emitResize()
+}
+
+export function toggleEditor () {
+  store.commit('setShowView', true)
+  store.commit('setShowEditor', !store.state.showEditor)
   emitResize()
 }
 
@@ -40,5 +47,6 @@ export function toggleXterm (val?: boolean) {
 }
 
 registerAction({ name: 'layout.toggle-side', handler: toggleSide, keys: [Alt, 'e'] })
+registerAction({ name: 'layout.toggle-editor', handler: toggleEditor, keys: [Alt, 'x'] })
 registerAction({ name: 'layout.toggle-view', handler: toggleView, keys: [Alt, 'v'] })
 registerAction({ name: 'layout.toggle-xterm', handler: toggleXterm, keys: [Alt, 't'] })

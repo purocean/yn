@@ -27,6 +27,13 @@ export default {
             onClick: () => getActionHandler('layout.toggle-side')()
           },
           {
+            id: 'toggle-editor',
+            type: 'normal',
+            title: '切换编辑',
+            tips: getKeysLabel('layout.toggle-editor'),
+            onClick: () => getActionHandler('layout.toggle-editor')()
+          },
+          {
             id: 'toggle-view',
             type: 'normal',
             title: '切换预览',

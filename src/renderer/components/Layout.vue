@@ -10,7 +10,7 @@
       </div>
       <div class="right">
         <div class="content">
-          <div class="editor" ref="editor">
+          <div class="editor" ref="editor" v-show="showEditor">
             <slot name="editor"></slot>
             <!-- <div class="sash-right" @mousedown="e => initResize('right', 'editor', 100, 99999999999, e)"></div> -->
           </div>
@@ -46,7 +46,7 @@ export default defineComponent({
     const bus = useBus()
     const store = useStore()
 
-    const { showView, showXterm, showSide, presentation } = toRefs(store.state)
+    const { showView, showXterm, showSide, showEditor, presentation } = toRefs(store.state)
 
     const aside = ref(null)
     const editor = ref(null)
@@ -113,6 +113,7 @@ export default defineComponent({
       showXterm: FLAG_DISABLE_XTERM ? false : showXterm,
       showFooter,
       showView,
+      showEditor,
       presentation,
       isElectron,
       aside,
@@ -204,12 +205,13 @@ export default defineComponent({
 }
 
 .editor {
-  width: 50%;
   height: 100%;
   position: relative;
-  flex: 1;
+  flex: 1 1 50%;
+  min-width: 50%;
   display: flex;
   flex-direction: column;
+  border-left: 1px solid var(--g-color-80);
 }
 
 .terminal {
@@ -220,8 +222,10 @@ export default defineComponent({
 
 .preview {
   height: 100%;
-  width: 50%;
+  flex: 1 1 50%;
+  min-width: 50%;
   box-sizing: border-box;
+  border-left: 1px solid var(--g-color-80);
 }
 
 .footer {

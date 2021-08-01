@@ -41,6 +41,7 @@ export default createStore({
     tree: null,
     showSide: Storage.get('showSide', true),
     showView: Storage.get('showView', true),
+    showEditor: Storage.get('showEditor', true),
     showXterm: false,
     autoPreview: true,
     showSetting: false,
@@ -72,6 +73,10 @@ export default createStore({
     setShowView (state, data) {
       state.showView = data
       Storage.set('showView', data)
+    },
+    setShowEditor (state, data) {
+      state.showEditor = data
+      Storage.set('showEditor', data)
     },
     setShowSide (state, data) {
       state.showSide = data

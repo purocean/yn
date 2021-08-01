@@ -274,8 +274,7 @@ export default defineComponent({
   }
 
   .markdown-body {
-    max-width: 1200px;
-    margin: 0 auto;
+    margin-top: 0;
   }
 }
 
@@ -461,6 +460,8 @@ export default defineComponent({
   }
 
   .markdown-view .markdown-body {
+    max-width: 1200px;
+    margin: 0 auto;
     color: var(--g-color-0);
     margin-top: 1em;
 
