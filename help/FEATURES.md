@@ -377,6 +377,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 切换编辑器自动换行 | Alt + W | Option + W
 切换文档预览显示 | Alt + V | Option + V
 切换终端 | Alt + T | Option + T
+演示模式 | F5 | F5
 查看 Readme | Alt + H | Option + H
 
 ## 元素属性书写
