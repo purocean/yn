@@ -4,6 +4,7 @@ import statusBarView from '@fe/plugins/status-bar-view'
 import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarRefresh from '@fe/plugins/status-bar-refresh'
+import statusBarPresentation from '@fe/plugins/status-bar-presentation'
 import statusBarGet from '@fe/plugins/status-bar-get'
 import editorPaste from '@fe/plugins/editor-paste'
 import editorAttachment from '@fe/plugins/editor-attachment'
@@ -38,6 +39,7 @@ export default [
   statusBarTool,
   statusBarHelp,
   statusBarRefresh,
+  statusBarPresentation,
   statusBarGet,
   transformImgOutLink,
   editorPaste,
