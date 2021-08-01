@@ -7,7 +7,7 @@ export default {
   register: ctx => {
     const present = (flag: boolean) => {
       if (flag) {
-        ctx.ui.useToast().show('info', '按下 Esc 键退出预览模式')
+        ctx.ui.useToast().show('info', '按下 Esc 键退出演示模式')
       }
       store.commit('setPresentation', flag)
     }
