@@ -168,6 +168,7 @@ export default defineComponent({
   width: 17vw;
   flex: none;
   height: 100%;
+  border-right: 1px solid var(--g-color-80);
 }
 
 .sash-right {
@@ -211,7 +212,6 @@ export default defineComponent({
   min-width: 50%;
   display: flex;
   flex-direction: column;
-  border-left: 1px solid var(--g-color-80);
 }
 
 .terminal {
@@ -225,7 +225,6 @@ export default defineComponent({
   flex: 1 1 50%;
   min-width: 50%;
   box-sizing: border-box;
-  border-left: 1px solid var(--g-color-80);
 }
 
 .footer {
