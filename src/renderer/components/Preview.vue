@@ -1,5 +1,5 @@
 <template>
-  <div ref="refViewWrapper" class="markdown-view" @scroll="handleScroll">
+  <div ref="refViewWrapper" :class="{'markdown-view': true, presentation}" @scroll="handleScroll">
     <div class="action-bar" :style="{width: (width - 50) + 'px'}">
       <div :style="{background: todoCount ? 'var(--g-color-87)' : 'transparent'}">
         <div v-if="todoCount" class="todo-progress">
@@ -64,7 +64,7 @@ export default defineComponent({
     const store = useStore()
     const toast = useToast()
 
-    const { currentContent, currentFile, autoPreview } = toRefs(store.state)
+    const { currentContent, currentFile, autoPreview, presentation } = toRefs(store.state)
     const fileName = computed(() => currentFile.value?.name)
     const filePath = computed(() => currentFile.value?.path)
 
@@ -244,6 +244,7 @@ export default defineComponent({
       refViewWrapper,
       refConvertForm,
       refView,
+      presentation,
       renderContent,
       width,
       height,
@@ -266,7 +267,18 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.markdown-view.presentation {
+  .action-bar {
+    display: none;
+  }
+
+  .markdown-body {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
 .action-bar {
   position: fixed;
   width: 27vw;

@@ -44,6 +44,7 @@ export default createStore({
     showXterm: false,
     autoPreview: true,
     showSetting: false,
+    presentation: false,
     currentContent: '',
     currentRepo: Storage.get('currentRepo'),
     currentFile: null as Doc | null,
@@ -78,6 +79,9 @@ export default createStore({
     },
     setShowSetting (state, data) {
       state.showSetting = data
+    },
+    setPresentation (state, data) {
+      state.presentation = data
     },
     setAutoPreview (state, data) {
       state.autoPreview = data

@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div :class="{layout: true, presentation, electron: isElectron}">
     <div class="header">
       <slot name="header"></slot>
     </div>
@@ -36,6 +36,7 @@ import { useStore } from 'vuex'
 import { useBus } from '@fe/support/bus'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import { emitResize } from '@fe/context/layout'
+import { isElectron } from '@fe/utils/env'
 
 let resizeOrigin: any = null
 
@@ -45,7 +46,7 @@ export default defineComponent({
     const bus = useBus()
     const store = useStore()
 
-    const { showView, showXterm, showSide } = toRefs(store.state)
+    const { showView, showXterm, showSide, presentation } = toRefs(store.state)
 
     const aside = ref(null)
     const editor = ref(null)
@@ -112,6 +113,8 @@ export default defineComponent({
       showXterm: FLAG_DISABLE_XTERM ? false : showXterm,
       showFooter,
       showView,
+      presentation,
+      isElectron,
       aside,
       editor,
       terminal,
@@ -120,12 +123,32 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .layout {
   display: flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+
+  &.presentation {
+    .terminal,
+    .left,
+    .editor,
+    .header,
+    .footer {
+      display: none;
+    }
+
+    &.electron {
+      .header {
+        display: block;
+      }
+    }
+
+    .preview {
+      width: 100%;
+    }
+  }
 }
 
 .header {
