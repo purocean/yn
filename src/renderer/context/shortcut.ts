@@ -1,10 +1,11 @@
+import { upperFirst } from 'lodash-es'
 import { getLogger } from '@fe/utils'
-import env from '@fe/utils/env'
+import { isMacOS } from '@fe/utils/env'
 import { getActionHandler } from './action'
 
 const logger = getLogger('shortcut')
 
-const isMacOS = env.isMacOS
+export const Escape = 'Escape'
 export const Ctrl = 'Ctrl'
 export const Meta = 'Meta'
 export const CtrlCmd = 'CtrlCmd'
@@ -33,7 +34,7 @@ export const getKeyLabel = (key: XKey | string | number) => {
       return isMacOS ? 'Option' : 'Alt'
 
     default:
-      return key.toString().toUpperCase()
+      return upperFirst(key.toString())
   }
 }
 
@@ -43,7 +44,7 @@ export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)
   for (const key of keys) {
     switch (key) {
       case CtrlCmd:
-        if (env.isMacOS) {
+        if (isMacOS) {
           modifiers.metaKey = true
         } else {
           modifiers.ctrlKey = true
@@ -104,7 +105,7 @@ export function getKeysLabel (id: string): string {
     return ''
   }
 
-  return command.keys.map(getKeyLabel).join(' + ')
+  return command.keys.map(getKeyLabel).join('+')
 }
 
 export function registerCommand (command: Command) {

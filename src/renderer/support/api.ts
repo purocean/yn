@@ -1,7 +1,7 @@
 import { slugify } from 'transliteration'
 import { basename, relative, extname, join, dirname } from '@fe/utils/path'
 import { fileToBase64URL } from '@fe/utils'
-import env from '@fe/utils/env'
+import { isElectron } from '@fe/utils/env'
 import Crypto from '@fe/utils/crypto'
 import { Doc } from './types'
 import { FLAG_DEMO } from './global-args'
@@ -92,7 +92,7 @@ export async function writeSettings (body: any) {
 }
 
 export async function choosePath (args: any) {
-  const from = env.isElectron ? 'electron' : 'browser'
+  const from = isElectron ? 'electron' : 'browser'
   const result = await fetchHttp(`/api/choose?from=${from}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

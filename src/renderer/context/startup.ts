@@ -1,5 +1,5 @@
 import { useBus } from '@fe/support/bus'
-import env from '@fe/utils/env'
+import { isElectron, nodeRequire } from '@fe/utils/env'
 import { triggerHook } from '@fe/context/plugin'
 import store, { getLastOpenFile } from '@fe/support/store'
 import { Doc } from '@fe/support/types'
@@ -14,8 +14,8 @@ export default function startup () {
   triggerHook('ON_STARTUP')
 
   // 在 Electron 环境中开启缩放页面功能
-  if (env.isElectron) {
-    const webContents = env.require('electron').remote.getCurrentWebContents()
+  if (isElectron) {
+    const webContents = nodeRequire('electron').remote.getCurrentWebContents()
 
     const changeZoomFactor = (zoomIn: boolean) => {
       const currentZoomFactor = webContents.getZoomFactor()

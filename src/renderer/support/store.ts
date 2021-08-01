@@ -41,9 +41,11 @@ export default createStore({
     tree: null,
     showSide: Storage.get('showSide', true),
     showView: Storage.get('showView', true),
+    showEditor: Storage.get('showEditor', true),
     showXterm: false,
     autoPreview: true,
     showSetting: false,
+    presentation: false,
     currentContent: '',
     currentRepo: Storage.get('currentRepo'),
     currentFile: null as Doc | null,
@@ -72,12 +74,19 @@ export default createStore({
       state.showView = data
       Storage.set('showView', data)
     },
+    setShowEditor (state, data) {
+      state.showEditor = data
+      Storage.set('showEditor', data)
+    },
     setShowSide (state, data) {
       state.showSide = data
       Storage.set('showSide', data)
     },
     setShowSetting (state, data) {
       state.showSetting = data
+    },
+    setPresentation (state, data) {
+      state.presentation = data
     },
     setAutoPreview (state, data) {
       state.autoPreview = data

@@ -42,7 +42,7 @@ export default defineComponent({
 
 .status-bar {
   box-sizing: border-box;
-  padding: 0 1em;
+  padding: 0;
   color: #eee;
   background: #4e4e4e;
   font-size: 12px;

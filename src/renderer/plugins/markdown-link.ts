@@ -2,7 +2,7 @@ import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
 import { Plugin, Ctx } from '@fe/context/plugin'
 import store from '@fe/support/store'
-import env from '@fe/utils/env'
+import { isElectron, nodeRequire } from '@fe/utils/env'
 import { basename, dirname, join } from '@fe/utils/path'
 import { switchDoc } from '@fe/context/document'
 
@@ -24,8 +24,8 @@ const handleLink = (link: HTMLAnchorElement) => {
 
   if (/^(http:|https:|ftp:)\/\//i.test(href)) { // 处理外链
     // Electron 中打开外链
-    if (env.isElectron) {
-      env.require && env.require('opn')(link.href)
+    if (isElectron) {
+      nodeRequire && nodeRequire('opn')(link.href)
       return true
     }
   } else { // 处理相对链接

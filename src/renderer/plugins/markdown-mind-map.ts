@@ -4,7 +4,7 @@ import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context/plugin'
 import crypto from '@fe/utils/crypto'
 import { dataURItoBlobLink } from '@fe/utils'
-import env from '@fe/utils/env'
+import { openWindow } from '@fe/utils/env'
 import storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/context/embed'
 
@@ -161,7 +161,7 @@ const render = async (ele: HTMLElement, content: string) => {
   const actionsStr = action.outerHTML.replace(/data-onclick/g, 'onclick')
   action.appendChild(buildButton('新窗口打开', () => {
     const srcdoc = buildSrcdoc(JSON.stringify(km.exportJson()), actionsStr)
-    env.openWindow(buildSrc(srcdoc, '查看图形'), '_blank', { backgroundColor: '#fff' })
+    openWindow(buildSrc(srcdoc, '查看图形'), '_blank', { backgroundColor: '#fff' })
   }))
   action.appendChild(buildButton('导出 PNG', () => exportData('png')))
   action.appendChild(buildButton('导出 SVG', () => exportData('svg')))

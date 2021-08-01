@@ -55,7 +55,7 @@ export function getActionHandler (name: string) {
 
     const action = getAction(name)
     if (action) {
-      if (!(action.when && action.when())) {
+      if (!(action.when && !action.when())) {
         result = action.handler?.(...args)
       }
     }

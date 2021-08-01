@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div :class="{layout: true, presentation, electron: isElectron}">
     <div class="header">
       <slot name="header"></slot>
     </div>
@@ -10,7 +10,7 @@
       </div>
       <div class="right">
         <div class="content">
-          <div class="editor" ref="editor">
+          <div class="editor" ref="editor" v-show="showEditor">
             <slot name="editor"></slot>
             <!-- <div class="sash-right" @mousedown="e => initResize('right', 'editor', 100, 99999999999, e)"></div> -->
           </div>
@@ -36,6 +36,7 @@ import { useStore } from 'vuex'
 import { useBus } from '@fe/support/bus'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import { emitResize } from '@fe/context/layout'
+import { isElectron } from '@fe/utils/env'
 
 let resizeOrigin: any = null
 
@@ -45,7 +46,7 @@ export default defineComponent({
     const bus = useBus()
     const store = useStore()
 
-    const { showView, showXterm, showSide } = toRefs(store.state)
+    const { showView, showXterm, showSide, showEditor, presentation } = toRefs(store.state)
 
     const aside = ref(null)
     const editor = ref(null)
@@ -112,6 +113,9 @@ export default defineComponent({
       showXterm: FLAG_DISABLE_XTERM ? false : showXterm,
       showFooter,
       showView,
+      showEditor,
+      presentation,
+      isElectron,
       aside,
       editor,
       terminal,
@@ -120,12 +124,32 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .layout {
   display: flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+
+  &.presentation {
+    .terminal,
+    .left,
+    .editor,
+    .header,
+    .footer {
+      display: none;
+    }
+
+    &.electron {
+      .header {
+        display: block;
+      }
+    }
+
+    .preview {
+      width: 100%;
+    }
+  }
 }
 
 .header {
@@ -181,12 +205,13 @@ export default defineComponent({
 }
 
 .editor {
-  width: 50%;
   height: 100%;
   position: relative;
-  flex: 1;
+  flex: 1 1 50%;
+  min-width: 50%;
   display: flex;
   flex-direction: column;
+  border-left: 1px solid var(--g-color-80);
 }
 
 .terminal {
@@ -197,8 +222,10 @@ export default defineComponent({
 
 .preview {
   height: 100%;
-  width: 50%;
+  flex: 1 1 50%;
+  min-width: 50%;
   box-sizing: border-box;
+  border-left: 1px solid var(--g-color-80);
 }
 
 .footer {

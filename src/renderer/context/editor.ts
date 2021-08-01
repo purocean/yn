@@ -1,6 +1,6 @@
 import * as Monaco from 'monaco-editor'
 import { $args } from '@fe/support/global-args'
-import env from '@fe/utils/env'
+import { isElectron } from '@fe/utils/env'
 import { useBus } from '@fe/support/bus'
 import { getColorScheme } from './theme'
 import { registerAction } from './action'
@@ -18,7 +18,7 @@ export const defaultOptions: {[key: string]: any} = {
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: 16,
   wordWrap: false,
-  links: !env.isElectron,
+  links: !isElectron,
   // wordWrapColumn: 40,
   // Set this to false to not auto word wrap minified files
   wordWrapMinified: true,
