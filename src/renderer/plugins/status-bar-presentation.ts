@@ -22,7 +22,10 @@ export default {
       name: 'status-bar.exit-presentation',
       handler: () => present(false),
       keys: [Escape],
-      when: () =>  store.state.presentation
+      when: () => {
+        const el = window.document.activeElement
+        return store.state.presentation && el?.tagName !== 'INPUT' && el?.tagName !== 'TEXTAREA'
+      }
     })
 
     ctx.statusBar.tapMenus(menus => {

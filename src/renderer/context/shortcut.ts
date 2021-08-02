@@ -18,7 +18,8 @@ type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 interface Command {
   id: string,
   keys: null | (string | number)[]
-  handler: null | string | ((...args: any[]) => void)
+  handler: null | string | ((...args: any[]) => void),
+  when?: () => boolean
 }
 
 const commands: { [key: string]: Command } = {}
@@ -122,6 +123,10 @@ export function removeCommand (id: string) {
 function keydownHandler (e: KeyboardEvent) {
   for (const command of Object.values(commands)) {
     if (isCommand(e, command.id)) {
+      if (command.when && !command.when()) {
+        continue
+      }
+
       e.stopPropagation()
       e.preventDefault()
       runCommand(command)

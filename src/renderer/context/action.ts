@@ -15,7 +15,7 @@ export interface Action {
   name: string,
   keys?: null | (string | number)[]
   handler: ((this: Action, ...args: any[]) => any)
-  when?: (this: Action) => boolean
+  when?: () => boolean
 }
 
 export type ActionHandler = ((...args: any[]) => any)
@@ -38,7 +38,8 @@ export function registerAction (action: Action) {
     registerCommand({
       id: action.name,
       keys: action.keys,
-      handler: getActionHandler(action.name)
+      handler: getActionHandler(action.name),
+      when: action.when,
     })
   }
   return action
