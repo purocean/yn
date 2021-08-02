@@ -491,19 +491,18 @@ export default defineComponent({
     table.source-line tbody {
       counter-reset: tr-number;
 
-      tr {
-        &:hover {
-          outline: 2px #b3833b dashed;
-        }
+      &:hover td:first-child:before {
+        counter-increment: tr-number;
+        content: counter(tr-number);
+        position: absolute;
+        right: 100%;
+        padding-right: 5px;
+        color: #999;
+        font-family: monospace;
+      }
 
-        td:first-child:before {
-          counter-increment: tr-number;
-          content: counter(tr-number);
-          position: absolute;
-          right: 100%;
-          padding-right: 5px;
-          color: #999;
-        }
+      tr:hover {
+        outline: 2px #b3833b dashed;
       }
     }
   }

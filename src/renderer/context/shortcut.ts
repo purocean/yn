@@ -18,7 +18,8 @@ type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 interface Command {
   id: string,
   keys: null | (string | number)[]
-  handler: null | string | ((...args: any[]) => void)
+  handler: null | string | ((...args: any[]) => void),
+  when?: () => boolean
 }
 
 const commands: { [key: string]: Command } = {}
@@ -28,10 +29,13 @@ export const hasCtrlCmd = (e: KeyboardEvent | MouseEvent) => isMacOS ? e.metaKey
 export const getKeyLabel = (key: XKey | string | number) => {
   switch (key) {
     case CtrlCmd:
-      return isMacOS ? 'Cmd' : 'Ctrl'
-
+      return isMacOS ? '⌘' : 'Ctrl'
     case Alt:
-      return isMacOS ? 'Option' : 'Alt'
+      return isMacOS ? '⌥' : 'Alt'
+    case Ctrl:
+      return isMacOS ? '⌃' : 'Ctrl'
+    case Shift:
+      return isMacOS ? '⇧' : 'Shift'
 
     default:
       return upperFirst(key.toString())
@@ -105,7 +109,7 @@ export function getKeysLabel (id: string): string {
     return ''
   }
 
-  return command.keys.map(getKeyLabel).join('+')
+  return command.keys.map(getKeyLabel).join(isMacOS ? ' ' : '+')
 }
 
 export function registerCommand (command: Command) {
@@ -122,6 +126,10 @@ export function removeCommand (id: string) {
 function keydownHandler (e: KeyboardEvent) {
   for (const command of Object.values(commands)) {
     if (isCommand(e, command.id)) {
+      if (command.when && !command.when()) {
+        continue
+      }
+
       e.stopPropagation()
       e.preventDefault()
       runCommand(command)
