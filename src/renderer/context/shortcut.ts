@@ -29,10 +29,13 @@ export const hasCtrlCmd = (e: KeyboardEvent | MouseEvent) => isMacOS ? e.metaKey
 export const getKeyLabel = (key: XKey | string | number) => {
   switch (key) {
     case CtrlCmd:
-      return isMacOS ? 'Cmd' : 'Ctrl'
-
+      return isMacOS ? '⌘' : 'Ctrl'
     case Alt:
-      return isMacOS ? 'Option' : 'Alt'
+      return isMacOS ? '⌥' : 'Alt'
+    case Ctrl:
+      return isMacOS ? '⌃' : 'Ctrl'
+    case Shift:
+      return isMacOS ? '⇧' : 'Shift'
 
     default:
       return upperFirst(key.toString())
@@ -106,7 +109,7 @@ export function getKeysLabel (id: string): string {
     return ''
   }
 
-  return command.keys.map(getKeyLabel).join('+')
+  return command.keys.map(getKeyLabel).join(isMacOS ? ' ' : '+')
 }
 
 export function registerCommand (command: Command) {
