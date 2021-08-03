@@ -164,14 +164,6 @@ export default defineComponent({
 
     async function handleClick (e: MouseEvent) {
       triggerHook('ON_VIEW_ELEMENT_CLICK', e)
-
-      const target = e.target as HTMLElement
-
-      if (target.classList.contains('source-line') && window.getSelection()!.toString().length < 1) {
-        syncScroll(parseInt(target.dataset.sourceLine || '0'))
-        e.stopPropagation()
-        e.preventDefault()
-      }
     }
 
     function revealLine (line: number) {
