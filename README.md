@@ -78,6 +78,10 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.5.0](https://github.com/purocean/yn/releases/tag/v3.5.0) 2021-08-03
+1. 新增导航菜单，前进后退功能
+2. 优化预览模式点击交互
+
 ### [v3.4.2](https://github.com/purocean/yn/releases/tag/v3.4.2) 2021-08-02
 1. 修复表格行号展示
 2. 修复 Esc 快捷键冲突问题
