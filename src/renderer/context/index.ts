@@ -5,6 +5,7 @@ import store from '@fe/support/store'
 import storage from '@fe/utils/storage'
 import * as api from '@fe/support/api'
 import * as action from './action'
+import * as doc from './document'
 import * as shortcut from './shortcut'
 import * as view from './view'
 import * as tree from './tree'
@@ -24,6 +25,7 @@ const ctx = {
   bus,
   store,
   action,
+  doc,
   shortcut,
   ui: { useToast, useModal },
   tree,
