@@ -55,7 +55,7 @@ export default {
       if (file) {
         if (!ctx.doc.isSameFile(stack[idx], file)) {
           stack.splice(idx + 1, stack.length)
-          stack.push({ type: file.type, repo: file.repo, name: file?.name, path: file?.path })
+          stack.push({ type: file.type, repo: file.repo, name: file.name, path: file.path })
           idx = stack.length - 1
         }
       }
