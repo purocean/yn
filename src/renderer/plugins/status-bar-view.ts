@@ -16,13 +16,6 @@ export default {
           title: '视图',
           list: [
             {
-              id: 'show-quick-open',
-              type: 'normal',
-              title: '快速跳转',
-              subTitle: getKeysLabel('filter.show-quick-open'),
-              onClick: () => getActionHandler('filter.show-quick-open')()
-            },
-            {
               id: 'toggle-side',
               type: 'normal',
               title: toggleTitle(ctx.store.state.showSide, '侧栏'),

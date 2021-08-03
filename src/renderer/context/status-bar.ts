@@ -9,6 +9,7 @@ export type MenuItem = {
   title: string;
   tips?: string;
   subTitle?: string;
+  disabled?: boolean;
   onClick?: (item: MenuItem) => void;
 }
 

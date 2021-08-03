@@ -11,6 +11,8 @@ export const Meta = 'Meta'
 export const CtrlCmd = 'CtrlCmd'
 export const Alt = 'Alt'
 export const Shift = 'Shift'
+export const BracketLeft = 'BracketLeft'
+export const BracketRight = 'BracketRight'
 export const LeftClick = 0
 
 type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
@@ -27,19 +29,16 @@ const commands: { [key: string]: Command } = {}
 export const hasCtrlCmd = (e: KeyboardEvent | MouseEvent) => isMacOS ? e.metaKey : e.ctrlKey
 
 export const getKeyLabel = (key: XKey | string | number) => {
-  switch (key) {
-    case CtrlCmd:
-      return isMacOS ? '⌘' : 'Ctrl'
-    case Alt:
-      return isMacOS ? '⌥' : 'Alt'
-    case Ctrl:
-      return isMacOS ? '⌃' : 'Ctrl'
-    case Shift:
-      return isMacOS ? '⇧' : 'Shift'
+  const str = {
+    CtrlCmd: isMacOS ? '⌘' : 'Ctrl',
+    Alt: isMacOS ? '⌥' : 'Alt',
+    Ctrl: isMacOS ? '⌃' : 'Ctrl',
+    Shift: isMacOS ? '⇧' : 'Shift',
+    BracketLeft: '[',
+    BracketRight: ']',
+  }[key]
 
-    default:
-      return upperFirst(key.toString())
-  }
+  return str || upperFirst(key.toString())
 }
 
 export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)[]) => {
@@ -73,7 +72,11 @@ export const matchKeys = (e: KeyboardEvent | MouseEvent, keys: (string | number)
         break
       default:
         if (e instanceof KeyboardEvent) {
-          if (key !== e.key && `Key${key.toString().toUpperCase()}` !== e.code) return false
+          if (
+            key !== e.key &&
+            key.toString().toUpperCase() !== e.code.toUpperCase() &&
+            `Key${key}`.toUpperCase() !== e.code.toUpperCase()
+          ) return false
         } else {
           if (key !== e.button) return false
         }

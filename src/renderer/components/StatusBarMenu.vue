@@ -10,7 +10,12 @@
         <div v-if="menu.title" class="title-text">{{menu.title}}</div>
       </div>
       <ul class="list" v-if="showList && menu.list && menu.list.length">
-        <li v-for="item in menu.list" :key="item.id" :title="item.tips" @click="handleItemClick(item)">
+        <li
+          v-for="item in menu.list"
+          :key="item.id"
+          :class="{disabled: item.disabled}"
+          :title="item.tips"
+          @click="handleItemClick(item)">
           <div class="menu-item-title">{{item.title}}</div>
           <div v-if="item.subTitle" class="menu-item-sub-title">{{item.subTitle}}</div>
         </li>
@@ -39,6 +44,10 @@ export default defineComponent({
     const showList = ref(true)
 
     const handleItemClick = (item: MenuItem) => {
+      if (item.disabled) {
+        return
+      }
+
       item.onClick && item.onClick(item)
       showList.value = false
       setTimeout(() => {
@@ -129,6 +138,18 @@ export default defineComponent({
   overflow: hidden;
   display: flex;
   justify-content: space-between;
+
+  &.disabled {
+    cursor: default;
+
+    &:hover {
+      background: unset;
+    }
+
+    .menu-item-title {
+      color: var(--g-color-50);
+    }
+  }
 
   .menu-item-sub-title {
     font-size: 12px;
