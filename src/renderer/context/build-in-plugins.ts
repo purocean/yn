@@ -2,6 +2,7 @@ import documentHistoryStack from '@fe/plugins/document-history-stack'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
 import statusBarRepositorySwitch from '@fe/plugins/status-bar-repository-switch'
 import statusBarView from '@fe/plugins/status-bar-view'
+import statusBarNavigation from '@fe/plugins/status-bar-navigation'
 import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarRefresh from '@fe/plugins/status-bar-refresh'
@@ -39,6 +40,7 @@ export default [
   statusBarSetting,
   statusBarRepositorySwitch,
   statusBarView,
+  statusBarNavigation,
   statusBarTool,
   statusBarHelp,
   statusBarRefresh,
