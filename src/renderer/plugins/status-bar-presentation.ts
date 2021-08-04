@@ -24,7 +24,12 @@ export default {
       keys: [Escape],
       when: () => {
         const el = window.document.activeElement
-        return store.state.presentation && el?.tagName !== 'INPUT' && el?.tagName !== 'TEXTAREA'
+        return store.state.presentation &&
+          el?.tagName !== 'INPUT' &&
+          el?.tagName !== 'TEXTAREA' &&
+          [...document.body.children] // 判断页面是否有浮层遮住
+            .filter(x => x.tagName === 'DIV' && x.clientWidth > 10 && x.clientHeight > 10)
+            .length < 2
       }
     })
 
