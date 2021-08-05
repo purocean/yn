@@ -33,6 +33,7 @@ const ctx = {
   statusBar,
   layout,
   editor,
+  view,
   theme,
   storage,
   embed

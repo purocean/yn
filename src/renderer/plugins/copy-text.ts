@@ -22,7 +22,12 @@ export default {
       if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && hasCtrlCmd(e)) {
         const { currentFile } = store.state
         if (currentFile) {
-          copyText(encodeMarkdownLink(currentFile.path) + '#' + encodeMarkdownLink(decodeURIComponent(target.id)))
+          let path = currentFile.path
+          if (!path.startsWith('/')) {
+            path = '/' + path
+          }
+
+          copyText(encodeMarkdownLink(path) + '#' + encodeMarkdownLink(decodeURIComponent(target.id)))
           return preventEvent()
         }
       }

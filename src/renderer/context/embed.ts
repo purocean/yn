@@ -63,6 +63,7 @@ export const IFrame = defineComponent({
     }
 
     expose({
+      getIframe: () => iframe.value,
       reload: () => {
         iframe.value?.contentWindow?.location.reload()
       },

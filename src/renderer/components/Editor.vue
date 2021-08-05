@@ -5,18 +5,13 @@
 </template>
 
 <script lang="ts">
-import { debounce } from 'lodash-es'
 import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useBus } from '@fe/support/bus'
-import Storage from '@fe/utils/storage'
 import { isEncrypted, saveDoc, toUri } from '@fe/context/document'
-import { setScrollToTop, whenEditorReady } from '@fe/context/editor'
-import { getActionHandler } from '@fe/context/action'
-import { Doc } from '@fe/support/types'
+import { whenEditorReady } from '@fe/context/editor'
+import type { Doc } from '@fe/support/types'
 import MonacoEditor from './MonacoEditor.vue'
-
-const FILE_POSITION_KEY = 'filePosition'
 
 export default defineComponent({
   name: 'editor',
@@ -32,27 +27,10 @@ export default defineComponent({
 
     const getEditor = () => refEditor.value
 
-    function saveFileOpenPosition (top: number) {
-      if (currentFile.value) {
-        const map = Storage.get(FILE_POSITION_KEY, {})
-        map[`${currentFile.value.repo}|${currentFile.value.path}`] = top
-        Storage.set(FILE_POSITION_KEY, map)
-      }
-    }
-
-    const saveFileOpenPositionDebounce = debounce((line: number) => {
-      saveFileOpenPosition(line)
-    }, 1000)
-
     function setCurrentValue ({ uri, value }: { uri: string; value: any}) {
       if (toUri(currentFile.value) === uri) {
         store.commit('setCurrentContent', value)
       }
-    }
-
-    function syncScrollView (line: number, top: number) {
-      getActionHandler('view.reveal-line')(line)
-      saveFileOpenPositionDebounce(top)
     }
 
     function clearTimer () {
@@ -108,14 +86,6 @@ export default defineComponent({
       }
 
       getEditor().setModel(toUri(current), current?.content ?? '\n')
-
-      if (current && current.status) {
-        // 切换文件时候保留定位
-        nextTick(() => {
-          const top = Storage.get(FILE_POSITION_KEY, {})[`${current.repo}|${current.path}`] || 1
-          setScrollToTop(top)
-        })
-      }
     }
 
     function resize () {
@@ -141,12 +111,6 @@ export default defineComponent({
       if (currentFile.value) {
         changeFile(currentFile.value)
       }
-
-      editor.onDidScrollChange(() => {
-        const line = Math.max(1, editor.getVisibleRanges()[0].startLineNumber - 2)
-        const top = editor.getScrollTop()
-        syncScrollView(line, top)
-      })
 
       editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
         saveFile()
