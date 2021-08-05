@@ -33,6 +33,8 @@ const Drawio = defineComponent({
       }
     }
 
+    const reload = () => {
+      refIFrame.value.reload()
     }
 
     setTimeout(resize, 1000)
@@ -51,6 +53,7 @@ const Drawio = defineComponent({
         },
         [
           button('适应高度', resize),
+          button('重载', reload),
           button('新窗口打开', () => openWindow(buildSrc(srcdoc.value, '查看图形'))),
         ]
       ),
