@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="{top: (height - 40) + 'px'}" @click="scrollToTop">TOP</div>
+    <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="{bottom: `max(100vh - ${height}px, 40px)`}" @click="scrollToTop">TOP</div>
     <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick">
       <Render @render="handleRender" @rendered="handleRendered" :content="renderContent" />
     </article>

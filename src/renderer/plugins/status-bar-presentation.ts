@@ -1,6 +1,4 @@
-import store from '@fe/support/store'
-import { Plugin } from '@fe/context/plugin'
-import { Escape, getKeysLabel } from '@fe/context/shortcut'
+import type { Plugin } from '@fe/context/plugin'
 
 export default {
   name: 'status-bar-presentation',
@@ -9,7 +7,10 @@ export default {
       if (flag) {
         ctx.ui.useToast().show('info', '按下 Esc 键退出演示模式')
       }
-      store.commit('setPresentation', flag)
+      ctx.store.commit('setPresentation', flag)
+      setTimeout(() => {
+        ctx.bus.emit('global.resize')
+      }, 0)
     }
 
     const enterPresentation = ctx.action.registerAction({
@@ -21,10 +22,10 @@ export default {
     ctx.action.registerAction({
       name: 'status-bar.exit-presentation',
       handler: () => present(false),
-      keys: [Escape],
+      keys: [ctx.shortcut.Escape],
       when: () => {
         const el = window.document.activeElement
-        return store.state.presentation &&
+        return ctx.store.state.presentation &&
           el?.tagName !== 'INPUT' &&
           el?.tagName !== 'TEXTAREA' &&
           [...document.body.children] // 判断页面是否有浮层遮住
@@ -37,7 +38,7 @@ export default {
       menus['status-bar-presentation'] = {
         id: 'status-bar-presentation',
         position: 'right',
-        tips: `预览 (${getKeysLabel(enterPresentation.name)})`,
+        tips: `预览 (${ctx.shortcut.getKeysLabel(enterPresentation.name)})`,
         icon: 'presentation',
         onClick: () => present(true)
       }
