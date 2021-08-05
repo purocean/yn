@@ -147,14 +147,19 @@ export default defineComponent({
 
     function handleScroll (e: any) {
       scrollTop.value = e.target.scrollTop
+      triggerHook('ON_VIEW_SCROLL', e)
     }
 
     function syncScroll (line: number) {
       revealLineInCenter(line)
     }
 
+    function scrollTopTo (top: number) {
+      refViewWrapper.value!.scrollTo(0, top)
+    }
+
     function scrollToTop () {
-      refViewWrapper.value!.scrollTo(0, 0)
+      scrollTopTo(0)
       syncScroll(1)
     }
 
@@ -168,7 +173,7 @@ export default defineComponent({
 
     function revealLine (line: number) {
       if (line <= 1) {
-        refViewWrapper.value!.scrollTo(0, 0)
+        scrollTopTo(0)
         return
       }
 
@@ -213,6 +218,7 @@ export default defineComponent({
       triggerHook('ON_VIEW_MOUNTED', { getViewDom })
       registerAction({ name: 'view.refresh', handler: render })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
+      registerAction({ name: 'view.scroll-top-to', handler: scrollTopTo })
       window.addEventListener('keydown', keydownHandler, true)
       bus.on('global.resize', resizeHandler)
       resizeHandler()
@@ -221,6 +227,7 @@ export default defineComponent({
     onBeforeUnmount(() => {
       removeAction('view.refresh')
       removeAction('view.reveal-line')
+      removeAction('view.scroll-top-to')
       window.removeEventListener('keydown', keydownHandler)
       bus.off('global.resize', resizeHandler)
     })

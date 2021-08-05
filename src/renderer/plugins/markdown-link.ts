@@ -2,6 +2,7 @@ import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
 import { Plugin, Ctx } from '@fe/context/plugin'
 import store from '@fe/support/store'
+import { sleep } from '@fe/utils'
 import { isElectron, nodeRequire } from '@fe/utils/env'
 import { basename, dirname, join } from '@fe/utils/path'
 import { switchDoc } from '@fe/context/document'
@@ -43,12 +44,11 @@ const handleLink = (link: HTMLAnchorElement) => {
         name: basename(path),
         repo: fileRepo,
         type: 'file'
-      })
-
-      // 跳转锚点
-      const hash = tmp.slice(1).join('#')
-      if (hash) {
-        setTimeout(() => {
+      }).then(async () => {
+        const hash = tmp.slice(1).join('#')
+        // 跳转锚点
+        if (hash) {
+          await sleep(50)
           const el = document.getElementById(hash) ||
             document.getElementById(encodeURIComponent(hash))
 
@@ -59,8 +59,8 @@ const handleLink = (link: HTMLAnchorElement) => {
             }
             el.scrollIntoView()
           }
-        }, 50)
-      }
+        }
+      })
 
       return true
     } else if (href && href.startsWith('#')) { // 处理 TOC 跳转
