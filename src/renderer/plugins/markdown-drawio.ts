@@ -15,20 +15,27 @@ const Drawio = defineComponent({
   setup (props) {
     const bus = useBus()
     const srcdoc = ref('')
-    const iframe = ref<HTMLIFrameElement>()
+    const refIFrame = ref<any>()
 
     watch(props, async () => {
       srcdoc.value = await buildSrcdoc({ url: props.url, content: props.content || '' })
     }, { immediate: true })
 
     const resize = () => {
-      iframe.value!.contentDocument!.body.style.height = 'auto'
-      iframe.value!.contentDocument!.documentElement.style.height = 'auto'
-      iframe.value!.height = iframe.value!.contentDocument!.documentElement.offsetHeight + 'px'
-      iframe.value!.contentDocument!.body.style.height = iframe.value!.contentDocument!.body.clientHeight + 'px'
-      iframe.value!.contentDocument!.documentElement.style.height = '100%'
-      bus.emit('global.resize')
+      const iframe = refIFrame.value.getIframe()
+      if (iframe) {
+        iframe.contentDocument.body.style.height = 'auto'
+        iframe.contentDocument.documentElement.style.height = 'auto'
+        iframe.height = iframe.contentDocument.documentElement.offsetHeight + 'px'
+        iframe.contentDocument.body.style.height = iframe.contentDocument.body.clientHeight + 'px'
+        iframe.contentDocument.documentElement.style.height = '100%'
+        bus.emit('global.resize')
+      }
     }
+
+    }
+
+    setTimeout(resize, 1000)
 
     const button = (text: string, onClick: any) => h('button', {
       style: 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 2px; transition: all .1s ease-in-out; line-height: 24px;',
@@ -49,10 +56,8 @@ const Drawio = defineComponent({
       ),
       h(IFrame, {
         html: srcdoc.value,
-        onLoad (frame) {
-          iframe.value = frame
-          resize()
-        },
+        ref: refIFrame,
+        onLoad: resize,
         iframeProps: {
           class: 'drawio',
           height: '300px',
