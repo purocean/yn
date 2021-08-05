@@ -78,6 +78,15 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.5.1](https://github.com/purocean/yn/releases/tag/v3.5.1) 2021-08-05
+1. 调整界面基础字体为系统字体
+2. 增加单独保存预览窗口滚动条位置
+3. drawio 图形增加重载按钮
+4. 修复复制标题链接有可能丢失 / 问题
+5. 修复演示模式预览图片按 Esc 退出演示模式问题
+6. 修复 drawio 网络慢的时候不能调整高度问题
+7. 修复某些情况下切换演示模式页面样式不正确问题
+
 ### [v3.5.0](https://github.com/purocean/yn/releases/tag/v3.5.0) 2021-08-03
 1. 新增导航菜单，前进后退功能
 2. 优化预览模式点击交互
