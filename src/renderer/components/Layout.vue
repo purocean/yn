@@ -1,6 +1,6 @@
 <template>
   <div :class="{layout: true, presentation, electron: isElectron}">
-    <div class="header">
+    <div class="header" v-show="isElectron">
       <slot name="header"></slot>
     </div>
     <div class="main">
