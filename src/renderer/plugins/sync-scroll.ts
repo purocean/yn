@@ -40,7 +40,7 @@ export default {
         await ctx.editor.whenEditorReady()
 
         disableSyncScroll(async () => {
-          ctx.editor.setScrollToTop(position.editor || 1)
+          ctx.editor.setScrollToTop(position.editor || 0)
           if (typeof position.view === 'number') {
             await sleep(0)
             ctx.view.scrollTopTo(position.view)
