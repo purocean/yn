@@ -1,10 +1,10 @@
 <template>
-  <Tabs :list="tabs" :value="current" @remove="removeTabs" @switch="switchTab" @change-list="setTabs"></Tabs>
+  <Tabs :list="fileTabs" :value="current" @remove="removeTabs" @switch="switchTab" @change-list="setTabs"></Tabs>
 </template>
 
 <script lang="ts">
 import { useStore } from 'vuex'
-import { defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
 import { Alt, Ctrl } from '@fe/context/shortcut'
 import { Components, Doc } from '@fe/support/types'
 import { useBus } from '@fe/support/bus'
@@ -23,6 +23,7 @@ export default defineComponent({
     const bus = useBus()
 
     const { currentFile, tabs } = toRefs(store.state)
+    const { isSaved } = toRefs(store.getters)
     const list = ref<Components.FileTabs.Item[]>([])
     const current = ref(blankUri)
 
@@ -164,10 +165,33 @@ export default defineComponent({
       }
     })
 
+    const fileTabs = computed(() => (tabs.value as Components.FileTabs.Item[]).map(tab => {
+      if (currentFile.value && tab.key === toUri(currentFile.value)) {
+        const status = currentFile.value.status
+
+        let mark = ''
+        if (!isSaved.value) {
+          mark = '*'
+        } else if (status === 'saved') {
+          mark = ''
+        } else if (status === 'save-failed') {
+          mark = '!'
+        } else if (status === 'loaded') {
+          mark = ''
+        } else {
+          mark = '…'
+        }
+
+        tab.label = mark + currentFile.value.name
+      }
+
+      return tab
+    }))
+
     return {
       list,
       current,
-      tabs,
+      fileTabs,
       removeTabs,
       switchTab,
       setTabs,

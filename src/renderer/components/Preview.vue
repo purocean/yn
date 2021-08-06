@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="{bottom: `max(100vh - ${height}px, 40px)`}" @click="scrollToTop">TOP</div>
+    <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="scrollToTopStyle" @click="scrollToTop">TOP</div>
     <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick">
       <Render @render="handleRender" @rendered="handleRendered" :content="renderContent" />
     </article>
@@ -44,6 +44,7 @@ import { debounce } from 'lodash-es'
 import { useStore } from 'vuex'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { extname } from '@fe/utils/path'
+import { isElectron } from '@fe/utils/env'
 import { markdown } from '@fe/context/markdown'
 import { triggerHook } from '@fe/context/plugin'
 import { useBus } from '@fe/support/bus'
@@ -88,6 +89,9 @@ export default defineComponent({
     const todoCount = ref(0)
     const todoDoneCount = ref(0)
     const scrollTop = ref(0)
+    const scrollToTopStyle = computed(() => ({
+      bottom: `max(100vh - ${height.value - (isElectron ? 0 : 20)}px, 40px)`
+    }))
 
     function resizeHandler () {
       width.value = refViewWrapper.value!.clientWidth
@@ -134,7 +138,7 @@ export default defineComponent({
       // 编辑非 markdown 文件预览直接显示代码
       const content = (filePath.value || '').endsWith('.md')
         ? currentContent.value
-        : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '```'
+        : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
 
       renderContent.value = markdown.render(content, { source: content, file: currentFile.value })
     }
@@ -247,6 +251,7 @@ export default defineComponent({
       renderContent,
       width,
       height,
+      scrollToTopStyle,
       heads,
       convert,
       todoCount,

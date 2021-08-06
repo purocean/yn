@@ -9,7 +9,17 @@ export default {
     type ScrollTop = { editor?: number, view?: number }
 
     const STORAGE_KEY = 'plugin.scroll-position'
+
     let enableSyncScroll = true
+    let xTimer: any
+    async function disableSyncScroll (fn: Function) {
+      clearTimeout(xTimer)
+      enableSyncScroll = false
+      await fn()
+      xTimer = setTimeout(() => {
+        enableSyncScroll = true
+      }, 500)
+    }
 
     function saveScrollPosition (scrollTop: ScrollTop) {
       const key = ctx.doc.toUri(ctx.store.state.currentFile)
@@ -19,7 +29,6 @@ export default {
     }
 
     // 切换文件后恢复滚动位置
-    let xTimer: any
     ctx.bus.on('doc.switched', async (file?: Doc) => {
       if (file) {
         await sleep(0)
@@ -30,18 +39,13 @@ export default {
 
         await ctx.editor.whenEditorReady()
 
-        clearTimeout(xTimer)
-        enableSyncScroll = false
-        ctx.editor.setScrollToTop(position.editor || 1)
-
-        if (typeof position.view === 'number') {
-          await sleep(0)
-          ctx.view.scrollTopTo(position.view)
-        }
-
-        xTimer = setTimeout(() => {
-          enableSyncScroll = true
-        }, 500)
+        disableSyncScroll(async () => {
+          ctx.editor.setScrollToTop(position.editor || 0)
+          if (typeof position.view === 'number') {
+            await sleep(0)
+            ctx.view.scrollTopTo(position.view)
+          }
+        })
       }
     })
 
@@ -74,7 +78,9 @@ export default {
         target.classList.contains('source-line') &&
         window.getSelection()!.toString().length < 1
       ) {
-        ctx.editor.revealLineInCenter(parseInt(target.dataset.sourceLine || '0'))
+        disableSyncScroll(() => {
+          ctx.editor.revealLineInCenter(parseInt(target.dataset.sourceLine || '0'))
+        })
       }
 
       return false

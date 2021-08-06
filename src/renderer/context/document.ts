@@ -40,10 +40,14 @@ function encrypt (content: any, password: string) {
   return Crypto.encrypt(content, password)
 }
 
-async function inputPassword (title: string, filename: string) {
+async function inputPassword (title: string, filename: string, throwError = false) {
   const password = await useModal().input({ title, type: 'password', hint: filename })
   if (!password) {
-    throw new Error('未输入密码')
+    if (throwError) {
+      throw new Error('未输入密码')
+    } else {
+      useToast().show('warning', '未输入密码')
+    }
   }
 
   return password
@@ -108,6 +112,10 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
     // 加密文件内容
     if (isEncrypted(file)) {
       const password = await inputPassword('[创建] 请输入密码', file.name)
+      if (!password) {
+        return
+      }
+
       const encrypted = encrypt(file.content, password)
       file.content = encrypted.content
     }
@@ -212,6 +220,10 @@ export async function saveDoc (doc: Doc, content: string) {
     // 加密文件内容
     if (isEncrypted(doc)) {
       const password = await inputPassword('[保存] 请输入密码', doc.name)
+      if (!password) {
+        return
+      }
+
       const encrypted = encrypt(sendContent, password)
       if (doc.passwordHash !== encrypted.passwordHash) {
         if (!(await useModal().confirm({ title: '提示', content: '密码和上一次输入的密码不一致，是否用新密码保存？' }))) {
@@ -289,7 +301,7 @@ export async function switchDoc (doc: Doc | null) {
 
     // 解密文件内容
     if (isEncrypted(doc)) {
-      const password = await inputPassword('[打开] 请输入密码', doc.name)
+      const password = await inputPassword('[打开] 请输入密码', doc.name, true)
       const decrypted = decrypt(content, password)
       content = decrypted.content
       passwordHash = decrypted.passwordHash

@@ -78,6 +78,13 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.5.2](https://github.com/purocean/yn/releases/tag/v3.5.2) 2021-08-06
+1. 浏览器中使用时候隐藏标题栏
+2. 文档标签增加状态指示
+4. 修复保存加密文件取消输入密码内容被还原问题
+3. 修复一些 UI 展示问题
+5. 优化一些交互体验
+
 ### [v3.5.1](https://github.com/purocean/yn/releases/tag/v3.5.1) 2021-08-05
 1. 调整界面基础字体为系统字体
 2. 增加单独保存预览窗口滚动条位置
