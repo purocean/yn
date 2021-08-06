@@ -134,7 +134,7 @@ export default defineComponent({
       // 编辑非 markdown 文件预览直接显示代码
       const content = (filePath.value || '').endsWith('.md')
         ? currentContent.value
-        : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '```'
+        : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
 
       renderContent.value = markdown.render(content, { source: content, file: currentFile.value })
     }
