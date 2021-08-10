@@ -96,9 +96,10 @@ export default defineComponent({
       }
     }
 
-    function handleMoved (payload?: { oldDoc: Doc }) {
+    function handleMoved (payload?: { oldDoc: Doc, newDoc: Doc }) {
       if (payload) {
         removeFile(payload.oldDoc)
+        switchFile(payload.newDoc)
       }
     }
 

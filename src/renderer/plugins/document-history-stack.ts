@@ -51,6 +51,13 @@ export default {
       })
     }
 
+    function removeFromStack (doc?: Doc) {
+      const newStack = stack.filter(x => ctx.doc.toUri(doc) !== ctx.doc.toUri(x))
+      stack.splice(0, stack.length)
+      stack.push(...newStack)
+      updateMenu()
+    }
+
     ctx.bus.on('doc.switched', (file?: Doc) => {
       if (file) {
         if (!ctx.doc.isSameFile(stack[idx], file)) {
@@ -61,6 +68,9 @@ export default {
       }
       updateMenu()
     })
+
+    ctx.bus.on('doc.deleted', removeFromStack)
+    ctx.bus.on('doc.moved', ({ oldDoc }) => removeFromStack(oldDoc))
 
     ctx.action.registerAction({
       name: backId,
