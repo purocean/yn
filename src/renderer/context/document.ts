@@ -4,7 +4,7 @@ import { useModal } from '@fe/support/modal'
 import { useToast } from '@fe/support/toast'
 import store from '@fe/support/store'
 import type { Doc } from '@fe/support/types'
-import { basename, dirname, join } from '@fe/utils/path'
+import { basename, dirname, isBelongTo, join } from '@fe/utils/path'
 import { useBus } from '@fe/support/bus'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
@@ -61,6 +61,14 @@ export function isSameFile (a?: Doc | null, b?: Doc | null) {
   return a && b && a.repo === b.repo && a.path === b.path
 }
 
+export function isSubOrSameFile (a?: Doc | null, b?: Doc | null) {
+  return a && b && a.repo === b.repo &&
+  (
+    isBelongTo(a.path, b.path) ||
+    isSameFile(a, b)
+  )
+}
+
 export function toUri (doc?: Doc | null) {
   if (doc && doc.repo && doc.path) {
     return encodeURI(`yank-note://${doc.repo}/${doc.path.replace(/^\//, '')}`)
@@ -92,7 +100,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
         filename = filename.replace(/\/$/, '') + '.md'
       }
 
-      doc.path = join(currentPath, filename).replace(/^\//, '')
+      doc.path = join(currentPath, filename)
     }
   }
 

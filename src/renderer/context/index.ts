@@ -3,6 +3,8 @@ import { useToast } from '@fe/support/toast'
 import { useModal } from '@fe/support/modal'
 import store from '@fe/support/store'
 import storage from '@fe/utils/storage'
+import * as utils from '@fe/utils/index'
+import * as env from '@fe/utils/env'
 import * as api from '@fe/support/api'
 import * as action from './action'
 import * as doc from './document'
@@ -36,7 +38,9 @@ const ctx = {
   view,
   theme,
   storage,
-  embed
+  embed,
+  env,
+  utils,
 }
 
 window.ctx = ctx

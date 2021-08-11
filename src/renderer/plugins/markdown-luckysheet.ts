@@ -361,7 +361,7 @@ async function createLuckysheet (node: Doc) {
     filename = filename.replace(/\/$/, '') + fileExt
   }
 
-  const path = join(currentPath, filename).replace(/^\//, '')
+  const path = join(currentPath, filename)
 
   if (!path) {
     throw new Error('需要传入文件路径')
