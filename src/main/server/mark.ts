@@ -9,7 +9,13 @@ const configKey = 'mark'
 const defaultVal: MarkedFile[] = []
 
 const list = () => {
-  return config.get(configKey, defaultVal) as MarkedFile[]
+  return (config.get(configKey, defaultVal) as MarkedFile[]).map(file => {
+    if (!file.path.startsWith('/')) {
+      file.path = '/' + file.path
+    }
+
+    return file
+  })
 }
 
 const remove = (file: MarkedFile) => {
