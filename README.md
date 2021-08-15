@@ -78,6 +78,11 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.5.3](https://github.com/purocean/yn/releases/tag/v3.5.3) 2021-08-15
+1. 修复点击配置菜单不工作问题
+2. 修复一些 UI 展示问题
+3. 优化一些交互体验
+
 ### [v3.5.2](https://github.com/purocean/yn/releases/tag/v3.5.2) 2021-08-06
 1. 浏览器中使用时候隐藏标题栏
 2. 文档标签增加状态指示
