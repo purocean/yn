@@ -167,7 +167,7 @@ const showSetting = () => {
   }
 
   showWindow()
-  win.webContents.executeJavaScript('window.ctx.action.getAction("status-bar.show-setting")();', true)
+  win.webContents.executeJavaScript('window.ctx.action.getActionHandler("status-bar.show-setting")();', true)
 }
 
 const serve = () => {
