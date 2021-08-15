@@ -4,7 +4,7 @@ import type { Doc } from '@fe/support/types'
 export default {
   name: 'document-history-stack',
   register: (ctx: Ctx) => {
-    const stack: Doc[] = []
+    let stack: Doc[] = []
     let idx = -1
 
     const backId = 'plugin.document-history-stack.back'
@@ -22,10 +22,10 @@ export default {
       }
 
       idx = index
+      updateMenu()
     }
 
     function updateMenu () {
-      console.log(idx, idx < stack.length - 1, idx > 0)
       ctx.statusBar.tapMenus(menus => {
         const list = menus['status-bar-navigation']?.list || []
         if (list) {
@@ -36,7 +36,7 @@ export default {
               title: '前进',
               disabled: idx >= stack.length - 1,
               subTitle: ctx.shortcut.getKeysLabel(forwardId),
-              onClick: ctx.action.getActionHandler(forwardId)
+              onClick: () => ctx.action.getActionHandler(forwardId)()
             },
             {
               id: backId,
@@ -44,11 +44,17 @@ export default {
               title: '后退',
               disabled: idx <= 0,
               subTitle: ctx.shortcut.getKeysLabel(backId),
-              onClick: ctx.action.getActionHandler(backId)
+              onClick: () => ctx.action.getActionHandler(backId)()
             },
           ].concat(list.filter(x => ![forwardId, backId].includes(x.id)) as any)
         }
       })
+    }
+
+    function removeFromStack (doc?: Doc) {
+      stack = stack.filter(x => !ctx.doc.isSubOrSameFile(doc, x))
+      idx = stack.length - 1
+      updateMenu()
     }
 
     ctx.bus.on('doc.switched', (file?: Doc) => {
@@ -61,6 +67,9 @@ export default {
       }
       updateMenu()
     })
+
+    ctx.bus.on('doc.deleted', removeFromStack)
+    ctx.bus.on('doc.moved', ({ oldDoc }) => removeFromStack(oldDoc))
 
     ctx.action.registerAction({
       name: backId,

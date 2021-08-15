@@ -93,6 +93,9 @@ const upload = (repo: string, buffer: Buffer, path: string) => {
   write(repo, path, buffer)
 }
 
+const getRelativePath = (from: string, to: string) =>
+  '/' + path.relative(from, to).replace(/\\/g, '/')
+
 const travels = (location: string, repo: string, basePath: string, markedFiles: MarkedFile[] | null = null): any => {
   if (!fs.statSync(location).isDirectory()) {
     return []
@@ -109,18 +112,16 @@ const travels = (location: string, repo: string, basePath: string, markedFiles: 
 
   return dirs.map(x => {
     const p = path.join(location, x)
-    const xpath = path.relative(basePath, p).replace(/\\/g, '/')
-
     return {
       name: x,
-      path: xpath,
+      path: getRelativePath(basePath, p),
       type: 'dir',
       repo: repo,
       children: travels(p, repo, basePath, markedFiles)
     } as TreeItem
   }).concat(files.map(x => {
     const p = path.join(location, x)
-    const xpath = path.relative(basePath, p).replace(/\\/g, '/')
+    const xpath = getRelativePath(basePath, p)
     const stat = fs.statSync(p)
 
     return {
@@ -184,7 +185,7 @@ const search = (repo: string, str: string) => {
           files.push({
             repo,
             name: x,
-            path: path.relative(basePath, p).replace(/\\/g, '/'),
+            path: getRelativePath(basePath, p),
             type: 'file',
           })
         }

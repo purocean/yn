@@ -1,3 +1,5 @@
+export * as path from './path'
+
 export const encodeMarkdownLink = (path: string) => {
   return path
     .replace(/\(/g, '%28')

@@ -259,13 +259,15 @@ const LuckyComponent = defineComponent({
       onClick
     }, text)
 
+    const topOffset = isElectron ? '30px' : '0px'
+
     const buildIFrame = (full: boolean) => h(IFrame, {
       ref: full ? refFullIFrame : refIFrame,
       html: buildSrcdoc(props.repo!, props.path!, full),
       debounce: 1000,
       iframeProps: {
         class: 'lucky-sheet',
-        style: 'margin: 0;display:block;height: ' + (full ? 'calc(100vh - 30px)' : '500px'),
+        style: 'margin: 0;display:block;height: ' + (full ? `calc(100vh - ${topOffset})` : '500px'),
         width: '100%'
       }
     })
@@ -275,7 +277,7 @@ const LuckyComponent = defineComponent({
         show: true,
         maskCloseable: false,
         escCloseable: false,
-        style: { paddingTop: '30px' }
+        style: { paddingTop: topOffset }
       }, [
         h(
           'div',
@@ -359,7 +361,7 @@ async function createLuckysheet (node: Doc) {
     filename = filename.replace(/\/$/, '') + fileExt
   }
 
-  const path = join(currentPath, filename).replace(/^\//, '')
+  const path = join(currentPath, filename)
 
   if (!path) {
     throw new Error('需要传入文件路径')

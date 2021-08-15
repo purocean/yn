@@ -8,7 +8,7 @@ import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs,
 import { Alt, Ctrl } from '@fe/context/shortcut'
 import { Components, Doc } from '@fe/support/types'
 import { useBus } from '@fe/support/bus'
-import { ensureCurrentFileSaved, isEncrypted, switchDoc, toUri } from '@fe/context/document'
+import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/context/document'
 import { registerAction, removeAction } from '@fe/context/action'
 import { isBelongTo } from '@fe/utils/path'
 import Tabs from './Tabs.vue'
@@ -32,7 +32,7 @@ export default defineComponent({
     }
 
     function switchFile (file: any) {
-      switchDoc(file)
+      return switchDoc(file)
     }
 
     function switchTab (item: Components.FileTabs.Item) {
@@ -81,12 +81,10 @@ export default defineComponent({
     }
 
     function removeFile (doc?: Doc | null) {
-      const tab = tabs.value.find((x: Components.FileTabs.Item) => {
-        return x.key === toUri(doc) || (x.payload.file && doc && isBelongTo(doc.path, x.payload.file.path))
-      })
+      const files = tabs.value.filter((x: Components.FileTabs.Item) => isSubOrSameFile(doc, x.payload.file))
 
-      if (tab) {
-        removeTabs([tab])
+      if (files.length > 0) {
+        removeTabs(files)
       }
     }
 
@@ -96,8 +94,11 @@ export default defineComponent({
       }
     }
 
-    function handleMoved (payload?: { oldDoc: Doc }) {
+    async function handleMoved (payload?: { oldDoc: Doc, newDoc: Doc }) {
       if (payload) {
+        if (payload.newDoc.type === 'file') {
+          await switchFile(payload.newDoc)
+        }
         removeFile(payload.oldDoc)
       }
     }

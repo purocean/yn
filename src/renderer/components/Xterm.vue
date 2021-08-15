@@ -184,7 +184,6 @@ export default defineComponent({
 .xterm {
   box-sizing: border-box;
   padding: 5px;
-  padding-bottom: 20px;
   background: var(--g-color-98);
   border: 1px solid var(--g-color-80);
   flex: 0 0 auto;
