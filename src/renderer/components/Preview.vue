@@ -436,10 +436,16 @@ export default defineComponent({
       margin-left: auto;
       margin-right: auto;
       cursor: zoom-in;
-      background-color: #fff;
 
-      &.inline {
+      &.inline,
+      &[src*=".inline"] {
         display: inline;
+        background: unset;
+      }
+
+      &.bgw,
+      &[src*=".bgw"] {
+        background-color: #fff;
       }
     }
 

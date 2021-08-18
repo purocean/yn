@@ -1,7 +1,7 @@
 # Yank Note
 > 一款面向程序员的 Markdown 笔记应用 **[在线体验>>>](https://yn-phi.vercel.app/)**
 
-[![Download](./help/mas_en.svg)](https://apps.apple.com/cn/app/yank-note/id1551528618)
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [![Download](./help/ws_en.svg?.inline)](https://www.microsoft.com/store/apps/9NRK5ZXVQ2PH)
 
 [toc]{level: [2]}
 
@@ -77,6 +77,10 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v3.5.4](https://github.com/purocean/yn/releases/tag/v3.5.4) 2021-08-18
+1. 微调界面配色
+2. 图片支持行内模式展示
 
 ### [v3.5.3](https://github.com/purocean/yn/releases/tag/v3.5.3) 2021-08-15
 1. 修复点击配置菜单不工作问题

@@ -111,9 +111,8 @@ export function toggleWrap () {
 
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
 
-bus.on('monaco.ready', (payload: any) => {
+bus.on('monaco.before-init', (payload: any) => {
   monaco = payload.monaco
-  editor = payload.editor
 
   monaco.editor.defineTheme('vs', {
     base: 'vs',
@@ -124,6 +123,21 @@ bus.on('monaco.ready', (payload: any) => {
       'minimap.background': '#EEEEEE',
     }
   })
+
+  monaco.editor.defineTheme('vs-dark', {
+    base: 'vs-dark',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#131416',
+      'minimap.background': '#101113',
+    }
+  })
+})
+
+bus.on('monaco.ready', (payload: any) => {
+  monaco = payload.monaco
+  editor = payload.editor
 
   bus.emit('editor.ready', payload)
 })

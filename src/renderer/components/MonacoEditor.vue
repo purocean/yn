@@ -51,6 +51,8 @@ export default defineComponent({
     }
 
     function initMonaco () {
+      bus.emit('monaco.before-init', { monaco: getMonaco() })
+
       editor = getMonaco().editor.create(refEditor.value, defaultOptions)
       setModel(toUri(null), '')
 
