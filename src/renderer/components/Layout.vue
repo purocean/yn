@@ -168,7 +168,7 @@ export default defineComponent({
   width: 17vw;
   flex: none;
   height: 100%;
-  border-right: 1px solid var(--g-color-80);
+  border-right: 1px solid var(--g-color-86);
 }
 
 .sash-right {

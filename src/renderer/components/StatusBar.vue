@@ -44,7 +44,7 @@ export default defineComponent({
   box-sizing: border-box;
   padding: 0;
   color: #eee;
-  background: #4e4e4e;
+  background: #38383a;
   font-size: 12px;
   line-height: 20px;
   height: 100%;

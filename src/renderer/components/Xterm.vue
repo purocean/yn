@@ -43,7 +43,7 @@ export default defineComponent({
 
     function changeTheme () {
       const dark = getColorScheme() === 'dark'
-      OneHalfDark.background = '#2c2e2f'
+      OneHalfDark.background = '#1a1b1d'
       OneHalfLight.selection = 'rgba(0, 0, 0, .1)'
       xterm!.setOption('theme', dark ? OneHalfDark : OneHalfLight)
     }
@@ -185,7 +185,7 @@ export default defineComponent({
   box-sizing: border-box;
   padding: 5px;
   background: var(--g-color-98);
-  border: 1px solid var(--g-color-80);
+  border: 1px solid var(--g-color-88);
   flex: 0 0 auto;
   width: 100%;
   height: 100%;
