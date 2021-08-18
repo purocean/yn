@@ -78,7 +78,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.5.4](https://github.com/purocean/yn/releases/tag/v3.5.4) 2021-08-18
+### [v3.5.5](https://github.com/purocean/yn/releases/tag/v3.5.5) 2021-08-18
 1. 微调界面配色
 2. 图片支持行内模式展示
 
