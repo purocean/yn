@@ -1,7 +1,7 @@
 # Yank Note
 > 一款面向程序员的 Markdown 笔记应用 **[在线体验>>>](https://yn-phi.vercel.app/)**
 
-[![Download](./help/mas_en.svg)](https://apps.apple.com/cn/app/yank-note/id1551528618) [![Download](./help/ws_en.svg)](https://www.microsoft.com/store/apps/9NRK5ZXVQ2PH)
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [![Download](./help/ws_en.svg?.inline)](https://www.microsoft.com/store/apps/9NRK5ZXVQ2PH)
 
 [toc]{level: [2]}
 
