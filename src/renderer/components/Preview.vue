@@ -438,13 +438,15 @@ export default defineComponent({
       cursor: zoom-in;
 
       &.inline,
-      &[src*=".inline"] {
+      &[src*=".inline"],
+      &[origin-src*=".inline"] {
         display: inline;
         background: unset;
       }
 
       &.bgw,
-      &[src*=".bgw"] {
+      &[src*=".bgw"],
+      &[origin-src*=".bgw"] {
         background-color: #fff;
       }
     }

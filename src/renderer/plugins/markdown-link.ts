@@ -111,12 +111,14 @@ function convertLink (state: StateCore) {
 
     token.attrSet(`origin-${attrName}`, attrVal)
 
+    const val = attrVal.replace(/[#?].*$/, '')
+
     if (repo === '__help__') {
-      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(attrVal)}`)
+      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(val)}`)
       return
     }
 
-    const filePath = join(basePath, attrVal)
+    const filePath = join(basePath, val)
     token.attrSet(attrName, `api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
   }
 
