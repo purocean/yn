@@ -1,4 +1,4 @@
-import { FLAG_DEMO, URL_GITHUB, URL_MAS } from '@fe/support/global-args'
+import { FLAG_DEMO, URL_GITHUB, URL_MAS, URL_WS } from '@fe/support/global-args'
 import { Plugin } from '@fe/context/plugin'
 
 export default {
@@ -14,6 +14,7 @@ export default {
           list: [
             { id: 'github', type: 'normal', title: 'GitHub', onClick: () => window.open(URL_GITHUB) },
             { id: 'mas', type: 'normal', title: 'Mac App Store', onClick: () => window.open(URL_MAS) },
+            { id: 'ws', type: 'normal', title: 'Microsoft Store', onClick: () => window.open(URL_WS) },
           ]
         }
       })
