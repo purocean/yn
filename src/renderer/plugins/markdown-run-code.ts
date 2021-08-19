@@ -5,9 +5,8 @@ import { Plugin } from '@fe/context/plugin'
 import { getActionHandler } from '@fe/context/action'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
-import storage from '@fe/utils/storage'
 
-const cachePrefix = 'run_code_result_'
+const cache: Record<string, string> = {}
 
 const RunCode = defineComponent({
   name: 'run-code',
@@ -32,7 +31,7 @@ const RunCode = defineComponent({
         hasResult = true
       }
 
-      storage.set(`${cachePrefix}${hash.value}`, result.value)
+      cache[hash.value] = result.value
     }
 
     const run = async () => {
@@ -64,7 +63,7 @@ const RunCode = defineComponent({
     })
 
     return () => {
-      const runResult = result.value || storage.get(`${cachePrefix}${hash.value}`, '')
+      const runResult = result.value || cache[hash.value]
 
       return [
         h('div', { class: 'run-code-action', style: 'position: sticky; left: 0; border-top: dashed 1px #888; margin: 1em 0' }, [
@@ -110,14 +109,6 @@ const RunPlugin = (md: Markdown) => {
   }
 }
 
-const clearCache = () => {
-  Object.keys(storage.getAll()).forEach(key => {
-    if (key.startsWith(cachePrefix)) {
-      storage.remove(key)
-    }
-  })
-}
-
 export default {
   name: 'run-code',
   register: ctx => {
@@ -130,7 +121,6 @@ export default {
     `)
 
     ctx.markdown.registerPlugin(RunPlugin)
-    ctx.registerHook('ON_STARTUP', clearCache)
 
     !FLAG_DISABLE_XTERM && ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
       editor.addAction({
