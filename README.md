@@ -5,7 +5,7 @@
 
 [toc]{level: [2]}
 
-![截图](./help/0.png)
+![截图](./help/1.png)
 
 ## 特色
 + **使用方便**：使用 Monaco 编辑器（VSCode 编辑器内核）编辑，针对 Markdown 文件添加了快捷键和补全规则
@@ -69,11 +69,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 + 自定义插件：支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中，文档待完善
 
 ## 界面截图
-![截图](./help/3.png)
-![截图](./help/5.png)
-![截图](./help/1.png)
 ![截图](./help/2.png)
-![截图](./help/4.gif)
+![截图](./help/3.png)
+![截图](./help/4.png)
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
