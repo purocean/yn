@@ -109,7 +109,7 @@ export default defineComponent({
   left: -99999px;
   top: -99999px;
   visibility: hidden;
-  background: var(--g-color-90);
+  background: var(--g-color-82);
   border: 1px var(--g-color-84) solid;
   border-left: 0;
   border-top: 0;
@@ -132,7 +132,7 @@ export default defineComponent({
 }
 
 .menu > li.normal:hover {
-  background: var(--g-color-80);
+  background: var(--g-color-70);
 }
 
 </style>
