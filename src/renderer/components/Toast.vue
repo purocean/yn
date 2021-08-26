@@ -44,6 +44,7 @@ export default defineComponent({
   border-radius: 50px;
   text-align: center;
   word-break: break-all;
+  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
 }
 
 .toast-warning {

@@ -40,6 +40,7 @@ import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import { Components } from '@fe/support/types'
 import { getActionHandler } from '@fe/context/action'
 import { createDoc, deleteDoc, duplicateDoc, isEncrypted, markDoc, moveDoc, openInOS, switchDoc, unmarkDoc } from '@fe/context/document'
+import { join } from '@fe/utils/path'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -95,7 +96,7 @@ export default defineComponent({
     }
 
     function revealInXterminal () {
-      const path = currentRepo.value ? currentRepo.value.path + '/' + props.item.path : ''
+      const path = currentRepo.value ? join(currentRepo.value.path, props.item.path) : ''
 
       getActionHandler('xterm.run')(`--yank-note-run-command-cd-- ${path}`)
     }

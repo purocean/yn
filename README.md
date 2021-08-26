@@ -1,11 +1,11 @@
 # Yank Note
 > 一款面向程序员的 Markdown 笔记应用 **[在线体验>>>](https://yn-phi.vercel.app/)**
 
-[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [![Download](./help/ws_en.svg?.inline)](https://www.microsoft.com/store/apps/9NRK5ZXVQ2PH)
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
 
 [toc]{level: [2]}
 
-![截图](./help/0.png)
+![截图](./help/1.png)
 
 ## 特色
 + **使用方便**：使用 Monaco 编辑器（VSCode 编辑器内核）编辑，针对 Markdown 文件添加了快捷键和补全规则
@@ -31,6 +31,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 + [ ] 重构快捷键处理层，支持自定义快捷键
 + [ ] 其他 V2 未完成的功能
 + [ ] 完善自定义插件文档
++ [ ] 增加移动端
 
 ## 特色功能
 部分功能需要相关快捷键配合，可参考*特色功能说明*
@@ -69,14 +70,18 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 + 自定义插件：支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中，文档待完善
 
 ## 界面截图
-![截图](./help/3.png)
-![截图](./help/5.png)
-![截图](./help/1.png)
 ![截图](./help/2.png)
-![截图](./help/4.gif)
+![截图](./help/3.png)
+![截图](./help/4.png)
 
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
+
+### [v3.5.7](https://github.com/purocean/yn/releases/tag/v3.5.7) 2021-08-26
+1. 微调界面配色
+2. 插件目录下的文件现在可以被访问
+3. 编辑器上下文菜单增加粘贴相关功能
+4. 优化内置终端语言判断和路径解析逻辑
 
 ### [v3.5.6](https://github.com/purocean/yn/releases/tag/v3.5.6) 2021-08-20
 1. 微调界面配色

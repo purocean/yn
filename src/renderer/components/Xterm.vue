@@ -122,11 +122,14 @@ export default defineComponent({
 
         const map: {[key: string]: {start: string; exit: string; eol: string}} = {
           bat: { start: 'cmd.exe', exit: 'exit', eol: '\r\n' },
+          shell: { start: '', exit: 'exit', eol: '\n' },
+          sh: { start: 'sh', exit: 'exit', eol: '\n' },
           bash: { start: 'bash', exit: 'exit', eol: '\n' },
           php: { start: 'php -a', exit: 'exit', eol: '\n' },
           python: { start: 'python', exit: 'exit()', eol: '\n' },
           py: { start: 'python', exit: 'exit()', eol: '\n' },
-          js: { start: 'node', exit: '.exit', eol: '\n' }
+          js: { start: 'node', exit: '.exit', eol: '\n' },
+          node: { start: 'node', exit: '.exit', eol: '\n' },
         }
 
         const run = (code: string, eol: string) => {
@@ -139,8 +142,10 @@ export default defineComponent({
         if (!language || language === '_') {
           run(code, '\n')
         } else if (map[language]) {
-          input(map[language].start)
-          input(map[language].eol)
+          if (map[language].start) {
+            input(map[language].start)
+            input(map[language].eol)
+          }
 
           // 延迟一下等待子进程启动
           setTimeout(() => {

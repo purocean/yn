@@ -112,7 +112,7 @@ export default defineComponent({
 }
 
 .status-bar-menu:hover {
-  background: #2f3031;
+  background: #4a4b4d;
 }
 
 .status-bar-menu:hover .list {
@@ -123,12 +123,13 @@ export default defineComponent({
   min-width: 70px;
   margin: 0;
   list-style: none;
-  background: #37393a;
+  background: #4a4b4d;
   padding: 4px 0;
   display: none;
   position: fixed;
   bottom: 20px;
   box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
 }
 
 .list li {
