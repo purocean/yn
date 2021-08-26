@@ -285,13 +285,13 @@ const server = (port = 3000) => {
           next()
         }
 
-        return
+        return false
       }
 
       const fileStat = fs.statSync(filePath)
       if (fileStat.isDirectory()) {
         await sendFile(path.resolve(filePath, 'index.html'))
-        return
+        return true
       }
 
       ctx.body = await promisify(fs.readFile)(filePath)
@@ -300,9 +300,13 @@ const server = (port = 3000) => {
       ctx.set('Cache-Control', 'max-age=0')
       ctx.set('X-XSS-Protection', '0')
       ctx.type = path.extname(filePath)
+
+      return true
     }
 
-    await sendFile(path.resolve(STATIC_DIR, urlPath), true)
+    if (!(await sendFile(path.resolve(STATIC_DIR, urlPath), false))) {
+      await sendFile(path.resolve(USER_PLUGIN_DIR, urlPath), true)
+    }
   })
 
   const callback = app.callback()
