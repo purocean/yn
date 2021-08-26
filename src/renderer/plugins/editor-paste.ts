@@ -6,7 +6,10 @@ import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { encodeMarkdownLink, fileToBase64URL } from '@fe/utils'
 
-let keys: {[key: string]: boolean} = {}
+const IMAGE_REG = /^image\/(png|jpg|jpeg|gif)$/i
+const HTML_REG = /^text\/html$/i
+
+let keys: Record<string, boolean> = {}
 
 function recordKeys (e: KeyboardEvent) {
   if (e.type === 'keydown') {
@@ -21,7 +24,7 @@ async function pasteHtml (html: string) {
   insert(md)
 }
 
-async function pasteImage (file: any, asBase64: boolean) {
+async function pasteImage (file: File, asBase64: boolean) {
   if (asBase64) {
     const uri = await fileToBase64URL(file)
     insert(`![图片](${uri})\n`)
@@ -45,7 +48,7 @@ function paste (e: ClipboardEvent) {
   const items = e.clipboardData!.items
   if (keys.d || keys.D) { // 粘贴 HTML 转为 markdown
     for (let i = 0; i < items.length; i++) {
-      if (items[i].type.match(/^text\/html$/i)) {
+      if (items[i].type.match(HTML_REG)) {
         items[i].getAsString(pasteHtml)
       }
     }
@@ -55,9 +58,9 @@ function paste (e: ClipboardEvent) {
   } else {
     for (let i = 0; i < items.length; i++) {
       const fileType = items[i].type
-      if (fileType.match(/^image\/(png|jpg|jpeg|gif)$/i)) {
+      if (fileType.match(IMAGE_REG)) {
         const asBase64 = keys.b || keys.B // 粘贴的同时 按下了 B 键，就粘贴 base64 图像
-        pasteImage(items[i].getAsFile(), asBase64)
+        pasteImage(items[i].getAsFile()!, asBase64)
       }
     }
   }
@@ -65,9 +68,72 @@ function paste (e: ClipboardEvent) {
 
 export default {
   name: 'editor-paste',
-  register: () => {
+  register: (ctx) => {
     window.addEventListener('paste', paste as any, true)
     window.addEventListener('keydown', recordKeys, true)
     window.addEventListener('keyup', recordKeys, true)
+
+    ctx.editor.whenEditorReady().then(({ editor }) => {
+      const getClipboardContent = async (callback: (type: string, getType: (type: string) => Promise<Blob>) => Promise<void>) => {
+        const result = await navigator.permissions.query({ name: 'clipboard-read' })
+
+        if (result.state === 'denied') {
+          ctx.ui.useToast().show('warning', '请授予剪切板权限')
+          return
+        }
+
+        const items: any = await (navigator.clipboard as any).read()
+        for (const item of items) {
+          for (const type of (item.types as string[])) {
+            await callback(type, item.getType.bind(item))
+          }
+        }
+      }
+
+      const pasteImageFromClipboard = async (asBase64: boolean) => {
+        getClipboardContent(async (type, getType) => {
+          const match = type.match(IMAGE_REG)
+          if (match) {
+            const file = new File([await getType(type)], 'image.' + match[1], { type })
+            await pasteImage(file, asBase64)
+          }
+        })
+      }
+
+      editor.addAction({
+        id: 'plugin.editor-paste.insert-image',
+        label: '粘贴图片',
+        contextMenuGroupId: 'clipboard',
+        contextMenuOrder: 1,
+        run: async () => {
+          pasteImageFromClipboard(false)
+        }
+      })
+
+      editor.addAction({
+        id: 'plugin.editor-paste.insert-image-base64',
+        label: '粘贴图片为 Base64',
+        contextMenuGroupId: 'clipboard',
+        contextMenuOrder: 2,
+        run: () => {
+          pasteImageFromClipboard(true)
+        }
+      })
+
+      editor.addAction({
+        id: 'plugin.editor-paste.insert-rtf',
+        label: '粘贴富文本为 Markdown',
+        contextMenuGroupId: 'clipboard',
+        contextMenuOrder: 3,
+        run: () => {
+          getClipboardContent(async (type, getType) => {
+            if (type.match(HTML_REG)) {
+              const html = await (await getType(type)).text()
+              await pasteHtml(html)
+            }
+          })
+        }
+      })
+    })
   }
 } as Plugin
