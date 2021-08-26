@@ -330,6 +330,7 @@ export default defineComponent({
   background: var(--g-color-95);
   margin: auto;
   padding: 10px;
+  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
 }
 
 .result {

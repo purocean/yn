@@ -129,6 +129,7 @@ export default defineComponent({
   position: fixed;
   bottom: 20px;
   box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
 }
 
 .list li {

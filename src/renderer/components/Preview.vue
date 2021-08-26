@@ -295,7 +295,6 @@ export default defineComponent({
 }
 
 .action-bar > div {
-  /* background: #4e4e4e; */
   padding: .3em;
   border-radius: 2px;
   height: 26px;
@@ -326,7 +325,7 @@ export default defineComponent({
 .outline {
   position: fixed;
   right: 2em;
-  background: var(--g-color-90);
+  background: var(--g-color-85);
   color: var(--g-color-10);
   font-size: 14px;
   max-height: 3.2em;
@@ -341,6 +340,7 @@ export default defineComponent({
 .outline:hover {
   max-height: 75vh;
   max-width: 20em;
+  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
 }
 
 .outline > .catalog {
@@ -357,7 +357,7 @@ export default defineComponent({
 }
 
 .outline > .catalog > div:hover {
-  background: var(--g-color-80);
+  background: var(--g-color-75);
 }
 
 .convert {
@@ -370,7 +370,7 @@ export default defineComponent({
   position: fixed;
   right: 2em;
   /* bottom: 40px; */
-  background: var(--g-color-90);
+  background: var(--g-color-85);
   color: var(--g-color-10);
   font-size: 14px;
   overflow: hidden;
@@ -392,7 +392,7 @@ export default defineComponent({
 }
 
 .scroll-to-top:hover {
-  background: var(--g-color-96);
+  background: var(--g-color-80);
 }
 
 .scroll-to-top.hide {
