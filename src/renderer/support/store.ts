@@ -45,6 +45,7 @@ export default createStore({
     showXterm: false,
     autoPreview: true,
     showSetting: false,
+    showExport: false,
     presentation: false,
     currentContent: '',
     currentRepo: Storage.get('currentRepo'),
@@ -84,6 +85,9 @@ export default createStore({
     },
     setShowSetting (state, data) {
       state.showSetting = data
+    },
+    setShowExport (state, data) {
+      state.showExport = data
     },
     setPresentation (state, data) {
       state.presentation = data

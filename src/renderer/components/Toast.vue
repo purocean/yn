@@ -1,5 +1,5 @@
 <template>
-  <div v-if="toast" :class="{toast: true, [`toast-${toast.type}`]: true}">{{toast.content}}</div>
+  <div v-if="toast" :class="{toast: true, 'no-print': true, [`toast-${toast.type}`]: true}">{{toast.content}}</div>
 </template>
 
 <script lang="ts">

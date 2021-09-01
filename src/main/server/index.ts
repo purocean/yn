@@ -150,7 +150,7 @@ const convertFile = async (ctx: any, next: any) => {
     const html = ctx.request.body.html
     const type = ctx.request.body.type
 
-    ctx.type = mime.getType(`file.${type}`)
+    ctx.set('content-type', 'application/octet-stream')
     ctx.body = await convert(html, type)
   } else {
     await next()

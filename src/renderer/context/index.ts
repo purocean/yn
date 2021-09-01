@@ -18,7 +18,7 @@ import * as editor from './editor'
 import * as theme from './theme'
 import * as embed from './embed'
 
-export type CtxHookType = view.HookType | tree.HookType
+export type CtxHookType = view.HookType | tree.HookType | doc.HookType
 
 const bus = useBus()
 

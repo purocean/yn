@@ -20,6 +20,9 @@ export type ActionName = 'doc.create'
   | 'doc.save'
   | 'doc.switch'
   | 'doc.show-help'
+  | 'doc.show-export'
+
+export type HookType = 'ON_DOC_BEFORE_EXPORT'
 
 const logger = getLogger('document')
 const bus = useBus()
@@ -355,6 +358,10 @@ export async function showHelp (doc: string) {
   })
 }
 
+export function showExport () {
+  store.commit('setShowExport', true)
+}
+
 registerAction({ name: 'doc.create', handler: createDoc })
 registerAction({ name: 'doc.duplicate', handler: duplicateDoc })
 registerAction({ name: 'doc.delete', handler: deleteDoc })
@@ -365,3 +372,4 @@ registerAction({ name: 'doc.open-in-os', handler: openInOS })
 registerAction({ name: 'doc.save', handler: saveDoc })
 registerAction({ name: 'doc.switch', handler: switchDoc })
 registerAction({ name: 'doc.show-help', handler: showHelp })
+registerAction({ name: 'doc.show-export', handler: showExport })

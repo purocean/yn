@@ -11,7 +11,7 @@ import XMask from './Mask.vue'
 import Setting from './Setting.vue'
 
 export default defineComponent({
-  name: 'x-filter',
+  name: 'setting-panel',
   components: { XMask, Setting },
   setup () {
     const store = useStore()
