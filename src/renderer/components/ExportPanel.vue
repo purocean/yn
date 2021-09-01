@@ -1,6 +1,6 @@
 <template>
   <XMask :show="showExport" @close="close" :maskCloseable="false">
-    <div class="editor-wrapper" @click.stop>
+    <div class="wrapper" @click.stop>
       <h3>导出</h3>
       <iframe width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
       <form ref="refExportForm" :action="`/api/convert/${convert.fileName}`" method="post" target="export-download">
@@ -189,7 +189,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.editor-wrapper {
+.wrapper {
   width: 600px;
   background: var(--g-color-95);
   margin: auto;
@@ -199,58 +199,6 @@ export default defineComponent({
 
   h3 {
     margin-top: 0;
-  }
-}
-
-.editor {
-  max-height: 50vh;
-  overflow: auto;
-
-  &> ::v-deep(div > .je-header),
-  ::v-deep(.je-object__controls){
-    display: none;
-  }
-
-  ::v-deep(.je-header) {
-    margin: 0;
-  }
-
-  ::v-deep(.row) {
-    margin-bottom: 10px;
-  }
-
-  ::v-deep(.je-indented-panel) {
-    border: none;
-    margin-right: 0;
-  }
-
-  ::v-deep(.form-control) {
-    display: flex;
-    align-content: center;
-  }
-
-  ::v-deep(.je-form-input-label) {
-    width: 90px;
-    // text-align: right;
-    display: inline-block;
-    flex: none;
-    padding-right: 14px;
-    line-height: 30px;
-    height: 30px;
-  }
-
-  ::v-deep(.je-table) {
-    width: 100%;
-    padding-bottom: 6px;
-    margin-bottom: 6px;
-
-    tr > td:first-child {
-      width: 100px;
-    }
-
-    tr > td:last-child {
-      width: 120px;
-    }
   }
 }
 
