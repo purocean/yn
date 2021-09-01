@@ -11,17 +11,6 @@ if (FLAG_DEMO) {
   const xOpen = window.open
   const cache: {[key: string]: string} = {}
 
-  window.addEventListener('click', e => {
-    const target = e.target as HTMLElement
-    if (target.parentElement?.tagName === 'FORM' && target.innerText.includes('docx')) {
-      const message = 'DEMO 模式下该功能不可用'
-      useToast().show('warning', message)
-
-      e.preventDefault()
-      e.stopPropagation()
-    }
-  }, true)
-
   window.addEventListener('error', e => {
     const target = e.target as HTMLImageElement
     if (target.tagName === 'IMG') {

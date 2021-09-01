@@ -77,6 +77,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.6.0](https://github.com/purocean/yn/releases/tag/v3.6.0) 2021-09-01
+1. 增强导出功能，支持导出多种格式
+
 ### [v3.5.7](https://github.com/purocean/yn/releases/tag/v3.5.7) 2021-08-26
 1. 微调界面配色
 2. 插件目录下的文件现在可以被访问

@@ -19,6 +19,7 @@
       v-model="searchText"
       type="text"
       class="input"
+      placeholder="键入字符……"
       @keydown.tab.prevent
       @keydown.up.prevent
       @keydown.down.prevent>
@@ -400,10 +401,10 @@ export default defineComponent({
 }
 
 .tab > div:hover {
-  background: var(--g-color-66);
+  background: var(--g-color-70);
 }
 
 .tab > div.selected {
-  background: var(--g-color-60);
+  background: var(--g-color-66);
 }
 </style>

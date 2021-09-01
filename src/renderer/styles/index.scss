@@ -57,6 +57,10 @@ html {
 }
 
 @media print {
+  html {
+    background: #fff !important;
+  }
+
   .no-print {
     display: none;
   }

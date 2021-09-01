@@ -22,6 +22,7 @@
   </Layout>
   <XFilter />
   <SettingPanel />
+  <ExportPanel />
 </template>
 
 <script lang="ts">
@@ -38,6 +39,7 @@ import Editor from '@fe/components/Editor.vue'
 import Preview from '@fe/components/Preview.vue'
 
 import SettingPanel from '@fe/components/SettingPanel.vue'
+import ExportPanel from '@fe/components/ExportPanel.vue'
 import XFilter from '@fe/components/Filter.vue'
 
 export default defineComponent({
@@ -52,7 +54,8 @@ export default defineComponent({
     Editor,
     Preview,
     XFilter,
-    SettingPanel
+    SettingPanel,
+    ExportPanel,
   },
   setup () {
     onMounted(startup)

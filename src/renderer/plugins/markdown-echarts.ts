@@ -104,7 +104,7 @@ export default {
     ctx.registerHook('ON_VIEW_RENDERED', () => {
       update()
     })
-    ctx.registerHook('ON_VIEW_BEFORE_CONVERT', () => {
+    ctx.registerHook('ON_DOC_BEFORE_EXPORT', () => {
       preparePrint() // 转换成图片形式，设置主题
       setTimeout(() => update(), 0) // 恢复
     })

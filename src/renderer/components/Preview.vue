@@ -11,15 +11,9 @@
           </div>
         </div>
         <div v-else></div>
-        <div class="convert">
-          <iframe width="0" height="0" hidden id="preview_download" name="preview_download"></iframe>
-          <form ref="refConvertForm" :action="`/api/convert/${convert.fileName}`" method="post" target="preview_download">
-            <input type="hidden" name="html" :value="convert.html">
-            <input type="hidden" name="type" :value="convert.type">
-            <!-- <button type="button" @click="convertFile('pdf')">pdf</button> -->
-            <button type="button" @click="print()">打印</button>
-            <button type="button" @click="convertFile('docx')">docx</button>
-          </form>
+        <div class="action-btns">
+          <button type="button" @click="print()">打印</button>
+          <button type="button" @click="showExport">导出</button>
         </div>
       </div>
     </div>
@@ -48,8 +42,7 @@ import { isElectron } from '@fe/utils/env'
 import { markdown } from '@fe/context/markdown'
 import { triggerHook } from '@fe/context/plugin'
 import { useBus } from '@fe/support/bus'
-import { useToast } from '@fe/support/toast'
-import { registerAction, removeAction } from '@fe/context/action'
+import { getActionHandler, registerAction, removeAction } from '@fe/context/action'
 import { revealLineInCenter } from '@fe/context/editor'
 import Render from './Render.vue'
 
@@ -63,7 +56,6 @@ export default defineComponent({
   setup () {
     const bus = useBus()
     const store = useStore()
-    const toast = useToast()
 
     const { currentContent, currentFile, autoPreview, presentation } = toRefs(store.state)
     const fileName = computed(() => currentFile.value?.name)
@@ -71,7 +63,6 @@ export default defineComponent({
 
     const refViewWrapper = ref<HTMLElement | null>(null)
     const refView = ref<HTMLElement | null>(null)
-    const refConvertForm = ref<HTMLFormElement | null>(null)
 
     const renderContent = ref()
 
@@ -85,7 +76,6 @@ export default defineComponent({
       level: number;
       sourceLine: number;
     }[]>([])
-    const convert = ref({ fileName: '', html: '', type: '' })
     const todoCount = ref(0)
     const todoDoneCount = ref(0)
     const scrollTop = ref(0)
@@ -191,30 +181,16 @@ export default defineComponent({
       }
     }
 
-    function convertFile (type: string) {
-      triggerHook('ON_VIEW_BEFORE_CONVERT', { getViewDom })
-
-      toast.show('info', '转换中，请稍候……')
-
-      let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
-
-      // Windows 下偶尔解析 localhost 很耗时，这里直接用 ip 代替
-      if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
-        baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
-      }
-
-      convert.value = {
-        fileName: (fileName.value || '未命名') + `.${type}`,
-        html: refView.value!.outerHTML.replace(/src="api/g, `src="${baseUrl}api`),
-        type
-      }
-      setTimeout(() => {
-        refConvertForm.value!.submit()
-      }, 300)
-    }
-
     function print () {
       window.print()
+    }
+
+    function showExport () {
+      getActionHandler('doc.show-export')()
+    }
+
+    function getContentHtml () {
+      return refView.value?.outerHTML || ''
     }
 
     onMounted(() => {
@@ -223,6 +199,7 @@ export default defineComponent({
       registerAction({ name: 'view.refresh', handler: render })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
       registerAction({ name: 'view.scroll-top-to', handler: scrollTopTo })
+      registerAction({ name: 'view.get-content-html', handler: getContentHtml })
       window.addEventListener('keydown', keydownHandler, true)
       bus.on('global.resize', resizeHandler)
       resizeHandler()
@@ -232,6 +209,7 @@ export default defineComponent({
       removeAction('view.refresh')
       removeAction('view.reveal-line')
       removeAction('view.scroll-top-to')
+      removeAction('view.get-content-html')
       window.removeEventListener('keydown', keydownHandler)
       bus.off('global.resize', resizeHandler)
     })
@@ -245,7 +223,6 @@ export default defineComponent({
 
     return {
       refViewWrapper,
-      refConvertForm,
       refView,
       presentation,
       renderContent,
@@ -253,12 +230,11 @@ export default defineComponent({
       height,
       scrollToTopStyle,
       heads,
-      convert,
       todoCount,
       todoDoneCount,
       scrollTop,
       print,
-      convertFile,
+      showExport,
       handleScroll,
       handleRender,
       handleRendered,
@@ -360,7 +336,7 @@ export default defineComponent({
   background: var(--g-color-75);
 }
 
-.convert {
+.action-btns {
   font-size: 14px;
   pointer-events: initial;
 }
