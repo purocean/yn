@@ -4,11 +4,11 @@
       <h3>导出</h3>
       <iframe width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
       <form ref="refExportForm" :action="`/api/convert/${convert.fileName}`" method="post" target="export-download">
-        <input type="hidden" name="html" :value="convert.html">
+        <input type="hidden" name="source" :value="convert.source">
         <div style="padding: 20px">
           <label>
             格式：
-            <select name="type" v-model="convert.type">
+            <select name="toType" v-model="convert.toType">
               <option value="pdf">PDF</option>
               <option value="docx">Word (docx)</option>
               <option value="html">HTML</option>
@@ -16,27 +16,35 @@
               <option value="adoc">AsciiDoc</option>
             </select>
           </label>
-          <div v-if="convert.type === 'pdf'" style="margin-top: 20px">
+          <div style="margin-top: 20px">
             <hr>
-            <div v-if="isElectron">
-              <div style="margin: 10px 0"><label>方向：<select name="type" v-model="convert.pdfOptions.landscape">
-                <option value="">纵向</option>
-                <option value="true">横向</option>
-              </select></label></div>
-              <div style="margin: 10px 0"><label>页面：<select name="type" v-model="convert.pdfOptions.pageSize">
-                <option value="A3">A3</option>
-                <option value="A4">A4</option>
-                <option value="A5">A5</option>
-                <option value="Legal">Legal</option>
-                <option value="Letter">Letter</option>
-                <option value="Tabloid">Tabloid</option>
-              </select></label></div>
-              <div style="margin: 10px 0"><label>缩放：<input v-model="convert.pdfOptions.scaleFactor" type="number" max="100" min="10" setp="1" style="display: inline-block;width: 4em"></label></div>
-              <div style="margin: 10px 0"><label><input type="checkbox" v-model="convert.pdfOptions.printBackground"> 包含背景</label></div>
-            </div>
-            <div v-else>
-              将使用浏览器打印功能
-            </div>
+            <template v-if="convert.toType === 'pdf'">
+              <div v-if="isElectron">
+                <div style="margin: 10px 0"><label>方向：<select v-model="convert.pdfOptions.landscape">
+                  <option value="">纵向</option>
+                  <option value="true">横向</option>
+                </select></label></div>
+                <div style="margin: 10px 0"><label>页面：<select v-model="convert.pdfOptions.pageSize">
+                  <option value="A3">A3</option>
+                  <option value="A4">A4</option>
+                  <option value="A5">A5</option>
+                  <option value="Legal">Legal</option>
+                  <option value="Letter">Letter</option>
+                  <option value="Tabloid">Tabloid</option>
+                </select></label></div>
+                <div style="margin: 10px 0"><label>缩放：<input v-model="convert.pdfOptions.scaleFactor" type="number" max="100" min="10" setp="1" style="display: inline-block;width: 4em"></label></div>
+                <div style="margin: 10px 0"><label><input type="checkbox" v-model="convert.pdfOptions.printBackground"> 包含背景</label></div>
+              </div>
+              <div v-else>
+                将使用浏览器打印功能
+              </div>
+            </template>
+            <template v-else>
+              <div style="margin: 10px 0">
+                <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'markdown'" @change="() => convert.fromType = 'markdown'"> 使用 Markdown 转换 </label>
+                <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'html'" @change="() => convert.fromType = 'html'"> 使用渲染后的 HTML 转换 </label>
+              </div>
+            </template>
           </div>
         </div>
         <div class="action">
@@ -70,8 +78,9 @@ export default defineComponent({
     const fileName = computed(() => currentFile.value?.name || 'export.md')
     const convert = reactive({
       fileName: '',
-      html: '',
-      type: 'pdf',
+      source: '',
+      toType: 'pdf',
+      fromType: 'markdown',
       pdfOptions: {
         landscape: '',
         pageSize: 'A4',
@@ -141,9 +150,13 @@ export default defineComponent({
     }
 
     async function exportDoc () {
+      if (!currentFile.value || !currentFile.value.content) {
+        return
+      }
+
       triggerHook('ON_DOC_BEFORE_EXPORT')
 
-      if (convert.type === 'pdf') {
+      if (convert.toType === 'pdf') {
         exportPdf(fileName.value)
         return
       }
@@ -165,10 +178,12 @@ export default defineComponent({
         baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
       }
 
-      const html = getActionHandler('view.get-content-html')().replace(/src="api/g, `src="${baseUrl}api`);
+      const source = convert.fromType === 'markdown'
+        ? currentFile.value.content
+        : getActionHandler('view.get-content-html')().replace(/src="api/g, `src="${baseUrl}api`)
 
-      convert.fileName = `${fileName.value}.${convert.type}`
-      convert.html = filterHtml(html)
+      convert.fileName = `${fileName.value}.${convert.toType}`
+      convert.source = filterHtml(source)
 
       await sleep(300)
       refExportForm.value!.submit()
