@@ -147,11 +147,12 @@ const runCode = async (ctx: any, next: any) => {
 
 const convertFile = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/convert/')) {
-    const html = ctx.request.body.html
-    const type = ctx.request.body.type
+    const source = ctx.request.body.source
+    const fromType = ctx.request.body.fromType
+    const toType = ctx.request.body.toType
 
     ctx.set('content-type', 'application/octet-stream')
-    ctx.body = await convert(html, type)
+    ctx.body = await convert(source, fromType, toType)
   } else {
     await next()
   }
@@ -240,7 +241,7 @@ const choose = async (ctx: any, next: any) => {
 const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
-  } catch (error) {
+  } catch (error: any) {
     console.error(error)
     ctx.body = result('error', error.message)
   }
