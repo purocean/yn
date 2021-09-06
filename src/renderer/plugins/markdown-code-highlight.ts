@@ -1,5 +1,4 @@
 import Highlight from 'highlight.js'
-import { getKeyLabel } from '@fe/context/shortcut'
 import { Plugin, Ctx } from '@fe/context/plugin'
 import { getLogger } from '@fe/utils'
 
@@ -210,20 +209,10 @@ function highlight (str: string, lang: string) {
 }
 
 export default {
-  name: 'markdown-code',
+  name: 'markdown-code-highlight',
   register: (ctx: Ctx) => {
     addCustomStyles(ctx)
     ctx.markdown.registerPlugin(md => {
-      const Fun = (fn: Function) => (tokens: any, idx: any, options: any, env: any, slf: any) => {
-        if (tokens[idx].attrIndex('title') < 0) {
-          tokens[idx].attrJoin('class', 'copy-inner-text')
-          tokens[idx].attrPush(['title', getKeyLabel('CtrlCmd') + ' + 单击复制'])
-        }
-
-        return (fn)(tokens, idx, options, env, slf)
-      }
-
-      md.renderer.rules.code_inline = Fun(md.renderer.rules.code_inline!.bind(md.renderer.rules))
       md.options.highlight = highlight as any
     })
   }

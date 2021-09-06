@@ -45,7 +45,7 @@ const RunCode = defineComponent({
           name: `_l_${id}_${hash.value}`,
           handler: res => appendLog && appendLog(res)
         })
-      } catch (error) {
+      } catch (error: any) {
         result.value = error.message
       }
     }
@@ -110,7 +110,7 @@ const RunPlugin = (md: Markdown) => {
 }
 
 export default {
-  name: 'run-code',
+  name: 'markdown-code-run',
   register: ctx => {
     ctx.theme.addStyles(`
       @media print {

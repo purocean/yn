@@ -20,12 +20,13 @@ import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownSourceLine from '@fe/plugins/markdown-source-line'
 import markdownToc from '@fe/plugins/markdown-toc'
-import markdownCode from '@fe/plugins/markdown-code'
+import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
 import markdownFootnote from '@fe/plugins/markdown-footnote'
 import markdownKatex from '@fe/plugins/markdown-katex'
-import markdownRunCode from '@fe/plugins/markdown-run-code'
+import markdownCodeCopy from '@fe/plugins/markdown-code-copy'
+import markdownCodeRun from '@fe/plugins/markdown-code-run'
 import markdownPlantuml from '@fe/plugins/markdown-plantuml'
 import markdownDrawio from '@fe/plugins/markdown-drawio'
 import markdownMindMap from '@fe/plugins/markdown-mind-map'
@@ -58,12 +59,13 @@ export default [
   markdownRenderVnode,
   markdownSourceLine,
   markdownToc,
-  markdownCode,
+  markdownCodeHighlight,
   markdownLink,
   markdownTaskList,
   markdownFootnote,
   markdownKatex,
-  markdownRunCode,
+  markdownCodeCopy,
+  markdownCodeRun,
   markdownPlantuml,
   markdownDrawio,
   markdownMindMap,

@@ -7,17 +7,17 @@ export function copyText (text?: string) {
 
   const toast = useToast()
 
-  const input = document.createElement('input')
-  input.style.position = 'absolute'
-  input.style.background = 'red'
-  input.style.left = '-999999px'
-  input.style.top = '-999999px'
-  input.style.zIndex = '-1000'
-  input.style.opacity = '0'
-  input.value = text
-  document.body.appendChild(input)
-  input.select()
+  const textarea = document.createElement('textarea')
+  textarea.style.position = 'absolute'
+  textarea.style.background = 'red'
+  textarea.style.left = '-999999px'
+  textarea.style.top = '-999999px'
+  textarea.style.zIndex = '-1000'
+  textarea.style.opacity = '0'
+  textarea.value = text
+  document.body.appendChild(textarea)
+  textarea.select()
   document.execCommand('copy')
-  document.body.removeChild(input)
+  document.body.removeChild(textarea)
   toast.show('info', '已复制')
 }
