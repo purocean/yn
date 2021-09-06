@@ -7,7 +7,7 @@ import { Plugin } from '@fe/context/plugin'
 
 import { injectLineNumbers } from './markdown-source-line'
 
-const slugify = (s: string) => 'h-' + encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
+const slugify = (s: string) => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
 
 const defaults = {
   level: [2, 3],
