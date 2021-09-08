@@ -332,6 +332,7 @@ export default defineComponent({
   margin: auto;
   padding: 10px;
   box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  border-radius: var(--g-border-radius);
 }
 
 .result {
@@ -349,6 +350,7 @@ export default defineComponent({
   padding: 2px;
   transition: all .1s ease-in-out;
   cursor: pointer;
+  border-radius: var(--g-border-radius);
 }
 
 .result li.selected,
@@ -381,6 +383,10 @@ export default defineComponent({
 .tab {
   display: flex;
   margin-top: -8px;
+  border-radius: var(--g-border-radius);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  overflow: hidden;
 }
 
 .tab > div {
@@ -406,5 +412,10 @@ export default defineComponent({
 
 .tab > div.selected {
   background: var(--g-color-66);
+}
+
+.input {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
 </style>

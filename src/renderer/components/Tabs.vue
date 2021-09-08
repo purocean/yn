@@ -11,7 +11,7 @@
       @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
       <div v-if="!item.fixed" class="close" @click.prevent.stop="removeTabs([item])">
-        <svg-icon name="times-solid" title="关闭" style="width: 12px; height: 12px;" />
+        <svg-icon name="times" title="关闭" style="width: 12px; height: 12px;" />
       </div>
     </div>
   </div>
@@ -183,6 +183,10 @@ export default defineComponent({
 .tab.current {
   color: var(--g-color-0);
   background: var(--g-color-100);
+  border-radius: var(--g-border-radius);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  position: relative;
 }
 
 .close {
@@ -198,7 +202,7 @@ export default defineComponent({
 
 .close:hover {
   color: var(--g-color-40);
-  background: var(--g-color-80);
+  background: var(--g-color-75);
 }
 
 .tab.on-sort {

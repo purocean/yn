@@ -32,6 +32,11 @@ export default {
         }
       }
 
+      if (target.classList.contains('copy-text') && target.dataset.text) {
+        copyText(target.dataset.text)
+        return preventEvent()
+      }
+
       // 复制内容
       if (target.classList.contains('copy-inner-text') && hasCtrlCmd(e)) {
         copyText(target.innerText)

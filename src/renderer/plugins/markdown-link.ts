@@ -50,14 +50,17 @@ const handleLink = (link: HTMLAnchorElement) => {
         if (hash) {
           await sleep(50)
           const el = document.getElementById(hash) ||
-            document.getElementById(encodeURIComponent(hash))
+            document.getElementById(encodeURIComponent(hash)) ||
+            document.getElementById(hash.replace(/^h-/, '')) ||
+            document.getElementById(encodeURIComponent(hash.replace(/^h-/, '')))
 
           if (el) {
+            el.scrollIntoView()
+
             // 如果是标题的话，也顺便将编辑器滚动到可视区域
-            if (hash.startsWith('h-')) {
+            if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
               el.click()
             }
-            el.scrollIntoView()
           }
         }
       })
