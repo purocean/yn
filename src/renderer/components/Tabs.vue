@@ -11,7 +11,7 @@
       @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
       <div v-if="!item.fixed" class="close" @click.prevent.stop="removeTabs([item])">
-        <svg-icon name="times-solid" title="关闭" style="width: 12px; height: 12px;" />
+        <svg-icon name="times" title="关闭" style="width: 12px; height: 12px;" />
       </div>
     </div>
   </div>

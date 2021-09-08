@@ -1,10 +1,11 @@
-import { computed, defineComponent, h, onBeforeUnmount, ref, VNode, watch } from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref, VNode, watch } from 'vue'
 import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context/plugin'
 import { getActionHandler } from '@fe/context/action'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import SvgIcon from '@fe/components/SvgIcon.vue'
 
 const cache: Record<string, string> = {}
 
@@ -18,6 +19,7 @@ const RunCode = defineComponent({
     language: String,
   },
   setup (props) {
+    const instance = getCurrentInstance()
     const result = ref('')
     const hash = computed(() => CryptoJS.MD5(props.code).toString())
     const id = Date.now()
@@ -54,6 +56,13 @@ const RunCode = defineComponent({
       getActionHandler('xterm.run-code')(props.language, props.code, e.ctrlKey)
     }
 
+    const clearResult = () => {
+      delete cache[hash.value]
+      hasResult = false
+      result.value = ''
+      instance?.proxy?.$forceUpdate()
+    }
+
     watch(() => props.code, () => {
       result.value = ''
     })
@@ -79,7 +88,12 @@ const RunCode = defineComponent({
             onClick: runInXterm
           }),
         ]),
-        h('div', { class: 'run-code-result', style: 'padding: .5em 0 0 0', innerHTML: runResult }),
+        h('div', { class: 'p-mcr-run-code-result', style: 'padding: .5em 0 0 0', innerHTML: runResult }),
+        h(
+          'div',
+          { class: 'p-mcr-clear-btn no-print', style: { display: runResult ? 'flex' : 'none' }, title: '清空运行结果', onClick: clearResult },
+          h(SvgIcon, { name: 'times', style: 'pointer-events: none' })
+        ),
       ]
     }
   }
@@ -113,8 +127,26 @@ export default {
   name: 'markdown-code-run',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body .p-mcr-clear-btn {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        padding: 6px;
+        border-radius: 50%;
+        transition: opacity 200ms;
+        display: flex;
+        align-items: center;
+        color: var(--g-color-30)
+      }
+
+      .markdown-view .markdown-body .p-mcr-clear-btn:hover {
+        background: var(--g-color-80);
+      }
+
       @media print {
-        .markdown-view .markdown-body .run-code-result {
+        .markdown-view .markdown-body .p-mcr-run-code-result {
           white-space: pre-wrap;
         }
       }
