@@ -202,7 +202,7 @@ export default defineComponent({
 
 .close:hover {
   color: var(--g-color-40);
-  background: var(--g-color-80);
+  background: var(--g-color-75);
 }
 
 .tab.on-sort {

@@ -245,11 +245,11 @@ summary.folder::marker {
 }
 
 .folder:hover {
-  background: var(--g-color-94);
+  background: var(--g-color-80);
 }
 
 .folder-selected {
-  background: var(--g-color-90)
+  background: var(--g-color-85)
 }
 
 .item {
@@ -284,15 +284,15 @@ summary > .item {
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  height: 22px;
-  width: 22px;
+  height: 20px;
+  width: 20px;
   border-radius: 50%;
-  color: var(--g-color-30);
+  color: var(--g-color-45);
 }
 
 .item-action .icon:hover {
-  background: var(--g-color-80);
-  color: var(--g-color-30);
+  background: var(--g-color-65);
+  color: var(--g-color-35);
 }
 
 .item:hover .item-action {
@@ -327,7 +327,7 @@ summary > .item {
 }
 
 .file-name:hover {
-  background: var(--g-color-90);
+  background: var(--g-color-80);
 }
 
 .file-name:active {
