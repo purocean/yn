@@ -323,6 +323,7 @@ export default defineComponent({
   max-height: 70vh;
   cursor: pointer;
   overflow: auto;
+  overflow-x: hidden;
   padding-bottom: 1em;
 }
 
