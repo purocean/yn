@@ -6,6 +6,7 @@ import { getActionHandler } from '@fe/context/action'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import SvgIcon from '@fe/components/SvgIcon.vue'
+import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/context/shortcut'
 
 const cache: Record<string, string> = {}
 
@@ -53,7 +54,11 @@ const RunCode = defineComponent({
     }
 
     const runInXterm = (e: MouseEvent) => {
-      getActionHandler('xterm.run-code')(props.language, props.code, e.ctrlKey)
+      getActionHandler('xterm.run-code')(
+        props.language,
+        props.code,
+        !matchKeys(e, [CtrlCmd]),
+      )
     }
 
     const clearResult = () => {
@@ -82,7 +87,7 @@ const RunCode = defineComponent({
             onClick: run
           }),
           h('div', {
-            title: '在终端中运行代码，Ctrl + 单击不退出解释器',
+            title: `在终端中运行代码，${getKeyLabel(CtrlCmd)} + 单击不退出解释器`,
             class: 'no-print',
             style: 'position: absolute; top: -.5em; right: -0; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none;transform: rotate(90deg);',
             onClick: runInXterm
