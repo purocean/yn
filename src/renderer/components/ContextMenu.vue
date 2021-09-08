@@ -118,6 +118,7 @@ export default defineComponent({
   min-width: 9em;
   cursor: default;
   box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  border-radius: var(--g-border-radius);
 }
 
 .menu > li.separator {
@@ -130,6 +131,7 @@ export default defineComponent({
   padding: 5px 20px;
   cursor: default;
   font-size: 12px;
+  border-radius: var(--g-border-radius);
 }
 
 .menu > li.normal:hover {

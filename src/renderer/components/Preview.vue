@@ -272,7 +272,7 @@ export default defineComponent({
 
 .action-bar > div {
   padding: .3em;
-  border-radius: 2px;
+  border-radius: var(--g-border-radius);
   height: 26px;
   display: flex;
   justify-content: space-between;
@@ -309,7 +309,7 @@ export default defineComponent({
   overflow: hidden;
   transition: .1s ease-in-out;
   z-index: 500;
-  border-radius: 2px;
+  border-radius: var(--g-border-radius);
   margin-top: 1em;
 }
 
@@ -330,6 +330,7 @@ export default defineComponent({
   padding: .5em;
   display: flex;
   align-items: center;
+  border-radius: var(--g-border-radius);
 }
 
 .outline > .catalog > div:hover {
@@ -352,7 +353,7 @@ export default defineComponent({
   overflow: hidden;
   transition: .1s ease-in-out;
   z-index: 400;
-  border-radius: 2px;
+  border-radius: var(--g-border-radius);
   cursor: pointer;
   padding: 7px 5px;
   text-align: center;

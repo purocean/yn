@@ -6,26 +6,27 @@ export default {
   name: 'markdown-code-copy',
   register: ctx => {
     ctx.theme.addStyles(`
-      .markdown-view .markdown-body .copy-code-btn {
+      .markdown-view .markdown-body .p-mcc-copy-code-btn {
+        width: 20px;
+        height: 20px;
         position: absolute;
         right: 10px;
         top: 10px;
-        cursor: pointer;
         padding: 6px;
-        border-radius: 6px;
+        border-radius: 50%;
         opacity: 0;
         transition: opacity 200ms;
-        background: var(--g-color-78);
         display: flex;
         align-items: center;
+        color: var(--g-color-30)
       }
 
-      .markdown-view .markdown-body pre:hover > .copy-code-btn {
+      .markdown-view .markdown-body pre:hover > .p-mcc-copy-code-btn {
         opacity: 1;
       }
 
-      .markdown-view .markdown-body .copy-code-btn:hover {
-        background: var(--g-color-68);
+      .markdown-view .markdown-body .p-mcc-copy-code-btn:hover {
+        background: var(--g-color-80);
       }
     `)
 
@@ -51,7 +52,7 @@ export default {
         if (codeNode && Array.isArray(codeNode.children)) {
           codeNode.children.push(h(
             'div',
-            { class: 'copy-code-btn copy-text no-print', 'data-text': code, title: '复制代码' },
+            { class: 'p-mcc-copy-code-btn copy-text no-print', 'data-text': code, title: '复制代码' },
             h(SvgIcon, { name: 'clipboard', style: 'pointer-events: none' }))
           )
         }

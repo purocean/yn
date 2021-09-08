@@ -183,6 +183,10 @@ export default defineComponent({
 .tab.current {
   color: var(--g-color-0);
   background: var(--g-color-100);
+  border-radius: var(--g-border-radius);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  position: relative;
 }
 
 .close {
