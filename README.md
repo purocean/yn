@@ -77,6 +77,12 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.6.2](https://github.com/purocean/yn/releases/tag/v3.6.2) 2021-09-08
+1. 增加复制代码块按钮
+2. 增加清空代码运行结果按钮
+3. 标题锚点不再增加 `h-` 前缀
+4. 微调 UI
+
 ### [v3.6.1](https://github.com/purocean/yn/releases/tag/v3.6.1) 2021-09-06
 1. 导出功能支持使用 Markdown 直接转换
 2. Chrome 93 固定强调色
