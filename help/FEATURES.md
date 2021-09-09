@@ -1,20 +1,24 @@
 # Yank-Note 特色功能使用说明
 
 ## TOC 生成
+
 需要生成目录的地方写入 `[toc]{type: "ul", level: [1,2,3]}`
 可以控制目录样式 `ul` 或 `ol` 和级别
 
 [toc]{type: "ol", level: [2,3]}
 
 ## 系统配置
+
 1. 用户数据目录存放在 `<home>/yank-note` 下面
 1. 配置文件 `<home/yank-note/config.json>`
 
 ## 多仓库
+
 1. 系统默认有一个 `main` 仓库，默认位于 `<home>/yank-note/main`
 1. 在配置文件 `<home/yank-note/config.json>` 中可以配置多个仓库，或者自定义 `main` 仓库路径
 
 ## 文件管理
+
 右键目录树可看到文件相关操作选项。
 进行删除文件/目录操作后，文件并没有真正删除，还可以从 `<home>/yank-note/trash` 目录下面恢复
 
@@ -25,14 +29,17 @@
 + [x] ~~2021-06-06 10:27~~ TEST3
 
 ## 加密文档
+
 1. 以 `.c.md` 结尾的文档视为加密文档，可以用来保存机密的信息。
 2. 加密和解密过程均在前端完成。
 3. 请务必保管好文档密码，密码一旦丢失就只能自己暴力破解了。
 
 ## 脚注功能
+
 支持使用脚注[^1]语法[^2]
 
 ## 思维导图
+
 只需要在列表根节点加上 `{.mindmap}` 即可。
 
 + 中心节点{.mindmap}
@@ -112,6 +119,7 @@ journey
 ```
 
 ## Plantuml 图形解析
+
 系统需要有 Java 环境，并安装有 graphviz
 示例如下
 
@@ -120,6 +128,7 @@ a -> b
 @enduml
 
 ## 表格增强
+
 此功能使用 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 实现
 支持在表格中使用多行文本和列表。支持表格说明渲染
 
@@ -135,6 +144,7 @@ Test | Test
 [测试表格]
 
 ## Katex 公式解析
+
 此功能由 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) 插件提供
 
 $$\begin{array}{c}
@@ -151,6 +161,7 @@ $\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{
 $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} = \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} = 4 \pi \rho$ | _wha?_
 
 ## 运行代码
+
 支持运行 `JavaScript` `PHP` `nodejs` `Python` `bash` `bat` 代码。
 此功能执行外部命令实现，所以需要安装相应环境。
 
@@ -188,11 +199,13 @@ REM --run--
 ```
 
 ## 集成终端
+
 1. 使用 `Alt/Option + T` 或者点击状态栏 **切换终端** 菜单唤起集成终端
 1. 支持在编辑器中选中一段代码后按下 `Shift + Alt/Option + R` 直接在终端中运行命令。免去复制粘贴。
 1. 切换内置终端工作目录到当前目录 `右键目录`
 
 ## 小工具
+
 支持在文档中嵌入 HTML 小工具。
 HTMl代码块第一行需要包含以 `--applet--` 字符串，其余字符串作为小工具标题，示例如下
 
@@ -234,6 +247,7 @@ function run (type) {
 ```
 
 ## ECharts 图形
+
 Js 代码块第一行包含以 `--echarts--` 字符串会被解析成 ECharts 图形，示例如下
 
 ```js
@@ -315,7 +329,9 @@ chart.setOption({
 ```
 
 ## 嵌入 Draw.io 图形
+
 ### 嵌入 xml
+
 xml 代码块 第一行注释需要有 `--drawio--` 文字
 ```xml
 <!-- --drawio-- -->
@@ -323,6 +339,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 ```
 
 ### 嵌入本地 drawio 文件
+
 链接属性 `link-type` 值需要是 `drawio` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
 ```markdown
@@ -330,6 +347,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 ```
 
 ## 嵌入 Luckysheet 表格文件
+
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
 ```markdown
@@ -381,11 +399,13 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 查看 Readme | Alt + H | Option + H
 
 ## 元素属性书写
+
 此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
 示例红色文字：
 **test**{style="color:red"}
 
 ## 命令行参数
+
 在向别人交接文档的时候，可以使用脚本，自定义命令行参数启动程序，方便对方查看文档。
 
 名称               | 作用         | 默认值 | 说明                    | 示例
@@ -399,6 +419,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 --init-file       | 加载文件路径  | 无    | 文件路径，相对于仓库路径     | --init-file='/1.md'
 
 ## 其他
+
 1. 图片默认会渲染成块元素并居中，背景色透明
     + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
     + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
