@@ -77,6 +77,11 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.6.3](https://github.com/purocean/yn/releases/tag/v3.6.3) 2021-09-09
+1. 调整脚注展示
+2. 修复目录动画闪烁问题
+3. 修复终端中执行退出判定
+
 ### [v3.6.2](https://github.com/purocean/yn/releases/tag/v3.6.2) 2021-09-08
 1. 增加复制代码块按钮
 2. 增加清空代码运行结果按钮
