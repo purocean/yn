@@ -5,7 +5,7 @@
 // @ts-nocheck
 // https://github.com/markdown-it/markdown-it-footnote/blob/master/index.js
 
-import { createVNode } from 'vue'
+import { createVNode, Fragment } from 'vue'
 import { Plugin } from '@fe/context/plugin'
 
 // Process footnotes
@@ -46,9 +46,13 @@ function render_footnote_ref (tokens, idx, options, env, slf) {
 
 function render_footnote_block_open (tokens, idx, options) {
   const ol = createVNode('ol', { class: 'footnotes-list' }, [])
+
   return {
     parent: ol,
-    node: createVNode('section', { class: 'footnotes' }, [ol])
+    node: createVNode(Fragment, {}, [
+      createVNode('hr', { class: 'footnote-sep' }),
+      createVNode('section', { class: 'footnotes' }, [ol])
+    ])
   }
 }
 
