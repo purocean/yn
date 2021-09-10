@@ -23,6 +23,7 @@
 进行删除文件/目录操作后，文件并没有真正删除，还可以从 `<home>/yank-note/trash` 目录下面恢复
 
 ## 待办切换
+
 在预览界面打勾试试
 + [x] ~~2021-06-06 10:27~~ TEST1
 + [x] ~~2021-06-06 10:27~~ TEST2
@@ -372,7 +373,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 插入文档链接 | Ctrl + Alt + I | Cmd + Option + I
 保存文档 | Ctrl + S | Cmd + S
 连接行 | Ctrl + J | Cmd + J
-强制插入新行，忽略预置补全规则 | Ctrl + Enter | Cmd + Enter
+强制插入新行，忽略预置补全规则 | Alt + Enter | Option + Enter
 强制插入 Tab，忽略预置补全规则 | Shift + Enter | Shift + Enter
 当前行上移 | Ctrl + Shift + Up | Cmd + Shift + Up
 当前行下移 | Ctrl + Shift + Down | Cmd + Shift + Down
