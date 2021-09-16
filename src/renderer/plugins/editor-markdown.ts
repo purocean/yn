@@ -78,7 +78,7 @@ export default {
         }
       })
 
-      editor.addCommand(KM.CtrlCmd | KC.Enter, () => {
+      editor.addCommand(KM.Alt | KC.Enter, () => {
         insert(editor.getModel()!.getEOL())
       })
 
