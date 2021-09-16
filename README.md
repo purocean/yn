@@ -84,7 +84,12 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.6.3](https://github.com/purocean/yn/releases/tag/v3.6.3) 2021-09-09
+### [v3.6.5](https://github.com/purocean/yn/releases/tag/v3.6.5) 2021-09-09
+1. 调整强制插入新行快捷键
+2. 外部链接增加小图标
+3. 修复表格鼠标悬停样式问题
+
+### [v3.6.4](https://github.com/purocean/yn/releases/tag/v3.6.4) 2021-09-09
 1. 调整脚注展示
 2. 修复目录动画闪烁问题
 3. 修复终端中执行退出判定
