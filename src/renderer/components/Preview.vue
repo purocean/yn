@@ -479,10 +479,13 @@ export default defineComponent({
       background: var(--g-color-80);
     }
 
+    pre {
+      position: relative;
+    }
+
     pre,
     pre > code,
     table tr:nth-child(2n) {
-      position: relative;
       background: var(--g-color-96);
     }
 
