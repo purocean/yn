@@ -429,6 +429,13 @@ export default defineComponent({
       }
     }
 
+    a[target="_blank"] {
+      background-position: center right;
+      background-repeat: no-repeat;
+      background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20aria-hidden%3D%22true%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%2215%22%20height%3D%2215%22%20class%3D%22icon%20outbound%22%3E%3Cpath%20fill%3D%22%23bbbbbb%22%20d%3D%22M18.8%2C85.1h56l0%2C0c2.2%2C0%2C4-1.8%2C4-4v-32h-8v28h-48v-48h28v-8h-32l0%2C0c-2.2%2C0-4%2C1.8-4%2C4v56C14.8%2C83.3%2C16.6%2C85.1%2C18.8%2C85.1z%22%3E%3C%2Fpath%3E%20%3Cpolygon%20fill%3D%22%23bbbbbb%22%20points%3D%2245.7%2C48.7%2051.3%2C54.3%2077.2%2C28.5%2077.2%2C37.2%2085.2%2C37.2%2085.2%2C14.9%2062.8%2C14.9%2062.8%2C22.9%2071.5%2C22.9%22%3E%3C%2Fpolygon%3E%3C%2Fsvg%3E);
+      padding-right: 16px;
+    }
+
     .new-page {
       page-break-before: always;
     }
