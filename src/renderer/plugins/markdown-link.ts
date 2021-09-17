@@ -93,7 +93,7 @@ function convertLink (state: StateCore) {
       return
     }
 
-    if (/^[^:]*:/.test(attrVal)) { // xxx: : 开头不转换
+    if (/^[^:]*:/.test(attrVal) || attrVal.startsWith('//')) { // xxx: : 开头不转换
       return
     }
 
