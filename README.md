@@ -84,7 +84,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.6.6](https://github.com/purocean/yn/releases/tag/v3.6.6) 2021-09-18
+### [v3.6.7](https://github.com/purocean/yn/releases/tag/v3.6.7) 2021-09-18
 1. 优化链接图标
 2. 优化省略协议的链接解析
 3. HTML 解析支持多行注释
