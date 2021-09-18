@@ -71,6 +71,7 @@ export default defineComponent({
   box-sizing: border-box;
   overflow: auto;
   background: var(--g-color-97);
+  padding-bottom: 20px;
 }
 
 .loading {
