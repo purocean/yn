@@ -16,9 +16,9 @@ const attribute = '(?:\\s+' + attrName + '(?:\\s*=\\s*' + attrValue + ')?)'
 const selfCloseTag = '<(?:area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)\\b'
 const openTag = '<([A-Za-z][A-Za-z0-9\\-]*)' + attribute + '*\\s*\\/?>'
 const closeTag = '<\\/([A-Za-z][A-Za-z0-9\\-]*)\\s*>'
-const comment = '<!---->|<!--(?:-?[^>-])(?:-?[^-])*-->'
+const comment = '(?:<!(--)|(--)>)'
 
-const HTML_TAG_RE = new RegExp('^(?:' + openTag + '|' + closeTag + '|' + comment + ')')
+const HTML_TAG_RE = new RegExp('^(?:' + comment + '|' + openTag + '|' + closeTag + ')')
 const HTML_SELF_CLOSE_TAG_RE = new RegExp('^' + selfCloseTag, 'i')
 
 function isLetter (ch: number) {
@@ -31,15 +31,17 @@ function htmlInline (state: StateInline): boolean {
 
   if (!state.md.options.html) { return false }
 
-  // Check start
   const max = state.posMax
-  if (state.src.charCodeAt(pos) !== 0x3C/* < */ || pos + 2 >= max) {
+
+  // Check start
+  let ch = state.src.charCodeAt(pos)
+  if (pos + 2 >= max || (ch !== 0x3C/* < */ && ch !== 0x2D/* - */)) {
     return false
   }
 
   // Quick fail on second char
-  const ch = state.src.charCodeAt(pos + 1)
-  if (ch !== 0x21/* ! */ && ch !== 0x3F/* ? */ && ch !== 0x2F/* / */ && !isLetter(ch)) {
+  ch = state.src.charCodeAt(pos + 1)
+  if (ch !== 0x2D/* - */ && ch !== 0x21/* ! */ && ch !== 0x3F/* ? */ && ch !== 0x2F/* / */ && !isLetter(ch)) {
     return false
   }
 
@@ -48,13 +50,7 @@ function htmlInline (state: StateInline): boolean {
 
   const content = state.src.slice(pos, pos + match[0].length)
 
-  // ignore comment
-  if (content.startsWith('<!--')) {
-    state.pos += match[0].length
-    return true
-  }
-
-  const tag = (match[1] || match[2] || '').toLowerCase()
+  const tag = (match[1] || match[2] || match[3] || match[4] || '').toLowerCase()
   if (!tag) { return false }
 
   const setAttrs = (token: Token) => {
@@ -77,7 +73,7 @@ function htmlInline (state: StateInline): boolean {
   const prevHtmlTags = (state.md as any)._prev_inline_html_tags
 
   let token: Token
-  if (content.startsWith('</')) {
+  if (content.startsWith('</') || content.startsWith('-->')) {
     const prevHtmlTag = prevHtmlTags.pop()
     if (prevHtmlTags && prevHtmlTag === tag) {
       token = state.push('html_close', tag, -1)

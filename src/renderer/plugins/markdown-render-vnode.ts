@@ -1,4 +1,4 @@
-import { createVNode, Fragment, Text, VNode } from 'vue'
+import { createVNode, Fragment, Comment, Text, VNode } from 'vue'
 import Token from 'markdown-it/lib/token'
 import Renderer from 'markdown-it/lib/renderer'
 import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
@@ -139,6 +139,10 @@ function renderToken (this: Renderer, tokens: Token[], idx: number): any {
     return createVNode(Fragment, {}, [])
   }
 
+  if (token.tag === '--') {
+    return createVNode(Comment)
+  }
+
   return createVNode(token.tag, this.renderAttrs(token) as any, [])
 }
 
@@ -188,8 +192,10 @@ function render (this: Renderer, tokens: Token[], options: any, env: any) {
     let isChild = false
     const parentNode = vNodeParents.length > 0 ? vNodeParents[vNodeParents.length - 1] : null
     if (vnode && parentNode) {
-      const children = Array.isArray(parentNode.children) ? parentNode.children : []
-      parentNode.children = children.concat([vnode])
+      if (parentNode.type !== Comment) {
+        const children = Array.isArray(parentNode.children) ? parentNode.children : []
+        parentNode.children = children.concat([vnode])
+      }
       isChild = true
     }
 
