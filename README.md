@@ -84,7 +84,15 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.6.5](https://github.com/purocean/yn/releases/tag/v3.6.5) 2021-09-09
+### [v3.6.6](https://github.com/purocean/yn/releases/tag/v3.6.6) 2021-09-18
+1. 优化链接图标
+2. 优化省略协议的链接解析
+3. HTML 解析支持多行注释
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
+### [v3.6.5](https://github.com/purocean/yn/releases/tag/v3.6.5) 2021-09-16
 1. 调整强制插入新行快捷键
 2. 外部链接增加小图标
 3. 修复表格鼠标悬停样式问题
@@ -232,9 +240,6 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 2. 修复部分遗留问题，增强 Katex 公式渲染，文件相对路径解析
 3. 新增工具菜单
 4. 修复 Ubuntu 上不展示应用图标问题
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v2.9.10](https://github.com/purocean/yn/releases/tag/v2.9.10) 2021-06-16
 1. 增加双击编辑表格单元格功能
