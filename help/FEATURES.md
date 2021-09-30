@@ -425,5 +425,8 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
     + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
     + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
 
+1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
+    例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
+
 [^1]: 这是一个脚注
 [^2]: 这也是一个脚注
