@@ -19,6 +19,7 @@ import imageViewer from '@fe/plugins/image-viewer'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownSourceLine from '@fe/plugins/markdown-source-line'
+import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
 import markdownLink from '@fe/plugins/markdown-link'
@@ -58,6 +59,7 @@ export default [
   markdownHtml,
   markdownRenderVnode,
   markdownSourceLine,
+  markdownImsize,
   markdownToc,
   markdownCodeHighlight,
   markdownLink,

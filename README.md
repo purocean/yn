@@ -84,13 +84,18 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.6.8](https://github.com/purocean/yn/releases/tag/v3.6.8) 2021-09-30
+1. 新增自定义图片尺寸功能
+2. 链接图标不使用背景方式，便于打印
+3. 微调样式
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v3.6.7](https://github.com/purocean/yn/releases/tag/v3.6.7) 2021-09-18
 1. 优化链接图标
 2. 优化省略协议的链接解析
 3. HTML 解析支持多行注释
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v3.6.5](https://github.com/purocean/yn/releases/tag/v3.6.5) 2021-09-16
 1. 调整强制插入新行快捷键

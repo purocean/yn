@@ -291,7 +291,7 @@ summary > .item {
 }
 
 .item-action .icon:hover {
-  background: var(--g-color-65);
+  background: var(--glor-65);
   color: var(--g-color-35);
 }
 
@@ -300,9 +300,9 @@ summary > .item {
 }
 
 .item .count {
-  color: #989898;
+  color: var(--g-color-30);
   font-size: 12px;
-  vertical-align: text-bottom;
+  vertical-align: bottom;
 
   opacity: 0;
 }
