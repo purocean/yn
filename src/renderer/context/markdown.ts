@@ -1,6 +1,6 @@
 import Markdown from 'markdown-it'
 import MarkdownItAttrs from 'markdown-it-attrs'
-import MultimdTable from 'markdown-it-multimd-table'
+import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 
 export const markdown = Markdown({ linkify: true, breaks: true, html: true })
 
@@ -9,4 +9,4 @@ export function registerPlugin (plugin: (md: Markdown, ...args: any) => void, pa
 }
 
 markdown.use(MarkdownItAttrs)
-markdown.use(MultimdTable, { multiline: true })
+markdown.use(MarkdownItMultimdTable, { multiline: true })

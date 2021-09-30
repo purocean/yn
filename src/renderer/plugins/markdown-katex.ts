@@ -169,7 +169,7 @@ function math_plugin (md: any, options: any) {
     options.displayMode = false
     try {
       return katex.renderToString(latex, options)
-    } catch (error) {
+    } catch (error: any) {
       if (options.throwOnError) { console.error(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
@@ -183,7 +183,7 @@ function math_plugin (md: any, options: any) {
     options.displayMode = true
     try {
       return '<p>' + katex.renderToString(latex, options) + '</p>'
-    } catch (error) {
+    } catch (error: any) {
       if (options.throwOnError) { console.error(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
