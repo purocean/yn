@@ -394,6 +394,7 @@ export default defineComponent({
 
     fieldset {
       border-style: solid;
+      border-radius: var(--g-border-radius);
       margin: 20px 0;
 
       legend {
@@ -433,7 +434,8 @@ export default defineComponent({
       width: 11px;
       content: url(data:image/svg+xml,%3Csvg%20aria-hidden%3D%22true%22%20focusable%3D%22false%22%20data-prefix%3D%22far%22%20data-icon%3D%22anchor%22%20role%3D%22img%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20576%20512%22%20class%3D%22svg-inline--fa%20fa-anchor%20fa-w-18%22%3E%3Cpath%20fill%3D%22%23999999%22%20d%3D%22M571.515%20331.515l-67.029-67.029c-4.686-4.686-12.284-4.686-16.971%200l-67.029%2067.029c-7.56%207.56-2.206%2020.485%208.485%2020.485h44.268C453.531%20417.326%20380.693%20456.315%20312%20462.865V216h60c6.627%200%2012-5.373%2012-12v-24c0-6.627-5.373-12-12-12h-60v-11.668c32.456-10.195%2056-40.512%2056-76.332%200-44.183-35.817-80-80-80s-80%2035.817-80%2080c0%2035.82%2023.544%2066.138%2056%2076.332V168h-60c-6.627%200-12%205.373-12%2012v24c0%206.627%205.373%2012%2012%2012h60v246.865C195.192%20456.304%20122.424%20417.176%20102.762%20352h44.268c10.691%200%2016.045-12.926%208.485-20.485l-67.029-67.029c-4.686-4.686-12.284-4.686-16.971%200l-67.03%2067.029C-3.074%20339.074%202.28%20352%2012.971%20352h40.284C73.657%20451.556%20181.238%20512%20288%20512c113.135%200%20215.338-65.3%20234.745-160h40.284c10.691%200%2016.045-12.926%208.486-20.485zM288%2048c17.645%200%2032%2014.355%2032%2032s-14.355%2032-32%2032-32-14.355-32-32%2014.355-32%2032-32z%22%20class%3D%22%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E);
       box-sizing: content-box;
-      padding-left: 3px;
+      padding-left: 1px;
+      padding-right: 1px;
       display: inline-block;
       vertical-align: baseline;
     }
@@ -444,7 +446,8 @@ export default defineComponent({
         width: 9px;
         content: url(data:image/svg+xml,%3Csvg%20aria-hidden%3D%22true%22%20focusable%3D%22false%22%20data-prefix%3D%22far%22%20data-icon%3D%22file-alt%22%20role%3D%22img%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20384%20512%22%20class%3D%22svg-inline--fa%20fa-file-alt%20fa-w-12%22%3E%3Cpath%20fill%3D%22%23999999%22%20d%3D%22M288%20248v28c0%206.6-5.4%2012-12%2012H108c-6.6%200-12-5.4-12-12v-28c0-6.6%205.4-12%2012-12h168c6.6%200%2012%205.4%2012%2012zm-12%2072H108c-6.6%200-12%205.4-12%2012v28c0%206.6%205.4%2012%2012%2012h168c6.6%200%2012-5.4%2012-12v-28c0-6.6-5.4-12-12-12zm108-188.1V464c0%2026.5-21.5%2048-48%2048H48c-26.5%200-48-21.5-48-48V48C0%2021.5%2021.5%200%2048%200h204.1C264.8%200%20277%205.1%20286%2014.1L369.9%2098c9%208.9%2014.1%2021.2%2014.1%2033.9zm-128-80V128h76.1L256%2051.9zM336%20464V176H232c-13.3%200-24-10.7-24-24V48H48v416h288z%22%20class%3D%22%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E);
         box-sizing: content-box;
-        padding-left: 4px;
+        padding-left: 2px;
+        padding-right: 2px;
         display: inline-block;
         vertical-align: baseline;
       }
@@ -457,7 +460,8 @@ export default defineComponent({
         width: 10px;
         content: url(data:image/svg+xml,%3Csvg%20aria-hidden%3D%22true%22%20focusable%3D%22false%22%20data-prefix%3D%22far%22%20data-icon%3D%22external-link%22%20role%3D%22img%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20class%3D%22svg-inline--fa%20fa-external-link%20fa-w-16%22%3E%3Cpath%20fill%3D%22%23999999%22%20d%3D%22M497.6%2C0%2C334.4.17A14.4%2C14.4%2C0%2C0%2C0%2C320%2C14.57V47.88a14.4%2C14.4%2C0%2C0%2C0%2C14.69%2C14.4l73.63-2.72%2C2.06%2C2.06L131.52%2C340.49a12%2C12%2C0%2C0%2C0%2C0%2C17l23%2C23a12%2C12%2C0%2C0%2C0%2C17%2C0L450.38%2C101.62l2.06%2C2.06-2.72%2C73.63A14.4%2C14.4%2C0%2C0%2C0%2C464.12%2C192h33.31a14.4%2C14.4%2C0%2C0%2C0%2C14.4-14.4L512%2C14.4A14.4%2C14.4%2C0%2C0%2C0%2C497.6%2C0ZM432%2C288H416a16%2C16%2C0%2C0%2C0-16%2C16V458a6%2C6%2C0%2C0%2C1-6%2C6H54a6%2C6%2C0%2C0%2C1-6-6V118a6%2C6%2C0%2C0%2C1%2C6-6H208a16%2C16%2C0%2C0%2C0%2C16-16V80a16%2C16%2C0%2C0%2C0-16-16H48A48%2C48%2C0%2C0%2C0%2C0%2C112V464a48%2C48%2C0%2C0%2C0%2C48%2C48H400a48%2C48%2C0%2C0%2C0%2C48-48V304A16%2C16%2C0%2C0%2C0%2C432%2C288Z%22%20class%3D%22%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E);
         box-sizing: content-box;
-        padding-left: 4px;
+        padding-left: 2px;
+        padding-right: 2px;
         display: inline-block;
         vertical-align: baseline;
       }
@@ -484,7 +488,7 @@ export default defineComponent({
   }
 
   .markdown-view .markdown-body {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     color: var(--g-color-0);
     margin-top: 1em;
