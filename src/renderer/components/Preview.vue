@@ -488,7 +488,7 @@ export default defineComponent({
   }
 
   .markdown-view .markdown-body {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     color: var(--g-color-0);
     margin-top: 1em;
