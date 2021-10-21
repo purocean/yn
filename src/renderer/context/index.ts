@@ -18,6 +18,7 @@ import * as layout from './layout'
 import * as editor from './editor'
 import * as theme from './theme'
 import * as embed from './embed'
+import * as setting from './setting'
 
 export type CtxHookType = view.HookType | tree.HookType | doc.HookType
 
@@ -40,6 +41,7 @@ const ctx = {
   theme,
   storage,
   embed,
+  setting,
   lib,
   env,
   utils,

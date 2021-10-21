@@ -50,3 +50,12 @@ export function sleep (ms: number) {
     setTimeout(resolve, ms)
   })
 }
+
+export function objectInsertAfterKey (obj: {}, key: string, content: {}) {
+  const items = Object.entries(obj)
+  const idx = items.findIndex(([k]) => k === key)
+  if (idx > -1) {
+    items.splice(idx + 1, 0, ...Object.entries(content))
+  }
+  return Object.fromEntries(items)
+}

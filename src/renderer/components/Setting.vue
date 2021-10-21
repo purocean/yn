@@ -14,9 +14,9 @@ import { useStore } from 'vuex'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 import * as api from '@fe/support/api'
-import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import { useToast } from '@fe/support/toast'
 import { getThemeName, setTheme } from '@fe/context/theme'
+import { fetchSettings, getSchema, writeSettings } from '@fe/context/setting'
 
 JSONEditor.defaults.language = 'zh'
 JSONEditor.defaults.languages.zh = { ...JSONEditor.defaults.languages.en }
@@ -25,54 +25,6 @@ JSONEditor.defaults.languages.zh.button_move_up_title = '⬆'
 JSONEditor.defaults.languages.zh.button_delete_row_title_short = '✖'
 JSONEditor.defaults.languages.zh.button_add_row_title = '添加{{0}}'
 JSONEditor.defaults.languages.zh.button_delete_node_warning = '确定删除吗'
-
-const schema = {
-  type: 'object',
-  title: '配置项',
-  properties: {
-    repos: {
-      type: 'array',
-      title: '仓库',
-      format: 'table',
-      items: {
-        type: 'object',
-        title: '仓库',
-        properties: {
-          name: {
-            type: 'string',
-            title: '仓库名',
-            maxLength: 10,
-            options: {
-              inputAttributes: { placeholder: '请输入' }
-            },
-          },
-          path: {
-            type: 'string',
-            title: '路径',
-            readonly: true,
-            options: {
-              inputAttributes: { placeholder: '请选择储存位置', style: 'cursor: pointer' }
-            },
-          }
-        }
-      },
-    },
-    shell: {
-      title: '终端 Shell',
-      type: 'string',
-    } as any,
-    theme: {
-      title: '主题',
-      type: 'string',
-      enum: ['system', 'dark', 'light']
-    }
-  },
-  required: ['theme']
-}
-
-if (FLAG_DISABLE_XTERM) {
-  delete schema.properties.shell
-}
 
 export default defineComponent({
   name: 'x-filter',
@@ -85,6 +37,7 @@ export default defineComponent({
     const show = computed(() => store.state.showSetting)
 
     let editor: any = null
+    const schema: any = getSchema()
 
     onMounted(async () => {
       editor = new JSONEditor(refEditor.value, {
@@ -105,17 +58,11 @@ export default defineComponent({
         }
       })
 
-      const data = await api.fetchSettings()
-      data.repos = Object.keys(data.repositories).map(name => ({
-        name,
-        path: data.repositories[name]
-      }))
+      const data = await fetchSettings()
 
       if (data.repos.length < 1) {
         data.repos = [{ name: '', path: '' }]
       }
-
-      data.theme = getThemeName()
 
       const value: any = {}
 
@@ -133,21 +80,25 @@ export default defineComponent({
     const ok = async () => {
       const value = editor && editor.getValue()
       if (value) {
-        const repositories: any = {}
         value.repos.forEach(({ name, path }: any) => {
           name = name.trim()
           path = path.trim()
-          if (name && path) {
-            repositories[name] = path
-          } else if (name) {
+          if (name && !path) {
             toast.show('warning', '请选择储存位置')
             throw new Error('请选择储存位置')
           }
         })
 
-        const data = { repositories, shell: value.shell }
+        const errors = editor.validate()
+        if (errors.length) {
+          console.log('json-editor', errors)
+          errors.forEach((error: any) => {
+            toast.show('warning', error.message)
+            throw new Error(error.message)
+          })
+        }
 
-        await api.writeSettings(data)
+        await writeSettings({ ...value })
         store.dispatch('fetchRepositories')
       }
       emit('close')
@@ -212,18 +163,43 @@ export default defineComponent({
 
   ::v-deep(.form-control) {
     display: flex;
+    flex-wrap: wrap;
     align-content: center;
+    position: relative;
   }
 
   ::v-deep(.je-form-input-label) {
     width: 90px;
-    // text-align: right;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     flex: none;
     padding-right: 14px;
-    line-height: 30px;
-    height: 30px;
   }
+
+  ::v-deep(.je-form-input-label + input) {
+    max-width: calc(100% - 110px);
+  }
+
+  ::v-deep(.je-form-input-label ~ .je-form-input-label) {
+    font-size: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    color: var(--g-color-50);
+    margin-top: 4px;
+    text-align: right;
+    display: block;
+  }
+
+  ::v-deep(.form-control .errmsg) {
+    font-size: 12px;
+    text-align: right;
+    display: block;
+    width: 100%;
+    // right: 0;
+    // bottom: -20px;
+    // position: absolute;
+  }
+
 
   ::v-deep(.je-table) {
     width: 100%;
@@ -237,6 +213,10 @@ export default defineComponent({
     tr > td:last-child {
       width: 120px;
     }
+  }
+
+  ::v-deep(.je-checkbox) {
+    margin-right: 10px;
   }
 }
 

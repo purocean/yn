@@ -7,6 +7,7 @@ import { hasCtrlCmd } from './shortcut'
 import { showHelp, switchDoc, unmarkDoc } from './document'
 import { refreshTree } from './tree'
 import { getSelectionInfo, whenEditorReady } from './editor'
+import { fetchSettings } from './setting'
 
 const bus = useBus()
 
@@ -75,3 +76,5 @@ whenEditorReady().then(({ editor }) => {
     showHelp('README.md')
   }
 })
+
+fetchSettings()
