@@ -83,6 +83,7 @@
     "luckysheet": "^2.1.13",
     "markdown-it": "^12.0.6",
     "markdown-it-attrs": "^4.0.0",
+    "markdown-it-container": "^3.0.0",
     "markdown-it-multimd-table": "^4.1.0",
     "mermaid": "^8.10.2",
     "monaco-editor": "^0.25.2",

@@ -35,6 +35,7 @@ import markdownMermaid from '@fe/plugins/markdown-mermaid'
 import markdownApplet from '@fe/plugins/markdown-applet'
 import markdownEcharts from '@fe/plugins/markdown-echarts'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
+import markdownContainer from '@fe/plugins/markdown-container'
 import syncScroll from '@fe/plugins/sync-scroll'
 
 export default [
@@ -75,5 +76,6 @@ export default [
   markdownApplet,
   markdownEcharts,
   markdownLuckysheet,
+  markdownContainer,
   syncScroll,
 ]

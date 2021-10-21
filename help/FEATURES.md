@@ -355,6 +355,48 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
 ```
 
+## 容器块
+
+支持类似 [VuePress 容器块](https://v2.vuepress.vuejs.org/zh/reference/default-theme/markdown.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%B9%E5%99%A8) 功能，使用 [markdown-it-container](https://github.com/markdown-it/markdown-it-container) 实现
+
+**使用**
+
+```md
+::: <type> [title]
+[content]
+:::
+```
+
+`type` 是必需的， `title` 和 `content` 是可选的。
+
+支持的 `type` 有：`tip` `warning` `danger` `details`
+
+**示例**
+
+::: tip
+这是一个提示
+:::
+
+::: warning
+这是一个警告
+:::
+
+::: danger
+这是一个危险警告
+:::
+
+::: danger STOP
+危险区域，禁止通行
+:::
+
+::: details
+这是一个 details 标签
+:::
+
+::: details 点击展开更多
+这是一个 details 标签
+:::
+
 ## 快捷键
 
 这里仅列出部分常用快捷键和自定义快捷键，默认编辑器快捷键参考 [vscode](https://code.visualstudio.com/)。
