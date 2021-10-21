@@ -15,7 +15,7 @@ async function uploadFile (file: any, asImage: boolean) {
   }
   const { repo, path } = store.state.currentFile
 
-  const filename = asImage ? null : `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`
+  const filename = file.name
   const { relativePath } = await api.upload(repo, path, file, filename)
 
   if (asImage) {
