@@ -132,7 +132,11 @@ export async function upload (repo: string, belongPath: string, uploadFile: any,
 
   await fetchHttp('/api/attachment', { method: 'POST', body: formData })
 
-  const relativePath: string = relative(parentPath, path)
+  let relativePath: string = relative(parentPath, path)
+  if (!relativePath.startsWith('/') || !relativePath.startsWith('./')) {
+    relativePath = './' + relativePath
+  }
+
   return { repo, path, relativePath }
 }
 
