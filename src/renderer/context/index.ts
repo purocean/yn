@@ -6,6 +6,7 @@ import storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
 import * as env from '@fe/utils/env'
 import * as api from '@fe/support/api'
+import * as lib from './lib'
 import * as action from './action'
 import * as doc from './document'
 import * as shortcut from './shortcut'
@@ -39,6 +40,7 @@ const ctx = {
   theme,
   storage,
   embed,
+  lib,
   env,
   utils,
 }
