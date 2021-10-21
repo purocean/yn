@@ -85,7 +85,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.7.0](https://github.com/purocean/yn/releases/tag/v3.7.0) 2021-10-21
+### [v3.7.1](https://github.com/purocean/yn/releases/tag/v3.7.1) 2021-10-21
 1. 新增自定义容器块功能
 2. 预览界面目录新增固定按钮
 3. 终端优化：新增收起按钮、状态栏新增快速切换终端按钮
