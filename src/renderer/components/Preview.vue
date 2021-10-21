@@ -17,8 +17,13 @@
         </div>
       </div>
     </div>
-    <div class="outline">
-      <div style="padding: .5em;"><b>目录</b></div>
+    <div :class="{outline: true, pined: pinOutline}">
+      <div class="outline-title">
+        <b>目录</b>
+        <div class="outline-pin" @click="togglePinOutline">
+          <SvgIcon style="width: 12px; height: 12px" name="thumbtack" />
+        </div>
+      </div>
       <div class="catalog" :style="{maxHeight: `min(${(height - 120) + 'px'}, 70vh)`}">
         <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level + 1}em`}" @click="syncScroll(head.sourceLine)">
           {{ head.text }}
@@ -45,6 +50,7 @@ import { useBus } from '@fe/support/bus'
 import { getActionHandler, registerAction, removeAction } from '@fe/context/action'
 import { revealLineInCenter } from '@fe/context/editor'
 import Render from './Render.vue'
+import SvgIcon from './SvgIcon.vue'
 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
@@ -52,11 +58,12 @@ import 'katex/dist/katex.min.css'
 
 export default defineComponent({
   name: 'xview',
-  components: { Render },
+  components: { Render, SvgIcon },
   setup () {
     const bus = useBus()
     const store = useStore()
 
+    const pinOutline = ref(false)
     const { currentContent, currentFile, autoPreview, presentation } = toRefs(store.state)
     const fileName = computed(() => currentFile.value?.name)
     const filePath = computed(() => currentFile.value?.path)
@@ -82,6 +89,10 @@ export default defineComponent({
     const scrollToTopStyle = computed(() => ({
       bottom: `max(100vh - ${height.value - (isElectron ? 0 : 20)}px, 40px)`
     }))
+
+    function togglePinOutline () {
+      pinOutline.value = !pinOutline.value
+    }
 
     function resizeHandler () {
       width.value = refViewWrapper.value!.clientWidth
@@ -222,6 +233,7 @@ export default defineComponent({
     })
 
     return {
+      pinOutline,
       refViewWrapper,
       refView,
       presentation,
@@ -232,6 +244,7 @@ export default defineComponent({
       heads,
       todoCount,
       todoDoneCount,
+      togglePinOutline,
       scrollTop,
       print,
       showExport,
@@ -313,6 +326,7 @@ export default defineComponent({
   margin-top: 1em;
 }
 
+.outline.pined,
 .outline:hover {
   max-height: 75vh;
   max-width: 20em;
@@ -336,6 +350,40 @@ export default defineComponent({
 
 .outline > .catalog > div:hover {
   background: var(--g-color-75);
+}
+
+.outline-title {
+  padding: .5em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.outline-pin {
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
+  transition: left .1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 50%;
+  left: 40px;
+  color: var(--g-color-20);
+
+  &:hover {
+    background: var(--g-color-75);
+  }
+}
+
+.outline:hover .outline-pin,
+.outline.pined .outline-pin {
+  left: 3px;
+}
+
+.outline.pined .outline-pin {
+  background: var(--g-color-70);
 }
 
 .action-btns {
