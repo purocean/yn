@@ -134,7 +134,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
     await api.writeFile(file, file.content)
 
     bus.emit('doc.created', file)
-  } catch (error) {
+  } catch (error: any) {
     useToast().show('warning', error.message)
     console.error(error)
   }
@@ -254,7 +254,7 @@ export async function saveDoc (doc: Doc, content: string) {
       status: 'saved'
     })
     bus.emit('doc.saved', store.state.currentFile)
-  } catch (error) {
+  } catch (error: any) {
     store.commit('setCurrentFile', { ...doc, status: 'save-failed' })
     useToast().show('warning', error.message)
     throw error
@@ -279,7 +279,7 @@ export async function ensureCurrentFileSaved () {
         await saveDoc(currentFile, currentContent)
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     useToast().show('warning', error.message)
     throw error
   }
@@ -327,7 +327,7 @@ export async function switchDoc (doc: Doc | null) {
     })
 
     bus.emit('doc.switched', store.state.currentFile)
-  } catch (error) {
+  } catch (error: any) {
     bus.emit('doc.switch-failed', { doc, message: error.message })
     useToast().show('warning', error.message.includes('Malformed') ? '密码错误' : error.message)
     throw error
