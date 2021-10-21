@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div :class="{outline: true, pined: pinOutline}">
+    <div v-if="heads && heads.length > 0" :class="{outline: true, pined: pinOutline}">
       <div class="outline-title">
         <b>目录</b>
         <div class="outline-pin" @click="togglePinOutline">
