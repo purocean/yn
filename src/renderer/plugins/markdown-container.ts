@@ -49,6 +49,28 @@ export default {
         background-color: var(--g-color-90);
         padding: 16px 20px;
       }
+
+      html[app-theme=dark] .markdown-view .markdown-body .custom-container.danger {
+        background-color: #503f3f;
+        color: #d9bebe;
+      }
+
+      html[app-theme=dark] .markdown-view .markdown-body .custom-container.warning {
+        background-color: #4a4738;
+        color: #cbb759;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html[app-theme=system] .markdown-view .markdown-body .custom-container.danger {
+          background-color: #503f3f;
+          color: #d9bebe;
+        }
+
+        html[app-theme=system] .markdown-view .markdown-body .custom-container.warning {
+          background-color: #4a4738;
+          color: #cbb759;
+        }
+      }
     `)
 
     ctx.markdown.registerPlugin(md => {
