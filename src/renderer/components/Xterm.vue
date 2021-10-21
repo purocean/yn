@@ -200,14 +200,17 @@ export default defineComponent({
   flex: 0 0 auto;
   width: 100%;
   height: 100%;
+  padding-right: 0;
+  padding-top: 0;
+  border-right: 0;
 }
 
 .hide {
   position: absolute;
   top: -6px;
-  right: 1px;
+  right: 0;
   z-index: 10;
-  background: var(--g-color-90);
+  background: var(--g-color-75);
   border-bottom-left-radius: var(--g-border-radius);
   border-bottom-right-radius: var(--g-border-radius);
   width: 30px;
@@ -229,6 +232,6 @@ export default defineComponent({
 }
 
 .hide:hover {
-  background: var(--g-color-70);
+  background: var(--g-color-65);
 }
 </style>
