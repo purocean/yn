@@ -1,5 +1,8 @@
 <template>
   <div class="xterm">
+    <div class="hide" @click="$emit('hide')">
+      <SvgIcon style="width: 20px; height: 20px" name="chevron-down" />
+    </div>
     <div ref="refXterm" style="height: 100%"></div>
   </div>
 </template>
@@ -17,12 +20,15 @@ import { registerAction, removeAction } from '@fe/context/action'
 import { getLogger } from '@fe/utils'
 import { getColorScheme } from '@fe/context/theme'
 import { OneHalfLight, OneHalfDark } from 'xterm-theme'
+import SvgIcon from './SvgIcon.vue'
+
 import 'xterm/css/xterm.css'
 
 const logger = getLogger('component-x-term')
 
 export default defineComponent({
   name: 'xterm',
+  components: { SvgIcon },
   setup () {
     const bus = useBus()
     const store = useStore()
@@ -194,5 +200,35 @@ export default defineComponent({
   flex: 0 0 auto;
   width: 100%;
   height: 100%;
+}
+
+.hide {
+  position: absolute;
+  top: -6px;
+  right: 1px;
+  z-index: 10;
+  background: var(--g-color-90);
+  border-bottom-left-radius: var(--g-border-radius);
+  border-bottom-right-radius: var(--g-border-radius);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: scaleY(0.6);
+  border: 8px solid transparent;
+  box-sizing: border-box;
+  color: var(--g-color-20);
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.xterm:hover .hide {
+  opacity: 1;
+}
+
+.hide:hover {
+  background: var(--g-color-70);
 }
 </style>

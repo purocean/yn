@@ -10,7 +10,7 @@
       <Tree />
     </template>
     <template v-slot:terminal>
-      <Xterm />
+      <Xterm @hide="hideXterm" />
     </template>
     <template v-slot:editor>
       <FileTabs />
@@ -28,6 +28,7 @@
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'
 import startup from '@fe/context/startup'
+import { getActionHandler } from '@fe/context/action'
 import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
 import Layout from '@fe/components/Layout.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
@@ -64,7 +65,11 @@ export default defineComponent({
       'flag-disable-xterm': FLAG_DISABLE_XTERM
     }
 
-    return { classes }
+    function hideXterm () {
+      getActionHandler('layout.toggle-xterm')(false)
+    }
+
+    return { classes, hideXterm }
   }
 })
 </script>
