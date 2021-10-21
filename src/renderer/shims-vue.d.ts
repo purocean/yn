@@ -12,6 +12,7 @@ declare interface Window {
   monaco: any;
 }
 
+declare module 'markdown-it-container'
 declare module 'markdown-it-task-lists'
 declare module 'markdown-it-attrs'
 declare module 'markdown-it-multimd-table'

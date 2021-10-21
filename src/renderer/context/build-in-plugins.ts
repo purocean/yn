@@ -7,6 +7,7 @@ import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarRefresh from '@fe/plugins/status-bar-refresh'
 import statusBarPresentation from '@fe/plugins/status-bar-presentation'
+import statusBarTerminal from '@fe/plugins/status-bar-terminal'
 import statusBarGet from '@fe/plugins/status-bar-get'
 import editorPaste from '@fe/plugins/editor-paste'
 import editorAttachment from '@fe/plugins/editor-attachment'
@@ -35,6 +36,7 @@ import markdownMermaid from '@fe/plugins/markdown-mermaid'
 import markdownApplet from '@fe/plugins/markdown-applet'
 import markdownEcharts from '@fe/plugins/markdown-echarts'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
+import markdownContainer from '@fe/plugins/markdown-container'
 import syncScroll from '@fe/plugins/sync-scroll'
 
 export default [
@@ -46,6 +48,7 @@ export default [
   statusBarTool,
   statusBarHelp,
   statusBarRefresh,
+  statusBarTerminal,
   statusBarPresentation,
   statusBarGet,
   transformImgOutLink,
@@ -75,5 +78,6 @@ export default [
   markdownApplet,
   markdownEcharts,
   markdownLuckysheet,
+  markdownContainer,
   syncScroll,
 ]

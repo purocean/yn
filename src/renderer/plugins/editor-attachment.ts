@@ -15,11 +15,11 @@ async function uploadFile (file: any, asImage: boolean) {
   }
   const { repo, path } = store.state.currentFile
 
-  const filename = asImage ? null : `${dayjs().format('YYYYMMDDHHmmss')}.${file.name}`
+  const filename = file.name
   const { relativePath } = await api.upload(repo, path, file, filename)
 
   if (asImage) {
-    insert(`![图片](${encodeMarkdownLink(relativePath)})`)
+    insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
   } else {
     insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
   }
@@ -30,9 +30,10 @@ async function uploadFile (file: any, asImage: boolean) {
 function addAttachment (asImage = false) {
   const input = window.document.createElement('input')
   input.type = 'file'
-  input.onchange = () => {
+  input.multiple = true
+  input.onchange = async () => {
     for (let i = 0; i < input.files!.length; i++) {
-      uploadFile(input.files![i], asImage)
+      await uploadFile(input.files![i], asImage)
     }
   }
   input.click()

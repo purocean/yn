@@ -72,6 +72,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 - 表格解析增强：表格支持表格标题多行文本，列表等特性
 - 文档交叉链接跳转：支持在文档中引入其他文档，互相跳转
 - 脚注功能：支持在文档中书写脚注
+- 容器块：支持类似 VuePress 默认主题的自定义容器
 - 自定义插件：支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中，文档待完善
 
 ## 界面截图
@@ -84,11 +85,18 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.6.9](https://github.com/purocean/yn/releases/tag/v3.6.9) 2021-10-13
-1. 微调样式
+### [v3.7.0](https://github.com/purocean/yn/releases/tag/v3.7.0) 2021-10-21
+1. 新增自定义容器块功能
+2. 预览界面目录新增固定按钮
+3. 终端优化：新增收起按钮、状态栏新增快速切换终端按钮
+4. 上传附件和图片功能优化：增加多选、文件名保留原始文件名、路径增加 `./`
+5. 快捷键说明放置在单独文档
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v3.6.9](https://github.com/purocean/yn/releases/tag/v3.6.9) 2021-10-13
+1. 微调样式
 
 ### [v3.6.8](https://github.com/purocean/yn/releases/tag/v3.6.8) 2021-09-30
 1. 新增自定义图片尺寸功能

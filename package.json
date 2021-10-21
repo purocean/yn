@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.6.9",
+  "version": "3.7.0",
   "description": "Yank Note 一款面向程序员的 Markdown 笔记应用",
   "main": "dist/main/app.js",
   "license": "GPL-3.0",
@@ -83,6 +83,7 @@
     "luckysheet": "^2.1.13",
     "markdown-it": "^12.0.6",
     "markdown-it-attrs": "^4.0.0",
+    "markdown-it-container": "^3.0.0",
     "markdown-it-multimd-table": "^4.1.0",
     "mermaid": "^8.10.2",
     "monaco-editor": "^0.25.2",
