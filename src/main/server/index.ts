@@ -162,7 +162,19 @@ const proxy = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/proxy')) {
     const url = ctx.query.url
     const headers = ctx.query.headers ? JSON.parse(ctx.query.headers) : undefined
-    ctx.body = request(url, { headers })
+    const options = ctx.query.options ? JSON.parse(ctx.query.options) : {}
+    await new Promise<void>((resolve, reject) => {
+      request({ url, headers, encoding: null, ...options }, function (err: any, response: any, body: any) {
+        if (err) {
+          reject(err)
+        } else {
+          ctx.status = response.statusCode
+          ctx.set('content-type', response.headers['content-type'])
+          ctx.body = body
+          resolve()
+        }
+      })
+    })
   } else {
     await next()
   }
