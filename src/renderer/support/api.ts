@@ -23,6 +23,12 @@ async function fetchHttp (input: RequestInfo, init?: RequestInit) {
   return result
 }
 
+export function proxyRequest (url: string, reqOptions = {}, reqHeaders = {}, init?: RequestInit) {
+  const headers = encodeURIComponent(JSON.stringify(reqHeaders))
+  const options = encodeURIComponent(JSON.stringify(reqOptions))
+  return fetch(`/api/proxy?url=${encodeURIComponent(url)}&headers=${headers}&options=${options}`, init)
+}
+
 async function fetchHelpContent (doc: string) {
   const result = await fetchHttp('/api/help?doc=' + doc)
   return { content: result.data.content, hash: '' }
