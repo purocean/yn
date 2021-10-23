@@ -6,6 +6,7 @@ import storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
 import * as env from '@fe/utils/env'
 import * as api from '@fe/support/api'
+import * as lib from './lib'
 import * as action from './action'
 import * as doc from './document'
 import * as shortcut from './shortcut'
@@ -17,6 +18,7 @@ import * as layout from './layout'
 import * as editor from './editor'
 import * as theme from './theme'
 import * as embed from './embed'
+import * as setting from './setting'
 
 export type CtxHookType = view.HookType | tree.HookType | doc.HookType
 
@@ -39,6 +41,8 @@ const ctx = {
   theme,
   storage,
   embed,
+  setting,
+  lib,
   env,
   utils,
 }

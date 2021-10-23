@@ -38,6 +38,7 @@ import markdownEcharts from '@fe/plugins/markdown-echarts'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
 import syncScroll from '@fe/plugins/sync-scroll'
+import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 
 export default [
   documentHistoryStack,
@@ -80,4 +81,5 @@ export default [
   markdownLuckysheet,
   markdownContainer,
   syncScroll,
+  imageHostingPicgo,
 ]

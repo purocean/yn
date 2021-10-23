@@ -76,7 +76,6 @@ export default {
     ctx.markdown.registerPlugin(md => {
       ['tip', 'warning', 'danger', 'details'].forEach(name => {
         const reg = new RegExp(`^${name}\\s*(.*)$`)
-        console.log('xxx', reg)
 
         md.use(MarkdownItContainer, name, {
           validate: (params: string) => {

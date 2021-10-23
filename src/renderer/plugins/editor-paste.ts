@@ -1,6 +1,6 @@
 import TurndownService from 'turndown'
 import { getEditor, insert } from '@fe/context/editor'
-import type { Plugin } from '@fe/context/plugin'
+import { Plugin, triggerHook } from '@fe/context/plugin'
 import { refreshTree } from '@fe/context/tree'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
@@ -33,9 +33,12 @@ async function pasteImage (file: File, asBase64: boolean) {
       throw new Error('当前未打开文件')
     }
 
-    const { repo, path } = store.state.currentFile
-    const { relativePath } = await api.upload(repo, path, file)
-    insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
+    if (!(await triggerHook('ON_PASTE_IMAGE', file))) {
+      const { repo, path } = store.state.currentFile
+      const { relativePath } = await api.upload(repo, path, file)
+      insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
+    }
+
     refreshTree()
   }
 }

@@ -7,7 +7,7 @@ const logger = getLogger('plugin')
 const ctx = { ...context, registerHook, removeHook, triggerHook }
 
 export type Ctx = typeof ctx;
-export type HookType = 'ON_STARTUP' | CtxHookType
+export type HookType = 'ON_STARTUP' | 'ON_PASTE_IMAGE' | CtxHookType
 export type HookFun = (...args: any[]) => boolean | void | Promise<boolean | void>
 export interface Plugin {
   name: string;

@@ -39,7 +39,8 @@ async function transformImgOutLink (img: HTMLImageElement) {
   if (img.src.startsWith('data:')) {
     replacedLink = await transform(img)
   } else if (imgAttrSrc.startsWith('http://') || imgAttrSrc.startsWith('https://')) {
-    const res = await window.fetch(`api/proxy?url=${encodeURIComponent(img.src)}&headers=${img.getAttribute('headers') || ''}`)
+    const headers = JSON.parse(img.getAttribute('headers') || '{}')
+    const res = await api.proxyRequest(img.src, { method: 'get' }, headers)
     const blob = await res.blob()
     const imgFile = new File([blob!], 'file.' + mime.extension(res.headers.get('content-type')!))
     const { relativePath } = await api.upload(repo, path, imgFile)

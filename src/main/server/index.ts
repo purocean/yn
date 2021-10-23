@@ -1,3 +1,4 @@
+import * as os from 'os'
 import * as fs from 'fs'
 import * as path from 'path'
 import Koa from 'koa'
@@ -5,7 +6,7 @@ import bodyParser from 'koa-body'
 import * as mime from 'mime'
 import request from 'request'
 import { promisify } from 'util'
-import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER } from '../constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME } from '../constant'
 import file from './file'
 import dataRepository from './repository'
 import run from './run'
@@ -158,11 +159,49 @@ const convertFile = async (ctx: any, next: any) => {
   }
 }
 
+const tmpFile = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/tmp-file')) {
+    const absPath = path.join(os.tmpdir(), APP_NAME + '_' + ctx.query.name.replace(/\//g, '_'))
+    if (ctx.method === 'GET') {
+      ctx.body = fs.readFileSync(absPath)
+    } else if (ctx.method === 'POST') {
+      let body: any = ctx.request.body.toString()
+
+      if (ctx.query.asBase64) {
+        body = Buffer.from(
+          body.startsWith('data:') ? body.substring(body.indexOf(',') + 1) : body,
+          'base64'
+        )
+      }
+
+      fs.writeFileSync(absPath, body)
+      ctx.body = result('ok', '写入成功', { path: absPath })
+    } else if (ctx.method === 'DELETE') {
+      fs.unlinkSync(absPath)
+      ctx.body = result('ok', '删除成功')
+    }
+  } else {
+    await next()
+  }
+}
+
 const proxy = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/proxy')) {
     const url = ctx.query.url
     const headers = ctx.query.headers ? JSON.parse(ctx.query.headers) : undefined
-    ctx.body = request(url, { headers })
+    const options = ctx.query.options ? JSON.parse(ctx.query.options) : {}
+    await new Promise<void>((resolve, reject) => {
+      request({ url, headers, encoding: null, ...options }, function (err: any, response: any, body: any) {
+        if (err) {
+          reject(err)
+        } else {
+          ctx.status = response.statusCode
+          ctx.set('content-type', response.headers['content-type'])
+          ctx.body = body
+          resolve()
+        }
+      })
+    })
   } else {
     await next()
   }
@@ -274,6 +313,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
 
   // 静态文件
   app.use(async (ctx: any, next: any) => {
