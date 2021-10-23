@@ -41,8 +41,8 @@
             </template>
             <template v-else>
               <div style="margin: 10px 0">
-                <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'markdown'" @change="() => convert.fromType = 'markdown'"> 使用 Markdown 转换 </label>
                 <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'html'" @change="() => convert.fromType = 'html'"> 使用渲染后的 HTML 转换 </label>
+                <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'markdown'" @change="() => convert.fromType = 'markdown'"> 使用 Markdown 转换 </label>
               </div>
             </template>
           </div>
@@ -80,7 +80,7 @@ export default defineComponent({
       fileName: '',
       source: '',
       toType: 'pdf',
-      fromType: 'markdown',
+      fromType: 'html',
       pdfOptions: {
         landscape: '',
         pageSize: 'A4',
