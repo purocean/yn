@@ -8,7 +8,7 @@
     --g-color-#{$i}: #{mix($background, $foreground, $i * 1%)};
   }
 
-  --selection-color: #{rgba($foreground, 0.3)};
+  --selection-color: rgba(86, 155, 214, 0.38);
 
   --scrollbar-shadow-color: #{rgba($foreground, 0.1)};
   --scrollbar-track-background-color: #{rgba($foreground, 0.08)};
