@@ -8,8 +8,15 @@ import { FLAG_DEMO } from './global-args'
 
 async function fetchHttp (input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init)
-  const result = await response.json()
-  if (result.status !== 'ok') {
+
+  let result: any = null
+  try {
+    result = await response.json()
+  } catch (error) {
+    return response
+  }
+
+  if (result.status && result.status !== 'ok') {
     throw new Error(result.message)
   }
 
@@ -142,6 +149,24 @@ export async function upload (repo: string, belongPath: string, uploadFile: any,
 
 export async function openInOS ({ repo, path }: Doc) {
   return fetchHttp(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
+}
+
+export async function writeTmpFile (name: string, data: string, asBase64 = false) {
+  return fetchHttp(
+    `/api/tmp-file?name=${encodeURIComponent(name)}${asBase64 ? '&asBase64=true' : ''}`,
+    { method: 'post', body: data }
+  )
+}
+
+export async function readTmpFile (name: string): Promise<Response> {
+  return fetchHttp(`/api/tmp-file?name=${encodeURIComponent(name)}`)
+}
+
+export async function deleteTmpFile (name: string) {
+  return fetchHttp(
+    `/api/tmp-file?name=${encodeURIComponent(name)}`,
+    { method: 'delete' }
+  )
 }
 
 export async function runCode (language: string, code: string, callback?: { name: string, handler: (res: string) => void }) {
