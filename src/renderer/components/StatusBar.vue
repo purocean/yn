@@ -5,9 +5,11 @@
       <div class="document-info">
         <span>行：{{selectionInfo.line}}</span>
         <span>列：{{selectionInfo.column}}</span>
-        <span>总行数：{{selectionInfo.lineCount}}</span>
-        <span>字符数：{{selectionInfo.textLength}}</span>
         <span v-if="selectionInfo.selectedLength > 0">已选中：{{selectionInfo.selectedLength}}</span>
+        <template v-else>
+          <span>总行数：{{selectionInfo.lineCount}}</span>
+          <span>字符数：{{selectionInfo.textLength}}</span>
+        </template>
       </div>
       <StatusBarMenu class="right" position="right" />
     </div>
