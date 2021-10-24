@@ -86,6 +86,17 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.8.1](https://github.com/purocean/yn/releases/tag/v3.8.1) 2021-10-24
+1. 过于宽的表格增加横向滚动
+2. 编辑器增加表格补全
+3. 工具菜单增加更多内容
+4. 导出默认使用 HTML 转换
+5. 优化状态栏展示
+6. 调整选中文本背景颜色
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v3.8.0](https://github.com/purocean/yn/releases/tag/v3.8.0) 2021-10-23
 1. 增加 PicGo 图床支持
 2. 文档没有目录时候隐藏目录按钮
@@ -93,9 +104,6 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 4. 插件开发：`ctx` 增加 `lib`，可以使用一些安装的 npm 模块
 5. 插件开发：新增临时文件接口
 6. 插件开发：增加 `ON_PASTE_IMAGE` 钩子事件，用以拦截粘贴图片行为
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v3.7.1](https://github.com/purocean/yn/releases/tag/v3.7.1) 2021-10-21
 1. 新增自定义容器块功能
