@@ -86,7 +86,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.8.1](https://github.com/purocean/yn/releases/tag/v3.8.1) 2021-10-24
+### [v3.8.2](https://github.com/purocean/yn/releases/tag/v3.8.2) 2021-10-24
 1. 过于宽的表格增加横向滚动
 2. 编辑器增加表格补全
 3. 工具菜单增加更多内容
