@@ -23,6 +23,7 @@ import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
 import markdownLink from '@fe/plugins/markdown-link'
+import markdownTable from '@fe/plugins/markdown-table'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
 import markdownFootnote from '@fe/plugins/markdown-footnote'
 import markdownKatex from '@fe/plugins/markdown-katex'
@@ -66,6 +67,7 @@ export default [
   markdownToc,
   markdownCodeHighlight,
   markdownLink,
+  markdownTable,
   markdownTaskList,
   markdownFootnote,
   markdownKatex,
