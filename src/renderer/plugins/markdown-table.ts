@@ -10,32 +10,24 @@ export default {
           margin-bottom: 16px;
         }
 
-        .markdown-view .markdown-body .table-wrapper table {
+        .markdown-view .markdown-body .table-wrapper > table {
           margin-bottom: 6px;
         }
 
-        .markdown-view .markdown-body table th {
+        .markdown-view .markdown-body .table-wrapper > table th {
           white-space: nowrap;
         }
 
-        .markdown-view .markdown-body table tr {
-          background: inherit;
-        }
-
-        .markdown-view .markdown-body table tr:hover {
+        .markdown-view .markdown-body .table-wrapper > table tr:hover {
           outline: 2px #b3833b dashed;
           outline-offset: -2px;
         }
 
-        .markdown-view .markdown-body table tr:nth-child(2n) {
-          background: var(--g-color-96);
-        }
-
-        .markdown-view .markdown-body tbody {
+        .markdown-view .markdown-body .table-wrapper > table tbody {
           counter-reset: tr-number;
         }
 
-        .markdown-view .markdown-body tbody:hover td:first-child:before {
+        .markdown-view .markdown-body .table-wrapper > table tbody:hover td:first-child:before {
           counter-increment: tr-number;
           content: counter(tr-number);
           position: absolute;

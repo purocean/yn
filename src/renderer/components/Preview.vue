@@ -545,6 +545,10 @@ export default defineComponent({
       color: #4c93e2;
     }
 
+    tr {
+      background: inherit;
+    }
+
     * {
       border-color: var(--g-color-80);
       background: inherit;
@@ -559,6 +563,7 @@ export default defineComponent({
     }
 
     pre,
+    table tr:nth-child(2n),
     pre > code {
       background: var(--g-color-96);
     }
