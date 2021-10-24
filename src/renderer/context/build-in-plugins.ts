@@ -13,7 +13,6 @@ import editorPaste from '@fe/plugins/editor-paste'
 import editorAttachment from '@fe/plugins/editor-attachment'
 import editorMarkdown from '@fe/plugins/editor-markdown'
 import copyText from '@fe/plugins/copy-text'
-import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import switchTodo from '@fe/plugins/switch-todo'
 import tableCellEdit from '@fe/plugins/table-cell-edit'
 import imageViewer from '@fe/plugins/image-viewer'
@@ -24,6 +23,7 @@ import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
 import markdownLink from '@fe/plugins/markdown-link'
+import markdownTable from '@fe/plugins/markdown-table'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
 import markdownFootnote from '@fe/plugins/markdown-footnote'
 import markdownKatex from '@fe/plugins/markdown-katex'
@@ -38,6 +38,7 @@ import markdownEcharts from '@fe/plugins/markdown-echarts'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
 import syncScroll from '@fe/plugins/sync-scroll'
+import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 
 export default [
@@ -52,7 +53,6 @@ export default [
   statusBarTerminal,
   statusBarPresentation,
   statusBarGet,
-  transformImgOutLink,
   editorPaste,
   editorAttachment,
   editorMarkdown,
@@ -67,6 +67,7 @@ export default [
   markdownToc,
   markdownCodeHighlight,
   markdownLink,
+  markdownTable,
   markdownTaskList,
   markdownFootnote,
   markdownKatex,
@@ -81,5 +82,6 @@ export default [
   markdownLuckysheet,
   markdownContainer,
   syncScroll,
+  transformImgOutLink,
   imageHostingPicgo,
 ]

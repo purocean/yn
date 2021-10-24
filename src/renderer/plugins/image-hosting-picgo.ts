@@ -107,12 +107,24 @@ export default {
       input.click()
     }
 
+    const addImageActionId = 'plugin.image-hosting-picgo.add-image'
+
     ctx.editor.whenEditorReady().then(({ editor }) => {
       editor.addAction({
-        id: 'plugin.image-hosting-picgo.add-image',
+        id: addImageActionId,
         contextMenuGroupId: 'modification',
-        label: '上传图片（PicGo）',
+        label: '添加图片（PicGo）',
         run: addImage,
+      })
+    })
+
+    ctx.statusBar.tapMenus(menus => {
+      menus['status-bar-tool']?.list?.push({
+        id: addImageActionId,
+        type: 'normal',
+        title: '添加图片',
+        subTitle: 'PicGo',
+        onClick: addImage
       })
     })
   }

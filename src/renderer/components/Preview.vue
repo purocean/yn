@@ -545,10 +545,6 @@ export default defineComponent({
       color: #4c93e2;
     }
 
-    tr {
-      background: inherit;
-    }
-
     * {
       border-color: var(--g-color-80);
       background: inherit;
@@ -563,27 +559,8 @@ export default defineComponent({
     }
 
     pre,
-    pre > code,
-    table tr:nth-child(2n) {
+    pre > code {
       background: var(--g-color-96);
-    }
-
-    table.source-line tbody {
-      counter-reset: tr-number;
-
-      &:hover td:first-child:before {
-        counter-increment: tr-number;
-        content: counter(tr-number);
-        position: absolute;
-        right: 100%;
-        padding-right: 5px;
-        color: #999;
-        font-family: monospace;
-      }
-
-      tr:hover {
-        outline: 2px #b3833b dashed;
-      }
     }
   }
 }

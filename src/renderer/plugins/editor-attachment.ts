@@ -60,7 +60,7 @@ export default {
       editor.addAction({
         id: 'plugin.editor.add-image',
         contextMenuGroupId: 'modification',
-        label: '上传图片',
+        label: '添加图片',
         keybindings: [
           monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
         ],
