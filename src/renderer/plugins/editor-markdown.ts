@@ -38,6 +38,7 @@ function createDependencyProposals (range: any) {
     { name: '[]() Luckysheet Link', type: 'Luckysheet 链接', insertText: '[${2:链接}]($1){link-type="luckysheet"}' },
     { name: '```mermaid Mermaid', type: 'Mermaid 图形', insertText: '```mermaid\ngraph LR\n${1:A[Hard] -->|Text| B(Round)}\n```\n' },
     { name: '@startuml Plantuml', type: 'Plantuml 图形', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
+    { name: '||| Table', type: '表格', insertText: '${1:A} | ${2:B} | ${3:C}\n-- | -- | --\na | b | c' },
   ].map(x => ({
     label: { name: x.name, type: x.type },
     kind: monaco.languages.CompletionItemKind.Snippet,
