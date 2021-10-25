@@ -200,7 +200,6 @@ export default defineComponent({
     // position: absolute;
   }
 
-
   ::v-deep(.je-table) {
     width: 100%;
     padding-bottom: 6px;

@@ -10,7 +10,6 @@ import { Components, Doc } from '@fe/support/types'
 import { useBus } from '@fe/support/bus'
 import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/context/document'
 import { registerAction, removeAction } from '@fe/context/action'
-import { isBelongTo } from '@fe/utils/path'
 import Tabs from './Tabs.vue'
 
 const blankUri = toUri(null)
