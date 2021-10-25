@@ -2,13 +2,13 @@ import { App, ComponentPublicInstance, createApp } from 'vue'
 import Toast from '@fe/components/Toast.vue'
 import { Components } from '@fe/support/types'
 
-interface ToastInstance extends ComponentPublicInstance {
+export interface Instance extends ComponentPublicInstance {
   show: (type: Components.Toast.ToastType, content: string, timeout?: number) => void;
 }
 
-let instance: ToastInstance
+let instance: Instance
 
-export function useToast (): ToastInstance {
+export function useToast (): Instance {
   return instance
 }
 
@@ -17,6 +17,6 @@ export default function install (app: App) {
   const el = document.createElement('div')
   document.body.appendChild(el)
 
-  instance = toast.mount(el) as ToastInstance
+  instance = toast.mount(el) as Instance
   app.config.globalProperties.$toast = instance
 }

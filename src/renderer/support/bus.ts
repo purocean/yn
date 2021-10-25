@@ -7,7 +7,7 @@ const emitter = mitt()
 //   console.log('debug bus >', type, payload)
 // })
 
-interface XEmitter extends Emitter {
+export interface XEmitter extends Emitter {
   once<T = any>(type: EventType, handler: Handler<T>): void;
   once(type: '*', handler: WildcardHandler): void;
 }

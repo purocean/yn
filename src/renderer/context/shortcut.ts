@@ -17,7 +17,7 @@ export const LeftClick = 0
 
 type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 
-interface Command {
+export interface Command {
   id: string,
   keys: null | (string | number)[]
   handler: null | string | ((...args: any[]) => void),

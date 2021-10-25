@@ -1,0 +1,19 @@
+{
+  "out": "docs",
+  "name": "Yank Note Api",
+  "includeVersion": true,
+  "entryPointStrategy": "expand",
+  "readme": "none",
+  "entryPoints": [
+    "src/renderer/context",
+    "src/renderer/support/api.ts",
+    "src/renderer/support/bus.ts",
+    "src/renderer/support/types.ts",
+    "src/renderer/support/modal.ts",
+    "src/renderer/support/toast.ts",
+    "src/renderer/utils"
+  ],
+  "exclude": [
+    "src/renderer/utils/fuzzy-match.ts"
+  ]
+}
