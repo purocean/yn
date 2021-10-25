@@ -59,4 +59,13 @@ export namespace Components {
       };
     }
   }
+
+  export namespace Tree {
+    export interface Node extends Pick<Doc, 'type' | 'name' | 'path' | 'repo'> {
+      mtime?: number;
+      birthtime?: number;
+      marked?: boolean;
+      children?: Node[];
+    }
+  }
 }

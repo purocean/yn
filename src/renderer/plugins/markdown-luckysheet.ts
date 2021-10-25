@@ -419,7 +419,7 @@ async function createLuckysheet (node: Doc) {
   try {
     await api.writeFile(file, file.content)
     refreshTree()
-  } catch (error) {
+  } catch (error: any) {
     useToast().show('warning', error.message)
     console.error(error)
   }
@@ -440,7 +440,7 @@ export default {
       return false
     })
 
-    ctx.tree.registerContextMenu((items, node) => {
+    ctx.tree.tapContextMenus((items, node) => {
       if (node.type === 'dir') {
         items.push(
           { type: 'separator' },
@@ -452,8 +452,6 @@ export default {
           }
         )
       }
-
-      return items
     })
   }
 } as Plugin
