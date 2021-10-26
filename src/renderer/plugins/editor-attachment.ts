@@ -1,13 +1,13 @@
 import dayjs from 'dayjs'
-import { insert, whenEditorReady } from '@fe/context/editor'
-import type { Plugin } from '@fe/context/plugin'
+import { insert, whenEditorReady } from '@fe/services/editor'
+import type { Plugin } from '@fe/context'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { encodeMarkdownLink } from '@fe/utils'
-import { Doc } from '@fe/support/types'
+import type { Doc } from '@fe/types'
 import { dirname, isBelongTo, join, relative } from '@fe/utils/path'
-import { getActionHandler } from '@fe/context/action'
-import { refreshTree } from '@fe/context/tree'
+import { getActionHandler } from '@fe/core/action'
+import { refreshTree } from '@fe/services/tree'
 
 async function uploadFile (file: any, asImage: boolean) {
   if (!store.state.currentFile) {

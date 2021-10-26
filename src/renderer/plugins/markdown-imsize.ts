@@ -6,7 +6,7 @@
 // Process ![test]( x =100x200)
 //                    ^^^^^^^^ this size specification
 
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 
 'use strict'
 

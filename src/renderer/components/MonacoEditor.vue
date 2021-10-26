@@ -5,9 +5,9 @@
 <script lang="ts">
 import type * as monaco from 'monaco-editor'
 import { defineComponent, onMounted, ref } from 'vue'
-import { defaultOptions } from '@fe/context/editor'
-import { toUri } from '@fe/context/document'
-import { useBus } from '@fe/support/bus'
+import { defaultOptions } from '@fe/services/editor'
+import { toUri } from '@fe/services/document'
+import { useBus } from '@fe/core/bus'
 
 const models: {[key: string]: monaco.editor.ITextModel} = {}
 

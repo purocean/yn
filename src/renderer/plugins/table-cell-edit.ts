@@ -1,9 +1,9 @@
-import { useModal } from '@fe/support/modal'
-import { Plugin, Ctx } from '@fe/context/plugin'
-import { hasCtrlCmd } from '@fe/context/shortcut'
-import { getActionHandler } from '@fe/context/action'
-import { useToast } from '@fe/support/toast'
-import { getLineContent, replaceLine } from '@fe/context/editor'
+import { useModal } from '@fe/support/ui/modal'
+import { Plugin } from '@fe/context'
+import { hasCtrlCmd } from '@fe/core/shortcut'
+import { getActionHandler } from '@fe/core/action'
+import { useToast } from '@fe/support/ui/toast'
+import { getLineContent, replaceLine } from '@fe/services/editor'
 
 const editTableCell = async (start: number, end: number, cellIndex: number, input: HTMLTextAreaElement | null) => {
   const toast = useToast()
@@ -123,7 +123,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
 
 export default {
   name: 'table-cell-edit',
-  register: (ctx: Ctx) => {
+  register: (ctx) => {
     const handleClick = async (e: MouseEvent, modal: boolean) => {
       const target = e.target as HTMLElement
 

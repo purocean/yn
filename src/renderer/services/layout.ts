@@ -1,12 +1,8 @@
 import { nextTick } from 'vue'
 import store from '@fe/support/store'
-import { useBus } from '@fe/support/bus'
-import { getActionHandler, registerAction } from './action'
-import { Alt } from './shortcut'
-
-export type ActionName = 'layout.toggle-view'
-  | 'layout.toggle-side'
-  | 'layout.toggle-xterm'
+import { useBus } from '@fe/core/bus'
+import { getActionHandler, registerAction } from '../core/action'
+import { Alt } from '../core/shortcut'
 
 const bus = useBus()
 

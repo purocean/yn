@@ -1,11 +1,11 @@
 import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
-import { Plugin, Ctx } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { sleep } from '@fe/utils'
-import { isElectron, nodeRequire } from '@fe/utils/env'
+import { isElectron, nodeRequire } from '@fe/support/env'
 import { basename, dirname, join } from '@fe/utils/path'
-import { switchDoc } from '@fe/context/document'
+import { switchDoc } from '@fe/services/document'
 
 const handleLink = (link: HTMLAnchorElement) => {
   const { currentFile } = store.state
@@ -144,7 +144,7 @@ function convertLink (state: StateCore) {
 
 export default {
   name: 'markdown-link',
-  register: (ctx: Ctx) => {
+  register: (ctx) => {
     ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
       const target = e.target as HTMLElement
 

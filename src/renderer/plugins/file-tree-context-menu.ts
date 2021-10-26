@@ -1,5 +1,5 @@
-import { Plugin, Ctx } from '@fe/context/plugin'
-import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import { Plugin, Ctx } from '@fe/context'
+import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 
 export default {
   name: 'markdown-link',
@@ -48,8 +48,8 @@ export default {
         ...(isMarkdown ? [
           { id: 'create', label: '当前目录创建新文件', onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
         ] : []),
-        { id: 'copy-name', label: '复制名称', onClick: () => ctx.action.getActionHandler('app.copy-text')(node.name) },
-        { id: 'copy-name', label: '复制路径', onClick: () => ctx.action.getActionHandler('app.copy-text')(node.path) }
+        { id: 'copy-name', label: '复制名称', onClick: () => ctx.utils.copyText(node.name) },
+        { id: 'copy-name', label: '复制路径', onClick: () => ctx.utils.copyText(node.path) }
       ] as typeof items)
     })
   }

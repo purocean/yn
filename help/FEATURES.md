@@ -221,13 +221,13 @@ function run (type) {
 
     switch (type) {
         case 'md5':
-            output.value = CryptoJS.MD5(input.value).toString().toLowerCase()
+            output.value = ctx.lib.cryptojs.MD5(input.value).toString().toLowerCase()
             break
         case 'sha1':
-            output.value = CryptoJS.SHA1(input.value).toString().toLowerCase()
+            output.value = ctx.lib.cryptojs.SHA1(input.value).toString().toLowerCase()
             break
         case 'sha256':
-            output.value = CryptoJS.SHA256(input.value).toString().toLowerCase()
+            output.value = ctx.lib.cryptojs.SHA256(input.value).toString().toLowerCase()
             break
     }
     output.focus()

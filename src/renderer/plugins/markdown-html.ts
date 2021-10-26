@@ -1,4 +1,4 @@
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import StateBlock from 'markdown-it/lib/rules_block/state_block'
 import StateInline from 'markdown-it/lib/rules_inline/state_inline'
 import Token from 'markdown-it/lib/token'

@@ -1,6 +1,6 @@
 import { debounce } from 'lodash-es'
 import Viewer from 'viewerjs'
-import type { Plugin } from '@fe/context/plugin'
+import type { Plugin } from '@fe/context'
 import 'viewerjs/dist/viewer.css'
 
 let viewer: any

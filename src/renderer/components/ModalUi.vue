@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent, nextTick, ref } from 'vue'
 import XMask from './Mask.vue'
-import { Components } from '@fe/support/types'
+import type { Components } from '@fe/types'
 
 type ModalType = '' | 'confirm' | 'input'
 

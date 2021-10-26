@@ -1,57 +1,27 @@
 import { omit } from 'lodash-es'
 import { createStore } from 'vuex'
-import Storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
+import * as storage from '@fe/utils/storage'
 import * as api from '@fe/support/api'
-import { Doc } from './types'
-
-export const getLastOpenFile = (repoName?: string) => {
-  const currentFile = Storage.get('currentFile')
-  const recentOpenTime = Storage.get('recentOpenTime', {}) as {[key: string]: number}
-
-  repoName ??= Storage.get('currentRepo')?.name
-
-  if (!repoName) {
-    return null
-  }
-
-  if (currentFile && currentFile.repo === repoName) {
-    return currentFile
-  }
-
-  const item = Object.entries(recentOpenTime)
-    .filter(x => x[0].startsWith(repoName + '|'))
-    .sort((a, b) => b[1] - a[1])[0]
-
-  if (!item) {
-    return null
-  }
-
-  const path = item[0].split('|', 2)[1]
-  if (!path) {
-    return null
-  }
-
-  return { repo: repoName, name: basename(path), path }
-}
+import type { Doc } from '@fe/types'
 
 export default createStore({
   state: {
     repositories: {} as any,
     tree: null,
-    showSide: Storage.get('showSide', true),
-    showView: Storage.get('showView', true),
-    showEditor: Storage.get('showEditor', true),
+    showSide: storage.get('showSide', true),
+    showView: storage.get('showView', true),
+    showEditor: storage.get('showEditor', true),
     showXterm: false,
     autoPreview: true,
     showSetting: false,
     showExport: false,
     presentation: false,
     currentContent: '',
-    currentRepo: Storage.get('currentRepo'),
+    currentRepo: storage.get('currentRepo'),
     currentFile: null as Doc | null,
-    recentOpenTime: Storage.get('recentOpenTime', {}),
-    tabs: Storage.get('tabs', []),
+    recentOpenTime: storage.get('recentOpenTime', {}),
+    tabs: storage.get('tabs', []),
     selectionInfo: {
       textLength: 0,
       selectedLength: 0,
@@ -73,15 +43,15 @@ export default createStore({
     },
     setShowView (state, data) {
       state.showView = data
-      Storage.set('showView', data)
+      storage.set('showView', data)
     },
     setShowEditor (state, data) {
       state.showEditor = data
-      Storage.set('showEditor', data)
+      storage.set('showEditor', data)
     },
     setShowSide (state, data) {
       state.showSide = data
-      Storage.set('showSide', data)
+      storage.set('showSide', data)
     },
     setShowSetting (state, data) {
       state.showSetting = data
@@ -97,7 +67,7 @@ export default createStore({
     },
     setTabs (state, data) {
       state.tabs = data
-      Storage.set('tabs', data)
+      storage.set('tabs', data)
     },
     setShowXterm (state, data) {
       state.showXterm = data
@@ -111,16 +81,16 @@ export default createStore({
     setCurrentRepo (state, data) {
       state.currentRepo = data
       state.tree = null
-      Storage.set('currentRepo', data)
+      storage.set('currentRepo', data)
     },
     setCurrentFile (state, data: Doc | null) {
       state.currentFile = data
 
-      Storage.set('currentFile', omit(data, 'content'))
+      storage.set('currentFile', omit(data, 'content'))
 
       if (data) {
         state.recentOpenTime = { ...(state.recentOpenTime || {}), [`${data.repo}|${data.path}`]: new Date().valueOf() }
-        Storage.set('recentOpenTime', state.recentOpenTime)
+        storage.set('recentOpenTime', state.recentOpenTime)
       }
     },
   },

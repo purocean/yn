@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
-import { getMenus, MenuItem } from '@fe/context/status-bar'
-import { hookAction } from '@fe/context/action'
+import { hookAction } from '@fe/core/action'
+import { getMenus, MenuItem } from '@fe/services/status-bar'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({

@@ -1,12 +1,12 @@
 import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref, VNode, watch } from 'vue'
-import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/context/plugin'
-import { getActionHandler } from '@fe/context/action'
+import { Plugin } from '@fe/context'
+import { getActionHandler } from '@fe/core/action'
 import * as api from '@fe/support/api'
-import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import SvgIcon from '@fe/components/SvgIcon.vue'
-import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/context/shortcut'
+import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/core/shortcut'
+import { md5 } from '@fe/utils'
 
 const cache: Record<string, string> = {}
 
@@ -22,7 +22,7 @@ const RunCode = defineComponent({
   setup (props) {
     const instance = getCurrentInstance()
     const result = ref('')
-    const hash = computed(() => CryptoJS.MD5(props.code).toString())
+    const hash = computed(() => md5(props.code))
     const id = Date.now()
     let hasResult = false
 

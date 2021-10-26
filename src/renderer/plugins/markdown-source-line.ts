@@ -1,4 +1,4 @@
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import Renderer from 'markdown-it/lib/renderer'
 
 const buildFunction = (className: string): Renderer.RenderRule => {

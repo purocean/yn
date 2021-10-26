@@ -1,15 +1,14 @@
 import { getLogger } from '@fe/utils'
-import { useBus } from '@fe/support/bus'
-import type { ActionName as ViewActionName } from './view'
-import type { ActionName as LayoutActionName } from './layout'
-import type { ActionName as StatusBarActionName } from './status-bar'
-import type { ActionName as TreeActionName } from './tree'
-import type { ActionName as DocActionName } from './document'
-import type { ActionName as EditorActionName } from './editor'
+import { useBus } from '@fe/core/bus'
+import { BuildInActionName } from '@fe/types'
 import { registerCommand, removeCommand } from './shortcut'
 
 const logger = getLogger('action')
 const bus = useBus()
+
+export type ActionHandler = ((...args: any[]) => any)
+export type ActionName = BuildInActionName
+export type HookType = 'before-run' | 'after-run'
 
 export interface Action {
   name: string,
@@ -18,17 +17,13 @@ export interface Action {
   when?: () => boolean
 }
 
-export type ActionHandler = ((...args: any[]) => any)
-export type ActionName = ViewActionName | LayoutActionName | StatusBarActionName | TreeActionName | DocActionName | EditorActionName
-export type HookType = 'before-run' | 'after-run'
-
 export const actions: { [id: string]: Action } = {}
 
 export function hookAction (type: HookType, name: ActionName, handler: (payload: any) => void): () => void
 export function hookAction (type: HookType, name: string, handler: (payload: any) => void): () => void
 export function hookAction (type: HookType, name: string, handler: (payload: any) => void) {
-  bus.on(`action.${type}.${name}`, handler)
-  return () => bus.off(`action.${type}.${name}`, handler)
+  bus.on(`action.${type}.${name}` as any, handler)
+  return () => bus.off(`action.${type}.${name}` as any, handler)
 }
 
 export function registerAction (action: Action) {
@@ -50,7 +45,7 @@ export function getActionHandler (name: string): ActionHandler
 export function getActionHandler (name: string) {
   logger.debug('getActionHandler', name)
   return (...args: any[]) => {
-    bus.emit(`action.before-run.${name}`, args)
+    bus.emit(`action.before-run.${name}` as any, args)
 
     let result: any
 
@@ -61,7 +56,7 @@ export function getActionHandler (name: string) {
       }
     }
 
-    bus.emit(`action.after-run.${name}`, result)
+    bus.emit(`action.after-run.${name}` as any, result)
     return result
   }
 }

@@ -1,8 +1,8 @@
 import { App, ComponentPublicInstance, createApp } from 'vue'
-import { Components } from '@fe/support/types'
+import type { Components } from '@fe/types'
 import Modal from '@fe/components/ContextMenu.vue'
 
-interface Instance extends ComponentPublicInstance {
+export interface Instance extends ComponentPublicInstance {
   show: (menuItems: Components.ContextMenu.Item[]) => void;
 }
 

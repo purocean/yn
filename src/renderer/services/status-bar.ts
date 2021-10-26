@@ -1,7 +1,5 @@
 import { debounce } from 'lodash-es'
-import { getActionHandler } from './action'
-
-export type ActionName = 'status-bar.show-setting' | 'status-bar.refresh-menu'
+import { getActionHandler } from '../core/action'
 
 export type MenuItem = {
   id: string;

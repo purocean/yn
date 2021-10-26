@@ -1,5 +1,5 @@
 import { App, ComponentPublicInstance, createApp } from 'vue'
-import { Components } from '@fe/support/types'
+import type { Components } from '@fe/types'
 import Modal from '@fe/components/ModalUi.vue'
 
 export interface Instance extends ComponentPublicInstance {

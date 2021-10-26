@@ -8,7 +8,7 @@
 // https://github.com/blog/1825-task-lists-in-all-markdown-documents
 
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 
 let disableCheckboxes = true
 

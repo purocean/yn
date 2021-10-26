@@ -14,9 +14,9 @@ import { useStore } from 'vuex'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 import * as api from '@fe/support/api'
-import { useToast } from '@fe/support/toast'
-import { getThemeName, setTheme } from '@fe/context/theme'
-import { fetchSettings, getSchema, writeSettings } from '@fe/context/setting'
+import { useToast } from '@fe/support/ui/toast'
+import { getThemeName, setTheme } from '@fe/services/theme'
+import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
 
 JSONEditor.defaults.language = 'zh'
 JSONEditor.defaults.languages.zh = { ...JSONEditor.defaults.languages.en }

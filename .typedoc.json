@@ -5,13 +5,12 @@
   "entryPointStrategy": "expand",
   "readme": "none",
   "entryPoints": [
+    "src/renderer/core",
     "src/renderer/context",
-    "src/renderer/support/api.ts",
-    "src/renderer/support/bus.ts",
-    "src/renderer/support/types.ts",
-    "src/renderer/support/modal.ts",
-    "src/renderer/support/toast.ts",
-    "src/renderer/utils"
+    "src/renderer/support",
+    "src/renderer/services",
+    "src/renderer/utils",
+    "src/renderer/types.ts"
   ],
   "exclude": [
     "src/renderer/utils/fuzzy-match.ts"

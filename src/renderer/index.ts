@@ -1,14 +1,14 @@
-import './support/demo'
+import '@fe/others/demo'
 
 import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import App from '@fe/App.vue'
+import router from '@fe/router'
 
-import store from './support/store'
-import bus from './support/bus'
-import toast from './support/toast'
-import modal from './support/modal'
-import contextmenu from './support/context-menu'
+import bus from '@fe/core/bus'
+import store from '@fe/support/store'
+import toast from '@fe/support/ui/toast'
+import modal from '@fe/support/ui/modal'
+import contextmenu from '@fe/support/ui/context-menu'
 
 const app = createApp(App)
 

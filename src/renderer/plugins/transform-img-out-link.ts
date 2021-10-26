@@ -1,12 +1,13 @@
 import mime from 'mime-types'
 import * as api from '@fe/support/api'
 import { encodeMarkdownLink } from '@fe/utils'
-import { useToast } from '@fe/support/toast'
+import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import { CtrlCmd, getKeysLabel, isCommand, LeftClick, Shift } from '@fe/context/shortcut'
-import { replaceValue } from '@fe/context/editor'
-import { Plugin, Ctx } from '@fe/context/plugin'
-import { refreshTree } from '@fe/context/tree'
+import { CtrlCmd, getKeysLabel, isCommand, LeftClick, Shift } from '@fe/core/shortcut'
+import { replaceValue } from '@fe/services/editor'
+import { Plugin } from '@fe/context'
+import { refreshTree } from '@fe/services/tree'
+import type { BuildInActionName } from '@fe/types'
 
 async function transformImgOutLink (img: HTMLImageElement) {
   const { currentFile } = store.state
@@ -54,8 +55,8 @@ async function transformImgOutLink (img: HTMLImageElement) {
   return null
 }
 
-const actionKeydown = 'plugin.transform-img-link'
-const actionClick = 'plugin.transform-img-link-by-click'
+const actionKeydown: BuildInActionName = 'plugin.transform-img-link.all'
+const actionClick: BuildInActionName = 'plugin.transform-img-link.single-by-click'
 let refView: HTMLElement
 
 async function transformAll () {
@@ -105,7 +106,7 @@ async function handleClick (e: MouseEvent) {
 
 export default {
   name: 'transform-img-out-link',
-  register: (ctx: Ctx) => {
+  register: (ctx) => {
     ctx.action.registerAction({
       name: actionKeydown,
       keys: [CtrlCmd, Shift, 'l'],

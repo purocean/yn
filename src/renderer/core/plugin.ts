@@ -1,15 +1,10 @@
+import type { HookType } from '@fe/types'
 import { getLogger } from '@fe/utils'
-import buildInPlugins from './build-in-plugins'
-import context, { CtxHookType } from './index'
 
 const logger = getLogger('plugin')
 
-const ctx = { ...context, registerHook, removeHook, triggerHook }
-
-export type Ctx = typeof ctx;
-export type HookType = 'ON_STARTUP' | 'ON_PASTE_IMAGE' | CtxHookType
 export type HookFun = (...args: any[]) => boolean | void | Promise<boolean | void>
-export interface Plugin {
+export interface Plugin<Ctx = any> {
   name: string;
   register?: (ctx: Ctx) => void;
 }
@@ -34,7 +29,7 @@ export function removeHook (type: HookType, fun: HookFun) {
 export async function triggerHook (type: HookType, ...args: any[]) {
   logger.debug('triggerHook', type, args)
   for (const { fun, once } of (hooks[type] || [])) {
-    once && ctx.removeHook(type, fun)
+    once && removeHook(type, fun)
     if (await fun(...args)) {
       return true
     }
@@ -43,24 +38,22 @@ export async function triggerHook (type: HookType, ...args: any[]) {
   return false
 }
 
-export function register (plugin: Plugin) {
+export function register <Ctx> (plugin: Plugin, ctx: Ctx) {
   logger.debug('register', plugin)
   plugins[plugin.name] = plugin
   plugin.register && plugin.register(ctx)
 }
 
-function init () {
+export function init <Ctx> (plugins: Plugin[], ctx: Ctx) {
   logger.debug('init')
 
-  buildInPlugins.forEach((plugin) => {
-    register(plugin)
+  plugins.forEach((plugin) => {
+    register(plugin, ctx)
   })
 
-  window.registerPlugin = register
+  window.registerPlugin = (plugin: Plugin) => register(plugin, ctx)
 
   const script = window.document.createElement('script')
   script.src = '/api/plugins'
   window.document.body.appendChild(script)
 }
-
-init()

@@ -31,10 +31,10 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { isElectron, isMacOS, nodeRequire } from '@fe/utils/env'
-import { isEncrypted } from '@fe/context/document'
+import { isElectron, isMacOS, nodeRequire } from '@fe/support/env'
+import { isEncrypted } from '@fe/services/document'
 import SvgIcon from './SvgIcon.vue'
-import { Doc } from '@fe/support/types'
+import type { Doc } from '@fe/types'
 
 export default defineComponent({
   name: 'title-bar',

@@ -1,5 +1,6 @@
-import { useBus } from '@fe/support/bus'
-import storage from '@fe/utils/storage'
+import { useBus } from '@fe/core/bus'
+import type { ThemeName } from '@fe/types'
+import * as storage from '@fe/utils/storage'
 
 const bus = useBus()
 
@@ -23,7 +24,7 @@ export function getColorScheme () {
   return theme
 }
 
-export function setTheme (name: 'system' | 'dark' | 'light') {
+export function setTheme (name: ThemeName) {
   document.documentElement.setAttribute('app-theme', name)
   bus.emit('theme.change', name)
   storage.set('app.theme', name)

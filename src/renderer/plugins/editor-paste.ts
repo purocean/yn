@@ -1,7 +1,8 @@
 import TurndownService from 'turndown'
-import { getEditor, insert } from '@fe/context/editor'
-import { Plugin, triggerHook } from '@fe/context/plugin'
-import { refreshTree } from '@fe/context/tree'
+import { getEditor, insert } from '@fe/services/editor'
+import { Plugin } from '@fe/context'
+import { triggerHook } from '@fe/core/plugin'
+import { refreshTree } from '@fe/services/tree'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { encodeMarkdownLink, fileToBase64URL } from '@fe/utils'
@@ -33,7 +34,7 @@ async function pasteImage (file: File, asBase64: boolean) {
       throw new Error('当前未打开文件')
     }
 
-    if (!(await triggerHook('ON_PASTE_IMAGE', file))) {
+    if (!(await triggerHook('ON_EDITOR_PASTE_IMAGE', file))) {
       const { repo, path } = store.state.currentFile
       const { relativePath } = await api.upload(repo, path, file)
       insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
@@ -80,7 +81,7 @@ export default {
     const pasteRtfActionId = 'plugin.editor-paste.insert-rtf'
 
     const getClipboardContent = async (callback: (type: string, getType: (type: string) => Promise<Blob>) => Promise<void>) => {
-      const result = await navigator.permissions.query({ name: 'clipboard-read' })
+      const result = await navigator.permissions.query({ name: 'clipboard-read' as any })
 
       if (result.state === 'denied') {
         ctx.ui.useToast().show('warning', '请授予剪切板权限')

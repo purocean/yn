@@ -1,10 +1,8 @@
 import type { Ref } from 'vue'
-import type { Components } from '@fe/support/types'
+import type { Components } from '@fe/types'
 import store from '@fe/support/store'
-import { registerAction } from './action'
+import { registerAction } from '../core/action'
 
-export type ActionName = 'tree.refresh'
-export type HookType = 'ON_TREE_NODE_SELECT'
 export type MenuItem = Components.ContextMenu.Item
 export type VueCtx = { localMarked: Ref<boolean | null> }
 export type BuildContextMenu = (items: MenuItem[], node: Components.Tree.Node, vueCtx: VueCtx) => void

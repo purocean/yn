@@ -1,9 +1,9 @@
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import { $args } from '@fe/support/global-args'
+import { $args } from '@fe/support/args'
 import { basename } from '@fe/utils/path'
-import { switchDoc } from '@fe/context/document'
-import { whenEditorReady } from '@fe/context/editor'
+import { switchDoc } from '@fe/services/document'
+import { whenEditorReady } from '@fe/services/editor'
 
 export default {
   name: 'status-bar-repository-switch',

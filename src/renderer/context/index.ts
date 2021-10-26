@@ -1,37 +1,32 @@
-import { useBus } from '@fe/support/bus'
-import { useToast } from '@fe/support/toast'
-import { useModal } from '@fe/support/modal'
-import store from '@fe/support/store'
-import storage from '@fe/utils/storage'
+import * as storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
-import * as env from '@fe/utils/env'
+import * as plugin from '@fe/core/plugin'
+import * as action from '@fe/core/action'
+import * as shortcut from '@fe/core/shortcut'
+import { useBus } from '@fe/core/bus'
+import { useToast } from '@fe/support/ui/toast'
+import { useModal } from '@fe/support/ui/modal'
+import * as env from '@fe/support/env'
+import store from '@fe/support/store'
 import * as api from '@fe/support/api'
+import * as doc from '@fe/services/document'
+import * as view from '@fe/services/view'
+import * as tree from '@fe/services/tree'
+import * as markdown from '@fe/services/markdown'
+import * as statusBar from '@fe/services/status-bar'
+import * as layout from '@fe/services/layout'
+import * as editor from '@fe/services/editor'
+import * as theme from '@fe/services/theme'
+import * as setting from '@fe/services/setting'
+import * as embed from '@fe/support/embed'
 import * as lib from './lib'
-import * as action from './action'
-import * as doc from './document'
-import * as shortcut from './shortcut'
-import * as view from './view'
-import * as tree from './tree'
-import * as markdown from './markdown'
-import * as statusBar from './status-bar'
-import * as layout from './layout'
-import * as editor from './editor'
-import * as theme from './theme'
-import * as embed from './embed'
-import * as setting from './setting'
-
-export type CtxHookType = view.HookType | tree.HookType | doc.HookType
-
-const bus = useBus()
 
 const ctx = {
   api,
-  bus,
   store,
   action,
   doc,
   shortcut,
-  ui: { useToast, useModal },
   tree,
   markdown,
   statusBar,
@@ -45,8 +40,17 @@ const ctx = {
   lib,
   env,
   utils,
+  bus: useBus(),
+  ui: { useToast, useModal },
+  registerHook: plugin.registerHook,
+  removeHook: plugin.removeHook,
+  triggerHook: plugin.triggerHook,
+  registerPlugin: plugin.register,
 }
 
 window.ctx = ctx
+
+export type Ctx = typeof ctx
+export type Plugin = plugin.Plugin<Ctx>
 
 export default ctx

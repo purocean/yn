@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import dayjs from 'dayjs'
-import { getMonaco, insert, whenEditorReady } from '@fe/context/editor'
-import type { Plugin } from '@fe/context/plugin'
+import { getMonaco, insert, whenEditorReady } from '@fe/services/editor'
+import type { Plugin } from '@fe/context'
 
 function createDependencyProposals (range: any) {
   const monaco = getMonaco()

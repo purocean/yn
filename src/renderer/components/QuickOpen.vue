@@ -49,7 +49,7 @@ import { debounce } from 'lodash-es'
 import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import * as api from '@fe/support/api'
-import fuzzyMatch from '@fe/utils/fuzzy-match'
+import fuzzyMatch from '@fe/others/fuzzy-match'
 
 type TabKey = 'marked' | 'search' | 'file'
 

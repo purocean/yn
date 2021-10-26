@@ -32,12 +32,12 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, PropType, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useContextMenu } from '@fe/support/context-menu'
-import Extensions from '@fe/support/extensions'
-import { triggerHook } from '@fe/context/plugin'
-import { getContextMenuItems } from '@fe/context/tree'
-import type { Components } from '@fe/support/types'
-import { createDoc, openInOS, switchDoc } from '@fe/context/document'
+import { useContextMenu } from '@fe/support/ui/context-menu'
+import extensions from '@fe/others/extensions'
+import { triggerHook } from '@fe/core/plugin'
+import { getContextMenuItems } from '@fe/services/tree'
+import type { Components } from '@fe/types'
+import { createDoc, openInOS, switchDoc } from '@fe/services/document'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -69,7 +69,7 @@ export default defineComponent({
 
     async function select (item: any) {
       if (item.type !== 'dir') {
-        if (Extensions.supported(item.name)) {
+        if (extensions.supported(item.name)) {
           switchDoc(item)
         } else {
           if (!(await triggerHook('ON_TREE_NODE_SELECT', item))) {

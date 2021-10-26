@@ -7,10 +7,10 @@
 <script lang="ts">
 import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '@fe/support/bus'
-import { isEncrypted, saveDoc, toUri } from '@fe/context/document'
-import { whenEditorReady } from '@fe/context/editor'
-import type { Doc } from '@fe/support/types'
+import { useBus } from '@fe/core/bus'
+import { isEncrypted, saveDoc, toUri } from '@fe/services/document'
+import { whenEditorReady } from '@fe/services/editor'
+import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
 
 export default defineComponent({

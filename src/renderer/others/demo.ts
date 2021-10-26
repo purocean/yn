@@ -1,7 +1,7 @@
-import { setTheme } from '@fe/context/theme'
-import storage from '@fe/utils/storage'
-import { FLAG_DEMO } from './global-args'
-import { useToast } from './toast'
+import { setTheme } from '@fe/services/theme'
+import * as storage from '@fe/utils/storage'
+import { FLAG_DEMO } from '@fe/support/args'
+import { useToast } from '@fe/support/ui/toast'
 
 if (FLAG_DEMO) {
   storage.clear()

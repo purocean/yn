@@ -1,6 +1,6 @@
 import { upperFirst } from 'lodash-es'
 import { getLogger } from '@fe/utils'
-import { isMacOS } from '@fe/utils/env'
+import { isMacOS } from '@fe/support/env'
 import { getActionHandler } from './action'
 
 const logger = getLogger('shortcut')
@@ -100,7 +100,7 @@ export function isCommand (e: KeyboardEvent | MouseEvent, id: string) {
 
 export function runCommand (command: Command) {
   if (typeof command.handler === 'string') {
-    return getActionHandler(command.handler)()
+    return getActionHandler(command.handler as any)()
   } else {
     return command.handler?.()
   }

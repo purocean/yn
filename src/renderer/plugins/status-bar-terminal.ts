@@ -1,5 +1,5 @@
-import type { Plugin } from '@fe/context/plugin'
-import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import type { Plugin } from '@fe/context'
+import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 
 export default {
   name: 'status-bar-terminal',

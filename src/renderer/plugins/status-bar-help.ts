@@ -1,6 +1,6 @@
-import { showHelp } from '@fe/context/document'
-import { Plugin } from '@fe/context/plugin'
-import { Alt, getKeysLabel } from '@fe/context/shortcut'
+import { showHelp } from '@fe/services/document'
+import { Plugin } from '@fe/context'
+import { Alt, getKeysLabel } from '@fe/core/shortcut'
 
 export default {
   name: 'status-bar-help',

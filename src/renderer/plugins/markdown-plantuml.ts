@@ -3,7 +3,7 @@ import { debounce } from 'lodash-es'
 import { defineComponent, h, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import Markdown from 'markdown-it'
 import Token from 'markdown-it/lib/token'
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 
 const emptySrc = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
 

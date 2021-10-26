@@ -1,6 +1,6 @@
 import Markdown from 'markdown-it'
 import mermaid from 'mermaid/dist/mermaid.js'
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import { h } from 'vue'
 
 const mermaidChart: any = (code: string) => {

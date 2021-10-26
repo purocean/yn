@@ -1,8 +1,8 @@
-import { Plugin, Ctx } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 
 export default {
   name: 'markdown-table',
-  register: (ctx: Ctx) => {
+  register: (ctx) => {
     ctx.theme.addStyles(`
       @media screen {
         .markdown-view .markdown-body .table-wrapper {

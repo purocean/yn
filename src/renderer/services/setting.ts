@@ -1,5 +1,6 @@
 import * as api from '@fe/support/api'
-import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import { FLAG_DISABLE_XTERM } from '@fe/support/args'
+import store from '@fe/support/store'
 import { getThemeName } from './theme'
 
 const schema = {
@@ -112,4 +113,12 @@ export async function writeSettings (value: Record<string, any>) {
 
 export function getSettings () {
   return settings
+}
+
+export function showSettingPanel () {
+  store.commit('setShowSetting', true)
+}
+
+export function hideSettingPanel () {
+  store.commit('setShowSetting', false)
 }

@@ -1,10 +1,9 @@
 import { slugify } from 'transliteration'
 import { basename, relative, extname, join, dirname } from '@fe/utils/path'
-import { fileToBase64URL } from '@fe/utils'
-import { isElectron } from '@fe/utils/env'
-import Crypto from '@fe/utils/crypto'
-import { Doc } from './types'
-import { FLAG_DEMO } from './global-args'
+import { binMd5, fileToBase64URL } from '@fe/utils'
+import { isElectron } from '@fe/support/env'
+import { Doc } from '@fe/types'
+import { FLAG_DEMO } from './args'
 
 async function fetchHttp (input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init)
@@ -129,7 +128,7 @@ export async function upload (repo: string, belongPath: string, uploadFile: any,
   }
 
   const fileBase64Url = await fileToBase64URL(uploadFile)
-  const filename = name || Crypto.binMd5(fileBase64Url).substr(0, 8) + extname(uploadFile.name)
+  const filename = name || binMd5(fileBase64Url).substr(0, 8) + extname(uploadFile.name)
 
   const formData = new FormData()
   const dirName = slugify(basename(belongPath))
