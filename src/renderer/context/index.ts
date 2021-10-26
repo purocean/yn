@@ -9,6 +9,8 @@ import { useModal } from '@fe/support/ui/modal'
 import * as env from '@fe/support/env'
 import store from '@fe/support/store'
 import * as api from '@fe/support/api'
+import * as embed from '@fe/support/embed'
+import * as args from '@fe/support/args'
 import * as doc from '@fe/services/document'
 import * as view from '@fe/services/view'
 import * as tree from '@fe/services/tree'
@@ -18,11 +20,11 @@ import * as layout from '@fe/services/layout'
 import * as editor from '@fe/services/editor'
 import * as theme from '@fe/services/theme'
 import * as setting from '@fe/services/setting'
-import * as embed from '@fe/support/embed'
 import * as lib from './lib'
 
 const ctx = {
   api,
+  args,
   store,
   action,
   doc,
