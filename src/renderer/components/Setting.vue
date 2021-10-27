@@ -169,7 +169,7 @@ export default defineComponent({
   }
 
   ::v-deep(.je-form-input-label) {
-    width: 90px;
+    width: 100px;
     display: inline-flex;
     align-items: center;
     flex: none;
@@ -177,7 +177,7 @@ export default defineComponent({
   }
 
   ::v-deep(.je-form-input-label + input) {
-    max-width: calc(100% - 110px);
+    max-width: calc(100% - 120px);
   }
 
   ::v-deep(.je-form-input-label ~ .je-form-input-label) {

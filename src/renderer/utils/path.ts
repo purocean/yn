@@ -5,6 +5,7 @@ export const {
   extname,
   dirname,
   join,
+  resolve,
 } = Path
 
 export function relative (from: string, to: string) {

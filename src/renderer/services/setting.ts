@@ -1,9 +1,20 @@
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import store from '@fe/support/store'
+import { BuildInSettings } from '@fe/types'
 import { getThemeName } from './theme'
 
-const schema = {
+export type Schema = {
+  type: string,
+  title: string,
+  properties: {[K in keyof BuildInSettings]: {
+    defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any
+    [key: string]: any,
+  }},
+  required: (keyof BuildInSettings)[],
+}
+
+const schema: Schema = {
   type: 'object',
   title: '配置项',
   properties: {
@@ -41,27 +52,33 @@ const schema = {
       type: 'string',
       enum: ['system', 'dark', 'light']
     },
+    'assets-dir': {
+      defaultValue: './FILES/{docSlug}',
+      title: '图片存放目录',
+      type: 'string',
+      minLength: 1,
+      description: '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, date'
+    } as any,
     shell: {
       defaultValue: '',
       title: '终端 Shell',
       type: 'string',
     } as any,
-  },
+  } as any,
   required: ['theme'],
-  dependentSchemas: {},
 }
 
 const settings = getDefaultSetting()
 
 if (FLAG_DISABLE_XTERM) {
-  delete schema.properties.shell
+  delete (schema.properties as any).shell
 }
 
 export function getSchema () {
   return schema
 }
 
-export function tapSchema (fun: (schema: any) => void) {
+export function tapSchema (fun: (schema: Schema) => void) {
   fun(schema)
 }
 
@@ -81,7 +98,7 @@ function transformSettings (data: any) {
 export function getDefaultSetting () {
   return Object.fromEntries(
     Object.entries(schema.properties).map(([key, val]) => [key, val.defaultValue])
-  )
+  ) as BuildInSettings
 }
 
 export async function fetchSettings () {

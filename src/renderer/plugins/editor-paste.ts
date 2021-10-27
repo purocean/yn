@@ -3,7 +3,7 @@ import { getEditor, insert } from '@fe/services/editor'
 import { Plugin } from '@fe/context'
 import { triggerHook } from '@fe/core/plugin'
 import { refreshTree } from '@fe/services/tree'
-import * as api from '@fe/support/api'
+import { upload } from '@fe/services/base'
 import store from '@fe/support/store'
 import { encodeMarkdownLink, fileToBase64URL } from '@fe/utils'
 
@@ -35,9 +35,8 @@ async function pasteImage (file: File, asBase64: boolean) {
     }
 
     if (!(await triggerHook('ON_EDITOR_PASTE_IMAGE', file))) {
-      const { repo, path } = store.state.currentFile
-      const { relativePath } = await api.upload(repo, path, file)
-      insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
+      const assetPath = await upload(file, store.state.currentFile)
+      insert(`![图片](${encodeMarkdownLink(assetPath)})\n`)
     }
 
     refreshTree()

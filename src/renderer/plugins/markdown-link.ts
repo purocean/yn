@@ -4,7 +4,7 @@ import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { sleep } from '@fe/utils'
 import { isElectron, nodeRequire } from '@fe/support/env'
-import { basename, dirname, join } from '@fe/utils/path'
+import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 
 const handleLink = (link: HTMLAnchorElement) => {
@@ -121,7 +121,7 @@ function convertLink (state: StateCore) {
       return
     }
 
-    const filePath = join(basePath, val)
+    const filePath = resolve(basePath, val)
     token.attrSet(attrName, `api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
   }
 

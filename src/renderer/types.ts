@@ -91,6 +91,15 @@ export type BuildInEvents = {
   'doc.changed': Doc,
 }
 
+export type BuildInSettings = {
+  'repos': { name: string, path: string }[],
+  'theme': ThemeName,
+  'assets-dir': string,
+  'shell': string,
+  'plugin.image-hosting-picgo.server-url': string,
+  'plugin.image-hosting-picgo.enable-paste-image': boolean
+}
+
 export type HookType = 'ON_STARTUP'
   | 'ON_EDITOR_PASTE_IMAGE'
   | 'ON_VIEW_ELEMENT_CLICK'

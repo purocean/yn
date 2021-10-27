@@ -5,8 +5,9 @@ import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import { CtrlCmd, getKeysLabel, isCommand, LeftClick, Shift } from '@fe/core/shortcut'
 import { replaceValue } from '@fe/services/editor'
-import { Plugin } from '@fe/context'
 import { refreshTree } from '@fe/services/tree'
+import { upload } from '@fe/services/base'
+import type { Plugin } from '@fe/context'
 import type { BuildInActionName } from '@fe/types'
 
 async function transformImgOutLink (img: HTMLImageElement) {
@@ -14,8 +15,6 @@ async function transformImgOutLink (img: HTMLImageElement) {
   if (!currentFile) {
     return
   }
-
-  const { repo, path } = currentFile
 
   const transform = (ximg: HTMLImageElement): Promise<string> => {
     const canvas = document.createElement('canvas')
@@ -26,8 +25,8 @@ async function transformImgOutLink (img: HTMLImageElement) {
       canvas.toBlob(async blob => {
         try {
           const imgFile = new File([blob!], 'file.png')
-          const { relativePath } = await api.upload(repo, path, imgFile)
-          resolve(relativePath)
+          const assetPath = await upload(imgFile, currentFile)
+          resolve(assetPath)
         } catch (error) {
           reject(error)
         }
@@ -44,8 +43,8 @@ async function transformImgOutLink (img: HTMLImageElement) {
     const res = await api.proxyRequest(img.src, { method: 'get' }, headers)
     const blob = await res.blob()
     const imgFile = new File([blob!], 'file.' + mime.extension(res.headers.get('content-type')!))
-    const { relativePath } = await api.upload(repo, path, imgFile)
-    replacedLink = relativePath
+    const assetPath = await upload(imgFile, currentFile)
+    replacedLink = assetPath
   }
 
   if (replacedLink) {

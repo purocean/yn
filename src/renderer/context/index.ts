@@ -8,6 +8,7 @@ import { useToast } from '@fe/support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
 import * as env from '@fe/support/env'
 import store from '@fe/support/store'
+import * as base from '@fe/services/base'
 import * as api from '@fe/support/api'
 import * as embed from '@fe/support/embed'
 import * as args from '@fe/support/args'
@@ -23,6 +24,7 @@ import * as setting from '@fe/services/setting'
 import * as lib from './lib'
 
 const ctx = {
+  base,
   api,
   args,
   store,
