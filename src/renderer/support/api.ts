@@ -1,10 +1,5 @@
-import { slugify } from 'transliteration'
-import { basename, relative, extname, join, dirname } from '@fe/utils/path'
-import { fileToBase64URL } from '@fe/utils'
-import { isElectron } from '@fe/utils/env'
-import Crypto from '@fe/utils/crypto'
-import { Doc } from './types'
-import { FLAG_DEMO } from './global-args'
+import type { Doc } from '@fe/types'
+import { isElectron } from '@fe/support/env'
 
 async function fetchHttp (input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init)
@@ -119,38 +114,13 @@ export async function search (repo: string, text: string) {
   return result.data
 }
 
-export async function upload (repo: string, belongPath: string, uploadFile: any, name: string | null = null) {
-  if (FLAG_DEMO) {
-    return Promise.resolve({
-      repo,
-      path: belongPath,
-      relativePath: URL.createObjectURL(uploadFile)
-    })
-  }
-
-  const fileBase64Url = await fileToBase64URL(uploadFile)
-  const filename = name || Crypto.binMd5(fileBase64Url).substr(0, 8) + extname(uploadFile.name)
-
+export async function upload (repo: string, fileBase64Url: string, filePath: string) {
   const formData = new FormData()
-  const dirName = slugify(basename(belongPath))
-  const parentPath = dirname(belongPath)
-  const path: string = join(
-    parentPath,
-    'FILES',
-    dirName.startsWith('.') ? 'upload' : dirName, filename
-  )
   formData.append('repo', repo)
-  formData.append('path', path)
+  formData.append('path', filePath)
   formData.append('attachment', fileBase64Url)
 
   await fetchHttp('/api/attachment', { method: 'POST', body: formData })
-
-  let relativePath: string = relative(parentPath, path)
-  if (!relativePath.startsWith('/') || !relativePath.startsWith('./')) {
-    relativePath = './' + relativePath
-  }
-
-  return { repo, path, relativePath }
 }
 
 export async function openInOS ({ repo, path }: Doc) {

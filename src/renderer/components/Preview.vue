@@ -43,12 +43,13 @@ import { debounce } from 'lodash-es'
 import { useStore } from 'vuex'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { extname } from '@fe/utils/path'
-import { isElectron } from '@fe/utils/env'
-import { markdown } from '@fe/context/markdown'
-import { triggerHook } from '@fe/context/plugin'
-import { useBus } from '@fe/support/bus'
-import { getActionHandler, registerAction, removeAction } from '@fe/context/action'
-import { revealLineInCenter } from '@fe/context/editor'
+import { isElectron } from '@fe/support/env'
+import { markdown } from '@fe/services/markdown'
+import { triggerHook } from '@fe/core/plugin'
+import { useBus } from '@fe/core/bus'
+import { registerAction, removeAction } from '@fe/core/action'
+import { revealLineInCenter } from '@fe/services/editor'
+import { showExport } from '@fe/services/document'
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
 
@@ -194,10 +195,6 @@ export default defineComponent({
 
     function print () {
       window.print()
-    }
-
-    function showExport () {
-      getActionHandler('doc.show-export')()
     }
 
     function getContentHtml () {

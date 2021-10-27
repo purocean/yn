@@ -1,28 +1,13 @@
 import { Optional } from 'utility-types'
-import Crypto from '@fe/utils/crypto'
-import { useModal } from '@fe/support/modal'
-import { useToast } from '@fe/support/toast'
+import * as crypto from '@fe/utils/crypto'
+import { useModal } from '@fe/support/ui/modal'
+import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import type { Doc } from '@fe/support/types'
+import type { Doc } from '@fe/types'
 import { basename, dirname, isBelongTo, join } from '@fe/utils/path'
-import { useBus } from '@fe/support/bus'
+import { useBus } from '@fe/core/bus'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
-import { registerAction } from './action'
-
-export type ActionName = 'doc.create'
-  | 'doc.create'
-  | 'doc.delete'
-  | 'doc.move'
-  | 'doc.mark'
-  | 'doc.unmark'
-  | 'doc.open-in-os'
-  | 'doc.save'
-  | 'doc.switch'
-  | 'doc.show-help'
-  | 'doc.show-export'
-
-export type HookType = 'ON_DOC_BEFORE_EXPORT'
 
 const logger = getLogger('document')
 const bus = useBus()
@@ -32,7 +17,7 @@ function decrypt (content: any, password: string) {
     throw new Error('未输入解密密码')
   }
 
-  return Crypto.decrypt(content, password)
+  return crypto.decrypt(content, password)
 }
 
 function encrypt (content: any, password: string) {
@@ -40,7 +25,7 @@ function encrypt (content: any, password: string) {
     throw new Error('未输入解密密码')
   }
 
-  return Crypto.encrypt(content, password)
+  return crypto.encrypt(content, password)
 }
 
 async function inputPassword (title: string, filename: string, throwError = false) {
@@ -253,7 +238,7 @@ export async function saveDoc (doc: Doc, content: string) {
       contentHash: hash,
       status: 'saved'
     })
-    bus.emit('doc.saved', store.state.currentFile)
+    bus.emit('doc.saved', store.state.currentFile!)
   } catch (error: any) {
     store.commit('setCurrentFile', { ...doc, status: 'save-failed' })
     useToast().show('warning', error.message)
@@ -361,15 +346,3 @@ export async function showHelp (doc: string) {
 export function showExport () {
   store.commit('setShowExport', true)
 }
-
-registerAction({ name: 'doc.create', handler: createDoc })
-registerAction({ name: 'doc.duplicate', handler: duplicateDoc })
-registerAction({ name: 'doc.delete', handler: deleteDoc })
-registerAction({ name: 'doc.move', handler: moveDoc })
-registerAction({ name: 'doc.mark', handler: markDoc })
-registerAction({ name: 'doc.unmark', handler: unmarkDoc })
-registerAction({ name: 'doc.open-in-os', handler: openInOS })
-registerAction({ name: 'doc.save', handler: saveDoc })
-registerAction({ name: 'doc.switch', handler: switchDoc })
-registerAction({ name: 'doc.show-help', handler: showHelp })
-registerAction({ name: 'doc.show-export', handler: showExport })

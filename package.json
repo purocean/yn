@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.8.2",
+  "version": "3.9.0",
   "description": "Yank Note 一款面向程序员的 Markdown 笔记应用",
   "main": "dist/main/app.js",
   "license": "GPL-3.0",
@@ -16,7 +16,9 @@
     "serve:fe": "vite preview",
     "build:main": "tsc --esModuleInterop true src/main/app.ts --outDir ./dist/main && node ./scripts/copy-assets.js",
     "build": "npm run build:fe && npm run build:main",
-    "lint": "vue-tsc --noEmit --esModuleInterop true && eslint src/ --ext .tsx,.ts,.vue"
+    "lint": "vue-tsc --noEmit --esModuleInterop true && eslint src/ --ext .tsx,.ts,.vue",
+    "api-doc": "yarn run typedoc --options .typedoc.json",
+    "prepare": "husky install"
   },
   "dependencies": {
     "command-exists": "^1.2.9",
@@ -41,6 +43,8 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.2.1",
+    "@commitlint/config-conventional": "^13.2.0",
     "@json-editor/json-editor": "^2.5.4",
     "@types/command-exists": "^1.2.0",
     "@types/crypto-js": "^4.0.1",
@@ -77,6 +81,7 @@
     "eslint-plugin-vue": "^7.11.1",
     "github-markdown-css": "^4.0.0",
     "highlight.js": "^11.0.1",
+    "husky": "^7.0.4",
     "katex": "^0.13.11",
     "lodash-es": "^4.17.21",
     "luckyexcel": "^1.0.1",
@@ -93,6 +98,7 @@
     "sortablejs": "^1.13.0",
     "ts-node": "^10.0.0",
     "turndown": "^7.0.0",
+    "typedoc": "^0.22.7",
     "typescript": "^4.3.2",
     "utility-types": "^3.10.0",
     "viewerjs": "^1.10.0",

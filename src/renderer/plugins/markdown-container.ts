@@ -1,6 +1,6 @@
 import MarkdownItContainer from 'markdown-it-container'
 import { h } from 'vue'
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
 
 export default {

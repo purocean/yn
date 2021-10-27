@@ -1,27 +1,26 @@
 import dayjs from 'dayjs'
-import { insert, whenEditorReady } from '@fe/context/editor'
-import type { Plugin } from '@fe/context/plugin'
-import * as api from '@fe/support/api'
+import { insert, whenEditorReady } from '@fe/services/editor'
+import type { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { encodeMarkdownLink } from '@fe/utils'
-import { Doc } from '@fe/support/types'
+import type { Doc } from '@fe/types'
 import { dirname, isBelongTo, join, relative } from '@fe/utils/path'
-import { getActionHandler } from '@fe/context/action'
-import { refreshTree } from '@fe/context/tree'
+import { getActionHandler } from '@fe/core/action'
+import { refreshTree } from '@fe/services/tree'
+import { upload } from '@fe/services/base'
 
 async function uploadFile (file: any, asImage: boolean) {
   if (!store.state.currentFile) {
     throw new Error('当前未打开文件')
   }
-  const { repo, path } = store.state.currentFile
 
   const filename = file.name
-  const { relativePath } = await api.upload(repo, path, file, filename)
+  const assetPath = await upload(file, store.state.currentFile, filename)
 
   if (asImage) {
-    insert(`![图片](${encodeMarkdownLink(relativePath)})\n`)
+    insert(`![图片](${encodeMarkdownLink(assetPath)})\n`)
   } else {
-    insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(relativePath)}){class=open target=_blank}\n`)
+    insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){class=open target=_blank}\n`)
   }
 
   refreshTree()

@@ -1,5 +1,5 @@
-import { Plugin, Ctx } from '@fe/context/plugin'
-import { FLAG_DEMO } from '@fe/support/global-args'
+import { Plugin, Ctx } from '@fe/context'
+import { FLAG_DEMO } from '@fe/support/args'
 
 export default {
   name: 'image-hosting-picgo',
@@ -42,7 +42,7 @@ export default {
 
         if (!url) {
           ctx.ui.useToast().show('warning', '请先配置 PicGo 图床接口地址')
-          ctx.action.getActionHandler('status-bar.show-setting')()
+          ctx.setting.showSettingPanel()
           throw new Error('未配置 PicGo 图床上传地址')
         }
 
@@ -77,7 +77,7 @@ export default {
       }
     })
 
-    ctx.registerHook('ON_PASTE_IMAGE', async (file: File) => {
+    ctx.registerHook('ON_EDITOR_PASTE_IMAGE', async (file: File) => {
       if (!ctx.setting.getSettings()[settingKeyPaste]) {
         return false
       }

@@ -1,12 +1,12 @@
 import { h } from 'vue'
 import * as echarts from 'echarts'
-import CryptoJS from 'crypto-js'
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/context/plugin'
-import { getColorScheme } from '@fe/context/theme'
+import { Plugin } from '@fe/context'
+import { getColorScheme } from '@fe/services/theme'
+import { md5 } from '@fe/utils'
 
 const render = (code: string) => {
-  const id = `echart-${CryptoJS.MD5(code).toString()}-${Math.random().toString(36).substr(2)}`
+  const id = `echart-${md5(code).toString()}-${Math.random().toString(36).substr(2)}`
 
   return h(
     'div', { class: 'echarts', id, 'data-code': encodeURIComponent(code) })
@@ -60,7 +60,7 @@ const update = (theme: string | undefined = undefined, animation: boolean | unde
 
         charts[id] = { chart, img }
       }
-    } catch (error) {
+    } catch (error: any) {
       el.innerText = error
     }
   }

@@ -1,14 +1,11 @@
-import { Plugin, Ctx } from '@fe/context/plugin'
-import { hasCtrlCmd } from '@fe/context/shortcut'
-import { encodeMarkdownLink } from '@fe/utils'
-import { copyText } from '@fe/support/copy-text'
+import { Plugin } from '@fe/context'
+import { hasCtrlCmd } from '@fe/core/shortcut'
+import { copyText, encodeMarkdownLink } from '@fe/utils'
 import store from '@fe/support/store'
 
 export default {
   name: 'copy-text',
-  register: (ctx: Ctx) => {
-    ctx.action.registerAction({ name: 'app.copy-text', handler: copyText })
-
+  register: (ctx) => {
     ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
       const target = e.target as HTMLElement
 

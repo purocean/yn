@@ -1,4 +1,5 @@
 import documentHistoryStack from '@fe/plugins/document-history-stack'
+import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
 import statusBarRepositorySwitch from '@fe/plugins/status-bar-repository-switch'
 import statusBarView from '@fe/plugins/status-bar-view'
@@ -43,6 +44,7 @@ import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 
 export default [
   documentHistoryStack,
+  fileTreeContextMenu,
   statusBarSetting,
   statusBarRepositorySwitch,
   statusBarView,

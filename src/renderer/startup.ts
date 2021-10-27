@@ -1,15 +1,51 @@
-import { useBus } from '@fe/support/bus'
-import { isElectron, nodeRequire } from '@fe/utils/env'
-import { triggerHook } from '@fe/context/plugin'
-import store, { getLastOpenFile } from '@fe/support/store'
-import { Doc } from '@fe/support/types'
-import { hasCtrlCmd } from './shortcut'
-import { showHelp, switchDoc, unmarkDoc } from './document'
-import { refreshTree } from './tree'
-import { getSelectionInfo, whenEditorReady } from './editor'
-import { fetchSettings } from './setting'
+import { useBus } from '@fe/core/bus'
+import { isElectron, nodeRequire } from '@fe/support/env'
+import { init, triggerHook } from '@fe/core/plugin'
+import store from '@fe/support/store'
+import * as storage from '@fe/utils/storage'
+import { basename } from '@fe/utils/path'
+import type { Doc } from '@fe/types'
+import { hasCtrlCmd } from '@fe/core/shortcut'
+import { showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
+import { refreshTree } from '@fe/services/tree'
+import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
+import { fetchSettings } from '@fe/services/setting'
+import plugins from '@fe/plugins'
+import ctx from '@fe/context'
+
+init(plugins, ctx)
 
 const bus = useBus()
+
+function getLastOpenFile (repoName?: string) {
+  const currentFile = storage.get('currentFile')
+  const recentOpenTime = storage.get('recentOpenTime', {}) as {[key: string]: number}
+
+  repoName ??= storage.get('currentRepo')?.name
+
+  if (!repoName) {
+    return null
+  }
+
+  if (currentFile && currentFile.repo === repoName) {
+    return currentFile
+  }
+
+  const item = Object.entries(recentOpenTime)
+    .filter(x => x[0].startsWith(repoName + '|'))
+    .sort((a, b) => b[1] - a[1])[0]
+
+  if (!item) {
+    return null
+  }
+
+  const path = item[0].split('|', 2)[1]
+  if (!path) {
+    return null
+  }
+
+  return { repo: repoName, name: basename(path), path }
+}
 
 export default function startup () {
   triggerHook('ON_STARTUP')

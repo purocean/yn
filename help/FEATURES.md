@@ -5,7 +5,7 @@
 需要生成目录的地方写入 `[toc]{type: "ul", level: [1,2,3]}`
 可以控制目录样式 `ul` 或 `ol` 和级别
 
-[toc]{type: "ol", level: [2,3]}
+[toc]{type: "ol", level: [2]}
 
 ## 系统配置
 
@@ -221,13 +221,13 @@ function run (type) {
 
     switch (type) {
         case 'md5':
-            output.value = CryptoJS.MD5(input.value).toString().toLowerCase()
+            output.value = ctx.lib.cryptojs.MD5(input.value).toString().toLowerCase()
             break
         case 'sha1':
-            output.value = CryptoJS.SHA1(input.value).toString().toLowerCase()
+            output.value = ctx.lib.cryptojs.SHA1(input.value).toString().toLowerCase()
             break
         case 'sha256':
-            output.value = CryptoJS.SHA256(input.value).toString().toLowerCase()
+            output.value = ctx.lib.cryptojs.SHA256(input.value).toString().toLowerCase()
             break
     }
     output.focus()

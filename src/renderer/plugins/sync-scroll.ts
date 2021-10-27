@@ -1,11 +1,11 @@
 import { debounce } from 'lodash-es'
-import type { Plugin, Ctx } from '@fe/context/plugin'
-import type { Doc } from '@fe/support/types'
+import type { Plugin } from '@fe/context'
+import type { Doc } from '@fe/types'
 import { sleep } from '@fe/utils'
 
 export default {
   name: 'sync-scroll',
-  register: (ctx: Ctx) => {
+  register: (ctx) => {
     type ScrollTop = { editor?: number, view?: number }
 
     const STORAGE_KEY = 'plugin.scroll-position'
@@ -29,7 +29,7 @@ export default {
     }
 
     // 切换文件后恢复滚动位置
-    ctx.bus.on('doc.switched', async (file?: Doc) => {
+    ctx.bus.on('doc.switched', async (file?: Doc | null) => {
       if (file) {
         await sleep(0)
 

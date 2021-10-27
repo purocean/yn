@@ -2,7 +2,7 @@ import { createVNode, Fragment, Comment, Text, VNode } from 'vue'
 import Token from 'markdown-it/lib/token'
 import Renderer from 'markdown-it/lib/renderer'
 import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 
 const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*/
 const defaultRules = {} as any

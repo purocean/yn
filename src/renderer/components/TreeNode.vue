@@ -6,7 +6,7 @@
         @contextmenu.exact.prevent.stop="showContextMenu(item)">
         <div class="item">
           <div class="item-label">
-            {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children.length}})</span>
+            {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children ? item.children.length : 0}})</span>
           </div>
           <div class="item-action">
             <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" title="创建文件"></svg-icon>
@@ -30,23 +30,25 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, nextTick, PropType, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useContextMenu } from '@fe/support/context-menu'
-import Extensions from '@fe/support/extensions'
-import { triggerHook } from '@fe/context/plugin'
-import { getContextMenuItems, refreshTree } from '@fe/context/tree'
-import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
-import { Components } from '@fe/support/types'
-import { getActionHandler } from '@fe/context/action'
-import { createDoc, deleteDoc, duplicateDoc, isEncrypted, markDoc, moveDoc, openInOS, switchDoc, unmarkDoc } from '@fe/context/document'
-import { join } from '@fe/utils/path'
+import { useContextMenu } from '@fe/support/ui/context-menu'
+import extensions from '@fe/others/extensions'
+import { triggerHook } from '@fe/core/plugin'
+import { getContextMenuItems } from '@fe/services/tree'
+import type { Components } from '@fe/types'
+import { createDoc, openInOS, switchDoc } from '@fe/services/document'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
   name: 'tree-node',
   components: { SvgIcon },
-  props: ['item'],
+  props: {
+    item: {
+      type: Object as PropType<Components.Tree.Node>,
+      required: true,
+    }
+  },
   setup (props) {
     const store = useStore()
     const contextMenu = useContextMenu()
@@ -65,23 +67,9 @@ export default defineComponent({
       await createDoc({ repo: props.item.repo }, props.item)
     }
 
-    async function duplicateFile () {
-      await duplicateDoc(props.item)
-    }
-
-    async function toggleMark () {
-      if (props.item.marked) {
-        localMarked.value = false
-        await unmarkDoc(props.item)
-      } else {
-        localMarked.value = true
-        await markDoc(props.item)
-      }
-    }
-
     async function select (item: any) {
       if (item.type !== 'dir') {
-        if (Extensions.supported(item.name)) {
+        if (extensions.supported(item.name)) {
           switchDoc(item)
         } else {
           if (!(await triggerHook('ON_TREE_NODE_SELECT', item))) {
@@ -91,72 +79,8 @@ export default defineComponent({
       }
     }
 
-    function revealInExplorer () {
-      openInOS(props.item)
-    }
-
-    function revealInXterminal () {
-      const path = currentRepo.value ? join(currentRepo.value.path, props.item.path) : ''
-
-      getActionHandler('xterm.run')(`--yank-note-run-command-cd-- ${path}`)
-    }
-
-    async function moveFile () {
-      await moveDoc(props.item)
-    }
-
-    async function deleteFile () {
-      await deleteDoc(props.item)
-    }
-
-    function buildContextMenu (item: any) {
-      const menu: Components.ContextMenu.Item[] = [
-        { type: 'separator' },
-        { id: 'openInOS', label: '在系统中打开', onClick: () => revealInExplorer() },
-        { id: 'refreshTree', label: '刷新目录树', onClick: refreshTree },
-      ]
-
-      if (item.path !== '/') {
-        menu.unshift(...[
-          { id: 'rename', label: '重命名 / 移动', onClick: () => moveFile() },
-          { id: 'delete', label: '删除', onClick: () => deleteFile() },
-        ] as Components.ContextMenu.Item[])
-      }
-
-      if (item.type === 'dir') {
-        const other = FLAG_DISABLE_XTERM ? [] : [{ id: 'openInTerminal', label: '在终端中打开', onClick: () => revealInXterminal() }]
-
-        return [
-          { id: 'create', label: '创建新文件', onClick: () => createFile() },
-          ...menu,
-          ...other
-        ]
-      } else {
-        // markdown 文件可以被标记
-        if (props.item.path.endsWith('.md')) {
-          const additional: Components.ContextMenu.Item[] = [
-            { id: 'mark', label: props.item.marked ? '取消标记' : '标记文件', onClick: () => toggleMark() },
-          ]
-
-          // 非加密文件增加复制重复菜单
-          if (!isEncrypted(props.item)) {
-            additional.push({ id: 'duplicate', label: '重复文件', onClick: () => duplicateFile() })
-          }
-
-          return [
-            ...additional,
-            ...menu,
-            { id: 'create', label: '当前目录创建新文件', onClick: () => createFile() }
-          ]
-        } else {
-          return menu
-        }
-      }
-    }
-
     function showContextMenu (item: any) {
-      const buildInMenuItems = buildContextMenu(item)
-      contextMenu.show(buildInMenuItems.concat(getContextMenuItems(item)))
+      contextMenu.show([...getContextMenuItems(item, { localMarked })])
     }
 
     const currentRepoName = computed(() => currentRepo.value?.name ?? '/')

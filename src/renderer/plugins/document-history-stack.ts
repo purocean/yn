@@ -1,5 +1,5 @@
-import type { Plugin, Ctx } from '@fe/context/plugin'
-import type { Doc } from '@fe/support/types'
+import type { Plugin, Ctx } from '@fe/context'
+import type { BuildInActionName, Doc } from '@fe/types'
 
 export default {
   name: 'document-history-stack',
@@ -7,8 +7,8 @@ export default {
     let stack: Doc[] = []
     let idx = -1
 
-    const backId = 'plugin.document-history-stack.back'
-    const forwardId = 'plugin.document-history-stack.forward'
+    const backId: BuildInActionName = 'plugin.document-history-stack.back'
+    const forwardId: BuildInActionName = 'plugin.document-history-stack.forward'
 
     function go (offset: number) {
       const index = idx + offset
@@ -46,7 +46,7 @@ export default {
               subTitle: ctx.shortcut.getKeysLabel(backId),
               onClick: () => ctx.action.getActionHandler(backId)()
             },
-          ].concat(list.filter(x => ![forwardId, backId].includes(x.id)) as any)
+          ].concat(list.filter(x => ![forwardId, backId].includes(x.id as BuildInActionName)) as any)
         }
       })
     }
@@ -57,7 +57,7 @@ export default {
       updateMenu()
     }
 
-    ctx.bus.on('doc.switched', (file?: Doc) => {
+    ctx.bus.on('doc.switched', (file?: Doc | null) => {
       if (file) {
         if (!ctx.doc.isSameFile(stack[idx], file)) {
           stack.splice(idx + 1, stack.length)

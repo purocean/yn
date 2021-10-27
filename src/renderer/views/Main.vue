@@ -27,9 +27,9 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'
-import startup from '@fe/context/startup'
-import { getActionHandler } from '@fe/context/action'
-import { FLAG_DISABLE_XTERM } from '@fe/support/global-args'
+import startup from '@fe/startup'
+import { getActionHandler } from '@fe/core/action'
+import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import Layout from '@fe/components/Layout.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
 import StatusBar from '@fe/components/StatusBar.vue'

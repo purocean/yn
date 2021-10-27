@@ -1,5 +1,5 @@
 import Highlight from 'highlight.js'
-import { Plugin, Ctx } from '@fe/context/plugin'
+import { Plugin, Ctx } from '@fe/context'
 import { getLogger } from '@fe/utils'
 
 const logger = getLogger('markdown-code')

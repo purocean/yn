@@ -1,12 +1,11 @@
 import { defineComponent, h, onMounted, ref, watch } from 'vue'
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
-import { Plugin } from '@fe/context/plugin'
-import crypto from '@fe/utils/crypto'
-import { dataURItoBlobLink } from '@fe/utils'
-import { openWindow } from '@fe/utils/env'
-import storage from '@fe/utils/storage'
-import { buildSrc } from '@fe/context/embed'
+import { Plugin } from '@fe/context'
+import { dataURItoBlobLink, strToBase64 } from '@fe/utils'
+import { openWindow } from '@fe/support/env'
+import * as storage from '@fe/utils/storage'
+import { buildSrc } from '@fe/support/embed'
 
 const layoutStorageKey = 'mind-map-layout'
 let links = ''
@@ -129,10 +128,10 @@ const render = async (ele: HTMLElement, content: string) => {
 
     switch (type) {
       case 'svg':
-        download('data:image/svg+xml;base64,' + crypto.strToBase64(await km.exportData('svg')), 'mindmap.svg')
+        download('data:image/svg+xml;base64,' + strToBase64(await km.exportData('svg')), 'mindmap.svg')
         break
       case 'km':
-        download('data:application/octet-stream;base64,' + crypto.strToBase64(await km.exportData('json')), 'mindmap.km')
+        download('data:application/octet-stream;base64,' + strToBase64(await km.exportData('json')), 'mindmap.km')
         break
       case 'png':
         download(await km.exportData('png'), 'mindmap.png')

@@ -20,8 +20,8 @@
 <script lang="ts">
 import Sortable from 'sortablejs'
 import { computed, defineComponent, nextTick, onMounted, ref, watch } from 'vue'
-import { useContextMenu } from '@fe/support/context-menu'
-import { Components } from '@fe/support/types'
+import { useContextMenu } from '@fe/support/ui/context-menu'
+import type { Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({

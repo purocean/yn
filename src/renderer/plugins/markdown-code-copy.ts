@@ -1,5 +1,5 @@
 import { h, VNode } from 'vue'
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import SvgIcon from '@fe/components/SvgIcon.vue'
 
 export default {

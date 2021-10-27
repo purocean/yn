@@ -1,19 +1,18 @@
 import { defineComponent, h, ref, watch } from 'vue'
-
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import { getLogger } from '@fe/utils'
-import { Doc } from '@fe/support/types'
-import { useModal } from '@fe/support/modal'
-import { useToast } from '@fe/support/toast'
+import type { Doc } from '@fe/types'
+import { useModal } from '@fe/support/ui/modal'
+import { useToast } from '@fe/support/ui/toast'
 import { dirname, join } from '@fe/utils/path'
-import { isElectron, openWindow } from '@fe/utils/env'
+import { isElectron, openWindow } from '@fe/support/env'
 import store from '@fe/support/store'
 import * as api from '@fe/support/api'
-import { refreshTree } from '@fe/context/tree'
-import { buildSrc, IFrame } from '@fe/context/embed'
+import { refreshTree } from '@fe/services/tree'
+import { buildSrc, IFrame } from '@fe/support/embed'
 import Mask from '@fe/components/Mask.vue'
-import { FLAG_DEMO } from '@fe/support/global-args'
+import { FLAG_DEMO } from '@fe/support/args'
 
 const logger = getLogger('plugin-markdown-luckysheet')
 
@@ -419,7 +418,7 @@ async function createLuckysheet (node: Doc) {
   try {
     await api.writeFile(file, file.content)
     refreshTree()
-  } catch (error) {
+  } catch (error: any) {
     useToast().show('warning', error.message)
     console.error(error)
   }
@@ -440,7 +439,7 @@ export default {
       return false
     })
 
-    ctx.tree.registerContextMenu((items, node) => {
+    ctx.tree.tapContextMenus((items, node) => {
       if (node.type === 'dir') {
         items.push(
           { type: 'separator' },
@@ -452,8 +451,6 @@ export default {
           }
         )
       }
-
-      return items
     })
   }
 } as Plugin

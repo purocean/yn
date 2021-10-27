@@ -1,10 +1,10 @@
 import Markdown from 'markdown-it'
 import { defineComponent, h, ref, watch } from 'vue'
-import { Plugin } from '@fe/context/plugin'
-import { buildSrc, IFrame } from '@fe/context/embed'
+import { Plugin } from '@fe/context'
+import { buildSrc, IFrame } from '@fe/support/embed'
 import * as api from '@fe/support/api'
-import { useBus } from '@fe/support/bus'
-import { openWindow } from '@fe/utils/env'
+import { useBus } from '@fe/core/bus'
+import { openWindow } from '@fe/support/env'
 
 const Drawio = defineComponent({
   name: 'drawio',

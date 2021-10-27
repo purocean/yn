@@ -6,7 +6,7 @@
     </template>
   </aside>
   <aside v-else class="side">
-    <div class="add-repo-btn" @click="showSetting">
+    <div class="add-repo-btn" @click="showSettingPanel">
       添加仓库
       <div class="add-repo-desc">选择一个位置保存笔记</div>
     </div>
@@ -16,10 +16,10 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeMount, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useContextMenu } from '@fe/support/context-menu'
-import { getActionHandler } from '@fe/context/action'
-import { refreshRepo, refreshTree } from '@fe/context/tree'
+import { useContextMenu } from '@fe/support/ui/context-menu'
+import { refreshRepo, refreshTree } from '@fe/services/tree'
 import TreeNode from './TreeNode.vue'
+import { showSettingPanel } from '@fe/services/setting'
 
 export default defineComponent({
   name: 'tree',
@@ -40,10 +40,6 @@ export default defineComponent({
       ])
     }
 
-    function showSetting () {
-      getActionHandler('status-bar.show-setting')()
-    }
-
     onBeforeMount(() => {
       refreshTree()
     })
@@ -56,7 +52,7 @@ export default defineComponent({
       tree,
       refreshRepo,
       showContextMenu,
-      showSetting,
+      showSettingPanel,
       hasRepo,
     }
   },

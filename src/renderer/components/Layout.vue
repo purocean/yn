@@ -33,10 +33,10 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '@fe/support/bus'
-import { $args, FLAG_DISABLE_XTERM } from '@fe/support/global-args'
-import { emitResize } from '@fe/context/layout'
-import { isElectron } from '@fe/utils/env'
+import { useBus } from '@fe/core/bus'
+import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
+import { emitResize } from '@fe/services/layout'
+import { isElectron } from '@fe/support/env'
 
 let resizeOrigin: any = null
 

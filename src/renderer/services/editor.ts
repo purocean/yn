@@ -1,12 +1,10 @@
 import * as Monaco from 'monaco-editor'
-import { $args } from '@fe/support/global-args'
-import { isElectron } from '@fe/utils/env'
-import { useBus } from '@fe/support/bus'
+import { $args } from '@fe/support/args'
+import { isElectron } from '@fe/support/env'
+import { useBus } from '@fe/core/bus'
 import { getColorScheme } from './theme'
-import { registerAction } from './action'
-import { Alt } from './shortcut'
-
-export type ActionName = 'editor.toggle-wrap'
+import { registerAction } from '../core/action'
+import { Alt } from '../core/shortcut'
 
 const bus = useBus()
 
@@ -135,7 +133,7 @@ bus.on('monaco.before-init', (payload: any) => {
   })
 })
 
-bus.on('monaco.ready', (payload: any) => {
+bus.on('monaco.ready', (payload) => {
   monaco = payload.monaco
   editor = payload.editor
 

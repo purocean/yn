@@ -1,6 +1,6 @@
-import { Plugin } from '@fe/context/plugin'
+import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import { getActionHandler } from '@fe/context/action'
+import { getActionHandler } from '@fe/core/action'
 
 export default {
   name: 'status-bar-refresh',

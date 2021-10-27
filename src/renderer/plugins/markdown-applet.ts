@@ -1,9 +1,8 @@
 import { h } from 'vue'
-import CryptoJS from 'crypto-js'
-import dayjs from 'dayjs'
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/context/plugin'
-import { IFrame } from '@fe/context/embed'
+import { Plugin } from '@fe/context'
+import { IFrame } from '@fe/support/embed'
+import { md5 } from '@fe/utils'
 
 const MarkdownItPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
@@ -16,7 +15,7 @@ const MarkdownItPlugin = (md: Markdown) => {
       return temp(tokens, idx, options, env, slf)
     }
 
-    const hash = CryptoJS.MD5(code).toString()
+    const hash = md5(code)
     const appletId = `applet-${hash}-${idx}`
     const appletTitle = firstLine.replace('<!--', '').replace('-->', '').replace('--applet--', '').trim()
 
@@ -40,8 +39,6 @@ const MarkdownItPlugin = (md: Markdown) => {
           onLoad (iframe: HTMLIFrameElement) {
             const win = iframe.contentWindow as any
             win.appletId = appletId
-            win.CryptoJS = CryptoJS
-            win.dayjs = dayjs
             win.init?.()
             win.resize()
           },

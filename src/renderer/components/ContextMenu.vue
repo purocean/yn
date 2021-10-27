@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { Components } from '@fe/support/types'
+import type { Components } from '@fe/types'
 
 export default defineComponent({
   name: 'context-menu',

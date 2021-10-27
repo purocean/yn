@@ -59,11 +59,11 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, ref, toRefs } from 'vue'
-import { isElectron, nodeRequire } from '@fe/utils/env'
-import { getActionHandler } from '@fe/context/action'
-import { FLAG_DEMO } from '@fe/support/global-args'
-import { triggerHook } from '@fe/context/plugin'
-import { useToast } from '@fe/support/toast'
+import { isElectron, nodeRequire } from '@fe/support/env'
+import { getContentHtml } from '@fe/services/view'
+import { FLAG_DEMO } from '@fe/support/args'
+import { triggerHook } from '@fe/core/plugin'
+import { useToast } from '@fe/support/ui/toast'
 import { sleep } from '@fe/utils'
 import XMask from './Mask.vue'
 
@@ -180,7 +180,7 @@ export default defineComponent({
 
       const source = convert.fromType === 'markdown'
         ? currentFile.value.content
-        : getActionHandler('view.get-content-html')().replace(/src="api/g, `src="${baseUrl}api`)
+        : getContentHtml().replace(/src="api/g, `src="${baseUrl}api`)
 
       convert.fileName = `${fileName.value}.${convert.toType}`
       convert.source = filterHtml(source)
@@ -192,7 +192,7 @@ export default defineComponent({
     async function ok () {
       try {
         await exportDoc()
-      } catch (error) {
+      } catch (error: any) {
         toast.show('warning', error.message)
         throw error
       }
