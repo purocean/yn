@@ -4,6 +4,7 @@ import logger from 'electron-log'
 import ProgressBar from 'electron-progressbar'
 import opn from 'opn'
 import store from './storage'
+import { GITHUB_URL } from './constant'
 
 logger.transports.file.level = 'info'
 autoUpdater.logger = logger
@@ -63,7 +64,7 @@ const init = (call: () => void) => {
         cancellationToken.cancel()
       })
     } else if (response === 1) {
-      opn('https://github.com/purocean/yn#%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97')
+      opn(GITHUB_URL + '/releases')
     } else if (response === 3) {
       store.set('dontCheckUpdates', true)
     }
