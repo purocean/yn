@@ -1,26 +1,21 @@
 # Yank-Note 特色功能使用说明
 
+[toc]{type: "ol", level: [2]}
+
 ## TOC 生成
 
 需要生成目录的地方写入 `[toc]{type: "ul", level: [1,2,3]}`
 可以控制目录样式 `ul` 或 `ol` 和级别
 
-[toc]{type: "ol", level: [2]}
+## 应用数据
 
-## 系统配置
+应用相关的数据目录存放在 `<home>/yank-note` 下面，点击托盘菜单“打开主目录”接口即可查看
 
-1. 用户数据目录存放在 `<home>/yank-note` 下面
-1. 配置文件 `<home/yank-note/config.json>`
+目录说明：
 
-## 多仓库
-
-1. 系统默认有一个 `main` 仓库，默认位于 `<home>/yank-note/main`
-1. 在配置文件 `<home/yank-note/config.json>` 中可以配置多个仓库，或者自定义 `main` 仓库路径
-
-## 文件管理
-
-右键目录树可看到文件相关操作选项。
-进行删除文件/目录操作后，文件并没有真正删除，还可以从 `<home>/yank-note/trash` 目录下面恢复
+1. 配置文件 `<home>/yank-note/config.json`
+1. 回收站 `<home>/yank-note/trash`
+1. 插件 `<home>/yank-note/plugins`
 
 ## 待办切换
 
@@ -403,6 +398,15 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 示例红色文字：
 **test**{style="color:red"}
 
+## 图片增强
+
+1. 图片默认会渲染成块元素并居中，背景色透明
+    + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
+    + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
+
+1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
+    例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
+
 ## 命令行参数
 
 在向别人交接文档的时候，可以使用脚本，自定义命令行参数启动程序，方便对方查看文档。
@@ -417,14 +421,13 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 --init-repo       | 初始仓库名    | 无    | 字符串                    | --init-repo='test'
 --init-file       | 加载文件路径  | 无    | 文件路径，相对于仓库路径     | --init-file='/1.md'
 
-## 其他
+## 插件开发
 
-1. 图片默认会渲染成块元素并居中，背景色透明
-    + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
-    + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
+Api 文档: https://yn-api-doc.vercel.app/
 
-1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
-    例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
+::: warning
+开发文档待完善
+:::
 
 [^1]: 这是一个脚注
 [^2]: 这也是一个脚注
