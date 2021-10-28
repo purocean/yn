@@ -1,6 +1,6 @@
 import { app, Menu } from 'electron'
 import { getAction } from './action'
-import { FLAG_DISABLE_DEVTOOL, FLAG_DISABLE_SERVER, USER_DIR } from './constant'
+import { FLAG_DISABLE_DEVTOOL, FLAG_DISABLE_SERVER, GITHUB_URL, USER_DIR } from './constant'
 import { getAccelerator } from './shortcut'
 import opn from 'opn'
 import { checkForUpdates } from './updater'
@@ -149,7 +149,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
     type: 'normal',
     label: 'GitHub',
     click: () => {
-      opn('https://github.com/purocean/yn')
+      opn(GITHUB_URL)
     }
   },
   {

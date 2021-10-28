@@ -18,10 +18,20 @@ async function fetchHttp (input: RequestInfo, init?: RequestInit) {
   return result
 }
 
-export function proxyRequest (url: string, reqOptions = {}, reqHeaders = {}, init?: RequestInit) {
-  const headers = encodeURIComponent(JSON.stringify(reqHeaders))
+export function proxyRequest (url: string, reqOptions: Record<string, any> = {}, usePost = false) {
+  if (usePost) {
+    return fetch('/api/proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: url,
+        options: reqOptions
+      })
+    })
+  }
+
   const options = encodeURIComponent(JSON.stringify(reqOptions))
-  return fetch(`/api/proxy?url=${encodeURIComponent(url)}&headers=${headers}&options=${options}`, init)
+  return fetch(`/api/proxy?url=${encodeURIComponent(url)}&options=${options}`)
 }
 
 async function fetchHelpContent (doc: string) {

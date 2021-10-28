@@ -187,11 +187,11 @@ const tmpFile = async (ctx: any, next: any) => {
 
 const proxy = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/proxy')) {
-    const url = ctx.query.url
-    const headers = ctx.query.headers ? JSON.parse(ctx.query.headers) : undefined
-    const options = ctx.query.options ? JSON.parse(ctx.query.options) : {}
+    const data = ctx.method === 'POST' ? ctx.request.body : ctx.query
+    const url = data.url
+    const options = typeof data.options === 'string' ? JSON.parse(ctx.query.options) : data.options
     await new Promise<void>((resolve, reject) => {
-      request({ url, headers, encoding: null, ...options }, function (err: any, response: any, body: any) {
+      request({ url, encoding: null, ...options }, function (err: any, response: any, body: any) {
         if (err) {
           reject(err)
         } else {

@@ -86,13 +86,17 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.9.1](https://github.com/purocean/yn/releases/tag/v3.9.1) 2021-10-28
+1. 更新说明文档
+2. 插件开发：`ctx.api.proxyRequest` 支持 Post 方式，传输大量数据
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v3.9.0](https://github.com/purocean/yn/releases/tag/v3.9.0) 2021-10-27
 1. 增加自定义图片上传目录配置
 2. 目录树菜单增加复制名称、复制路径功能
 3. 插件开发：`ctx` 增加 `args` `base` 模块
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v3.8.2](https://github.com/purocean/yn/releases/tag/v3.8.2) 2021-10-24
 1. 过于宽的表格增加横向滚动
