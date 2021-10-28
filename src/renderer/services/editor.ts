@@ -1,5 +1,5 @@
 import * as Monaco from 'monaco-editor'
-import { $args } from '@fe/support/args'
+import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron } from '@fe/support/env'
 import { useBus } from '@fe/core/bus'
 import { getColorScheme } from './theme'
@@ -32,7 +32,7 @@ export const defaultOptions: {[key: string]: any} = {
     vertical: 'hidden',
     verticalScrollbarSize: 0
   },
-  readOnly: $args().get('readonly') === 'true',
+  readOnly: FLAG_READONLY,
 }
 
 /**
