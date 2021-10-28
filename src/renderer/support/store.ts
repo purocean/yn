@@ -1,36 +1,38 @@
 import { omit } from 'lodash-es'
 import { createStore } from 'vuex'
-import { basename } from '@fe/utils/path'
 import * as storage from '@fe/utils/storage'
 import * as api from '@fe/support/api'
-import type { Doc } from '@fe/types'
+import type { Components, Doc, FileItem, Repo } from '@fe/types'
 
-export default createStore({
-  state: {
-    repositories: {} as any,
-    tree: null,
-    showSide: storage.get('showSide', true),
-    showView: storage.get('showView', true),
-    showEditor: storage.get('showEditor', true),
-    showXterm: false,
-    autoPreview: true,
-    showSetting: false,
-    showExport: false,
-    presentation: false,
-    currentContent: '',
-    currentRepo: storage.get('currentRepo'),
-    currentFile: null as Doc | null,
-    recentOpenTime: storage.get('recentOpenTime', {}),
-    tabs: storage.get('tabs', []),
-    selectionInfo: {
-      textLength: 0,
-      selectedLength: 0,
-      lineCount: 0,
-      line: 0,
-      column: 0
-    },
-    markedFiles: [],
+export const initState = {
+  repositories: {} as Record<string, string>,
+  tree: null,
+  showSide: storage.get('showSide', true),
+  showView: storage.get('showView', true),
+  showEditor: storage.get('showEditor', true),
+  showXterm: false,
+  autoPreview: true,
+  showSetting: false,
+  showExport: false,
+  presentation: false,
+  currentContent: '',
+  currentRepo: storage.get<Repo>('currentRepo'),
+  currentFile: null as Doc | null,
+  recentOpenTime: storage.get<Record<string, number>>('recentOpenTime', {}),
+  tabs: storage.get<Components.FileTabs.Item[]>('tabs', []),
+  selectionInfo: {
+    textLength: 0,
+    selectedLength: 0,
+    lineCount: 0,
+    line: 0,
+    column: 0
   },
+  markedFiles: [] as FileItem[],
+}
+
+export type AppState = typeof initState
+export default createStore({
+  state: initState,
   mutations: {
     setMarkedFiles (state, files) {
       state.markedFiles = files
@@ -105,7 +107,7 @@ export default createStore({
   },
   actions: {
     async fetchMarkedFiles ({ commit }) {
-      const files = (await api.fetchMarkedFiles()).map((x: any) => ({ ...x, name: basename(x.path) }))
+      const files = await api.fetchMarkedFiles()
       commit('setMarkedFiles', files)
     },
     async fetchRepositories ({ commit }) {

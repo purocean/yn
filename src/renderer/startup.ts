@@ -4,7 +4,7 @@ import { init, triggerHook } from '@fe/core/plugin'
 import store from '@fe/support/store'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
-import type { Doc } from '@fe/types'
+import type { Doc, Repo } from '@fe/types'
 import { hasCtrlCmd } from '@fe/core/shortcut'
 import { showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
@@ -17,11 +17,11 @@ init(plugins, ctx)
 
 const bus = useBus()
 
-function getLastOpenFile (repoName?: string) {
-  const currentFile = storage.get('currentFile')
+function getLastOpenFile (repoName?: string): Doc | null {
+  const currentFile = storage.get<Doc>('currentFile')
   const recentOpenTime = storage.get('recentOpenTime', {}) as {[key: string]: number}
 
-  repoName ??= storage.get('currentRepo')?.name
+  repoName ??= storage.get<Repo>('currentRepo')?.name
 
   if (!repoName) {
     return null
@@ -44,7 +44,7 @@ function getLastOpenFile (repoName?: string) {
     return null
   }
 
-  return { repo: repoName, name: basename(path), path }
+  return { type: 'file', repo: repoName, name: basename(path), path }
 }
 
 export default function startup () {

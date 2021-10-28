@@ -9,11 +9,21 @@ export type BuildContextMenu = (items: MenuItem[], node: Components.Tree.Node, v
 
 const contextMenuFunList: BuildContextMenu[] = []
 
-export const tapContextMenus = (fun: BuildContextMenu) => {
+/**
+ * 添加一个上下文菜单处理方法
+ * @param fun 处理方法
+ */
+export function tapContextMenus (fun: BuildContextMenu) {
   contextMenuFunList.push(fun)
 }
 
-export const getContextMenuItems = (node: Components.Tree.Node, vueCtx: VueCtx) => {
+/**
+ * 获取上下文菜单
+ * @param node 节点
+ * @param vueCtx Vue 上下文
+ * @returns
+ */
+export function getContextMenuItems (node: Components.Tree.Node, vueCtx: VueCtx) {
   const items: MenuItem[] = []
 
   contextMenuFunList.forEach((fun) => {
@@ -23,10 +33,16 @@ export const getContextMenuItems = (node: Components.Tree.Node, vueCtx: VueCtx) 
   return items
 }
 
+/**
+ * 刷新目录树
+ */
 export function refreshTree () {
   store.dispatch('fetchTree')
 }
 
+/**
+ * 刷新仓库
+ */
 export function refreshRepo () {
   refreshTree()
   store.dispatch('fetchRepositories')

@@ -28,15 +28,31 @@ export type MenuTapper = (menus: Menus) => void
 
 const menuTappers: MenuTapper[] = []
 
-export const refreshMenu = debounce(() => {
+const _refreshMenu = debounce(() => {
   getActionHandler('status-bar.refresh-menu')()
 }, 10)
 
+/**
+ * 刷新菜单
+ */
+export function refreshMenu () {
+  _refreshMenu()
+}
+
+/**
+ * 注册一个菜单处理器
+ * @param tapper 处理器
+ */
 export function tapMenus (tapper: MenuTapper) {
   menuTappers.push(tapper)
   refreshMenu()
 }
 
+/**
+ * 获取菜单
+ * @param position 位置
+ * @returns 菜单
+ */
 export function getMenus (position: string) {
   const menus: Menus = {}
   menuTappers.forEach(tap => tap(menus))

@@ -1,3 +1,7 @@
+/**
+ * 获取所有 url 传递来的参数
+ * @returns 参数
+ */
 export function $args () {
   return new URLSearchParams(location.search)
 }

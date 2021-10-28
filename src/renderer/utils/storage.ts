@@ -1,4 +1,6 @@
-export function get (key: string, defaultValue?: any) {
+export function get<T> (key: string): T | undefined
+export function get<T> (key: string, defaultValue: T): T
+export function get<T> (key: string, defaultValue?: T) {
   try {
     return typeof window.localStorage[key] === 'undefined' ? defaultValue : JSON.parse(window.localStorage[key])
   } catch (error) {

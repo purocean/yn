@@ -1,15 +1,25 @@
 import type * as Monaco from 'monaco-editor'
 
-export interface Doc {
-  type: 'file' | 'dir';
-  name: string;
+export interface PathItem {
   repo: string;
   path: string;
+}
+
+export interface FileItem extends PathItem { name: string }
+
+export interface Doc extends PathItem {
+  type: 'file' | 'dir';
+  name: string;
   content?: string;
   title?: string;
   passwordHash?: string;
   contentHash?: string;
   status?: 'loaded' | 'save-failed' | 'saved';
+}
+
+export interface Repo {
+  name: string;
+  path: string;
 }
 
 export namespace Components {

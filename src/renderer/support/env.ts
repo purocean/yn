@@ -7,6 +7,13 @@ export const nodeRequire = window && (window.require || _window.nodeRequire)
 export const isElectron = !!(nodeProcess?.versions?.electron)
 export const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)
 
+/**
+ * 新窗口打开一个链接
+ * @param url URL
+ * @param target Target
+ * @param options 选项
+ * @returns opener
+ */
 export const openWindow = (url: string, target = '_blank', options: Record<string, any> = {}) => {
   if (isElectron) {
     const [x, y] = nodeRequire('electron').remote.getCurrentWindow().getPosition()

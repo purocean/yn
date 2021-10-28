@@ -8,8 +8,9 @@ import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs,
 import { Alt, Ctrl } from '@fe/core/shortcut'
 import type { Components, Doc } from '@fe/types'
 import { useBus } from '@fe/core/bus'
-import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import { registerAction, removeAction } from '@fe/core/action'
+import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
+import type { AppState } from '@fe/support/store'
 import Tabs from './Tabs.vue'
 
 const blankUri = toUri(null)
@@ -21,7 +22,7 @@ export default defineComponent({
     const store = useStore()
     const bus = useBus()
 
-    const { currentFile, tabs } = toRefs(store.state)
+    const { currentFile, tabs } = toRefs<AppState>(store.state)
     const { isSaved } = toRefs(store.getters)
     const list = ref<Components.FileTabs.Item[]>([])
     const current = ref(blankUri)
@@ -30,7 +31,7 @@ export default defineComponent({
       store.commit('setTabs', list)
     }
 
-    function switchFile (file: any) {
+    function switchFile (file: Doc | null) {
       return switchDoc(file)
     }
 
@@ -44,11 +45,11 @@ export default defineComponent({
       }
 
       const keys = items.map(x => x.key)
-      setTabs(tabs.value.filter((x: any) => keys.indexOf(x.key) === -1))
+      setTabs(tabs.value.filter(x => keys.indexOf(x.key) === -1))
     }
 
     function addTab (item: Components.FileTabs.Item) {
-      const tab = tabs.value.find((x: any) => item.key === x.key)
+      const tab = tabs.value.find(x => item.key === x.key)
 
       // 没有打开此 Tab，新建一个
       if (!tab) {
@@ -136,7 +137,7 @@ export default defineComponent({
       removeAction('file-tabs.switch-next')
     })
 
-    watch(currentFile, (file: any) => {
+    watch(currentFile, file => {
       const uri = toUri(file)
       const item = {
         key: uri,
@@ -157,12 +158,12 @@ export default defineComponent({
           payload: { file: null }
         })
       } else if (tabs.value.length === 2) {
-        if (tabs.value.some((x: any) => x.key === blankUri)) {
-          setTabs(tabs.value.filter((x: any) => x.key !== blankUri))
+        if (tabs.value.some(x => x.key === blankUri)) {
+          setTabs(tabs.value.filter(x => x.key !== blankUri))
         }
       }
 
-      const tab = list.find((x: any) => x.key === current.value)
+      const tab = list.find(x => x.key === current.value)
       if (!tab) {
         const currentFile = list.length > 0 ? list[list.length - 1].payload.file : null
         switchFile(currentFile)
