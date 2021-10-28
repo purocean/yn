@@ -40,7 +40,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
     replacedLink = await transform(img)
   } else if (imgAttrSrc.startsWith('http://') || imgAttrSrc.startsWith('https://')) {
     const headers = JSON.parse(img.getAttribute('headers') || '{}')
-    const res = await api.proxyRequest(img.src, { method: 'get' }, headers)
+    const res = await api.proxyRequest(img.src, { method: 'get', headers })
     const blob = await res.blob()
     const imgFile = new File([blob!], 'file.' + mime.extension(res.headers.get('content-type')!))
     const assetPath = await upload(imgFile, currentFile)
