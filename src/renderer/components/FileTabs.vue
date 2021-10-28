@@ -146,7 +146,7 @@ export default defineComponent({
       }
 
       addTab(item)
-    }, { immediate: true })
+    })
 
     watch(tabs, list => {
       if (list.length < 1) {
@@ -156,6 +156,10 @@ export default defineComponent({
           description: '空白页',
           payload: { file: null }
         })
+      } else if (tabs.value.length === 2) {
+        if (tabs.value.some((x: any) => x.key === blankUri)) {
+          setTabs(tabs.value.filter((x: any) => x.key !== blankUri))
+        }
       }
 
       const tab = list.find((x: any) => x.key === current.value)
