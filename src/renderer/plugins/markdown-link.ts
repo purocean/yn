@@ -55,6 +55,7 @@ const handleLink = (link: HTMLAnchorElement) => {
             document.getElementById(encodeURIComponent(hash.replace(/^h-/, '')))
 
           if (el) {
+            await sleep(0)
             el.scrollIntoView()
 
             // 如果是标题的话，也顺便将编辑器滚动到可视区域
