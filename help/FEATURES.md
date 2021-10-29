@@ -430,11 +430,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 
 ## 插件开发
 
-Api 文档: https://yn-api-doc.vercel.app/
-
-::: warning
-开发文档待完善
-:::
+请参考[插件开发指南](PLUGIN.md)
 
 [^1]: 这是一个脚注
 [^2]: 这也是一个脚注

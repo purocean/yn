@@ -5,21 +5,27 @@ import { Alt, getKeysLabel } from '@fe/core/command'
 export default {
   name: 'status-bar-help',
   register: ctx => {
-    const showHelpCommand = ctx.action.registerAction({
+    const showHelpAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-readme',
       keys: [Alt, 'h'],
       handler: () => showHelp('README.md')
     })
 
-    const showFeaturesCommand = ctx.action.registerAction({
+    const showFeaturesAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-features',
       handler: () => showHelp('FEATURES.md'),
       keys: null
     })
 
-    const showShortcutsCommand = ctx.action.registerAction({
+    const showShortcutsAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-shortcuts',
       handler: () => showHelp('SHORTCUTS.md'),
+      keys: null
+    })
+
+    const showPluginAction = ctx.action.registerAction({
+      name: 'plugin.status-bar-help.show-plugin',
+      handler: () => showHelp('PLUGIN.md'),
       keys: null
     })
 
@@ -33,20 +39,26 @@ export default {
             id: 'toggle-readme',
             type: 'normal',
             title: 'README',
-            tips: getKeysLabel(showHelpCommand.name),
-            onClick: () => ctx.action.getActionHandler(showHelpCommand.name)()
+            tips: getKeysLabel(showHelpAction.name),
+            onClick: () => ctx.action.getActionHandler(showHelpAction.name)()
+          },
+          {
+            id: 'toggle-plugin',
+            type: 'normal',
+            title: '插件开发指南',
+            onClick: () => ctx.action.getActionHandler(showPluginAction.name)()
           },
           {
             id: 'toggle-shortcuts',
             type: 'normal',
             title: '快捷键说明',
-            onClick: () => ctx.action.getActionHandler(showShortcutsCommand.name)()
+            onClick: () => ctx.action.getActionHandler(showShortcutsAction.name)()
           },
           {
             id: 'toggle-features',
             type: 'normal',
             title: '特色功能说明',
-            onClick: () => ctx.action.getActionHandler(showFeaturesCommand.name)()
+            onClick: () => ctx.action.getActionHandler(showFeaturesAction.name)()
           },
         ]
       }
