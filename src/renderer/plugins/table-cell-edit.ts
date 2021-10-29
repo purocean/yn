@@ -1,6 +1,6 @@
 import { useModal } from '@fe/support/ui/modal'
 import { Plugin } from '@fe/context'
-import { hasCtrlCmd } from '@fe/core/shortcut'
+import { hasCtrlCmd } from '@fe/core/command'
 import { getActionHandler } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import { getLineContent, replaceLine } from '@fe/services/editor'

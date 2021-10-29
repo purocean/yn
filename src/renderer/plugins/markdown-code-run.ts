@@ -5,7 +5,7 @@ import { getActionHandler } from '@fe/core/action'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import SvgIcon from '@fe/components/SvgIcon.vue'
-import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/core/shortcut'
+import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/core/command'
 import { md5 } from '@fe/utils'
 
 const cache: Record<string, string> = {}

@@ -1,6 +1,6 @@
 import { Plugin } from '@fe/context'
 import { getActionHandler } from '@fe/core/action'
-import { getKeysLabel } from '@fe/core/shortcut'
+import { getKeysLabel } from '@fe/core/command'
 
 export default {
   name: 'status-bar-navigation',

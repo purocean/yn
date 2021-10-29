@@ -1,5 +1,5 @@
 import { Plugin } from '@fe/context'
-import { hasCtrlCmd } from '@fe/core/shortcut'
+import { hasCtrlCmd } from '@fe/core/command'
 import { copyText, encodeMarkdownLink } from '@fe/utils'
 import store from '@fe/support/store'
 

@@ -4,7 +4,7 @@ import { isElectron } from '@fe/support/env'
 import { useBus } from '@fe/core/bus'
 import { getColorScheme } from './theme'
 import { registerAction } from '../core/action'
-import { Alt } from '../core/shortcut'
+import { Alt } from '../core/command'
 
 const bus = useBus()
 

@@ -3,7 +3,7 @@ import { getLogger } from '@fe/utils'
 import { isMacOS } from '@fe/support/env'
 import { getActionHandler } from './action'
 
-const logger = getLogger('shortcut')
+const logger = getLogger('command')
 
 export const Escape = 'Escape'
 export const Ctrl = 'Ctrl'

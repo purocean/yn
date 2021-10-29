@@ -1,5 +1,5 @@
 import { useBus } from '@fe/core/bus'
-import { Escape } from '@fe/core/shortcut'
+import { Escape } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'

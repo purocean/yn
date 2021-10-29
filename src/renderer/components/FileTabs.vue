@@ -5,7 +5,7 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
-import { Alt, Ctrl } from '@fe/core/shortcut'
+import { Alt, Ctrl } from '@fe/core/command'
 import type { Components, Doc } from '@fe/types'
 import { useBus } from '@fe/core/bus'
 import { registerAction, removeAction } from '@fe/core/action'

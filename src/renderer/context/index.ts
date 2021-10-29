@@ -2,7 +2,7 @@ import * as storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
 import * as plugin from '@fe/core/plugin'
 import * as action from '@fe/core/action'
-import * as shortcut from '@fe/core/shortcut'
+import * as command from '@fe/core/command'
 import { useBus } from '@fe/core/bus'
 import { useToast } from '@fe/support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
@@ -30,7 +30,7 @@ const ctx = {
   store,
   action,
   doc,
-  shortcut,
+  command,
   tree,
   markdown,
   statusBar,

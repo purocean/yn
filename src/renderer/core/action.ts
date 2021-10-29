@@ -1,7 +1,7 @@
 import { getLogger } from '@fe/utils'
 import { useBus } from '@fe/core/bus'
 import { BuildInActionName } from '@fe/types'
-import { registerCommand, removeCommand } from './shortcut'
+import { registerCommand, removeCommand } from './command'
 
 const logger = getLogger('action')
 const bus = useBus()

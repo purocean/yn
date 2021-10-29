@@ -35,7 +35,7 @@ export default {
               type: 'normal' as any,
               title: '前进',
               disabled: idx >= stack.length - 1,
-              subTitle: ctx.shortcut.getKeysLabel(forwardId),
+              subTitle: ctx.command.getKeysLabel(forwardId),
               onClick: () => ctx.action.getActionHandler(forwardId)()
             },
             {
@@ -43,7 +43,7 @@ export default {
               type: 'normal' as any,
               title: '后退',
               disabled: idx <= 0,
-              subTitle: ctx.shortcut.getKeysLabel(backId),
+              subTitle: ctx.command.getKeysLabel(backId),
               onClick: () => ctx.action.getActionHandler(backId)()
             },
           ].concat(list.filter(x => ![forwardId, backId].includes(x.id as BuildInActionName)) as any)
@@ -74,13 +74,13 @@ export default {
     ctx.action.registerAction({
       name: backId,
       handler: () => go(-1),
-      keys: [ctx.shortcut.Alt, ctx.shortcut.BracketLeft],
+      keys: [ctx.command.Alt, ctx.command.BracketLeft],
     })
 
     ctx.action.registerAction({
       name: forwardId,
       handler: () => go(1),
-      keys: [ctx.shortcut.Alt, ctx.shortcut.BracketRight],
+      keys: [ctx.command.Alt, ctx.command.BracketRight],
     })
   }
 } as Plugin

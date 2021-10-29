@@ -2,7 +2,7 @@ import { nextTick } from 'vue'
 import store from '@fe/support/store'
 import { useBus } from '@fe/core/bus'
 import { getActionHandler, registerAction } from '../core/action'
-import { Alt } from '../core/shortcut'
+import { Alt } from '../core/command'
 
 const bus = useBus()
 
