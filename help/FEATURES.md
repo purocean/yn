@@ -242,6 +242,13 @@ function run (type) {
 </div>
 ```
 
+如果没有标题，将没有外部边框装饰
+
+```html
+<!-- --applet--  -->
+<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">HELLO</button>
+```
+
 ## ECharts 图形
 
 Js 代码块第一行包含以 `--echarts--` 字符串会被解析成 ECharts 图形，示例如下

@@ -28,25 +28,31 @@ const MarkdownItPlugin = (md: Markdown) => {
       ${code}
     `
 
+    const iframe = h(IFrame, {
+      html,
+      debounce: 1000,
+      globalStyle: true,
+      onLoad (iframe: HTMLIFrameElement) {
+        const win = iframe.contentWindow as any
+        win.appletId = appletId
+        win.init?.()
+        win.resize()
+      },
+      iframeProps: {
+        class: 'applet-iframe',
+        height: '20px',
+      }
+    })
+
+    if (!appletTitle) {
+      return iframe
+    }
+
     return h('fieldset', {}, [
       h('legend', {}, `Applet: ${appletTitle}`),
       h('div',
         { class: 'applet' },
-        h(IFrame, {
-          html,
-          debounce: 1000,
-          globalStyle: true,
-          onLoad (iframe: HTMLIFrameElement) {
-            const win = iframe.contentWindow as any
-            win.appletId = appletId
-            win.init?.()
-            win.resize()
-          },
-          iframeProps: {
-            class: 'applet-iframe',
-            height: '20px',
-          }
-        }),
+        iframe,
       )
     ]) as any
   }
