@@ -51,7 +51,7 @@ Yank Note 插件体系有一些概念，是支撑整个插件体系的基础：
 
 Yank Note 有一个事件总线 [`ctx.bus`](https://yn-api-doc.vercel.app/modules/core_bus.html)，由 [mitt](https://github.com/developit/mitt) 实现，可以参考它的使用方法。
 
-自定一插件可以监听一些事件或触发一些事件，内部事件可以参考[Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInEvents)
+插件可以监听一些事件或触发一些事件，内部事件可以参考[Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInEvents)
 
 ### Hook 钩子
 
@@ -92,7 +92,7 @@ console.log(Object.keys(ctx).join('\n'))
 
 总体来说，Yank Note 鼓励用户打造自己的工作学习工具，内部毫无保留完全开放出来，只需要用户简单几行代码，即可给自己的工作学习助力。
 
-另外，如果您只需要打造一些趁手的工具，可以不用编写插件，可以使用[代码运行](/FEATURES.md#运行代码)功能或者编写 [Html 小工具](/FEATURES.md#小工具)。这里的 js 代码运行能力也是完全开放，全局变量 `ctx` 也具有上述所有的功能。
+另外，如果您只需要打造一些趁手的工具，可以不用编写插件，可以使用[代码运行](FEATURES.md#运行代码)功能或者编写 [Html 小工具](FEATURES.md#小工具)。这里的 js 代码运行能力也是完全开放，全局变量 `ctx` 也具有上述所有的功能。
 
 例如运行代码功能：
 
