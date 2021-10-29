@@ -86,7 +86,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.9.2](https://github.com/purocean/yn/releases/tag/v3.9.2) 2021-10-29
+### [v3.9.3](https://github.com/purocean/yn/releases/tag/v3.9.3) 2021-10-29
 1. HTML 小工具支持无边框展示
 2. 只读模式文件树禁用一些右键菜单
 3. 限制 js 代码不能在终端运行
