@@ -10,7 +10,7 @@ import { switchDoc } from '@fe/services/document'
 import XMask from './Mask.vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import QuickOpen from './QuickOpen.vue'
-import { CtrlCmd } from '@fe/core/shortcut'
+import { CtrlCmd } from '@fe/core/command'
 
 export default defineComponent({
   name: 'x-filter',

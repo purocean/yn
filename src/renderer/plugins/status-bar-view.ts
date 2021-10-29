@@ -1,7 +1,7 @@
 import { Plugin } from '@fe/context'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { getActionHandler } from '@fe/core/action'
-import { getKeysLabel } from '@fe/core/shortcut'
+import { getKeysLabel } from '@fe/core/command'
 
 export default {
   name: 'status-bar-view',

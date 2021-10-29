@@ -8,6 +8,7 @@ import { basename, dirname, isBelongTo, join } from '@fe/utils/path'
 import { useBus } from '@fe/core/bus'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
+import { inputPassword } from './base'
 
 const logger = getLogger('document')
 const bus = useBus()
@@ -28,27 +29,31 @@ function encrypt (content: any, password: string) {
   return crypto.encrypt(content, password)
 }
 
-async function inputPassword (title: string, filename: string, throwError = false) {
-  const password = await useModal().input({ title, type: 'password', hint: filename })
-  if (!password) {
-    if (throwError) {
-      throw new Error('未输入密码')
-    } else {
-      useToast().show('warning', '未输入密码')
-    }
-  }
-
-  return password
-}
-
+/**
+ * 判断是否是加密文档
+ * @param doc 文档
+ * @returns
+ */
 export function isEncrypted (doc?: Pick<Doc, 'path'> | null) {
   return doc && doc.path.toLowerCase().endsWith('.c.md')
 }
 
+/**
+ * 判断是否是同一个文档
+ * @param a 文档 A
+ * @param b 文档 B
+ * @returns
+ */
 export function isSameFile (a?: Doc | null, b?: Doc | null) {
   return a && b && a.repo === b.repo && a.path === b.path
 }
 
+/**
+ * 判断文档 B 是否和文档 A 相同或是目录 A 的下级
+ * @param a 文档/目录 A
+ * @param b 文档 B
+ * @returns
+ */
 export function isSubOrSameFile (a?: Doc | null, b?: Doc | null) {
   return a && b && a.repo === b.repo &&
   (
@@ -65,6 +70,12 @@ export function toUri (doc?: Doc | null) {
   }
 }
 
+/**
+ * 创建一个文档
+ * @param doc 文档
+ * @param baseDoc 文档所在目录或同级文档
+ * @returns 创建的文档
+ */
 export async function createDoc (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: Doc): Promise<Doc>
 export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc): Promise<Doc>
 export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc) {
@@ -127,6 +138,11 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
   return file
 }
 
+/**
+ * 重复一个文档
+ * @param origin 源文档
+ * @returns 创建的文档
+ */
 export async function duplicateDoc (origin: Doc) {
   let newPath = await useModal().input({
     title: '重复文件',
@@ -152,6 +168,10 @@ export async function duplicateDoc (origin: Doc) {
   await createDoc({ repo: origin.repo, path: newPath, content })
 }
 
+/**
+ * 删除一个文档
+ * @param doc 文档
+ */
 export async function deleteDoc (doc: Doc) {
   if (doc.path === '/') {
     throw new Error('不能删除根目录')
@@ -166,6 +186,11 @@ export async function deleteDoc (doc: Doc) {
   }
 }
 
+/**
+ * 移动一个文档
+ * @param doc 文档
+ * @param newPath 新路径
+ */
 export async function moveDoc (doc: Doc, newPath?: string) {
   if (doc.path === '/') {
     throw new Error('不能移动根目录')
@@ -207,6 +232,11 @@ export async function moveDoc (doc: Doc, newPath?: string) {
   bus.emit('doc.moved', { oldDoc: doc, newDoc })
 }
 
+/**
+ * 保存一个文档
+ * @param doc 文档
+ * @param content 内容
+ */
 export async function saveDoc (doc: Doc, content: string) {
   logger.debug('saveDoc', doc)
   try {
@@ -246,6 +276,9 @@ export async function saveDoc (doc: Doc, content: string) {
   }
 }
 
+/**
+ * 确保一个文档已保存
+ */
 export async function ensureCurrentFileSaved () {
   const { currentFile, currentContent } = store.state
   if (!currentFile || !currentFile.status) {
@@ -270,6 +303,10 @@ export async function ensureCurrentFileSaved () {
   }
 }
 
+/**
+ * 切换文档
+ * @param doc 文档
+ */
 export async function switchDoc (doc: Doc | null) {
   logger.debug('switchDoc', doc)
 
@@ -319,30 +356,49 @@ export async function switchDoc (doc: Doc | null) {
   }
 }
 
+/**
+ * 标记文档
+ * @param doc 文档
+ */
 export async function markDoc (doc: Doc) {
   await api.markFile(doc)
   bus.emit('doc.changed', doc)
 }
 
+/**
+ * 取消标记文档
+ * @param doc 文档
+ */
 export async function unmarkDoc (doc: Doc) {
   await api.unmarkFile(doc)
   bus.emit('doc.changed', doc)
 }
 
+/**
+ * 在操作系统中打开
+ * @param doc 文档
+ */
 export async function openInOS (doc: Doc) {
   await api.openInOS(doc)
 }
 
-export async function showHelp (doc: string) {
+/**
+ * 打开帮助文档
+ * @param docName 文档名
+ */
+export async function showHelp (docName: string) {
   switchDoc({
     type: 'file',
     repo: '__help__',
-    title: doc,
-    name: doc,
-    path: doc,
+    title: docName,
+    name: docName,
+    path: docName,
   })
 }
 
+/**
+ * 显示导出面板
+ */
 export function showExport () {
   store.commit('setShowExport', true)
 }

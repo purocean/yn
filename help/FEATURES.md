@@ -242,6 +242,13 @@ function run (type) {
 </div>
 ```
 
+如果没有标题，将没有外部边框装饰
+
+```html
+<!-- --applet--  -->
+<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">HELLO</button>
+```
+
 ## ECharts 图形
 
 Js 代码块第一行包含以 `--echarts--` 字符串会被解析成 ECharts 图形，示例如下
@@ -423,11 +430,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 
 ## 插件开发
 
-Api 文档: https://yn-api-doc.vercel.app/
-
-::: warning
-开发文档待完善
-:::
+请参考[插件开发指南](PLUGIN.md)
 
 [^1]: 这是一个脚注
 [^2]: 这也是一个脚注

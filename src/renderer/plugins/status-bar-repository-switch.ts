@@ -4,13 +4,14 @@ import { $args } from '@fe/support/args'
 import { basename } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { whenEditorReady } from '@fe/services/editor'
+import type { Repo } from '@fe/types'
 
 export default {
   name: 'status-bar-repository-switch',
   register: ctx => {
-    function choose (repo: any) {
+    function choose (repo: Repo) {
       const { currentRepo } = store.state
-      if (repo.name !== currentRepo.name) {
+      if (repo.name !== currentRepo?.name) {
         store.commit('setCurrentRepo', repo)
       }
     }
@@ -33,7 +34,7 @@ export default {
       }
 
       if (initFilePath) {
-        switchDoc({ type: 'file', repo: currentRepo.name, name: basename(initFilePath), path: initFilePath })
+        switchDoc({ type: 'file', repo: currentRepo!.name, name: basename(initFilePath), path: initFilePath })
       }
     }
 

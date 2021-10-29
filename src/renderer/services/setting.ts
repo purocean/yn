@@ -74,10 +74,18 @@ if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
 }
 
+/**
+ * 获取配置 Schema
+ * @returns 配置 Schema
+ */
 export function getSchema () {
   return schema
 }
 
+/**
+ * 更改 Schema
+ * @param fun 处理方法
+ */
 export function tapSchema (fun: (schema: Schema) => void) {
   fun(schema)
 }
@@ -95,12 +103,20 @@ function transformSettings (data: any) {
   return data
 }
 
+/**
+ * 获取默认配置
+ * @returns 配置
+ */
 export function getDefaultSetting () {
   return Object.fromEntries(
     Object.entries(schema.properties).map(([key, val]) => [key, val.defaultValue])
   ) as BuildInSettings
 }
 
+/**
+ * 从服务器获取配置并更新本地配置
+ * @returns 配置
+ */
 export async function fetchSettings () {
   const data = transformSettings(await api.fetchSettings())
 
@@ -110,9 +126,14 @@ export async function fetchSettings () {
   })
 }
 
-export async function writeSettings (value: Record<string, any>) {
+/**
+ * 写入配置
+ * @param data 配置内容
+ * @returns 配置
+ */
+export async function writeSettings (data: Record<string, any>) {
   const repositories: any = {}
-  value.repos.forEach(({ name, path }: any) => {
+  data.repos.forEach(({ name, path }: any) => {
     name = name.trim()
     path = path.trim()
     if (name && path) {
@@ -120,22 +141,32 @@ export async function writeSettings (value: Record<string, any>) {
     }
   })
 
-  delete value.repos
-  delete value.theme
-  value.repositories = repositories
+  delete data.repos
+  delete data.theme
+  data.repositories = repositories
 
-  await api.writeSettings(value)
+  await api.writeSettings(data)
   return await fetchSettings()
 }
 
+/**
+ * 获取本地配置
+ * @returns 配置
+ */
 export function getSettings () {
   return settings
 }
 
+/**
+ * 展示设置面板
+ */
 export function showSettingPanel () {
   store.commit('setShowSetting', true)
 }
 
+/**
+ * 隐藏设置面板
+ */
 export function hideSettingPanel () {
   store.commit('setShowSetting', false)
 }

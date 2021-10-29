@@ -25,6 +25,10 @@ export default {
 
       const isMarkdown = node.type === 'file' && node.path.toLowerCase().endsWith('.md')
 
+      const disableItems = ctx.args.FLAG_READONLY
+        ? ['duplicate', 'create', 'rename', 'delete', 'openInTerminal', 'create']
+        : []
+
       items.push(...[
         ...(isMarkdown ? [
           { id: 'mark', label: node.marked ? '取消标记' : '标记文件', onClick: () => toggleMark() },
@@ -50,7 +54,7 @@ export default {
         ] : []),
         { id: 'copy-name', label: '复制名称', onClick: () => ctx.utils.copyText(node.name) },
         { id: 'copy-name', label: '复制路径', onClick: () => ctx.utils.copyText(node.path) }
-      ] as typeof items)
+      ].filter(x => (!x.id || !disableItems.includes(x.id))) as typeof items)
     })
   }
 } as Plugin

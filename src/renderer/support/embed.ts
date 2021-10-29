@@ -2,10 +2,20 @@ import { debounce } from 'lodash-es'
 import { defineComponent, h, IframeHTMLAttributes, onBeforeMount, onBeforeUnmount, PropType, ref, watch } from 'vue'
 import { useBus } from '@fe/core/bus'
 
+/**
+ * 构建一个嵌入页面的 src 路径
+ * @param html 页面代码
+ * @param title 页面标题
+ * @param globalStyle 是否包含全局样式
+ * @returns src 路径
+ */
 export function buildSrc (html: string, title = '', globalStyle = false) {
   return `/embed/#title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&html=${encodeURIComponent(html)}`
 }
 
+/**
+ * Iframe 组件
+ */
 export const IFrame = defineComponent({
   name: 'embed-iframe',
   props: {

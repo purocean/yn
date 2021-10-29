@@ -3,7 +3,7 @@ import * as api from '@fe/support/api'
 import { encodeMarkdownLink } from '@fe/utils'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import { CtrlCmd, getKeysLabel, isCommand, LeftClick, Shift } from '@fe/core/shortcut'
+import { CtrlCmd, getKeysLabel, isCommand, LeftClick, Shift } from '@fe/core/command'
 import { replaceValue } from '@fe/services/editor'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
@@ -112,7 +112,7 @@ export default {
       handler: transformAll
     })
 
-    ctx.shortcut.registerCommand({
+    ctx.command.registerCommand({
       id: actionClick,
       keys: [CtrlCmd, Shift, LeftClick],
       handler: null

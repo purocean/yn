@@ -9,7 +9,7 @@ export default {
       menus['status-bar-presentation'] = {
         id: 'status-bar-presentation',
         position: 'right',
-        tips: `预览 (${ctx.shortcut.getKeysLabel(action!.name)})`,
+        tips: `预览 (${ctx.command.getKeysLabel(action!.name)})`,
         icon: 'presentation',
         onClick: () => ctx.view.enterPresent()
       }

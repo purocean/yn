@@ -2,7 +2,7 @@
 
 import Markdown from 'markdown-it'
 import StateInline from 'markdown-it/lib/rules_inline/state_inline'
-import { getKeyLabel } from '@fe/core/shortcut'
+import { getKeyLabel } from '@fe/core/command'
 import { Plugin } from '@fe/context'
 
 import { injectLineNumbers } from './markdown-source-line'

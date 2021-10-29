@@ -34,6 +34,10 @@ export interface XEmitter extends Emitter {
   emitter.on(type, wrappedHandler)
 }
 
+/**
+ * 获取一个事件总线
+ * @returns 事件总线
+ */
 export function useBus () {
   return emitter as XEmitter
 }

@@ -12,6 +12,12 @@ export interface Plugin<Ctx = any> {
 const hooks: { [key in HookType]?: {fun: HookFun; once: boolean}[] } = {}
 const plugins: {[name: string]: Plugin} = {}
 
+/**
+ * 注册一个插件钩子
+ * @param type 钩子类型
+ * @param fun 执行方法
+ * @param once 是否只执行一次
+ */
 export function registerHook (type: HookType, fun: HookFun, once = false) {
   if (Array.isArray(hooks[type])) {
     hooks[type] = [...hooks[type]!, { fun, once }]
@@ -20,12 +26,23 @@ export function registerHook (type: HookType, fun: HookFun, once = false) {
   }
 }
 
+/**
+ * 移除一个插件钩子
+ * @param type 钩子类型
+ * @param fun 执行方法
+ */
 export function removeHook (type: HookType, fun: HookFun) {
   if (Array.isArray(hooks[type])) {
     hooks[type] = hooks[type]!.filter(x => x.fun !== fun)
   }
 }
 
+/**
+ * 触发一个钩子
+ * @param type 钩子类型
+ * @param args 参数
+ * @returns 所有钩子执行结果
+ */
 export async function triggerHook (type: HookType, ...args: any[]) {
   logger.debug('triggerHook', type, args)
   for (const { fun, once } of (hooks[type] || [])) {
@@ -38,12 +55,22 @@ export async function triggerHook (type: HookType, ...args: any[]) {
   return false
 }
 
+/**
+ * 注册一个插件
+ * @param plugin 插件
+ * @param ctx 上下文信息
+ */
 export function register <Ctx> (plugin: Plugin, ctx: Ctx) {
   logger.debug('register', plugin)
   plugins[plugin.name] = plugin
   plugin.register && plugin.register(ctx)
 }
 
+/**
+ * 初始化插件体系，注册内置插件
+ * @param plugins 内置插件列表
+ * @param ctx 上下文信息
+ */
 export function init <Ctx> (plugins: Plugin[], ctx: Ctx) {
   logger.debug('init')
 
