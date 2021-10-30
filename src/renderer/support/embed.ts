@@ -1,6 +1,7 @@
 import { debounce } from 'lodash-es'
 import { defineComponent, h, IframeHTMLAttributes, onBeforeMount, onBeforeUnmount, PropType, ref, watch } from 'vue'
 import { useBus } from '@fe/core/bus'
+import { md5 } from '@fe/utils'
 
 /**
  * 构建一个嵌入页面的 src 路径
@@ -10,7 +11,7 @@ import { useBus } from '@fe/core/bus'
  * @returns src 路径
  */
 export function buildSrc (html: string, title = '', globalStyle = false) {
-  return `/embed/#title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&html=${encodeURIComponent(html)}`
+  return `/embed/?_=${md5(html)}#title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&html=${encodeURIComponent(html)}`
 }
 
 /**
