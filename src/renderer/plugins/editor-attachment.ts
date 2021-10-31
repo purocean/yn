@@ -1,13 +1,15 @@
 import dayjs from 'dayjs'
 import { insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
-import store from '@fe/support/store'
-import { encodeMarkdownLink } from '@fe/utils'
 import type { Doc } from '@fe/types'
+import { encodeMarkdownLink } from '@fe/utils'
 import { dirname, isBelongTo, join, relative } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
+import store from '@fe/support/store'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
+import { isSameRepo } from '@fe/services/document'
+import { useToast } from '@fe/support/ui/toast'
 
 async function uploadFile (file: any, asImage: boolean) {
   if (!store.state.currentFile) {
@@ -41,6 +43,11 @@ function addAttachment (asImage = false) {
 function addDocument (doc: Doc) {
   const file = store.state.currentFile
   if (file) {
+    if (!isSameRepo(file, doc)) {
+      useToast().show('warning', '不能插入不同仓库的文档')
+      return
+    }
+
     const cwd = dirname(file.path)
     const filePath = isBelongTo(cwd, doc.path)
       ? relative(cwd, doc.path)

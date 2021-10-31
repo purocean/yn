@@ -110,19 +110,5 @@ export default createStore({
       const files = await api.fetchMarkedFiles()
       commit('setMarkedFiles', files)
     },
-    async fetchRepositories ({ commit }) {
-      const repos = await api.fetchRepositories()
-      commit('setRepositories', repos)
-    },
-    async fetchTree ({ commit, state }) {
-      const repo = state.currentRepo
-      if (!repo) {
-        console.warn('未选择仓库')
-        return
-      }
-
-      const tree = await api.fetchTree(repo.name)
-      commit('setTree', tree)
-    },
   }
 })

@@ -20,6 +20,9 @@ declare module 'markdown-it-katex'
 declare module '@json-editor/json-editor'
 declare module 'mermaid/dist/mermaid.js'
 declare module 'katex'
-declare module 'path-browserify'
 declare module 'luckyexcel'
 declare module 'xterm-theme'
+declare module 'path-browserify' {
+  import path from 'path'
+  export default path
+}

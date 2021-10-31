@@ -39,6 +39,16 @@ export function isEncrypted (doc?: Pick<Doc, 'path'> | null) {
 }
 
 /**
+ * 判断是否在同一个仓库
+ * @param a 文档 A
+ * @param b 文档 B
+ * @returns
+ */
+export function isSameRepo (a?: Doc | null, b?: Doc | null) {
+  return a && b && a.repo === b.repo
+}
+
+/**
  * 判断是否是同一个文档
  * @param a 文档 A
  * @param b 文档 B
@@ -225,6 +235,11 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     path: newPath,
     repo: doc.repo,
     type: doc.type
+  }
+
+  if (isEncrypted(doc) !== isEncrypted({ path: newPath })) {
+    useToast().show('warning', '加密文件和非加密文件不能互相转换')
+    return
   }
 
   await api.moveFile(doc, newPath)

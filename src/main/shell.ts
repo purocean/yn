@@ -34,7 +34,7 @@ const transformCdCommand = (command: string) => {
   }
 
   // windows 下的切换目录
-  return `cd /d "${path}"`
+  return `cd /d "${path}"\r`
 }
 
 export default {
