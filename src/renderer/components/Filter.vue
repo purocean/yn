@@ -6,11 +6,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { registerAction, removeAction } from '@fe/core/action'
+import { CtrlCmd } from '@fe/core/command'
 import { switchDoc } from '@fe/services/document'
 import XMask from './Mask.vue'
-import { registerAction, removeAction } from '@fe/core/action'
 import QuickOpen from './QuickOpen.vue'
-import { CtrlCmd } from '@fe/core/command'
 
 export default defineComponent({
   name: 'x-filter',
