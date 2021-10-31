@@ -39,6 +39,16 @@ export function isEncrypted (doc?: Pick<Doc, 'path'> | null) {
 }
 
 /**
+ * 判断是否在同一个仓库
+ * @param a 文档 A
+ * @param b 文档 B
+ * @returns
+ */
+export function isSameRepo (a?: Doc | null, b?: Doc | null) {
+  return a && b && a.repo === b.repo
+}
+
+/**
  * 判断是否是同一个文档
  * @param a 文档 A
  * @param b 文档 B
