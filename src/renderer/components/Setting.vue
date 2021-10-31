@@ -17,6 +17,7 @@ import * as api from '@fe/support/api'
 import { useToast } from '@fe/support/ui/toast'
 import { getThemeName, setTheme } from '@fe/services/theme'
 import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
+import { refreshRepo } from '@fe/services/tree'
 
 JSONEditor.defaults.language = 'zh'
 JSONEditor.defaults.languages.zh = { ...JSONEditor.defaults.languages.en }
@@ -99,7 +100,7 @@ export default defineComponent({
         }
 
         await writeSettings({ ...value })
-        store.dispatch('fetchRepositories')
+        refreshRepo()
       }
       emit('close')
     }

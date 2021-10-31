@@ -60,7 +60,7 @@ export default {
     })
 
     whenEditorReady().then(initRepo)
-    store.dispatch('fetchRepositories')
+    ctx.tree.refreshRepo()
 
     store.watch(() => store.state.repositories, ctx.statusBar.refreshMenu)
     store.watch(() => store.state.currentRepo, ctx.statusBar.refreshMenu)
