@@ -237,6 +237,11 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     type: doc.type
   }
 
+  if (isEncrypted(doc) !== isEncrypted({ path: newPath })) {
+    useToast().show('warning', '加密文件和非加密文件不能互相转换')
+    return
+  }
+
   await api.moveFile(doc, newPath)
 
   bus.emit('doc.moved', { oldDoc: doc, newDoc })
