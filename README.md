@@ -86,6 +86,15 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.9.4](https://github.com/purocean/yn/releases/tag/v3.9.4) 2021-10-31
+1. 修复 HTML 小工具编辑代码界面不更新问题
+2. 修复 Windows 下终端不能正确切换目录问题
+3. 其他交互体验优化
+4. 插件开发：增加 `ctx.document.isSameRepo` 方法
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v3.9.3](https://github.com/purocean/yn/releases/tag/v3.9.3) 2021-10-29
 1. HTML 小工具支持无边框展示
 2. 只读模式文件树禁用一些右键菜单
@@ -94,9 +103,6 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 5. 修复大文档锚点跳转时预览滚动位置可能不正确
 6. 插件开发：增加插件开发指南文档
 7. 插件开发：`ctx.shortcut` 重命名为 `ctx.command`
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v3.9.1](https://github.com/purocean/yn/releases/tag/v3.9.1) 2021-10-28
 1. 更新说明文档
