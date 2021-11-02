@@ -212,8 +212,10 @@ export default defineComponent({
       } else if (currentTab.value === 'marked') {
         list.value = markedFiles.value
       } else if (currentTab.value === 'search') {
-        list.value = null
-        searchWithDebounce(searchText.value.trim(), (data: any[]) => {
+        const keyword = searchText.value.trim()
+        list.value = keyword ? null : []
+
+        searchWithDebounce(keyword, (data: any[]) => {
           if (currentTab.value === 'search') {
             list.value = data
           }
