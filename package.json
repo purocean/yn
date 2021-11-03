@@ -79,6 +79,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^7.11.1",
+    "front-matter": "^4.0.2",
     "github-markdown-css": "^4.0.0",
     "highlight.js": "^11.0.1",
     "husky": "^7.0.4",
