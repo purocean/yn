@@ -1,3 +1,7 @@
+---
+heading-number: true
+---
+
 # 插件开发指南
 
 [toc]{type: "ol"}

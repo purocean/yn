@@ -1,3 +1,7 @@
+---
+heading-number: true
+---
+
 # Yank-Note 特色功能使用说明
 
 [toc]{type: "ol", level: [2]}
@@ -413,6 +417,16 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 
 1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
     例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
+
+## Front Matter
+
+页面支持类似 [Jekyll Front Matter](https://jekyllrb.com/docs/front-matter/) 配置信息
+
+### 内置变量
+
+变量名 | 类型 | 描述
+---- | ----- | ---
+heading-number | boolean | 是否开启页面标题序号编号
 
 ## 命令行参数
 

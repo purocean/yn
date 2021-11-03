@@ -159,3 +159,7 @@ export type BuildInActions = {
 }
 
 export type BuildInActionName = keyof BuildInActions
+
+export type FrontMatterAttrs = {
+  'heading-number'?: boolean
+}
