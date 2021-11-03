@@ -22,6 +22,7 @@
 当前行下移 | Ctrl + Shift + Down | Cmd + Shift + Down
 重复当前行 | Ctrl + Shift + D | Cmd + Shift + D
 插入当前日期 | Shift + Alt + D | Shift + Option + D
+切换待办状态 | Alt + O | Alt + O
 插入当前时间 | Shift + Alt + T | Shift + Option + T
 插入文件附件 | Shift + Alt + F | Shift + Option + F
 在内置终端里面运行选中内容 | Shift + Alt + R | Shift + Option + R
