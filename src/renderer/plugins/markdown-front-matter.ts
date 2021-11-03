@@ -7,13 +7,24 @@ export default {
     const logger = ctx.utils.getLogger('markdown-front-matter')
     ctx.markdown.registerPlugin(md => {
       const render = md.render
+
       md.render = (src: string, env?: any) => {
-        const fm = frontMatter(src)
-        const bodyBegin = fm.bodyBegin - 1
-        const attributes = typeof fm.attributes === 'object' ? fm.attributes : {}
+        let bodyBegin = 0
+        let attributes: Record<string, any> = {}
+        try {
+          const fm = frontMatter(src)
+
+          bodyBegin = fm.bodyBegin - 1
+          if (fm.attributes && typeof fm.attributes === 'object') {
+            attributes = fm.attributes
+          }
+
+          return render.call(md, src, { ...env, bodyBegin, attributes })
+        } catch (error) {
+          console.error(error)
+        }
 
         logger.debug('render', bodyBegin, attributes)
-
         return render.call(md, src, { ...env, bodyBegin, attributes })
       }
 
