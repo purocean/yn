@@ -1,6 +1,6 @@
 # Yank Note
 
-一款面向程序员的 Markdown 笔记应用 **[在线体验>>>](https://yn-phi.vercel.app/)**
+一款面向程序员的 Markdown 笔记应用 **[在线体验>>>](https://yank-note.vercel.app/)**
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
 
