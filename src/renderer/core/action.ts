@@ -1,20 +1,19 @@
 import { getLogger } from '@fe/utils'
 import { useBus } from '@fe/core/bus'
-import { BuildInActionName } from '@fe/types'
+import { BuildInActions, BuildInActionName } from '@fe/types'
 import { registerCommand, removeCommand } from './command'
 
 const logger = getLogger('action')
 const bus = useBus()
 
-export type ActionHandler = ((...args: any[]) => any)
-export type ActionName = BuildInActionName
+export type ActionHandler<T extends string> = T extends BuildInActionName ? BuildInActions[T] : (...args: any[]) => any
 export type HookType = 'before-run' | 'after-run'
 
-export interface Action {
+export interface Action<T extends string> {
   /**
    * 名称
    */
-  name: string,
+  name: T,
 
   /**
    * 绑定快捷键
@@ -24,7 +23,7 @@ export interface Action {
   /**
    * 执行方法
    */
-  handler: ((this: Action, ...args: any[]) => any)
+  handler: ActionHandler<T>
 
   /**
    * 执行前判断方法，什么时候执行
@@ -32,7 +31,7 @@ export interface Action {
   when?: () => boolean
 }
 
-const actions: { [id: string]: Action } = {}
+const actions: { [id: string]: Action<string> } = {}
 
 /**
  * Hook 一个 Action
@@ -40,9 +39,7 @@ const actions: { [id: string]: Action } = {}
  * @param name Action 名
  * @param handler 处理方法
  */
-export function hookAction (type: HookType, name: ActionName, handler: (payload: any) => void): () => void
-export function hookAction (type: HookType, name: string, handler: (payload: any) => void): () => void
-export function hookAction (type: HookType, name: string, handler: (payload: any) => void) {
+export function hookAction (type: HookType, name: BuildInActionName, handler: (payload: any) => void) {
   bus.on(`action.${type}.${name}` as any, handler)
   return () => bus.off(`action.${type}.${name}` as any, handler)
 }
@@ -52,7 +49,7 @@ export function hookAction (type: HookType, name: string, handler: (payload: any
  * @param action Action
  * @returns Action
  */
-export function registerAction (action: Action) {
+export function registerAction<T extends string> (action: Action<T>) {
   logger.debug('registerAction', action.name)
   actions[action.name] = action
   if (action.keys) {
@@ -70,11 +67,11 @@ export function registerAction (action: Action) {
  * 获取一个 Action 的执行方法，调用执行时候会触发相关的钩子
  * @param name Action 名称
  */
-export function getActionHandler (name: ActionName): ActionHandler
-export function getActionHandler (name: string): ActionHandler
-export function getActionHandler (name: string) {
+export function getActionHandler <T extends BuildInActionName> (name: T): ActionHandler<T>
+export function getActionHandler <T extends string> (name: T): ActionHandler<T>
+export function getActionHandler <T extends string> (name: T): ActionHandler<T> {
   logger.debug('getActionHandler', name)
-  return (...args: any[]) => {
+  return ((...args: any[]) => {
     bus.emit(`action.before-run.${name}` as any, args)
 
     let result: any
@@ -82,21 +79,21 @@ export function getActionHandler (name: string) {
     const action = getAction(name)
     if (action) {
       if (!(action.when && !action.when())) {
-        result = action.handler?.(...args)
+        result = (action.handler)?.(...args)
       }
     }
 
     bus.emit(`action.after-run.${name}` as any, result)
     return result
-  }
+  }) as ActionHandler<T>
 }
 
 /**
  * 获取一个 Action
  * @param name Action 名称
  */
-export function getAction (name: ActionName): Action | undefined
-export function getAction (name: string): Action | undefined
+export function getAction <T extends BuildInActionName> (name: T): Action<T> | undefined
+export function getAction <T extends string>(name: T): Action<T> | undefined
 export function getAction (name: string) {
   logger.debug('getAction', name)
   return actions[name]
@@ -106,7 +103,7 @@ export function getAction (name: string) {
  * 移除一个方法
  * @param name Actin 名称
  */
-export function removeAction (name: ActionName): void
+export function removeAction (name: BuildInActionName): void
 export function removeAction (name: string): void
 export function removeAction (name: string) {
   logger.debug('removeAction', name)

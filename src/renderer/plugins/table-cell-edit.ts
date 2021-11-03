@@ -161,7 +161,7 @@ export default {
           input.style.position = 'absolute'
           input.style.display = 'block'
           input.style.padding = '4px'
-          input.autofocus = true
+          ;(input as any).autofocus = true
           input.placeholder = 'ESC 取消'
           setTimeout(() => {
             input.focus()
@@ -181,7 +181,7 @@ export default {
     ctx.registerHook('ON_VIEW_ELEMENT_DBCLICK', e => handleClick(e, false))
     ctx.registerHook('ON_VIEW_ELEMENT_CLICK', e => handleClick(e, true))
     ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
-      const view: HTMLElement = getViewDom()
+      const view: HTMLElement = getViewDom()!
       view.querySelectorAll('.yank-table-cell').forEach(td => {
         (td as HTMLElement).title = '双击编辑'
       })

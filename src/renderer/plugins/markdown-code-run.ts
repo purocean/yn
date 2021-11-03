@@ -56,7 +56,7 @@ const RunCode = defineComponent({
 
     const runInXterm = (e: MouseEvent) => {
       getActionHandler('xterm.run-code')(
-        props.language,
+        props.language || '',
         props.code,
         !matchKeys(e, [CtrlCmd]),
       )

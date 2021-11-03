@@ -110,47 +110,52 @@ export type BuildInSettings = {
   'plugin.image-hosting-picgo.enable-paste-image': boolean
 }
 
-export type HookType = 'ON_STARTUP'
-  | 'ON_EDITOR_PASTE_IMAGE'
-  | 'ON_VIEW_ELEMENT_CLICK'
-  | 'ON_VIEW_ELEMENT_DBCLICK'
-  | 'ON_VIEW_KEY_DOWN'
-  | 'ON_VIEW_SCROLL'
-  | 'ON_VIEW_RENDER'
-  | 'ON_VIEW_RENDERED'
-  | 'ON_VIEW_MOUNTED'
-  | 'ON_VIEW_FILE_CHANGE'
-  | 'ON_TREE_NODE_SELECT'
-  | 'ON_DOC_BEFORE_EXPORT'
+export type BuildInHookTypes = {
+  ON_STARTUP: [],
+  ON_EDITOR_PASTE_IMAGE: [File],
+  ON_VIEW_ELEMENT_CLICK: [MouseEvent],
+  ON_VIEW_ELEMENT_DBCLICK: [MouseEvent],
+  ON_VIEW_KEY_DOWN: [KeyboardEvent, HTMLElement | null ],
+  ON_VIEW_SCROLL: [WheelEvent],
+  ON_VIEW_RENDER: [{ getViewDom: ()=> HTMLElement | null }],
+  ON_VIEW_RENDERED: [{ getViewDom: ()=> HTMLElement | null }],
+  ON_VIEW_MOUNTED: [{ getViewDom: ()=> HTMLElement | null }],
+  ON_VIEW_FILE_CHANGE: [{ getViewDom: ()=> HTMLElement | null }],
+  ON_TREE_NODE_SELECT: [Components.Tree.Node],
+  ON_DOC_BEFORE_EXPORT: [],
+}
 
-export type BuildInActionName = 'view.refresh'
-  | 'view.reveal-line'
-  | 'view.scroll-top-to'
-  | 'view.get-content-html'
-  | 'view.enter-presentation'
-  | 'view.exit-presentation'
-  | 'layout.toggle-view'
-  | 'layout.toggle-side'
-  | 'layout.toggle-xterm'
-  | 'layout.toggle-editor'
-  | 'status-bar.refresh-menu'
-  | 'tree.refresh'
-  | 'editor.toggle-wrap'
-  | 'filter.show-quick-open'
-  | 'filter.choose-document'
-  | 'file-tabs.switch-left'
-  | 'file-tabs.switch-right'
-  | 'file-tabs.switch-next'
-  | 'xterm.run-code'
-  | 'xterm.run'
-  | 'xterm.init'
-  | 'plugin.document-history-stack.back'
-  | 'plugin.document-history-stack.forward'
-  | 'plugin.image-hosting-picgo.upload'
-  | 'plugin.status-bar-help.show-readme'
-  | 'plugin.status-bar-help.show-features'
-  | 'plugin.status-bar-help.show-shortcuts'
-  | 'plugin.status-bar-help.show-plugin'
-  | 'plugin.transform-img-link.all'
-  | 'plugin.transform-img-link.single-by-click'
-  | 'plugin.switch-todo.switch'
+export type BuildInActions = {
+  'view.refresh': () => void,
+  'view.reveal-line': (line: number) => void,
+  'view.scroll-top-to': (top: number) => void,
+  'view.get-content-html': () => string,
+  'view.enter-presentation': () => void,
+  'view.exit-presentation': () => void,
+  'layout.toggle-view': (visible?: boolean) => void,
+  'layout.toggle-side': (visible?: boolean) => void,
+  'layout.toggle-xterm': (visible?: boolean) => void,
+  'layout.toggle-editor': (visible?: boolean) => void,
+  'status-bar.refresh-menu': () => void,
+  'tree.refresh': () => void,
+  'editor.toggle-wrap': () => void,
+  'filter.show-quick-open': () => void,
+  'filter.choose-document': () => Promise<Doc>,
+  'file-tabs.switch-left': () => void,
+  'file-tabs.switch-right': () => void,
+  'file-tabs.switch-next': () => void,
+  'xterm.run-code': (language: string, code: string, exit: boolean) => void,
+  'xterm.run': (code: string) => void,
+  'xterm.init': () => void,
+  'plugin.document-history-stack.back': () => void,
+  'plugin.document-history-stack.forward': () => void,
+  'plugin.image-hosting-picgo.upload': (file: File) => void,
+  'plugin.status-bar-help.show-readme': () => void,
+  'plugin.status-bar-help.show-features': () => void,
+  'plugin.status-bar-help.show-shortcuts': () => void,
+  'plugin.status-bar-help.show-plugin': () => void,
+  'plugin.transform-img-link.all': () => void,
+  'plugin.switch-todo.switch': (line?: number, checked?: boolean) => void,
+}
+
+export type BuildInActionName = keyof BuildInActions

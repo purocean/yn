@@ -7,8 +7,8 @@ export default {
     let stack: Doc[] = []
     let idx = -1
 
-    const backId: BuildInActionName = 'plugin.document-history-stack.back'
-    const forwardId: BuildInActionName = 'plugin.document-history-stack.forward'
+    const backId = 'plugin.document-history-stack.back'
+    const forwardId = 'plugin.document-history-stack.forward'
 
     function go (offset: number) {
       const index = idx + offset

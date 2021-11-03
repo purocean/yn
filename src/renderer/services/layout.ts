@@ -15,40 +15,40 @@ export function emitResize () {
 
 /**
  * 切换侧栏展示
- * @param val 是否展示
+ * @param visible 是否展示
  */
-export function toggleSide (val?: boolean) {
-  store.commit('setShowSide', typeof val === 'boolean' ? val : !store.state.showSide)
+export function toggleSide (visible?: boolean) {
+  store.commit('setShowSide', typeof visible === 'boolean' ? visible : !store.state.showSide)
   emitResize()
 }
 
 /**
  * 切换预览展示
- * @param val 是否展示
+ * @param visible 是否展示
  */
-export function toggleView (val?: boolean) {
-  store.commit('setShowView', typeof val === 'boolean' ? val : !store.state.showView)
+export function toggleView (visible?: boolean) {
+  store.commit('setShowView', typeof visible === 'boolean' ? visible : !store.state.showView)
   store.commit('setShowEditor', true)
   emitResize()
 }
 
 /**
  * 切换编辑器展示
- * @param val 是否展示
+ * @param visible 是否展示
  */
-export function toggleEditor (val?: boolean) {
+export function toggleEditor (visible?: boolean) {
   store.commit('setShowView', true)
-  store.commit('setShowEditor', typeof val === 'boolean' ? val : !store.state.showEditor)
+  store.commit('setShowEditor', typeof visible === 'boolean' ? visible : !store.state.showEditor)
   emitResize()
 }
 
 /**
  * 切换终端展示
- * @param val 是否展示
+ * @param visible 是否展示
  */
-export function toggleXterm (val?: boolean) {
+export function toggleXterm (visible?: boolean) {
   const showXterm = store.state.showXterm
-  const show = typeof val === 'boolean' ? val : !showXterm
+  const show = typeof visible === 'boolean' ? visible : !showXterm
 
   store.commit('setShowXterm', show)
 

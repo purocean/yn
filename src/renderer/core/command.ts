@@ -31,7 +31,7 @@ export interface Command {
   /**
    * 命令执行方法
    */
-  handler: null | string | ((...args: any[]) => void),
+  handler: null | string | (() => void),
 
   /**
    * 执行前判断方法，什么时候执行
@@ -149,7 +149,7 @@ export function isCommand (e: KeyboardEvent | MouseEvent, id: string) {
  */
 export function runCommand (command: Command) {
   if (typeof command.handler === 'string') {
-    return getActionHandler(command.handler as any)()
+    return getActionHandler(command.handler)()
   } else {
     return command.handler?.()
   }

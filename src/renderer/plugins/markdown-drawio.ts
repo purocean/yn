@@ -177,9 +177,9 @@ export default {
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
 
-    ctx.registerHook('ON_TREE_NODE_SELECT', async (item: any) => {
+    ctx.registerHook('ON_TREE_NODE_SELECT', async (item) => {
       if (item.path.toLowerCase().endsWith('.drawio')) {
-        const srcdoc = await buildSrcdoc(item)
+        const srcdoc = await buildSrcdoc({ content: '', ...item })
         openWindow(buildSrc(srcdoc, '查看图形'))
 
         return true

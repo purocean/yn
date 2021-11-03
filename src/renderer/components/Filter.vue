@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import type { Doc } from '@fe/types'
 import { registerAction, removeAction } from '@fe/core/action'
 import { CtrlCmd } from '@fe/core/command'
 import { switchDoc } from '@fe/services/document'
@@ -34,8 +35,8 @@ export default defineComponent({
     }
 
     function chooseDocument () {
-      return new Promise(resolve => {
-        callback.value = (f: any) => {
+      return new Promise<Doc>(resolve => {
+        callback.value = (f: Doc) => {
           resolve(f)
           callback.value = null
         }
