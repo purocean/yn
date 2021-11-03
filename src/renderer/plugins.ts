@@ -19,6 +19,7 @@ import tableCellEdit from '@fe/plugins/table-cell-edit'
 import imageViewer from '@fe/plugins/image-viewer'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
+import markdownMacro from './plugins/markdown-macro'
 import markdownFrontMatter from '@fe/plugins/markdown-front-matter'
 import markdownSourceLine from '@fe/plugins/markdown-source-line'
 import markdownImsize from '@fe/plugins/markdown-imsize'
@@ -66,6 +67,7 @@ export default [
   imageViewer,
   markdownHtml,
   markdownRenderVnode,
+  markdownMacro,
   markdownFrontMatter,
   markdownSourceLine,
   markdownImsize,
