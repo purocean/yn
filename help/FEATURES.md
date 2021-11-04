@@ -56,7 +56,7 @@ heading-number: true
 
 脑图使用 [kityminder-core](https://github.com/fex-team/kityminder-core) 实现。
 
-## Mermaid 图形解析
+## Mermaid 图形
 
 ```mermaid
 graph LR
@@ -118,7 +118,7 @@ journey
       Sit down: 3: Me
 ```
 
-## Plantuml 图形解析
+## Plantuml 图形
 
 系统需要有 Java 环境，并安装有 graphviz
 示例如下
@@ -143,7 +143,7 @@ List:        | More  \
 Test | Test
 [测试表格]
 
-## Katex 公式解析
+## Katex 公式
 
 此功能由 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) 插件提供
 
@@ -335,7 +335,7 @@ chart.setOption({
 }
 ```
 
-## 嵌入 Draw.io 图形
+## Draw.io 图形
 
 ### 嵌入 xml
 
@@ -353,7 +353,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 [drawio](./test.drawio){link-type="drawio"}
 ```
 
-## 嵌入 Luckysheet 表格文件
+## Luckysheet 表格
 
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
