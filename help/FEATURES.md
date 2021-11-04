@@ -1,5 +1,6 @@
 ---
 headingNumber: true
+customVar: Hello
 ---
 
 # Yank-Note 特色功能使用说明
@@ -422,11 +423,63 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 
 页面支持类似 [Jekyll Front Matter](https://jekyllrb.com/docs/front-matter/) 配置信息
 
-### 内置变量
+内置变量
 
 变量名 | 类型 | 描述
 ---- | ----- | ---
 headingNumber | boolean | 是否开启页面标题序号编号
+
+## 宏替换
+
+Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
+
+### 语法
+
+```md
+<= <expression> =>
+```
+
+其中 `expression` 是需要执行的 js 代码。
+
+### 示例
+
+- 是否开启页面标题序号编号 <= headingNumber =>
+- 自定义变量 <= customVar =>
+- 当前文档名 <= $doc.basename =>
+- 当前文档路径 <= $doc.path =>
+- 当前时间 <= new Date().toString() =>
+- 四则运算 <= (1 + 2) / 2 =>
+- 九九乘法表
+  <=
+  (function nine (num) {
+      let res = ''
+      for (let i = 1; i <= num; i++) {
+          let str = '';
+          for (let k = 1; k <= num; k++) {
+              if (i >= k) {
+                  str += k + 'x' + i + '=' + i*k + ' ';
+              }
+          }
+          res = res + str + '\n'
+      }
+      return res
+  })(9)
+  =>
+
+### 可用变量
+
+宏代码可以使用在 Front Matter 定义的变量，也可以使用下面的内置变量
+
+变量名 | 类型 | 描述
+---- | ----- | ---
+`$ctx` | object | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/context.html)
+`$doc` | object | 当前文档信息
+`$doc.basename` | string | 当前文档文件名（无后缀）
+`$doc.name` | string | 当前文档文件名
+`$doc.path` | string | 当前文档路径
+`$doc.repo` | string | 当前文档仓库
+`$doc.content` | string | 当前文档内容
+`$doc.status` | 'loaded', 'save-failed', 'saved' | 当前文档状态
 
 ## 命令行参数
 
