@@ -14,6 +14,19 @@ function macro (expression: string, vars: Record<string, any>) {
   return '' + res
 }
 
+function lineCount (str: string) {
+  let s = 1
+  const len = str.length
+
+  for (let i = 0; i < len; i++) {
+    if (str.charCodeAt(i) === 0x0A) {
+      s++
+    }
+  }
+
+  return s
+}
+
 export default {
   name: 'markdown-macro',
   register: ctx => {
@@ -34,11 +47,36 @@ export default {
           ...env.attributes
         }
 
+        if (!env.macroLines) {
+          env.macroLines = []
+        }
+
         const reg = /<=((?:.|\s)+?)=>/g
-        src = src.replace(reg, (match, $1) => {
+        let lineOffset = 0
+        let posOffset = 0
+        src = src.replace(reg, (match, $1, matchPos) => {
           try {
-            return macro($1.trim(), vars)
-          } catch {}
+            const result = macro($1.trim(), vars)
+
+            const matchLine = lineCount(match)
+            const resultLine = lineCount(result)
+
+            if (resultLine !== matchLine) {
+              lineOffset += (matchLine - resultLine)
+              posOffset += (match.length - result.length)
+              env.macroLines.push({
+                matchPos,
+                matchLine,
+                resultLine,
+                lineOffset,
+                posOffset,
+                matchLength: match.length,
+                resultLength: result.length,
+              })
+            }
+
+            return result
+          } catch (error) {}
 
           return match
         })
