@@ -124,17 +124,22 @@ if (FLAG_DEMO) {
             }
           }
 
-          const message = (url.searchParams.get('doc') ? '' : '当前处于 DEMO 模式，部分功能不可用{style="color: red; font-size: 30px"}\n\n')
+          const replaceContnet = (str: string) => {
+            const message = (url.searchParams.get('doc') ? '' : '当前处于 DEMO 模式，部分功能不可用{style="color: red; font-size: 30px"}\n\n')
+
+            const idx = str.indexOf('#')
+            return str.substring(0, idx) + message + str.substring(idx)
+          }
 
           if (cache[path]) {
-            data.data.content = message + cache[path]
+            data.data.content = replaceContnet(cache[path])
             return Promise.resolve(data)
           }
 
           return xFetch(path).then(res => res.text()).then(md => {
             md = md.replace(/```markdown\n(\[luckysheet\].+)\n```/, '$1')
             cache[path] = md
-            data.data.content = message + md
+            data.data.content = replaceContnet(md)
             return data
           })
         }
