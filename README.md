@@ -87,14 +87,21 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.10.0](https://github.com/purocean/yn/releases/tag/v3.10.0) 2021-11-04
+1. 增加宏替换功能
+2. 增加 Front Matter 解析
+3. 增加标题序号展示
+4. 切换待办状态支持快捷键 `Alt + O`
+5. 其他若干问题修复和优化
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v3.9.4](https://github.com/purocean/yn/releases/tag/v3.9.4) 2021-10-31
 1. 修复 HTML 小工具编辑代码界面不更新问题
 2. 修复 Windows 下终端不能正确切换目录问题
 3. 其他交互体验优化
 4. 插件开发：增加 `ctx.document.isSameRepo` 方法
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v3.9.3](https://github.com/purocean/yn/releases/tag/v3.9.3) 2021-10-29
 1. HTML 小工具支持无边框展示
