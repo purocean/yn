@@ -1,5 +1,6 @@
 ---
 headingNumber: true
+enableMacro: true
 customVar: Hello
 ---
 
@@ -428,12 +429,15 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 变量名 | 类型 | 描述
 ---- | ----- | ---
 headingNumber | boolean | 是否开启页面标题序号编号
+enableMacro | boolean | 是否开启宏替换
 
 ## 宏替换
 
 Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 
-### 语法
+### 使用
+
+使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`
 
 ```md
 <= <expression> =>

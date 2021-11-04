@@ -20,34 +20,28 @@ export default {
     ctx.markdown.registerPlugin(md => {
       const render = md.render
       md.render = (src: string, env?: any) => {
-        let vars: Record<string, any> | undefined
-        function getVars () {
-          if (!vars) {
-            const file = env.file || {}
-            vars = {
-              $ctx: ctx,
-              $doc: {
-                basename: file.name ? file.name.substring(0, file.name.lastIndexOf('.')) : '',
-                ...ctx.lib.lodash.pick(env.file, 'name', 'repo', 'path', 'content', 'status')
-              },
-              ...env.attributes
-            }
-          }
-
-          return vars || {}
+        if (!env.attributes || !env.attributes.enableMacro) {
+          return render.call(md, src, env)
         }
 
-        const keys = Object.keys(env.attributes)
-        if (keys.length > 0) {
-          const reg = /<=((?:.|\s)+?)=>/g
-          src = src.replace(reg, (match, $1) => {
-            try {
-              return macro($1.trim(), getVars())
-            } catch {}
-
-            return match
-          })
+        const file = env.file || {}
+        const vars = {
+          $ctx: ctx,
+          $doc: {
+            basename: file.name ? file.name.substring(0, file.name.lastIndexOf('.')) : '',
+            ...ctx.lib.lodash.pick(env.file, 'name', 'repo', 'path', 'content', 'status')
+          },
+          ...env.attributes
         }
+
+        const reg = /<=((?:.|\s)+?)=>/g
+        src = src.replace(reg, (match, $1) => {
+          try {
+            return macro($1.trim(), vars)
+          } catch {}
+
+          return match
+        })
 
         return render.call(md, src, env)
       }

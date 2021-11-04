@@ -161,5 +161,6 @@ export type BuildInActions = {
 export type BuildInActionName = keyof BuildInActions
 
 export type FrontMatterAttrs = {
-  'headingNumber'?: boolean
+  headingNumber?: boolean,
+  enableMacro?: boolean,
 }
