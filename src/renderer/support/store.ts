@@ -1,4 +1,4 @@
-import { omit } from 'lodash-es'
+import { pick } from 'lodash-es'
 import { createStore } from 'vuex'
 import * as storage from '@fe/utils/storage'
 import * as api from '@fe/support/api'
@@ -88,7 +88,7 @@ export default createStore({
     setCurrentFile (state, data: Doc | null) {
       state.currentFile = data
 
-      storage.set('currentFile', omit(data, 'content'))
+      storage.set('currentFile', pick(data, 'repo', 'path', 'type', 'name'))
 
       if (data) {
         state.recentOpenTime = { ...(state.recentOpenTime || {}), [`${data.repo}|${data.path}`]: new Date().valueOf() }

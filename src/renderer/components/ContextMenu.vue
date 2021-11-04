@@ -99,6 +99,7 @@ export default defineComponent({
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 2147483646;
 }
 
 .menu {
@@ -113,7 +114,7 @@ export default defineComponent({
   border: 1px var(--g-color-84) solid;
   border-left: 0;
   border-top: 0;
-  z-index: 9999999999;
+  z-index: 2147483647;
   color: var(--g-foreground-color);
   min-width: 9em;
   cursor: default;

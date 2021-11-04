@@ -55,7 +55,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
 }
 
 const actionKeydown: BuildInActionName = 'plugin.transform-img-link.all'
-const actionClick: BuildInActionName = 'plugin.transform-img-link.single-by-click'
+const commandClick = 'plugin.transform-img-link.single-by-click'
 let refView: HTMLElement
 
 async function transformAll () {
@@ -87,7 +87,7 @@ async function handleClick (e: MouseEvent) {
   }
 
   const img = target as HTMLImageElement
-  if (isCommand(e, actionClick)) { // 转换外链图片到本地
+  if (isCommand(e, commandClick)) { // 转换外链图片到本地
     const data = await transformImgOutLink(img)
     if (data) {
       replaceValue(data.oldLink, data.replacedLink)
@@ -113,14 +113,14 @@ export default {
     })
 
     ctx.command.registerCommand({
-      id: actionClick,
+      id: commandClick,
       keys: [CtrlCmd, Shift, LeftClick],
       handler: null
     })
 
     ctx.registerHook('ON_VIEW_ELEMENT_CLICK', handleClick)
     ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
-      refView = getViewDom()
+      refView = getViewDom()!
     })
 
     ctx.statusBar.tapMenus(menus => {

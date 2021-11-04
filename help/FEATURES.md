@@ -1,3 +1,9 @@
+---
+headingNumber: true
+enableMacro: true
+customVar: Hello
+---
+
 # Yank-Note 特色功能使用说明
 
 [toc]{type: "ol", level: [2]}
@@ -52,7 +58,7 @@
 
 脑图使用 [kityminder-core](https://github.com/fex-team/kityminder-core) 实现。
 
-## Mermaid 图形解析
+## Mermaid 图形
 
 ```mermaid
 graph LR
@@ -114,7 +120,7 @@ journey
       Sit down: 3: Me
 ```
 
-## Plantuml 图形解析
+## Plantuml 图形
 
 系统需要有 Java 环境，并安装有 graphviz
 示例如下
@@ -139,7 +145,7 @@ List:        | More  \
 Test | Test
 [测试表格]
 
-## Katex 公式解析
+## Katex 公式
 
 此功能由 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) 插件提供
 
@@ -331,7 +337,7 @@ chart.setOption({
 }
 ```
 
-## 嵌入 Draw.io 图形
+## Draw.io 图形
 
 ### 嵌入 xml
 
@@ -349,7 +355,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 [drawio](./test.drawio){link-type="drawio"}
 ```
 
-## 嵌入 Luckysheet 表格文件
+## Luckysheet 表格
 
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
@@ -413,6 +419,71 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 
 1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
     例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
+
+## Front Matter
+
+页面支持类似 [Jekyll Front Matter](https://jekyllrb.com/docs/front-matter/) 配置信息
+
+内置变量
+
+变量名 | 类型 | 描述
+---- | ----- | ---
+headingNumber | boolean | 是否开启页面标题序号编号
+enableMacro | boolean | 是否开启宏替换
+
+## 宏替换
+
+Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
+
+### 使用
+
+使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`
+
+```md
+<= <expression> =>
+```
+
+其中 `expression` 是需要执行的 js 代码。
+
+### 示例
+
+- 是否开启页面标题序号编号: <= headingNumber =>
+- 自定义变量: <= customVar =>
+- 当前文档名: <= $doc.basename =>
+- 当前文档路径: <= $doc.path =>
+- 当前时间: <= ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =>
+- 四则运算: <= (1 + 2) / 2 =>
+- 九九乘法表
+  <=
+  (function nine (num) {
+      let res = ''
+      for (let i = 1; i <= num; i++) {
+          let str = '';
+          for (let k = 1; k <= num; k++) {
+              if (i >= k) {
+                  str += k + 'x' + i + '=' + i*k + ' ';
+              }
+          }
+          res = res + str + '\n'
+      }
+      return res
+  })(9)
+  =>
+
+### 可用变量
+
+宏代码可以使用在 Front Matter 定义的变量，也可以使用下面的内置变量
+
+变量名 | 类型 | 描述
+---- | ----- | ---
+`$ctx` | object | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/context.html)
+`$doc` | object | 当前文档信息
+`$doc.basename` | string | 当前文档文件名（无后缀）
+`$doc.name` | string | 当前文档文件名
+`$doc.path` | string | 当前文档路径
+`$doc.repo` | string | 当前文档仓库
+`$doc.content` | string | 当前文档内容
+`$doc.status` | 'loaded', 'save-failed', 'saved' | 当前文档状态
 
 ## 命令行参数
 

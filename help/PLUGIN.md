@@ -1,3 +1,7 @@
+---
+headingNumber: true
+---
+
 # 插件开发指南
 
 [toc]{type: "ol"}
@@ -63,13 +67,13 @@ Yank Note 在执行一些操作的时候，会触发一些钩子调用。
 
 钩子和事件不同的地方在于，钩子处理是可以有返回值 `true` 或者 `false`。当钩子处理方法返回 `true`，则后续的钩子不再运行。
 
-内部的钩子类型可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#HookType)
+内部的钩子类型可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInHookTypes)
 
 ### Action 动作
 
 Yank Note 有一个 Action 中心 [`ctx.action`](https://yn-api-doc.vercel.app/modules/core_action.html)，提供动作的管理和运行。
 
-内部 Action 可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInActionName)
+内部 Action 可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInActions)
 
 ### Command 命令
 

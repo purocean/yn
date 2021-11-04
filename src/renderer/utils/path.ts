@@ -5,8 +5,11 @@ export const {
   extname,
   dirname,
   join,
-  resolve,
 } = Path
+
+export function resolve (...args: string[]) {
+  return Path.resolve('/', ...args)
+}
 
 export function relative (from: string, to: string) {
   return Path.relative(

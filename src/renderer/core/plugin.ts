@@ -1,15 +1,16 @@
-import type { HookType } from '@fe/types'
+import type { BuildInHookTypes } from '@fe/types'
 import { getLogger } from '@fe/utils'
 
 const logger = getLogger('plugin')
 
-export type HookFun = (...args: any[]) => boolean | void | Promise<boolean | void>
+export type HookType = keyof BuildInHookTypes
+export type HookFun<T extends any[]> = (...args: T) => boolean | void | Promise<boolean | void>
 export interface Plugin<Ctx = any> {
   name: string;
   register?: (ctx: Ctx) => void;
 }
 
-const hooks: { [key in HookType]?: {fun: HookFun; once: boolean}[] } = {}
+const hooks: { [key in HookType]?: ({fun: HookFun<any>; once: boolean})[] } = {}
 const plugins: {[name: string]: Plugin} = {}
 
 /**
@@ -18,7 +19,7 @@ const plugins: {[name: string]: Plugin} = {}
  * @param fun 执行方法
  * @param once 是否只执行一次
  */
-export function registerHook (type: HookType, fun: HookFun, once = false) {
+export function registerHook<T extends HookType> (type: T, fun: HookFun<BuildInHookTypes[T]>, once = false) {
   if (Array.isArray(hooks[type])) {
     hooks[type] = [...hooks[type]!, { fun, once }]
   } else {
@@ -31,7 +32,7 @@ export function registerHook (type: HookType, fun: HookFun, once = false) {
  * @param type 钩子类型
  * @param fun 执行方法
  */
-export function removeHook (type: HookType, fun: HookFun) {
+export function removeHook<T extends HookType> (type: T, fun: HookFun<BuildInHookTypes[T]>) {
   if (Array.isArray(hooks[type])) {
     hooks[type] = hooks[type]!.filter(x => x.fun !== fun)
   }
@@ -43,9 +44,9 @@ export function removeHook (type: HookType, fun: HookFun) {
  * @param args 参数
  * @returns 所有钩子执行结果
  */
-export async function triggerHook (type: HookType, ...args: any[]) {
+export async function triggerHook<T extends HookType> (type: T, ...args: BuildInHookTypes[T]) {
   logger.debug('triggerHook', type, args)
-  for (const { fun, once } of (hooks[type] || [])) {
+  for (const { fun, once } of (hooks[type] || ([] as any))) {
     once && removeHook(type, fun)
     if (await fun(...args)) {
       return true

@@ -67,7 +67,7 @@ export default defineComponent({
       await createDoc({ repo: props.item.repo }, props.item)
     }
 
-    async function select (item: any) {
+    async function select (item: Components.Tree.Node) {
       if (item.type !== 'dir') {
         if (extensions.supported(item.name)) {
           switchDoc(item)

@@ -18,3 +18,16 @@ export function registerPlugin (plugin: (md: Markdown, ...args: any) => void, pa
 
 markdown.use(MarkdownItAttrs)
 markdown.use(MarkdownItMultimdTable, { multiline: true })
+
+const tokenize = markdown.block.tokenize
+markdown.block.tokenize = function (state, startLine, endLine) {
+  tokenize.call(this, state, startLine, endLine)
+
+  if (!state.env) {
+    state.env = {}
+  }
+
+  // 将 bMarks eMarks 挂载到 env 上，方便渲染插件调用
+  state.env.bMarks = state.bMarks
+  state.env.eMarks = state.eMarks
+}

@@ -19,6 +19,8 @@ import tableCellEdit from '@fe/plugins/table-cell-edit'
 import imageViewer from '@fe/plugins/image-viewer'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
+import markdownMacro from './plugins/markdown-macro'
+import markdownFrontMatter from '@fe/plugins/markdown-front-matter'
 import markdownSourceLine from '@fe/plugins/markdown-source-line'
 import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
@@ -38,6 +40,7 @@ import markdownApplet from '@fe/plugins/markdown-applet'
 import markdownEcharts from '@fe/plugins/markdown-echarts'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
+import markdownHeadingNumber from './plugins/markdown-heading-number'
 import syncScroll from '@fe/plugins/sync-scroll'
 import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
@@ -64,6 +67,8 @@ export default [
   imageViewer,
   markdownHtml,
   markdownRenderVnode,
+  markdownMacro,
+  markdownFrontMatter,
   markdownSourceLine,
   markdownImsize,
   markdownToc,
@@ -83,6 +88,7 @@ export default [
   markdownEcharts,
   markdownLuckysheet,
   markdownContainer,
+  markdownHeadingNumber,
   syncScroll,
   transformImgOutLink,
   imageHostingPicgo,
