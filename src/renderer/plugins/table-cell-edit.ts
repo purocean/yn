@@ -5,6 +5,12 @@ import { getActionHandler } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import { getLineContent, replaceLine } from '@fe/services/editor'
 
+function reset (input: HTMLTextAreaElement) {
+  input.parentElement!.style.position = ''
+  input.onblur = () => undefined
+  input.remove()
+}
+
 const editTableCell = async (start: number, end: number, cellIndex: number, input: HTMLTextAreaElement | null) => {
   const toast = useToast()
   const modal = useModal()
@@ -55,11 +61,10 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
   const text = getLineContent(start).trim()
 
   const columns = escapedSplit(text)
-  const cellText = columns[cellIndex].trim()
+  const cellText = columns[cellIndex]?.trim()
 
   if (typeof cellText !== 'string') {
-    toast.show('warning', '编辑错误')
-    return
+    throw new Error('编辑错误')
   }
 
   let value = cellText
@@ -67,9 +72,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
     input.value = cellText
     value = await (new Promise((resolve) => {
       const cancel = () => {
-        input.parentElement!.style.position = ''
-        input.onblur = () => undefined
-        input.remove()
+        reset(input)
       }
 
       const ok = () => {
@@ -170,7 +173,10 @@ export default {
           target.appendChild(input)
         }
 
-        editTableCell(start, end, cellIndex, input)
+        editTableCell(start, end, cellIndex, input).catch((e: Error) => {
+          useToast().show('warning', e.message)
+          input && reset(input)
+        })
 
         return preventEvent()
       }
