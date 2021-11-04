@@ -447,12 +447,12 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 
 ### 示例
 
-- 是否开启页面标题序号编号 <= headingNumber =>
-- 自定义变量 <= customVar =>
-- 当前文档名 <= $doc.basename =>
-- 当前文档路径 <= $doc.path =>
-- 当前时间 <= new Date().toString() =>
-- 四则运算 <= (1 + 2) / 2 =>
+- 是否开启页面标题序号编号: <= headingNumber =>
+- 自定义变量: <= customVar =>
+- 当前文档名: <= $doc.basename =>
+- 当前文档路径: <= $doc.path =>
+- 当前时间: <= ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =>
+- 四则运算: <= (1 + 2) / 2 =>
 - 九九乘法表
   <=
   (function nine (num) {
