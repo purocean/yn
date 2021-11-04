@@ -52,7 +52,7 @@ export default {
 
       md.renderer.rules.heading_open = function (tokens, idx, opt, env, slf) {
         const attrs: FrontMatterAttrs = env.attributes
-        if (attrs['heading-number']) {
+        if (attrs.headingNumber) {
           const token = tokens[idx]
           token.attrJoin('class', 'show-number')
         }

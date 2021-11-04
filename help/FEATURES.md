@@ -1,5 +1,5 @@
 ---
-heading-number: true
+headingNumber: true
 ---
 
 # Yank-Note 特色功能使用说明
@@ -426,7 +426,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 
 变量名 | 类型 | 描述
 ---- | ----- | ---
-heading-number | boolean | 是否开启页面标题序号编号
+headingNumber | boolean | 是否开启页面标题序号编号
 
 ## 命令行参数
 

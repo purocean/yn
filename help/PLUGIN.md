@@ -1,5 +1,5 @@
 ---
-heading-number: true
+headingNumber: true
 ---
 
 # 插件开发指南
