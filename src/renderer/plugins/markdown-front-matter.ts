@@ -18,14 +18,14 @@ export default {
           if (fm.attributes && typeof fm.attributes === 'object') {
             attributes = fm.attributes
           }
-
-          return render.call(md, src, { ...env, bodyBegin, attributes })
         } catch (error) {
           console.error(error)
         }
 
         logger.debug('render', bodyBegin, attributes)
-        return render.call(md, src, { ...env, bodyBegin, attributes })
+
+        Object.assign(env, { bodyBegin, attributes })
+        return render.call(md, src, env)
       }
 
       const firstRule = (md.block.ruler as any).__rules__[0]
