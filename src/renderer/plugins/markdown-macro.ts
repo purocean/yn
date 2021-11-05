@@ -59,6 +59,7 @@ export default {
             const expression = match
               .substring(2, match.length - 2)
               .trim()
+              .replace(/(?:=\\>|<\\=)/g, x => x.replace('\\', ''))
 
             const result = macro(expression, vars)
 

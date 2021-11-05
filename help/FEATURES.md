@@ -443,7 +443,9 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 <= <expression> =>
 ```
 
-其中 `expression` 是需要执行的 js 代码。
+其中 `expression` 是需要执行的 js 表达式。
+
+如果表达式中需要包含 <\= 或 =\> 请输入 `<\=` 或 `=\>` 转义替换
 
 ### 示例
 
@@ -451,6 +453,7 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 - 自定义变量: <= customVar =>
 - 当前文档名: <= $doc.basename =>
 - 当前时间: <= ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =>
+- 限定符转义: <= (1 <\= 3) ? 'result =\> true' : 'result =\> false' =>
 - 四则运算: <= (1 + 2) / 2 =>
 - 九九乘法表
   <=
