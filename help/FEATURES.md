@@ -8,11 +8,6 @@ customVar: Hello
 
 [toc]{type: "ol", level: [2]}
 
-## TOC 生成
-
-需要生成目录的地方写入 `[toc]{type: "ul", level: [1,2,3]}`
-可以控制目录样式 `ul` 或 `ol` 和级别
-
 ## 应用数据
 
 应用相关的数据目录存放在 `<home>/yank-note` 下面，点击托盘菜单“打开主目录”接口即可查看
@@ -22,6 +17,11 @@ customVar: Hello
 1. 配置文件 `<home>/yank-note/config.json`
 1. 回收站 `<home>/yank-note/trash`
 1. 插件 `<home>/yank-note/plugins`
+
+## TOC 生成
+
+需要生成目录的地方写入 `[toc]{type: "ul", level: [1,2,3]}`
+可以控制目录样式 `ul` 或 `ol` 和级别
 
 ## 待办切换
 
@@ -160,7 +160,7 @@ equation | description
 ----------|------------
 $\nabla \cdot \vec{\mathbf{B}}  = 0$ | divergence of $\vec{\mathbf{B}}$ is zero
 $\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t}  = \vec{\mathbf{0}}$ |  curl of $\vec{\mathbf{E}}$ is proportional to the rate of change of $\vec{\mathbf{B}}$
-$\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} = \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} = 4 \pi \rho$ | _wha?_
+$\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} = \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} = 4 \pi \rho$ | _what?_
 
 ## 运行代码
 
@@ -443,15 +443,17 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 <= <expression> =>
 ```
 
-其中 `expression` 是需要执行的 js 代码。
+其中 `expression` 是需要执行的 js 表达式。
+
+如果表达式中需要包含 <\= 或 =\> 请输入 `<\=` 或 `=\>` 转义替换
 
 ### 示例
 
 - 是否开启页面标题序号编号: <= headingNumber =>
 - 自定义变量: <= customVar =>
 - 当前文档名: <= $doc.basename =>
-- 当前文档路径: <= $doc.path =>
 - 当前时间: <= ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =>
+- 限定符转义: <= (1 <\= 3) ? 'result =\> true' : 'result =\> false' =>
 - 四则运算: <= (1 + 2) / 2 =>
 - 九九乘法表
   <=

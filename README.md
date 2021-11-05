@@ -87,7 +87,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.10.0](https://github.com/purocean/yn/releases/tag/v3.10.0) 2021-11-04
+### [v3.10.1](https://github.com/purocean/yn/releases/tag/v3.10.1) 2021-11-05
 1. 增加宏替换功能
 2. 增加 Front Matter 解析
 3. 增加标题序号展示

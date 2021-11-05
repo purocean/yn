@@ -51,12 +51,17 @@ export default {
           env.macroLines = []
         }
 
-        const reg = /<=((?:.|\s)+?)=>/g
+        const reg = /<=(?:.|\n)+?=>/g
         let lineOffset = 0
         let posOffset = 0
-        src = src.replace(reg, (match, $1, matchPos) => {
+        src = src.replace(reg, (match, matchPos) => {
           try {
-            const result = macro($1.trim(), vars)
+            const expression = match
+              .substring(2, match.length - 2)
+              .trim()
+              .replace(/(?:=\\>|<\\=)/g, x => x.replace('\\', ''))
+
+            const result = macro(expression, vars)
 
             const matchLine = lineCount(match)
             const resultLine = lineCount(result)
