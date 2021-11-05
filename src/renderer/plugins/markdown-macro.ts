@@ -51,7 +51,7 @@ export default {
           env.macroLines = []
         }
 
-        const reg = /<=(?:.|\n)+?=>/g
+        const reg = /<=.+?=>/gs
         let lineOffset = 0
         let posOffset = 0
         src = src.replace(reg, (match, matchPos) => {
