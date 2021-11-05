@@ -148,7 +148,7 @@ export default defineComponent({
     const renderDebonce = debounce(render, 100, { leading: true })
 
     async function keydownHandler (e: KeyboardEvent) {
-      triggerHook('ON_VIEW_KEY_DOWN', e, getViewDom())
+      triggerHook('ON_VIEW_KEY_DOWN', e, getViewDom()!)
     }
 
     function handleScroll (e: any) {
@@ -170,11 +170,11 @@ export default defineComponent({
     }
 
     function handleDbClick (e: MouseEvent) {
-      triggerHook('ON_VIEW_ELEMENT_DBCLICK', e)
+      triggerHook('ON_VIEW_ELEMENT_DBCLICK', e, getViewDom()!)
     }
 
     async function handleClick (e: MouseEvent) {
-      triggerHook('ON_VIEW_ELEMENT_CLICK', e)
+      triggerHook('ON_VIEW_ELEMENT_CLICK', e, getViewDom()!)
     }
 
     function revealLine (line: number) {
