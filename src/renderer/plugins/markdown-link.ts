@@ -7,7 +7,7 @@ import { isElectron, nodeRequire } from '@fe/support/env'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 
-const handleLink = (link: HTMLAnchorElement) => {
+const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
   if (!currentFile) {
     return
@@ -30,6 +30,15 @@ const handleLink = (link: HTMLAnchorElement) => {
       return true
     }
   } else { // 处理相对链接
+    const scrollIntoView = (el: HTMLElement) => {
+      el.scrollIntoView()
+      const wrap = view.parentElement
+      // 如果没有滚动到底部，页面顶部留一点距离方便阅读
+      if (wrap && wrap.scrollHeight !== wrap.scrollTop + wrap.clientHeight) {
+        wrap.scrollTop -= 60
+      }
+    }
+
     if (/(\.md$|\.md#)/.test(href)) { // 处理打开相对 md 文件
       const tmp = decodeURI(href).split('#')
 
@@ -56,7 +65,7 @@ const handleLink = (link: HTMLAnchorElement) => {
 
           if (el) {
             await sleep(0)
-            el.scrollIntoView()
+            scrollIntoView(el)
 
             // 如果是标题的话，也顺便将编辑器滚动到可视区域
             if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
@@ -69,9 +78,7 @@ const handleLink = (link: HTMLAnchorElement) => {
       return true
     } else if (href && href.startsWith('#')) { // 处理 TOC 跳转
       const el = document.getElementById(href.replace(/^#/, ''))
-      if (el) {
-        el.scrollIntoView()
-      }
+      el && scrollIntoView(el)
       return true
     }
 
@@ -146,7 +153,7 @@ function convertLink (state: StateCore) {
 export default {
   name: 'markdown-link',
   register: (ctx) => {
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
+    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e, view) => {
       const target = e.target as HTMLElement
 
       const preventEvent = () => {
@@ -156,7 +163,7 @@ export default {
       }
 
       if (target.tagName === 'A' || target.parentElement?.tagName === 'A') {
-        if (handleLink(target as HTMLAnchorElement)) {
+        if (handleLink(target as HTMLAnchorElement, view)) {
           return preventEvent()
         } else {
           return true

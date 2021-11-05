@@ -87,12 +87,13 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.10.1](https://github.com/purocean/yn/releases/tag/v3.10.1) 2021-11-05
+### [v3.10.2](https://github.com/purocean/yn/releases/tag/v3.10.2) 2021-11-05
 1. 增加宏替换功能
 2. 增加 Front Matter 解析
 3. 增加标题序号展示
 4. 切换待办状态支持快捷键 `Alt + O`
 5. 其他若干问题修复和优化
+6. 插件：ON_VIEW_ELEMENT_CLICK ON_VIEW_ELEMENT_DBCLICK 钩子中可以获取到 view dom
 
 <details>
 <summary>展开查看更多版本记录</summary>

@@ -113,9 +113,9 @@ export type BuildInSettings = {
 export type BuildInHookTypes = {
   ON_STARTUP: [],
   ON_EDITOR_PASTE_IMAGE: [File],
-  ON_VIEW_ELEMENT_CLICK: [MouseEvent],
-  ON_VIEW_ELEMENT_DBCLICK: [MouseEvent],
-  ON_VIEW_KEY_DOWN: [KeyboardEvent, HTMLElement | null ],
+  ON_VIEW_ELEMENT_CLICK: [MouseEvent, HTMLElement],
+  ON_VIEW_ELEMENT_DBCLICK: [MouseEvent, HTMLElement],
+  ON_VIEW_KEY_DOWN: [KeyboardEvent, HTMLElement],
   ON_VIEW_SCROLL: [WheelEvent],
   ON_VIEW_RENDER: [{ getViewDom: ()=> HTMLElement | null }],
   ON_VIEW_RENDERED: [{ getViewDom: ()=> HTMLElement | null }],
