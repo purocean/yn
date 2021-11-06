@@ -10,8 +10,8 @@ function getLine (token: Token, env?: Record<string, any>) {
   if (env?.macroLines && env.bMarks && env.eMarks) {
     const sPos = env.bMarks[lineStart]
     for (let i = 0; i < env.macroLines.length; i++) {
-      const { matchPos, lineOffset, posOffset } = env.macroLines[i]
-      if (sPos + posOffset > matchPos) {
+      const { matchPos, lineOffset, posOffset, currentPosOffset } = env.macroLines[i]
+      if (sPos + posOffset > matchPos && sPos + posOffset - currentPosOffset > matchPos) {
         sOffset = lineOffset
       } else {
         break

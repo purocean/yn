@@ -31,10 +31,11 @@ export default {
   name: 'markdown-macro',
   register: ctx => {
     ctx.markdown.registerPlugin(md => {
-      const render = md.render
-      md.render = (src: string, env?: any) => {
+      md.core.ruler.after('normalize', 'macro', (state) => {
+        const env = state.env || {}
+
         if (!env.attributes || !env.attributes.enableMacro) {
-          return render.call(md, src, env)
+          return false
         }
 
         const file = env.file || {}
@@ -54,7 +55,7 @@ export default {
         const reg = /<=.+?=>/gs
         let lineOffset = 0
         let posOffset = 0
-        src = src.replace(reg, (match, matchPos) => {
+        state.src = state.src.replace(reg, (match, matchPos) => {
           try {
             const expression = match
               .substring(2, match.length - 2)
@@ -67,14 +68,18 @@ export default {
             const resultLine = lineCount(result)
 
             if (resultLine !== matchLine) {
-              lineOffset += (matchLine - resultLine)
-              posOffset += (match.length - result.length)
+              const currentLineOffset = (matchLine - resultLine)
+              const currentPosOffset = (match.length - result.length)
+              lineOffset += currentLineOffset
+              posOffset += currentPosOffset
               env.macroLines.push({
                 matchPos,
                 matchLine,
                 resultLine,
                 lineOffset,
                 posOffset,
+                currentPosOffset,
+                currentLineOffset,
                 matchLength: match.length,
                 resultLength: result.length,
               })
@@ -86,8 +91,8 @@ export default {
           return match
         })
 
-        return render.call(md, src, env)
-      }
+        return false
+      })
     })
   }
 } as Plugin
