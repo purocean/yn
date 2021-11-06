@@ -10,7 +10,7 @@ headingNumber: true
 
 Yank Note 是一个完全开放，Hackable 的笔记应用。
 
-我的理想是让用户可以按照自己的想法来定制自己的编辑器，让这款编辑器可以更好的辅助用户的工作和学习。比如针对 [Git 提交](https://github.com/purocean/yn/issues/58#issuecomment-906073520) 的这个场景，用户就可以自己编写插件来实现这个功能，不用等到开发者来适配。
+我的理想是让用户可以按照自己的想法来定制自己的编辑器，让这款编辑器可以更好的辅助用户的工作和学习。比如针对 [Git 提交](https://github.com/purocean/yn/issues/65#issuecomment-962472562) 的这个场景，用户就可以自己编写插件来实现这个功能，不用等到开发者来适配。
 
 目前，Yank Note 内部几乎所有功能功能，均是通过一套薄薄的插件体系来实现（[几十个内置插件](https://github.com/purocean/yn/tree/develop/src/renderer/plugins)）。内置插件所用到的能力，和用户编写的插件完全一致，甚至你可以在插件中使用一些 Yank Note 使用的第三方库。
 
