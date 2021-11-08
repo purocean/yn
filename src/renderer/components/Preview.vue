@@ -45,7 +45,7 @@ import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, t
 import { extname } from '@fe/utils/path'
 import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
-import { triggerHook } from '@fe/core/plugin'
+import { triggerHook } from '@fe/core/hook'
 import { useBus } from '@fe/core/bus'
 import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'

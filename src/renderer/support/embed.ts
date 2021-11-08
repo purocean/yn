@@ -2,7 +2,7 @@ import { debounce } from 'lodash-es'
 import { defineComponent, h, IframeHTMLAttributes, nextTick, onBeforeMount, onBeforeUnmount, PropType, ref, watch } from 'vue'
 import { useBus } from '@fe/core/bus'
 import { md5 } from '@fe/utils'
-import { registerHook, removeHook } from '@fe/core/plugin'
+import { registerHook, removeHook } from '@fe/core/hook'
 
 /**
  * 构建一个嵌入页面的 src 路径

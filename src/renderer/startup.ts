@@ -1,6 +1,7 @@
 import { useBus } from '@fe/core/bus'
 import { isElectron, nodeRequire } from '@fe/support/env'
-import { init, triggerHook } from '@fe/core/plugin'
+import { init } from '@fe/core/plugin'
+import { triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'

@@ -1,7 +1,7 @@
 import TurndownService from 'turndown'
 import { getEditor, insert } from '@fe/services/editor'
 import { Plugin } from '@fe/context'
-import { triggerHook } from '@fe/core/plugin'
+import { triggerHook } from '@fe/core/hook'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
 import store from '@fe/support/store'
