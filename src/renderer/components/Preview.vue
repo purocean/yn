@@ -50,12 +50,16 @@ import { useBus } from '@fe/core/bus'
 import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'
 import { showExport } from '@fe/services/document'
+import { toggleAutoPreview } from '@fe/services/view'
+import { getLogger } from '@fe/utils'
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
+
+const logger = getLogger('preview')
 
 export default defineComponent({
   name: 'xview',
@@ -137,6 +141,7 @@ export default defineComponent({
     }
 
     function render () {
+      logger.debug('render')
       // 编辑非 markdown 文件预览直接显示代码
       const content = (filePath.value || '').endsWith('.md')
         ? currentContent.value
@@ -201,10 +206,16 @@ export default defineComponent({
       return refView.value?.outerHTML || ''
     }
 
+    function refresh () {
+      logger.debug('refresh')
+      renderDebonce()
+      triggerHook('ON_VIEW_REFRESH', { getViewDom })
+    }
+
     onMounted(() => {
       nextTick(renderDebonce)
       triggerHook('ON_VIEW_MOUNTED', { getViewDom })
-      registerAction({ name: 'view.refresh', handler: render })
+      registerAction({ name: 'view.refresh', handler: refresh })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
       registerAction({ name: 'view.scroll-top-to', handler: scrollTopTo })
       registerAction({ name: 'view.get-content-html', handler: getContentHtml })
@@ -222,10 +233,10 @@ export default defineComponent({
       bus.off('global.resize', resizeHandler)
     })
 
-    watch(currentContent, () => autoPreview.value && renderDebonce())
+    watch(() => currentContent.value + filePath.value, () => autoPreview.value && renderDebonce())
     watch(filePath, () => {
       // 切换文件后，开启自动预览
-      store.commit('setAutoPreview', true)
+      toggleAutoPreview(true)
       triggerHook('ON_VIEW_FILE_CHANGE', { getViewDom })
     })
 

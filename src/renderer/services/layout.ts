@@ -3,6 +3,7 @@ import store from '@fe/support/store'
 import { useBus } from '@fe/core/bus'
 import { getActionHandler, registerAction } from '../core/action'
 import { Alt } from '../core/command'
+import * as view from './view'
 
 const bus = useBus()
 
@@ -27,7 +28,10 @@ export function toggleSide (visible?: boolean) {
  * @param visible 是否展示
  */
 export function toggleView (visible?: boolean) {
-  store.commit('setShowView', typeof visible === 'boolean' ? visible : !store.state.showView)
+  const val = typeof visible === 'boolean' ? visible : !store.state.showView
+  val && nextTick(view.refresh)
+
+  store.commit('setShowView', val)
   store.commit('setShowEditor', true)
   emitResize()
 }

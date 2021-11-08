@@ -1,7 +1,8 @@
 import { debounce } from 'lodash-es'
-import { defineComponent, h, IframeHTMLAttributes, onBeforeMount, onBeforeUnmount, PropType, ref, watch } from 'vue'
+import { defineComponent, h, IframeHTMLAttributes, nextTick, onBeforeMount, onBeforeUnmount, PropType, ref, watch } from 'vue'
 import { useBus } from '@fe/core/bus'
 import { md5 } from '@fe/utils'
+import { registerHook, removeHook } from '@fe/core/plugin'
 
 /**
  * 构建一个嵌入页面的 src 路径
@@ -51,11 +52,21 @@ export const IFrame = defineComponent({
       }
     }
 
+    const refresh = () => {
+      url.value = ''
+      nextTick(update)
+    }
+
     const bus = useBus()
     bus.on('theme.change', changeTheme)
 
+    registerHook('ON_VIEW_REFRESH', refresh)
+    registerHook('ON_VIEW_FILE_CHANGE', refresh)
+
     onBeforeUnmount(() => {
       bus.off('theme.change', changeTheme)
+      removeHook('ON_VIEW_REFRESH', refresh)
+      removeHook('ON_VIEW_FILE_CHANGE', refresh)
     })
 
     const onLoad = function () {

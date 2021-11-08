@@ -59,6 +59,15 @@ export function exitPresent () {
   getActionHandler('view.exit-presentation')()
 }
 
+/**
+ * 切换自动预览刷新
+ * @param flag 是否开启自动刷新预览
+ */
+export function toggleAutoPreview (flag?: boolean) {
+  const showXterm = store.state.autoPreview
+  store.commit('setAutoPreview', typeof flag === 'boolean' ? flag : !showXterm)
+}
+
 registerAction({
   name: 'view.enter-presentation',
   handler: () => present(true),

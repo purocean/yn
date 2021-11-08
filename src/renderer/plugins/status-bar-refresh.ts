@@ -1,6 +1,5 @@
 import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import { getActionHandler } from '@fe/core/action'
 
 export default {
   name: 'status-bar-refresh',
@@ -11,7 +10,12 @@ export default {
         id: 'status-bar-refresh-status',
         position: 'right',
         title: '同步渲染-' + (autoPreview ? '已开启' : '已关闭'),
-        onClick: () => store.commit('setAutoPreview', !autoPreview)
+        onClick: () => {
+          ctx.view.toggleAutoPreview()
+          if (!autoPreview) {
+            ctx.view.refresh()
+          }
+        },
       }
 
       menus['status-bar-refresh-action'] = {
@@ -20,7 +24,7 @@ export default {
         tips: '强制渲染',
         icon: 'sync-alt-solid',
         hidden: autoPreview,
-        onClick: () => getActionHandler('view.refresh')()
+        onClick: () => ctx.view.refresh()
       }
     })
 

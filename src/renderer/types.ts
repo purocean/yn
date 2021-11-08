@@ -121,6 +121,7 @@ export type BuildInHookTypes = {
   ON_VIEW_RENDERED: [{ getViewDom: ()=> HTMLElement | null }],
   ON_VIEW_MOUNTED: [{ getViewDom: ()=> HTMLElement | null }],
   ON_VIEW_FILE_CHANGE: [{ getViewDom: ()=> HTMLElement | null }],
+  ON_VIEW_REFRESH: [{ getViewDom: ()=> HTMLElement | null }],
   ON_TREE_NODE_SELECT: [Components.Tree.Node],
   ON_DOC_BEFORE_EXPORT: [],
 }
