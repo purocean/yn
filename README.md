@@ -88,6 +88,15 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.10.3](https://github.com/purocean/yn/releases/tag/v3.10.3) 2021-11-10
+1. 修复长时间运行命令导致主进程阻塞问题
+2. 修复代码块操作按钮滚动定位问题
+3. 修复一些情况下渲染刷新问题
+4. 插件：移除 `ctx.bus` 事件总线，使用钩子代替
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v3.10.2](https://github.com/purocean/yn/releases/tag/v3.10.2) 2021-11-05
 1. 增加宏替换功能
 2. 增加 Front Matter 解析
@@ -95,9 +104,6 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 4. 切换待办状态支持快捷键 `Alt + O`
 5. 其他若干问题修复和优化
 6. 插件：ON_VIEW_ELEMENT_CLICK ON_VIEW_ELEMENT_DBCLICK 钩子中可以获取到 view dom
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v3.9.4](https://github.com/purocean/yn/releases/tag/v3.9.4) 2021-10-31
 1. 修复 HTML 小工具编辑代码界面不更新问题
