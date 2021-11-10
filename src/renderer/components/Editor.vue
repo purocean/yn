@@ -7,7 +7,7 @@
 <script lang="ts">
 import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '@fe/core/bus'
+import { registerHook, removeHook } from '@fe/core/hook'
 import { isEncrypted, saveDoc, toUri } from '@fe/services/document'
 import { whenEditorReady } from '@fe/services/editor'
 import type { Doc } from '@fe/types'
@@ -18,7 +18,6 @@ export default defineComponent({
   components: { MonacoEditor },
   setup () {
     let editorIsReady = false
-    const bus = useBus()
     const store = useStore()
 
     let timer: number | null = null
@@ -96,14 +95,14 @@ export default defineComponent({
     watch(currentContent, restartTimer)
 
     onMounted(() => {
-      bus.on('global.resize', resize)
-      bus.on('editor.change', setCurrentValue as any)
+      registerHook('GLOBAL_RESIZE', resize)
+      registerHook('EDITOR_CHANGE', setCurrentValue)
       restartTimer()
     })
 
     onBeforeMount(() => {
-      bus.off('global.resize', resize)
-      bus.off('editor.change', setCurrentValue as any)
+      removeHook('GLOBAL_RESIZE', resize)
+      removeHook('EDITOR_CHANGE', setCurrentValue)
     })
 
     whenEditorReady().then(({ editor, monaco }) => {

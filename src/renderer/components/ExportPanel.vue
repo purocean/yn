@@ -154,7 +154,7 @@ export default defineComponent({
         return
       }
 
-      triggerHook('ON_DOC_BEFORE_EXPORT')
+      triggerHook('DOC_BEFORE_EXPORT')
 
       if (convert.toType === 'pdf') {
         exportPdf(fileName.value)

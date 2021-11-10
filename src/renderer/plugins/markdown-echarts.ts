@@ -101,14 +101,14 @@ export default {
     `)
 
     ctx.markdown.registerPlugin(EChartsPlugin)
-    ctx.registerHook('ON_VIEW_RENDERED', () => {
+    ctx.registerHook('VIEW_RENDERED', () => {
       update()
     })
-    ctx.registerHook('ON_DOC_BEFORE_EXPORT', () => {
+    ctx.registerHook('DOC_BEFORE_EXPORT', () => {
       preparePrint() // 转换成图片形式，设置主题
       setTimeout(() => update(), 0) // 恢复
     })
 
-    ctx.bus.on('theme.change', () => update())
+    ctx.registerHook('THEME_CHANGE', () => update())
   }
 } as Plugin

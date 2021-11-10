@@ -45,8 +45,7 @@ import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, t
 import { extname } from '@fe/utils/path'
 import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
-import { triggerHook } from '@fe/core/hook'
-import { useBus } from '@fe/core/bus'
+import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'
 import { showExport } from '@fe/services/document'
@@ -65,7 +64,6 @@ export default defineComponent({
   name: 'xview',
   components: { Render, SvgIcon },
   setup () {
-    const bus = useBus()
     const store = useStore()
 
     const pinOutline = ref(false)
@@ -131,13 +129,13 @@ export default defineComponent({
     }
 
     function handleRender () {
-      triggerHook('ON_VIEW_RENDER', { getViewDom })
+      triggerHook('VIEW_RENDER', { getViewDom })
     }
 
     function handleRendered () {
       updateOutline()
       updateTodoCount()
-      triggerHook('ON_VIEW_RENDERED', { getViewDom })
+      triggerHook('VIEW_RENDERED', { getViewDom })
     }
 
     function render () {
@@ -153,12 +151,12 @@ export default defineComponent({
     const renderDebonce = debounce(render, 100, { leading: true })
 
     async function keydownHandler (e: KeyboardEvent) {
-      triggerHook('ON_VIEW_KEY_DOWN', e, getViewDom()!)
+      triggerHook('VIEW_KEY_DOWN', { e, view: getViewDom()! }, { breakable: true })
     }
 
     function handleScroll (e: any) {
-      scrollTop.value = e.target.scrollTop
-      triggerHook('ON_VIEW_SCROLL', e)
+      scrollTop.value = e.target.scrollTop || 0
+      triggerHook('VIEW_SCROLL', { e })
     }
 
     function syncScroll (line: number) {
@@ -175,11 +173,11 @@ export default defineComponent({
     }
 
     function handleDbClick (e: MouseEvent) {
-      triggerHook('ON_VIEW_ELEMENT_DBCLICK', e, getViewDom()!)
+      triggerHook('VIEW_ELEMENT_DBCLICK', { e, view: getViewDom()! }, { breakable: true })
     }
 
     async function handleClick (e: MouseEvent) {
-      triggerHook('ON_VIEW_ELEMENT_CLICK', e, getViewDom()!)
+      triggerHook('VIEW_ELEMENT_CLICK', { e, view: getViewDom()! }, { breakable: true })
     }
 
     function revealLine (line: number) {
@@ -209,18 +207,18 @@ export default defineComponent({
     function refresh () {
       logger.debug('refresh')
       renderDebonce()
-      triggerHook('ON_VIEW_REFRESH', { getViewDom })
+      triggerHook('VIEW_REFRESH', { getViewDom })
     }
 
     onMounted(() => {
       nextTick(renderDebonce)
-      triggerHook('ON_VIEW_MOUNTED', { getViewDom })
+      triggerHook('VIEW_MOUNTED', { getViewDom })
       registerAction({ name: 'view.refresh', handler: refresh })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
       registerAction({ name: 'view.scroll-top-to', handler: scrollTopTo })
       registerAction({ name: 'view.get-content-html', handler: getContentHtml })
+      registerHook('GLOBAL_RESIZE', resizeHandler)
       window.addEventListener('keydown', keydownHandler, true)
-      bus.on('global.resize', resizeHandler)
       resizeHandler()
     })
 
@@ -229,15 +227,15 @@ export default defineComponent({
       removeAction('view.reveal-line')
       removeAction('view.scroll-top-to')
       removeAction('view.get-content-html')
+      removeHook('GLOBAL_RESIZE', resizeHandler)
       window.removeEventListener('keydown', keydownHandler)
-      bus.off('global.resize', resizeHandler)
     })
 
     watch(() => currentContent.value + filePath.value, () => autoPreview.value && renderDebonce())
     watch(filePath, () => {
       // 切换文件后，开启自动预览
       toggleAutoPreview(true)
-      triggerHook('ON_VIEW_FILE_CHANGE', { getViewDom })
+      triggerHook('VIEW_FILE_CHANGE', { getViewDom })
     })
 
     return {

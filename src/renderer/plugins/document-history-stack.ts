@@ -57,19 +57,19 @@ export default {
       updateMenu()
     }
 
-    ctx.bus.on('doc.switched', (file?: Doc | null) => {
-      if (file) {
-        if (!ctx.doc.isSameFile(stack[idx], file)) {
+    ctx.registerHook('DOC_SWITCHED', ({ doc }) => {
+      if (doc) {
+        if (!ctx.doc.isSameFile(stack[idx], doc)) {
           stack.splice(idx + 1, stack.length)
-          stack.push({ type: file.type, repo: file.repo, name: file.name, path: file.path })
+          stack.push({ type: doc.type, repo: doc.repo, name: doc.name, path: doc.path })
           idx = stack.length - 1
         }
       }
       updateMenu()
     })
 
-    ctx.bus.on('doc.deleted', removeFromStack)
-    ctx.bus.on('doc.moved', ({ oldDoc }) => removeFromStack(oldDoc))
+    ctx.registerHook('DOC_DELETED', ({ doc }) => removeFromStack(doc))
+    ctx.registerHook('DOC_MOVED', ({ oldDoc }) => removeFromStack(oldDoc))
 
     ctx.action.registerAction({
       name: backId,

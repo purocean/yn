@@ -1,8 +1,6 @@
-import { useBus } from '@fe/core/bus'
+import { triggerHook } from '@fe/core/hook'
 import type { ThemeName } from '@fe/types'
 import * as storage from '@fe/utils/storage'
-
-const bus = useBus()
 
 /**
  * 获取当前主题设置
@@ -38,7 +36,7 @@ export function getColorScheme () {
  */
 export function setTheme (name: ThemeName) {
   document.documentElement.setAttribute('app-theme', name)
-  bus.emit('theme.change', name)
+  triggerHook('THEME_CHANGE', { name })
   storage.set('app.theme', name)
 }
 

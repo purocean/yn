@@ -1,5 +1,5 @@
-import { useBus } from '@fe/core/bus'
 import { Escape } from '@fe/core/command'
+import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
@@ -10,7 +10,7 @@ function present (flag: boolean) {
   }
   store.commit('setPresentation', flag)
   setTimeout(() => {
-    useBus().emit('global.resize')
+    triggerHook('GLOBAL_RESIZE')
   }, 0)
 }
 

@@ -7,7 +7,7 @@ import { useStore } from 'vuex'
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
 import { Alt, Ctrl } from '@fe/core/command'
 import type { Components, Doc } from '@fe/types'
-import { useBus } from '@fe/core/bus'
+import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import type { AppState } from '@fe/support/store'
@@ -20,7 +20,6 @@ export default defineComponent({
   components: { Tabs },
   setup () {
     const store = useStore()
-    const bus = useBus()
 
     const { currentFile, tabs } = toRefs<AppState>(store.state)
     const { isSaved } = toRefs(store.getters)
@@ -103,11 +102,19 @@ export default defineComponent({
       }
     }
 
+    function handleDocCreated ({ doc }: { doc: Doc | null }) {
+      switchFile(doc)
+    }
+
+    function handleDocDeleted ({ doc }: { doc: Doc | null }) {
+      removeFile(doc)
+    }
+
     onBeforeMount(() => {
-      bus.on('doc.created', switchFile)
-      bus.on('doc.deleted', removeFile)
-      bus.on('doc.switch-failed', handleSwitchFailed)
-      bus.on('doc.moved', handleMoved)
+      registerHook('DOC_MOVED', handleMoved)
+      registerHook('DOC_CREATED', handleDocCreated)
+      registerHook('DOC_DELETED', handleDocDeleted)
+      registerHook('DOC_SWITCH_FAILED', handleSwitchFailed)
 
       registerAction({
         name: 'file-tabs.switch-left',
@@ -129,10 +136,10 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
-      bus.off('doc.created', switchFile)
-      bus.off('doc.deleted', removeFile)
-      bus.off('doc.switch-failed', handleSwitchFailed)
-      bus.off('doc.moved', handleMoved)
+      removeHook('DOC_MOVED', handleMoved)
+      removeHook('DOC_CREATED', handleDocCreated)
+      removeHook('DOC_DELETED', handleDocDeleted)
+      removeHook('DOC_SWITCH_FAILED', handleSwitchFailed)
       removeAction('file-tabs.switch-left')
       removeAction('file-tabs.switch-next')
     })

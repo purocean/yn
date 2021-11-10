@@ -67,13 +67,13 @@ export default defineComponent({
       await createDoc({ repo: props.item.repo }, props.item)
     }
 
-    async function select (item: Components.Tree.Node) {
-      if (item.type !== 'dir') {
-        if (extensions.supported(item.name)) {
-          switchDoc(item)
+    async function select (node: Components.Tree.Node) {
+      if (node.type !== 'dir') {
+        if (extensions.supported(node.name)) {
+          switchDoc(node)
         } else {
-          if (!(await triggerHook('ON_TREE_NODE_SELECT', item))) {
-            openInOS(item)
+          if (!(await triggerHook('TREE_NODE_SELECT', { node }, { breakable: true }))) {
+            openInOS(node)
           }
         }
       }

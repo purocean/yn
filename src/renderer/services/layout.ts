@@ -1,17 +1,15 @@
 import { nextTick } from 'vue'
 import store from '@fe/support/store'
-import { useBus } from '@fe/core/bus'
-import { getActionHandler, registerAction } from '../core/action'
-import { Alt } from '../core/command'
+import { triggerHook } from '@fe/core/hook'
+import { getActionHandler, registerAction } from '@fe/core/action'
+import { Alt } from '@fe/core/command'
 import * as view from './view'
-
-const bus = useBus()
 
 /**
  * 下一个 tick 抛出 resize 事件
  */
 export function emitResize () {
-  nextTick(() => bus.emit('global.resize'))
+  nextTick(() => triggerHook('GLOBAL_RESIZE'))
 }
 
 /**

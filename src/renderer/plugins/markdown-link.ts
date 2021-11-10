@@ -153,7 +153,7 @@ function convertLink (state: StateCore) {
 export default {
   name: 'markdown-link',
   register: (ctx) => {
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e, view) => {
+    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e, view }) => {
       const target = e.target as HTMLElement
 
       const preventEvent = () => {

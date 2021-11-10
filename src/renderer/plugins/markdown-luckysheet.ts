@@ -428,9 +428,9 @@ export default {
   name: 'markdown-luckysheet',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
-    ctx.registerHook('ON_TREE_NODE_SELECT', async (item: Doc) => {
-      if (item.path.toLowerCase().endsWith(fileExt)) {
-        const srcdoc = buildSrcdoc(item.repo, item.path, true)
+    ctx.registerHook('TREE_NODE_SELECT', async ({ node }) => {
+      if (node.path.toLowerCase().endsWith(fileExt)) {
+        const srcdoc = buildSrcdoc(node.repo, node.path, true)
         openWindow(buildSrc(srcdoc, '编辑表格', false), '_blank', { alwaysOnTop: false })
 
         return true

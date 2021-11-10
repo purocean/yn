@@ -77,7 +77,7 @@ export default {
       }
     })
 
-    ctx.registerHook('ON_EDITOR_PASTE_IMAGE', async (file: File) => {
+    ctx.registerHook('EDITOR_PASTE_IMAGE', async ({ file }) => {
       if (!ctx.setting.getSettings()[settingKeyPaste]) {
         return false
       }
