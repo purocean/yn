@@ -1,6 +1,6 @@
-import { useBus } from '@fe/core/bus'
 import { isElectron, nodeRequire } from '@fe/support/env'
-import { init, triggerHook } from '@fe/core/plugin'
+import { init } from '@fe/core/plugin'
+import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
@@ -14,8 +14,6 @@ import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 
 init(plugins, ctx)
-
-const bus = useBus()
 
 function getLastOpenFile (repoName?: string): Doc | null {
   const currentFile = storage.get<Doc>('currentFile')
@@ -48,7 +46,7 @@ function getLastOpenFile (repoName?: string): Doc | null {
 }
 
 export default function startup () {
-  triggerHook('ON_STARTUP')
+  triggerHook('STARTUP')
 
   // 在 Electron 环境中开启缩放页面功能
   if (isElectron) {
@@ -88,13 +86,12 @@ export default function startup () {
 const doc = getLastOpenFile()
 switchDoc(doc)
 
-bus.on('doc.created', refreshTree)
-bus.on('doc.deleted', refreshTree)
-bus.on('doc.moved', refreshTree)
-bus.on('doc.changed', refreshTree)
-bus.on('doc.switch-failed', refreshTree)
-
-bus.on('doc.switch-failed', (payload?: { doc?: Doc | null, message: string }) => {
+registerHook('DOC_CREATED', refreshTree)
+registerHook('DOC_DELETED', refreshTree)
+registerHook('DOC_MOVED', refreshTree)
+registerHook('DOC_CHANGED', refreshTree)
+registerHook('DOC_SWITCH_FAILED', refreshTree)
+registerHook('DOC_SWITCH_FAILED', (payload?: { doc?: Doc | null, message: string }) => {
   if (payload && payload.doc && payload?.message?.indexOf('NOENT')) {
     unmarkDoc(payload.doc)
   }

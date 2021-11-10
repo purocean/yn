@@ -6,7 +6,7 @@ import store from '@fe/support/store'
 export default {
   name: 'copy-text',
   register: (ctx) => {
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
+    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
       const target = e.target as HTMLElement
 
       const preventEvent = () => {

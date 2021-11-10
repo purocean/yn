@@ -5,13 +5,12 @@ import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { Doc } from '@fe/types'
 import { basename, dirname, isBelongTo, join } from '@fe/utils/path'
-import { useBus } from '@fe/core/bus'
+import { triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
 import { inputPassword } from './base'
 
 const logger = getLogger('document')
-const bus = useBus()
 
 function decrypt (content: any, password: string) {
   if (!password) {
@@ -139,7 +138,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
 
     await api.writeFile(file, file.content)
 
-    bus.emit('doc.created', file)
+    triggerHook('DOC_CREATED', { doc: file })
   } catch (error: any) {
     useToast().show('warning', error.message)
     console.error(error)
@@ -192,7 +191,7 @@ export async function deleteDoc (doc: Doc) {
   if (confirm) {
     await api.deleteFile(doc)
 
-    bus.emit('doc.deleted', doc)
+    triggerHook('DOC_DELETED', { doc })
   }
 }
 
@@ -244,7 +243,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
 
   await api.moveFile(doc, newPath)
 
-  bus.emit('doc.moved', { oldDoc: doc, newDoc })
+  triggerHook('DOC_MOVED', { oldDoc: doc, newDoc })
 }
 
 /**
@@ -283,7 +282,7 @@ export async function saveDoc (doc: Doc, content: string) {
       contentHash: hash,
       status: 'saved'
     })
-    bus.emit('doc.saved', store.state.currentFile!)
+    triggerHook('DOC_SAVED', { doc: store.state.currentFile! })
   } catch (error: any) {
     store.commit('setCurrentFile', { ...doc, status: 'save-failed' })
     useToast().show('warning', error.message)
@@ -335,7 +334,7 @@ export async function switchDoc (doc: Doc | null) {
   try {
     if (!doc) {
       store.commit('setCurrentFile', null)
-      bus.emit('doc.switched', null)
+      triggerHook('DOC_SWITCHED', { doc: null })
       return
     }
 
@@ -363,9 +362,9 @@ export async function switchDoc (doc: Doc | null) {
       status: 'loaded'
     })
 
-    bus.emit('doc.switched', store.state.currentFile)
+    triggerHook('DOC_SWITCHED', { doc: store.state.currentFile })
   } catch (error: any) {
-    bus.emit('doc.switch-failed', { doc, message: error.message })
+    triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message })
     useToast().show('warning', error.message.includes('Malformed') ? '密码错误' : error.message)
     throw error
   }
@@ -377,7 +376,7 @@ export async function switchDoc (doc: Doc | null) {
  */
 export async function markDoc (doc: Doc) {
   await api.markFile(doc)
-  bus.emit('doc.changed', doc)
+  triggerHook('DOC_CHANGED', { doc })
 }
 
 /**
@@ -386,7 +385,7 @@ export async function markDoc (doc: Doc) {
  */
 export async function unmarkDoc (doc: Doc) {
   await api.unmarkFile(doc)
-  bus.emit('doc.changed', doc)
+  triggerHook('DOC_CHANGED', { doc })
 }
 
 /**

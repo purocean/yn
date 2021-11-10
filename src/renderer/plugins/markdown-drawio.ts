@@ -3,7 +3,7 @@ import { defineComponent, h, ref, watch } from 'vue'
 import { Plugin } from '@fe/context'
 import { buildSrc, IFrame } from '@fe/support/embed'
 import * as api from '@fe/support/api'
-import { useBus } from '@fe/core/bus'
+import { triggerHook } from '@fe/core/hook'
 import { openWindow } from '@fe/support/env'
 
 const Drawio = defineComponent({
@@ -13,7 +13,6 @@ const Drawio = defineComponent({
     content: String
   },
   setup (props) {
-    const bus = useBus()
     const srcdoc = ref('')
     const refIFrame = ref<any>()
 
@@ -29,7 +28,7 @@ const Drawio = defineComponent({
         iframe.height = iframe.contentDocument.documentElement.offsetHeight + 'px'
         iframe.contentDocument.body.style.height = iframe.contentDocument.body.clientHeight + 'px'
         iframe.contentDocument.documentElement.style.height = '100%'
-        bus.emit('global.resize')
+        triggerHook('GLOBAL_RESIZE')
       }
     }
 
@@ -177,9 +176,9 @@ export default {
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
 
-    ctx.registerHook('ON_TREE_NODE_SELECT', async (item) => {
-      if (item.path.toLowerCase().endsWith('.drawio')) {
-        const srcdoc = await buildSrcdoc({ content: '', ...item })
+    ctx.registerHook('TREE_NODE_SELECT', async ({ node }) => {
+      if (node.path.toLowerCase().endsWith('.drawio')) {
+        const srcdoc = await buildSrcdoc({ content: '', ...node })
         openWindow(buildSrc(srcdoc, '查看图形'))
 
         return true

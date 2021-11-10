@@ -8,7 +8,7 @@ let viewer: any
 export default {
   name: 'image-viewer',
   register: ctx => {
-    ctx.registerHook('ON_VIEW_RENDERED', debounce(({ getViewDom }) => {
+    ctx.registerHook('VIEW_RENDERED', debounce(({ getViewDom }) => {
       if (!viewer) {
         viewer = new Viewer(getViewDom(), {
           zIndex: 299999,

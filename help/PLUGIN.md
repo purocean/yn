@@ -10,7 +10,7 @@ headingNumber: true
 
 Yank Note 是一个完全开放，Hackable 的笔记应用。
 
-我的理想是让用户可以按照自己的想法来定制自己的编辑器，让这款编辑器可以更好的辅助用户的工作和学习。比如针对 [Git 提交](https://github.com/purocean/yn/issues/58#issuecomment-906073520) 的这个场景，用户就可以自己编写插件来实现这个功能，不用等到开发者来适配。
+我的理想是让用户可以按照自己的想法来定制自己的编辑器，让这款编辑器可以更好的辅助用户的工作和学习。比如针对 [Git 提交](https://github.com/purocean/yn/issues/65#issuecomment-962472562) 的这个场景，用户就可以自己编写插件来实现这个功能，不用等到开发者来适配。
 
 目前，Yank Note 内部几乎所有功能功能，均是通过一套薄薄的插件体系来实现（[几十个内置插件](https://github.com/purocean/yn/tree/develop/src/renderer/plugins)）。内置插件所用到的能力，和用户编写的插件完全一致，甚至你可以在插件中使用一些 Yank Note 使用的第三方库。
 
@@ -46,18 +46,9 @@ Yank Note 是一个完全开放，Hackable 的笔记应用。
 
 Yank Note 有一些概念，是支撑整个插件体系的基础：
 
-1. Event 事件
 1. Hook 钩子
 1. Action 动作
 1. Command 命令
-
-### Event 事件
-
-插件可以通过事件总线 [`ctx.bus`](https://yn-api-doc.vercel.app/modules/core_bus.html) 来监听事件或触发事件。
-
-事件总线由 [mitt](https://github.com/developit/mitt) 实现，可以参考它的使用方法。
-
-内部事件可以参考[Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInEvents)
 
 ### Hook 钩子
 
@@ -65,7 +56,19 @@ Yank Note 在执行一些操作的时候，会触发一些钩子调用。
 
 使用 [`ctx.registerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#registerHook) 可以注册一个钩子处理方法。使用 [`ctx.triggerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#triggerHook) 则可以触发一个钩子。
 
-钩子和事件不同的地方在于，钩子处理是可以有返回值 `true` 或者 `false`。当钩子处理方法返回 `true`，则后续的钩子不再运行。
+调用 `triggerHook` 时候附加选项 `{ breakable: true }`，表明这个钩子调用是可中断的。
+
+下面的内部钩子调用是可中断的
+
+- `ACTION_AFTER_RUN`
+- `ACTION_BEFORE_RUN`
+- `TREE_NODE_SELECT`
+- `VIEW_ELEMENT_CLICK`
+- `VIEW_ELEMENT_DBCLICK`
+- `VIEW_KEY_DOWN`
+- `EDITOR_PASTE_IMAGE`
+
+可中断的钩子处理方法需要有返回值 `Promise<boolean> | boolean`。当钩子处理方法返回 `true`，则后续的钩子不再运行。
 
 内部的钩子类型可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInHookTypes)
 

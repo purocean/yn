@@ -1,5 +1,5 @@
-import { useBus } from '@fe/core/bus'
 import { Escape } from '@fe/core/command'
+import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
@@ -10,7 +10,7 @@ function present (flag: boolean) {
   }
   store.commit('setPresentation', flag)
   setTimeout(() => {
-    useBus().emit('global.resize')
+    triggerHook('GLOBAL_RESIZE')
   }, 0)
 }
 
@@ -57,6 +57,15 @@ export function enterPresent () {
  */
 export function exitPresent () {
   getActionHandler('view.exit-presentation')()
+}
+
+/**
+ * 切换自动预览刷新
+ * @param flag 是否开启自动刷新预览
+ */
+export function toggleAutoPreview (flag?: boolean) {
+  const showXterm = store.state.autoPreview
+  store.commit('setAutoPreview', typeof flag === 'boolean' ? flag : !showXterm)
 }
 
 registerAction({

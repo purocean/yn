@@ -184,9 +184,9 @@ export default {
       return false
     }
 
-    ctx.registerHook('ON_VIEW_ELEMENT_DBCLICK', e => handleClick(e, false))
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', e => handleClick(e, true))
-    ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
+    ctx.registerHook('VIEW_ELEMENT_DBCLICK', ({ e }) => handleClick(e, false))
+    ctx.registerHook('VIEW_ELEMENT_CLICK', ({ e }) => handleClick(e, true))
+    ctx.registerHook('VIEW_RENDERED', ({ getViewDom }) => {
       const view: HTMLElement = getViewDom()!
       view.querySelectorAll('.yank-table-cell').forEach(td => {
         (td as HTMLElement).title = '双击编辑'

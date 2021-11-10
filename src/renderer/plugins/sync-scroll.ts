@@ -1,6 +1,5 @@
 import { debounce } from 'lodash-es'
 import type { Plugin } from '@fe/context'
-import type { Doc } from '@fe/types'
 import { sleep } from '@fe/utils'
 
 export default {
@@ -29,8 +28,8 @@ export default {
     }
 
     // 切换文件后恢复滚动位置
-    ctx.bus.on('doc.switched', async (file?: Doc | null) => {
-      if (file) {
+    ctx.registerHook('DOC_SWITCHED', async ({ doc }) => {
+      if (doc) {
         await sleep(0)
 
         const key = ctx.doc.toUri(ctx.store.state.currentFile)
@@ -62,14 +61,14 @@ export default {
     })
 
     const savePosition = debounce(saveScrollPosition, 500)
-    ctx.registerHook('ON_VIEW_SCROLL', (e: WheelEvent) => {
+    ctx.registerHook('VIEW_SCROLL', ({ e }) => {
       if (ctx.store.state.currentFile?.status) {
         const { scrollTop } = e.target as HTMLElement
         savePosition({ view: scrollTop })
       }
     })
 
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', async (e: MouseEvent) => {
+    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
       const target = e.target as HTMLElement
 
       if (

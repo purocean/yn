@@ -84,23 +84,6 @@ export namespace Components {
 
 export type ThemeName = 'system' | 'dark' | 'light'
 
-export type BuildInEvents = {
-  'global.resize': never,
-  'theme.change': ThemeName,
-  'monaco.change-value': { uri: string, value: string },
-  'monaco.before-init': { monaco: typeof Monaco },
-  'monaco.ready': { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
-  'editor.ready': { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
-  'editor.change': { uri: string, value: string },
-  'doc.created': Doc,
-  'doc.deleted': Doc,
-  'doc.moved': { oldDoc: Doc, newDoc: Doc },
-  'doc.saved': Doc,
-  'doc.switched': Doc | null,
-  'doc.switch-failed': { doc?: Doc | null, message: string },
-  'doc.changed': Doc,
-}
-
 export type BuildInSettings = {
   'repos': { name: string, path: string }[],
   'theme': ThemeName,
@@ -108,21 +91,6 @@ export type BuildInSettings = {
   'shell': string,
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean
-}
-
-export type BuildInHookTypes = {
-  ON_STARTUP: [],
-  ON_EDITOR_PASTE_IMAGE: [File],
-  ON_VIEW_ELEMENT_CLICK: [MouseEvent, HTMLElement],
-  ON_VIEW_ELEMENT_DBCLICK: [MouseEvent, HTMLElement],
-  ON_VIEW_KEY_DOWN: [KeyboardEvent, HTMLElement],
-  ON_VIEW_SCROLL: [WheelEvent],
-  ON_VIEW_RENDER: [{ getViewDom: ()=> HTMLElement | null }],
-  ON_VIEW_RENDERED: [{ getViewDom: ()=> HTMLElement | null }],
-  ON_VIEW_MOUNTED: [{ getViewDom: ()=> HTMLElement | null }],
-  ON_VIEW_FILE_CHANGE: [{ getViewDom: ()=> HTMLElement | null }],
-  ON_TREE_NODE_SELECT: [Components.Tree.Node],
-  ON_DOC_BEFORE_EXPORT: [],
 }
 
 export type BuildInActions = {
@@ -159,6 +127,38 @@ export type BuildInActions = {
 }
 
 export type BuildInActionName = keyof BuildInActions
+
+export type BuildInHookTypes = {
+  STARTUP: never,
+  GLOBAL_RESIZE: never,
+  ACTION_BEFORE_RUN: { name: string },
+  ACTION_AFTER_RUN: { name: string }
+  THEME_CHANGE: { name: ThemeName },
+  EDITOR_PASTE_IMAGE: { file: File },
+  VIEW_ELEMENT_CLICK: { e: MouseEvent, view: HTMLElement },
+  VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
+  VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },
+  VIEW_SCROLL: { e: WheelEvent },
+  VIEW_RENDER: { getViewDom: ()=> HTMLElement | null },
+  VIEW_RENDERED: { getViewDom: ()=> HTMLElement | null },
+  VIEW_MOUNTED: { getViewDom: ()=> HTMLElement | null },
+  VIEW_FILE_CHANGE: { getViewDom: ()=> HTMLElement | null },
+  VIEW_REFRESH: { getViewDom: ()=> HTMLElement | null },
+  TREE_NODE_SELECT: { node: Components.Tree.Node },
+  MONACO_CHANGE_VALUE : { uri: string, value: string },
+  MONACO_BEFORE_INIT: { monaco: typeof Monaco },
+  MONACO_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
+  EDITOR_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
+  EDITOR_CHANGE: { uri: string, value: string },
+  DOC_CREATED: { doc: Doc },
+  DOC_DELETED: { doc: Doc },
+  DOC_MOVED: { oldDoc: Doc, newDoc: Doc },
+  DOC_SAVED: { doc: Doc },
+  DOC_SWITCHED: { doc: Doc | null },
+  DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
+  DOC_CHANGED: { doc: Doc },
+  DOC_BEFORE_EXPORT: never,
+}
 
 export type FrontMatterAttrs = {
   headingNumber?: boolean,

@@ -80,7 +80,7 @@ async function transformAll () {
   refreshTree()
 }
 
-async function handleClick (e: MouseEvent) {
+async function handleClick ({ e }: { e: MouseEvent }) {
   const target = e.target as HTMLElement
   if (target.tagName !== 'IMG') {
     return false
@@ -118,8 +118,8 @@ export default {
       handler: null
     })
 
-    ctx.registerHook('ON_VIEW_ELEMENT_CLICK', handleClick)
-    ctx.registerHook('ON_VIEW_RENDERED', ({ getViewDom }) => {
+    ctx.registerHook('VIEW_ELEMENT_CLICK', handleClick)
+    ctx.registerHook('VIEW_RENDERED', ({ getViewDom }) => {
       refView = getViewDom()!
     })
 

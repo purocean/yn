@@ -33,7 +33,7 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
 import { useStore } from 'vuex'
-import { useBus } from '@fe/core/bus'
+import { triggerHook } from '@fe/core/hook'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { emitResize } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
@@ -43,7 +43,6 @@ let resizeOrigin: any = null
 export default defineComponent({
   name: 'layout',
   setup () {
-    const bus = useBus()
     const store = useStore()
 
     const { showView, showXterm, showSide, showEditor, presentation } = toRefs(store.state)
@@ -74,7 +73,7 @@ export default defineComponent({
         const height = (resizeOrigin.targetHeight + offsetY)
         ref.style.height = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, height)) + 'px'
       }
-      bus.emit('global.resize')
+      triggerHook('GLOBAL_RESIZE')
     }
 
     function initResize (type: any, ref: any, min: any, max: any, e: any) {

@@ -62,7 +62,7 @@ import { computed, defineComponent, reactive, ref, toRefs } from 'vue'
 import { isElectron, nodeRequire } from '@fe/support/env'
 import { getContentHtml } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
-import { triggerHook } from '@fe/core/plugin'
+import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
 import { sleep } from '@fe/utils'
 import XMask from './Mask.vue'
@@ -154,7 +154,7 @@ export default defineComponent({
         return
       }
 
-      triggerHook('ON_DOC_BEFORE_EXPORT')
+      triggerHook('DOC_BEFORE_EXPORT')
 
       if (convert.toType === 'pdf') {
         exportPdf(fileName.value)

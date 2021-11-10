@@ -1,16 +1,15 @@
 import { nextTick } from 'vue'
 import store from '@fe/support/store'
-import { useBus } from '@fe/core/bus'
-import { getActionHandler, registerAction } from '../core/action'
-import { Alt } from '../core/command'
-
-const bus = useBus()
+import { triggerHook } from '@fe/core/hook'
+import { getActionHandler, registerAction } from '@fe/core/action'
+import { Alt } from '@fe/core/command'
+import * as view from './view'
 
 /**
  * 下一个 tick 抛出 resize 事件
  */
 export function emitResize () {
-  nextTick(() => bus.emit('global.resize'))
+  nextTick(() => triggerHook('GLOBAL_RESIZE'))
 }
 
 /**
@@ -27,7 +26,10 @@ export function toggleSide (visible?: boolean) {
  * @param visible 是否展示
  */
 export function toggleView (visible?: boolean) {
-  store.commit('setShowView', typeof visible === 'boolean' ? visible : !store.state.showView)
+  const val = typeof visible === 'boolean' ? visible : !store.state.showView
+  val && nextTick(view.refresh)
+
+  store.commit('setShowView', val)
   store.commit('setShowEditor', true)
   emitResize()
 }

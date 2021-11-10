@@ -26,8 +26,9 @@
 
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
-import { hookAction } from '@fe/core/action'
 import { getMenus, MenuItem } from '@fe/services/status-bar'
+import { registerHook, removeHook } from '@fe/core/hook'
+import type { BuildInActionName } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -55,13 +56,16 @@ export default defineComponent({
       }, 0)
     }
 
-    const updateMenu = () => {
-      list.value = getMenus(props.position)
+    const updateMenu = ({ name }: { name: BuildInActionName }) => {
+      if (name === 'status-bar.refresh-menu') {
+        list.value = getMenus(props.position)
+      }
+      return false
     }
 
-    const cleanup = hookAction('before-run', 'status-bar.refresh-menu', updateMenu)
+    registerHook('ACTION_BEFORE_RUN', updateMenu as any)
     onBeforeUnmount(() => {
-      cleanup()
+      removeHook('ACTION_BEFORE_RUN', updateMenu as any)
     })
 
     return {

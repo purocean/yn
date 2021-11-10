@@ -13,11 +13,11 @@ import { defineComponent, nextTick, onBeforeMount, onBeforeUnmount, ref } from '
 import { useStore } from 'vuex'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
-import { useBus } from '@fe/core/bus'
+import { getLogger } from '@fe/utils'
+import { registerHook, removeHook } from '@fe/core/hook'
+import { registerAction, removeAction } from '@fe/core/action'
 import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { toggleXterm } from '@fe/services/layout'
-import { registerAction, removeAction } from '@fe/core/action'
-import { getLogger } from '@fe/utils'
 import { getColorScheme } from '@fe/services/theme'
 import { OneHalfLight, OneHalfDark } from 'xterm-theme'
 import SvgIcon from './SvgIcon.vue'
@@ -30,7 +30,6 @@ export default defineComponent({
   name: 'xterm',
   components: { SvgIcon },
   setup () {
-    const bus = useBus()
     const store = useStore()
 
     const refXterm = ref<HTMLElement | null>(null)
@@ -84,8 +83,8 @@ export default defineComponent({
 
         xterm.open(refXterm.value!)
         fitAddon.fit()
-        bus.on('theme.change', changeTheme)
-        bus.on('global.resize', fitXterm)
+        registerHook('THEME_CHANGE', changeTheme)
+        registerHook('GLOBAL_RESIZE', fitXterm)
 
         if (FLAG_DEMO) {
           const message = 'DEMO 模式终端不可用'
@@ -182,6 +181,8 @@ export default defineComponent({
       removeAction('xterm.run-code')
       removeAction('xterm.run')
       removeAction('xterm.init')
+      removeHook('THEME_CHANGE', changeTheme)
+      removeHook('GLOBAL_RESIZE', fitXterm)
     })
 
     return {

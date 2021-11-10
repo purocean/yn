@@ -7,7 +7,7 @@ import type * as monaco from 'monaco-editor'
 import { defineComponent, onMounted, ref } from 'vue'
 import { defaultOptions } from '@fe/services/editor'
 import { toUri } from '@fe/services/document'
-import { useBus } from '@fe/core/bus'
+import { triggerHook } from '@fe/core/hook'
 
 const models: {[key: string]: monaco.editor.ITextModel} = {}
 
@@ -19,7 +19,6 @@ export default defineComponent({
   setup () {
     let editor: monaco.editor.IStandaloneCodeEditor | null = null
     const refEditor = ref<HTMLElement | null>(null)
-    const bus = useBus()
 
     const getMonaco = () => window.monaco
     const getEditor = () => editor!
@@ -32,7 +31,7 @@ export default defineComponent({
         model = getMonaco().editor.createModel(value, undefined, getMonaco().Uri.parse(uri))
         model.onDidChangeContent(() => {
           const value = model.getValue()
-          bus.emit('monaco.change-value', { uri, value })
+          triggerHook('MONACO_CHANGE_VALUE', { uri, value })
         })
       }
 
@@ -51,13 +50,13 @@ export default defineComponent({
     }
 
     function initMonaco () {
-      bus.emit('monaco.before-init', { monaco: getMonaco() })
+      triggerHook('MONACO_BEFORE_INIT', { monaco: getMonaco() })
 
       editor = getMonaco().editor.create(refEditor.value, defaultOptions)
       setModel(toUri(null), '')
 
       setTimeout(() => {
-        bus.emit('monaco.ready', { editor: getEditor(), monaco: getMonaco() })
+        triggerHook('MONACO_READY', { editor: getEditor(), monaco: getMonaco() })
       }, 500)
     }
 

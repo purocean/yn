@@ -1,14 +1,27 @@
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import * as os from 'os'
 import * as path from 'path'
-import { execFileSync } from 'child_process'
+import * as cp from 'child_process'
 import * as wsl from '../wsl'
 import config from '../config'
 
 const isWsl = wsl.isWsl
 const isWin = os.platform() === 'win32'
 
-const runCode = (language: string, code: string) => {
+async function execFile (file: string, args: string[], options?: cp.ExecFileOptions) {
+  return new Promise<string>((resolve) => {
+    let result = ''
+    // 默认 300 秒超时
+    const process = cp.execFile(file, args, { timeout: 300 * 1000, ...options })
+    process.stdout?.on('data', data => { result += data })
+    process.stderr?.on('data', data => { result += data })
+    process.on('close', () => {
+      resolve(result)
+    })
+  })
+}
+
+const runCode = async (language: string, code: string): Promise<string> => {
   try {
     const languageMap = {
       sh: { cmd: 'sh', args: ['-c'] },
@@ -26,12 +39,12 @@ const runCode = (language: string, code: string) => {
       code = code.split('\n').slice(1).join('\n') // 去掉第一行的注释
       if (isWsl) {
         const tmpFile = path.join(wsl.toWslPath(wsl.getWinTempPath()), fileName)
-        fs.writeFileSync(tmpFile, code)
-        return execFileSync('cmd.exe', ['/c', `${wsl.toWinPath(tmpFile).replace(/\\/g, '/')}`]).toString()
+        await fs.writeFile(tmpFile, code)
+        return execFile('cmd.exe', ['/c', `${wsl.toWinPath(tmpFile).replace(/\\/g, '/')}`])
       } else {
         const tmpFile = path.join(os.tmpdir(), fileName)
-        fs.writeFileSync(tmpFile, code)
-        return execFileSync('cmd', ['/c', tmpFile]).toString()
+        await fs.writeFile(tmpFile, code)
+        return execFile('cmd', ['/c', tmpFile])
       }
     }
 
@@ -42,7 +55,7 @@ const runCode = (language: string, code: string) => {
 
     const useWsl = isWin && config.get('runCodeUseWsl', false)
     if (useWsl) {
-      return execFileSync('wsl.exe', ['--', runParams.cmd].concat(runParams.args).concat([code])).toString()
+      return execFile('wsl.exe', ['--', runParams.cmd].concat(runParams.args).concat([code]))
     }
 
     const env = { ...process.env }
@@ -51,12 +64,12 @@ const runCode = (language: string, code: string) => {
       env.PATH = `${extPath}:${env.PATH}`
     }
 
-    return execFileSync(
+    return execFile(
       runParams.cmd,
       runParams.args.concat([code]),
       { env }
-    ).toString()
-  } catch (e) {
+    )
+  } catch (e: any) {
     return e.message
   }
 }

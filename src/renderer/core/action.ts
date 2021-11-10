@@ -1,10 +1,9 @@
 import { getLogger } from '@fe/utils'
-import { useBus } from '@fe/core/bus'
 import { BuildInActions, BuildInActionName } from '@fe/types'
 import { registerCommand, removeCommand } from './command'
+import { triggerHook } from './hook'
 
 const logger = getLogger('action')
-const bus = useBus()
 
 export type ActionHandler<T extends string> = T extends BuildInActionName ? BuildInActions[T] : (...args: any[]) => any
 export type HookType = 'before-run' | 'after-run'
@@ -34,17 +33,6 @@ export interface Action<T extends string> {
 const actions: { [id: string]: Action<string> } = {}
 
 /**
- * Hook 一个 Action
- * @param type 钩子类型
- * @param name Action 名
- * @param handler 处理方法
- */
-export function hookAction (type: HookType, name: BuildInActionName, handler: (payload: any) => void) {
-  bus.on(`action.${type}.${name}` as any, handler)
-  return () => bus.off(`action.${type}.${name}` as any, handler)
-}
-
-/**
  * 注册一个 Action
  * @param action Action
  * @returns Action
@@ -72,7 +60,7 @@ export function getActionHandler <T extends string> (name: T): ActionHandler<T>
 export function getActionHandler <T extends string> (name: T): ActionHandler<T> {
   logger.debug('getActionHandler', name)
   return ((...args: any[]) => {
-    bus.emit(`action.before-run.${name}` as any, args)
+    triggerHook('ACTION_BEFORE_RUN', { name }, { breakable: true })
 
     let result: any
 
@@ -83,7 +71,7 @@ export function getActionHandler <T extends string> (name: T): ActionHandler<T> 
       }
     }
 
-    bus.emit(`action.after-run.${name}` as any, result)
+    triggerHook('ACTION_AFTER_RUN', { name }, { breakable: true })
     return result
   }) as ActionHandler<T>
 }

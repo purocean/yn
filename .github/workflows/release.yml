@@ -23,6 +23,10 @@ jobs:
       npm_config_runtime: "electron"
 
     steps:
+      - name: Set git config
+        run: |
+          git config --global core.autocrlf false
+
       - name: Checkout
         uses: actions/checkout@v2.3.3
 

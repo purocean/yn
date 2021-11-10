@@ -81,26 +81,27 @@ const RunCode = defineComponent({
       const runResult = result.value || cache[hash.value]
 
       return [
-        h('div', { class: 'run-code-action', style: 'position: sticky; left: 0; border-top: dashed 1px #888; margin: 1em 0' }, [
+        h('div', { class: 'p-mcr-run-code-action' }, [
           h('div', {
             title: '运行代码',
-            style: 'position: absolute; top: -.7em; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none',
+            class: 'p-mcr-run-btn',
             onClick: run
           }),
           h('div', {
             title: `在终端中运行代码，${getKeyLabel(CtrlCmd)} + 单击不退出解释器`,
-            class: 'no-print',
+            class: 'p-mcr-run-xterm-btn no-print',
             hidden: isJs.value,
-            style: 'position: absolute; top: -.5em; right: -0; height: 0; width: 0; border-left: .7em #b7b3b3 solid; border-top: .6em #dddddd00 solid; border-bottom: .6em #dddddd00 solid; border-right: 0; background: rgba(0, 0, 0, 0); cursor: pointer; outline: none;transform: rotate(90deg);',
             onClick: runInXterm
           }),
         ]),
         h('div', { class: 'p-mcr-run-code-result', style: 'padding: .5em 0 0 0', innerHTML: runResult }),
-        h(
-          'div',
-          { class: 'p-mcr-clear-btn no-print', style: { display: runResult ? 'flex' : 'none' }, title: '清空运行结果', onClick: clearResult },
-          h(SvgIcon, { name: 'times', style: 'pointer-events: none' })
-        ),
+        h('div', { class: 'p-mcr-clear-btn-wrapper no-print' }, h(
+          h(
+            'div',
+            { class: 'p-mcr-clear-btn', style: { display: runResult ? 'flex' : 'none' }, title: '清空运行结果', onClick: clearResult },
+            h(SvgIcon, { name: 'times', style: 'pointer-events: none' })
+          ),
+        )),
       ]
     }
   }
@@ -134,11 +135,56 @@ export default {
   name: 'markdown-code-run',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body .p-mcr-run-code-action {
+        position: sticky;
+        left: 0;
+        border-top: dashed 1px #888;
+        margin: 1em 0;
+      }
+
+      .markdown-view .markdown-body .p-mcr-run-btn {
+        position: absolute;
+        top: -.7em;
+        height: 0;
+        width: 0;
+        border-left: .7em #b7b3b3 solid;
+        border-top: .6em #dddddd00 solid;
+        border-bottom: .6em #dddddd00 solid;
+        border-right: 0;
+        background: rgba(0, 0, 0, 0);
+        cursor: pointer;
+        outline: none;
+      }
+
+      .markdown-view .markdown-body .p-mcr-run-xterm-btn {
+        position: absolute;
+        top: -.5em;
+        right: -0;
+        height: 0;
+        width: 0;
+        border-left: .7em #b7b3b3 solid;
+        border-top: .6em #dddddd00 solid;
+        border-bottom: .6em #dddddd00 solid;
+        border-right: 0;
+        background: rgba(0, 0, 0, 0);
+        cursor: pointer;
+        outline: none;transform: rotate(90deg);
+      }
+
+      .markdown-view .markdown-body .p-mcr-clear-btn-wrapper {
+        width: 0;
+        height: 0;
+        position: sticky;
+        left: 100%;
+        bottom: 0;
+        float: right;
+      }
+
       .markdown-view .markdown-body .p-mcr-clear-btn {
         width: 20px;
         height: 20px;
-        position: absolute;
-        right: 10px;
+        position: relative;
+        right: 12px;
         bottom: 10px;
         padding: 6px;
         border-radius: 50%;

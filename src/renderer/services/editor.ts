@@ -1,12 +1,10 @@
 import * as Monaco from 'monaco-editor'
 import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron } from '@fe/support/env'
-import { useBus } from '@fe/core/bus'
+import { registerHook, triggerHook } from '@fe/core/hook'
+import { registerAction } from '@fe/core/action'
+import { Alt } from '@fe/core/command'
 import { getColorScheme } from './theme'
-import { registerAction } from '../core/action'
-import { Alt } from '../core/command'
-
-const bus = useBus()
 
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
@@ -61,9 +59,7 @@ export function whenEditorReady (): Promise<{ editor: typeof editor, monaco: typ
   }
 
   return new Promise(resolve => {
-    bus.once('editor.ready', payload => {
-      resolve(payload)
-    })
+    registerHook('EDITOR_READY', resolve)
   })
 }
 
@@ -171,9 +167,7 @@ export function toggleWrap () {
 
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
 
-bus.on('monaco.before-init', (payload: any) => {
-  monaco = payload.monaco
-
+registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
   monaco.editor.defineTheme('vs', {
     base: 'vs',
     inherit: true,
@@ -195,17 +189,17 @@ bus.on('monaco.before-init', (payload: any) => {
   })
 })
 
-bus.on('monaco.ready', (payload) => {
+registerHook('MONACO_READY', (payload) => {
   monaco = payload.monaco
   editor = payload.editor
 
-  bus.emit('editor.ready', payload)
+  triggerHook('EDITOR_READY', payload)
 })
 
-bus.on('monaco.change-value', payload => {
-  bus.emit('editor.change', payload)
+registerHook('MONACO_CHANGE_VALUE', payload => {
+  triggerHook('EDITOR_CHANGE', payload)
 })
 
-bus.on('theme.change', () => {
+registerHook('THEME_CHANGE', () => {
   monaco?.editor.setTheme(getColorScheme() === 'dark' ? 'vs-dark' : 'vs')
 })

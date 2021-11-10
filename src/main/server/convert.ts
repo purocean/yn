@@ -1,5 +1,5 @@
 import * as os from 'os'
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import * as path from 'path'
 import { spawn } from 'child_process'
 import { BIN_DIR, RESOURCES_DIR } from '../constant'
@@ -16,10 +16,10 @@ const convert = async (source: string, fromType: string, toType: string) => {
       console.log(binPath, args)
       const process = spawn(binPath, args)
 
-      process.on('close', () => {
+      process.on('close', async () => {
         try {
-          const data = fs.readFileSync(path)
-          fs.unlinkSync(path)
+          const data = await fs.readFile(path)
+          await fs.unlink(path)
           resolve(data)
         } catch (error) {
           reject(error)
