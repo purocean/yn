@@ -24,7 +24,7 @@ const Drawio = defineComponent({
 
     const resize = () => {
       const iframe = refIFrame.value.getIframe()
-      if (iframe) {
+      if (iframe && iframe.contentDocument.body) {
         iframe.contentDocument.body.style.height = 'auto'
         iframe.contentDocument.documentElement.style.height = 'auto'
         iframe.height = iframe.contentDocument.documentElement.offsetHeight + 'px'
