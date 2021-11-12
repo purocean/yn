@@ -578,7 +578,7 @@ export default defineComponent({
       background: inherit;
     }
 
-    * {
+    *:not(button) {
       border-color: var(--g-color-80);
       background: inherit;
     }

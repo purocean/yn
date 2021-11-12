@@ -145,7 +145,7 @@ const render = async (ele: HTMLElement, content: string) => {
 
   const buildButton = (text: string, fun: () => void, onclick = '') => {
     const button = document.createElement('button')
-    button.style.cssText = 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 4px; transition: all .1s ease-in-out; line-height: 24px;'
+    button.className = 'small'
     button.innerText = text
     button.onclick = fun
     button.dataset.onclick = `${onclick}()`
@@ -154,7 +154,7 @@ const render = async (ele: HTMLElement, content: string) => {
 
   const action = document.createElement('div')
   action.className = 'no-print'
-  action.style.cssText = 'position: absolute; right: 10px; top: 3px; z-index: 1;'
+  action.style.cssText = 'position: absolute; right: 10px; top: 3px; z-index: 1; text-align: right'
   action.appendChild(buildButton(t('mind-map.zoom-in'), zoomIn, 'zoomIn'))
   action.appendChild(buildButton(t('mind-map.zoom-out'), zoomOut, 'zoomOut'))
   action.appendChild(buildButton(t('mind-map.switch-layout'), switchLayout, 'switchLayout'))
@@ -164,9 +164,9 @@ const render = async (ele: HTMLElement, content: string) => {
     const srcdoc = buildSrcdoc(JSON.stringify(km.exportJson()), actionsStr)
     openWindow(buildSrc(srcdoc, t('view-figure')), '_blank', { backgroundColor: '#fff' })
   }))
-  action.appendChild(buildButton(t('export') + ' PNG', () => exportData('png')))
-  action.appendChild(buildButton(t('export') + ' SVG', () => exportData('svg')))
-  action.appendChild(buildButton(t('export') + ' KM', () => exportData('km')))
+  action.appendChild(buildButton('PNG', () => exportData('png')))
+  action.appendChild(buildButton('SVG', () => exportData('svg')))
+  action.appendChild(buildButton('KM', () => exportData('km')))
 
   div.appendChild(action)
 }

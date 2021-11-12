@@ -27,7 +27,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
   if (full) {
     onload = `
       const btn = document.createElement('button');
-      btn.style = 'border: 0; background: #666; cursor: pointer; margin-left: 10px; color: #fff; padding: 4px 8px;';
+      btn.style = 'border-radius: 4px;border: 0; background: #d3d4d5; cursor: pointer; margin-left: 10px; color: #24292f; padding: 4px 8px;';
       btn.innerText = '${t('save')}'
       btn.onclick = save
       document.querySelector('.luckysheet_info_detail .sheet-name').after(btn)
@@ -259,7 +259,7 @@ const LuckyComponent = defineComponent({
     }
 
     const button = (text: string, onClick: any) => h('button', {
-      style: 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 4px; transition: all .1s ease-in-out; line-height: 24px;',
+      class: 'small',
       onClick
     }, text)
 
@@ -287,7 +287,7 @@ const LuckyComponent = defineComponent({
           'div',
           {
             class: 'no-print',
-            style: 'position: absolute; right: 15px; margin-top: 15px; z-index: 1;'
+            style: 'position: absolute; right: 10px; margin-top: 15px; z-index: 1;'
           },
           button(t('close'), close),
         ),
@@ -299,7 +299,7 @@ const LuckyComponent = defineComponent({
           'div',
           {
             class: 'no-print',
-            style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
+            style: 'position: absolute; right: 10px; top: 3px; z-index: 1;'
           },
           [
             button(t('edit'), open),

@@ -41,7 +41,7 @@ const Drawio = defineComponent({
     setTimeout(resize, 1000)
 
     const button = (text: string, onClick: any) => h('button', {
-      style: 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 4px; transition: all .1s ease-in-out; line-height: 24px;',
+      class: 'small',
       onClick
     }, text)
 
