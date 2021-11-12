@@ -1,3 +1,4 @@
+import type { Language } from '@share/i18n'
 import type * as Monaco from 'monaco-editor'
 
 export interface PathItem {
@@ -83,10 +84,12 @@ export namespace Components {
 }
 
 export type ThemeName = 'system' | 'dark' | 'light'
+export type LanguageName = 'system' | Language
 
 export type BuildInSettings = {
   'repos': { name: string, path: string }[],
   'theme': ThemeName,
+  'language': LanguageName,
   'assets-dir': string,
   'shell': string,
   'plugin.image-hosting-picgo.server-url': string,
@@ -158,6 +161,9 @@ export type BuildInHookTypes = {
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
   DOC_BEFORE_EXPORT: never,
+  I18N_CHANGE_LANGUAGE: { lang: LanguageName },
+  SETTING_FETCHED: { settings: BuildInSettings },
+  SETTING_BEFORE_WRITE: { settings: BuildInSettings },
 }
 
 export type FrontMatterAttrs = {

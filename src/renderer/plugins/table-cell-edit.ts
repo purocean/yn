@@ -4,6 +4,7 @@ import { hasCtrlCmd } from '@fe/core/command'
 import { getActionHandler } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import { getLineContent, replaceLine } from '@fe/services/editor'
+import { t } from '@fe/services/i18n'
 
 function reset (input: HTMLTextAreaElement) {
   input.parentElement!.style.position = ''
@@ -16,7 +17,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
   const modal = useModal()
 
   if (end - start !== 1) {
-    toast.show('warning', '暂只支持编辑单行文本')
+    toast.show('warning', t('table-cell-edit.limit-single-line'))
     input && input.remove()
     return
   }
@@ -64,7 +65,7 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
   const cellText = columns[cellIndex]?.trim()
 
   if (typeof cellText !== 'string') {
-    throw new Error('编辑错误')
+    throw new Error(t('table-cell-edit.edit-error'))
   }
 
   let value = cellText
@@ -98,15 +99,15 @@ const editTableCell = async (start: number, end: number, cellIndex: number, inpu
     }))
   } else {
     const inputVal = await modal.input({
-      title: '编辑单元格',
+      title: t('table-cell-edit.edit-title'),
       type: 'textarea',
       value: cellText,
       modalWidth: '600px',
-      hint: '单元格内容',
+      hint: t('table-cell-edit.edit-hint'),
     })
 
     if (typeof inputVal !== 'string') {
-      toast.show('warning', '取消编辑')
+      toast.show('warning', t('table-cell-edit.canceled'))
       return
     }
 
@@ -165,7 +166,7 @@ export default {
           input.style.display = 'block'
           input.style.padding = '4px'
           ;(input as any).autofocus = true
-          input.placeholder = 'ESC 取消'
+          input.placeholder = t('table-cell-edit.esc-to-cancel')
           setTimeout(() => {
             input.focus()
           }, 0)
@@ -189,7 +190,7 @@ export default {
     ctx.registerHook('VIEW_RENDERED', ({ getViewDom }) => {
       const view: HTMLElement = getViewDom()!
       view.querySelectorAll('.yank-table-cell').forEach(td => {
-        (td as HTMLElement).title = '双击编辑'
+        (td as HTMLElement).title = t('table-cell-edit.db-click-edit')
       })
     })
   }

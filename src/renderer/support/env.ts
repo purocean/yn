@@ -8,10 +8,10 @@ export const isElectron = !!(nodeProcess?.versions?.electron)
 export const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)
 
 /**
- * 新窗口打开一个链接
- * @param url URL
- * @param target Target
- * @param options 选项
+ * Open in new window.
+ * @param url
+ * @param target
+ * @param options
  * @returns opener
  */
 export const openWindow = (url: string, target = '_blank', options: Record<string, any> = {}) => {
@@ -33,7 +33,7 @@ export const openWindow = (url: string, target = '_blank', options: Record<strin
     const opener: any = window.open(url, target, Object.entries(opts).map(([k, v]) => `${k}=${v}`).join(','))
 
     const preload = `
-      // 在 Electron 环境中开启鼠标滚轮缩放页面
+      // enable page zoom in electron.
       xRequire = require || nodeRequire
 
       const webContents = xRequire('electron').remote.getCurrentWebContents()

@@ -33,7 +33,7 @@ export default {
             {
               id: forwardId,
               type: 'normal' as any,
-              title: '前进',
+              title: ctx.i18n.t('status-bar.nav.forward'),
               disabled: idx >= stack.length - 1,
               subTitle: ctx.command.getKeysLabel(forwardId),
               onClick: () => ctx.action.getActionHandler(forwardId)()
@@ -41,7 +41,7 @@ export default {
             {
               id: backId,
               type: 'normal' as any,
-              title: '后退',
+              title: ctx.i18n.t('status-bar.nav.back'),
               disabled: idx <= 0,
               subTitle: ctx.command.getKeysLabel(backId),
               onClick: () => ctx.action.getActionHandler(backId)()

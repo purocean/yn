@@ -7,7 +7,7 @@ export default {
       menus['status-bar-tool'] = {
         id: 'status-bar-tool',
         position: 'left',
-        title: '工具',
+        title: ctx.i18n.t('status-bar.tool.tool'),
         list: []
       }
     })

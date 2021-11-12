@@ -10,22 +10,22 @@ export type HookType = 'before-run' | 'after-run'
 
 export interface Action<T extends string> {
   /**
-   * 名称
+   * Name
    */
   name: T,
 
   /**
-   * 绑定快捷键
+   * Associate shortcuts
    */
   keys?: null | (string | number)[]
 
   /**
-   * 执行方法
+   * Handler
    */
   handler: ActionHandler<T>
 
   /**
-   * 执行前判断方法，什么时候执行
+   * When should execute handler
    */
   when?: () => boolean
 }
@@ -33,9 +33,9 @@ export interface Action<T extends string> {
 const actions: { [id: string]: Action<string> } = {}
 
 /**
- * 注册一个 Action
- * @param action Action
- * @returns Action
+ * Register an action.
+ * @param action
+ * @returns action
  */
 export function registerAction<T extends string> (action: Action<T>) {
   logger.debug('registerAction', action.name)
@@ -52,8 +52,8 @@ export function registerAction<T extends string> (action: Action<T>) {
 }
 
 /**
- * 获取一个 Action 的执行方法，调用执行时候会触发相关的钩子
- * @param name Action 名称
+ * Get an action handler.
+ * @param name
  */
 export function getActionHandler <T extends BuildInActionName> (name: T): ActionHandler<T>
 export function getActionHandler <T extends string> (name: T): ActionHandler<T>
@@ -77,8 +77,8 @@ export function getActionHandler <T extends string> (name: T): ActionHandler<T> 
 }
 
 /**
- * 获取一个 Action
- * @param name Action 名称
+ * Get an action.
+ * @param name
  */
 export function getAction <T extends BuildInActionName> (name: T): Action<T> | undefined
 export function getAction <T extends string>(name: T): Action<T> | undefined
@@ -88,8 +88,8 @@ export function getAction (name: string) {
 }
 
 /**
- * 移除一个方法
- * @param name Actin 名称
+ * Remove an action.
+ * @param name
  */
 export function removeAction (name: BuildInActionName): void
 export function removeAction (name: string): void

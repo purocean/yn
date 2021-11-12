@@ -8,7 +8,7 @@ function macro (expression: string, vars: Record<string, any>) {
   const res = fun(vars)
 
   if (typeof res === 'object' || typeof res === 'function' || typeof res === 'symbol' || typeof res === 'undefined') {
-    throw new Error('返回数据类型错误')
+    throw new Error('Macro result type error.')
   }
 
   return '' + res

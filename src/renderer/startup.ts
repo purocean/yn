@@ -4,12 +4,14 @@ import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
-import type { Doc, Repo } from '@fe/types'
+import type { BuildInSettings, Doc, Repo } from '@fe/types'
 import { hasCtrlCmd } from '@fe/core/command'
 import { showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
 import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
+import { getLanguage, setLanguage } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
+import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 
@@ -48,7 +50,7 @@ function getLastOpenFile (repoName?: string): Doc | null {
 export default function startup () {
   triggerHook('STARTUP')
 
-  // 在 Electron 环境中开启缩放页面功能
+  // enable page zoom in electron.
   if (isElectron) {
     const webContents = nodeRequire('electron').remote.getCurrentWebContents()
 
@@ -86,6 +88,15 @@ export default function startup () {
 const doc = getLastOpenFile()
 switchDoc(doc)
 
+function changeLanguage ({ settings }: { settings: BuildInSettings }) {
+  if (settings.language !== getLanguage()) {
+    setLanguage(settings.language)
+  }
+}
+
+registerHook('I18N_CHANGE_LANGUAGE', view.refresh)
+registerHook('SETTING_FETCHED', changeLanguage)
+registerHook('SETTING_BEFORE_WRITE', changeLanguage)
 registerHook('DOC_CREATED', refreshTree)
 registerHook('DOC_DELETED', refreshTree)
 registerHook('DOC_MOVED', refreshTree)
@@ -105,7 +116,7 @@ whenEditorReady().then(({ editor }) => {
   const { currentFile } = store.state
 
   if (!currentFile) {
-    // 当前没打开文件，直接打开 README
+    // no recent file, show readme.
     showHelp('README.md')
   }
 })

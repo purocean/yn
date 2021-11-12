@@ -19,6 +19,7 @@ import { registerAction, removeAction } from '@fe/core/action'
 import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { toggleXterm } from '@fe/services/layout'
 import { getColorScheme } from '@fe/services/theme'
+import { t } from '@fe/services/i18n'
 import { OneHalfLight, OneHalfDark } from 'xterm-theme'
 import SvgIcon from './SvgIcon.vue'
 
@@ -87,7 +88,7 @@ export default defineComponent({
         registerHook('GLOBAL_RESIZE', fitXterm)
 
         if (FLAG_DEMO) {
-          const message = 'DEMO 模式终端不可用'
+          const message = t('demo-tips')
           xterm.write(message)
           return
         }
@@ -152,7 +153,7 @@ export default defineComponent({
             input(map[language].eol)
           }
 
-          // 延迟一下等待子进程启动
+          // wait for child process ready.
           setTimeout(() => {
             run(code, map[language].eol)
 
@@ -162,7 +163,7 @@ export default defineComponent({
             }
           }, 400)
         } else {
-          xterm!.write(`不支持 ${language} 语言\n`)
+          xterm!.write(`Not support  ${language}\n`)
         }
       })
     }

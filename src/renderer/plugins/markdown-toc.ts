@@ -3,7 +3,7 @@
 import Markdown from 'markdown-it'
 import StateInline from 'markdown-it/lib/rules_inline/state_inline'
 import { getKeyLabel } from '@fe/core/command'
-import { Plugin } from '@fe/context'
+import ctx, { Plugin } from '@fe/context'
 
 import { injectLineNumbers } from './markdown-source-line'
 
@@ -45,12 +45,12 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
       return false
     }
 
-    if (match.length > 1) { // 有自定义参数进来
+    if (match.length > 1) { // custom params.
       try {
         const ext = JSON.parse(match[1].replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": '))
         Object.assign(options, defaults, o, ext)
       } catch (error) {
-        console.log('参数解析错误', match)
+        console.log('parse params error', match)
       }
     } else {
       Object.assign(options, defaults, o)
@@ -109,7 +109,7 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
         }
       }
 
-      // 给标题加上 id
+      // Add id to heading.
 
       const slug = options.slugify(heading.content)
 
@@ -171,7 +171,7 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
     }
 
     if (header.attrIndex('title') < 0) {
-      header.attrSet('title', getKeyLabel('CtrlCmd') + ' + 单击复制链接')
+      header.attrSet('title', getKeyLabel('CtrlCmd') + ' + ' + ctx.i18n.t('click-to-copy-link'))
     }
 
     return injectLineNumbers(tokens, idx, opt, env, slf)

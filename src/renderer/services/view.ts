@@ -3,10 +3,11 @@ import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
+import { t } from './i18n'
 
 function present (flag: boolean) {
   if (flag) {
-    useToast().show('info', '按下 Esc 键退出演示模式')
+    useToast().show('info', t('exit-presentation-msg'))
   }
   store.commit('setPresentation', flag)
   setTimeout(() => {
@@ -15,30 +16,30 @@ function present (flag: boolean) {
 }
 
 /**
- * 刷新渲染
+ * Refresh view.
  */
 export function refresh () {
   getActionHandler('view.refresh')()
 }
 
 /**
- * 聚焦到某一行
- * @param line 行号
+ * REveal a line.
+ * @param line
  */
 export function revealLine (line: number) {
   getActionHandler('view.reveal-line')(line)
 }
 
 /**
- * 滚动到指定位置
- * @param top 顶部偏移
+ * Scroll to a position.
+ * @param top
  */
 export function scrollTopTo (top: number) {
   getActionHandler('view.scroll-top-to')(top)
 }
 
 /**
- * 获取渲染后的 HTML
+ * Get rendered HTML.
  * @returns HTML
  */
 export function getContentHtml () {
@@ -46,22 +47,22 @@ export function getContentHtml () {
 }
 
 /**
- * 进入演示模式
+ * Enter presentation mode.
  */
 export function enterPresent () {
   getActionHandler('view.enter-presentation')()
 }
 
 /**
- * 退出演示模式
+ * Exit presentation mode.
  */
 export function exitPresent () {
   getActionHandler('view.exit-presentation')()
 }
 
 /**
- * 切换自动预览刷新
- * @param flag 是否开启自动刷新预览
+ * Toggle auto render preview.
+ * @param flag
  */
 export function toggleAutoPreview (flag?: boolean) {
   const showXterm = store.state.autoPreview
@@ -83,7 +84,7 @@ registerAction({
     return store.state.presentation &&
       el?.tagName !== 'INPUT' &&
       el?.tagName !== 'TEXTAREA' &&
-      [...document.body.children] // 判断页面是否有浮层遮住
+      [...document.body.children] // has mask?
         .filter(x => x.tagName === 'DIV' && x.clientWidth > 10 && x.clientHeight > 10)
         .length < 2
   }

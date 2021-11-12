@@ -10,19 +10,20 @@ import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
 import { isSameRepo } from '@fe/services/document'
 import { useToast } from '@fe/support/ui/toast'
+import { t } from '@fe/services/i18n'
 
 async function uploadFile (file: any, asImage: boolean) {
   if (!store.state.currentFile) {
-    throw new Error('当前未打开文件')
+    throw new Error('No file opened.')
   }
 
   const filename = file.name
   const assetPath = await upload(file, store.state.currentFile, filename)
 
   if (asImage) {
-    insert(`![图片](${encodeMarkdownLink(assetPath)})\n`)
+    insert(`![Img](${encodeMarkdownLink(assetPath)})\n`)
   } else {
-    insert(`附件 [${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){class=open target=_blank}\n`)
+    insert(`[${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){class=open target=_blank}\n`)
   }
 
   refreshTree()
@@ -44,7 +45,7 @@ function addDocument (doc: Doc) {
   const file = store.state.currentFile
   if (file) {
     if (!isSameRepo(file, doc)) {
-      useToast().show('warning', '不能插入不同仓库的文档')
+      useToast().show('warning', t('insert-different-repo-doc'))
       return
     }
 
@@ -55,7 +56,7 @@ function addDocument (doc: Doc) {
     const fileName = doc.name.replace(/\.[^.]*$/, '')
     insert(`[${fileName}](${encodeMarkdownLink(filePath)})`)
   } else {
-    throw new Error('当前未打开文件')
+    throw new Error('No file opened.')
   }
 }
 
@@ -66,7 +67,7 @@ export default {
       editor.addAction({
         id: 'plugin.editor.add-image',
         contextMenuGroupId: 'modification',
-        label: '添加图片',
+        label: t('add-image'),
         keybindings: [
           monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
         ],
@@ -75,7 +76,7 @@ export default {
       editor.addAction({
         id: 'plugin.editor.add-file',
         contextMenuGroupId: 'modification',
-        label: '插入附件',
+        label: t('editor.context-menu.add-attachment'),
         keybindings: [
           monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F
         ],
@@ -84,7 +85,7 @@ export default {
       editor.addAction({
         id: 'plugin.editor.add-document',
         contextMenuGroupId: 'modification',
-        label: '插入文档',
+        label: t('editor.context-menu.add-doc'),
         keybindings: [
           monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
         ],

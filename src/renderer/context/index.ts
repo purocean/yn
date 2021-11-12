@@ -21,6 +21,7 @@ import * as layout from '@fe/services/layout'
 import * as editor from '@fe/services/editor'
 import * as theme from '@fe/services/theme'
 import * as setting from '@fe/services/setting'
+import * as i18n from '@fe/services/i18n'
 import * as lib from './lib'
 
 const ctx = {
@@ -41,6 +42,7 @@ const ctx = {
   storage,
   embed,
   setting,
+  i18n,
   lib,
   env,
   utils,

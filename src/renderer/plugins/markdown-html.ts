@@ -110,7 +110,7 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
   const prevHtmlTags = (state.md as any)._prev_block_html_tags
 
   lineText = state.src.slice(pos, max)
-  // 调用行内解析规则
+  // invoke inline parse function
   inlineParse(lineText, state.md, state.env, state.tokens, prevHtmlTags, pushState)
 
   // If we are here - we detected HTML block.
@@ -139,12 +139,12 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
 }
 
 function inlineParse (this: ParserInline, src: string, md: any, env: any, outTokens: Token[], prevHtmlTags: string[], htmlBlock: boolean) {
-  // 每次解析 inline 时候，重置或者使用外部的 html 标签堆栈
+  // restore or use external tag stack every time.
   md._prev_inline_html_tags = prevHtmlTags || []
 
   const state = new this.State(src, md, env, outTokens)
 
-  // 如果是 html block 规则调用的，这里 hack 一下，避免 delimiters 为 undefined
+  // hack avoid delimiters to be undefined when html block called.
   if (htmlBlock) {
     Object.defineProperty(state, 'delimiters', {
       get () {
@@ -164,7 +164,7 @@ function inlineParse (this: ParserInline, src: string, md: any, env: any, outTok
 }
 
 function parse (this: any, src: string, env: any) {
-  // 每次运行解析程序，设定一个 block html 标签栈，便于后续处理程序匹配标签
+  // create block html tag stack for flow up process
   this._prev_block_html_tags = []
   return MarkdownIt.prototype.parse.call(this, src, env)
 }

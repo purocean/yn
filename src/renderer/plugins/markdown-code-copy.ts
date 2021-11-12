@@ -43,7 +43,7 @@ export default {
       const codeInline = (fn: Function) => (tokens: any, idx: any, options: any, env: any, slf: any) => {
         if (tokens[idx].attrIndex('title') < 0) {
           tokens[idx].attrJoin('class', 'copy-inner-text')
-          tokens[idx].attrPush(['title', ctx.command.getKeyLabel('CtrlCmd') + ' + 单击复制'])
+          tokens[idx].attrPush(['title', ctx.command.getKeyLabel('CtrlCmd') + ' + ' + ctx.i18n.t('click-to-copy')])
         }
 
         return (fn)(tokens, idx, options, env, slf)
@@ -61,7 +61,7 @@ export default {
         if (codeNode && Array.isArray(codeNode.children)) {
           codeNode.children.unshift(h('div', { class: 'p-mcc-copy-btn-wrapper no-print' }, h(
             'div',
-            { class: 'p-mcc-copy-btn copy-text', 'data-text': code, title: '复制代码' },
+            { class: 'p-mcc-copy-btn copy-text', 'data-text': code, title: ctx.i18n.t('copy-code') },
             h(SvgIcon, { name: 'clipboard', style: 'pointer-events: none' }))
           ))
         }

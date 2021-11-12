@@ -5,6 +5,7 @@ import { buildSrc, IFrame } from '@fe/support/embed'
 import * as api from '@fe/support/api'
 import { triggerHook } from '@fe/core/hook'
 import { openWindow } from '@fe/support/env'
+import { useI18n } from '@fe/services/i18n'
 
 const Drawio = defineComponent({
   name: 'drawio',
@@ -13,6 +14,7 @@ const Drawio = defineComponent({
     content: String
   },
   setup (props) {
+    const { t } = useI18n()
     const srcdoc = ref('')
     const refIFrame = ref<any>()
 
@@ -51,9 +53,9 @@ const Drawio = defineComponent({
           style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
         },
         [
-          button('适应高度', resize),
-          button('重载', reload),
-          button('新窗口打开', () => openWindow(buildSrc(srcdoc.value, '查看图形'))),
+          button(t('drawio.adjust-height'), resize),
+          button(t('reload'), reload),
+          button(t('open-in-new-window'), () => openWindow(buildSrc(srcdoc.value, t('view-figure')))),
         ]
       ),
       h(IFrame, {
@@ -179,7 +181,7 @@ export default {
     ctx.registerHook('TREE_NODE_SELECT', async ({ node }) => {
       if (node.path.toLowerCase().endsWith('.drawio')) {
         const srcdoc = await buildSrcdoc({ content: '', ...node })
-        openWindow(buildSrc(srcdoc, '查看图形'))
+        openWindow(buildSrc(srcdoc, ctx.i18n.t('view-figure')))
 
         return true
       }

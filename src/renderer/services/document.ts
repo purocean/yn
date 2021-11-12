@@ -9,12 +9,13 @@ import { triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
 import { inputPassword } from './base'
+import { t } from './i18n'
 
 const logger = getLogger('document')
 
 function decrypt (content: any, password: string) {
   if (!password) {
-    throw new Error('未输入解密密码')
+    throw new Error(t('no-password'))
   }
 
   return crypto.decrypt(content, password)
@@ -22,15 +23,15 @@ function decrypt (content: any, password: string) {
 
 function encrypt (content: any, password: string) {
   if (!password) {
-    throw new Error('未输入解密密码')
+    throw new Error(t('no-password'))
   }
 
   return crypto.encrypt(content, password)
 }
 
 /**
- * 判断是否是加密文档
- * @param doc 文档
+ * Determine if the document is encrypted.
+ * @param doc
  * @returns
  */
 export function isEncrypted (doc?: Pick<Doc, 'path'> | null) {
@@ -38,39 +39,44 @@ export function isEncrypted (doc?: Pick<Doc, 'path'> | null) {
 }
 
 /**
- * 判断是否在同一个仓库
- * @param a 文档 A
- * @param b 文档 B
+ * Determine if it is in the same repository.
+ * @param docA
+ * @param docB
  * @returns
  */
-export function isSameRepo (a?: Doc | null, b?: Doc | null) {
-  return a && b && a.repo === b.repo
+export function isSameRepo (docA?: Doc | null, docB?: Doc | null) {
+  return docA && docB && docA.repo === docB.repo
 }
 
 /**
- * 判断是否是同一个文档
- * @param a 文档 A
- * @param b 文档 B
+ * Determine if it is the same document.
+ * @param docA
+ * @param docB
  * @returns
  */
-export function isSameFile (a?: Doc | null, b?: Doc | null) {
-  return a && b && a.repo === b.repo && a.path === b.path
+export function isSameFile (docA?: Doc | null, docB?: Doc | null) {
+  return docA && docB && docA.repo === docB.repo && docA.path === docB.path
 }
 
 /**
- * 判断文档 B 是否和文档 A 相同或是目录 A 的下级
- * @param a 文档/目录 A
- * @param b 文档 B
+ * Determine whether document B is the same as document A or a subordinate to directory A.
+ * @param docA
+ * @param docB
  * @returns
  */
-export function isSubOrSameFile (a?: Doc | null, b?: Doc | null) {
-  return a && b && a.repo === b.repo &&
+export function isSubOrSameFile (docA?: Doc | null, docB?: Doc | null) {
+  return docA && docB && docA.repo === docB.repo &&
   (
-    isBelongTo(a.path, b.path) ||
-    isSameFile(a, b)
+    isBelongTo(docA.path, docB.path) ||
+    isSameFile(docA, docB)
   )
 }
 
+/**
+ * Get file URI.
+ * @param doc
+ * @returns
+ */
 export function toUri (doc?: Doc | null) {
   if (doc && doc.repo && doc.path) {
     return encodeURI(`yank-note://${doc.repo}/${doc.path.replace(/^\//, '')}`)
@@ -80,10 +86,10 @@ export function toUri (doc?: Doc | null) {
 }
 
 /**
- * 创建一个文档
- * @param doc 文档
- * @param baseDoc 文档所在目录或同级文档
- * @returns 创建的文档
+ * Create a document.
+ * @param doc
+ * @param baseDoc
+ * @returns
  */
 export async function createDoc (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: Doc): Promise<Doc>
 export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc): Promise<Doc>
@@ -93,9 +99,9 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
       const currentPath = baseDoc.type === 'dir' ? baseDoc.path : dirname(baseDoc.path)
 
       let filename = await useModal().input({
-        title: '创建文件(加密文件以 .c.md 结尾)',
-        hint: '文件路径',
-        content: '当前路径：' + currentPath,
+        title: t('document.create-dialog.title'),
+        hint: t('document.create-dialog.hint'),
+        content: t('document.current-path', currentPath),
         value: 'new.md',
         select: true
       })
@@ -113,7 +119,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
   }
 
   if (!doc.path) {
-    throw new Error('需要传入文件路径')
+    throw new Error('Need path')
   }
 
   const filename = basename(doc.path)
@@ -125,9 +131,8 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
   }
 
   try {
-    // 加密文件内容
     if (isEncrypted(file)) {
-      const password = await inputPassword('[创建] 请输入密码', file.name)
+      const password = await inputPassword(t('document.password-create'), file.name)
       if (!password) {
         return
       }
@@ -148,20 +153,20 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
 }
 
 /**
- * 重复一个文档
- * @param origin 源文档
- * @returns 创建的文档
+ * Duplicate a document.
+ * @param originDoc
+ * @returns
  */
-export async function duplicateDoc (origin: Doc) {
+export async function duplicateDoc (originDoc: Doc) {
   let newPath = await useModal().input({
-    title: '重复文件',
-    hint: '目标路径',
-    content: '当前路径：' + origin.path,
-    value: origin.path,
-    // 默认选中文件名
+    title: t('document.duplicate-dialog.title'),
+    hint: t('document.duplicate-dialog.hint'),
+    content: t('document.current-path', originDoc.path),
+    value: originDoc.path,
+    // default select file basename.
     select: [
-      origin.path.lastIndexOf('/') + 1,
-      origin.name.lastIndexOf('.') > -1 ? origin.path.lastIndexOf('.') : origin.path.length,
+      originDoc.path.lastIndexOf('/') + 1,
+      originDoc.name.lastIndexOf('.') > -1 ? originDoc.path.lastIndexOf('.') : originDoc.path.length,
       'forward'
     ]
   })
@@ -172,21 +177,24 @@ export async function duplicateDoc (origin: Doc) {
 
   newPath = newPath.replace(/\/$/, '')
 
-  const { content } = await api.readFile(origin)
+  const { content } = await api.readFile(originDoc)
 
-  await createDoc({ repo: origin.repo, path: newPath, content })
+  await createDoc({ repo: originDoc.repo, path: newPath, content })
 }
 
 /**
- * 删除一个文档
- * @param doc 文档
+ * Delete a document.
+ * @param doc
  */
 export async function deleteDoc (doc: Doc) {
   if (doc.path === '/') {
-    throw new Error('不能删除根目录')
+    throw new Error('Could\'t delete root dir.')
   }
 
-  const confirm = await useModal().confirm({ title: '删除文件', content: `确定要删除 [${doc.path}] 吗？` })
+  const confirm = await useModal().confirm({
+    title: t('document.delete-dialog.title'),
+    content: t('document.delete-dialog.content', doc.path),
+  })
 
   if (confirm) {
     await api.deleteFile(doc)
@@ -196,21 +204,21 @@ export async function deleteDoc (doc: Doc) {
 }
 
 /**
- * 移动一个文档
- * @param doc 文档
- * @param newPath 新路径
+ * Move or rename a document.
+ * @param doc
+ * @param newPath
  */
 export async function moveDoc (doc: Doc, newPath?: string) {
   if (doc.path === '/') {
-    throw new Error('不能移动根目录')
+    throw new Error('Could\'t move/rename root dir.')
   }
 
   newPath = newPath ?? await useModal().input({
-    title: '移动文件',
-    hint: '新的路径',
-    content: '当前路径：' + doc.path,
+    title: t('document.move-dialog.title'),
+    hint: t('document.move-dialog.content'),
+    content: t('document.current-path', doc.path),
     value: doc.path,
-    // 默认选中文件名
+    // default select file basename.
     select: [
       doc.path.lastIndexOf('/') + 1,
       doc.name.lastIndexOf('.') > -1 ? doc.path.lastIndexOf('.') : doc.path.length,
@@ -237,7 +245,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
   }
 
   if (isEncrypted(doc) !== isEncrypted({ path: newPath })) {
-    useToast().show('warning', '加密文件和非加密文件不能互相转换')
+    useToast().show('warning', t('document.file-transform-error'))
     return
   }
 
@@ -247,9 +255,9 @@ export async function moveDoc (doc: Doc, newPath?: string) {
 }
 
 /**
- * 保存一个文档
- * @param doc 文档
- * @param content 内容
+ * Save a document.
+ * @param doc
+ * @param content
  */
 export async function saveDoc (doc: Doc, content: string) {
   logger.debug('saveDoc', doc)
@@ -257,16 +265,18 @@ export async function saveDoc (doc: Doc, content: string) {
     let sendContent = content
     let passwordHash = ''
 
-    // 加密文件内容
     if (isEncrypted(doc)) {
-      const password = await inputPassword('[保存] 请输入密码', doc.name)
+      const password = await inputPassword(t('document.password-save'), doc.name)
       if (!password) {
         return
       }
 
       const encrypted = encrypt(sendContent, password)
       if (doc.passwordHash !== encrypted.passwordHash) {
-        if (!(await useModal().confirm({ title: '提示', content: '密码和上一次输入的密码不一致，是否用新密码保存？' }))) {
+        if (!(await useModal().confirm({
+          title: t('document.save-encrypted-file-dialog.title'),
+          content: t('document.save-encrypted-file-dialog.content')
+        }))) {
           return
         }
       }
@@ -291,7 +301,7 @@ export async function saveDoc (doc: Doc, content: string) {
 }
 
 /**
- * 确保一个文档已保存
+ * Ensure current document is saved.
  */
 export async function ensureCurrentFileSaved () {
   const { currentFile, currentContent } = store.state
@@ -301,8 +311,11 @@ export async function ensureCurrentFileSaved () {
 
   try {
     if (isEncrypted(currentFile)) {
-      if (!store.getters.isSaved && !(await useModal().confirm({ title: '未保存文件', content: '确定要离开吗？' }))) {
-        throw new Error('请先保存文件')
+      if (!store.getters.isSaved && !(await useModal().confirm({
+        title: t('quit-check-dialog.title'),
+        content: t('quit-check-dialog.desc'),
+      }))) {
+        throw new Error('Please save document.')
       } else {
         store.commit('setCurrentFile', null)
       }
@@ -318,8 +331,8 @@ export async function ensureCurrentFileSaved () {
 }
 
 /**
- * 切换文档
- * @param doc 文档
+ * Switch document.
+ * @param doc
  */
 export async function switchDoc (doc: Doc | null) {
   logger.debug('switchDoc', doc)
@@ -346,9 +359,9 @@ export async function switchDoc (doc: Doc | null) {
     let { content, hash } = await api.readFile(doc)
     clearTimeout(timer)
 
-    // 解密文件内容
+    // decrypt content.
     if (isEncrypted(doc)) {
-      const password = await inputPassword('[打开] 请输入密码', doc.name, true)
+      const password = await inputPassword(t('document.password-open'), doc.name, true)
       const decrypted = decrypt(content, password)
       content = decrypted.content
       passwordHash = decrypted.passwordHash
@@ -365,14 +378,14 @@ export async function switchDoc (doc: Doc | null) {
     triggerHook('DOC_SWITCHED', { doc: store.state.currentFile })
   } catch (error: any) {
     triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message })
-    useToast().show('warning', error.message.includes('Malformed') ? '密码错误' : error.message)
+    useToast().show('warning', error.message.includes('Malformed') ? t('document.wrong-password') : error.message)
     throw error
   }
 }
 
 /**
- * 标记文档
- * @param doc 文档
+ * Mark document.
+ * @param doc
  */
 export async function markDoc (doc: Doc) {
   await api.markFile(doc)
@@ -380,8 +393,8 @@ export async function markDoc (doc: Doc) {
 }
 
 /**
- * 取消标记文档
- * @param doc 文档
+ * Unmark document.
+ * @param doc
  */
 export async function unmarkDoc (doc: Doc) {
   await api.unmarkFile(doc)
@@ -389,16 +402,16 @@ export async function unmarkDoc (doc: Doc) {
 }
 
 /**
- * 在操作系统中打开
- * @param doc 文档
+ * Open in OS.
+ * @param doc
  */
 export async function openInOS (doc: Doc) {
   await api.openInOS(doc)
 }
 
 /**
- * 打开帮助文档
- * @param docName 文档名
+ * Show help file.
+ * @param docName
  */
 export async function showHelp (docName: string) {
   switchDoc({
@@ -411,7 +424,7 @@ export async function showHelp (docName: string) {
 }
 
 /**
- * 显示导出面板
+ * Show export panel.
  */
 export function showExport () {
   store.commit('setShowExport', true)

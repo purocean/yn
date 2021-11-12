@@ -8,8 +8,8 @@
         <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" v-model="inputValue">
       </template>
       <div class="action">
-        <button class="btn" @click="cancel">取消</button>
-        <button class="btn primary" @click="ok">确定</button>
+        <button class="btn" @click="cancel">{{$t('cancel')}}</button>
+        <button class="btn primary" @click="ok">{{$t('ok')}}</button>
       </div>
     </div>
   </XMask>
@@ -17,8 +17,9 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, ref } from 'vue'
-import XMask from './Mask.vue'
 import type { Components } from '@fe/types'
+import { useI18n } from '@fe/services/i18n'
+import XMask from './Mask.vue'
 
 type ModalType = '' | 'confirm' | 'input'
 
@@ -26,6 +27,8 @@ export default defineComponent({
   name: 'modal-input',
   components: { XMask },
   setup () {
+    const { t } = useI18n()
+
     const refInput = ref<HTMLInputElement | null>(null)
 
     const type = ref<ModalType>('')
@@ -60,7 +63,7 @@ export default defineComponent({
 
     function confirm (params: Components.Modal.ConfirmModalParams): Promise<boolean> {
       type.value = 'confirm'
-      title.value = params.title || '提示'
+      title.value = params.title || t('modal.info')
       content.value = params.content || ''
       show.value = true
       modalWidth.value = undefined
@@ -72,7 +75,7 @@ export default defineComponent({
 
     function input (params: Components.Modal.InputModalParams): Promise<string> {
       type.value = 'input'
-      title.value = params.title || '请输入'
+      title.value = params.title || t('modal.input-placeholder')
       content.value = params.content || ''
       inputType.value = params.type || 'text'
       inputValue.value = params.value || ''

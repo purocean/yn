@@ -5,12 +5,13 @@ import * as os from 'os'
 import * as yargs from 'yargs'
 import server from './server'
 import { APP_NAME } from './constant'
-import { mainMenus, inputMenu, selectionMenu, getTrayMenus } from './menus'
+import { inputMenu, selectionMenu, getTrayMenus, getMainMenus } from './menus'
 import { transformProtocolRequest } from './protocol'
 import opn from 'opn'
 import startup from './startup'
 import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
+import { $t } from './i18n'
 
 const isMacos = os.platform() === 'darwin'
 const isLinux = os.platform() === 'linux'
@@ -21,12 +22,10 @@ const trayEnabled = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || 3044
 const devFrontendPort = 8066
 
-Menu.setApplicationMenu(mainMenus)
+Menu.setApplicationMenu(getMainMenus())
 
-// 主窗口
 let win: BrowserWindow | null = null
-// 系统托盘
-let tray = null
+let tray: Tray | null = null
 
 const getUrl = (mode?: typeof urlMode) => {
   mode = mode ?? urlMode
@@ -75,7 +74,7 @@ const createWindow = () => {
       nodeIntegration: true,
       enableRemoteModule: true,
     },
-    // Linux 上设置窗口图标
+    // for linux icon.
     ...(isLinux ? { icon: path.join(__dirname, './assets/icon.png') } : undefined)
   })
 
@@ -83,7 +82,7 @@ const createWindow = () => {
   win.show()
   win.setMenu(null)
 
-  // 不明原因，第一次启动窗口不能正确加载js
+  // could not load js correctly when startup
   setTimeout(() => {
     win && win.loadURL(getUrl())
   }, 0)
@@ -104,7 +103,7 @@ const showWindow = () => {
   if (win) {
     const show = () => {
       if (win) {
-        // macos 上展示图标
+        // macos need show in dock
         isMacos && app.dock.show()
         win.setSkipTaskbar(false)
         win.show()
@@ -115,7 +114,7 @@ const showWindow = () => {
     if (isMacos) {
       show()
     } else {
-      // 先隐藏再显示，以便在 windows 10 当前虚拟窗口展示
+      // hide first, then show in current desktop. for windows 10.
       hideWindow()
       setTimeout(show, 100)
     }
@@ -144,9 +143,12 @@ const quit = () => {
       if (val === false) {
         dialog.showMessageBox(win, {
           type: 'question',
-          buttons: ['取消', '放弃保存并退出'],
-          title: '提示',
-          message: '有文档未保存，是否要退出？'
+          title: $t('quit-check-dialog.title'),
+          message: $t('quit-check-dialog.desc'),
+          buttons: [
+            $t('quit-check-dialog.buttons.cancel'),
+            $t('quit-check-dialog.buttons.discard')
+          ],
         }).then(choice => {
           if (choice.response === 1) {
             win && win.destroy()
@@ -174,7 +176,7 @@ const serve = () => {
   try {
     const handler = server(backendPort)
     protocol.registerStreamProtocol('yank-note', async (request, callback) => {
-      // 自定义 protocol 协议转换为 koa 请求
+      // transform protocol data to koa request.
       const { req, res, out } = await transformProtocolRequest(request)
 
       await handler(req, res)
@@ -198,7 +200,7 @@ const showOpenDialog = (params: OpenDialogOptions) => {
 
 const showTray = () => {
   tray = new Tray(path.join(__dirname, './assets/tray.png'))
-  tray.setToolTip('Yank Note 一款面向程序员的 Markdown 编辑器')
+  tray.setToolTip(`${$t('app-name')} - ${$t('slogan')}`)
   if (isMacos) {
     tray.on('click', function (this: Tray) { this.popUpContextMenu() })
   } else {
@@ -208,6 +210,13 @@ const showTray = () => {
 }
 
 const openInBrowser = () => opn(getUrl('prod'))
+
+function refreshMenus () {
+  Menu.setApplicationMenu(getMainMenus())
+  if (tray) {
+    tray.setContextMenu(getTrayMenus())
+  }
+}
 
 registerAction('show-main-window', showWindow)
 registerAction('hide-main-window', hideWindow)
@@ -221,6 +230,7 @@ registerAction('get-dev-frontend-port', () => devFrontendPort)
 registerAction('open-in-browser', openInBrowser)
 registerAction('quit', quit)
 registerAction('show-open-dialog', showOpenDialog)
+registerAction('refresh-menus', refreshMenus)
 
 powerMonitor.on('shutdown', quit)
 
@@ -236,6 +246,9 @@ if (!gotTheLock) {
     startup()
     serve()
     showWindow()
+
+    // getLocale returns empty string before ready. so refresh menus after ready.
+    refreshMenus()
 
     if (trayEnabled) {
       showTray()

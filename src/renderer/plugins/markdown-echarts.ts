@@ -105,8 +105,8 @@ export default {
       update()
     })
     ctx.registerHook('DOC_BEFORE_EXPORT', () => {
-      preparePrint() // 转换成图片形式，设置主题
-      setTimeout(() => update(), 0) // 恢复
+      preparePrint() // convert to image and set light theme.
+      setTimeout(() => update(), 0) // restore
     })
 
     ctx.registerHook('THEME_CHANGE', () => update())

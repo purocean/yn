@@ -11,7 +11,7 @@ const isWin = os.platform() === 'win32'
 async function execFile (file: string, args: string[], options?: cp.ExecFileOptions) {
   return new Promise<string>((resolve) => {
     let result = ''
-    // 默认 300 秒超时
+    // default 300 seconds timeout.
     const process = cp.execFile(file, args, { timeout: 300 * 1000, ...options })
     process.stdout?.on('data', data => { result += data })
     process.stderr?.on('data', data => { result += data })
@@ -36,7 +36,7 @@ const runCode = async (language: string, code: string): Promise<string> => {
 
     if (language === 'bat' && isWin) {
       const fileName = 'yn-run-cmd.bat'
-      code = code.split('\n').slice(1).join('\n') // 去掉第一行的注释
+      code = code.split('\n').slice(1).join('\n') // remove first comment.
       if (isWsl) {
         const tmpFile = path.join(wsl.toWslPath(wsl.getWinTempPath()), fileName)
         await fs.writeFile(tmpFile, code)
@@ -50,7 +50,7 @@ const runCode = async (language: string, code: string): Promise<string> => {
 
     const runParams = languageMap[language]
     if (!runParams) {
-      return `不支持 ${language} 语言`
+      return `Not support ${language}.`
     }
 
     const useWsl = isWin && config.get('runCodeUseWsl', false)

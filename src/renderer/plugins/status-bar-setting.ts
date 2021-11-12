@@ -7,7 +7,7 @@ export default {
       menus['status-bar-setting'] = {
         id: 'status-bar-setting',
         position: 'left',
-        tips: '设置',
+        tips: ctx.i18n.t('status-bar.setting'),
         icon: 'cog',
         onClick: ctx.setting.showSettingPanel
       }

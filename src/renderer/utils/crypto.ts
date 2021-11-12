@@ -2,7 +2,7 @@ import CryptoJS from 'crypto-js'
 
 function getCryptKey (password: string) {
   if (!password) {
-    throw new Error('未输入密码')
+    throw new Error('No password.')
   }
 
   return CryptoJS.MD5(password).toString().substr(0, 16)
@@ -41,7 +41,7 @@ export function decrypt (content: any, password: string) {
 
   const result = CryptoJS.enc.Utf8.stringify(decrypted)
   if (!result) {
-    throw new Error('解密失败！！！')
+    throw new Error('Decrypt failed.')
   }
 
   return { content: result, passwordHash }

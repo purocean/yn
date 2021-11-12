@@ -9,7 +9,7 @@
             {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children ? item.children.length : 0}})</span>
           </div>
           <div class="item-action">
-            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" title="创建文件"></svg-icon>
+            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create')"></svg-icon>
           </div>
         </div>
       </summary>
@@ -39,6 +39,7 @@ import { getContextMenuItems } from '@fe/services/tree'
 import type { Components } from '@fe/types'
 import { createDoc, openInOS, switchDoc } from '@fe/services/document'
 import SvgIcon from './SvgIcon.vue'
+import { useI18n } from '@fe/services/i18n'
 
 export default defineComponent({
   name: 'tree-node',
@@ -50,6 +51,8 @@ export default defineComponent({
     }
   },
   setup (props) {
+    const { t } = useI18n()
+
     const store = useStore()
     const contextMenu = useContextMenu()
 
@@ -120,8 +123,8 @@ export default defineComponent({
     }, { immediate: true })
 
     const fileTitle = computed(() => [
-      `创建于：${props.item.birthtime ? new Date(props.item.birthtime).toLocaleString() : '无'}`,
-      `更新于：${props.item.mtime ? new Date(props.item.mtime).toLocaleString() : '无'}`,
+      t('tree.created-at', props.item.birthtime ? new Date(props.item.birthtime).toLocaleString() : '-'),
+      t('tree.updated-at', props.item.mtime ? new Date(props.item.mtime).toLocaleString() : '-'),
     ].join('\n'))
 
     return {

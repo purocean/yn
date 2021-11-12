@@ -5,19 +5,16 @@ import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import type { ThemeName } from '@fe/types'
 
 /**
- * 构建一个嵌入页面的 src 路径
- * @param html 页面代码
- * @param title 页面标题
- * @param globalStyle 是否包含全局样式
- * @returns src 路径
+ * Build embedded page uri.
+ * @param html
+ * @param title
+ * @param globalStyle
+ * @returns src
  */
 export function buildSrc (html: string, title = '', globalStyle = false) {
   return `/embed/?_=${md5(html)}#title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&html=${encodeURIComponent(html)}`
 }
 
-/**
- * Iframe 组件
- */
 export const IFrame = defineComponent({
   name: 'embed-iframe',
   props: {
@@ -39,7 +36,7 @@ export const IFrame = defineComponent({
 
     const update = () => {
       if (props.html) {
-        url.value = buildSrc(props.html, '嵌入页面', props.globalStyle)
+        url.value = buildSrc(props.html, 'Embedded Page', props.globalStyle)
       }
     }
 
@@ -76,7 +73,7 @@ export const IFrame = defineComponent({
 
       const win = frame.contentWindow as any
 
-      // 注入变量
+      // inject vars.
       win.resize = resize
       win.ctx = window.ctx
       props.onLoad?.(frame)
@@ -90,7 +87,7 @@ export const IFrame = defineComponent({
       close: () => {
         const flag = iframe.value?.contentWindow?.onbeforeunload?.(null as any)
         if (flag !== undefined && flag !== null) {
-          throw new Error('检查关闭状态失败')
+          throw new Error('Check close failed.')
         }
         iframe.value?.contentWindow?.close()
       }

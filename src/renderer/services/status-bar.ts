@@ -33,15 +33,15 @@ const _refreshMenu = debounce(() => {
 }, 10)
 
 /**
- * 刷新菜单
+ * Refresh status bar menus.
  */
 export function refreshMenu () {
   _refreshMenu()
 }
 
 /**
- * 注册一个菜单处理器
- * @param tapper 处理器
+ * Add a menu processor.
+ * @param tapper
  */
 export function tapMenus (tapper: MenuTapper) {
   menuTappers.push(tapper)
@@ -49,9 +49,9 @@ export function tapMenus (tapper: MenuTapper) {
 }
 
 /**
- * 获取菜单
- * @param position 位置
- * @returns 菜单
+ * Get status bar menus by position.
+ * @param position
+ * @returns
  */
 export function getMenus (position: string) {
   const menus: Menus = {}

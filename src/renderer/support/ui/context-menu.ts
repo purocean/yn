@@ -9,8 +9,8 @@ export interface Instance extends ComponentPublicInstance {
 let instance: Instance
 
 /**
- * 获取一个上下文菜单实例
- * @returns 上下文菜单实例
+ * Get ContextMenu instance
+ * @returns instance
  */
 export function useContextMenu (): Instance {
   return instance

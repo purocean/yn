@@ -10,8 +10,11 @@
       @contextmenu.exact.prevent.stop="showContextMenu(item)"
       @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
-      <div v-if="!item.fixed" class="close" @click.prevent.stop="removeTabs([item])">
-        <svg-icon name="times" title="关闭" style="width: 12px; height: 12px;" />
+      <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @click.prevent.stop="toggleFix(item)">
+        <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
+      </div>
+      <div v-else class="icon" :title="$t('close')" @click.prevent.stop="removeTabs([item])">
+        <svg-icon name="times" style="width: 12px; height: 12px;" />
       </div>
     </div>
   </div>
@@ -21,6 +24,7 @@
 import Sortable from 'sortablejs'
 import { computed, defineComponent, nextTick, onMounted, ref, watch } from 'vue'
 import { useContextMenu } from '@fe/support/ui/context-menu'
+import { useI18n } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
@@ -35,6 +39,8 @@ export default defineComponent({
     },
   },
   setup (props, { emit }) {
+    const { t } = useI18n()
+
     const refTabs = ref<HTMLElement | null>(null)
     const contextMenu = useContextMenu()
 
@@ -114,13 +120,13 @@ export default defineComponent({
 
     function showContextMenu (item: Components.Tabs.Item) {
       contextMenu.show([
-        { id: 'close', label: '关闭', onClick: () => removeTabs([item]) },
-        { id: 'close-other', label: '关闭其他', onClick: () => removeOther(item) },
-        { id: 'close-right', label: '关闭到右侧', onClick: () => removeRight(item) },
-        { id: 'close-left', label: '关闭到左侧', onClick: () => removeLeft(item) },
-        { id: 'close-all', label: '全部关闭', onClick: () => removeAll() },
+        { id: 'close', label: t('close'), onClick: () => removeTabs([item]) },
+        { id: 'close-others', label: t('tabs.close-others'), onClick: () => removeOther(item) },
+        { id: 'close-right', label: t('tabs.close-right'), onClick: () => removeRight(item) },
+        { id: 'close-left', label: t('tabs.close-left'), onClick: () => removeLeft(item) },
+        { id: 'close-all', label: t('tabs.close-all'), onClick: () => removeAll() },
         { type: 'separator' },
-        { id: 'fix', label: item.fixed ? '取消固定' : '固定', onClick: () => toggleFix(item) },
+        { id: 'fix', label: item.fixed ? t('tabs.unpin') : t('tabs.pin'), onClick: () => toggleFix(item) },
       ])
     }
 
@@ -143,7 +149,8 @@ export default defineComponent({
       switchTab,
       showContextMenu,
       removeTabs,
-      tabList
+      tabList,
+      toggleFix,
     }
   }
 })
@@ -189,7 +196,7 @@ export default defineComponent({
   position: relative;
 }
 
-.close {
+.icon {
   color: var(--g-color-50);
   height: 18px;
   width: 18px;
@@ -198,9 +205,10 @@ export default defineComponent({
   justify-content: center;
   border-radius: 50%;
   margin-right: 5px;
+  flex: none;
 }
 
-.close:hover {
+.icon:hover {
   color: var(--g-color-40);
   background: var(--g-color-75);
 }

@@ -1,4 +1,4 @@
-import { defineComponent, h, onMounted, ref, watch } from 'vue'
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context'
@@ -6,6 +6,8 @@ import { dataURItoBlobLink, strToBase64 } from '@fe/utils'
 import { openWindow } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/support/embed'
+import { registerHook, removeHook } from '@fe/core/hook'
+import { t } from '@fe/services/i18n'
 
 const layoutStorageKey = 'mind-map-layout'
 let links = ''
@@ -75,7 +77,7 @@ const render = async (ele: HTMLElement, content: string) => {
   ele.appendChild(div)
 
   const km = new (window as any).kityminder.Minder()
-  // Hack 一下，防止脑图自动聚焦
+  // Hack, avoid KM editor auto focus.
   km.focus = () => 0
   km.setup(div)
   km.disable()
@@ -83,7 +85,7 @@ const render = async (ele: HTMLElement, content: string) => {
     await km.importData('text', code)
     km.useTemplate(storage.get(layoutStorageKey, 'default'))
   } catch (error) {
-    await km.importData('text', '转换错误\n    1. 请保证大纲只有一个根项目\n    2. 请保证大纲层级正确')
+    await km.importData('text', t('mind-map.convert-error'))
     km.useTemplate('structure')
   }
 
@@ -152,19 +154,19 @@ const render = async (ele: HTMLElement, content: string) => {
 
   const action = document.createElement('div')
   action.className = 'no-print'
-  action.style.cssText = 'position: absolute; right: 15px; top: 3px; z-index: 1;'
-  action.appendChild(buildButton('放大', zoomIn, 'zoomIn'))
-  action.appendChild(buildButton('缩小', zoomOut, 'zoomOut'))
-  action.appendChild(buildButton('切换布局', switchLayout, 'switchLayout'))
-  action.appendChild(buildButton('紧凑/宽松', switchCompat, 'switchCompat'))
+  action.style.cssText = 'position: absolute; right: 10px; top: 3px; z-index: 1;'
+  action.appendChild(buildButton(t('mind-map.zoom-in'), zoomIn, 'zoomIn'))
+  action.appendChild(buildButton(t('mind-map.zoom-out'), zoomOut, 'zoomOut'))
+  action.appendChild(buildButton(t('mind-map.switch-layout'), switchLayout, 'switchLayout'))
+  action.appendChild(buildButton(t('mind-map.switch-loose'), switchCompat, 'switchCompat'))
   const actionsStr = action.outerHTML.replace(/data-onclick/g, 'onclick')
-  action.appendChild(buildButton('新窗口打开', () => {
+  action.appendChild(buildButton(t('open-in-new-window'), () => {
     const srcdoc = buildSrcdoc(JSON.stringify(km.exportJson()), actionsStr)
-    openWindow(buildSrc(srcdoc, '查看图形'), '_blank', { backgroundColor: '#fff' })
+    openWindow(buildSrc(srcdoc, t('view-figure')), '_blank', { backgroundColor: '#fff' })
   }))
-  action.appendChild(buildButton('导出 PNG', () => exportData('png')))
-  action.appendChild(buildButton('导出 SVG', () => exportData('svg')))
-  action.appendChild(buildButton('导出 KM', () => exportData('km')))
+  action.appendChild(buildButton(t('export') + ' PNG', () => exportData('png')))
+  action.appendChild(buildButton(t('export') + ' SVG', () => exportData('svg')))
+  action.appendChild(buildButton(t('export') + ' KM', () => exportData('km')))
 
   div.appendChild(action)
 }
@@ -187,6 +189,11 @@ const MindMap = defineComponent({
     watch(() => props.content, renderMindMap)
 
     onMounted(renderMindMap)
+
+    registerHook('I18N_CHANGE_LANGUAGE', renderMindMap)
+    onBeforeUnmount(() => {
+      removeHook('I18N_CHANGE_LANGUAGE', renderMindMap)
+    })
 
     return () => h('div', { ref: container, class: 'mind-map reduce-brightness' })
   }

@@ -12,14 +12,15 @@
         </div>
         <div v-else></div>
         <div class="action-btns">
-          <button type="button" @click="print()">打印</button>
-          <button type="button" @click="showExport">导出</button>
+          <button type="button" @click="print()">{{$t('view.print')}}</button>
+          <button type="button" @click="showExport">{{$t('export')}}</button>
         </div>
       </div>
     </div>
     <div v-if="heads && heads.length > 0" :class="{outline: true, pined: pinOutline}">
       <div class="outline-title">
-        <b>目录</b>
+        <svg-icon class="outline-title-icon" name="list" />
+        <b class="outline-title-text"> {{ $t('view.outline') }}</b>
         <div class="outline-pin" @click="togglePinOutline">
           <SvgIcon style="width: 12px; height: 12px" name="thumbtack" />
         </div>
@@ -50,6 +51,7 @@ import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'
 import { showExport } from '@fe/services/document'
 import { toggleAutoPreview } from '@fe/services/view'
+import { useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
@@ -64,6 +66,8 @@ export default defineComponent({
   name: 'xview',
   components: { Render, SvgIcon },
   setup () {
+    useI18n()
+
     const store = useStore()
 
     const pinOutline = ref(false)
@@ -140,7 +144,7 @@ export default defineComponent({
 
     function render () {
       logger.debug('render')
-      // 编辑非 markdown 文件预览直接显示代码
+      // not markdown file, show code block.
       const content = (filePath.value || '').endsWith('.md')
         ? currentContent.value
         : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
@@ -233,7 +237,7 @@ export default defineComponent({
 
     watch(() => currentContent.value + filePath.value, () => autoPreview.value && renderDebonce())
     watch(filePath, () => {
-      // 切换文件后，开启自动预览
+      // file switched, turn on auto render preview.
       toggleAutoPreview(true)
       triggerHook('VIEW_FILE_CHANGE', { getViewDom })
     })
@@ -323,73 +327,92 @@ export default defineComponent({
   background: var(--g-color-85);
   color: var(--g-color-10);
   font-size: 14px;
-  max-height: 3.2em;
-  max-width: 2em;
+  max-height: 34px;
+  max-width: 30px;
   overflow: hidden;
   transition: .1s ease-in-out;
   z-index: 500;
   border-radius: var(--g-border-radius);
   margin-top: 1em;
-}
 
-.outline.pined,
-.outline:hover {
-  max-height: 75vh;
-  max-width: 20em;
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
-}
+  .catalog {
+    max-height: 70vh;
+    cursor: pointer;
+    overflow: auto;
+    overflow-x: hidden;
+    padding-bottom: 1em;
 
-.outline > .catalog {
-  max-height: 70vh;
-  cursor: pointer;
-  overflow: auto;
-  overflow-x: hidden;
-  padding-bottom: 1em;
-}
+    & > div {
+      padding: .5em;
+      display: flex;
+      align-items: center;
+      border-radius: var(--g-border-radius);
 
-.outline > .catalog > div {
-  padding: .5em;
-  display: flex;
-  align-items: center;
-  border-radius: var(--g-border-radius);
-}
-
-.outline > .catalog > div:hover {
-  background: var(--g-color-75);
-}
-
-.outline-title {
-  padding: .5em;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.outline-pin {
-  width: 20px;
-  height: 20px;
-  overflow: hidden;
-  transition: left .1s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  border-radius: 50%;
-  left: 40px;
-  color: var(--g-color-20);
-
-  &:hover {
-    background: var(--g-color-75);
+      &:hover {
+        background: var(--g-color-75);
+      }
+    }
   }
-}
 
-.outline:hover .outline-pin,
-.outline.pined .outline-pin {
-  left: 3px;
-}
+  .outline-title {
+    padding: .5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-.outline.pined .outline-pin {
-  background: var(--g-color-70);
+    .outline-title-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 1;
+      transition: opacity .1s;
+      position: absolute;
+    }
+
+    .outline-title-text {
+      white-space: nowrap;
+      opacity: 0;
+    }
+
+    .outline-pin {
+      width: 20px;
+      height: 20px;
+      overflow: hidden;
+      transition: left .1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 50%;
+      left: 40px;
+      color: var(--g-color-20);
+
+      &:hover {
+        background: var(--g-color-75);
+      }
+    }
+  }
+
+  &.pined .outline-pin {
+    background: var(--g-color-70);
+  }
+
+  &.pined, &:hover {
+    max-height: 75vh;
+    max-width: 20em;
+    box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+
+    .outline-pin {
+      left: 3px;
+    }
+
+    .outline-title-icon {
+      opacity: 0;
+    }
+
+    .outline-title-text {
+      opacity: 1;
+    }
+  }
 }
 
 .action-btns {

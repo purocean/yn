@@ -12,10 +12,10 @@ const logger = getLogger('hook')
 const hooks: { [key in HookType]?: ({fun: HookFun<any>; once: boolean})[] } = {}
 
 /**
- * 注册一个插件钩子
- * @param type 钩子类型
- * @param fun 执行方法
- * @param once 是否只执行一次
+ * Register a hook.
+ * @param type
+ * @param fun
+ * @param once
  */
 export function registerHook<T extends HookType> (type: T, fun: HookFun<BuildInHookTypes[T]>, once = false) {
   if (Array.isArray(hooks[type])) {
@@ -26,9 +26,9 @@ export function registerHook<T extends HookType> (type: T, fun: HookFun<BuildInH
 }
 
 /**
- * 移除一个插件钩子
- * @param type 钩子类型
- * @param fun 执行方法
+ * Remove a hook.
+ * @param type
+ * @param fun
  */
 export function removeHook<T extends HookType> (type: T, fun: HookFun<BuildInHookTypes[T]>) {
   if (Array.isArray(hooks[type])) {
@@ -37,10 +37,10 @@ export function removeHook<T extends HookType> (type: T, fun: HookFun<BuildInHoo
 }
 
 /**
- * 触发一个钩子
- * @param type 钩子类型
- * @param arg 参数
- * @returns 所有钩子执行结果
+ * Trigger a hook.
+ * @param type
+ * @param arg
+ * @returns
  */
 export async function triggerHook<T extends HookTypeWithoutPayload> (type: T): Promise<void>
 export async function triggerHook<T extends HookTypeWithPayload> (type: T, arg: BuildInHookTypes[T], options?: { breakable?: boolean }): Promise<boolean>

@@ -10,7 +10,7 @@ let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
 
 /**
- * 默认选项
+ * Default options.
  */
 export const defaultOptions: {[key: string]: any} = {
   value: '',
@@ -34,7 +34,7 @@ export const defaultOptions: {[key: string]: any} = {
 }
 
 /**
- * 获取 Monaco
+ * Get Monaco
  * @returns Monaco
  */
 export function getMonaco () {
@@ -42,16 +42,16 @@ export function getMonaco () {
 }
 
 /**
- * 获取 Editor
- * @returns Editor
+ * Get editor instance.
+ * @returns
  */
 export function getEditor () {
   return editor
 }
 
 /**
- * 编辑器准备好后的 Promise
- * @returns Monaco 和 Editor
+ * Ensure editor is ready.
+ * @returns
  */
 export function whenEditorReady (): Promise<{ editor: typeof editor, monaco: typeof monaco }> {
   if (monaco && editor) {
@@ -64,8 +64,8 @@ export function whenEditorReady (): Promise<{ editor: typeof editor, monaco: typ
 }
 
 /**
- * 当前光标插入文本
- * @param text 文本
+ * Insert text at current cursor.
+ * @param text
  */
 export function insert (text: string) {
   const selection = getEditor().getSelection()!
@@ -79,9 +79,9 @@ export function insert (text: string) {
 }
 
 /**
- * 替换一行的文本
- * @param line 行号
- * @param text 文本
+ * Replace text value of line.
+ * @param line
+ * @param text
  */
 export function replaceLine (line: number, text: string) {
   const length = getEditor().getModel()!.getLineLength(line)
@@ -92,58 +92,58 @@ export function replaceLine (line: number, text: string) {
 }
 
 /**
- * 聚焦某一行到中间
- * @param line 行号
+ * Reveal line to screen center.
+ * @param line
  */
 export function revealLineInCenter (line: number) {
   getEditor().revealLineInCenter(line)
 }
 
 /**
- * 聚焦某一行
- * @param line 行号
+ * Reveal line.
+ * @param line
  */
 export function revealLine (line: number) {
   getEditor().revealLine(line)
 }
 
 /**
- * 设置纵向滚动条偏移
- * @param top 偏移
+ * Set scroll bar position.
+ * @param top
  */
 export function setScrollToTop (top: number) {
   getEditor().setScrollTop(top)
 }
 
 /**
- * 获取某一行文本
- * @param line 行号
- * @returns 内容
+ * Get content of line.
+ * @param line
+ * @returns
  */
 export function getLineContent (line: number) {
   return getEditor().getModel()!.getLineContent(line)
 }
 
 /**
- * 获取编辑器的文本
- * @returns 文本
+ * Get text value.
+ * @returns
  */
 export function getValue () {
   return getEditor().getModel()!.getValue(getMonaco().editor.DefaultEndOfLine.LF as number)
 }
 
 /**
- * 替换文本
- * @param search 搜索值
- * @param val 替换值
+ * Replace text value.
+ * @param search
+ * @param val
  */
 export function replaceValue (search: string, val: string) {
   getEditor().getModel()!.setValue(getValue().replace(search, val))
 }
 
 /**
- * 获取选区信息
- * @returns 选区信息
+ * Get editor selection.
+ * @returns
  */
 export function getSelectionInfo () {
   const selection = getEditor().getSelection()!
@@ -158,7 +158,7 @@ export function getSelectionInfo () {
 }
 
 /**
- * 切换软换行
+ * Toggle editor word wrap.
  */
 export function toggleWrap () {
   const isWrapping = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo).isViewportWrapping

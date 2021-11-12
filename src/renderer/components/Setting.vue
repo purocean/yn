@@ -1,37 +1,34 @@
 <template>
   <div class="editor-wrapper" @click.stop>
-    <h3>配置项</h3>
+    <h3>{{$t('setting-panel.setting')}}</h3>
     <div ref="refEditor" class="editor" @click="onClick" />
     <div class="action">
-      <button class="btn" @click="cancel">取消</button>
-      <button class="btn primary" @click="ok">确定</button>
+      <button class="btn" @click="cancel">{{$t('cancel')}}</button>
+      <button class="btn primary" @click="ok">{{$t('ok')}}</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { useStore } from 'vuex'
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 import * as api from '@fe/support/api'
 import { useToast } from '@fe/support/ui/toast'
 import { getThemeName, setTheme } from '@fe/services/theme'
+import { useI18n } from '@fe/services/i18n'
 import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
 import { refreshRepo } from '@fe/services/tree'
+import { registerHook, removeHook } from '@fe/core/hook'
 
-JSONEditor.defaults.language = 'zh'
-JSONEditor.defaults.languages.zh = { ...JSONEditor.defaults.languages.en }
-JSONEditor.defaults.languages.zh.button_move_down_title = '⬇'
-JSONEditor.defaults.languages.zh.button_move_up_title = '⬆'
-JSONEditor.defaults.languages.zh.button_delete_row_title_short = '✖'
-JSONEditor.defaults.languages.zh.button_add_row_title = '添加{{0}}'
-JSONEditor.defaults.languages.zh.button_delete_node_warning = '确定删除吗'
+JSONEditor.defaults.language = 'en'
 
 export default defineComponent({
   name: 'x-filter',
   components: {},
   setup (_, { emit }) {
     const store = useStore()
+    const { t } = useI18n()
     const toast = useToast()
     const refEditor = ref(null)
 
@@ -39,6 +36,14 @@ export default defineComponent({
 
     let editor: any = null
     const schema: any = getSchema()
+
+    function setLanguage () {
+      JSONEditor.defaults.languages.en.button_move_down_title = '⬇'
+      JSONEditor.defaults.languages.en.button_move_up_title = '⬆'
+      JSONEditor.defaults.languages.en.button_delete_row_title_short = '✖'
+      JSONEditor.defaults.languages.en.button_add_row_title = t('setting-panel.add', '{{0}}')
+      JSONEditor.defaults.languages.en.button_delete_node_warning = t('setting-panel.delete-warning')
+    }
 
     onMounted(async () => {
       editor = new JSONEditor(refEditor.value, {
@@ -67,11 +72,17 @@ export default defineComponent({
 
       const value: any = {}
 
-      Object.keys(schema.properties).forEach(key => {
-        value[key] = data[key]
+      Object.keys(schema.properties).forEach((key) => {
+        value[key] = (data as any)[key]
       })
 
       editor.setValue(value)
+    })
+
+    setLanguage()
+    registerHook('I18N_CHANGE_LANGUAGE', setLanguage)
+    onBeforeUnmount(() => {
+      removeHook('I18N_CHANGE_LANGUAGE', setLanguage)
     })
 
     const cancel = () => {
@@ -85,8 +96,9 @@ export default defineComponent({
           name = name.trim()
           path = path.trim()
           if (name && !path) {
-            toast.show('warning', '请选择储存位置')
-            throw new Error('请选择储存位置')
+            const msg = t('setting-panel.error-choose-repo-path')
+            toast.show('warning', msg)
+            throw new Error(msg)
           }
         })
 

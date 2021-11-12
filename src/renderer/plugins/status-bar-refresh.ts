@@ -9,7 +9,7 @@ export default {
       menus['status-bar-refresh-status'] = {
         id: 'status-bar-refresh-status',
         position: 'right',
-        title: '同步渲染-' + (autoPreview ? '已开启' : '已关闭'),
+        title: ctx.i18n.t('status-bar.rendering.rendering', ctx.i18n.t(autoPreview ? 'status-bar.rendering.on' : 'status-bar.rendering.off')),
         onClick: () => {
           ctx.view.toggleAutoPreview()
           if (!autoPreview) {
@@ -21,7 +21,7 @@ export default {
       menus['status-bar-refresh-action'] = {
         id: 'status-bar-refresh-action',
         position: 'right',
-        tips: '强制渲染',
+        tips: ctx.i18n.t('status-bar.rendering.refresh'),
         icon: 'sync-alt-solid',
         hidden: autoPreview,
         onClick: () => ctx.view.refresh()

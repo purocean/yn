@@ -1,14 +1,37 @@
+import { cloneDeepWith } from 'lodash-es'
+import { triggerHook } from '@fe/core/hook'
+import { MsgPath } from '@share/i18n'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import store from '@fe/support/store'
-import { BuildInSettings } from '@fe/types'
+import type{ BuildInSettings } from '@fe/types'
 import { getThemeName } from './theme'
+import { t } from './i18n'
+
+export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
 
 export type Schema = {
   type: string,
-  title: string,
+  title: TTitle,
   properties: {[K in keyof BuildInSettings]: {
-    defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any
+    type: string,
+    title: TTitle,
+    description?: TTitle,
+    defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
+    items?: {
+      type: string,
+      title: TTitle,
+      properties: {
+        [K in string] : {
+          type: string,
+          title: TTitle,
+          description?: TTitle,
+          options: {
+            inputAttributes: { placeholder: TTitle }
+          }
+        }
+      }
+    },
     [key: string]: any,
   }},
   required: (keyof BuildInSettings)[],
@@ -16,31 +39,32 @@ export type Schema = {
 
 const schema: Schema = {
   type: 'object',
-  title: '配置项',
+  title: 'T_setting-panel.setting',
   properties: {
     repos: {
       defaultValue: [],
       type: 'array',
-      title: '仓库',
+      title: 'T_setting-panel.schema.repos.repos',
       format: 'table',
       items: {
         type: 'object',
-        title: '仓库',
+        title: 'T_setting-panel.schema.repos.repo',
         properties: {
           name: {
             type: 'string',
-            title: '仓库名',
+            title: 'T_setting-panel.schema.repos.name',
+            defaultValue: '',
             maxLength: 10,
             options: {
-              inputAttributes: { placeholder: '请输入' }
+              inputAttributes: { placeholder: 'T_setting-panel.schema.repos.name-placeholder' }
             },
           },
           path: {
             type: 'string',
-            title: '路径',
+            title: 'T_setting-panel.schema.repos.path',
             readonly: true,
             options: {
-              inputAttributes: { placeholder: '请选择储存位置', style: 'cursor: pointer' }
+              inputAttributes: { placeholder: 'T_setting-panel.schema.repos.path-placeholder', style: 'cursor: pointer' }
             },
           }
         }
@@ -48,24 +72,30 @@ const schema: Schema = {
     },
     theme: {
       defaultValue: 'system',
-      title: '主题',
+      title: 'T_setting-panel.schema.theme',
       type: 'string',
       enum: ['system', 'dark', 'light']
     },
+    language: {
+      defaultValue: 'system',
+      title: 'T_setting-panel.schema.language',
+      type: 'string',
+      enum: ['system', 'en', 'zh-CN']
+    },
     'assets-dir': {
       defaultValue: './FILES/{docSlug}',
-      title: '图片存放目录',
+      title: 'T_setting-panel.schema.assets-dir',
       type: 'string',
       minLength: 1,
-      description: '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, date'
-    } as any,
+      description: 'T_setting-panel.schema.assets-desc'
+    },
     shell: {
       defaultValue: '',
-      title: '终端 Shell',
+      title: 'T_setting-panel.schema.shell',
       type: 'string',
-    } as any,
-  } as any,
-  required: ['theme'],
+    },
+  } as Partial<Schema['properties']> as any,
+  required: ['theme', 'language'],
 }
 
 const settings = getDefaultSetting()
@@ -75,16 +105,20 @@ if (FLAG_DISABLE_XTERM) {
 }
 
 /**
- * 获取配置 Schema
- * @returns 配置 Schema
+ * Get Schema.
+ * @returns Schema
  */
 export function getSchema () {
-  return schema
+  return cloneDeepWith(schema, val => {
+    if (typeof val === 'string' && val.startsWith('T_')) {
+      return t(val.substring(2) as any)
+    }
+  })
 }
 
 /**
- * 更改 Schema
- * @param fun 处理方法
+ * Change Schema.
+ * @param fun
  */
 export function tapSchema (fun: (schema: Schema) => void) {
   fun(schema)
@@ -104,8 +138,8 @@ function transformSettings (data: any) {
 }
 
 /**
- * 获取默认配置
- * @returns 配置
+ * Get default settings.
+ * @returns settings
  */
 export function getDefaultSetting () {
   return Object.fromEntries(
@@ -114,22 +148,26 @@ export function getDefaultSetting () {
 }
 
 /**
- * 从服务器获取配置并更新本地配置
- * @returns 配置
+ * Fetch remote settings and refresh local value.
+ * @returns settings
  */
 export async function fetchSettings () {
   const data = transformSettings(await api.fetchSettings())
 
-  return Object.assign(settings, {
+  Object.assign(settings, {
     ...getDefaultSetting(),
     ...data
   })
+
+  triggerHook('SETTING_FETCHED', { settings })
+
+  return settings
 }
 
 /**
- * 写入配置
- * @param data 配置内容
- * @returns 配置
+ * Write settings.
+ * @param data settings
+ * @returns settings
  */
 export async function writeSettings (data: Record<string, any>) {
   const repositories: any = {}
@@ -145,27 +183,29 @@ export async function writeSettings (data: Record<string, any>) {
   delete data.theme
   data.repositories = repositories
 
+  triggerHook('SETTING_BEFORE_WRITE', { settings })
+
   await api.writeSettings(data)
   return await fetchSettings()
 }
 
 /**
- * 获取本地配置
- * @returns 配置
+ * Get local settings.
+ * @returns settings
  */
 export function getSettings () {
   return settings
 }
 
 /**
- * 展示设置面板
+ * Show setting panel.
  */
 export function showSettingPanel () {
   store.commit('setShowSetting', true)
 }
 
 /**
- * 隐藏设置面板
+ * Hide setting panel.
  */
 export function hideSettingPanel () {
   store.commit('setShowSetting', false)

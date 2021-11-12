@@ -19,22 +19,22 @@ type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 
 export interface Command {
   /**
-   * 命令 ID
+   * Command Id
    */
   id: string,
 
   /**
-   * 绑定的快捷键
+   * Associate shortcuts
    */
   keys: null | (string | number)[]
 
   /**
-   * 命令执行方法
+   * Handler
    */
   handler: null | string | (() => void),
 
   /**
-   * 执行前判断方法，什么时候执行
+   * When should execute handler
    */
   when?: () => boolean
 }
@@ -42,18 +42,18 @@ export interface Command {
 const commands: { [key: string]: Command } = {}
 
 /**
- * 判断用户是否按下了 Cmd 键（macOS）或 Ctrl 键
- * @param e 鼠标事件或键盘事件
- * @returns 是否按下
+ * Determine whether the user has pressed the Cmd key (macOS) or Ctrl key.
+ * @param e
+ * @returns
  */
 export function hasCtrlCmd (e: KeyboardEvent | MouseEvent) {
   return isMacOS ? e.metaKey : e.ctrlKey
 }
 
 /**
- * 获取按键的名字标签
- * @param key 按键 Key
- * @returns 按键名
+ * Get key label.
+ * @param key
+ * @returns
  */
 export function getKeyLabel (key: XKey | string | number) {
   const str = {
@@ -69,10 +69,10 @@ export function getKeyLabel (key: XKey | string | number) {
 }
 
 /**
- * 判断事件是否匹配快捷键组合
- * @param e 鼠标事件或键盘事件
- * @param keys 快捷键
- * @returns 是否匹配
+ * Determine whether the event matches the shortcut key combination.
+ * @param e
+ * @param keys
+ * @returns
  */
 export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number)[]) {
   const modifiers = { metaKey: false, ctrlKey: false, altKey: false, shiftKey: false }
@@ -123,19 +123,19 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
 }
 
 /**
- * 获取一个命令
- * @param id 命令 ID
- * @returns 命令
+ * Get a command
+ * @param id
+ * @returns
  */
 export function getCommand (id: string): Command | undefined {
   return commands[id]
 }
 
 /**
- * 判断事件快捷键组合是否匹配一个命令
- * @param e 鼠标事件或键盘事件
- * @param id 命令 ID
- * @returns 是否匹配
+ * Determine whether the event shortcut key combination matches a command.
+ * @param e
+ * @param id
+ * @returns
  */
 export function isCommand (e: KeyboardEvent | MouseEvent, id: string) {
   const command = getCommand(id)
@@ -143,9 +143,9 @@ export function isCommand (e: KeyboardEvent | MouseEvent, id: string) {
 }
 
 /**
- * 运行一个命令
- * @param command 命令
- * @returns 执行方法结果
+ * Run a command
+ * @param command
+ * @returns
  */
 export function runCommand (command: Command) {
   if (typeof command.handler === 'string') {
@@ -156,9 +156,9 @@ export function runCommand (command: Command) {
 }
 
 /**
- * 获取一个命令的快捷键名
- * @param id 命令 ID
- * @returns 快捷键名
+ * Get a command shortcuts label.
+ * @param id
+ * @returns
  */
 export function getKeysLabel (id: string): string {
   const command = getCommand(id)
@@ -170,9 +170,9 @@ export function getKeysLabel (id: string): string {
 }
 
 /**
- * 注册一个命令
- * @param command 命令
- * @returns 命令
+ * Register a command.
+ * @param command
+ * @returns
  */
 export function registerCommand (command: Command) {
   logger.debug('registerCommand', command)
@@ -181,8 +181,8 @@ export function registerCommand (command: Command) {
 }
 
 /**
- * 移除一个命令
- * @param id 命令 ID
+ * Remove a command
+ * @param id
  */
 export function removeCommand (id: string) {
   logger.debug('removeCommand', id)

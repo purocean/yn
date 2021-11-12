@@ -1,14 +1,19 @@
 <template>
-  <aside v-if="hasRepo" class="side" @contextmenu.exact.prevent="showContextMenu" @dblclick="refreshRepo" title="双击此处刷新目录树">
-    <div class="loading" v-if="tree === null"> 加载中 </div>
+  <aside
+    v-if="hasRepo"
+    class="side"
+    @contextmenu.exact.prevent="showContextMenu"
+    @dblclick="refreshRepo"
+    :title="$t('tree.db-click-refresh')">
+    <div class="loading" v-if="tree === null"> {{$t('loading')}} </div>
     <template v-else>
       <TreeNode v-for="item in tree" :item="item" :key="item.path" />
     </template>
   </aside>
   <aside v-else class="side">
     <div class="add-repo-btn" @click="showSettingPanel">
-      添加仓库
-      <div class="add-repo-desc">选择一个位置保存笔记</div>
+      {{$t('tree.add-repo')}}
+      <div class="add-repo-desc">{{$t('tree.add-repo-hint')}}</div>
     </div>
   </aside>
 </template>
@@ -18,13 +23,15 @@ import { computed, defineComponent, onBeforeMount, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { refreshRepo, refreshTree } from '@fe/services/tree'
-import TreeNode from './TreeNode.vue'
 import { showSettingPanel } from '@fe/services/setting'
+import { useI18n } from '@fe/services/i18n'
+import TreeNode from './TreeNode.vue'
 
 export default defineComponent({
   name: 'tree',
   components: { TreeNode },
   setup () {
+    const { t } = useI18n()
     const store = useStore()
     const contextMenu = useContextMenu()
 
@@ -34,7 +41,7 @@ export default defineComponent({
       contextMenu.show([
         {
           id: 'refresh',
-          label: '刷新目录树',
+          label: t('tree.context-menu.refresh'),
           onClick: refreshRepo
         }
       ])

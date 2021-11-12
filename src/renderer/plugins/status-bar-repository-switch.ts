@@ -44,7 +44,9 @@ export default {
       menus['status-bar-repository-switch'] = {
         id: 'status-bar-repository-switch',
         position: 'left',
-        title: currentRepo ? `仓库: ${currentRepo.name}` : '未选择仓库',
+        title: currentRepo
+          ? ctx.i18n.t('status-bar.repo.repo', currentRepo.name)
+          : ctx.i18n.t('status-bar.repo.no-data'),
         list: Object.keys(repositories).map(name => {
           const path = repositories[name]
 

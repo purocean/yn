@@ -5,7 +5,7 @@ import type Token from 'markdown-it/lib/token'
 function getLine (token: Token, env?: Record<string, any>) {
   const [lineStart, lineEnd] = token.map || [0, 1]
 
-  // 由于宏替换，可能导致源码行号和渲染内容行号不一致，需要补偿，参考 `markdown-macro` 插件
+  // macro, calc line offset, see `markdown-macro` plugin.
   let sOffset = 0
   if (env?.macroLines && env.bMarks && env.eMarks) {
     const sPos = env.bMarks[lineStart]

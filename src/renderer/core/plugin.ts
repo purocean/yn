@@ -10,9 +10,9 @@ export interface Plugin<Ctx = any> {
 const plugins: {[name: string]: Plugin} = {}
 
 /**
- * 注册一个插件
- * @param plugin 插件
- * @param ctx 上下文信息
+ * Register a plugin.
+ * @param plugin
+ * @param ctx
  */
 export function register <Ctx> (plugin: Plugin, ctx: Ctx) {
   logger.debug('register', plugin)
@@ -21,9 +21,9 @@ export function register <Ctx> (plugin: Plugin, ctx: Ctx) {
 }
 
 /**
- * 初始化插件体系，注册内置插件
- * @param plugins 内置插件列表
- * @param ctx 上下文信息
+ * Initialization plugin system and register build-in plugins
+ * @param plugins
+ * @param ctx
  */
 export function init <Ctx> (plugins: Plugin[], ctx: Ctx) {
   logger.debug('init')

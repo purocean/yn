@@ -34,10 +34,11 @@ export default defineComponent({
 <style scoped>
 .toast {
   position: fixed;
-  width: 250px;
+  width: fit-content;
+  max-width: 300px;
   left: 0;
   top: 100px;
-  padding: 10px;
+  padding: 10px 20px;
   z-index: 999999;
   right: 0;
   margin: auto;
