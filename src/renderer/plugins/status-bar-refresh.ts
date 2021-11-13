@@ -23,7 +23,6 @@ export default {
         position: 'right',
         tips: ctx.i18n.t('status-bar.rendering.refresh'),
         icon: 'sync-alt-solid',
-        hidden: autoPreview,
         onClick: () => ctx.view.refresh()
       }
     })
