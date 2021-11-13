@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.11.0](https://github.com/purocean/yn/releases/tag/v3.11.0) 2021-11-13
+### [v3.11.1](https://github.com/purocean/yn/releases/tag/v3.11.1) 2021-11-13
 1. Add English language.
 2. Macro definition supports asynchronous expressions.
 3. Support quoting other document fragments in the document.
@@ -101,7 +101,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
          - `I18N_CHANGE_LANGUAGE`
          - `SETTING_FETCHED`
          - `SETTING_BEFORE_WRITE`
-         - `VIEW_BEFORE_REFRESH` 
+         - `VIEW_BEFORE_REFRESH`
 
 <details>
 <summary>展开查看更多版本记录</summary>
