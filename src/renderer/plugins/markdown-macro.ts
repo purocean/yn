@@ -1,17 +1,62 @@
 import type { Plugin } from '@fe/context'
+import { render } from '@fe/services/view'
+import { getLogger, md5 } from '@fe/utils'
 
-function macro (expression: string, vars: Record<string, any>) {
-  console.log('macro >', expression, vars)
-  // eslint-disable-next-line no-new-func
-  const fun = new Function('vars', `with (vars) { return ${expression}; }`)
+const logger = getLogger('macro')
 
-  const res = fun(vars)
+const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
+let macroCache: Record<string, Record<string, string>> = {}
 
-  if (typeof res === 'object' || typeof res === 'function' || typeof res === 'symbol' || typeof res === 'undefined') {
+function checkMacroResult (result: any) {
+  if (typeof result === 'object' ||
+    typeof result === 'function' ||
+    typeof result === 'symbol' ||
+    typeof result === 'undefined'
+  ) {
     throw new Error('Macro result type error.')
   }
+}
 
-  return '' + res
+function macro (match: string, vars: Record<string, any>, cache: Record<string, string>) {
+  const expression = match
+    .substring(2, match.length - 2)
+    .trim()
+    .replace(/(?:=\\>|<\\=)/g, x => x.replace('\\', ''))
+
+  const id = md5(expression)
+
+  logger.debug(id, expression, vars)
+
+  // async expression result cache
+  if (id in cache) {
+    return cache[id]
+  }
+
+  const FunctionConstructor = expression.startsWith('await') ? AsyncFunction : Function
+
+  const fun = new FunctionConstructor('vars', `with (vars) { return ${expression}; }`)
+
+  const result = fun(vars)
+
+  if ((result instanceof Promise)) {
+    result.then((res) => {
+      checkMacroResult(res)
+      return res
+    }).catch(e => {
+      logger.error(id, e)
+      return match
+    }).then(res => {
+      cache[id] = res
+      logger.debug('async', id, 'rerender')
+      render()
+    })
+
+    return 'macro is running……'
+  }
+
+  checkMacroResult(result)
+
+  return '' + result
 }
 
 function lineCount (str: string) {
@@ -52,17 +97,16 @@ export default {
           env.macroLines = []
         }
 
+        const cacheKey = '' + file.repo + file.path
+        // remove other file cache.
+        macroCache = { [cacheKey]: macroCache[cacheKey] || {} }
+
         const reg = /<=.+?=>/gs
         let lineOffset = 0
         let posOffset = 0
         state.src = state.src.replace(reg, (match, matchPos) => {
           try {
-            const expression = match
-              .substring(2, match.length - 2)
-              .trim()
-              .replace(/(?:=\\>|<\\=)/g, x => x.replace('\\', ''))
-
-            const result = macro(expression, vars)
+            const result = macro(match, vars, macroCache[cacheKey])
 
             const matchLine = lineCount(match)
             const resultLine = lineCount(result)
