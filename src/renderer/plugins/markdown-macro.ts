@@ -38,7 +38,7 @@ function macro (expression: Expression, cache: Record<string, Result>): Result {
 
   const FunctionConstructor = exp.startsWith('await') ? AsyncFunction : Function
 
-  const fun = new FunctionConstructor('vars', `with (vars) { return ${exp}; }`)
+  const fun = new FunctionConstructor('vars', `with (vars) { return (${exp}); }`)
 
   const result = fun(vars)
 
