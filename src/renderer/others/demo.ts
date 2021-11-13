@@ -34,7 +34,7 @@ if (FLAG_DEMO) {
     }
   }, true)
 
-  window.fetch = (uri: any, init: any) => Promise.resolve({
+  const fakeFetch = (uri: any, init: any) => Promise.resolve({
     json: () => {
       console.log('mock api >', uri, init)
 
@@ -121,7 +121,7 @@ if (FLAG_DEMO) {
             })
           }
 
-          const path = '/' + (url.searchParams.get('doc') || 'FEATURES.md')
+          const path = '/' + (url.searchParams.get('doc')?.replace(/^\//, '') || 'FEATURES.md')
           const data = {
             status: 'ok',
             message: 'success',
@@ -158,6 +158,14 @@ if (FLAG_DEMO) {
       return Promise.resolve({ status: 'error', message })
     }
   } as any)
+
+  window.fetch = (uri: any, init: any) => {
+    if (uri.startsWith('https://') || uri.startsWith('http://')) {
+      return xFetch(uri, init)
+    }
+
+    return fakeFetch(uri, init)
+  }
 
   window.open = function (...args: any[]) {
     const win = xOpen(...args)

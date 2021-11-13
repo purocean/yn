@@ -138,8 +138,6 @@ export default {
         let posOffset = 0
         state.src = state.src.replace(reg, (match, matchPos) => {
           try {
-            console.log('xxx', match, { ...vars })
-
             const exp = match
               .substring(2, match.length - 2)
               .trim()
