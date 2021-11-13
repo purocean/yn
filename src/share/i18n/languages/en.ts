@@ -175,7 +175,7 @@ const data = {
       'plugin': 'Create Plugin'
     },
     'rendering': {
-      'rendering': 'Auto Render - %s',
+      'rendering': 'Synchronous rendering - %s',
       'on': 'ON',
       'off': 'OFF',
       'refresh': 'Refresh'

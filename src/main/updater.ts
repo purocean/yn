@@ -41,7 +41,7 @@ const init = (call: () => void) => {
       progressBar = new ProgressBar({
         title: $t('app.updater.progress-bar.title'),
         text: `${info.version}`,
-        detail: $t('app.updater.progress-bar.detail'),
+        detail: $t('app.updater.progress-bar.detail', ''),
         indeterminate: false,
         closeOnComplete: false,
         browserWindow: {
