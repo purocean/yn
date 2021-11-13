@@ -16,6 +16,13 @@ function present (flag: boolean) {
 }
 
 /**
+ * Rerender view.
+ */
+export function render () {
+  getActionHandler('view.render')()
+}
+
+/**
  * Refresh view.
  */
 export function refresh () {

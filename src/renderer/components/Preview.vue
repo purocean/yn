@@ -210,6 +210,7 @@ export default defineComponent({
 
     function refresh () {
       logger.debug('refresh')
+      triggerHook('VIEW_REFRESH', { getViewDom })
       renderDebonce()
       triggerHook('VIEW_REFRESH', { getViewDom })
     }
@@ -217,6 +218,7 @@ export default defineComponent({
     onMounted(() => {
       nextTick(renderDebonce)
       triggerHook('VIEW_MOUNTED', { getViewDom })
+      registerAction({ name: 'view.render', handler: renderDebonce })
       registerAction({ name: 'view.refresh', handler: refresh })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
       registerAction({ name: 'view.scroll-top-to', handler: scrollTopTo })
@@ -227,6 +229,7 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
+      removeAction('view.render')
       removeAction('view.refresh')
       removeAction('view.reveal-line')
       removeAction('view.scroll-top-to')
