@@ -109,12 +109,16 @@ export default {
     ctx.markdown.registerPlugin(md => {
       md.core.ruler.after('normalize', 'macro', (state) => {
         const env = state.env || {}
+        const file = env.file || {}
+
+        const cacheKey = '' + file.repo + file.path
+        // remove other file cache.
+        macroCache = { [cacheKey]: macroCache[cacheKey] || {} }
 
         if (!env.attributes || !env.attributes.enableMacro) {
           return false
         }
 
-        const file = env.file || {}
         const vars: Record<string, any> = {
           $include: include.bind(null, file),
           $ctx: ctx,
@@ -128,10 +132,6 @@ export default {
         if (!env.macroLines) {
           env.macroLines = []
         }
-
-        const cacheKey = '' + file.repo + file.path
-        // remove other file cache.
-        macroCache = { [cacheKey]: macroCache[cacheKey] || {} }
 
         const reg = /<=.+?=>/gs
         let lineOffset = 0
