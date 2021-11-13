@@ -89,19 +89,19 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 [最新发布](https://github.com/purocean/yn/releases)
 
 ### [v3.11.0](https://github.com/purocean/yn/releases/tag/v3.11.0) 2021-11-13
-1. 增加英语语言
-2. 宏定义支持异步表达式
-3. 支持在文档中引用其他文档片段
-4. 微调 UI
-5. 插件开发：
-    - 新增服务 `ctx.i18n`，
-    - 新增方法 `ctx.view.render`，
-    - 更改钩子 `VIEW_REFRESH` 变更为 `VIEW_AFTER_REFRESH`
-    - 新增钩子
-        - `I18N_CHANGE_LANGUAGE`,
-        - `SETTING_FETCHED`,
-        - `SETTING_BEFORE_WRITE`,
-        - `VIEW_BEFORE_REFRESH`,
+1. Add English language.
+2. Macro definition supports asynchronous expressions.
+3. Support quoting other document fragments in the document.
+4. Fine-tune the UI.
+5. Plug-in development:
+     - Added service `ctx.i18n`.
+     - Added method `ctx.view.render`.
+     - Rename the hook `VIEW_REFRESH` to `VIEW_AFTER_REFRESH`.
+     - Added hooks.
+         - `I18N_CHANGE_LANGUAGE`
+         - `SETTING_FETCHED`
+         - `SETTING_BEFORE_WRITE`
+         - `VIEW_BEFORE_REFRESH` 
 
 <details>
 <summary>展开查看更多版本记录</summary>
