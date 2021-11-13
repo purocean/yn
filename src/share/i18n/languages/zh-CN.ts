@@ -176,7 +176,7 @@ const data: BaseLanguage = {
       'plugin': '插件开发'
     },
     'rendering': {
-      'rendering': '自动渲染-%s',
+      'rendering': '同步渲染 - %s',
       'on': '已开启',
       'off': '已关闭',
       'refresh': '重新渲染'
