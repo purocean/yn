@@ -6,15 +6,15 @@ import { Alt } from '@fe/core/command'
 import * as view from './view'
 
 /**
- * 下一个 tick 抛出 resize 事件
+ * Trigger resize hook after next tick.
  */
 export function emitResize () {
   nextTick(() => triggerHook('GLOBAL_RESIZE'))
 }
 
 /**
- * 切换侧栏展示
- * @param visible 是否展示
+ * Toggle side bar visible.
+ * @param visible
  */
 export function toggleSide (visible?: boolean) {
   store.commit('setShowSide', typeof visible === 'boolean' ? visible : !store.state.showSide)
@@ -22,8 +22,8 @@ export function toggleSide (visible?: boolean) {
 }
 
 /**
- * 切换预览展示
- * @param visible 是否展示
+ * Toggle preview visible.
+ * @param visible
  */
 export function toggleView (visible?: boolean) {
   const val = typeof visible === 'boolean' ? visible : !store.state.showView
@@ -35,8 +35,8 @@ export function toggleView (visible?: boolean) {
 }
 
 /**
- * 切换编辑器展示
- * @param visible 是否展示
+ * Toggle editor visible.
+ * @param visible
  */
 export function toggleEditor (visible?: boolean) {
   store.commit('setShowView', true)
@@ -45,8 +45,8 @@ export function toggleEditor (visible?: boolean) {
 }
 
 /**
- * 切换终端展示
- * @param visible 是否展示
+ * Toggle integrated terminal visible.
+ * @param visible
  */
 export function toggleXterm (visible?: boolean) {
   const showXterm = store.state.showXterm

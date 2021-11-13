@@ -15,7 +15,7 @@ export default {
         return true
       }
 
-      // 复制标题链接
+      // copy heading link.
       if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && hasCtrlCmd(e)) {
         const { currentFile } = store.state
         if (currentFile) {
@@ -34,7 +34,7 @@ export default {
         return preventEvent()
       }
 
-      // 复制内容
+      // copy content.
       if (target.classList.contains('copy-inner-text') && hasCtrlCmd(e)) {
         copyText(target.innerText)
         return preventEvent()

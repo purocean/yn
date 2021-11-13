@@ -2,6 +2,12 @@ import { setTheme } from '@fe/services/theme'
 import * as storage from '@fe/utils/storage'
 import { FLAG_DEMO } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
+import { t } from '@fe/services/i18n'
+
+let settings = {
+  repositories: { test: '/path_test' },
+  shell: 'bash'
+}
 
 if (FLAG_DEMO) {
   storage.clear()
@@ -28,7 +34,7 @@ if (FLAG_DEMO) {
     }
   }, true)
 
-  window.fetch = (uri: any, init: any) => Promise.resolve({
+  const fakeFetch = (uri: any, init: any) => Promise.resolve({
     json: () => {
       console.log('mock api >', uri, init)
 
@@ -36,31 +42,32 @@ if (FLAG_DEMO) {
       const method = (init && init.method) || 'GET'
 
       if (uri.startsWith('/api/settings')) {
+        if (method === 'POST') {
+          settings = JSON.parse(init.body)
+        }
+
         return Promise.resolve({
           status: 'ok',
-          message: '获取成功',
-          data: {
-            repositories: { test: '/path_test' },
-            shell: 'bash'
-          }
+          message: 'success',
+          data: JSON.parse(JSON.stringify(settings))
         })
       }
 
       if (uri.startsWith('/api/mark')) {
-        return Promise.resolve({ status: 'ok', message: '操作成功', data: {} })
+        return Promise.resolve({ status: 'ok', message: 'success', data: {} })
       }
 
       if (uri.startsWith('/api/repositories')) {
-        return Promise.resolve({ status: 'ok', message: '获取成功', data: { test: '/test' } })
+        return Promise.resolve({ status: 'ok', message: 'success', data: { test: '/test' } })
       }
 
       if (uri.startsWith('/api/tree')) {
-        return Promise.resolve({ status: 'ok', message: '获取成功', data: [{ name: '/', type: 'dir', path: '/', repo: 'test', children: [{ name: '工作', path: '/工作', type: 'dir', repo: 'test', children: [{ name: '1.md', path: '/工作/1.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635402958.447, mtime: 1623635402958.447 }, { name: '2.md', path: '/工作/2.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635406528.4639, mtime: 1623635406528.4639 }, { name: '3.md', path: '/工作/3.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635410176.051, mtime: 1623635410177.0498 }] }, { name: '学习', path: '/学习', type: 'dir', repo: 'test', children: [{ name: 'a.md', path: '/学习/a.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635423871.2678, mtime: 1623635423871.2678 }, { name: 'b.md', path: '/学习/b.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635427472.3079, mtime: 1623635427472.3079 }, { name: 'c.md', path: '/学习/c.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635431935.041, mtime: 1623635431935.041 }] }, { name: 'TEST.md', path: '/TEST.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635389096.3315, mtime: 1623635389097.3403 }, { name: 'TODO.md', path: '/TODO.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635437968.1262, mtime: 1623635437969.1235 }, { name: '重要账号.c.md', path: '/重要账号.c.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 }, { name: '表格.luckysheet', path: '/表格.luckysheet', type: 'file', repo: 'test', marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 }] }] })
+        return Promise.resolve({ status: 'ok', message: 'success', data: [{ name: '/', type: 'dir', path: '/', repo: 'test', children: [{ name: 'Work', path: '/Work', type: 'dir', repo: 'test', children: [{ name: '1.md', path: '/Work/1.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635402958.447, mtime: 1623635402958.447 }, { name: '2.md', path: '/Work/2.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635406528.4639, mtime: 1623635406528.4639 }, { name: '3.md', path: '/Work/3.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635410176.051, mtime: 1623635410177.0498 }] }, { name: 'Learn', path: '/Learn', type: 'dir', repo: 'test', children: [{ name: 'a.md', path: '/Learn/a.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635423871.2678, mtime: 1623635423871.2678 }, { name: 'b.md', path: '/Learn/b.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635427472.3079, mtime: 1623635427472.3079 }, { name: 'c.md', path: '/Learn/c.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635431935.041, mtime: 1623635431935.041 }] }, { name: 'TEST.md', path: '/TEST.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635389096.3315, mtime: 1623635389097.3403 }, { name: 'TODO.md', path: '/TODO.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635437968.1262, mtime: 1623635437969.1235 }, { name: 'Secret.c.md', path: '/Secret.c.md', type: 'file', repo: 'test', marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 }, { name: 'Project.luckysheet', path: '/Project.luckysheet', type: 'file', repo: 'test', marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 }] }] })
       }
 
       if (uri.startsWith('/api/help') || uri.startsWith('/api/file')) {
         if (method === 'POST') {
-          return Promise.resolve({ status: 'ok', message: '保存成功' })
+          return Promise.resolve({ status: 'ok', message: 'success' })
         } else if (method === 'GET') {
           if ((url.searchParams.get('path') || '').endsWith('.luckysheet')) {
             const content = JSON.stringify([{
@@ -109,15 +116,15 @@ if (FLAG_DEMO) {
             }])
             return Promise.resolve({
               status: 'ok',
-              message: '获取成功',
+              message: 'success',
               data: { content, hash: 'test' }
             })
           }
 
-          const path = '/' + (url.searchParams.get('doc') || 'FEATURES.md')
+          const path = '/' + (url.searchParams.get('doc')?.replace(/^\//, '') || 'FEATURES.md')
           const data = {
             status: 'ok',
-            message: '获取成功',
+            message: 'success',
             data: {
               content: '',
               hash: 'test'
@@ -125,7 +132,7 @@ if (FLAG_DEMO) {
           }
 
           const replaceContnet = (str: string) => {
-            const message = (url.searchParams.get('doc') ? '' : '当前处于 DEMO 模式，部分功能不可用{style="color: red; font-size: 30px"}\n\n')
+            const message = (url.searchParams.get('doc') ? '' : (t('demo-tips') + '{style="color: red; font-size: 30px"}\n\n'))
 
             const idx = str.indexOf('#')
             return str.substring(0, idx) + message + str.substring(idx)
@@ -145,12 +152,20 @@ if (FLAG_DEMO) {
         }
       }
 
-      const message = 'DEMO 模式下该功能不可用'
+      const message = t('demo-tips')
       useToast().show('warning', message)
 
       return Promise.resolve({ status: 'error', message })
     }
   } as any)
+
+  window.fetch = (uri: any, init: any) => {
+    if (uri.startsWith('https://') || uri.startsWith('http://')) {
+      return xFetch(uri, init)
+    }
+
+    return fakeFetch(uri, init)
+  }
 
   window.open = function (...args: any[]) {
     const win = xOpen(...args)

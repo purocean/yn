@@ -1,3 +1,4 @@
+import type { Language } from '@share/i18n'
 import type * as Monaco from 'monaco-editor'
 
 export interface PathItem {
@@ -83,10 +84,12 @@ export namespace Components {
 }
 
 export type ThemeName = 'system' | 'dark' | 'light'
+export type LanguageName = 'system' | Language
 
 export type BuildInSettings = {
   'repos': { name: string, path: string }[],
   'theme': ThemeName,
+  'language': LanguageName,
   'assets-dir': string,
   'shell': string,
   'plugin.image-hosting-picgo.server-url': string,
@@ -143,7 +146,8 @@ export type BuildInHookTypes = {
   VIEW_RENDERED: { getViewDom: ()=> HTMLElement | null },
   VIEW_MOUNTED: { getViewDom: ()=> HTMLElement | null },
   VIEW_FILE_CHANGE: { getViewDom: ()=> HTMLElement | null },
-  VIEW_REFRESH: { getViewDom: ()=> HTMLElement | null },
+  VIEW_BEFORE_REFRESH: { getViewDom: ()=> HTMLElement | null },
+  VIEW_AFTER_REFRESH: { getViewDom: ()=> HTMLElement | null },
   TREE_NODE_SELECT: { node: Components.Tree.Node },
   MONACO_CHANGE_VALUE : { uri: string, value: string },
   MONACO_BEFORE_INIT: { monaco: typeof Monaco },
@@ -158,6 +162,9 @@ export type BuildInHookTypes = {
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
   DOC_BEFORE_EXPORT: never,
+  I18N_CHANGE_LANGUAGE: { lang: LanguageName },
+  SETTING_FETCHED: { settings: BuildInSettings },
+  SETTING_BEFORE_WRITE: { settings: BuildInSettings },
 }
 
 export type FrontMatterAttrs = {

@@ -3,14 +3,14 @@ import MarkdownItAttrs from 'markdown-it-attrs'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 
 /**
- * Markdown-it 实例
+ * Markdown-it instance
  */
 export const markdown = Markdown({ linkify: true, breaks: true, html: true })
 
 /**
- * 注册一个 Markdown-it 插件
- * @param plugin Markdown-it 插件
- * @param params 插件参数
+ * Register a Markdown-it plugin.
+ * @param plugin Markdown-it plugin
+ * @param params plugin params
  */
 export function registerPlugin (plugin: (md: Markdown, ...args: any) => void, params?: any) {
   markdown.use(plugin, params)
@@ -27,7 +27,7 @@ markdown.block.tokenize = function (state, startLine, endLine) {
     state.env = {}
   }
 
-  // 将 bMarks eMarks 挂载到 env 上，方便渲染插件调用
+  // attach bMarks eMarks to env
   state.env.bMarks = state.bMarks
   state.env.eMarks = state.eMarks
 }

@@ -33,31 +33,31 @@ export default {
       menus['status-bar-help'] = {
         id: 'status-bar-help',
         position: 'right',
-        title: '帮助',
+        title: ctx.i18n.t('status-bar.help.help'),
         list: [
           {
             id: 'toggle-readme',
             type: 'normal',
-            title: 'README',
+            title: ctx.i18n.t('status-bar.help.readme'),
             tips: getKeysLabel(showHelpAction.name),
             onClick: () => ctx.action.getActionHandler(showHelpAction.name)()
           },
           {
             id: 'toggle-plugin',
             type: 'normal',
-            title: '插件开发指南',
+            title: ctx.i18n.t('status-bar.help.plugin'),
             onClick: () => ctx.action.getActionHandler(showPluginAction.name)()
           },
           {
             id: 'toggle-shortcuts',
             type: 'normal',
-            title: '快捷键说明',
+            title: ctx.i18n.t('status-bar.help.shortcuts'),
             onClick: () => ctx.action.getActionHandler(showShortcutsAction.name)()
           },
           {
             id: 'toggle-features',
             type: 'normal',
-            title: '特色功能说明',
+            title: ctx.i18n.t('status-bar.help.features'),
             onClick: () => ctx.action.getActionHandler(showFeaturesAction.name)()
           },
         ]

@@ -10,8 +10,8 @@ export interface Instance extends ComponentPublicInstance {
 let instance: Instance
 
 /**
- * 获取一个对话框实例
- * @returns 对话框实例
+ * Get Modal instance.
+ * @returns instance
  */
 export function useModal (): Instance {
   return instance

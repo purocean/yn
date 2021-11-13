@@ -9,12 +9,12 @@ export default {
       menus['status-bar-navigation'] = {
         id: 'status-bar-navigation',
         position: 'left',
-        title: '导航',
+        title: ctx.i18n.t('status-bar.nav.nav'),
         list: [
           {
             id: 'show-quick-open',
             type: 'normal',
-            title: '快速跳转',
+            title: ctx.i18n.t('status-bar.nav.goto'),
             subTitle: getKeysLabel('filter.show-quick-open'),
             onClick: () => getActionHandler('filter.show-quick-open')()
           },

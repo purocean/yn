@@ -9,19 +9,19 @@
       <span>{{statusText}}</span>
     </h4>
     <div class="action" v-if="hasWin">
-      <div title="置顶窗口" :class="{btn: true, pin: true, ontop: isAlwaysOnTop}" @click="toggleAlwaysOnTop">
+      <div :title="$t('title-bar.pin')" :class="{btn: true, pin: true, ontop: isAlwaysOnTop}" @click="toggleAlwaysOnTop">
         <svg-icon color="hsla(0, 0%, 100%, .5)" name="thumbtack-solid"></svg-icon>
       </div>
-      <div title="最小化" class="btn" @click="minimize">
+      <div :title="$t('title-bar.minimize')" class="btn" @click="minimize">
         <div class="icon minimize"></div>
       </div>
-      <div title="还原" v-if="isMaximized" class="btn" @click="unmaximize">
+      <div :title="$t('title-bar.unmaximize')" v-if="isMaximized" class="btn" @click="unmaximize">
         <div class="icon unmaximize"></div>
       </div>
-      <div title="最大化" v-else class="btn" @click="maximize">
+      <div :title="$t('title-bar.maximize')" v-else class="btn" @click="maximize">
         <div class="icon maximize"></div>
       </div>
-      <div title="关闭" class="btn btn-close" @click="close">
+      <div :title="$t('close')" class="btn btn-close" @click="close">
         <div class="icon close"></div>
       </div>
     </div>
@@ -33,6 +33,7 @@ import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, wat
 import { useStore } from 'vuex'
 import { isElectron, isMacOS, nodeRequire } from '@fe/support/env'
 import { isEncrypted } from '@fe/services/document'
+import { useI18n } from '@fe/services/i18n'
 import SvgIcon from './SvgIcon.vue'
 import type { Doc } from '@fe/types'
 
@@ -41,6 +42,7 @@ export default defineComponent({
   components: { SvgIcon },
   setup () {
     const store = useStore()
+    const { t } = useI18n()
 
     const { currentFile } = toRefs(store.state)
     const { isSaved } = toRefs(store.getters)
@@ -73,7 +75,7 @@ export default defineComponent({
     }
 
     function maximize () {
-      // 最大化后取消窗口置顶
+      // unpin window after maximize.
       win && win.maximize()
       win && win.setAlwaysOnTop(false)
     }
@@ -142,15 +144,15 @@ export default defineComponent({
         }
 
         if (!isSaved.value) {
-          status = '未保存'
+          status = t('file-status.unsaved')
         } else if (file.status === 'saved') {
-          status = '已保存'
+          status = t('file-status.saved')
         } else if (file.status === 'save-failed') {
-          status = '保存失败！'
+          status = t('file-status.save-failed')
         } else if (file.status === 'loaded') {
-          status = '加载完毕'
+          status = t('file-status.loaded')
         } else {
-          status = '加载中…'
+          status = t('file-status.loading')
         }
 
         if (file.path && file.repo) {
@@ -159,7 +161,7 @@ export default defineComponent({
           return file.name
         }
       } else {
-        return '未打开文件'
+        return t('file-status.no-file')
       }
     })
 
@@ -176,11 +178,11 @@ export default defineComponent({
     })
 
     watch(statusText, () => {
-      document.title = currentFile.value ? (currentFile.value.name || currentFile.value.title || 'Yank Note') : '未打开文件'
+      document.title = currentFile.value ? (currentFile.value.name || currentFile.value.title || 'Yank Note') : t('file-status.no-file')
     }, { immediate: true })
 
     watch(isSaved, (val: boolean) => {
-      // 暴露文档保存状态给 Electron 用
+      // expose save state for electron usage.
       window.documentSaved = val
     }, { immediate: true })
 

@@ -1,13 +1,13 @@
 <template>
   <XMask :show="showExport" @close="close" :maskCloseable="false">
     <div class="wrapper" @click.stop>
-      <h3>导出</h3>
+      <h3>{{$t('export-panel.export')}}</h3>
       <iframe width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
       <form ref="refExportForm" :action="`/api/convert/${convert.fileName}`" method="post" target="export-download">
         <input type="hidden" name="source" :value="convert.source">
         <div style="padding: 20px">
-          <label>
-            格式：
+          <label class="row-label">
+            {{$t('export-panel.format')}}
             <select name="toType" v-model="convert.toType">
               <option value="pdf">PDF</option>
               <option value="docx">Word (docx)</option>
@@ -20,36 +20,51 @@
             <hr>
             <template v-if="convert.toType === 'pdf'">
               <div v-if="isElectron">
-                <div style="margin: 10px 0"><label>方向：<select v-model="convert.pdfOptions.landscape">
-                  <option value="">纵向</option>
-                  <option value="true">横向</option>
-                </select></label></div>
-                <div style="margin: 10px 0"><label>页面：<select v-model="convert.pdfOptions.pageSize">
-                  <option value="A3">A3</option>
-                  <option value="A4">A4</option>
-                  <option value="A5">A5</option>
-                  <option value="Legal">Legal</option>
-                  <option value="Letter">Letter</option>
-                  <option value="Tabloid">Tabloid</option>
-                </select></label></div>
-                <div style="margin: 10px 0"><label>缩放：<input v-model="convert.pdfOptions.scaleFactor" type="number" max="100" min="10" setp="1" style="display: inline-block;width: 4em"></label></div>
-                <div style="margin: 10px 0"><label><input type="checkbox" v-model="convert.pdfOptions.printBackground"> 包含背景</label></div>
+                <div style="margin: 20px 0 10px">
+                  <label class="row-label">
+                    {{$t('export-panel.pdf.orientation')}}
+                    <select v-model="convert.pdfOptions.landscape">
+                      <option value="">{{$t('export-panel.pdf.portrait')}}</option>
+                      <option value="true">{{$t('export-panel.pdf.landscape')}}</option>
+                    </select>
+                  </label>
+                </div>
+                <div style="margin: 10px 0">
+                  <label class="row-label">
+                    {{$t('export-panel.pdf.size')}}
+                    <select v-model="convert.pdfOptions.pageSize">
+                      <option value="A3">A3</option>
+                      <option value="A4">A4</option>
+                      <option value="A5">A5</option>
+                      <option value="Legal">Legal</option>
+                      <option value="Letter">Letter</option>
+                      <option value="Tabloid">Tabloid</option>
+                    </select>
+                  </label>
+                </div>
+                <div style="margin: 10px 0">
+                  <label class="row-label">
+                    {{$t('export-panel.pdf.zoom')}}
+                    <input v-model="convert.pdfOptions.scaleFactor" type="number" max="100" min="10" setp="1" style="display: inline-block;width: 4em">
+                  </label>
+                </div>
+                <div style="margin: 10px 0"><label><input type="checkbox" v-model="convert.pdfOptions.printBackground"> {{$t('export-panel.pdf.include-bg')}}</label></div>
               </div>
-              <div v-else>
-                将使用浏览器打印功能
-              </div>
+              <div v-else> {{$t('export-panel.pdf.use-browser')}} </div>
             </template>
             <template v-else>
+              <div style="margin: 20px 0 10px">
+                <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'html'" @change="() => convert.fromType = 'html'"> {{$t('export-panel.use-html')}} </label>
+              </div>
               <div style="margin: 10px 0">
-                <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'html'" @change="() => convert.fromType = 'html'"> 使用渲染后的 HTML 转换 </label>
-                <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'markdown'" @change="() => convert.fromType = 'markdown'"> 使用 Markdown 转换 </label>
+                <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'markdown'" @change="() => convert.fromType = 'markdown'"> {{$t('export-panel.use-markdown')}} </label>
               </div>
             </template>
           </div>
         </div>
         <div class="action">
-          <button class="btn" @click.stop.prevent="close">取消</button>
-          <button class="btn primary" @click.stop.prevent="ok">确定</button>
+          <button class="btn" @click.stop.prevent="close">{{$t('cancel')}}</button>
+          <button class="btn primary" @click.stop.prevent="ok">{{$t('ok')}}</button>
         </div>
       </form>
     </div>
@@ -64,6 +79,7 @@ import { getContentHtml } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
 import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
+import { useI18n } from '@fe/services/i18n'
 import { sleep } from '@fe/utils'
 import XMask from './Mask.vue'
 
@@ -71,6 +87,8 @@ export default defineComponent({
   name: 'export-panel',
   components: { XMask },
   setup () {
+    const { t } = useI18n()
+
     const store = useStore()
     const toast = useToast()
     const refExportForm = ref<HTMLFormElement | null>(null)
@@ -128,7 +146,7 @@ export default defineComponent({
         window.print()
       } else {
         close()
-        toast.show('info', '转换中，请稍候……')
+        toast.show('info', t('export-panel.loading'))
         await sleep(300)
 
         const content = nodeRequire('electron').remote.getCurrentWebContents()
@@ -162,18 +180,18 @@ export default defineComponent({
       }
 
       if (FLAG_DEMO) {
-        toast.show('warning', 'DEMO 模式下该功能不可用')
+        toast.show('warning', t('demo-tips'))
         return
       }
 
-      // 下载文件后关闭面板
+      // close when download complete
       window.addEventListener('blur', close, { once: true })
 
-      toast.show('info', '转换中，请稍候……', 5000)
+      toast.show('info', t('export-panel.loading'), 5000)
 
       let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
 
-      // Windows 下偶尔解析 localhost 很耗时，这里直接用 ip 代替
+      // replace localhost to ip, somtimes resolve localhost take too much time on windows.
       if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
         baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
       }
@@ -205,7 +223,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .wrapper {
-  width: 600px;
+  width: 400px;
   background: var(--g-color-95);
   margin: auto;
   padding: 10px;
@@ -222,5 +240,11 @@ export default defineComponent({
   display: flex;
   justify-content: flex-end;
   padding-top: 10px;
+}
+
+.row-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

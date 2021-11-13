@@ -17,14 +17,14 @@ import mark from './mark'
 import config from '../config'
 import { getAction } from '../action'
 
-const result = (status: 'ok' | 'error' = 'ok', message = '操作成功', data: any = null) => {
+const result = (status: 'ok' | 'error' = 'ok', message = 'success', data: any = null) => {
   return { status, message, data }
 }
 
 const fileContent = async (ctx: any, next: any) => {
   if (ctx.path === '/api/file') {
     if (ctx.method === 'GET') {
-      ctx.body = result('ok', '获取成功', {
+      ctx.body = result('ok', 'success', {
         content: file.read(ctx.query.repo, ctx.query.path).toString(),
         hash: file.hash(ctx.query.repo, ctx.query.path)
       })
@@ -32,28 +32,28 @@ const fileContent = async (ctx: any, next: any) => {
       const oldHash = ctx.request.body.old_hash
 
       if (!oldHash) {
-        throw new Error('未传递文件hash')
+        throw new Error('No hash.')
       } else if (oldHash === 'new' && file.exists(ctx.request.body.repo, ctx.request.body.path)) {
-        throw new Error('文件已经存在')
+        throw new Error('File already exists.')
       } else if (oldHash !== 'new' && !file.checkHash(ctx.request.body.repo, ctx.request.body.path, oldHash)) {
-        throw new Error('磁盘文件已经更新，请刷新文件')
+        throw new Error('File is stale. Please refresh.')
       }
 
       const hash = file.write(ctx.request.body.repo, ctx.request.body.path, ctx.request.body.content)
-      ctx.body = result('ok', '保存成功', hash)
+      ctx.body = result('ok', 'success', hash)
     } else if (ctx.method === 'DELETE') {
       file.rm(ctx.query.repo, ctx.query.path)
       ctx.body = result()
     } else if (ctx.method === 'PATCH') {
       if (file.exists(ctx.request.body.repo, ctx.request.body.newPath)) {
-        throw new Error('文件已经存在')
+        throw new Error('File already exists.')
       }
 
       file.mv(ctx.request.body.repo, ctx.request.body.oldPath, ctx.request.body.newPath)
       ctx.body = result()
     }
   } else if (ctx.path === '/api/tree') {
-    ctx.body = result('ok', '获取成功', file.tree(ctx.query.repo))
+    ctx.body = result('ok', 'success', file.tree(ctx.query.repo))
   } else {
     await next()
   }
@@ -67,7 +67,7 @@ const attachment = async (ctx: any, next: any) => {
       const attachment = ctx.request.body.attachment
       const buffer = Buffer.from(attachment.substring(attachment.indexOf(',') + 1), 'base64')
       file.upload(repo, buffer, path)
-      ctx.body = result('ok', '上传成功', path)
+      ctx.body = result('ok', 'success', path)
     } else if (ctx.method === 'GET') {
       ctx.type = mime.getType(ctx.query.path)
       ctx.body = file.read(ctx.query.repo, ctx.query.path)
@@ -91,7 +91,7 @@ const open = async (ctx: any, next: any) => {
 const markFile = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/mark')) {
     if (ctx.method === 'GET') {
-      ctx.body = result('ok', '获取成功', mark.list())
+      ctx.body = result('ok', 'success', mark.list())
     } else if (ctx.method === 'POST') {
       mark.add({ repo: ctx.query.repo, path: ctx.query.path })
       ctx.body = result()
@@ -109,7 +109,7 @@ const searchFile = async (ctx: any, next: any) => {
     const search = ctx.query.search
     const repo = ctx.query.repo
 
-    ctx.body = result('ok', '操作成功', file.search(repo, search))
+    ctx.body = result('ok', 'success', file.search(repo, search))
   } else {
     await next()
   }
@@ -117,7 +117,7 @@ const searchFile = async (ctx: any, next: any) => {
 
 const repository = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/repositories')) {
-    ctx.body = result('ok', '获取成功', dataRepository.list())
+    ctx.body = result('ok', 'success', dataRepository.list())
   } else {
     await next()
   }
@@ -128,7 +128,7 @@ const plantumlGen = async (ctx: any, next: any) => {
     ctx.type = 'image/png'
     try {
       ctx.body = await plantuml(ctx.query.data)
-      ctx.set('cache-control', 'max-age=86400') // 一天过期
+      ctx.set('cache-control', 'max-age=86400') // 1 day.
     } catch (error) {
       ctx.body = error
     }
@@ -140,7 +140,7 @@ const plantumlGen = async (ctx: any, next: any) => {
 const runCode = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/run')) {
     const rst = await run.runCode(ctx.request.body.language, ctx.request.body.code)
-    ctx.body = result('ok', '运行成功', rst)
+    ctx.body = result('ok', 'success', rst)
   } else {
     await next()
   }
@@ -175,10 +175,10 @@ const tmpFile = async (ctx: any, next: any) => {
       }
 
       fs.writeFileSync(absPath, body)
-      ctx.body = result('ok', '写入成功', { path: absPath })
+      ctx.body = result('ok', 'success', { path: absPath })
     } else if (ctx.method === 'DELETE') {
       fs.unlinkSync(absPath)
-      ctx.body = result('ok', '删除成功')
+      ctx.body = result('ok', 'success')
     }
   } else {
     await next()
@@ -213,7 +213,7 @@ const readme = async (ctx: any, next: any) => {
       ctx.type = mime.getType(ctx.query.path)
       ctx.body = fs.readFileSync(path.join(HELP_DIR, ctx.query.path.replace('../', '')))
     } else {
-      ctx.body = result('ok', '获取成功', {
+      ctx.body = result('ok', 'success', {
         content: fs.readFileSync(path.join(HELP_DIR, ctx.query.doc.replace('../', ''))).toString()
       })
     }
@@ -243,11 +243,12 @@ const userPlugin = async (ctx: any, next: any) => {
 const setting = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/settings')) {
     if (ctx.method === 'GET') {
-      ctx.body = result('ok', '获取成功', config.getAll())
+      ctx.body = result('ok', 'success', config.getAll())
     } else if (ctx.method === 'POST') {
       const data = { ...config.getAll(), ...ctx.request.body }
       config.setAll(data)
-      ctx.body = result('ok', '设置成功')
+      getAction('i18n.change-language')(data.language)
+      ctx.body = result('ok', 'success')
     }
   } else {
     await next()
@@ -262,7 +263,7 @@ const choose = async (ctx: any, next: any) => {
       const body = ctx.request.body
 
       if (chooseLock) {
-        throw new Error('当前正在选择文件')
+        throw new Error('Busy')
       }
 
       chooseLock = true
@@ -270,7 +271,7 @@ const choose = async (ctx: any, next: any) => {
       const data = await getAction('show-open-dialog')(body)
       from === 'browser' && getAction('hide-main-window')()
       chooseLock = false
-      ctx.body = result('ok', '完成', data)
+      ctx.body = result('ok', 'success', data)
     }
   } else {
     await next()
@@ -315,7 +316,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
 
-  // 静态文件
+  // static file
   app.use(async (ctx: any, next: any) => {
     const urlPath = decodeURIComponent(ctx.path).replace(/^(\/static\/|\/)/, '')
     const sendFile = async (filePath: string, fullback = true) => {
@@ -386,7 +387,7 @@ const server = (port = 3000) => {
 
   server.listen(port, 'localhost')
 
-  console.log(`访问地址：http://localhost:${port}`)
+  console.log(`Address: http://localhost:${port}`)
 
   return callback
 }

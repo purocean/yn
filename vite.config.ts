@@ -38,6 +38,7 @@ export default defineConfig({
       { find: /^vue$/, replacement: 'vue/dist/vue.esm-bundler.js' },
       { find: /^@\//, replacement: path.resolve(__dirname, 'src') + '/' },
       { find: /^@fe\//, replacement: path.resolve(__dirname, 'src', 'renderer') + '/' },
+      { find: /^@share\//, replacement: path.resolve(__dirname, 'src', 'share') + '/' },
     ]
   },
   build: {

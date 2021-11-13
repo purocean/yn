@@ -19,12 +19,12 @@
       v-model="searchText"
       type="text"
       class="input"
-      placeholder="键入字符……"
+      :placeholder="$t('quick-open.input-placeholder')"
       @keydown.tab.prevent
       @keydown.up.prevent
       @keydown.down.prevent>
     <ul ref="refResult" class="result">
-      <li v-if="dataList === null">加载中……</li>
+      <li v-if="dataList === null">{{$t('loading')}}</li>
       <template v-else>
         <li
           v-for="(item, i) in dataList"
@@ -38,7 +38,7 @@
             [{{item.repo}}] {{item.path.substr(0, item.path.lastIndexOf('/'))}}
           </span>
         </li>
-        <li v-if="dataList.length < 1">无结果</li>
+        <li v-if="dataList.length < 1">{{$t('quick-open.empty')}}</li>
       </template>
     </ul>
   </div>
@@ -49,6 +49,7 @@ import { debounce } from 'lodash-es'
 import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import * as api from '@fe/support/api'
+import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 
 type TabKey = 'marked' | 'search' | 'file'
@@ -62,6 +63,7 @@ export default defineComponent({
     },
   },
   setup (props, { emit }) {
+    const { t } = useI18n()
     const store = useStore()
 
     const refInput = ref<HTMLInputElement | null>(null)
@@ -81,12 +83,12 @@ export default defineComponent({
 
     const tabs = computed(() => {
       const arr: {key: TabKey; label: string}[] = [
-        { key: 'file', label: '快速跳转' },
-        { key: 'search', label: '搜索内容' },
+        { key: 'file', label: t('quick-open.files') },
+        { key: 'search', label: t('quick-open.search') },
       ]
 
       if (props.withMarked) {
-        arr.unshift({ key: 'marked', label: '已标记' })
+        arr.unshift({ key: 'marked', label: t('quick-open.marked') })
       }
 
       return arr
@@ -151,10 +153,10 @@ export default defineComponent({
         return null
       }
 
-      // 筛选一下，搜索全文不筛选
+      // filter except full text search.
       const arr = currentTab.value === 'search' ? list.value : filterFiles(list.value, searchText.value.trim(), false)
 
-      // 按照最近使用时间排序
+      // sort by last usage time.
       return sortList(arr).slice(0, 70)
     })
 
@@ -163,7 +165,7 @@ export default defineComponent({
         const fetchTime = new Date().getTime()
         lastFetchTime.value = fetchTime
         const data = await api.search(repo.value, text.trim())
-        // 总是保证最后的搜索结果出现在列表
+        // ensure last result be ahead of list.
         if (fetchTime >= lastFetchTime.value) {
           call(data)
         }
@@ -291,7 +293,7 @@ export default defineComponent({
 
     watch(dataList, () => {
       updateSelected()
-      if (currentTab.value !== 'search') { // 搜索模式不高亮字符
+      if (currentTab.value !== 'search') { // search model do not highlight text.
         nextTick(() => highlightText(searchText.value.trim()))
       }
     })

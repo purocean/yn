@@ -3,12 +3,12 @@
     <StatusBarMenu class="left" position="left" />
     <div class="right">
       <div class="document-info">
-        <span>行：{{selectionInfo.line}}</span>
-        <span>列：{{selectionInfo.column}}</span>
-        <span v-if="selectionInfo.selectedLength > 0">已选中：{{selectionInfo.selectedLength}}</span>
+        <span>L {{selectionInfo.line}},</span>
+        <span>C {{selectionInfo.column}}</span>
+        <span v-if="selectionInfo.selectedLength > 0">{{$t('status-bar.document-info.selected')}}: {{selectionInfo.selectedLength}}</span>
         <template v-else>
-          <span>总行数：{{selectionInfo.lineCount}}</span>
-          <span>字符数：{{selectionInfo.textLength}}</span>
+          <span>{{$t('status-bar.document-info.lines')}}: {{selectionInfo.lineCount}}</span>
+          <span>{{$t('status-bar.document-info.chars')}}: {{selectionInfo.textLength}}</span>
         </template>
       </div>
       <StatusBarMenu class="right" position="right" />
@@ -19,12 +19,14 @@
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue'
 import { useStore } from 'vuex'
+import { useI18n } from '@fe/services/i18n'
 import StatusBarMenu from './StatusBarMenu.vue'
 
 export default defineComponent({
   name: 'status-bar',
   components: { StatusBarMenu },
   setup () {
+    useI18n()
     const store = useStore()
     const { selectionInfo, autoPreview } = toRefs(store.state)
 

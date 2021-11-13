@@ -1,5 +1,6 @@
 import CryptoJS from 'crypto-js'
 import { useToast } from '@fe/support/ui/toast'
+import { t } from '@fe/services/i18n'
 
 export * as path from './path'
 export * as storage from './storage'
@@ -96,5 +97,5 @@ export function copyText (text?: string) {
   textarea.select()
   document.execCommand('copy')
   document.body.removeChild(textarea)
-  toast.show('info', '已复制')
+  toast.show('info', t('copied'))
 }

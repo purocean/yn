@@ -71,7 +71,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 - 嵌套列表转脑图展示：可将嵌套列表用脑图的方式展示
 - 元素属性书写：可自定义元素的任意属性
 - 表格解析增强：表格支持表格标题多行文本，列表等特性
-- 文档交叉链接跳转：支持在文档中引入其他文档，互相跳转
+- 文档交叉链接跳转：支持在文档中链接其他文档，互相跳转
 - 脚注功能：支持在文档中书写脚注
 - 容器块：支持类似 VuePress 默认主题的自定义容器
 - 宏替换：支持内嵌 JavaScript 表达式动态替换文档内容
@@ -88,14 +88,29 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.11.0](https://github.com/purocean/yn/releases/tag/v3.11.0) 2021-11-13
+1. 增加英语语言
+2. 宏定义支持异步表达式
+3. 支持在文档中引用其他文档片段
+4. 微调 UI
+5. 插件开发：
+    - 新增服务 `ctx.i18n`，
+    - 新增方法 `ctx.view.render`，
+    - 更改钩子 `VIEW_REFRESH` 变更为 `VIEW_AFTER_REFRESH`
+    - 新增钩子
+        - `I18N_CHANGE_LANGUAGE`,
+        - `SETTING_FETCHED`,
+        - `SETTING_BEFORE_WRITE`,
+        - `VIEW_BEFORE_REFRESH`,
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v3.10.3](https://github.com/purocean/yn/releases/tag/v3.10.3) 2021-11-10
 1. 修复长时间运行命令导致主进程阻塞问题
 2. 修复代码块操作按钮滚动定位问题
 3. 修复一些情况下渲染刷新问题
 4. 插件：移除 `ctx.bus` 事件总线，使用钩子代替
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v3.10.2](https://github.com/purocean/yn/releases/tag/v3.10.2) 2021-11-05
 1. 增加宏替换功能

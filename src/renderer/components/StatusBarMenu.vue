@@ -57,15 +57,17 @@ export default defineComponent({
     }
 
     const updateMenu = ({ name }: { name: BuildInActionName }) => {
-      if (name === 'status-bar.refresh-menu') {
+      if (!name || name === 'status-bar.refresh-menu') {
         list.value = getMenus(props.position)
       }
       return false
     }
 
     registerHook('ACTION_BEFORE_RUN', updateMenu as any)
+    registerHook('I18N_CHANGE_LANGUAGE', updateMenu as any)
     onBeforeUnmount(() => {
       removeHook('ACTION_BEFORE_RUN', updateMenu as any)
+      removeHook('I18N_CHANGE_LANGUAGE', updateMenu as any)
     })
 
     return {

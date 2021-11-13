@@ -1,6 +1,8 @@
 import * as os from 'os'
 import { globalShortcut, dialog } from 'electron'
 import { FLAG_DISABLE_SERVER } from './constant'
+import { $t } from './i18n'
+
 const platform = os.platform()
 
 type AcceleratorType = 'show-main-window' | 'open-in-browser'
@@ -27,8 +29,8 @@ export const registerShortcut = (shortcuts: {[key in AcceleratorType]?: () => vo
     if (!globalShortcut.isRegistered(accelerator)) {
       dialog.showMessageBox({
         type: 'error',
-        title: 'Yank Note 注册快捷键失败',
-        message: `[${accelerator}] 快捷键有冲突`,
+        title: $t('app.shortcut.error.title'),
+        message: $t('app.shortcut.error.desc', accelerator),
       })
     }
   })

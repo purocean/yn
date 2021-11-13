@@ -99,7 +99,7 @@ function math_inline (state: any, silent: boolean) {
     token.markup = '$'
     token.content = state.src.slice(start, match)
 
-    // 如果本行字符串以 $ 结尾，避免 markdown-it-attrs 解析，插入一个空白节点
+    // if ends with `$`, insert empty node to avoid markdown-it-attrs parse
     if (state.src.endsWith('$')) {
       state.push('text', '', 0)
     }

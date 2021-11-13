@@ -2,45 +2,45 @@
 import dayjs from 'dayjs'
 import { getMonaco, insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
+import { t } from '@fe/services/i18n'
 
 function createDependencyProposals (range: any) {
   const monaco = getMonaco()
 
   return [
-    { name: '![]() Image', type: '插入图片', insertText: '![${2:图片}]($1)' },
-    { name: '[]() Link', type: '插入链接', insertText: '[${2:链接}]($1)' },
-    { name: '[toc]', type: '目录', insertText: '[toc]{type: "${ul}", level: [1,2,3]}' },
-    { name: '# Head', type: '一级标题', insertText: '# $1' },
-    { name: '## Head', type: '二级标题', insertText: '## $1' },
-    { name: '### Head', type: '三级标题', insertText: '### $1' },
-    { name: '#### Head', type: '四级标题', insertText: '#### $1' },
-    { name: '##### Head', type: '五级标题', insertText: '##### $1' },
-    { name: '###### Head', type: '六级标题', insertText: '###### $1' },
-    { name: '+ List', type: '无序列表', insertText: '+ ' },
-    { name: '- List', type: '无序列表', insertText: '- ' },
-    { name: '+ [ ] TODO List', type: '待办列表', insertText: '+ [ ] ' },
-    { name: '- [ ] TODO List', type: '待办列表', insertText: '- [ ] ' },
-    { name: '+ MindMap', type: '脑图', insertText: '+ ${1:中心主题}{.mindmap}\n    + ${2:子主题}' },
-    { name: '- MindMap', type: '脑图', insertText: '- ${1:中心主题}{.mindmap}\n    - ${2:子主题}' },
-    { name: '` Code', type: '代码', insertText: '`$1`' },
-    { name: '* Italic', type: '斜体', insertText: '*$1*' },
-    { name: '_ Italic', type: '斜体', insertText: '_$1_' },
-    { name: '** Bold', type: '加粗', insertText: '**$1**' },
-    { name: '__ Bold', type: '加粗', insertText: '__$1__' },
-    { name: '~~ Delete', type: '删除线', insertText: '~~$1~~' },
-    { name: '$ Inline KaTeX', type: '行内公式', insertText: '$$1$' },
-    { name: '$$ Block KaTeX', type: '块公式', insertText: '$$$1$$\n' },
-    { name: '``` Code', type: '代码块', insertText: '```$1\n```\n' },
-    { name: '``` Run Code', type: '运行代码块', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n' },
-    { name: '``` Applet', type: 'HTML 小工具', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">TEST</button>\n```\n' },
-    { name: '``` Drawio', type: 'Drawio 图形', insertText: '```xml\n<!-- --drawio-- -->\n${1:<!-- mxfile -->}\n```\n' },
-    { name: '[]() Drawio Link', type: 'Drawio 图形链接', insertText: '[${2:链接}]($1){link-type="drawio"}' },
-    { name: '[]() Luckysheet Link', type: 'Luckysheet 链接', insertText: '[${2:链接}]($1){link-type="luckysheet"}' },
-    { name: '```mermaid Mermaid', type: 'Mermaid 图形', insertText: '```mermaid\ngraph LR\n${1:A[Hard] -->|Text| B(Round)}\n```\n' },
-    { name: '@startuml Plantuml', type: 'Plantuml 图形', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
-    { name: '||| Table', type: '表格', insertText: '${1:A} | ${2:B} | ${3:C}\n-- | -- | --\na | b | c' },
+    { name: '![]() Image', insertText: '![${2:Img}]($1)' },
+    { name: '[]() Link', insertText: '[${2:Link}]($1)' },
+    { name: '[toc]', insertText: '[toc]{type: "${ul}", level: [1,2,3]}' },
+    { name: '# Head', insertText: '# $1' },
+    { name: '## Head', insertText: '## $1' },
+    { name: '### Head', insertText: '### $1' },
+    { name: '#### Head', insertText: '#### $1' },
+    { name: '##### Head', insertText: '##### $1' },
+    { name: '###### Head', insertText: '###### $1' },
+    { name: '+ List', insertText: '+ ' },
+    { name: '- List', insertText: '- ' },
+    { name: '+ [ ] TODO List', insertText: '+ [ ] ' },
+    { name: '- [ ] TODO List', insertText: '- [ ] ' },
+    { name: '+ MindMap', insertText: '+ ${1:Subject}{.mindmap}\n    + ${2:Topic}' },
+    { name: '` Code', insertText: '`$1`' },
+    { name: '* Italic', insertText: '*$1*' },
+    { name: '_ Italic', insertText: '_$1_' },
+    { name: '** Bold', insertText: '**$1**' },
+    { name: '__ Bold', insertText: '__$1__' },
+    { name: '~~ Delete', insertText: '~~$1~~' },
+    { name: '$ Inline KaTeX', insertText: '$$1$' },
+    { name: '$$ Block KaTeX', insertText: '$$$1$$\n' },
+    { name: '``` Code', insertText: '```$1\n```\n' },
+    { name: '``` Run Code', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n' },
+    { name: '``` Applet', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">TEST</button>\n```\n' },
+    { name: '``` Drawio', insertText: '```xml\n<!-- --drawio-- -->\n${1:<!-- mxfile -->}\n```\n' },
+    { name: '[]() Drawio Link', insertText: '[${2:Link}]($1){link-type="drawio"}' },
+    { name: '[]() Luckysheet Link', insertText: '[${2:Link}]($1){link-type="luckysheet"}' },
+    { name: '```mermaid Mermaid', insertText: '```mermaid\ngraph LR\n${1:A[Hard] -->|Text| B(Round)}\n```\n' },
+    { name: '@startuml Plantuml', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
+    { name: '||| Table', insertText: '${1:A} | ${2:B} | ${3:C}\n-- | -- | --\na | b | c' },
   ].map(x => ({
-    label: { name: x.name, type: x.type },
+    label: { name: x.name },
     kind: monaco.languages.CompletionItemKind.Snippet,
     insertText: x.insertText,
     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
@@ -57,7 +57,7 @@ export default {
 
       editor.addAction({
         id: 'plugin.editor.insert-date',
-        label: '插入当前日期',
+        label: t('editor.context-menu.insert-date'),
         contextMenuGroupId: 'modification',
         keybindings: [
           KM.Shift | KM.Alt | KC.KEY_D
@@ -69,7 +69,7 @@ export default {
 
       editor.addAction({
         id: 'plugin.editor.insert-time',
-        label: '插入当前时间',
+        label: t('editor.context-menu.insert-time'),
         contextMenuGroupId: 'modification',
         keybindings: [
           KM.Shift | KM.Alt | KC.KEY_T
@@ -84,7 +84,7 @@ export default {
       })
 
       editor.addCommand(KM.Shift | KC.Enter, () => {
-        // getOneIndent 接口被移除了 https://github.com/microsoft/monaco-editor/issues/1565
+        // getOneIndent removed https://github.com/microsoft/monaco-editor/issues/1565
         const getOneIndent = () => {
           const options = editor.getModel()!.getOptions()
           return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'

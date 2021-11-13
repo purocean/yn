@@ -11,6 +11,7 @@ import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import type { AppState } from '@fe/support/store'
+import { useI18n } from '@fe/services/i18n'
 import Tabs from './Tabs.vue'
 
 const blankUri = toUri(null)
@@ -19,6 +20,7 @@ export default defineComponent({
   name: 'file-tabs',
   components: { Tabs },
   setup () {
+    const { t } = useI18n()
     const store = useStore()
 
     const { currentFile, tabs } = toRefs<AppState>(store.state)
@@ -50,7 +52,7 @@ export default defineComponent({
     function addTab (item: Components.FileTabs.Item) {
       const tab = tabs.value.find(x => item.key === x.key)
 
-      // 没有打开此 Tab，新建一个
+      // no this tab, add new one.
       if (!tab) {
         setTabs(tabs.value.concat([item]))
       }
@@ -148,8 +150,8 @@ export default defineComponent({
       const uri = toUri(file)
       const item = {
         key: uri,
-        label: file ? file.name : '空白页',
-        description: file ? `[${file.repo}] ${file.path}` : '空白页',
+        label: file ? file.name : t('blank-page'),
+        description: file ? `[${file.repo}] ${file.path}` : t('blank-page'),
         payload: { file },
       }
 
@@ -160,8 +162,8 @@ export default defineComponent({
       if (list.length < 1) {
         addTab({
           key: blankUri,
-          label: '空白页',
-          description: '空白页',
+          label: t('blank-page'),
+          description: t('blank-page'),
           payload: { file: null }
         })
       } else if (tabs.value.length === 2) {

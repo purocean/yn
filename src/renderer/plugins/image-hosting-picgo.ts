@@ -11,19 +11,19 @@ export default {
 
     ctx.setting.tapSchema((schema) => {
       schema.properties[settingKeyUrl] = {
-        title: 'PicGo 接口',
-        description: 'PicGo 默认接口地址：http://127.0.0.1:36677/upload',
+        title: 'T_picgo.setting.api-title',
+        description: 'T_picgo.setting.api-desc',
         type: 'string',
         defaultValue: '',
         pattern: '^(http://|https://|$)',
         options: {
-          patternmessage: '必须以 http:// 开头',
+          patternmessage: 'T_picgo.setting.api-msg',
           inputAttributes: { placeholder: 'http://127.0.0.1:36677/upload' }
         },
       }
 
       schema.properties[settingKeyPaste] = {
-        title: '粘贴图片使用 PicGo 图床',
+        title: 'T_picgo.setting.paste-title',
         type: 'boolean',
         format: 'checkbox',
         defaultValue: false,
@@ -34,19 +34,20 @@ export default {
       name: uploadActionName,
       handler: async (file: File) => {
         if (FLAG_DEMO) {
-          ctx.ui.useToast().show('warning', 'DEMO 模式下此功能不可用')
+          ctx.ui.useToast().show('warning', ctx.i18n.t('demo-tips'))
           return URL.createObjectURL(file)
         }
 
         const url = ctx.setting.getSettings()[settingKeyUrl]
 
         if (!url) {
-          ctx.ui.useToast().show('warning', '请先配置 PicGo 图床接口地址')
+          const msg = ctx.i18n.t('picgo.need-api')
+          ctx.ui.useToast().show('warning', msg)
           ctx.setting.showSettingPanel()
-          throw new Error('未配置 PicGo 图床上传地址')
+          throw new Error(msg)
         }
 
-        ctx.ui.useToast().show('info', '上传中……')
+        ctx.ui.useToast().show('info', ctx.i18n.t('picgo.uploading'))
 
         logger.debug('upload', url, file)
 
@@ -69,8 +70,9 @@ export default {
             return result[0]
           }
         } catch (error) {
-          ctx.ui.useToast().show('warning', '上传失败')
-          throw new Error('上传失败')
+          const msg = ctx.i18n.t('picgo.upload-failed')
+          ctx.ui.useToast().show('warning', msg)
+          throw new Error(msg)
         } finally {
           ctx.api.deleteTmpFile(tmpFileName)
         }
@@ -89,10 +91,10 @@ export default {
 
     async function insertImage (file: File) {
       if (!ctx.store.state.currentFile) {
-        throw new Error('当前未打开文件')
+        throw new Error('No file opened.')
       }
       const url = await ctx.action.getActionHandler(uploadActionName)(file)
-      ctx.editor.insert(`![图片](${url})\n`)
+      ctx.editor.insert(`![Img](${url})\n`)
     }
 
     function addImage () {
@@ -113,7 +115,7 @@ export default {
       editor.addAction({
         id: addImageActionId,
         contextMenuGroupId: 'modification',
-        label: '添加图片（PicGo）',
+        label: ctx.i18n.t('add-image') + ' (PicGo)',
         run: addImage,
       })
     })
@@ -122,7 +124,7 @@ export default {
       menus['status-bar-tool']?.list?.push({
         id: addImageActionId,
         type: 'normal',
-        title: '添加图片',
+        title: ctx.i18n.t('add-image'),
         subTitle: 'PicGo',
         onClick: addImage
       })

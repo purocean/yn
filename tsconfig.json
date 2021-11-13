@@ -11,6 +11,7 @@
     "lib": ["esnext", "dom", "dom.iterable"],
     "baseUrl": ".",
     "paths": {
+      "@share/*": ["src/share/*"],
       "@fe/*": ["src/renderer/*"],
       "@main/*": ["src/main/*"],
       "@/*": ["src/*"]

@@ -4,9 +4,10 @@ import { Plugin } from '@fe/context'
 import { getActionHandler } from '@fe/core/action'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
-import SvgIcon from '@fe/components/SvgIcon.vue'
 import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/core/command'
+import { useI18n } from '@fe/services/i18n'
 import { md5 } from '@fe/utils'
+import SvgIcon from '@fe/components/SvgIcon.vue'
 
 const cache: Record<string, string> = {}
 
@@ -20,6 +21,7 @@ const RunCode = defineComponent({
     language: String,
   },
   setup (props) {
+    const { t } = useI18n()
     const instance = getCurrentInstance()
     const result = ref('')
     const hash = computed(() => md5(props.language + props.code))
@@ -42,7 +44,7 @@ const RunCode = defineComponent({
       const { code, language } = props
 
       hasResult = false
-      result.value = isJs.value ? '' : '运行中……'
+      result.value = isJs.value ? '' : t('code-run.running')
 
       try {
         await api.runCode(language!, code, {
@@ -83,12 +85,12 @@ const RunCode = defineComponent({
       return [
         h('div', { class: 'p-mcr-run-code-action' }, [
           h('div', {
-            title: '运行代码',
+            title: t('code-run.run'),
             class: 'p-mcr-run-btn',
             onClick: run
           }),
           h('div', {
-            title: `在终端中运行代码，${getKeyLabel(CtrlCmd)} + 单击不退出解释器`,
+            title: t('code-run.run-in-xterm-tips', getKeyLabel(CtrlCmd)),
             class: 'p-mcr-run-xterm-btn no-print',
             hidden: isJs.value,
             onClick: runInXterm
@@ -98,7 +100,7 @@ const RunCode = defineComponent({
         h('div', { class: 'p-mcr-clear-btn-wrapper no-print' }, h(
           h(
             'div',
-            { class: 'p-mcr-clear-btn', style: { display: runResult ? 'flex' : 'none' }, title: '清空运行结果', onClick: clearResult },
+            { class: 'p-mcr-clear-btn', style: { display: runResult ? 'flex' : 'none' }, title: t('code-run.clear'), onClick: clearResult },
             h(SvgIcon, { name: 'times', style: 'pointer-events: none' })
           ),
         )),
@@ -210,7 +212,7 @@ export default {
     !FLAG_DISABLE_XTERM && ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
       editor.addAction({
         id: 'plugin.editor.run-in-xterm',
-        label: '终端中运行',
+        label: ctx.i18n.t('code-run.run-in-xterm'),
         contextMenuGroupId: 'other',
         precondition: 'editorHasSelection',
         keybindings: [

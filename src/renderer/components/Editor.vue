@@ -69,7 +69,8 @@ export default defineComponent({
       }
 
       timer = window.setTimeout(() => {
-        if (!currentFile.value || isEncrypted(currentFile.value)) { // 加密文件不自动保存
+        // prevent auto save encrypted file.
+        if (!currentFile.value || isEncrypted(currentFile.value)) {
           return
         }
 

@@ -9,7 +9,7 @@ export default {
         menus['status-bar-get'] = {
           id: 'status-bar-get',
           position: 'left',
-          title: '获取应用',
+          title: ctx.i18n.t('status-bar.get.get-application'),
           icon: 'download',
           list: [
             { id: 'github', type: 'normal', title: 'GitHub', onClick: () => window.open(URL_GITHUB) },

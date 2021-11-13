@@ -1,0 +1,328 @@
+/* eslint-disable quote-props */
+import type { BaseLanguage } from './en'
+
+const data: BaseLanguage = {
+  'app-name': 'Yank Note',
+  'slogan': '一款面向程序员的 Markdown 编辑器',
+  'cancel': '取消',
+  'ok': '确定',
+  'demo-tips': 'DEMO 模式下一些功能不可用',
+  'blank-page': '空白页',
+  'copied': '已复制',
+  'insert-different-repo-doc': '不能插入不同仓库的文档',
+  'need-clipboard-permission': '请授予剪切板权限',
+  'click-to-copy': '单击复制',
+  'click-to-copy-link': '单击复制链接',
+  'copy-code': '复制代码',
+  'loading': '加载中',
+  'add-image': '添加图片',
+  'exit-presentation-msg': '按下 Esc 键退出演示模式',
+  'reload': '重载',
+  'open-in-new-window': '新窗口打开',
+  'view-figure': '查看图形',
+  'export': '导出',
+  'no-password': '未输入密码',
+  'save': '保存',
+  'close': '关闭',
+  'edit': '编辑',
+  'app': {
+    'quit': '退出',
+    'preferences': '偏好设置',
+    'close-window': '关闭窗口',
+    'tray': {
+      'open-main-window': '打开主界面',
+      'open-in-browser': '浏览器中打开',
+      'open-main-dir': '打开主目录',
+      'preferences': '偏好设置',
+      'start-at-login': '开机启动',
+      'version': '版本 %s',
+      'quit': '退出',
+      'dev': {
+        'dev': '开发',
+        'port-prod': '正式端口 (%s)',
+        'port-dev': '开发端口 (%s)',
+        'reload': '重载页面',
+        'dev-tool': '主窗口开发工具',
+        'restart': '重新启动',
+        'force-quit': '强制退出',
+      }
+    },
+    'shortcut': {
+      'error': {
+        'title': '注册快捷键失败',
+        'desc': '冲突 [%s]'
+      },
+    },
+    'updater': {
+      'found-dialog': {
+        'title': 'Yank Note - 发现新版本',
+        'desc': '当前版本: %s\n新版本: %s',
+        'buttons': {
+          'download': '下载',
+          'view-changes': '查看更新内容',
+          'cancel': '取消',
+          'ignore': '忽略'
+        }
+      },
+      'progress-bar': {
+        'title': 'Yank Note - 下载',
+        'detail': '下载中 %s',
+        'failed': '下载失败: %s'
+      },
+      'failed-dialog': {
+        'title': 'Yank Note - 出现了一些错误',
+      },
+      'install-dialog': {
+        'title': 'Yank Note - 下载完成',
+        'desc': '新版本下载完成，是否要立即安装？',
+        'buttons': {
+          'install': '安装',
+          'delay': '推迟',
+        }
+      },
+      'no-newer-dialog': {
+        'title': 'Yank Note - 无新版本',
+        'desc': '当前已是最新版本'
+      }
+    },
+  },
+  'quit-check-dialog': {
+    'title': '提示',
+    'desc': '有文档未保存，是否要退出？',
+    'buttons': {
+      'cancel': '取消',
+      'discard': '放弃保存并退出',
+    },
+  },
+  'file-status': {
+    'unsaved': '未保存',
+    'saving': '保存中',
+    'saved': '已保存',
+    'save-failed': '保存失败！',
+    'loaded': '加载完毕',
+    'loading': '加载中…',
+    'no-file': '未打开文件'
+  },
+  'modal': {
+    'info': '提示',
+    'input-placeholder': '请输入...',
+  },
+  'document': {
+    'current-path': '当前路径: %s',
+    'password-create': '[创建] 请输入密码',
+    'password-save': '[保存] 请输入密码',
+    'password-open': '[打开] 请输入密码',
+    'wrong-password': '密码错误',
+    'file-transform-error': '加密文件和非加密文件不能互相转换',
+    'create-dialog': {
+      'title': '创建文件(加密文件以 .c.md 结尾)',
+      'hint': '文件路径',
+    },
+    'duplicate-dialog': {
+      'title': '重复文件',
+      'hint': '目标路径',
+    },
+    'delete-dialog': {
+      'title': '删除文件',
+      'content': '确定要删除 [%s] 吗？'
+    },
+    'move-dialog': {
+      'title': '移动文件',
+      'content': '新的路径'
+    },
+    'save-encrypted-file-dialog': {
+      'title': '提示',
+      'content': '密码和上一次输入的密码不一致，是否用新密码保存？',
+    },
+  },
+  'status-bar': {
+    'view': {
+      'view': '视图',
+      'show': '显示',
+      'hide': '隐藏',
+      'xterm': '终端',
+      'preview': '预览',
+      'editor': '编辑',
+      'side-bar': '侧栏',
+      'toggle-wrap': '切换换行'
+    },
+    'setting': '设置',
+    'repo': {
+      'repo': '仓库: %s',
+      'no-data': '未选择仓库',
+    },
+    'nav': {
+      'nav': '导航',
+      'goto': '快速跳转',
+      'forward': '前进',
+      'back': '后退',
+    },
+    'tool': {
+      'tool': '工具',
+      'paste-rft': '粘贴富文本',
+      'paste-img-base64': '粘贴图片',
+      'convert-img-link': '下载外链图片',
+    },
+    'document-info': {
+      'selected': '已选择',
+      'lines': '总行数',
+      'chars': '字符数',
+    },
+    'help': {
+      'help': '帮助',
+      'readme': '应用介绍',
+      'features': '特色功能说明',
+      'shortcuts': '快捷键',
+      'plugin': '插件开发'
+    },
+    'rendering': {
+      'rendering': '自动渲染-%s',
+      'on': '已开启',
+      'off': '已关闭',
+      'refresh': '重新渲染'
+    },
+    'terminal': '终端',
+    'present': '预览',
+    'get': {
+      'get-application': '获取应用',
+    },
+  },
+  'view': {
+    'outline': '目录',
+    'print': '打印',
+  },
+  'tree': {
+    'db-click-refresh': '双击刷新目录树',
+    'add-repo': '添加仓库',
+    'add-repo-hint': '选择一个位置保存笔记',
+    'created-at': '创建于: %s',
+    'updated-at': '更新于: %s',
+    'context-menu': {
+      'mark': '标记文件',
+      'unmark': '取消标记',
+      'duplicate': '重复文件',
+      'create': '创建文件',
+      'rename': '重命名 / 移动',
+      'delete': '删除',
+      'open-in-os': '在系统中打开',
+      'refresh': '刷新目录',
+      'open-in-terminal': '在终端中打开',
+      'create-in-cd': '当前目录创建新文件',
+      'copy-name': '复制名称',
+      'copy-path': '复制路径',
+    }
+  },
+  'tabs': {
+    'close-others': '关闭其他',
+    'close-right': '关闭到右侧',
+    'close-left': '关闭到左侧',
+    'close-all': '全部关闭',
+    'pin': '固定',
+    'unpin': '取消固定',
+  },
+  'export-panel': {
+    'export': '导出',
+    'format': '格式',
+    'pdf': {
+      'orientation': '方向',
+      'portrait': '纵向',
+      'landscape': '横向',
+      'size': '尺寸',
+      'zoom': '缩放',
+      'use-browser': '将使用浏览器打印功能',
+      'include-bg': '包含背景',
+    },
+    'use-html': '使用渲染后的 HTML 转换',
+    'use-markdown': '使用 Markdown 转换',
+    'loading': '转换中，请稍候……'
+  },
+  'title-bar': {
+    'pin': '置顶窗口',
+    'minimize': '最小化',
+    'unmaximize': '还原',
+    'maximize': '最大化',
+  },
+  'setting-panel': {
+    'setting': '设置',
+    'add': '添加%s',
+    'delete-warning': '确定要删除吗？',
+    'error-choose-repo-path': '请选择储存位置',
+    'schema': {
+      'repos': {
+        'repos': '仓库',
+        'repo': '仓库',
+        'name': '仓库名',
+        'name-placeholder': '请输入',
+        'path': '路径',
+        'path-placeholder': '选选择一个路径'
+      },
+      'theme': '主题',
+      'language': '语言',
+      'assets-dir': '图片存放目录',
+      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, date',
+      'shell': 'Shell',
+    },
+  },
+  'quick-open': {
+    'input-placeholder': '键入字符……',
+    'empty': '无结果',
+    'files': '快速跳转',
+    'search': '搜索内容',
+    'marked': '已标记',
+  },
+  'editor': {
+    'context-menu': {
+      'paste-image': '粘贴图片',
+      'paste-image-as-base64': '粘贴图片为 Base64',
+      'paste-rtf-as-markdown': '粘贴富文本为 Markdown',
+      'add-attachment': '添加附件',
+      'add-doc': '添加文档',
+      'insert-date': '插入当前日期',
+      'insert-time': '插入当前时间',
+    }
+  },
+  'picgo': {
+    'setting': {
+      'api-title': 'PicGo 接口',
+      'api-desc': 'PicGo 默认接口地址：http://127.0.0.1:36677/upload',
+      'api-msg': '必须以 http:// 开头',
+      'paste-title': '粘贴图片使用 PicGo 图床'
+    },
+    'uploading': '上传中……',
+    'upload-failed': '上传失败',
+    'need-api': '请先配置 PicGo 图床接口地址',
+  },
+  'code-run': {
+    'run': '运行',
+    'run-in-xterm-tips': '在终端中运行代码，%s + 单击不退出解释器',
+    'run-in-xterm': '终端中运行',
+    'running': '运行中……',
+    'clear': '清空',
+  },
+  'drawio': {
+    'adjust-height': '调整高度',
+  },
+  'mind-map': {
+    'zoom-in': '放大',
+    'zoom-out': '缩小',
+    'switch-layout': '切换布局',
+    'switch-loose': '紧凑/宽松',
+    'convert-error': '转换错误\n    1. 请保证大纲只有一个根项目\n    2. 请保证大纲层级正确',
+  },
+  'table-cell-edit': {
+    'esc-to-cancel': 'ESC 取消',
+    'db-click-edit': '双击编辑',
+    'canceled': '已取消编辑',
+    'edit-hint': '单元格内容',
+    'edit-title': '编辑单元格',
+    'edit-error': '编辑出错',
+    'limit-single-line': '只支持编辑单行文本',
+  },
+  'lucky-sheet': {
+    'saved-at': '保存于',
+    'edit-sheet': '编辑表格',
+    'create-dialog-title': '创建 Luckysheet 文件',
+  },
+}
+
+export default data

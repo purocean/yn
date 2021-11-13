@@ -68,7 +68,7 @@ async function transformAll () {
   const result = []
   const imgList = refView.querySelectorAll('img')
   for (let i = 0; i < imgList.length; i++) {
-    toast.show('info', `正在转换外链图片 ${i + 1}/${imgList.length}`)
+    toast.show('info', `${i + 1}/${imgList.length}`)
 
     const img = imgList[i]
     const data = await transformImgOutLink(img)
@@ -87,7 +87,7 @@ async function handleClick ({ e }: { e: MouseEvent }) {
   }
 
   const img = target as HTMLImageElement
-  if (isCommand(e, commandClick)) { // 转换外链图片到本地
+  if (isCommand(e, commandClick)) { // download image to local
     const data = await transformImgOutLink(img)
     if (data) {
       replaceValue(data.oldLink, data.replacedLink)
@@ -127,7 +127,7 @@ export default {
       menus['status-bar-tool']?.list?.push({
         id: actionKeydown,
         type: 'normal',
-        title: '转换外链图片',
+        title: ctx.i18n.t('status-bar.tool.convert-img-link'),
         subTitle: getKeysLabel(actionKeydown),
         onClick: ctx.action.getActionHandler(actionKeydown)
       })

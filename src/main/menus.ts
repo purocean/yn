@@ -1,9 +1,10 @@
+import opn from 'opn'
 import { app, Menu } from 'electron'
 import { getAction } from './action'
 import { FLAG_DISABLE_DEVTOOL, FLAG_DISABLE_SERVER, GITHUB_URL, USER_DIR } from './constant'
 import { getAccelerator } from './shortcut'
-import opn from 'opn'
 import { checkForUpdates } from './updater'
+import { $t } from './i18n'
 
 export const selectionMenu = Menu.buildFromTemplate([
   { role: 'copy' },
@@ -20,13 +21,13 @@ export const inputMenu = Menu.buildFromTemplate([
   { role: 'selectAll' },
 ])
 
-export const mainMenus = process.platform === 'darwin' ? Menu.buildFromTemplate([
+export const getMainMenus = () => process.platform === 'darwin' ? Menu.buildFromTemplate([
   {
     label: 'Application',
     submenu: [
-      { type: 'normal', label: '偏好设置', click: () => getAction('show-main-window-setting')() },
-      { type: 'normal', label: '关闭窗口', accelerator: 'Command+W', click: () => getAction('hide-main-window')() },
-      { type: 'normal', label: '退出', accelerator: 'Command+Q', click: () => getAction('quit')() }
+      { type: 'normal', label: $t('app.preferences'), click: () => getAction('show-main-window-setting')() },
+      { type: 'normal', label: $t('app.close-window'), accelerator: 'Command+W', click: () => getAction('hide-main-window')() },
+      { type: 'normal', label: $t('app.quit'), accelerator: 'Command+Q', click: () => getAction('quit')() }
     ]
   },
   {
@@ -46,32 +47,32 @@ export const mainMenus = process.platform === 'darwin' ? Menu.buildFromTemplate(
 export const getTrayMenus = () => Menu.buildFromTemplate([
   {
     type: 'normal',
-    label: '打开主界面',
+    label: $t('app.tray.open-main-window'),
     accelerator: getAccelerator('show-main-window'),
     click: () => getAction('show-main-window')()
   },
   {
     type: 'normal',
-    label: '浏览器中打开',
+    label: $t('app.tray.open-in-browser'),
     accelerator: getAccelerator('open-in-browser'),
     visible: !FLAG_DISABLE_SERVER,
     click: () => getAction('open-in-browser')()
   },
   {
     type: 'normal',
-    label: '打开主目录',
+    label: $t('app.tray.open-main-dir'),
     click: () => {
       opn(USER_DIR)
     }
   },
   {
     type: 'normal',
-    label: '偏好设置',
+    label: $t('app.tray.preferences'),
     click: () => getAction('show-main-window-setting')()
   },
   {
     type: 'checkbox',
-    label: '开机启动',
+    label: $t('app.tray.start-at-login'),
     checked: app.getLoginItemSettings().openAtLogin,
     click: x => {
       app.setLoginItemSettings({ openAtLogin: x.checked })
@@ -81,13 +82,13 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
   { type: 'separator' },
   {
     type: 'submenu',
-    label: '开发',
+    label: $t('app.tray.dev.dev'),
     visible: !FLAG_DISABLE_DEVTOOL,
     submenu: [
       {
         type: 'radio',
         checked: getAction('get-url-mode')() === 'scheme',
-        label: '正式端口（Scheme）',
+        label: $t('app.tray.dev.port-prod', 'Scheme'),
         click: () => {
           getAction('set-url-mode')('scheme')
           getAction('reload-main-window')()
@@ -96,7 +97,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
       {
         type: 'radio',
         checked: getAction('get-url-mode')() === 'prod',
-        label: `正式端口（${getAction('get-backend-port')()}）`,
+        label: $t('app.tray.dev.port-prod', getAction('get-backend-port')()),
         click: () => {
           getAction('set-url-mode')('prod')
           getAction('reload-main-window')()
@@ -105,7 +106,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
       {
         type: 'radio',
         checked: getAction('get-url-mode')() === 'dev',
-        label: `开发端口（${getAction('get-dev-frontend-port')()}）`,
+        label: $t('app.tray.dev.port-dev', getAction('get-dev-frontend-port')()),
         click: () => {
           getAction('set-url-mode')('dev')
           getAction('reload-main-window')()
@@ -114,14 +115,14 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
       { type: 'separator' },
       {
         type: 'normal',
-        label: '重载页面',
+        label: $t('app.tray.dev.reload'),
         click: () => {
           getAction('reload-main-window')()
         }
       },
       {
         type: 'normal',
-        label: '主窗口开发工具',
+        label: $t('app.tray.dev.dev-tool'),
         click: () => {
           const win = getAction('get-main-widow')()
           win && win.webContents.openDevTools()
@@ -130,7 +131,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
       { type: 'separator' },
       {
         type: 'normal',
-        label: '强制重新启动',
+        label: $t('app.tray.dev.restart'),
         click: () => {
           app.relaunch()
           app.exit(1)
@@ -138,7 +139,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
       },
       {
         type: 'normal',
-        label: '强制退出',
+        label: $t('app.tray.dev.force-quit'),
         click: () => {
           app.exit(1)
         }
@@ -154,7 +155,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
   },
   {
     type: 'normal',
-    label: `版本 ${app.getVersion()}`,
+    label: `${$t('app.tray.version', app.getVersion())}`,
     click: () => {
       checkForUpdates()
     }
@@ -162,7 +163,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
   { type: 'separator' },
   {
     type: 'normal',
-    label: '退出',
+    label: $t('app.tray.quit'),
     click: () => {
       setTimeout(() => {
         getAction('quit')()

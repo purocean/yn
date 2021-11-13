@@ -15,7 +15,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
 
   const { repo: fileRepo, path: filePath } = currentFile
 
-  // 系统中打开附件
+  // open attachment in os
   if (link.classList.contains('open')) {
     fetch(link.href.replace('api/attachment', 'api/open'))
     return true
@@ -23,31 +23,31 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
 
   const href = link.getAttribute('href') || ''
 
-  if (/^(http:|https:|ftp:)\/\//i.test(href)) { // 处理外链
-    // Electron 中打开外链
+  if (/^(http:|https:|ftp:)\/\//i.test(href)) { // external link
+    // use node opn in Electron.
     if (isElectron) {
       nodeRequire && nodeRequire('opn')(link.href)
       return true
     }
-  } else { // 处理相对链接
+  } else { // relative link
+    // better scrollIntoView
     const scrollIntoView = (el: HTMLElement) => {
       el.scrollIntoView()
       const wrap = view.parentElement
-      // 如果没有滚动到底部，页面顶部留一点距离方便阅读
+      // retain 60 px for better view.
       if (wrap && wrap.scrollHeight !== wrap.scrollTop + wrap.clientHeight) {
         wrap.scrollTop -= 60
       }
     }
 
-    if (/(\.md$|\.md#)/.test(href)) { // 处理打开相对 md 文件
+    if (/(\.md$|\.md#)/.test(href)) { // markdown file
       const tmp = decodeURI(href).split('#')
 
       let path = tmp[0]
-      if (!path.startsWith('/')) { // 将相对路径转换为绝对路径
+      if (!path.startsWith('/')) { // to absolute path
         path = join(dirname(filePath || ''), path)
       }
 
-      // 打开文件
       switchDoc({
         path,
         name: basename(path),
@@ -55,7 +55,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
         type: 'file'
       }).then(async () => {
         const hash = tmp.slice(1).join('#')
-        // 跳转锚点
+        // jump anchor
         if (hash) {
           await sleep(50)
           const el = document.getElementById(hash) ||
@@ -67,7 +67,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
             await sleep(0)
             scrollIntoView(el)
 
-            // 如果是标题的话，也顺便将编辑器滚动到可视区域
+            // reveal editor lint when click heading
             if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
               el.click()
             }
@@ -76,7 +76,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
       })
 
       return true
-    } else if (href && href.startsWith('#')) { // 处理 TOC 跳转
+    } else if (href && href.startsWith('#')) { // for anchor
       const el = document.getElementById(href.replace(/^#/, ''))
       el && scrollIntoView(el)
       return true
@@ -101,7 +101,7 @@ function convertLink (state: StateCore) {
       return
     }
 
-    if (/^[^:]*:/.test(attrVal) || attrVal.startsWith('//')) { // xxx: : 开头不转换
+    if (/^[^:]*:/.test(attrVal) || attrVal.startsWith('//')) { // xxx:
       return
     }
 
@@ -109,12 +109,12 @@ function convertLink (state: StateCore) {
     const fileName = basename(attrVal)
 
     if (token.tag === 'a') {
-      // md 文件不替换
+      // keep markdown file.
       if (fileName.endsWith('.md')) {
         return
       }
 
-      // 路径中有 hash 不替换
+      // keep anchor hash.
       if (attrVal.indexOf('#') > -1) {
         return
       }

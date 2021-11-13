@@ -11,26 +11,28 @@ import store from '@fe/support/store'
 import * as api from '@fe/support/api'
 import { refreshTree } from '@fe/services/tree'
 import { buildSrc, IFrame } from '@fe/support/embed'
-import Mask from '@fe/components/Mask.vue'
+import { getCurrentLanguage, t, useI18n } from '@fe/services/i18n'
 import { FLAG_DEMO } from '@fe/support/args'
+import Mask from '@fe/components/Mask.vue'
 
 const logger = getLogger('plugin-markdown-luckysheet')
 
 const fileExt = '.luckysheet'
 
 function buildSrcdoc (repo: string, path: string, full: boolean) {
-  const options = { container: 'lucky-sheet', lang: 'zh', plugins: ['chart'], showtoolbarConfig: { print: false } }
+  const lang = getCurrentLanguage() === 'zh-CN' ? 'zh' : 'en'
+  const options = { container: 'lucky-sheet', lang, plugins: ['chart'], showtoolbarConfig: { print: false } }
   let onload = ''
 
   if (full) {
     onload = `
       const btn = document.createElement('button');
-      btn.style = 'border: 0; background: #666; cursor: pointer; margin-left: 10px; color: #fff; padding: 4px 8px;';
-      btn.innerText = '保存'
+      btn.style = 'border-radius: 4px;border: 0; background: #d3d4d5; cursor: pointer; margin-left: 10px; color: #24292f; padding: 4px 8px;';
+      btn.innerText = '${t('save')}'
       btn.onclick = save
       document.querySelector('.luckysheet_info_detail .sheet-name').after(btn)
       document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_update').innerText = '${path}'
-      setStatus('加载完毕')
+      setStatus('${t('file-status.loaded')}')
 
       ${isElectron
         ? `
@@ -49,8 +51,8 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
             let result = remote.dialog.showMessageBoxSync({
               type: 'question',
               cancelId: 1,
-              message: '文档未保存，确定要关闭吗？',
-              buttons: ['关闭', '取消']
+              message: '${t('quit-check-dialog.desc')}',
+              buttons: ['${t('quit-check-dialog.buttons.discard')}', '${t('quit-check-dialog.buttons.cancel')}']
             })
 
             if (result === 0) {
@@ -122,7 +124,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
     <script>
       window.getStatus = () => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText
       window.setStatus = str => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = str
-      window.saved = () => getStatus().startsWith('保存于') || getStatus() === '加载完毕'
+      window.saved = () => getStatus().startsWith('${t('lucky-sheet.saved-at')}') || getStatus() === '${t('file-status.loaded')}'
 
       async function fetchHttp (input, init) {
         const response = await fetch(input, init)
@@ -172,12 +174,12 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
 
       async function save () {
         try {
-          setStatus('保存中……')
+          setStatus('${t('file-status.saving')}...')
           await writeFile(repo, path, JSON.stringify(window.luckysheet.getAllSheets()))
-          setStatus('保存于：' + (new Date()).toLocaleString())
+          setStatus('${t('lucky-sheet.saved-at')}: ' + (new Date()).toLocaleString())
           await readFile(repo, path)
         } catch (error) {
-          setStatus('保存失败：' + error.message)
+          setStatus('${t('file-status.save-failed')}: ' + error.message)
         }
       }
 
@@ -186,7 +188,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
         options.hook = {
           workbookCreateAfter,
           updated () {
-            setStatus('未保存')
+            setStatus('${t('file-status.unsaved')}')
           }
         }
 
@@ -209,6 +211,9 @@ const LuckyComponent = defineComponent({
   },
   setup (props) {
     logger.debug('setup', props)
+
+    useI18n()
+
     const srcdoc = ref('')
     const refIFrame = ref<any>()
     const refFullIFrame = ref<any>()
@@ -231,7 +236,7 @@ const LuckyComponent = defineComponent({
         refFullIFrame.value.close()
         fullScreen.value = false
       } catch {
-        if (await useModal().confirm({ title: '未保存文件', content: '是否要关闭？' })) {
+        if (await useModal().confirm({ title: t('quit-check-dialog.title'), content: t('quit-check-dialog.desc') })) {
           fullScreen.value = false
         }
       }
@@ -243,7 +248,7 @@ const LuckyComponent = defineComponent({
       watch([refFullIFrame, refIFrame], () => {
         if (refIFrame.value) {
           refIFrame.value.reload = () => {
-            useToast().show('warning', 'DEMO 模式该功能不可用')
+            useToast().show('warning', t('demo-tips'))
           }
         }
 
@@ -254,7 +259,7 @@ const LuckyComponent = defineComponent({
     }
 
     const button = (text: string, onClick: any) => h('button', {
-      style: 'margin-left: 5px;font-size: 14px;background: #cacaca; border: 0; padding: 0 6px; color: #2c2b2b; cursor: pointer; border-radius: 4px; transition: all .1s ease-in-out; line-height: 24px;',
+      class: 'small',
       onClick
     }, text)
 
@@ -282,9 +287,9 @@ const LuckyComponent = defineComponent({
           'div',
           {
             class: 'no-print',
-            style: 'position: absolute; right: 15px; margin-top: 15px; z-index: 1;'
+            style: 'position: absolute; right: 10px; margin-top: 15px; z-index: 1;'
           },
-          button('关闭', close),
+          button(t('close'), close),
         ),
         buildIFrame(true),
       ]),
@@ -294,14 +299,14 @@ const LuckyComponent = defineComponent({
           'div',
           {
             class: 'no-print',
-            style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
+            style: 'position: absolute; right: 10px; top: 3px; z-index: 1;'
           },
           [
-            button('编辑', open),
-            button('重载', reload),
-            button('新窗口编辑', () => {
+            button(t('edit'), open),
+            button(t('reload'), reload),
+            button(t('open-in-new-window'), () => {
               const html = buildSrcdoc(props.repo!, props.path!, true)
-              openWindow(buildSrc(html, '编辑表格', false), '_blank', { alwaysOnTop: false })
+              openWindow(buildSrc(html, t('lucky-sheet.edit-sheet'), false), '_blank', { alwaysOnTop: false })
             }),
           ]
         ),
@@ -345,9 +350,9 @@ async function createLuckysheet (node: Doc) {
   const currentPath = node.path
 
   let filename = await useModal().input({
-    title: '创建 Luckysheet 文件',
-    hint: '文件路径',
-    content: '当前路径：' + currentPath,
+    title: t('lucky-sheet.create-dialog-title'),
+    hint: t('document.create-dialog.hint'),
+    content: t('document.current-path', currentPath),
     value: 'new-sheet' + fileExt,
     select: true
   })
@@ -363,7 +368,7 @@ async function createLuckysheet (node: Doc) {
   const path = join(currentPath, filename)
 
   if (!path) {
-    throw new Error('需要传入文件路径')
+    throw new Error('Need Path')
   }
 
   const file: Doc = { repo: node.repo, path: path, type: 'file', name: '', contentHash: 'new' }
@@ -431,7 +436,7 @@ export default {
     ctx.registerHook('TREE_NODE_SELECT', async ({ node }) => {
       if (node.path.toLowerCase().endsWith(fileExt)) {
         const srcdoc = buildSrcdoc(node.repo, node.path, true)
-        openWindow(buildSrc(srcdoc, '编辑表格', false), '_blank', { alwaysOnTop: false })
+        openWindow(buildSrc(srcdoc, t('lucky-sheet.edit-sheet'), false), '_blank', { alwaysOnTop: false })
 
         return true
       }
@@ -446,7 +451,7 @@ export default {
           {
             id: 'create-luckysheet',
             type: 'normal',
-            label: '创建 Luckysheet 文件',
+            label: t('lucky-sheet.create-dialog-title'),
             onClick: () => createLuckysheet(node)
           }
         )

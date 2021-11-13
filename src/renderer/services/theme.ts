@@ -3,8 +3,8 @@ import type { ThemeName } from '@fe/types'
 import * as storage from '@fe/utils/storage'
 
 /**
- * 获取当前主题设置
- * @returns 主题名
+ * Get current theme name.
+ * @returns
  */
 export function getThemeName () {
   const theme = document.documentElement.getAttribute('app-theme')
@@ -17,8 +17,8 @@ export function getThemeName () {
 }
 
 /**
- * 获取当前色彩方案
- * @returns 色彩方案
+ * Get current color schema.
+ * @returns
  */
 export function getColorScheme () {
   const theme = getThemeName()
@@ -31,8 +31,8 @@ export function getColorScheme () {
 }
 
 /**
- * 设置主题
- * @param name 主题名
+ * Set theme.
+ * @param name
  */
 export function setTheme (name: ThemeName) {
   document.documentElement.setAttribute('app-theme', name)
@@ -41,8 +41,8 @@ export function setTheme (name: ThemeName) {
 }
 
 /**
- * 给网页添加样式
- * @param style 样式
+ * Add styles to page.
+ * @param style
  */
 export function addStyles (style: string) {
   const css = document.createElement('style')

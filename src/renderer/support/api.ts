@@ -26,11 +26,11 @@ async function fetchHttp (input: RequestInfo, init?: RequestInit) {
 }
 
 /**
- * 代理请求，用于涉及跨域请求的地方
+ * Proxy request.
  * @param url URL
- * @param reqOptions 请求参数
- * @param usePost 是否使用 post 请求发送此次代理请求
- * @returns 响应
+ * @param reqOptions
+ * @param usePost
+ * @returns
  */
 export function proxyRequest (url: string, reqOptions: Record<string, any> = {}, usePost = false) {
   if (usePost) {
@@ -49,9 +49,9 @@ export function proxyRequest (url: string, reqOptions: Record<string, any> = {},
 }
 
 /**
- * 获取帮助文档
- * @param docName 文档名
- * @returns 文档内容
+ * Fetch help file content.
+ * @param docName
+ * @returns
  */
 async function fetchHelpContent (docName: string) {
   const result = await fetchHttp('/api/help?doc=' + docName)
@@ -59,9 +59,9 @@ async function fetchHelpContent (docName: string) {
 }
 
 /**
- * 读取一个文件
- * @param file 文件
- * @returns 文件内容
+ * Read a file.
+ * @param file
+ * @returns
  */
 export async function readFile (file: PathItem) {
   const { path, repo } = file
@@ -78,10 +78,10 @@ export async function readFile (file: PathItem) {
 }
 
 /**
- * 写入一个文件
- * @param file 文件
- * @param content 文件内容
- * @returns 写入结果
+ * Write content to a file.
+ * @param file
+ * @param content
+ * @returns
  */
 export async function writeFile (file: Doc, content: string) {
   const { repo, path, contentHash } = file
@@ -95,9 +95,9 @@ export async function writeFile (file: Doc, content: string) {
 }
 
 /**
- * 移动一个文件或目录
- * @param file 文件或目录
- * @param newPath 新的路径
+ * Move / Remove a file or dir.
+ * @param file
+ * @param newPath
  * @returns
  */
 export async function moveFile (file: FileItem, newPath: string): Promise<ApiResult<any>> {
@@ -110,8 +110,8 @@ export async function moveFile (file: FileItem, newPath: string): Promise<ApiRes
 }
 
 /**
- * 删除一个文件或目录
- * @param file 文件或目录
+ * Delete a file or dir.
+ * @param file
  * @returns
  */
 export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
@@ -120,8 +120,8 @@ export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
 }
 
 /**
- * 标记一个文件
- * @param file 文件
+ * Mark a file.
+ * @param file
  * @returns
  */
 export async function markFile (file: FileItem): Promise<ApiResult<any>> {
@@ -130,8 +130,8 @@ export async function markFile (file: FileItem): Promise<ApiResult<any>> {
 }
 
 /**
- * 取消标记文件
- * @param file 文件
+ * Unmark a file.
+ * @param file
  * @returns
  */
 export async function unmarkFile (file: FileItem): Promise<ApiResult<any>> {
@@ -140,8 +140,8 @@ export async function unmarkFile (file: FileItem): Promise<ApiResult<any>> {
 }
 
 /**
- * 获取标记的文件
- * @returns 标记的文件
+ * Fetch marked files.
+ * @returns
  */
 export async function fetchMarkedFiles (): Promise<FileItem[]> {
   const { data } = await fetchHttp('/api/mark')
@@ -149,9 +149,9 @@ export async function fetchMarkedFiles (): Promise<FileItem[]> {
 }
 
 /**
- * 获取一个仓库的目录树
- * @param repo 仓库名
- * @returns 目录树
+ * Fetch file tree from a repository.
+ * @param repo
+ * @returns
  */
 export async function fetchTree (repo: string): Promise<Components.Tree.Node[]> {
   const result = await fetchHttp(`/api/tree?repo=${repo}`)
@@ -159,8 +159,8 @@ export async function fetchTree (repo: string): Promise<Components.Tree.Node[]> 
 }
 
 /**
- * 获取仓库列表
- * @returns 仓库列表
+ * Fetch repositories.
+ * @returns
  */
 export async function fetchRepositories () {
   const result = await fetchHttp('/api/repositories')
@@ -168,8 +168,8 @@ export async function fetchRepositories () {
 }
 
 /**
- * 获取配置信息
- * @returns 配置
+ * Fetch settings.
+ * @returns
  */
 export async function fetchSettings (): Promise<Record<string, any>> {
   const result = await fetchHttp('/api/settings')
@@ -177,8 +177,8 @@ export async function fetchSettings (): Promise<Record<string, any>> {
 }
 
 /**
- * 写入配置信息
- * @param data 配置信息
+ * Write settings.
+ * @param data
  * @returns
  */
 export async function writeSettings (data: Record<string, any>): Promise<ApiResult<any>> {
@@ -190,9 +190,9 @@ export async function writeSettings (data: Record<string, any>): Promise<ApiResu
 }
 
 /**
- * 调起应用选择一个路径
- * @param options 参数
- * @returns 选择结果
+ * Launch app to choose a path.
+ * @param options
+ * @returns
  */
 export async function choosePath (options: Record<string, any>): Promise<{ canceled: boolean; filePaths: string[] }> {
   const from = isElectron ? 'electron' : 'browser'
@@ -206,10 +206,10 @@ export async function choosePath (options: Record<string, any>): Promise<{ cance
 }
 
 /**
- * 在一个仓库中搜索
- * @param repo 仓库名
- * @param text 搜索文本
- * @returns 搜索结果
+ * Search in a repository.
+ * @param repo
+ * @param text
+ * @returns
  */
 export async function search (repo: string, text: string): Promise<Pick<Doc, 'repo' | 'type' | 'path' | 'name'>> {
   const result = await fetchHttp(`/api/search?repo=${repo}&search=${encodeURIComponent(text)}`)
@@ -217,10 +217,10 @@ export async function search (repo: string, text: string): Promise<Pick<Doc, 're
 }
 
 /**
- * 上传文件
- * @param repo 仓库名
- * @param fileBase64Url 文件的 Base64 数据
- * @param filePath 上传到的路径
+ * Upload file.
+ * @param repo
+ * @param fileBase64Url
+ * @param filePath
  */
 export async function upload (repo: string, fileBase64Url: string, filePath: string): Promise<ApiResult<any>> {
   const formData = new FormData()
@@ -232,8 +232,8 @@ export async function upload (repo: string, fileBase64Url: string, filePath: str
 }
 
 /**
- * 在操作系统中打开
- * @param file 文件或目录
+ * Open file in OS.
+ * @param file
  * @returns
  */
 export async function openInOS (file: FileItem): Promise<ApiResult<any>> {
@@ -242,11 +242,11 @@ export async function openInOS (file: FileItem): Promise<ApiResult<any>> {
 }
 
 /**
- * 写入一个临时文件
- * @param name 临时文件名
- * @param data 数据
- * @param asBase64 是否作为 Base64 传输数据
- * @returns 写入结果
+ * Write temporary file.
+ * @param name
+ * @param data
+ * @param asBase64
+ * @returns
  */
 export async function writeTmpFile (name: string, data: string, asBase64 = false): Promise<ApiResult<{ path: string }>> {
   return fetchHttp(
@@ -256,17 +256,17 @@ export async function writeTmpFile (name: string, data: string, asBase64 = false
 }
 
 /**
- * 读取一个临时文件
- * @param name 临时文件名
- * @returns 数据
+ * Read temporary file.
+ * @param name
+ * @returns
  */
 export async function readTmpFile (name: string): Promise<Response> {
   return fetchHttp(`/api/tmp-file?name=${encodeURIComponent(name)}`)
 }
 
 /**
- * 删除一个临时文件
- * @param name 临时文件名
+ * Remove temporary file.
+ * @param name
  * @returns
  */
 export async function deleteTmpFile (name: string): Promise<ApiResult<any>> {
@@ -277,11 +277,11 @@ export async function deleteTmpFile (name: string): Promise<ApiResult<any>> {
 }
 
 /**
- * 运行一段代码
- * @param language 语言
- * @param code 代码
- * @param callback 回调
- * @returns 运行结果（Js 无运行结果）
+ * Run code.
+ * @param language
+ * @param code
+ * @param callback
+ * @returns result (javascript no result)
  */
 export async function runCode (language: string, code: string, callback?: { name: string, handler: (res: string) => void }): Promise<string> {
   if (['js', 'javascript'].includes(language.toLowerCase())) {

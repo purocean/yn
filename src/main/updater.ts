@@ -5,13 +5,13 @@ import ProgressBar from 'electron-progressbar'
 import opn from 'opn'
 import store from './storage'
 import { GITHUB_URL } from './constant'
+import { $t } from './i18n'
 
 logger.transports.file.level = 'info'
 autoUpdater.logger = logger
 
 let progressBar: any = null
 
-// 否是从微软应用商店安装，简单的判断路径中是否包含 WindowsApps
 const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
 const disabled = isAppx || process.mas
 
@@ -27,16 +27,21 @@ const init = (call: () => void) => {
     const { response } = await dialog.showMessageBox({
       cancelId: 999,
       type: 'question',
-      buttons: ['下载更新', '查看更新内容', '取消', '不再提醒'],
-      title: 'Yank Note 发现新版本',
-      message: `当前版本 ${app.getVersion()}\n最新版本：${info.version}`
+      title: $t('app.updater.found-dialog.title'),
+      message: $t('app.updater.found-dialog.desc', app.getVersion(), info.version),
+      buttons: [
+        $t('app.updater.found-dialog.buttons.download'),
+        $t('app.updater.found-dialog.buttons.view-changes'),
+        $t('app.updater.found-dialog.buttons.cancel'),
+        $t('app.updater.found-dialog.buttons.ignore')
+      ],
     })
 
     if (response === 0) {
       progressBar = new ProgressBar({
-        title: 'Yank Note 下载更新',
+        title: $t('app.updater.progress-bar.title'),
         text: `${info.version}`,
-        detail: '正在下载新版本 ',
+        detail: $t('app.updater.progress-bar.detail'),
         indeterminate: false,
         closeOnComplete: false,
         browserWindow: {
@@ -53,7 +58,7 @@ const init = (call: () => void) => {
         if (e.message !== 'Cancelled') {
           dialog.showMessageBox({
             type: 'info',
-            title: 'Yank Note 出现一点错误',
+            title: $t('app.updater.failed-dialog.title'),
             message: e.message,
           })
         }
@@ -72,7 +77,7 @@ const init = (call: () => void) => {
 
   autoUpdater.on('error', e => {
     try {
-      progressBar && (progressBar.detail = '下载失败： ' + e)
+      progressBar && (progressBar.detail = $t('app.updater.progress-bar.failed', e.toString()))
     } catch (error) {
       console.error(error)
     }
@@ -81,7 +86,7 @@ const init = (call: () => void) => {
   autoUpdater.on('download-progress', e => {
     if (progressBar) {
       progressBar.value = e.percent
-      progressBar.detail = '下载中…… ' + e.percent.toFixed(2) + '%'
+      progressBar.detail = $t('app.updater.progress-bar.detail', e.percent.toFixed(2) + '%')
     }
   })
 
@@ -91,10 +96,13 @@ const init = (call: () => void) => {
     dialog.showMessageBox({
       cancelId: 999,
       type: 'question',
-      title: 'Yank Note 下载完成',
-      buttons: ['立即安装', '推迟'],
+      title: $t('app.updater.install-dialog.title'),
+      message: $t('app.updater.install-dialog.desc'),
+      buttons: [
+        $t('app.updater.install-dialog.buttons.install'),
+        $t('app.updater.install-dialog.buttons.delay')
+      ],
       defaultId: 0,
-      message: '新版本下载完成，是否要立即安装？'
     }).then(result => {
       if (result.response === 0) {
         setTimeout(() => {
@@ -115,8 +123,8 @@ export function checkForUpdates () {
   autoUpdater.once('update-not-available', () => {
     dialog.showMessageBox({
       type: 'info',
-      title: 'Yank Note 无新版本',
-      message: '当前已经是最新版本',
+      title: $t('app.updater.no-newer-dialog.title'),
+      message: $t('app.updater.no-newer-dialog.desc'),
     })
   })
 
@@ -135,7 +143,6 @@ export function autoCheckForUpdates () {
 
 app.whenReady().then(() => {
   init(() => {
-    // 立即升级，退出程序
     setTimeout(() => {
       app.exit(0)
     }, process.platform === 'darwin' ? 3500 : 0)

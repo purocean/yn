@@ -27,7 +27,7 @@ export default {
       ctx.storage.set(STORAGE_KEY, data)
     }
 
-    // 切换文件后恢复滚动位置
+    // restore scroll bar location after file switched.
     ctx.registerHook('DOC_SWITCHED', async ({ doc }) => {
       if (doc) {
         await sleep(0)

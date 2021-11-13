@@ -9,8 +9,8 @@ export interface Instance extends ComponentPublicInstance {
 let instance: Instance
 
 /**
- * 获取一个 Toast 实例
- * @returns Toast 实例
+ * Get toast instance.
+ * @returns instance
  */
 export function useToast (): Instance {
   return instance

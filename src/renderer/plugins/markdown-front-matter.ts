@@ -24,18 +24,23 @@ export default {
 
         logger.debug('render', bodyBegin, attributes)
 
-        Object.assign(env, { bodyBegin, attributes })
+        Object.assign(env, { bodyBegin, attributes, _front_matter_exec_flag: false })
         return render.call(md, src, env)
       }
 
       const firstRule = (md.block.ruler as any).__rules__[0]
       md.block.ruler.before(firstRule.name, 'front-matter', (state, startLine) => {
+        if (state.env?._front_matter_exec_flag) {
+          return false
+        }
+
         const bodyBegin = state.env?.bodyBegin || 0
         if (startLine >= bodyBegin) {
           return false
         }
 
         state.line = bodyBegin
+        state.env._front_matter_exec_flag = true
         return true
       })
     })

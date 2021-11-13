@@ -28,15 +28,15 @@ async function pasteHtml (html: string) {
 async function pasteImage (file: File, asBase64: boolean) {
   if (asBase64) {
     const uri = await fileToBase64URL(file)
-    insert(`![图片](${uri})\n`)
+    insert(`![Img](${uri})\n`)
   } else {
     if (!store.state.currentFile) {
-      throw new Error('当前未打开文件')
+      throw new Error('No file opened.')
     }
 
     if (!(await triggerHook('EDITOR_PASTE_IMAGE', { file }, { breakable: true }))) {
       const assetPath = await upload(file, store.state.currentFile)
-      insert(`![图片](${encodeMarkdownLink(assetPath)})\n`)
+      insert(`![Img](${encodeMarkdownLink(assetPath)})\n`)
     }
 
     refreshTree()
@@ -49,7 +49,7 @@ function paste (e: ClipboardEvent) {
   }
 
   const items = e.clipboardData!.items
-  if (keys.d || keys.D) { // 粘贴 HTML 转为 markdown
+  if (keys.d || keys.D) { // covert RFT to markdown
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.match(HTML_REG)) {
         items[i].getAsString(pasteHtml)
@@ -62,7 +62,7 @@ function paste (e: ClipboardEvent) {
     for (let i = 0; i < items.length; i++) {
       const fileType = items[i].type
       if (fileType.match(IMAGE_REG)) {
-        const asBase64 = keys.b || keys.B // 粘贴的同时 按下了 B 键，就粘贴 base64 图像
+        const asBase64 = keys.b || keys.B // press key b, paste image as base64
         pasteImage(items[i].getAsFile()!, asBase64)
       }
     }
@@ -83,7 +83,7 @@ export default {
       const result = await navigator.permissions.query({ name: 'clipboard-read' as any })
 
       if (result.state === 'denied') {
-        ctx.ui.useToast().show('warning', '请授予剪切板权限')
+        ctx.ui.useToast().show('warning', ctx.i18n.t('need-clipboard-permission'))
         return
       }
 
@@ -123,14 +123,14 @@ export default {
         {
           id: pasteRtfActionId,
           type: 'normal',
-          title: '粘贴富文本',
+          title: ctx.i18n.t('status-bar.tool.paste-rft'),
           subTitle: 'Markdown',
           onClick: pasteRtf
         },
         {
           id: pasteImageAsBase64ActionId,
           type: 'normal',
-          title: '粘贴图片',
+          title: ctx.i18n.t('status-bar.tool.paste-img-base64'),
           subTitle: 'Base64',
           onClick: () => {
             pasteImageFromClipboard(true)
@@ -142,7 +142,7 @@ export default {
     ctx.editor.whenEditorReady().then(({ editor }) => {
       editor.addAction({
         id: 'plugin.editor-paste.insert-image',
-        label: '粘贴图片',
+        label: ctx.i18n.t('editor.context-menu.paste-image'),
         contextMenuGroupId: 'clipboard',
         contextMenuOrder: 1,
         run: async () => {
@@ -152,7 +152,7 @@ export default {
 
       editor.addAction({
         id: pasteImageAsBase64ActionId,
-        label: '粘贴图片为 Base64',
+        label: ctx.i18n.t('editor.context-menu.paste-image-as-base64'),
         contextMenuGroupId: 'clipboard',
         contextMenuOrder: 2,
         run: () => {
@@ -162,7 +162,7 @@ export default {
 
       editor.addAction({
         id: pasteRtfActionId,
-        label: '粘贴富文本为 Markdown',
+        label: ctx.i18n.t('editor.context-menu.paste-rtf-as-markdown'),
         contextMenuGroupId: 'clipboard',
         contextMenuOrder: 3,
         run: pasteRtf,

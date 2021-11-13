@@ -32,7 +32,7 @@ const get = (key: string, defaultVal: any = null) => {
   const config = getAll()
 
   if (config[key] === undefined) {
-    set(key, defaultVal) // 写入默认值到配置文件
+    set(key, defaultVal) // write default value to config file.
     return defaultVal
   }
 

@@ -12,17 +12,17 @@ export type BuildContextMenu = (items: MenuItem[], node: Components.Tree.Node, v
 const contextMenuFunList: BuildContextMenu[] = []
 
 /**
- * 添加一个上下文菜单处理方法
- * @param fun 处理方法
+ * Add a context menu processor.
+ * @param fun
  */
 export function tapContextMenus (fun: BuildContextMenu) {
   contextMenuFunList.push(fun)
 }
 
 /**
- * 获取上下文菜单
- * @param node 节点
- * @param vueCtx Vue 上下文
+ * Get context menus
+ * @param node
+ * @param vueCtx
  * @returns
  */
 export function getContextMenuItems (node: Components.Tree.Node, vueCtx: VueCtx) {
@@ -36,12 +36,12 @@ export function getContextMenuItems (node: Components.Tree.Node, vueCtx: VueCtx)
 }
 
 /**
- * 刷新目录树
+ * Refresh file tree.
  */
 export async function refreshTree () {
   const repo = store.state.currentRepo
   if (!repo) {
-    console.warn('未选择仓库')
+    console.warn('No repo')
     return
   }
 
@@ -54,7 +54,7 @@ export async function refreshTree () {
 }
 
 /**
- * 刷新仓库
+ * Refresh repositories.
  */
 export async function refreshRepo () {
   refreshTree()

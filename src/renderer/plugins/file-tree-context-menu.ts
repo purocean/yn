@@ -29,31 +29,33 @@ export default {
         ? ['duplicate', 'create', 'rename', 'delete', 'openInTerminal', 'create']
         : []
 
+      const t = ctx.i18n.t
+
       items.push(...[
         ...(isMarkdown ? [
-          { id: 'mark', label: node.marked ? '取消标记' : '标记文件', onClick: () => toggleMark() },
+          { id: 'mark', label: node.marked ? t('tree.context-menu.unmark') : t('tree.context-menu.mark'), onClick: () => toggleMark() },
         ] : []),
         ...(isMarkdown && !ctx.doc.isEncrypted(node) ? [
-          { id: 'duplicate', label: '重复文件', onClick: () => ctx.doc.duplicateDoc(node) },
+          { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node) },
         ] : []),
         ...(node.type === 'dir' ? [
-          { id: 'create', label: '创建新文件', onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
+          { id: 'create', label: t('tree.context-menu.create'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
         ] : []),
         ...(node.path !== '/' ? [
-          { id: 'rename', label: '重命名 / 移动', onClick: () => ctx.doc.moveDoc(node) },
-          { id: 'delete', label: '删除', onClick: () => ctx.doc.deleteDoc(node) },
+          { id: 'rename', label: t('tree.context-menu.rename'), onClick: () => ctx.doc.moveDoc(node) },
+          { id: 'delete', label: t('tree.context-menu.delete'), onClick: () => ctx.doc.deleteDoc(node) },
         ] : []),
         { type: 'separator' },
-        { id: 'openInOS', label: '在系统中打开', onClick: () => ctx.doc.openInOS(node) },
-        { id: 'refreshTree', label: '刷新目录树', onClick: () => ctx.tree.refreshTree() },
+        { id: 'open-in-os', label: t('tree.context-menu.open-in-os'), onClick: () => ctx.doc.openInOS(node) },
+        { id: 'refresh', label: t('tree.context-menu.refresh'), onClick: () => ctx.tree.refreshTree() },
         ...(node.type === 'dir' && !FLAG_DISABLE_XTERM ? [
-          { id: 'openInTerminal', label: '在终端中打开', onClick: revealInXterminal }
+          { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: revealInXterminal }
         ] : []),
         ...(isMarkdown ? [
-          { id: 'create', label: '当前目录创建新文件', onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
+          { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
         ] : []),
-        { id: 'copy-name', label: '复制名称', onClick: () => ctx.utils.copyText(node.name) },
-        { id: 'copy-name', label: '复制路径', onClick: () => ctx.utils.copyText(node.path) }
+        { id: 'copy-name', label: t('tree.context-menu.copy-name'), onClick: () => ctx.utils.copyText(node.name) },
+        { id: 'copy-path', label: t('tree.context-menu.copy-path'), onClick: () => ctx.utils.copyText(node.path) }
       ].filter(x => (!x.id || !disableItems.includes(x.id))) as typeof items)
     })
   }
