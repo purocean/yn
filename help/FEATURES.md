@@ -456,7 +456,7 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 - 限定符转义: <= (1 <\= 3) ? 'result =\> true' : 'result =\> false' =>
 - 四则运算: <= (1 + 2) / 2 =>
 - 引用文件（暂不支持嵌套宏指令，可使用目标文档中定义的 Front Matter 变量)
-    <= $include('./_FRAGMENT.md') =>
+    > <= $include('./_FRAGMENT.md', true) =>
 - 被引用文档中定义的变量：<= customVarFromOtherDoc =>
 - 你的 IP 地址：<= fetch('https://ifconfig.me/ip').then(r =\> r.text()) =>
 - 天气预报
@@ -487,7 +487,7 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 变量名 | 类型 | 描述
 ---- | ----- | ---
 `$ctx` | object | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/context.html)
-`$include` | function | 引入其他文档片段方法
+`$include` | (path: string, trim = false) => Result | 引入其他文档片段方法
 `$doc` | object | 当前文档信息
 `$doc.basename` | string | 当前文档文件名（无后缀）
 `$doc.name` | string | 当前文档文件名

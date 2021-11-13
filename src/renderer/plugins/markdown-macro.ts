@@ -76,7 +76,7 @@ function lineCount (str: string) {
   return s
 }
 
-async function include (belongDoc: Doc | undefined | null, path: string): Promise<Result> {
+async function include (belongDoc: Doc | undefined | null, path: string, trim = false): Promise<Result> {
   if (!belongDoc) {
     throw new Error('Current document is null')
   }
@@ -92,7 +92,7 @@ async function include (belongDoc: Doc | undefined | null, path: string): Promis
       Object.assign(vars, fm.attributes)
     }
 
-    return { __macroResult: true, vars, toString: () => fm.body }
+    return { __macroResult: true, vars, toString: () => trim ? fm.body.trim() : fm.body }
   } catch (error: any) {
     return error.message
   }
