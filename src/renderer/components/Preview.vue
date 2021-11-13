@@ -210,9 +210,9 @@ export default defineComponent({
 
     function refresh () {
       logger.debug('refresh')
-      triggerHook('VIEW_REFRESH', { getViewDom })
+      triggerHook('VIEW_BEFORE_REFRESH', { getViewDom })
       renderDebonce()
-      triggerHook('VIEW_REFRESH', { getViewDom })
+      triggerHook('VIEW_AFTER_REFRESH', { getViewDom })
     }
 
     onMounted(() => {

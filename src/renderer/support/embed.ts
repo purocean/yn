@@ -55,12 +55,12 @@ export const IFrame = defineComponent({
     }
 
     registerHook('THEME_CHANGE', changeTheme)
-    registerHook('VIEW_REFRESH', refresh)
+    registerHook('VIEW_AFTER_REFRESH', refresh)
     registerHook('VIEW_FILE_CHANGE', refresh)
 
     onBeforeUnmount(() => {
       removeHook('THEME_CHANGE', changeTheme)
-      removeHook('VIEW_REFRESH', refresh)
+      removeHook('VIEW_AFTER_REFRESH', refresh)
       removeHook('VIEW_FILE_CHANGE', refresh)
     })
 
