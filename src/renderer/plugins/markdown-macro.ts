@@ -182,6 +182,9 @@ export default {
           return match
         })
 
+        state.env.originSource = state.env.source
+        state.env.source = state.src
+
         return false
       })
     })
