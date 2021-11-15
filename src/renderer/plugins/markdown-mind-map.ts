@@ -66,9 +66,7 @@ const buildSrcdoc = (json: string, btns: string) => {
   `
 }
 
-const render = async (ele: HTMLElement, content: string) => {
-  const code = (content || '').trim()
-
+const init = (ele: HTMLElement) => {
   const div = document.createElement('div')
   div.setAttribute('minder-data-type', 'text')
   div.style.position = 'relative'
@@ -81,17 +79,15 @@ const render = async (ele: HTMLElement, content: string) => {
   km.focus = () => 0
   km.setup(div)
   km.disable()
-  try {
-    await km.importData('text', code)
-    km.useTemplate(storage.get(layoutStorageKey, 'default'))
-  } catch (error) {
-    await km.importData('text', t('mind-map.convert-error'))
-    km.useTemplate('structure')
+  km.setOption('defaultTheme', 'fresh-green-compat')
+  km.setTemplate(storage.get(layoutStorageKey, 'default'))
+  // origin enableAnimation has bug not work.
+  km.enableAnimation = function () {
+    km.setOption('enableAnimation', true)
+    km.setOption('layoutAnimationDuration', 300)
+    km.setOption('viewAnimationDuration', 100)
+    km.setOption('zoomAnimationDuration', 300)
   }
-
-  km.execCommand('hand')
-  km.useTheme('fresh-green-compat')
-  km.execCommand('camera')
 
   const switchLayout = () => {
     const tplList = ['default', 'right', 'structure', 'filetree', 'tianpan', 'fish-bone']
@@ -169,6 +165,31 @@ const render = async (ele: HTMLElement, content: string) => {
   action.appendChild(buildButton('KM', () => exportData('km')))
 
   div.appendChild(action)
+
+  return km
+}
+
+const render = async (km: any, content: string) => {
+  const code = (content || '').trim()
+
+  try {
+    const setTemplate = km.setTemplate
+    // hack for avoid auto set template
+    km.setTemplate = () => 0
+
+    km.disableAnimation()
+    await km.importData('text', code)
+    km.enableAnimation()
+
+    // recover setTemplate
+    km.setTemplate = setTemplate
+  } catch (error) {
+    await km.importData('text', t('mind-map.convert-error'))
+    km.useTemplate('structure')
+  }
+
+  km.execCommand('hand')
+  km.execCommand('camera')
 }
 
 const MindMap = defineComponent({
@@ -182,9 +203,18 @@ const MindMap = defineComponent({
   setup (props) {
     const container = ref<HTMLElement>()
 
+    let km: any = null
     const renderMindMap = debounce(() => {
-      container.value && render(container.value, props.content)
-    }, 1000, { leading: true })
+      if (!container.value) {
+        return
+      }
+
+      if (!km) {
+        km = init(container.value)
+      }
+
+      render(km, props.content)
+    }, 200, { leading: true })
 
     watch(() => props.content, renderMindMap)
 
@@ -199,14 +229,12 @@ const MindMap = defineComponent({
   }
 })
 
-const renderRule: Renderer.RenderRule = (tokens, idx, options, { source }, slf) => {
+const renderRule: Renderer.RenderRule = (tokens, idx, options, { bMarks, source }, slf) => {
   const token = tokens[idx]
   const nextToken = tokens[idx + 1]
   if (token.level === 0 && token.map && nextToken && nextToken.attrGet('class')?.includes('mindmap')) {
     const content = source
-      .split('\n')
-      .slice(token.map[0], token.map[1])
-      .join('\n')
+      .substring(bMarks[token.map[0]], bMarks[token.map[1]])
       .replace(/\{.mindmap[^}]*\}/gm, '')
       .replace(/^(\s*)([+-]*|\d+.) /gm, '$1')
 

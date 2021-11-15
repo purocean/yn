@@ -1,10 +1,10 @@
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import { CONFIG_FILE } from './constant'
 
 const configFile = CONFIG_FILE
 
 const writeJson = (data: any) => {
-  fs.writeFileSync(configFile, JSON.stringify(data, null, 4), 'utf8')
+  fs.writeJson(configFile, data, { spaces: 4 })
 }
 
 const readJson = () => {
