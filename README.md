@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.11.4](https://github.com/purocean/yn/releases/tag/v3.11.4) 2021-11-15
+### [v3.11.5](https://github.com/purocean/yn/releases/tag/v3.11.5) 2021-11-15
 1. upd(mindmap): optimize the user experience
 2. fix(main): fix startup crash when config.json is not exist
 
