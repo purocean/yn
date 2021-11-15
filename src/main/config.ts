@@ -4,6 +4,7 @@ import { CONFIG_FILE } from './constant'
 const configFile = CONFIG_FILE
 
 const writeJson = (data: any) => {
+  fs.ensureFileSync(configFile)
   fs.writeJson(configFile, data, { spaces: 4 })
 }
 
