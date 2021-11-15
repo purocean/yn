@@ -88,6 +88,13 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
+### [v3.11.4](https://github.com/purocean/yn/releases/tag/v3.11.4) 2021-11-15
+1. upd(mindmap): optimize the user experience
+2. fix(main): fix startup crash when config.json is not exist
+
+<details>
+<summary>展开查看更多版本记录</summary>
+
 ### [v3.11.3](https://github.com/purocean/yn/releases/tag/v3.11.3) 2021-11-13
 1. Add English language.
 2. Macro definition supports asynchronous expressions.
@@ -102,9 +109,6 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
          - `SETTING_FETCHED`
          - `SETTING_BEFORE_WRITE`
          - `VIEW_BEFORE_REFRESH`
-
-<details>
-<summary>展开查看更多版本记录</summary>
 
 ### [v3.10.3](https://github.com/purocean/yn/releases/tag/v3.10.3) 2021-11-10
 1. 修复长时间运行命令导致主进程阻塞问题
