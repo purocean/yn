@@ -1,94 +1,149 @@
-import { h } from 'vue'
+import { defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import Markdown from 'markdown-it'
-import { Plugin } from '@fe/context'
+import type { Plugin } from '@fe/context'
 import { getColorScheme } from '@fe/services/theme'
-import { md5 } from '@fe/utils'
+import { debounce } from 'lodash-es'
+import { registerHook, removeHook } from '@fe/core/hook'
+import { getLogger, sleep } from '@fe/utils'
+import type { ExportTypes } from '@fe/types'
 
-const render = (code: string) => {
-  const id = `echart-${md5(code).toString()}-${Math.random().toString(36).substr(2)}`
+const logger = getLogger('echarts')
 
-  return h(
-    'div', { class: 'echarts', id, 'data-code': encodeURIComponent(code) })
-}
+const Echarts = defineComponent({
+  name: 'echarts',
+  props: {
+    code: {
+      type: String,
+      default: '',
+    }
+  },
+  setup (props) {
+    let chart: echarts.ECharts | null = null
 
-const EChartsPlugin = (md: Markdown) => {
+    const container = ref<HTMLElement>()
+    const error = ref<any>()
+    const imgSrc = ref('')
+
+    function cleanChart () {
+      logger.debug('cleanChart')
+      chart?.dispose()
+      chart = null
+    }
+
+    function render (theme?: 'dark' | 'light', animation?: boolean, img = false) {
+      logger.debug('render', { theme, animation, img })
+
+      if (!container.value) {
+        cleanChart()
+        return
+      }
+
+      if (typeof theme === 'string') {
+        cleanChart()
+      }
+
+      if (!chart) {
+        logger.debug('init', theme || getColorScheme())
+        chart = echarts.init(container.value, theme || getColorScheme())
+      }
+
+      if (typeof animation === 'boolean') {
+        chart.setOption({ animation })
+      } else {
+        chart.setOption({ animation: true })
+      }
+
+      try {
+        // eslint-disable-next-line
+        eval(`(${props.code})(chart)`)
+        if (img) {
+          imgSrc.value = chart.getDataURL({ type: 'png' })
+          cleanChart()
+        } else {
+          imgSrc.value = ''
+        }
+      } catch (e: any) {
+        error.value = e
+        cleanChart()
+      }
+    }
+
+    const renderDebounce = debounce(render, 400)
+
+    function resize () {
+      chart?.resize()
+    }
+
+    async function beforeExport ({ type }: { type: ExportTypes }) {
+      render('light', false, type !== 'pdf') // convert to image and set light theme.
+      await sleep(0)
+      setTimeout(async () => {
+        imgSrc.value = ''
+        error.value = null
+        nextTick(() => render(getColorScheme(), false))
+      }, 500) // restore
+    }
+
+    function changeTheme () {
+      render(getColorScheme())
+    }
+
+    watch(() => props.code, () => {
+      if (error.value) {
+        imgSrc.value = ''
+        error.value = null
+        nextTick(renderDebounce)
+      } else {
+        renderDebounce()
+      }
+    })
+
+    onMounted(render)
+
+    registerHook('GLOBAL_RESIZE', resize)
+    registerHook('DOC_BEFORE_EXPORT', beforeExport)
+    registerHook('THEME_CHANGE', changeTheme)
+
+    onBeforeUnmount(() => {
+      removeHook('GLOBAL_RESIZE', resize)
+      removeHook('DOC_BEFORE_EXPORT', beforeExport)
+      removeHook('THEME_CHANGE', changeTheme)
+      chart?.dispose()
+      chart = null
+    })
+
+    return () => {
+      if (error.value) {
+        return h('pre', {
+          class: 'echarts',
+          style: 'background: var(--g-color-95); padding: 20px'
+        }, `${error.value}\n\n${props.code}`)
+      }
+
+      if (imgSrc.value) {
+        return h('img', { src: imgSrc.value })
+      }
+
+      return h('div', { ref: container, class: 'echarts' })
+    }
+  }
+})
+
+const MarkdownItPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
-
   md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
     const token = tokens[idx]
+
     const code = token.content.trim()
-    if (token.info === 'js' && code.split(/\n/)[0].trim().includes('--echarts--')) {
-      return render(code) as any
+    const firstLine = code.split(/\n/)[0].trim()
+    if (token.info !== 'js' || !firstLine.includes('--echarts--')) {
+      return temp(tokens, idx, options, env, slf)
     }
 
-    return temp(tokens, idx, options, env, slf)
+    return h(Echarts, { code }) as any
   }
 }
-
-let charts: {[key: string]: any} = {}
-
-const update = (theme: string | undefined = undefined, animation: boolean | undefined = undefined, renderImg = false) => {
-  theme ??= getColorScheme()
-
-  Object.values(charts).forEach(x => x.chart.dispose())
-  charts = {}
-
-  for (const ele of document.getElementsByClassName('echarts')) {
-    const el = ele as HTMLDivElement
-    try {
-      const id = el.getAttribute('id')!
-      const code = el.dataset.code
-
-      if (code) {
-        const chart = echarts.init(el, theme)
-        // eslint-disable-next-line
-        eval(`(${decodeURIComponent(code)})(chart)`)
-
-        if (animation !== undefined) {
-          chart.setOption({ animation })
-        }
-
-        let img = null
-
-        if (renderImg) {
-          img = new Image()
-          img.width = el.clientWidth
-          img.height = el.clientHeight
-          img.src = chart.getDataURL({})
-        }
-
-        charts[id] = { chart, img }
-      }
-    } catch (error: any) {
-      el.innerText = error
-    }
-  }
-}
-
-const preparePrint = () => {
-  update('light', false, true)
-
-  for (const ele of document.getElementsByClassName('echarts')) {
-    while (ele.firstChild) {
-      ele.firstChild.remove()
-    }
-
-    const id = ele.getAttribute('id')!
-
-    if (charts[id] && charts[id].img) {
-      ele.appendChild(charts[id].img)
-    }
-  }
-}
-
-window.addEventListener('resize', () => {
-  Object.values(charts).forEach(x => x.chart.resize())
-})
-
-window.addEventListener('beforeprint', () => {
-  update('light', false)
-})
 
 export default {
   name: 'markdown-echarts',
@@ -100,15 +155,6 @@ export default {
       }
     `)
 
-    ctx.markdown.registerPlugin(EChartsPlugin)
-    ctx.registerHook('VIEW_RENDERED', () => {
-      update()
-    })
-    ctx.registerHook('DOC_BEFORE_EXPORT', () => {
-      preparePrint() // convert to image and set light theme.
-      setTimeout(() => update(), 0) // restore
-    })
-
-    ctx.registerHook('THEME_CHANGE', () => update())
+    ctx.markdown.registerPlugin(MarkdownItPlugin)
   }
 } as Plugin
