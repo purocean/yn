@@ -81,6 +81,7 @@ import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
 import { useI18n } from '@fe/services/i18n'
 import { sleep } from '@fe/utils'
+import type { ExportTypes } from '@fe/types'
 import XMask from './Mask.vue'
 
 export default defineComponent({
@@ -97,7 +98,7 @@ export default defineComponent({
     const convert = reactive({
       fileName: '',
       source: '',
-      toType: 'pdf',
+      toType: 'pdf' as ExportTypes,
       fromType: 'html',
       pdfOptions: {
         landscape: '',
@@ -172,7 +173,7 @@ export default defineComponent({
         return
       }
 
-      triggerHook('DOC_BEFORE_EXPORT')
+      await triggerHook('DOC_BEFORE_EXPORT', { type: convert.toType }, { breakable: true })
 
       if (convert.toType === 'pdf') {
         exportPdf(fileName.value)

@@ -200,7 +200,8 @@ export default defineComponent({
       }
     }
 
-    function print () {
+    async function print () {
+      await triggerHook('DOC_BEFORE_EXPORT', { type: 'pdf' }, { breakable: true })
       window.print()
     }
 
