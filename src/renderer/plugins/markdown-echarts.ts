@@ -99,7 +99,7 @@ const Echarts = defineComponent({
       }
     })
 
-    onMounted(render)
+    onMounted(() => setTimeout(render, 0))
 
     registerHook('GLOBAL_RESIZE', resize)
     registerHook('DOC_BEFORE_EXPORT', beforeExport)

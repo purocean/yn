@@ -36,7 +36,7 @@ const Mermaid = defineComponent({
 
     watch(() => props.code, renderDebounce)
 
-    onMounted(render)
+    onMounted(() => setTimeout(render, 0))
 
     return () => {
       return h('div', {

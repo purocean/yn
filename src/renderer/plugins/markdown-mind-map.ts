@@ -218,7 +218,7 @@ const MindMap = defineComponent({
 
     watch(() => props.content, renderMindMap)
 
-    onMounted(renderMindMap)
+    onMounted(() => setTimeout(renderMindMap, 0))
 
     registerHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     onBeforeUnmount(() => {
