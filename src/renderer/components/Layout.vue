@@ -33,7 +33,6 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
 import { useStore } from 'vuex'
-import { triggerHook } from '@fe/core/hook'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { emitResize } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
@@ -73,7 +72,7 @@ export default defineComponent({
         const height = (resizeOrigin.targetHeight + offsetY)
         ref.style.height = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, height)) + 'px'
       }
-      triggerHook('GLOBAL_RESIZE')
+      emitResize()
     }
 
     function initResize (type: any, ref: any, min: any, max: any, e: any) {

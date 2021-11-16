@@ -239,7 +239,11 @@ export default defineComponent({
       window.removeEventListener('keydown', keydownHandler)
     })
 
-    watch(() => currentContent.value + filePath.value, () => autoPreview.value && renderDebonce())
+    const updateRender = debounce(renderDebonce, 20)
+    watch(
+      () => currentContent.value + filePath.value,
+      () => autoPreview.value && updateRender()
+    )
     watch(filePath, () => {
       // file switched, turn on auto render preview.
       toggleAutoPreview(true)
@@ -264,7 +268,7 @@ export default defineComponent({
       showExport,
       handleScroll,
       handleRender,
-      handleRendered,
+      handleRendered: debounce(handleRendered, 60),
       scrollToTop,
       handleClick,
       handleDbClick,
