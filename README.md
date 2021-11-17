@@ -88,12 +88,16 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 [最新发布](https://github.com/purocean/yn/releases)
 
-### [v3.11.5](https://github.com/purocean/yn/releases/tag/v3.11.5) 2021-11-15
-1. upd(mindmap): optimize the user experience
-2. fix(main): fix startup crash when config.json is not exist
+### [v3.11.6](https://github.com/purocean/yn/releases/tag/v3.11.6) 2021-11-17
+1. perf: optimize rendering large file performance
+2. feat: add export button for echarts and mermaid
 
 <details>
 <summary>展开查看更多版本记录</summary>
+
+### [v3.11.5](https://github.com/purocean/yn/releases/tag/v3.11.5) 2021-11-15
+1. upd(mindmap): optimize the user experience
+2. fix(main): fix startup crash when config.json is not exist
 
 ### [v3.11.3](https://github.com/purocean/yn/releases/tag/v3.11.3) 2021-11-13
 1. Add English language.
