@@ -3,7 +3,7 @@ import mermaid from 'mermaid/dist/mermaid.js'
 import { defineComponent, h, onMounted, ref, watch } from 'vue'
 import type { Plugin } from '@fe/context'
 import { debounce } from 'lodash-es'
-import { getLogger } from '@fe/utils'
+import { dataURItoBlobLink, getLogger, strToBase64 } from '@fe/utils'
 
 const logger = getLogger('mermaid')
 
@@ -32,6 +32,19 @@ const Mermaid = defineComponent({
       }
     }
 
+    const exportData = async () => {
+      const svg = container.value?.innerHTML
+      if (!svg) {
+        return
+      }
+
+      const link = document.createElement('a')
+      link.href = dataURItoBlobLink('data:image/svg+xml;base64,' + strToBase64(svg))
+      link.target = '_blank'
+      link.download = `mermaid-${Date.now()}.svg`
+      link.click()
+    }
+
     const renderDebounce = debounce(render, 100)
 
     watch(() => props.code, renderDebounce)
@@ -39,12 +52,17 @@ const Mermaid = defineComponent({
     onMounted(() => setTimeout(render, 0))
 
     return () => {
-      return h('div', {
-        ref: container,
-        key: props.code,
-        class: 'mermaid reduce-brightness',
-        innerHTML: result.value,
-      })
+      return h('div', { class: 'mermaid-wrapper' }, [
+        h('div', { class: 'mermaid-action no-print' }, [
+          h('button', { class: 'small', onClick: () => exportData() }, 'SVG'),
+        ]),
+        h('div', {
+          ref: container,
+          key: props.code,
+          class: 'mermaid reduce-brightness',
+          innerHTML: result.value,
+        })
+      ])
     }
   }
 })
@@ -71,6 +89,24 @@ export default {
   name: 'markdown-mermaid',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body .mermaid-wrapper {
+        position: relative;
+      }
+
+      .markdown-view .markdown-body .mermaid-wrapper .mermaid-action {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        z-index: 1;
+        text-align: right;
+        opacity: 0;
+        transition: opacity .2s;
+      }
+
+      .markdown-view .markdown-body .mermaid-wrapper:hover .mermaid-action {
+        opacity: 1;
+      }
+
       .markdown-view .markdown-body .mermaid {
         background: #fff;
       }
