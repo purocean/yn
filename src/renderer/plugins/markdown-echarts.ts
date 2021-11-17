@@ -5,7 +5,7 @@ import type { Plugin } from '@fe/context'
 import { getColorScheme } from '@fe/services/theme'
 import { debounce } from 'lodash-es'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { getLogger, sleep } from '@fe/utils'
+import { dataURItoBlobLink, getLogger, sleep } from '@fe/utils'
 import type { ExportTypes } from '@fe/types'
 
 const logger = getLogger('echarts')
@@ -89,6 +89,18 @@ const Echarts = defineComponent({
       render(getColorScheme())
     }
 
+    const exportData = async (type: 'png') => {
+      if (!chart) {
+        return
+      }
+
+      const link = document.createElement('a')
+      link.href = dataURItoBlobLink(chart.getDataURL({ type, pixelRatio: 2 }))
+      link.target = '_blank'
+      link.download = `echarts-${Date.now()}.${type}`
+      link.click()
+    }
+
     watch(() => props.code, () => {
       if (error.value) {
         imgSrc.value = ''
@@ -125,7 +137,12 @@ const Echarts = defineComponent({
         return h('img', { src: imgSrc.value })
       }
 
-      return h('div', { ref: container, class: 'echarts' })
+      return h('div', { class: 'echarts-wrapper' }, [
+        h('div', { class: 'echarts-action no-print' }, [
+          h('button', { class: 'small', onClick: () => exportData('png') }, 'PNG'),
+        ]),
+        h('div', { ref: container, class: 'echarts' }),
+      ])
     }
   }
 })
@@ -149,6 +166,24 @@ export default {
   name: 'markdown-echarts',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body .echarts-wrapper {
+        position: relative;
+      }
+
+      .markdown-view .markdown-body .echarts-wrapper .echarts-action {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        z-index: 1;
+        text-align: right;
+        opacity: 0;
+        transition: opacity .2s;
+      }
+
+      .markdown-view .markdown-body .echarts-wrapper:hover .echarts-action {
+        opacity: 1;
+      }
+
       .markdown-view .markdown-body .echarts {
         width: 100%;
         height: 350px;
