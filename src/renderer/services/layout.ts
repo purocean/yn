@@ -1,15 +1,20 @@
 import { nextTick } from 'vue'
+import { throttle } from 'lodash-es'
 import store from '@fe/support/store'
 import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
 import * as view from './view'
 
+const emitResizeDebounce = throttle(() => {
+  triggerHook('GLOBAL_RESIZE')
+}, 50, { leading: true })
+
 /**
  * Trigger resize hook after next tick.
  */
 export function emitResize () {
-  nextTick(() => triggerHook('GLOBAL_RESIZE'))
+  emitResizeDebounce()
 }
 
 /**

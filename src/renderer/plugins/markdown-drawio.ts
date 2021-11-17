@@ -3,9 +3,9 @@ import { defineComponent, h, ref, watch } from 'vue'
 import { Plugin } from '@fe/context'
 import { buildSrc, IFrame } from '@fe/support/embed'
 import * as api from '@fe/support/api'
-import { triggerHook } from '@fe/core/hook'
 import { openWindow } from '@fe/support/env'
 import { useI18n } from '@fe/services/i18n'
+import { emitResize } from '@fe/services/layout'
 
 const Drawio = defineComponent({
   name: 'drawio',
@@ -30,7 +30,7 @@ const Drawio = defineComponent({
         iframe.height = iframe.contentDocument.documentElement.offsetHeight + 'px'
         iframe.contentDocument.body.style.height = iframe.contentDocument.body.clientHeight + 'px'
         iframe.contentDocument.documentElement.style.height = '100%'
-        triggerHook('GLOBAL_RESIZE')
+        emitResize()
       }
     }
 

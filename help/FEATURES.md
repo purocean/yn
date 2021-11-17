@@ -270,7 +270,7 @@ chart.setOption({
         left: 'center',
         top: 20,
         textStyle: {
-            color: '#ccc'
+            color: '#888'
         }
     },
 
@@ -304,14 +304,14 @@ chart.setOption({
             label: {
                 normal: {
                     textStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
+                        color: '#888'
                     }
                 }
             },
             labelLine: {
                 normal: {
                     lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
+                        color: '#888'
                     },
                     smooth: 0.2,
                     length: 10,
