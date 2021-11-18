@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details ref="refDir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name" :open="item.path === '/'">
+    <details ref="refDir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.path" :open="item.path === '/'">
       <summary
         :class="{folder: true, 'folder-selected': selected}"
         @contextmenu.exact.prevent.stop="showContextMenu(item)">
@@ -19,7 +19,7 @@
       ref="refFile"
       v-else
       :class="{name: true, 'file-name': true, selected}"
-      :title="item.name + '\n\n' + fileTitle"
+      :title="item.path + '\n\n' + fileTitle"
       @click.exact.prevent="select(item)"
       @contextmenu.exact.prevent.stop="showContextMenu(item)">
       <div class="item">
