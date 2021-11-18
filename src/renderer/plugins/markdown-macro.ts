@@ -81,6 +81,10 @@ async function include (belongDoc: Doc | undefined | null, path: string, trim = 
     throw new Error('Current document is null')
   }
 
+  if (!path.endsWith('.md')) {
+    return { __macroResult: true, toString: () => 'Error: $include markdown file only' }
+  }
+
   try {
     const absolutePath = resolve(dirname(belongDoc.path), path)
     const { content } = await readFile({ repo: belongDoc.repo, path: absolutePath })
