@@ -450,7 +450,8 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 ### 一些示例
 
 - 是否开启页面标题序号编号: <= headingNumber =>
-- 自定义变量: <= customVar =>
+- 定义变量: <= $export('testVar', 'Test') =><= testVar =>
+- 使用变量: <= customVar =>
 - 当前文档名: <= $doc.basename =>
 - 当前时间: <= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =>
 - 限定符转义: <= (1 <\= 3) ? 'result =\> true' : 'result =\> false' =>
@@ -488,6 +489,7 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 ---- | ----- | ---
 `$ctx` | object | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/context.html)
 `$include` | (path: string, trim = false) => Result | 引入其他文档片段方法
+`$include` | (key: string, val: any) => Result | 定义一个本文档可以使用的变量
 `$doc` | object | 当前文档信息
 `$doc.basename` | string | 当前文档文件名（无后缀）
 `$doc.name` | string | 当前文档文件名
