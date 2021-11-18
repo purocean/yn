@@ -393,6 +393,8 @@ export default defineComponent({
       border-radius: 50%;
       left: 40px;
       color: var(--g-color-20);
+      transform: rotate(90deg);
+      transition: transform .2s;
 
       &:hover {
         background: var(--g-color-75);
@@ -402,6 +404,7 @@ export default defineComponent({
 
   &.pined .outline-pin {
     background: var(--g-color-70);
+    transform: rotate(0);
   }
 
   &.pined, &:hover {
