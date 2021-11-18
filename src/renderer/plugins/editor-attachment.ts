@@ -69,7 +69,7 @@ export default {
         contextMenuGroupId: 'modification',
         label: t('add-image'),
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
+          monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
         ],
         run: () => addAttachment(true),
       })
@@ -78,7 +78,7 @@ export default {
         contextMenuGroupId: 'modification',
         label: t('editor.context-menu.add-attachment'),
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F
+          monaco.KeyMod.Alt | monaco.KeyCode.KEY_F
         ],
         run: () => addAttachment(false),
       })
@@ -87,11 +87,9 @@ export default {
         contextMenuGroupId: 'modification',
         label: t('editor.context-menu.add-doc'),
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
+          monaco.KeyMod.Alt | monaco.KeyCode.KEY_D
         ],
-        run: () => {
-          getActionHandler('filter.choose-document')().then(addDocument)
-        },
+        run: () => getActionHandler('filter.choose-document')().then(addDocument),
       })
     })
   }
