@@ -94,22 +94,6 @@ export default {
         insert(getOneIndent())
       })
 
-      editor.addCommand(KM.CtrlCmd | KM.Shift | KC.UpArrow, () => {
-        editor.getAction('editor.action.moveLinesUpAction').run()
-      })
-
-      editor.addCommand(KM.CtrlCmd | KM.Shift | KC.DownArrow, () => {
-        editor.getAction('editor.action.moveLinesDownAction').run()
-      })
-
-      editor.addCommand(KM.CtrlCmd | KM.Shift | KC.KEY_D, () => {
-        editor.getAction('editor.action.copyLinesDownAction').run()
-      })
-
-      editor.addCommand(KM.CtrlCmd | KC.KEY_J, () => {
-        editor.getAction('editor.action.joinLines').run()
-      })
-
       editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_U), () => {
         editor.getAction('editor.action.transformToUppercase').run()
       })

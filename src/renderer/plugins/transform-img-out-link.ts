@@ -108,7 +108,6 @@ export default {
   register: (ctx) => {
     ctx.action.registerAction({
       name: actionKeydown,
-      keys: [CtrlCmd, Shift, 'l'],
       handler: transformAll
     })
 
@@ -128,7 +127,6 @@ export default {
         id: actionKeydown,
         type: 'normal',
         title: ctx.i18n.t('status-bar.tool.convert-img-link'),
-        subTitle: getKeysLabel(actionKeydown),
         onClick: ctx.action.getActionHandler(actionKeydown)
       })
     })
