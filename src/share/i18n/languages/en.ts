@@ -160,6 +160,9 @@ const data = {
       'forward': 'Forward',
       'back': 'Back',
     },
+    'insert': {
+      'insert': 'Insert',
+    },
     'tool': {
       'tool': 'Tool',
       'paste-rft': 'Paste RTF',

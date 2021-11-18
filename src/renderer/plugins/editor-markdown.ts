@@ -51,7 +51,15 @@ function createDependencyProposals (range: any) {
 
 export default {
   name: 'editor-markdown',
-  register: () => {
+  register: (ctx) => {
+    function insertDate () {
+      insert(dayjs().format('YYYY-MM-DD'))
+    }
+
+    function insertTime () {
+      insert(dayjs().format('HH:mm:ss'))
+    }
+
     whenEditorReady().then(({ editor, monaco }) => {
       const KM = monaco.KeyMod
       const KC = monaco.KeyCode
@@ -63,9 +71,7 @@ export default {
         keybindings: [
           KM.Shift | KM.Alt | KC.KEY_D
         ],
-        run: () => {
-          insert(dayjs().format('YYYY-MM-DD'))
-        }
+        run: insertDate
       })
 
       editor.addAction({
@@ -75,9 +81,7 @@ export default {
         keybindings: [
           KM.Shift | KM.Alt | KC.KEY_T
         ],
-        run: () => {
-          insert(dayjs().format('HH:mm:ss'))
-        }
+        run: insertTime
       })
 
       editor.addCommand(KM.Alt | KC.Enter, () => {
@@ -144,6 +148,25 @@ export default {
           }
         }
       })
+    })
+
+    ctx.statusBar.tapMenus(menus => {
+      menus['status-bar-insert']?.list?.push(
+        {
+          id: 'plugin.editor.insert-time',
+          type: 'normal',
+          title: ctx.i18n.t('editor.context-menu.insert-time'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Shift, ctx.command.Alt, 't']),
+          onClick: insertTime,
+        },
+        {
+          id: 'plugin.editor.insert-date',
+          type: 'normal',
+          title: ctx.i18n.t('editor.context-menu.insert-date'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Shift, ctx.command.Alt, 'd']),
+          onClick: insertDate,
+        },
+      )
     })
   }
 } as Plugin

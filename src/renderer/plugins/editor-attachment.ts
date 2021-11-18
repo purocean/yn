@@ -62,7 +62,7 @@ function addDocument (doc: Doc) {
 
 export default {
   name: 'editor-attachment',
-  register: () => {
+  register: (ctx) => {
     whenEditorReady().then(({ editor, monaco }) => {
       editor.addAction({
         id: 'plugin.editor.add-image',
@@ -91,6 +91,32 @@ export default {
         ],
         run: () => getActionHandler('filter.choose-document')().then(addDocument),
       })
+    })
+
+    ctx.statusBar.tapMenus(menus => {
+      menus['status-bar-insert']?.list?.push(
+        {
+          id: 'plugin.editor.add-image',
+          type: 'normal',
+          title: ctx.i18n.t('add-image'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'i']),
+          onClick: () => addAttachment(true),
+        },
+        {
+          id: 'plugin.editor.add-file',
+          type: 'normal',
+          title: ctx.i18n.t('editor.context-menu.add-attachment'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'f']),
+          onClick: () => addAttachment(false),
+        },
+        {
+          id: 'plugin.editor.add-document',
+          type: 'normal',
+          title: ctx.i18n.t('editor.context-menu.add-doc'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'd']),
+          onClick: () => getActionHandler('filter.choose-document')().then(addDocument),
+        },
+      )
     })
   }
 } as Plugin

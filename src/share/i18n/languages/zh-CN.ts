@@ -161,6 +161,9 @@ const data: BaseLanguage = {
       'forward': '前进',
       'back': '后退',
     },
+    'insert': {
+      'insert': '插入',
+    },
     'tool': {
       'tool': '工具',
       'paste-rft': '粘贴富文本',

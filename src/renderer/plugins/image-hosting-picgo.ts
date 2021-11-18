@@ -121,7 +121,7 @@ export default {
     })
 
     ctx.statusBar.tapMenus(menus => {
-      menus['status-bar-tool']?.list?.push({
+      menus['status-bar-insert']?.list?.unshift({
         id: addImageActionId,
         type: 'normal',
         title: ctx.i18n.t('add-image'),
