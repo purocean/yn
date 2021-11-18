@@ -115,7 +115,11 @@ const data = {
     'file-transform-error': 'Encrypted and unencrypted files cannot be converted to each other',
     'create-dialog': {
       'title': 'Create a file (encrypted file ends with .c.md)',
-      'hint': 'File path',
+      'hint': 'File name',
+    },
+    'create-dir-dialog': {
+      'title': 'Create a Folder',
+      'hint': 'Folder name',
     },
     'duplicate-dialog': {
       'title': 'Duplicate a File',
@@ -200,7 +204,8 @@ const data = {
       'mark': 'Mark File',
       'unmark': 'Unmark File',
       'duplicate': 'Duplicate',
-      'create': 'New File',
+      'create-doc': 'New File',
+      'create-dir': 'New Folder',
       'rename': 'Rename / Move',
       'delete': 'Delete',
       'open-in-os': 'Open in OS',

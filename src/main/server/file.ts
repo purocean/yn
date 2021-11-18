@@ -49,6 +49,12 @@ const write = (repo: string, p: string, content: any) => {
   if (readonly) throw new Error('Readonly')
 
   return withRepo(repo, (_, filePath) => {
+    // create dir.
+    if (filePath.endsWith('/')) {
+      fs.ensureDirSync(filePath)
+      return ''
+    }
+
     fs.ensureFileSync(filePath)
     fs.writeFileSync(filePath, content)
 
