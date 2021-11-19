@@ -377,7 +377,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 
 `type` 是必需的， `title` 和 `content` 是可选的。
 
-支持的 `type` 有：`tip` `warning` `danger` `details`
+支持的 `type` 有：`tip` `warning` `danger` `details` `group` `group-item`
 
 **示例**
 
@@ -404,6 +404,23 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 ::: details 点击展开更多
 这是一个 details 标签
 :::
+
+:::: group 这是标签组
+
+::: group-item Tab 1
+test 1
+:::
+
+::: group-item *Tab 2
+test 2
+标题前带 * 表示默认激活此选项卡
+:::
+
+::: group-item Tab 3
+test 3
+:::
+
+::::
 
 ## 元素属性书写
 
