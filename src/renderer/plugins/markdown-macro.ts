@@ -142,7 +142,7 @@ export default {
           env.macroLines = []
         }
 
-        const reg = /<=.+?=>/gs
+        const reg = /\[=.+?=\]/gs
         let lineOffset = 0
         let posOffset = 0
         state.src = state.src.replace(reg, (match, matchPos) => {
@@ -150,7 +150,7 @@ export default {
             const exp = match
               .substring(2, match.length - 2)
               .trim()
-              .replace(/(?:=\\>|<\\=)/g, x => x.replace('\\', ''))
+              .replace(/(?:=\\\]|\[\\=)/g, x => x.replace('\\', ''))
 
             const id = md5(exp)
 
