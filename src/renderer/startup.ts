@@ -117,7 +117,11 @@ whenEditorReady().then(({ editor }) => {
 
   if (!currentFile) {
     // no recent file, show readme.
-    showHelp('README.md')
+    showHelp(
+      ctx.i18n.getCurrentLanguage() === 'zh-CN'
+        ? 'README_ZH-CN.md'
+        : 'README.md'
+    )
   }
 })
 

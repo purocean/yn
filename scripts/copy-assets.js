@@ -12,7 +12,12 @@ dirs.forEach(dir => {
   fs.copySync(origin, dist)
 })
 
-// copy readme.md
-const readme = path.join(__dirname, '..', 'README.md')
-const md = fs.readFileSync(readme).toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')
+// copy README.md
+let readme = path.join(__dirname, '..', 'README.md')
+let md = fs.readFileSync(readme).toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')
 fs.writeFileSync(path.join(__dirname, '..', './help/README.md'), md)
+
+// copy README_ZH-CN.md
+readme = path.join(__dirname, '..', 'README_ZH-CN.md')
+md = fs.readFileSync(readme).toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')
+fs.writeFileSync(path.join(__dirname, '..', './help/README_ZH-CN.md'), md)

@@ -7,7 +7,11 @@ export default {
     const showHelpAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-readme',
       keys: null,
-      handler: () => showHelp('README.md')
+      handler: () => showHelp(
+        ctx.i18n.getCurrentLanguage() === 'zh-CN'
+          ? 'README_ZH-CN.md'
+          : 'README.md'
+      )
     })
 
     const showFeaturesAction = ctx.action.registerAction({
