@@ -270,7 +270,7 @@ chart.setOption({
         left: 'center',
         top: 20,
         textStyle: {
-            color: '#ccc'
+            color: '#888'
         }
     },
 
@@ -304,14 +304,14 @@ chart.setOption({
             label: {
                 normal: {
                     textStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
+                        color: '#888'
                     }
                 }
             },
             labelLine: {
                 normal: {
                     lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
+                        color: '#888'
                     },
                     smooth: 0.2,
                     length: 10,
@@ -377,7 +377,7 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 
 `type` 是必需的， `title` 和 `content` 是可选的。
 
-支持的 `type` 有：`tip` `warning` `danger` `details`
+支持的 `type` 有：`tip` `warning` `danger` `details` `group` `group-item`
 
 **示例**
 
@@ -404,6 +404,23 @@ xml 代码块 第一行注释需要有 `--drawio--` 文字
 ::: details 点击展开更多
 这是一个 details 标签
 :::
+
+:::: group 这是标签组
+
+::: group-item Tab 1
+test 1
+:::
+
+::: group-item *Tab 2
+test 2
+标题前带 * 表示默认激活此选项卡
+:::
+
+::: group-item Tab 3
+test 3
+:::
+
+::::
 
 ## 元素属性书写
 
@@ -450,7 +467,8 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 ### 一些示例
 
 - 是否开启页面标题序号编号: <= headingNumber =>
-- 自定义变量: <= customVar =>
+- 定义变量: <= $export('testVar', 'Test') =><= testVar =>
+- 使用变量: <= customVar =>
 - 当前文档名: <= $doc.basename =>
 - 当前时间: <= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =>
 - 限定符转义: <= (1 <\= 3) ? 'result =\> true' : 'result =\> false' =>
@@ -488,6 +506,7 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 ---- | ----- | ---
 `$ctx` | object | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/context.html)
 `$include` | (path: string, trim = false) => Result | 引入其他文档片段方法
+`$include` | (key: string, val: any) => Result | 定义一个本文档可以使用的变量
 `$doc` | object | 当前文档信息
 `$doc.basename` | string | 当前文档文件名（无后缀）
 `$doc.name` | string | 当前文档文件名

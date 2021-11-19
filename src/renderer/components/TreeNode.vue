@@ -1,6 +1,6 @@
 <template>
   <div class="tree-node">
-    <details ref="refDir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.name" :open="item.path === '/'">
+    <details ref="refDir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.path" :open="item.path === '/'">
       <summary
         :class="{folder: true, 'folder-selected': selected}"
         @contextmenu.exact.prevent.stop="showContextMenu(item)">
@@ -9,7 +9,7 @@
             {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children ? item.children.length : 0}})</span>
           </div>
           <div class="item-action">
-            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create')"></svg-icon>
+            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create-doc')"></svg-icon>
           </div>
         </div>
       </summary>
@@ -19,7 +19,7 @@
       ref="refFile"
       v-else
       :class="{name: true, 'file-name': true, selected}"
-      :title="item.name + '\n\n' + fileTitle"
+      :title="item.path + '\n\n' + fileTitle"
       @click.exact.prevent="select(item)"
       @contextmenu.exact.prevent.stop="showContextMenu(item)">
       <div class="item">

@@ -105,7 +105,9 @@ export default defineComponent({
     }
 
     function handleDocCreated ({ doc }: { doc: Doc | null }) {
-      switchFile(doc)
+      if (!doc || doc.type === 'file') {
+        switchFile(doc)
+      }
     }
 
     function handleDocDeleted ({ doc }: { doc: Doc | null }) {

@@ -142,6 +142,8 @@ export default defineComponent({
       triggerHook('VIEW_RENDERED', { getViewDom })
     }
 
+    let updateRender = debounce(render, 100)
+
     function render () {
       logger.debug('render')
       // not markdown file, show code block.
@@ -149,7 +151,13 @@ export default defineComponent({
         ? currentContent.value
         : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
 
+      const startTime = performance.now()
       renderContent.value = markdown.render(content, { source: content, file: currentFile.value })
+      const renderTime = performance.now() - startTime
+
+      logger.debug('rendered', 'cost', renderTime)
+
+      updateRender = debounce(render, Math.max(25, renderTime * (renderTime < 100 ? 1.2 : 1.8)))
     }
 
     const renderDebonce = debounce(render, 100, { leading: true })
@@ -200,7 +208,8 @@ export default defineComponent({
       }
     }
 
-    function print () {
+    async function print () {
+      await triggerHook('DOC_BEFORE_EXPORT', { type: 'pdf' }, { breakable: true })
       window.print()
     }
 
@@ -238,7 +247,10 @@ export default defineComponent({
       window.removeEventListener('keydown', keydownHandler)
     })
 
-    watch(() => currentContent.value + filePath.value, () => autoPreview.value && renderDebonce())
+    watch(
+      () => currentContent.value + filePath.value,
+      () => autoPreview.value && updateRender()
+    )
     watch(filePath, () => {
       // file switched, turn on auto render preview.
       toggleAutoPreview(true)
@@ -263,7 +275,7 @@ export default defineComponent({
       showExport,
       handleScroll,
       handleRender,
-      handleRendered,
+      handleRendered: debounce(handleRendered, 60),
       scrollToTop,
       handleClick,
       handleDbClick,
@@ -388,6 +400,8 @@ export default defineComponent({
       border-radius: 50%;
       left: 40px;
       color: var(--g-color-20);
+      transform: rotate(90deg);
+      transition: transform .2s;
 
       &:hover {
         background: var(--g-color-75);
@@ -397,6 +411,7 @@ export default defineComponent({
 
   &.pined .outline-pin {
     background: var(--g-color-70);
+    transform: rotate(0);
   }
 
   &.pined, &:hover {

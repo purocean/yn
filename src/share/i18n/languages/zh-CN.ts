@@ -115,8 +115,12 @@ const data: BaseLanguage = {
     'wrong-password': '密码错误',
     'file-transform-error': '加密文件和非加密文件不能互相转换',
     'create-dialog': {
-      'title': '创建文件(加密文件以 .c.md 结尾)',
-      'hint': '文件路径',
+      'title': '创建文件（加密文件以 .c.md 结尾）',
+      'hint': '文件名',
+    },
+    'create-dir-dialog': {
+      'title': '创建文件夹',
+      'hint': '文件夹名',
     },
     'duplicate-dialog': {
       'title': '重复文件',
@@ -156,6 +160,9 @@ const data: BaseLanguage = {
       'goto': '快速跳转',
       'forward': '前进',
       'back': '后退',
+    },
+    'insert': {
+      'insert': '插入',
     },
     'tool': {
       'tool': '工具',
@@ -201,7 +208,8 @@ const data: BaseLanguage = {
       'mark': '标记文件',
       'unmark': '取消标记',
       'duplicate': '重复文件',
-      'create': '创建文件',
+      'create-doc': '创建文件',
+      'create-dir': '创建文件夹',
       'rename': '重命名 / 移动',
       'delete': '删除',
       'open-in-os': '在系统中打开',

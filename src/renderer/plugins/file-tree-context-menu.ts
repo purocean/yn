@@ -39,7 +39,8 @@ export default {
           { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node) },
         ] : []),
         ...(node.type === 'dir' ? [
-          { id: 'create', label: t('tree.context-menu.create'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
+          { id: 'create-doc', label: t('tree.context-menu.create-doc'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) },
+          { id: 'create-dir', label: t('tree.context-menu.create-dir'), onClick: () => ctx.doc.createDir({ repo: node.repo }, node) }
         ] : []),
         ...(node.path !== '/' ? [
           { id: 'rename', label: t('tree.context-menu.rename'), onClick: () => ctx.doc.moveDoc(node) },

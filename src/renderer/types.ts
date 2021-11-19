@@ -85,6 +85,7 @@ export namespace Components {
 
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
+export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 
 export type BuildInSettings = {
   'repos': { name: string, path: string }[],
@@ -161,7 +162,7 @@ export type BuildInHookTypes = {
   DOC_SWITCHED: { doc: Doc | null },
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
-  DOC_BEFORE_EXPORT: never,
+  DOC_BEFORE_EXPORT: { type: ExportTypes },
   I18N_CHANGE_LANGUAGE: { lang: LanguageName },
   SETTING_FETCHED: { settings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },

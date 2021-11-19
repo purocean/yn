@@ -1,9 +1,9 @@
 import { Escape } from '@fe/core/command'
-import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import { t } from './i18n'
+import { emitResize } from './layout'
 
 function present (flag: boolean) {
   if (flag) {
@@ -11,7 +11,7 @@ function present (flag: boolean) {
   }
   store.commit('setPresentation', flag)
   setTimeout(() => {
-    triggerHook('GLOBAL_RESIZE')
+    emitResize()
   }, 0)
 }
 

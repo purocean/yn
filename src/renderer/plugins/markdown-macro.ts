@@ -76,9 +76,17 @@ function lineCount (str: string) {
   return s
 }
 
+function exportVar (key: string, val: any): Result {
+  return { __macroResult: true, vars: { [key]: val }, toString: () => '' }
+}
+
 async function include (belongDoc: Doc | undefined | null, path: string, trim = false): Promise<Result> {
   if (!belongDoc) {
     throw new Error('Current document is null')
+  }
+
+  if (!path.endsWith('.md')) {
+    return { __macroResult: true, toString: () => 'Error: $include markdown file only' }
   }
 
   try {
@@ -120,6 +128,7 @@ export default {
         }
 
         const vars: Record<string, any> = {
+          $export: exportVar,
           $include: include.bind(null, file),
           $ctx: ctx,
           $doc: {

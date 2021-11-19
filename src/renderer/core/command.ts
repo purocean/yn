@@ -156,17 +156,27 @@ export function runCommand (command: Command) {
 }
 
 /**
- * Get a command shortcuts label.
- * @param id
+ * Get shortcuts label.
+ * @param idOrKeys command id or keys
  * @returns
  */
-export function getKeysLabel (id: string): string {
-  const command = getCommand(id)
-  if (!command || !command.keys) {
-    return ''
+export function getKeysLabel (id: string): string
+export function getKeysLabel (keys: (string | number)[]): string
+export function getKeysLabel (idOrKeys: (string | number)[] | string): string {
+  let keys = []
+
+  if (typeof idOrKeys === 'string') {
+    const command = getCommand(idOrKeys)
+    if (!command || !command.keys) {
+      return ''
+    }
+
+    keys = command.keys
+  } else {
+    keys = idOrKeys
   }
 
-  return command.keys.map(getKeyLabel).join(isMacOS ? ' ' : '+')
+  return keys.map(getKeyLabel).join(isMacOS ? ' ' : '+')
 }
 
 /**

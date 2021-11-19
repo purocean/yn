@@ -124,15 +124,17 @@ const init = (ele: HTMLElement) => {
       link.click()
     }
 
+    const filename = `mindmap-${Date.now()}.${type}`
+
     switch (type) {
       case 'svg':
-        download('data:image/svg+xml;base64,' + strToBase64(await km.exportData('svg')), 'mindmap.svg')
+        download('data:image/svg+xml;base64,' + strToBase64(await km.exportData('svg')), filename)
         break
       case 'km':
-        download('data:application/octet-stream;base64,' + strToBase64(await km.exportData('json')), 'mindmap.km')
+        download('data:application/octet-stream;base64,' + strToBase64(await km.exportData('json')), filename)
         break
       case 'png':
-        download(await km.exportData('png'), 'mindmap.png')
+        download(await km.exportData('png'), filename)
         break
       default:
         break
@@ -218,7 +220,7 @@ const MindMap = defineComponent({
 
     watch(() => props.content, renderMindMap)
 
-    onMounted(renderMindMap)
+    onMounted(() => setTimeout(renderMindMap, 0))
 
     registerHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     onBeforeUnmount(() => {

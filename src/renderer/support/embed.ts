@@ -1,7 +1,8 @@
 import { debounce } from 'lodash-es'
 import { defineComponent, h, IframeHTMLAttributes, nextTick, onBeforeMount, onBeforeUnmount, PropType, ref, watch } from 'vue'
 import { md5 } from '@fe/utils'
-import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
+import { registerHook, removeHook } from '@fe/core/hook'
+import { emitResize } from '@fe/services/layout'
 import type { ThemeName } from '@fe/types'
 
 /**
@@ -68,7 +69,7 @@ export const IFrame = defineComponent({
       const frame = iframe.value!
       const resize = () => {
         frame.height = frame.contentDocument!.documentElement.scrollHeight + 'px'
-        triggerHook('GLOBAL_RESIZE')
+        emitResize()
       }
 
       const win = frame.contentWindow as any
