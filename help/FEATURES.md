@@ -467,8 +467,9 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
 ### 一些示例
 
 - 是否开启页面标题序号编号: <= headingNumber =>
-- 定义变量: <= $export('testVar', 'Test') =><= testVar =>
 - 使用变量: <= customVar =>
+- 定义变量: <= $export('testVar', 'Test') =><= testVar =>
+- 应用版本：<= $ctx.version =>
 - 当前文档名: <= $doc.basename =>
 - 当前时间: <= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =>
 - 限定符转义: <= (1 <\= 3) ? 'result =\> true' : 'result =\> false' =>
