@@ -9,7 +9,7 @@
             {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children ? item.children.length : 0}})</span>
           </div>
           <div class="item-action">
-            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create')"></svg-icon>
+            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create-doc')"></svg-icon>
           </div>
         </div>
       </summary>

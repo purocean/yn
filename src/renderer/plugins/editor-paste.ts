@@ -119,14 +119,7 @@ export default {
     }
 
     ctx.statusBar.tapMenus(menus => {
-      menus['status-bar-tool']?.list?.push(
-        {
-          id: pasteRtfActionId,
-          type: 'normal',
-          title: ctx.i18n.t('status-bar.tool.paste-rft'),
-          subTitle: 'Markdown',
-          onClick: pasteRtf
-        },
+      menus['status-bar-insert']?.list?.push(
         {
           id: pasteImageAsBase64ActionId,
           type: 'normal',
@@ -135,6 +128,13 @@ export default {
           onClick: () => {
             pasteImageFromClipboard(true)
           }
+        },
+        {
+          id: pasteRtfActionId,
+          type: 'normal',
+          title: ctx.i18n.t('status-bar.tool.paste-rft'),
+          subTitle: 'Markdown',
+          onClick: pasteRtf
         },
       )
     })

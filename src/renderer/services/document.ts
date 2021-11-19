@@ -153,6 +153,55 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
 }
 
 /**
+ * Create a dir.
+ * @param doc
+ * @param baseDoc
+ * @returns
+ */
+export async function createDir (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: Doc): Promise<Doc>
+export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc): Promise<Doc>
+export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc) {
+  if (!doc.path) {
+    if (baseDoc) {
+      const currentPath = baseDoc.type === 'dir' ? baseDoc.path : dirname(baseDoc.path)
+
+      const name = await useModal().input({
+        title: t('document.create-dir-dialog.title'),
+        hint: t('document.create-dir-dialog.hint'),
+        content: t('document.current-path', currentPath),
+        value: 'new-folder',
+        select: true
+      })
+
+      if (!name) {
+        return
+      }
+
+      doc.path = join(currentPath, name, '/')
+    }
+  }
+
+  if (!doc.path) {
+    throw new Error('Need path')
+  }
+
+  const name = basename(doc.path)
+
+  const dir: Doc = { ...doc, path: doc.path, type: 'dir', name, contentHash: 'new' }
+
+  try {
+    await api.writeFile(dir)
+
+    triggerHook('DOC_CREATED', { doc: dir })
+  } catch (error: any) {
+    useToast().show('warning', error.message)
+    console.error(error)
+  }
+
+  return dir
+}
+
+/**
  * Duplicate a document.
  * @param originDoc
  * @returns

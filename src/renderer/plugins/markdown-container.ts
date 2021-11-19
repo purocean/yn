@@ -1,5 +1,5 @@
 import MarkdownItContainer from 'markdown-it-container'
-import { h } from 'vue'
+import { Fragment, h } from 'vue'
 import { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
 
@@ -50,6 +50,70 @@ export default {
         padding: 16px 20px;
       }
 
+      .markdown-view .markdown-body .custom-container.group {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+        background: var(--g-color-80);
+        border-radius: var(--g-border-radius);
+        border: 1px solid var(--g-color-80);
+      }
+
+      .markdown-view .markdown-body .custom-container.group p {
+        order: 100;
+        width: 100%;
+      }
+
+      .markdown-view .markdown-body .custom-container.group .custom-container-title {
+        order: 1;
+        padding-left: 8px;
+        margin: 0;
+        font-size: 14px;
+        line-height: 2.2em;
+      }
+
+      .markdown-view .markdown-body .custom-container.group .group-item-radio {
+        position: absolute;
+        right: -99999999px;
+      }
+
+      .markdown-view .markdown-body .custom-container.group .group-item-label {
+        order: 1;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 2;
+        padding: 0 1em;
+        color: var(--g-color-20);
+      }
+
+      .markdown-view .markdown-body .custom-container.group .group-item-label:hover {
+        background: var(--g-color-85);
+      }
+
+      .markdown-view .markdown-body .custom-container.group .group-item-content {
+        order: 2;
+        width: 100%;
+        display: none;
+        border-radius: var(--g-border-radius);
+        border-top-left-radius: 0;
+        padding: 12px;
+        padding-bottom: 0;
+        background: var(--g-color-100);
+      }
+
+      .markdown-view .markdown-body .custom-container.group .group-item-radio:checked + .group-item-label {
+        background: var(--g-color-100);
+        border-top-left-radius: var(--g-border-radius);
+        border-top-right-radius: var(--g-border-radius);
+        color: var(--g-color-0);
+        font-weight: 500;
+      }
+
+      .markdown-view .markdown-body .custom-container.group .group-item-radio:checked + .group-item-label + .group-item-content {
+        display: block;
+      }
+
       html[app-theme=dark] .markdown-view .markdown-body .custom-container.danger {
         background-color: #503f3f;
         color: #d9bebe;
@@ -73,8 +137,11 @@ export default {
       }
     `)
 
+    let groupItemIdx = 0
+    let groupItemName = 0
+
     ctx.markdown.registerPlugin(md => {
-      ['tip', 'warning', 'danger', 'details'].forEach(name => {
+      ['tip', 'warning', 'danger', 'details', 'group-item', 'group'].forEach(name => {
         const reg = new RegExp(`^${name}\\s*(.*)$`)
 
         md.use(MarkdownItContainer, name, {
@@ -87,8 +154,28 @@ export default {
 
             if (tokens[idx].nesting === 1) {
               const title = md.utils.escapeHtml(match![1])
-              const containerTag = name === 'details' ? 'details' : 'div'
               const containerClass = `custom-container ${name}`
+
+              if (name === 'group-item') {
+                const parent = h('div', { class: 'group-item-content' }, [])
+                const radioName = `group-item-${groupItemName}`
+                const id = `group-item-${groupItemName}-${groupItemIdx++}`
+                const checked = groupItemIdx === 1 || title.startsWith('*')
+
+                return {
+                  node: h(Fragment, [
+                    h('input', { key: id, class: 'group-item-radio', id, name: radioName, type: 'radio', checked }),
+                    h('label', { class: 'group-item-label', for: id }, title.replace('*', '').trim() || 'Group Item'),
+                    parent
+                  ]),
+                  parent
+                }
+              } else if (name === 'group') {
+                groupItemIdx = 0
+                groupItemName++
+              }
+
+              const containerTag = name === 'details' ? 'details' : 'div'
               const titleTag = name === 'details' ? 'summary' : 'p'
               const titleClass = name === 'details' ? '' : 'custom-container-title'
 

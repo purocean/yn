@@ -142,6 +142,8 @@ export default defineComponent({
       triggerHook('VIEW_RENDERED', { getViewDom })
     }
 
+    let updateRender = debounce(render, 100)
+
     function render () {
       logger.debug('render')
       // not markdown file, show code block.
@@ -149,7 +151,13 @@ export default defineComponent({
         ? currentContent.value
         : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
 
+      const startTime = performance.now()
       renderContent.value = markdown.render(content, { source: content, file: currentFile.value })
+      const renderTime = performance.now() - startTime
+
+      logger.debug('rendered', 'cost', renderTime)
+
+      updateRender = debounce(render, Math.max(25, renderTime * (renderTime < 100 ? 1.2 : 1.8)))
     }
 
     const renderDebonce = debounce(render, 100, { leading: true })
@@ -239,7 +247,6 @@ export default defineComponent({
       window.removeEventListener('keydown', keydownHandler)
     })
 
-    const updateRender = debounce(renderDebonce, 20)
     watch(
       () => currentContent.value + filePath.value,
       () => autoPreview.value && updateRender()

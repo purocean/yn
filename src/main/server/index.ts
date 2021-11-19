@@ -1,5 +1,5 @@
 import * as os from 'os'
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import * as path from 'path'
 import Koa from 'koa'
 import bodyParser from 'koa-body'
@@ -7,7 +7,7 @@ import * as mime from 'mime'
 import request from 'request'
 import { promisify } from 'util'
 import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME } from '../constant'
-import file from './file'
+import * as file from './file'
 import dataRepository from './repository'
 import run from './run'
 import convert from './convert'
@@ -25,8 +25,8 @@ const fileContent = async (ctx: any, next: any) => {
   if (ctx.path === '/api/file') {
     if (ctx.method === 'GET') {
       ctx.body = result('ok', 'success', {
-        content: file.read(ctx.query.repo, ctx.query.path).toString(),
-        hash: file.hash(ctx.query.repo, ctx.query.path)
+        content: (await file.read(ctx.query.repo, ctx.query.path)).toString(),
+        hash: await file.hash(ctx.query.repo, ctx.query.path)
       })
     } else if (ctx.method === 'POST') {
       const oldHash = ctx.request.body.old_hash
@@ -35,25 +35,25 @@ const fileContent = async (ctx: any, next: any) => {
         throw new Error('No hash.')
       } else if (oldHash === 'new' && file.exists(ctx.request.body.repo, ctx.request.body.path)) {
         throw new Error('File already exists.')
-      } else if (oldHash !== 'new' && !file.checkHash(ctx.request.body.repo, ctx.request.body.path, oldHash)) {
+      } else if (oldHash !== 'new' && !(await file.checkHash(ctx.request.body.repo, ctx.request.body.path, oldHash))) {
         throw new Error('File is stale. Please refresh.')
       }
 
-      const hash = file.write(ctx.request.body.repo, ctx.request.body.path, ctx.request.body.content)
+      const hash: string = await file.write(ctx.request.body.repo, ctx.request.body.path, ctx.request.body.content)
       ctx.body = result('ok', 'success', hash)
     } else if (ctx.method === 'DELETE') {
-      file.rm(ctx.query.repo, ctx.query.path)
+      await file.rm(ctx.query.repo, ctx.query.path)
       ctx.body = result()
     } else if (ctx.method === 'PATCH') {
       if (file.exists(ctx.request.body.repo, ctx.request.body.newPath)) {
         throw new Error('File already exists.')
       }
 
-      file.mv(ctx.request.body.repo, ctx.request.body.oldPath, ctx.request.body.newPath)
+      await file.mv(ctx.request.body.repo, ctx.request.body.oldPath, ctx.request.body.newPath)
       ctx.body = result()
     }
   } else if (ctx.path === '/api/tree') {
-    ctx.body = result('ok', 'success', file.tree(ctx.query.repo))
+    ctx.body = result('ok', 'success', (await file.tree(ctx.query.repo)))
   } else {
     await next()
   }
@@ -66,11 +66,11 @@ const attachment = async (ctx: any, next: any) => {
       const repo = ctx.request.body.repo
       const attachment = ctx.request.body.attachment
       const buffer = Buffer.from(attachment.substring(attachment.indexOf(',') + 1), 'base64')
-      file.upload(repo, buffer, path)
+      await file.upload(repo, buffer, path)
       ctx.body = result('ok', 'success', path)
     } else if (ctx.method === 'GET') {
       ctx.type = mime.getType(ctx.query.path)
-      ctx.body = file.read(ctx.query.repo, ctx.query.path)
+      ctx.body = await file.read(ctx.query.repo, ctx.query.path)
     }
   } else {
     await next()
@@ -109,7 +109,7 @@ const searchFile = async (ctx: any, next: any) => {
     const search = ctx.query.search
     const repo = ctx.query.repo
 
-    ctx.body = result('ok', 'success', file.search(repo, search))
+    ctx.body = result('ok', 'success', await file.search(repo, search))
   } else {
     await next()
   }
@@ -163,7 +163,7 @@ const tmpFile = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/tmp-file')) {
     const absPath = path.join(os.tmpdir(), APP_NAME + '_' + ctx.query.name.replace(/\//g, '_'))
     if (ctx.method === 'GET') {
-      ctx.body = fs.readFileSync(absPath)
+      ctx.body = await fs.readFile(absPath)
     } else if (ctx.method === 'POST') {
       let body: any = ctx.request.body.toString()
 
@@ -174,10 +174,10 @@ const tmpFile = async (ctx: any, next: any) => {
         )
       }
 
-      fs.writeFileSync(absPath, body)
+      await fs.writeFile(absPath, body)
       ctx.body = result('ok', 'success', { path: absPath })
     } else if (ctx.method === 'DELETE') {
-      fs.unlinkSync(absPath)
+      await fs.unlink(absPath)
       ctx.body = result('ok', 'success')
     }
   } else {
@@ -211,10 +211,10 @@ const readme = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/help')) {
     if (ctx.query.path) {
       ctx.type = mime.getType(ctx.query.path)
-      ctx.body = fs.readFileSync(path.join(HELP_DIR, ctx.query.path.replace('../', '')))
+      ctx.body = await fs.readFile(path.join(HELP_DIR, ctx.query.path.replace('../', '')))
     } else {
       ctx.body = result('ok', 'success', {
-        content: fs.readFileSync(path.join(HELP_DIR, ctx.query.doc.replace('../', ''))).toString()
+        content: await fs.readFile(path.join(HELP_DIR, ctx.query.doc.replace('../', '')), 'utf-8')
       })
     }
   } else {
@@ -227,13 +227,14 @@ const userPlugin = async (ctx: any, next: any) => {
     ctx.type = 'application/javascript; charset=utf-8'
 
     let code = ''
-    fs.readdirSync(USER_PLUGIN_DIR, { withFileTypes: true })
-      .filter(x => x.isFile() && x.name.endsWith('.js'))
-      .forEach(x => {
+    for (const x of await fs.readdir(USER_PLUGIN_DIR, { withFileTypes: true })) {
+      if (x.isFile() && x.name.endsWith('.js')) {
         code += `// ===== ${x.name} =====\n` +
-          fs.readFileSync(path.join(USER_PLUGIN_DIR, x.name)) +
+          (await fs.readFile(path.join(USER_PLUGIN_DIR, x.name))) +
           '\n// ===== end =====\n\n'
-      })
+      }
+    }
+
     ctx.body = code
   } else {
     await next()

@@ -1,13 +1,12 @@
 import { showHelp } from '@fe/services/document'
 import { Plugin } from '@fe/context'
-import { Alt, getKeysLabel } from '@fe/core/command'
 
 export default {
   name: 'status-bar-help',
   register: ctx => {
     const showHelpAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-readme',
-      keys: [Alt, 'h'],
+      keys: null,
       handler: () => showHelp('README.md')
     })
 
@@ -39,7 +38,6 @@ export default {
             id: 'toggle-readme',
             type: 'normal',
             title: ctx.i18n.t('status-bar.help.readme'),
-            tips: getKeysLabel(showHelpAction.name),
             onClick: () => ctx.action.getActionHandler(showHelpAction.name)()
           },
           {

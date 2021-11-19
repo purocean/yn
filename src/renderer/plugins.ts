@@ -4,6 +4,7 @@ import statusBarSetting from '@fe/plugins/status-bar-setting'
 import statusBarRepositorySwitch from '@fe/plugins/status-bar-repository-switch'
 import statusBarView from '@fe/plugins/status-bar-view'
 import statusBarNavigation from '@fe/plugins/status-bar-navigation'
+import statusBarInsert from './plugins/status-bar-insert'
 import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarRefresh from '@fe/plugins/status-bar-refresh'
@@ -52,6 +53,7 @@ export default [
   statusBarRepositorySwitch,
   statusBarView,
   statusBarNavigation,
+  statusBarInsert,
   statusBarTool,
   statusBarHelp,
   statusBarTerminal,

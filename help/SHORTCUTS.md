@@ -13,25 +13,22 @@
 为下一个匹配项添加光标 | Ctrl + D | Cmd + D
 查找 | Ctrl + F | Cmd + F
 打开文件快速跳转面板 | Ctrl + P | Cmd + P
-插入文档链接 | Ctrl + Alt + I | Cmd + Option + I
 保存文档 | Ctrl + S | Cmd + S
-连接行 | Ctrl + J | Cmd + J
+连接行 | Ctrl + J | Ctrl + J
 强制插入新行，忽略预置补全规则 | Alt + Enter | Option + Enter
 强制插入 Tab，忽略预置补全规则 | Shift + Enter | Shift + Enter
-当前行上移 | Ctrl + Shift + Up | Cmd + Shift + Up
-当前行下移 | Ctrl + Shift + Down | Cmd + Shift + Down
-重复当前行 | Ctrl + Shift + D | Cmd + Shift + D
-插入当前日期 | Shift + Alt + D | Shift + Option + D
 切换待办状态 | Alt + O | Alt + O
+插入当前日期 | Shift + Alt + D | Shift + Option + D
 插入当前时间 | Shift + Alt + T | Shift + Option + T
-插入文件附件 | Shift + Alt + F | Shift + Option + F
+插入文件附件 | Alt + F | Option + F
+插入图片 | Alt + I | Option + I
+插入文档链接 | Alt + D | Option + D
 在内置终端里面运行选中内容 | Shift + Alt + R | Shift + Option + R
 转换大写 | Ctrl + K, Ctrl + U | Cmd + K, Cmd + U
 转换小写 | Ctrl + K, Ctrl + L | Cmd + K, Cmd + K
 粘贴 HTML 富文本 | Ctrl + D + V | Cmd + D + V
 粘贴图片为 base64 链接 | Ctrl + B + V | Cmd + B + V
 转换单个外链图片到本地 | Ctrl + Shift + 单击图片 | Cmd + Shift + 单击图片
-转换所有外链图片到本地 | Ctrl + Shift + L | Cmd + Shift + L
 编辑表格单元格 | 双击单元格 | 双击单元格
 编辑表格单元格(弹出框) | Ctrl + 单击单元格 | Cmd + 单击单元格 或
 复制文档标题链接 | Ctrl + 单击标题 | Cmd + 单击标题
@@ -41,4 +38,3 @@
 切换文档预览显示 | Alt + V | Option + V
 切换终端 | Alt + T | Option + T
 演示模式 | F5 | F5
-查看 Readme | Alt + H | Option + H

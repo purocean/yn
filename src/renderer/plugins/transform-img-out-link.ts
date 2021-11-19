@@ -3,7 +3,7 @@ import * as api from '@fe/support/api'
 import { encodeMarkdownLink } from '@fe/utils'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import { CtrlCmd, getKeysLabel, isCommand, LeftClick, Shift } from '@fe/core/command'
+import { CtrlCmd, isCommand, LeftClick, Shift } from '@fe/core/command'
 import { replaceValue } from '@fe/services/editor'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
@@ -108,7 +108,6 @@ export default {
   register: (ctx) => {
     ctx.action.registerAction({
       name: actionKeydown,
-      keys: [CtrlCmd, Shift, 'l'],
       handler: transformAll
     })
 
@@ -128,7 +127,6 @@ export default {
         id: actionKeydown,
         type: 'normal',
         title: ctx.i18n.t('status-bar.tool.convert-img-link'),
-        subTitle: getKeysLabel(actionKeydown),
         onClick: ctx.action.getActionHandler(actionKeydown)
       })
     })

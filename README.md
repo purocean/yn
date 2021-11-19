@@ -88,12 +88,19 @@ For more information on how to use the following functions, please see [characte
 
 [Latest release](https://github.com/purocean/yn/releases)
 
-### [v3.11.6](https://github.com/purocean/yn/releases/tag/v3.11.6) 2021-11-17
-1. perf: optimize rendering large file performance
-2. feat: add export button for echarts and mermaid
+### [v3.11.7](https://github.com/purocean/yn/releases/tag/v3.11.7) 2021-11-19
+1. feat: add group container
+2. feat(macro): add $export method
+3. feat: add "New Folder" context menu
+4. feat: add insert menu
+5. upd: update shortcuts
 
 <details>
 <summary>Expand to see more version records</summary>
+
+### [v3.11.6](https://github.com/purocean/yn/releases/tag/v3.11.6) 2021-11-17
+1. perf: optimize rendering large file performance
+2. feat: add export button for echarts and mermaid
 
 ### [v3.11.5](https://github.com/purocean/yn/releases/tag/v3.11.5) 2021-11-15
 1. upd(mindmap): optimize the user experience

@@ -83,7 +83,7 @@ export async function readFile (file: PathItem) {
  * @param content
  * @returns
  */
-export async function writeFile (file: Doc, content: string) {
+export async function writeFile (file: Doc, content = '') {
   const { repo, path, contentHash } = file
   const result = await fetchHttp('/api/file', {
     method: 'POST',

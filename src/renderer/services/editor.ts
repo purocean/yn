@@ -76,6 +76,7 @@ export function insert (text: string) {
       forceMoveMarkers: true
     }
   ])
+  getEditor().focus()
 }
 
 /**

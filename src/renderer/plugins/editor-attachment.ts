@@ -62,14 +62,14 @@ function addDocument (doc: Doc) {
 
 export default {
   name: 'editor-attachment',
-  register: () => {
+  register: (ctx) => {
     whenEditorReady().then(({ editor, monaco }) => {
       editor.addAction({
         id: 'plugin.editor.add-image',
         contextMenuGroupId: 'modification',
         label: t('add-image'),
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
+          monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
         ],
         run: () => addAttachment(true),
       })
@@ -78,7 +78,7 @@ export default {
         contextMenuGroupId: 'modification',
         label: t('editor.context-menu.add-attachment'),
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F
+          monaco.KeyMod.Alt | monaco.KeyCode.KEY_F
         ],
         run: () => addAttachment(false),
       })
@@ -87,12 +87,36 @@ export default {
         contextMenuGroupId: 'modification',
         label: t('editor.context-menu.add-doc'),
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I
+          monaco.KeyMod.Alt | monaco.KeyCode.KEY_D
         ],
-        run: () => {
-          getActionHandler('filter.choose-document')().then(addDocument)
-        },
+        run: () => getActionHandler('filter.choose-document')().then(addDocument),
       })
+    })
+
+    ctx.statusBar.tapMenus(menus => {
+      menus['status-bar-insert']?.list?.push(
+        {
+          id: 'plugin.editor.add-image',
+          type: 'normal',
+          title: ctx.i18n.t('add-image'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'i']),
+          onClick: () => addAttachment(true),
+        },
+        {
+          id: 'plugin.editor.add-file',
+          type: 'normal',
+          title: ctx.i18n.t('editor.context-menu.add-attachment'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'f']),
+          onClick: () => addAttachment(false),
+        },
+        {
+          id: 'plugin.editor.add-document',
+          type: 'normal',
+          title: ctx.i18n.t('editor.context-menu.add-doc'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'd']),
+          onClick: () => getActionHandler('filter.choose-document')().then(addDocument),
+        },
+      )
     })
   }
 } as Plugin
