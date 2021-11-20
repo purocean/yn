@@ -10,7 +10,7 @@ English | [中文说明](./README_ZH-CN.md)
 
 ![Screenshot](./help/1.png)
 
-## Highlight
+## Highlights
 
 - **Easy to use**：Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
 - **Powerful**：Widgets, runnable code blocks, tables, Plantuml, Drawio, macro replacements, etc., can be embedded in the document.
@@ -20,7 +20,6 @@ English | [中文说明](./README_ZH-CN.md)
 
 ## Attention
 
-- Yank Note is a Markdown editor **for programmers**, purpose to write articles and take notes on the local machine.
 - For mort extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). If you want to use it to open a foreign Markdown file, **be sure to carefully identify whether the content of the file is trustworthy**.
 - The encryption and decryption of encrypted files are both completed at the front end. Please **be sure to remember your password**. Once the password is lost, it can only be cracked violently.
 
