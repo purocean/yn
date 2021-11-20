@@ -94,7 +94,8 @@ export type BuildInSettings = {
   'assets-dir': string,
   'shell': string,
   'plugin.image-hosting-picgo.server-url': string,
-  'plugin.image-hosting-picgo.enable-paste-image': boolean
+  'plugin.image-hosting-picgo.enable-paste-image': boolean,
+  'license': string,
 }
 
 export type BuildInActions = {
@@ -128,6 +129,7 @@ export type BuildInActions = {
   'plugin.status-bar-help.show-plugin': () => void,
   'plugin.transform-img-link.all': () => void,
   'plugin.switch-todo.switch': (line?: number, checked?: boolean) => void,
+  'premium.show': () => void,
 }
 
 export type BuildInActionName = keyof BuildInActions

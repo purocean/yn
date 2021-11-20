@@ -13,7 +13,7 @@
         <li
           v-for="item in menu.list"
           :key="item.id"
-          :class="{disabled: item.disabled}"
+          :class="{disabled: item.disabled, hidden: item.hidden}"
           :title="item.tips"
           @click="handleItemClick(item)">
           <div class="menu-item-title">{{item.title}}</div>
@@ -88,7 +88,8 @@ export default defineComponent({
   overflow-x: hidden;
 }
 
-.status-bar-menu.hidden {
+.status-bar-menu.hidden,
+.status-bar-menu .hidden {
   display: none;
 }
 

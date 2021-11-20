@@ -20,6 +20,7 @@ import { useI18n } from '@fe/services/i18n'
 import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
 import { refreshRepo } from '@fe/services/tree'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { getPurchased, showPremium } from '@fe/others/premium'
 
 JSONEditor.defaults.language = 'en'
 
@@ -60,7 +61,13 @@ export default defineComponent({
       editor.watch('root.theme', () => {
         const theme = editor.getEditor('root.theme').getValue()
         if (getThemeName() !== theme) {
-          setTheme(theme)
+          if (getPurchased()) {
+            setTheme(theme)
+          } else {
+            cancel()
+            toast.show('warning', t('premium.need-purchase', 'Theme'))
+            showPremium()
+          }
         }
       })
 

@@ -450,7 +450,9 @@ enableMacro | boolean | 是否开启宏替换
 
 ## 宏替换
 
-Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
+> <a href="javascript: ctx.showPremium()">高级版可用</a>
+
+Yank Note 允许你在页面中嵌入宏，用以动态的替换文档。
 
 ### 使用
 

@@ -1,10 +1,12 @@
 import frontMatter from 'front-matter'
 import type { Plugin } from '@fe/context'
 import { render } from '@fe/services/view'
+import { t } from '@fe/services/i18n'
 import { readFile } from '@fe/support/api'
 import type { Doc } from '@fe/types'
 import { getLogger, md5 } from '@fe/utils'
 import { dirname, resolve } from '@fe/utils/path'
+import { getPurchased } from '@fe/others/premium'
 
 type Result = { __macroResult: true, vars?: Record<string, any>, toString: () => string }
 type Expression = { id: string, match: string, exp: string, vars: Record<string, any> }
@@ -155,7 +157,12 @@ export default {
             const id = md5(exp)
 
             const expression = { id, match, exp, vars }
-            const result = macro(expression, macroCache[cacheKey])
+            const result = (!getPurchased() && file.repo !== '__help__')
+              ? {
+                __macroResult: true,
+                toString: () => t('premium.need-purchase', 'Macro') + `, <a href="javascript: ctx.showPremium()">${t('premium.buy-license')}</a> `
+              } as Result
+              : macro(expression, macroCache[cacheKey])
 
             if (result && result.__macroResult && result.vars) {
               Object.assign(vars, result.vars)

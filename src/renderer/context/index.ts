@@ -1,5 +1,6 @@
 import * as storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
+import { showPremium } from '@fe/others/premium'
 import * as plugin from '@fe/core/plugin'
 import * as hook from '@fe/core/hook'
 import * as action from '@fe/core/action'
@@ -51,6 +52,7 @@ const ctx = {
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,
   registerPlugin: plugin.register,
+  showPremium: showPremium,
   version: __APP_VERSION__,
 }
 
