@@ -307,7 +307,7 @@ const data: BaseLanguage = {
         'name': '仓库名',
         'name-placeholder': '请输入',
         'path': '路径',
-        'path-placeholder': '选选择一个路径'
+        'path-placeholder': '请选择一个路径'
       },
       'theme': '主题',
       'language': '语言',
