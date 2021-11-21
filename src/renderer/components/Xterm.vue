@@ -13,6 +13,7 @@ import { defineComponent, nextTick, onBeforeMount, onBeforeUnmount, ref } from '
 import { useStore } from 'vuex'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
+import { OneHalfLight, OneHalfDark } from 'xterm-theme'
 import { getLogger } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
@@ -20,7 +21,7 @@ import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { toggleXterm } from '@fe/services/layout'
 import { getColorScheme } from '@fe/services/theme'
 import { t } from '@fe/services/i18n'
-import { OneHalfLight, OneHalfDark } from 'xterm-theme'
+import { isWindows } from '@fe/support/env'
 import SvgIcon from './SvgIcon.vue'
 
 import 'xterm/css/xterm.css'
@@ -126,16 +127,18 @@ export default defineComponent({
       nextTick(() => {
         init()
 
+        const eol = isWindows ? '\r\n' : '\n'
+
         const map: {[key: string]: {start: string; exit: string; eol: string}} = {
           bat: { start: 'cmd.exe', exit: 'exit', eol: '\r\n' },
-          shell: { start: '', exit: 'exit', eol: '\n' },
-          sh: { start: 'sh', exit: 'exit', eol: '\n' },
-          bash: { start: 'bash', exit: 'exit', eol: '\n' },
-          php: { start: 'php -a', exit: 'exit', eol: '\n' },
-          python: { start: 'python', exit: 'exit()', eol: '\n' },
-          py: { start: 'python', exit: 'exit()', eol: '\n' },
-          js: { start: 'node', exit: '.exit', eol: '\n' },
-          node: { start: 'node', exit: '.exit', eol: '\n' },
+          shell: { start: '', exit: 'exit', eol },
+          sh: { start: 'sh', exit: 'exit', eol },
+          bash: { start: 'bash', exit: 'exit', eol },
+          php: { start: 'php -a', exit: 'exit', eol },
+          python: { start: 'python', exit: 'exit()', eol },
+          py: { start: 'python', exit: 'exit()', eol },
+          js: { start: 'node', exit: '.exit', eol },
+          node: { start: 'node', exit: '.exit', eol },
         }
 
         const run = (code: string, eol: string) => {
