@@ -87,11 +87,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.11.7](https://github.com/purocean/yn/releases/tag/v3.11.7) 2021-11-19
-1. feat: add group container
-2. feat(macro): add $export method
-3. feat: add "New Folder" context menu
-4. feat: add insert menu
-5. upd: update shortcuts
+### [v3.12.0](https://github.com/purocean/yn/releases/tag/v3.12.0) 2021-11-21
+1. docs: add English language for shortcuts
+2. upd(macro): update qualifier
+3. feat(plugin): add `ctx.version`
 
 [More release notes](https://github.com/purocean/yn/releases)

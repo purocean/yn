@@ -87,11 +87,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.11.7](https://github.com/purocean/yn/releases/tag/v3.11.7) 2021-11-19
-1. feat: add group container
-2. feat(macro): add $export method
-3. feat: add "New Folder" context menu
-4. feat: add insert menu
-5. upd: update shortcuts
+### [v3.12.0](https://github.com/purocean/yn/releases/tag/v3.12.0) 2021-11-21
+1. 文档: 快捷键增加英文文档
+2. 宏: 更换限定符，尽量少减少冲突
+3. 插件: 增加 `ctx.version`
 
 [更多发布说明](https://github.com/purocean/yn/releases)
