@@ -5,7 +5,7 @@
     <div class="tabs">
       <div :class="{tab: true, selected: tab === 'intro'}" @click="switchTab('intro')">{{$t('premium.intro.intro')}}</div>
       <div v-if="!purchased" :class="{tab: true, selected: tab === 'buy'}" @click="switchTab('buy')">{{$t('premium.buy.buy')}}</div>
-      <div :class="{tab: true, selected: tab === 'activation'}" @click="switchTab('activation')">{{$t('premium.activation.license')}}</div>
+      <div v-if="!flagDemo" :class="{tab: true, selected: tab === 'activation'}" @click="switchTab('activation')">{{$t('premium.activation.license')}}</div>
     </div>
     <div v-show="tab === 'intro'" class="intro">
       <div v-if="!purchased" class="desc">{{$t('premium.intro.desc')}}</div>
@@ -72,7 +72,9 @@
       <textarea v-else v-model="license" :placeholder="$t('premium.activation.placeholder')" />
       <div v-if="!info" class="tips">
         {{$t('premium.activation.tips')}}:
-        <a href="javascript: void">{{$t('premium.activation.tips-wechat')}}</a> | <a href="mailto:yank-note@outlook.com">{{$t('premium.activation.tips-email')}}</a>
+        <a href="mailto:yank-note@outlook.com">{{$t('premium.activation.tips-email')}}</a>
+        |
+        <a href="javascript: void">{{$t('premium.activation.tips-wechat')}}</a>
         <img class="qrcode" src="~@fe/assets/qrcode-wechat.jpg" >
       </div>
     </div>
@@ -94,6 +96,7 @@ import XMask from './Mask.vue'
 import SvgIcon from './SvgIcon.vue'
 import { useToast } from '@fe/support/ui/toast'
 import { dayjs } from '@fe/context/lib'
+import { FLAG_DEMO } from '@fe/support/args'
 
 export default defineComponent({
   name: 'premium',
@@ -159,6 +162,7 @@ export default defineComponent({
     })
 
     return {
+      flagDemo: FLAG_DEMO,
       showPanel,
       tab,
       switchTab,
@@ -300,7 +304,7 @@ export default defineComponent({
     a {
       color: var(--g-color-50);
 
-      &:hover ~ img {
+      &:hover + img {
         width: 200px;
         margin-top: -220px;
         margin-left: 220px;
