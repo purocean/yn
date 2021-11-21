@@ -12,7 +12,7 @@ export default {
           title: ctx.i18n.t('status-bar.get.get-application'),
           icon: 'download',
           list: [
-            { id: 'github', type: 'normal', title: 'GitHub', onClick: () => window.open(URL_GITHUB) },
+            { id: 'github', type: 'normal', title: 'GitHub', onClick: () => window.open(URL_GITHUB + '/releases') },
             { id: 'mas', type: 'normal', title: 'Mac App Store', onClick: () => window.open(URL_MAS) },
           ]
         }

@@ -5,14 +5,14 @@ const configFile = CONFIG_FILE
 
 const writeJson = (data: any) => {
   fs.ensureFileSync(configFile)
-  fs.writeJson(configFile, data, { spaces: 4 })
+  fs.writeJsonSync(configFile, data, { spaces: 4 })
 }
 
 const readJson = () => {
-  if (fs.existsSync(configFile)) {
-    const data = fs.readFileSync(configFile)
-    return JSON.parse(data.toString())
-  } else {
+  try {
+    return fs.readJSONSync(configFile)
+  } catch (error) {
+    console.error(error)
     return null
   }
 }
