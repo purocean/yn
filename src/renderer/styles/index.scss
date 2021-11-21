@@ -126,5 +126,10 @@ html {
       padding: 3px 6px;
       font-weight: normal;
     }
+
+    &[disabled] {
+      background: var(--g-color-90);
+      cursor: not-allowed;
+    }
   }
 }

@@ -1,5 +1,4 @@
-import { showHelp } from '@fe/services/document'
-import { Plugin } from '@fe/context'
+import type { Plugin } from '@fe/context'
 
 export default {
   name: 'status-bar-help',
@@ -7,24 +6,28 @@ export default {
     const showHelpAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-readme',
       keys: null,
-      handler: () => showHelp('README.md')
+      handler: () => ctx.doc.showHelp(
+        ctx.i18n.getCurrentLanguage() === 'zh-CN'
+          ? 'README_ZH-CN.md'
+          : 'README.md'
+      )
     })
 
     const showFeaturesAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-features',
-      handler: () => showHelp('FEATURES.md'),
+      handler: () => ctx.doc.showHelp('FEATURES.md'),
       keys: null
     })
 
     const showShortcutsAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-shortcuts',
-      handler: () => showHelp('SHORTCUTS.md'),
+      handler: () => ctx.doc.showHelp('SHORTCUTS.md'),
       keys: null
     })
 
     const showPluginAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-plugin',
-      handler: () => showHelp('PLUGIN.md'),
+      handler: () => ctx.doc.showHelp('PLUGIN.md'),
       keys: null
     })
 
@@ -35,25 +38,32 @@ export default {
         title: ctx.i18n.t('status-bar.help.help'),
         list: [
           {
-            id: 'toggle-readme',
+            id: 'show-premium',
+            type: 'normal',
+            title: ctx.i18n.t('premium.premium'),
+            hidden: ctx.args.FLAG_DEMO,
+            onClick: () => ctx.showPremium()
+          },
+          {
+            id: 'show-readme',
             type: 'normal',
             title: ctx.i18n.t('status-bar.help.readme'),
             onClick: () => ctx.action.getActionHandler(showHelpAction.name)()
           },
           {
-            id: 'toggle-plugin',
+            id: 'show-plugin',
             type: 'normal',
             title: ctx.i18n.t('status-bar.help.plugin'),
             onClick: () => ctx.action.getActionHandler(showPluginAction.name)()
           },
           {
-            id: 'toggle-shortcuts',
+            id: 'show-shortcuts',
             type: 'normal',
             title: ctx.i18n.t('status-bar.help.shortcuts'),
             onClick: () => ctx.action.getActionHandler(showShortcutsAction.name)()
           },
           {
-            id: 'toggle-features',
+            id: 'show-features',
             type: 'normal',
             title: ctx.i18n.t('status-bar.help.features'),
             onClick: () => ctx.action.getActionHandler(showFeaturesAction.name)()

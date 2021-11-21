@@ -450,39 +450,42 @@ enableMacro | boolean | 是否开启宏替换
 
 ## 宏替换
 
-Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
+> <a href="javascript: ctx.showPremium()">高级版可用</a>
+
+Yank Note 允许你在页面中嵌入宏，用以动态的替换文档。
 
 ### 使用
 
 使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`
 
 ```md
-<= <expression> =>
+[= <expression> =]
 ```
 
 其中 `expression` 是需要执行的 js 表达式，支持 await/Promise 异步表达式。
 
-如果表达式中需要包含 <\= 或 =\> 请输入 `<\=` 或 `=\>` 转义替换
+如果表达式中需要包含 [\= 或 =\] 请输入 `[\=` 或 `=\]` 转义替换
 
 ### 一些示例
 
-- 是否开启页面标题序号编号: <= headingNumber =>
-- 定义变量: <= $export('testVar', 'Test') =><= testVar =>
-- 使用变量: <= customVar =>
-- 当前文档名: <= $doc.basename =>
-- 当前时间: <= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =>
-- 限定符转义: <= (1 <\= 3) ? 'result =\> true' : 'result =\> false' =>
-- 四则运算: <= (1 + 2) / 2 =>
+- 是否开启页面标题序号编号: [= headingNumber =]
+- 使用变量: [= customVar =]
+- 定义变量: [= $export('testVar', 'Test') =][= testVar =]
+- 应用版本：[= $ctx.version =]
+- 当前文档名: [= $doc.basename =]
+- 当前时间: [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]
+- 限定符转义: [= '[\= =\]' =]
+- 四则运算: [= (1 + 2) / 2 =]
 - 引用文件（暂不支持嵌套宏指令，可使用目标文档中定义的 Front Matter 变量)
-    > <= $include('./_FRAGMENT.md', true) =>
-- 被引用文档中定义的变量：<= customVarFromOtherDoc =>
-- 你的 IP 地址：<= fetch('https://ifconfig.me/ip').then(r =\> r.text()) =>
+    > [= $include('./_FRAGMENT.md', true) =]
+- 被引用文档中定义的变量：[= customVarFromOtherDoc =]
+- 你的 IP 地址：[= fetch('https://ifconfig.me/ip').then(r => r.text()) =]
 - 天气预报
     ```
-    <= await ctx.utils.sleep(1000), fetch('https://wttr.in?0AT').then(r =\> r.text()) =>
+    [= await ctx.utils.sleep(1000), fetch('https://wttr.in?0AT').then(r => r.text()) =]
     ```
 - 九九乘法表
-  <=
+  [=
   (function nine (num) {
       let res = ''
       for (let i = 1; i <= num; i++) {
@@ -496,7 +499,7 @@ Yank Note 运行你在页面中嵌入宏，用以动态的替换文档。
       }
       return res
   })(9)
-  =>
+  =]
 
 ### 可用变量
 

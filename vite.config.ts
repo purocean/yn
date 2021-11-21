@@ -18,6 +18,9 @@ fs.copySync(
 export default defineConfig({
   plugins: [vue()],
   root: 'src/renderer',
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version)
+  },
   server: {
     port: 8066,
     proxy: {

@@ -198,6 +198,33 @@ export function getSettings () {
 }
 
 /**
+ * get setting val by key
+ * @param key
+ * @param defaultVal
+ * @returns
+ */
+export function getSetting (key: keyof BuildInSettings, defaultVal: any = null) {
+  const settings = getSettings()
+  if (typeof settings[key] !== 'undefined') {
+    return settings[key]
+  }
+
+  return defaultVal
+}
+
+/**
+ * set setting val
+ * @param key
+ * @param val
+ * @returns
+ */
+export async function setSetting<T extends keyof BuildInSettings> (key: T, val: BuildInSettings[T]) {
+  const settings = getSettings()
+  settings[key] = val
+  await writeSettings(settings)
+}
+
+/**
  * Show setting panel.
  */
 export function showSettingPanel () {

@@ -11,6 +11,8 @@ import { refreshTree } from '@fe/services/tree'
 import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
+import { getPurchased } from '@fe/others/premium'
+import { setTheme } from '@fe/services/theme'
 import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
@@ -108,6 +110,14 @@ registerHook('DOC_SWITCH_FAILED', (payload?: { doc?: Doc | null, message: string
   }
 })
 
+registerHook('SETTING_FETCHED', () => {
+  if (!getPurchased(true)) {
+    whenEditorReady().then(() => {
+      setTheme('light')
+    })
+  }
+})
+
 whenEditorReady().then(({ editor }) => {
   editor.onDidChangeCursorSelection(() => {
     store.commit('setSelectionInfo', getSelectionInfo())
@@ -117,7 +127,11 @@ whenEditorReady().then(({ editor }) => {
 
   if (!currentFile) {
     // no recent file, show readme.
-    showHelp('README.md')
+    showHelp(
+      ctx.i18n.getCurrentLanguage() === 'zh-CN'
+        ? 'README_ZH-CN.md'
+        : 'README.md'
+    )
   }
 })
 

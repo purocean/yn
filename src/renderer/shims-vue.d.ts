@@ -25,3 +25,5 @@ declare interface Window {
   documentSaved: boolean;
   monaco: any;
 }
+
+declare const __APP_VERSION__: string
