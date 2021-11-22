@@ -27,7 +27,7 @@
             <div class="plan-desc">{{$t('premium.intro.premium-desc')}}</div>
           </div>
           <button v-if="purchased" class="buy-btn" disabled>{{$t('premium.intro.current-plan')}}</button>
-          <button v-else class="primary buy-btn" @click="switchTab('buy')">{{$t('premium.buy.buy')}}</button>
+          <button v-else class="primary buy-btn" @click="buy">{{$t('premium.buy.buy')}}</button>
           <ul>
             <li v-for="item in $t('premium.intro.premium-list').split('\n')" :key="item">{{item}}</li>
           </ul>
@@ -92,11 +92,11 @@ import { computed, defineComponent, onBeforeUnmount, ref } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import { useI18n } from '@fe/services/i18n'
 import { getLicenseInfo, getPurchased, setLicense } from '@fe/others/premium'
-import XMask from './Mask.vue'
-import SvgIcon from './SvgIcon.vue'
 import { useToast } from '@fe/support/ui/toast'
 import { dayjs } from '@fe/context/lib'
 import { FLAG_DEMO } from '@fe/support/args'
+import XMask from './Mask.vue'
+import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
   name: 'premium',
@@ -113,6 +113,10 @@ export default defineComponent({
 
     function switchTab (val: Tab) {
       tab.value = val
+    }
+
+    function buy () {
+      switchTab('buy')
     }
 
     function showPurchase () {
@@ -171,6 +175,7 @@ export default defineComponent({
       activate: debounce(activate, 1300, { leading: true, trailing: false }),
       license,
       purchased,
+      buy,
       info: computed(() => info.value
         ? { ...info.value, exp: dayjs(info.value?.expires).format('YYYY-MM-DD') }
         : null),
