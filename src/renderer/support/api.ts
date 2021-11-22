@@ -333,3 +333,22 @@ export async function runCode (language: string, code: string, callback?: { name
 
   return data
 }
+
+/**
+ * Eval cade on Electron main process
+ *
+ * await ctx.api.rpc('return 1 + 1') // result 2
+ * await ctx.api.rpc(`return require('os').platform()`) // result 'darwin'
+ * await ctx.api.rpc(`return require('./constant').APP_NAME`) // result 'yank-note'
+ *
+ * @param code Function body
+ */
+export async function rpc (code: string) {
+  const { data } = await fetchHttp('/api/rpc', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code })
+  })
+
+  return data
+}
