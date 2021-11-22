@@ -132,7 +132,7 @@ export default defineComponent({
     }
 
     function paypal () {
-      window.open('https://paypal.me/purocean/10')
+      window.open('https://paypal.me/purocean/6')
     }
 
     function sendEmail () {
