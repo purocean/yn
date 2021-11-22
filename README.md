@@ -87,9 +87,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.12.3](https://github.com/purocean/yn/releases/tag/v3.12.3) 2021-11-21
-1. docs: add English language for shortcuts
-2. upd(macro): update qualifier
-3. feat(plugin): add `ctx.version`
+### [v3.12.4](https://github.com/purocean/yn/releases/tag/v3.12.4) 2021-11-22
+1. feat(core): add `ctx.api.rpc` method
 
 [More release notes](https://github.com/purocean/yn/releases)

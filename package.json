@@ -1,7 +1,7 @@
 {
   "name": "yank.note",
-  "version": "3.12.3",
-  "description": "Yank Note 一款面向程序员的 Markdown 笔记应用",
+  "version": "3.12.4",
+  "description": "Yank Note: A hackable markdown note application for programmers",
   "main": "dist/main/app.js",
   "license": "GPL-3.0",
   "author": {
