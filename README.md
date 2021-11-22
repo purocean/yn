@@ -20,7 +20,7 @@ English | [中文说明](./README_ZH-CN.md)
 
 ## Attention
 
-- For mort extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). If you want to use it to open a foreign Markdown file, **be sure to carefully identify whether the content of the file is trustworthy**.
+- For more extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). If you want to use it to open a foreign Markdown file, **be sure to carefully identify whether the content of the file is trustworthy**.
 - The encryption and decryption of encrypted files are both completed at the front end. Please **be sure to remember your password**. Once the password is lost, it can only be cracked violently.
 
 ## Yank-Note V3 Plan
