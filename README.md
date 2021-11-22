@@ -20,7 +20,7 @@ English | [中文说明](./README_ZH-CN.md)
 
 ## Attention
 
-- For mort extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). If you want to use it to open a foreign Markdown file, **be sure to carefully identify whether the content of the file is trustworthy**.
+- For more extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). If you want to use it to open a foreign Markdown file, **be sure to carefully identify whether the content of the file is trustworthy**.
 - The encryption and decryption of encrypted files are both completed at the front end. Please **be sure to remember your password**. Once the password is lost, it can only be cracked violently.
 
 ## Yank-Note V3 Plan
@@ -87,9 +87,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.12.3](https://github.com/purocean/yn/releases/tag/v3.12.3) 2021-11-21
-1. docs: add English language for shortcuts
-2. upd(macro): update qualifier
-3. feat(plugin): add `ctx.version`
+### [v3.12.4](https://github.com/purocean/yn/releases/tag/v3.12.4) 2021-11-22
+1. feat(core): add `ctx.api.rpc` method
 
 [More release notes](https://github.com/purocean/yn/releases)
