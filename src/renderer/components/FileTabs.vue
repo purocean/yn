@@ -97,7 +97,7 @@ export default defineComponent({
 
     async function handleMoved (payload?: { oldDoc: Doc, newDoc: Doc }) {
       if (payload) {
-        if (payload.newDoc.type === 'file') {
+        if (payload.newDoc.type === 'file' && payload.newDoc.path.endsWith('.md')) {
           await switchFile(payload.newDoc)
         }
         removeFile(payload.oldDoc)
