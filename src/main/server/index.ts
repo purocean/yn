@@ -33,7 +33,7 @@ const fileContent = async (ctx: any, next: any) => {
 
       if (!oldHash) {
         throw new Error('No hash.')
-      } else if (oldHash === 'new' && file.exists(ctx.request.body.repo, ctx.request.body.path)) {
+      } else if (oldHash === 'new' && (await file.exists(ctx.request.body.repo, ctx.request.body.path))) {
         throw new Error('File already exists.')
       } else if (oldHash !== 'new' && !(await file.checkHash(ctx.request.body.repo, ctx.request.body.path, oldHash))) {
         throw new Error('File is stale. Please refresh.')
@@ -45,7 +45,7 @@ const fileContent = async (ctx: any, next: any) => {
       await file.rm(ctx.query.repo, ctx.query.path)
       ctx.body = result()
     } else if (ctx.method === 'PATCH') {
-      if (file.exists(ctx.request.body.repo, ctx.request.body.newPath)) {
+      if (await file.exists(ctx.request.body.repo, ctx.request.body.newPath)) {
         throw new Error('File already exists.')
       }
 

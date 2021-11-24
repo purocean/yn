@@ -87,7 +87,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.12.4](https://github.com/purocean/yn/releases/tag/v3.12.4) 2021-11-22
-1. feat(core): add `ctx.api.rpc` method
+### [v3.12.5](https://github.com/purocean/yn/releases/tag/v3.12.5) 2021-11-24
+1. feat(macos): add shortcuts for the open main window
+2. feat(macro): add recursion for $include
+3. fix bugs
 
 [More release notes](https://github.com/purocean/yn/releases)

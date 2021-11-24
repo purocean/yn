@@ -1,3 +1,4 @@
+import { omit } from 'lodash-es'
 import frontMatter from 'front-matter'
 import type { Plugin } from '@fe/context'
 import { render } from '@fe/services/view'
@@ -5,64 +6,20 @@ import { t } from '@fe/services/i18n'
 import { readFile } from '@fe/support/api'
 import type { Doc } from '@fe/types'
 import { getLogger, md5 } from '@fe/utils'
-import { dirname, resolve } from '@fe/utils/path'
+import { basename, dirname, resolve } from '@fe/utils/path'
 import { getPurchased } from '@fe/others/premium'
+import ctx from '@fe/context'
 
-type Result = { __macroResult: true, vars?: Record<string, any>, toString: () => string }
-type Expression = { id: string, match: string, exp: string, vars: Record<string, any> }
+type Result = { __macroResult: true, vars?: Record<string, any>, value: string }
 
 const logger = getLogger('plugin-macro')
 
 const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
-let macroCache: Record<string, Record<string, Result>> = {}
+let macroCache: Record<string, Record<string, Result | Promise<Result>>> = {}
 
-function checkMacroResult (result: any) {
-  if (
-    result === null ||
-    typeof result === 'function' ||
-    typeof result === 'symbol' ||
-    typeof result === 'undefined' ||
-    (typeof result === 'object' && (!result.__macroResult))
-  ) {
-    throw new Error('Macro result type error.')
-  }
-}
-
-function macro (expression: Expression, cache: Record<string, Result>): Result {
-  logger.debug('macro', expression)
-
-  const { id, match, exp, vars } = expression
-
-  // async expression result cache
-  if (id in cache) {
-    return cache[id]
-  }
-
-  const FunctionConstructor = exp.startsWith('await') ? AsyncFunction : Function
-
-  const fun = new FunctionConstructor('vars', `with (vars) { return (${exp}); }`)
-
-  const result = fun(vars)
-
-  if ((result instanceof Promise)) {
-    result.then((res) => {
-      checkMacroResult(res)
-      return res
-    }).catch(e => {
-      logger.error('macro', id, e)
-      return match
-    }).then(res => {
-      cache[id] = res
-      logger.debug('macro', 'async', id, 'rerender')
-      render()
-    })
-
-    return { __macroResult: true, toString: () => 'macro is running……' }
-  }
-
-  checkMacroResult(result)
-
-  return result
+const globalVars = {
+  $export: exportVar,
+  $ctx: ctx,
 }
 
 function lineCount (str: string) {
@@ -78,31 +35,191 @@ function lineCount (str: string) {
   return s
 }
 
-function exportVar (key: string, val: any): Result {
-  return { __macroResult: true, vars: { [key]: val }, toString: () => '' }
+function wrapResult (result: any) {
+  let value = result
+  let res = result
+  if (result.__macroResult) {
+    value = result.value
+  } else {
+    res = { __macroResult: true, value: '' + value }
+  }
+
+  if (
+    value === null ||
+    typeof value === 'function' ||
+    typeof value === 'symbol' ||
+    typeof value === 'undefined' ||
+    (typeof value === 'object')
+  ) {
+    throw new Error('Macro result type error.')
+  }
+
+  return res
 }
 
-async function include (belongDoc: Doc | undefined | null, path: string, trim = false): Promise<Result> {
+function macro (exp: string, vars: Record<string, any>): Result | Promise<Result> {
+  logger.debug('macro', exp)
+
+  const FunctionConstructor = exp.startsWith('await') ? AsyncFunction : Function
+  const fun = new FunctionConstructor('vars', `with (vars) { return (${exp}); }`)
+
+  let result = fun(vars)
+
+  if (!(result instanceof Promise)) {
+    return wrapResult(result)
+  }
+
+  result = result.then(wrapResult)
+
+  return result
+}
+
+function transform (
+  src: string,
+  vars: Record<string, any>,
+  options: {
+    autoRerender: boolean,
+    purchased: boolean,
+    cache: Record<string, Result | Promise<Result>>,
+    callback?: (result: Result | Promise<Result>, match: string, matchPos: number) => void
+  },
+) {
+  return src.replace(/\[=.+?=\]/gs, (match, matchPos) => {
+    try {
+      const exp = match
+        .substring(2, match.length - 2)
+        .trim()
+        .replace(/(?:=\\\]|\[\\=)/g, x => x.replace('\\', ''))
+
+      const id = md5(exp)
+
+      let result: Result | Promise<Result>
+      if (options.purchased) {
+        if (options.cache[id]) {
+          result = options.cache[id]
+        } else {
+          result = macro(exp, vars)
+          if (result instanceof Promise) {
+            options.cache[id] = result.then(res => {
+              options.cache[id] = res
+              options.autoRerender && render()
+              return res
+            })
+          }
+        }
+      } else {
+        result = { __macroResult: true, value: t('premium.need-purchase', 'Macro') + `, <a href="javascript: ctx.showPremium()">${t('premium.buy-license')}</a> ` }
+      }
+
+      options.callback?.(result, match, matchPos)
+
+      if (result instanceof Promise) {
+        return 'macro is running……'
+      }
+
+      if (result.vars) {
+        Object.assign(vars, result.vars)
+      }
+
+      return result.value
+    } catch {}
+
+    return match
+  })
+}
+
+function exportVar (key: string, val: any): Result {
+  return { __macroResult: true, vars: { [key]: val }, value: '' }
+}
+
+async function include (
+  options: {
+    belongDoc: Doc | undefined | null
+    purchased: boolean,
+    cache: Record<string, Result | Promise<Result>>,
+    count: number,
+  },
+  path: string,
+  trim = false
+): Promise<Result> {
+  const { belongDoc } = options
+
   if (!belongDoc) {
     throw new Error('Current document is null')
   }
 
+  if (options.count >= 3) {
+    return { __macroResult: true, value: 'Error: $include maximum call stack size exceeded [3]' }
+  }
+
   if (!path.endsWith('.md')) {
-    return { __macroResult: true, toString: () => 'Error: $include markdown file only' }
+    return { __macroResult: true, value: 'Error: $include markdown file only' }
   }
 
   try {
     const absolutePath = resolve(dirname(belongDoc.path), path)
-    const { content } = await readFile({ repo: belongDoc.repo, path: absolutePath })
+    const file: Doc = { type: 'file', name: basename(absolutePath), repo: belongDoc.repo, path: absolutePath }
+    const { content } = await readFile(file)
     const fm = frontMatter(content)
 
     // merge front-matter attributes to current document vars.
-    const vars = {}
+    const vars = {
+      ...globalVars,
+      $include: include.bind(null, { ...options, belongDoc: file, count: options.count + 1 }),
+      $doc: {
+        basename: file.name ? file.name.substring(0, file.name.lastIndexOf('.')) : '',
+        ...ctx.lib.lodash.pick(file, 'name', 'repo', 'path', 'content', 'status')
+      },
+    }
+
     if (fm.attributes && typeof fm.attributes === 'object') {
       Object.assign(vars, fm.attributes)
     }
 
-    return { __macroResult: true, vars, toString: () => trim ? fm.body.trim() : fm.body }
+    const cache: any = options.cache
+    if (options.count === 0 && !options.cache.$include) {
+      cache.$include = {}
+    }
+
+    const cacheKey = '' + options.count + file.repo + file.path
+    if (!cache.$include[cacheKey]) {
+      cache.$include[cacheKey] = {}
+    }
+
+    const body = trim ? fm.body.trim() : fm.body
+
+    const tasks: Promise<Result>[] = []
+    let value = transform(
+      body,
+      vars,
+      {
+        ...options,
+        cache: cache.$include[cacheKey],
+        autoRerender: false,
+        callback: res => {
+          if (res instanceof Promise) {
+            tasks.push(res)
+          }
+        }
+      }
+    )
+
+    if (tasks.length > 0) {
+      await Promise.allSettled(tasks)
+
+      // get final result
+      value = transform(
+        body,
+        vars,
+        {
+          ...options,
+          cache: cache.$include[cacheKey],
+          autoRerender: false,
+        }
+      )
+    }
+
+    return { __macroResult: true, vars: omit(vars, '$include', '$doc'), value }
   } catch (error: any) {
     return error.message
   }
@@ -129,10 +246,15 @@ export default {
           return false
         }
 
+        const options = {
+          purchased: getPurchased() || file.repo === '__help__',
+          cache: macroCache[cacheKey],
+          autoRerender: true,
+        }
+
         const vars: Record<string, any> = {
-          $export: exportVar,
-          $include: include.bind(null, file),
-          $ctx: ctx,
+          ...globalVars,
+          $include: include.bind(null, { ...options, belongDoc: file, count: 0 }),
           $doc: {
             basename: file.name ? file.name.substring(0, file.name.lastIndexOf('.')) : '',
             ...ctx.lib.lodash.pick(env.file, 'name', 'repo', 'path', 'content', 'status')
@@ -144,33 +266,13 @@ export default {
           env.macroLines = []
         }
 
-        const reg = /\[=.+?=\]/gs
         let lineOffset = 0
         let posOffset = 0
-        state.src = state.src.replace(reg, (match, matchPos) => {
-          try {
-            const exp = match
-              .substring(2, match.length - 2)
-              .trim()
-              .replace(/(?:=\\\]|\[\\=)/g, x => x.replace('\\', ''))
 
-            const id = md5(exp)
-
-            const expression = { id, match, exp, vars }
-            const result = (!getPurchased() && file.repo !== '__help__')
-              ? {
-                __macroResult: true,
-                toString: () => t('premium.need-purchase', 'Macro') + `, <a href="javascript: ctx.showPremium()">${t('premium.buy-license')}</a> `
-              } as Result
-              : macro(expression, macroCache[cacheKey])
-
-            if (result && result.__macroResult && result.vars) {
-              Object.assign(vars, result.vars)
-            }
-
-            // result maybe string or other type.
+        state.src = transform(state.src, vars, {
+          ...options,
+          callback: (result, match, matchPos) => {
             const resultStr = '' + result
-
             const matchLine = lineCount(match)
             const resultLine = lineCount(resultStr)
 
@@ -191,11 +293,7 @@ export default {
                 resultLength: resultStr.length,
               })
             }
-
-            return resultStr
-          } catch (error) {}
-
-          return match
+          }
         })
 
         state.env.originSource = state.env.source

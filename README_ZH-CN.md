@@ -87,7 +87,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.12.4](https://github.com/purocean/yn/releases/tag/v3.12.4) 2021-11-22
-1. feat(core): 增加 `ctx.api.rpc` 方法
+### [v3.12.5](https://github.com/purocean/yn/releases/tag/v3.12.5) 2021-11-24
+1. feat(macos): 增加打开主界面快捷键
+2. feat(macro): $include 支持嵌套
+3. 修复一些问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)

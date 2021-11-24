@@ -2,29 +2,31 @@
 headingNumber: true
 ---
 
-# 插件开发指南
+# Plug-In Development Guide
+
+English | [中文](./PLUGIN_ZH-CN.md)
 
 [toc]{type: "ol"}
 
-## 前言
+## Preface
 
-Yank Note 是一个完全开放，Hackable 的笔记应用。
+Yank Note is a open source, completely **hackable** note application.
 
-我的理想是让用户可以按照自己的想法来定制自己的编辑器，让这款编辑器可以更好的辅助用户的工作和学习。比如针对 [Git 提交](https://github.com/purocean/yn/issues/65#issuecomment-962472562) 的这个场景，用户就可以自己编写插件来实现这个功能，不用等到开发者来适配。
+My vision is to allow users to customize their own editor according to their own ideas, so that this editor can better assist users in their work and study. For example, for the scenario of [Git Submit](https://github.com/purocean/yn/issues/65#issuecomment-962472562), users can write their own plug-ins to implement this function without waiting for developers to adapt.
 
-目前，Yank Note 内部几乎所有功能功能，均是通过一套薄薄的插件体系来实现（[几十个内置插件](https://github.com/purocean/yn/tree/develop/src/renderer/plugins)）。内置插件所用到的能力，和用户编写的插件完全一致，甚至你可以在插件中使用一些 Yank Note 使用的第三方库。
+At now, almost all functions inside Yank Note are implemented through a thin plug-in system ([dozens of built-in plug-ins](https://github.com/purocean/yn/tree/develop/src/renderer/plugins)). The capabilities used by the built-in plug-ins are exactly the same as the plug-ins written by users, and you can even use some third-party libraries used by Yank Note in the plug-ins.
 
-## 编写一个插件
+## Write A Plug-In
 
-1. 右键点击托盘图标，点击“打开主目录”
-2. 在 `<主目录>/plugins` 中新建一个 `plugin-hello.js` 文件
-3. 编辑 `plugin-hello.js` 文件，写入如下内容。
+1. Right click the tray icon and click "Open Main Dir"
+2. Create a new file `plugin-hello.js` in `<main directory>/plugins`
+3. Edit the `plugin-hello.js` file and write the following content.
     ```js
-    // 注册一个插件
+    // register a plug-in
     window.registerPlugin({
         name: 'plugin-hello',
         register: ctx => {
-            // 添加状态栏菜单
+            // add menu on status bar
             ctx.statusBar.tapMenus(menus => {
                 menus['plugin-hello'] = {
                     id: 'plugin-hello',
@@ -38,27 +40,29 @@ Yank Note 是一个完全开放，Hackable 的笔记应用。
         }
     });
     ```
-4. 右键点击托盘图标，点击“开发 > 重载页面”
+4. Right-click the tray icon and click "Develop > Reload"
 
-现在应该可以在状态栏看到 “HELLO” 菜单了。
+Now you can see the "HELLO" menu in the status bar expectantly.
 
-## 核心概念
+## Core Concepts
 
-Yank Note 有一些概念，是支撑整个插件体系的基础：
+Yank Note has some concepts that are the basis for supporting the entire plug-in system：
 
-1. Hook 钩子
-1. Action 动作
-1. Command 命令
+1. Hook
+1. Action
+1. Command
 
-### Hook 钩子
+### Hook
 
-Yank Note 在执行一些操作的时候，会触发一些钩子调用。
+When Yank Note performs some operations, it will trigger some hook calls.
 
-使用 [`ctx.registerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#registerHook) 可以注册一个钩子处理方法。使用 [`ctx.triggerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#triggerHook) 则可以触发一个钩子。
+Use [`ctx.registerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#registerHook) to register a hook processing method.
 
-调用 `triggerHook` 时候附加选项 `{ breakable: true }`，表明这个钩子调用是可中断的。
+Use [`ctx.triggerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#triggerHook) to trigger a hook.
 
-下面的内部钩子调用是可中断的
+The option `{ breakable: true }` is appended when calling `triggerHook`, indicating that the hook call is breakable.
+
+The following internal hook call is breakable:
 
 - `ACTION_AFTER_RUN`
 - `ACTION_BEFORE_RUN`
@@ -68,42 +72,41 @@ Yank Note 在执行一些操作的时候，会触发一些钩子调用。
 - `VIEW_KEY_DOWN`
 - `EDITOR_PASTE_IMAGE`
 
-可中断的钩子处理方法需要有返回值 `Promise<boolean> | boolean`。当钩子处理方法返回 `true`，则后续的钩子不再运行。
+Breakable hook processing methods need to have a return value `Promise<boolean> | boolean`. When the hook processing method returns `true`, the subsequent hooks will no longer run。
 
-内部的钩子类型可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInHookTypes)
+For internal hook types, please refer to [Api Document](https://yn-api-doc.vercel.app/modules/types.html#BuildInHookTypes)
 
-### Action 动作
+### Action
 
-Yank Note 有一个 Action 中心 [`ctx.action`](https://yn-api-doc.vercel.app/modules/core_action.html)，提供动作的管理和运行。
+Yank Note has an Action Center [`ctx.action`](https://yn-api-doc.vercel.app/modules/core_action.html), which provides action management and operation。
 
-内部 Action 可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInActions)
+For internal action, please refer to [Api Document](https://yn-api-doc.vercel.app/modules/types.html#BuildInActions)
 
-### Command 命令
+### Command
+Yank Note has a Command Center [`ctx.command`](https://yn-api-doc.vercel.app/modules/core_command.html), which is mainly responsible for the management and operation of shortcut keys.
 
-Yank Note 有一个 Command 中心 [`ctx.command`](https://yn-api-doc.vercel.app/modules/core_command.html)，主要负责快捷键相关的管理和运行。
+## Plug-In Capabilities
 
-## 插件能力
+As you can see from the above, the functions of the plug-in are all implemented through the modules of `ctx`.
 
-从上面可以看到，插件的功能都是通过 `ctx` 下面挂载的模块来实现。
+In addition to the above core modules, there are many other modules under ctx, which basically cover all aspects of the editor.
 
-除了上述核心的几个模块，ctx 下面还有很多其他模块，基本涵盖了编辑器的各个方面。
-
-运行下面的代码，你可以看到 `ctx` 下都有哪些模块可供使用。
+Run the following code, you can see which modules are available of `ctx`.
 
 ```js
 // --run--
 console.log(Object.keys(ctx).join('\n'))
 ```
 
-参考 [Api 文档](https://yn-api-doc.vercel.app/modules/context.html) 获得更多使用说明。
+Refer to [Api Document](https://yn-api-doc.vercel.app/modules/context.html) to get more instructions.
 
-## 更多
+## More
 
-总体来说，Yank Note 鼓励用户打造自己的工作学习工具，只需要几行代码，即可给自己的工作学习助力。
+In general, Yank Note encourages users to create their own work-learning tools that only need a few lines of code to help their work and study.
 
-另外，如果您只需要打造一些趁手的工具，可以不用编写插件，可以使用[代码运行](FEATURES.md#运行代码)功能或者编写 [小工具](FEATURES.md#小工具)来实现。这里的 js 代码运行能力也是完全开放，全局变量 `ctx` 也具有上述所有的功能。
+In addition, if you only need to create some handy tools, you don't need to write plug-ins, you can use [RunCode](FEATURES.md#RunCode) function or write [Widgets](FEATURES.md#Widgets) to achieve. The ability to run js code here is also completely open, and the global variable `ctx` also has all the above functions.
 
-例如运行代码功能：
+For example, run js code:
 
 ```js
 // --run--
@@ -111,7 +114,7 @@ ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log("hello world!")
 ```
 
-小工具
+Widgets
 
 ```html
 <!-- --applet-- -->

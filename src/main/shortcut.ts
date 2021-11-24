@@ -8,7 +8,7 @@ const platform = os.platform()
 type AcceleratorType = 'show-main-window' | 'open-in-browser'
 export const getAccelerator = (type: AcceleratorType) => {
   return {
-    'show-main-window': platform === 'darwin' ? undefined : 'Super+N',
+    'show-main-window': platform === 'darwin' ? 'Shift+Alt+M' : 'Super+N',
     'open-in-browser': 'Super+Shift+B'
   }[type]
 }
