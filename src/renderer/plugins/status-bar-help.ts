@@ -3,19 +3,19 @@ import type { Plugin } from '@fe/context'
 export default {
   name: 'status-bar-help',
   register: ctx => {
+    const getDoc = (name: string) => ctx.i18n.getCurrentLanguage() === 'zh-CN'
+      ? `${name}_ZH-CN.md`
+      : `${name}.md`
+
     const showHelpAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-readme',
       keys: null,
-      handler: () => ctx.doc.showHelp(
-        ctx.i18n.getCurrentLanguage() === 'zh-CN'
-          ? 'README_ZH-CN.md'
-          : 'README.md'
-      )
+      handler: () => ctx.doc.showHelp(getDoc('README'))
     })
 
     const showFeaturesAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-features',
-      handler: () => ctx.doc.showHelp('FEATURES.md'),
+      handler: () => ctx.doc.showHelp(getDoc('FEATURES')),
       keys: null
     })
 
@@ -27,7 +27,7 @@ export default {
 
     const showPluginAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-plugin',
-      handler: () => ctx.doc.showHelp('PLUGIN.md'),
+      handler: () => ctx.doc.showHelp(getDoc('PLUGIN')),
       keys: null
     })
 
