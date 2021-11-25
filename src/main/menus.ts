@@ -27,6 +27,7 @@ export const getMainMenus = () => process.platform === 'darwin' ? Menu.buildFrom
     submenu: [
       { type: 'normal', label: $t('app.preferences'), click: () => getAction('show-main-window-setting')() },
       { type: 'normal', label: $t('app.close-window'), accelerator: 'Command+W', click: () => getAction('hide-main-window')() },
+      { type: 'normal', label: $t('app.toggle-fullscreen'), accelerator: 'Ctrl+command+F', click: () => getAction('toggle-fullscreen')() },
       { type: 'normal', label: $t('app.quit'), accelerator: 'Command+Q', click: () => getAction('quit')() }
     ]
   },
