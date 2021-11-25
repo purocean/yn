@@ -8,7 +8,7 @@
 
 [toc]{level: [2]}
 
-![截图](./help/1.png)
+![截图](./help/1_ZH-CN.png)
 
 ## 特色
 
@@ -81,13 +81,14 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 截图
 
-![截图](./help/2.png)
-![截图](./help/3.png)
-![截图](./help/4.png)
+![截图](./help/2_ZH-CN.png)
+![截图](./help/3_ZH-CN.png)
+![截图](./help/4_ZH-CN.png)
+![截图](./help/5_ZH-CN.png)
 
 ## 更新日志
 
-### [v3.12.6](https://github.com/purocean/yn/releases/tag/v3.12.6) 2021-11-25
+### [v3.12.8](https://github.com/purocean/yn/releases/tag/v3.12.8) 2021-11-25
 1. feat: 增加全屏模式
 2. upd(help): 自动选择当前语言打开文档
 3. fix(macro): 修复行号计算

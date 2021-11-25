@@ -84,10 +84,11 @@ For more information on how to use the following functions, please see [characte
 ![Screenshot](./help/2.png)
 ![Screenshot](./help/3.png)
 ![Screenshot](./help/4.png)
+![Screenshot](./help/5.png)
 
 ## Changelogs
 
-### [v3.12.6](https://github.com/purocean/yn/releases/tag/v3.12.6) 2021-11-25
+### [v3.12.8](https://github.com/purocean/yn/releases/tag/v3.12.8) 2021-11-25
 1. feat: add full screen mode
 2. upd(help): auto select current language
 3. fix(macro): fix line count
