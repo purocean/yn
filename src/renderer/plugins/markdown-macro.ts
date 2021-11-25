@@ -100,11 +100,13 @@ function transform (
         } else {
           result = macro(exp, vars)
           if (result instanceof Promise) {
-            options.cache[id] = result.then(res => {
-              options.cache[id] = res
-              options.autoRerender && render()
-              return res
-            })
+            options.cache[id] = result
+              .catch(() => ({ __macroResult: true, value: match } as Result))
+              .then(res => {
+                options.cache[id] = res
+                options.autoRerender && render()
+                return res
+              })
           }
         }
       } else {
@@ -272,7 +274,11 @@ export default {
         state.src = transform(state.src, vars, {
           ...options,
           callback: (result, match, matchPos) => {
-            const resultStr = '' + result
+            if (result instanceof Promise) {
+              return
+            }
+
+            const resultStr = result.value
             const matchLine = lineCount(match)
             const resultLine = lineCount(resultStr)
 
