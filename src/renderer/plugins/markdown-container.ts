@@ -74,7 +74,7 @@ export default {
       }
 
       .markdown-view .markdown-body .custom-container.group .group-item-radio {
-        position: absolute;
+        position: fixed;
         right: -99999999px;
       }
 
