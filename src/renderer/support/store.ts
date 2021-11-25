@@ -15,6 +15,7 @@ export const initState = {
   showSetting: false,
   showExport: false,
   presentation: false,
+  isFullscreen: false,
   currentContent: '',
   currentRepo: storage.get<Repo>('currentRepo'),
   currentFile: null as Doc | null,
@@ -63,6 +64,9 @@ export default createStore({
     },
     setPresentation (state, data) {
       state.presentation = data
+    },
+    setIsFullscreen (state, data) {
+      state.isFullscreen = data
     },
     setAutoPreview (state, data) {
       state.autoPreview = data

@@ -68,7 +68,7 @@ const createWindow = () => {
     frame: false,
     backgroundColor: '#282a2b',
     titleBarStyle: isMacos ? 'hidden' : undefined,
-    fullscreenable: false,
+    fullscreenable: true,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
