@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 更新日志
 
 ### [v3.12.6](https://github.com/purocean/yn/releases/tag/v3.12.6) 2021-11-25
-1. feat(macos): 运行应用全屏
+1. feat(macos): 允许应用全屏
 2. upd(help): 自动选择当前语言打开文档
 3. fix(macro): 修复行号计算
 
