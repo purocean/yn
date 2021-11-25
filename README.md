@@ -88,7 +88,7 @@ For more information on how to use the following functions, please see [characte
 ## Changelogs
 
 ### [v3.12.6](https://github.com/purocean/yn/releases/tag/v3.12.6) 2021-11-25
-1. feat(macos): add full screen mode for macOS
+1. feat: add full screen mode
 2. upd(help): auto select current language
 3. fix(macro): fix line count
 
