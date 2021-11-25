@@ -8,7 +8,7 @@
 
 [toc]{level: [2]}
 
-![截图](./help/1.png)
+![截图](./help/1_ZH-CN.png)
 
 ## 特色
 
@@ -81,9 +81,10 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 截图
 
-![截图](./help/2.png)
-![截图](./help/3.png)
-![截图](./help/4.png)
+![截图](./help/2_ZH-CN.png)
+![截图](./help/3_ZH-CN.png)
+![截图](./help/4_ZH-CN.png)
+![截图](./help/5_ZH-CN.png)
 
 ## 更新日志
 

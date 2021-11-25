@@ -84,6 +84,7 @@ For more information on how to use the following functions, please see [characte
 ![Screenshot](./help/2.png)
 ![Screenshot](./help/3.png)
 ![Screenshot](./help/4.png)
+![Screenshot](./help/5.png)
 
 ## Changelogs
 
