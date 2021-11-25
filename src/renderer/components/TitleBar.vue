@@ -54,6 +54,14 @@ export default defineComponent({
     const isAlwaysOnTop = ref(false)
     const isFocused = ref(false)
 
+    function handleFullscreenEnter () {
+      store.commit('setIsFullscreen', true)
+    }
+
+    function handleFullscreenLeave () {
+      store.commit('setIsFullscreen', false)
+    }
+
     function updateWindowStatus () {
       if (win) {
         isMaximized.value = win.isMaximized()
@@ -111,6 +119,10 @@ export default defineComponent({
         win.on('always-on-top-changed', updateWindowStatus)
         win.on('focus', updateWindowStatus)
         win.on('blur', updateWindowStatus)
+
+        // win.isFullScreen() not work
+        win.on('enter-full-screen', handleFullscreenEnter)
+        win.on('leave-full-screen', handleFullscreenLeave)
       }
     })
 
@@ -127,6 +139,8 @@ export default defineComponent({
         win.removeListener('always-on-top-changed', updateWindowStatus)
         win.removeListener('focus', updateWindowStatus)
         win.removeListener('blur', updateWindowStatus)
+        win.removeListener('enter-full-screen', handleFullscreenEnter)
+        win.removeListener('leave-full-screen', handleFullscreenLeave)
       }
 
       win = null

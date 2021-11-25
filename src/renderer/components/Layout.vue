@@ -1,6 +1,6 @@
 <template>
   <div :class="{layout: true, presentation, electron: isElectron}">
-    <div class="header" v-show="isElectron">
+    <div class="header" v-show="isElectron && !isFullscreen">
       <slot name="header"></slot>
     </div>
     <div class="main">
@@ -44,7 +44,7 @@ export default defineComponent({
   setup () {
     const store = useStore()
 
-    const { showView, showXterm, showSide, showEditor, presentation } = toRefs(store.state)
+    const { showView, showXterm, showSide, showEditor, presentation, isFullscreen } = toRefs(store.state)
 
     const aside = ref(null)
     const editor = ref(null)
@@ -114,6 +114,7 @@ export default defineComponent({
       showEditor,
       presentation,
       isElectron,
+      isFullscreen,
       aside,
       editor,
       terminal,
