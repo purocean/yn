@@ -74,6 +74,7 @@ const data: BaseLanguage = {
     'quit': '退出',
     'preferences': '偏好设置',
     'close-window': '关闭窗口',
+    'toggle-fullscreen': '切换全屏',
     'tray': {
       'open-main-window': '打开主界面',
       'open-in-browser': '浏览器中打开',

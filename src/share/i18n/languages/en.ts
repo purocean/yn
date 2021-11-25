@@ -73,6 +73,7 @@ const data = {
     'quit': 'Quit',
     'preferences': 'Preferences',
     'close-window': 'Close Window',
+    'toggle-fullscreen': 'Toggle Full Screen',
     'tray': {
       'open-main-window': 'Open Main Window',
       'open-in-browser': 'Open in Browser',
