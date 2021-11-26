@@ -50,6 +50,16 @@ export function getEditor () {
 }
 
 /**
+ * Get one indent
+ * getOneIndent removed https://github.com/microsoft/monaco-editor/issues/1565
+ * @returns
+ */
+export function getOneIndent () {
+  const options = editor.getModel()!.getOptions()
+  return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'
+}
+
+/**
  * Ensure editor is ready.
  * @returns
  */
