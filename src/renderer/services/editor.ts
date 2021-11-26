@@ -90,6 +90,22 @@ export function insert (text: string) {
 }
 
 /**
+ * Insert text at position.
+ * @param position
+ * @param text
+ */
+export function insertAt (position: Monaco.Position, text: string) {
+  getEditor().executeEdits('', [
+    {
+      range: new (getMonaco().Range)(position.lineNumber, position.column, position.lineNumber, position.column),
+      text,
+      forceMoveMarkers: true
+    }
+  ])
+  getEditor().focus()
+}
+
+/**
  * Replace text value of line.
  * @param line
  * @param text
