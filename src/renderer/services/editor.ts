@@ -114,7 +114,11 @@ export function replaceLine (line: number, text: string) {
   const length = getEditor().getModel()!.getLineLength(line)
 
   getEditor().executeEdits('', [
-    { range: new (getMonaco().Range)(line, 1, line, length + 1), text }
+    {
+      range: new (getMonaco().Range)(line, 1, line, length + 1),
+      text,
+      forceMoveMarkers: true
+    }
   ])
 }
 
