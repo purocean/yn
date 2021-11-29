@@ -94,3 +94,9 @@ For more information on how to use the following functions, please see [characte
 3. fix(macro): fix line count
 
 [More release notes](https://github.com/purocean/yn/releases)
+
+## Supports
+
+Wechat Group
+
+<img src="./help/qrcode-wechat.jpg?.inline" width="150">

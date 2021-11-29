@@ -94,3 +94,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 3. fix(macro): 修复行号计算
 
 [更多发布说明](https://github.com/purocean/yn/releases)
+
+## 支持
+
+加我微信进交流群（备注 Yank Note）
+
+<img src="./help/qrcode-wechat.jpg" width="150">
