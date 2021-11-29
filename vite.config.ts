@@ -38,6 +38,7 @@ export default defineConfig({
   },
   resolve: {
     alias: [
+      { find: /^socket.io-client$/, replacement: 'socket.io-client/dist/socket.io.js' },
       { find: /^vue$/, replacement: 'vue/dist/vue.esm-bundler.js' },
       { find: /^@\//, replacement: path.resolve(__dirname, 'src') + '/' },
       { find: /^@fe\//, replacement: path.resolve(__dirname, 'src', 'renderer') + '/' },

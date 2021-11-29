@@ -50,6 +50,16 @@ export function getEditor () {
 }
 
 /**
+ * Get one indent
+ * getOneIndent removed https://github.com/microsoft/monaco-editor/issues/1565
+ * @returns
+ */
+export function getOneIndent () {
+  const options = editor.getModel()!.getOptions()
+  return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'
+}
+
+/**
  * Ensure editor is ready.
  * @returns
  */
@@ -80,6 +90,22 @@ export function insert (text: string) {
 }
 
 /**
+ * Insert text at position.
+ * @param position
+ * @param text
+ */
+export function insertAt (position: Monaco.Position, text: string) {
+  getEditor().executeEdits('', [
+    {
+      range: new (getMonaco().Range)(position.lineNumber, position.column, position.lineNumber, position.column),
+      text,
+      forceMoveMarkers: true
+    }
+  ])
+  getEditor().focus()
+}
+
+/**
  * Replace text value of line.
  * @param line
  * @param text
@@ -88,7 +114,11 @@ export function replaceLine (line: number, text: string) {
   const length = getEditor().getModel()!.getLineLength(line)
 
   getEditor().executeEdits('', [
-    { range: new (getMonaco().Range)(line, 1, line, length + 1), text }
+    {
+      range: new (getMonaco().Range)(line, 1, line, length + 1),
+      text,
+      forceMoveMarkers: true
+    }
   ])
 }
 

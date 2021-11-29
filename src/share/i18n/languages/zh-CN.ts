@@ -377,6 +377,9 @@ const data: BaseLanguage = {
     'edit-sheet': '编辑表格',
     'create-dialog-title': '创建 Luckysheet 文件',
   },
+  'markdown-link': {
+    'convert-to-titled-link': '转换为带标题的链接',
+  },
 }
 
 export default data

@@ -1,6 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import dayjs from 'dayjs'
-import { getMonaco, insert, whenEditorReady } from '@fe/services/editor'
+import type { Position } from 'monaco-editor'
+import { getEditor, getLineContent, getMonaco, getOneIndent, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 
@@ -51,6 +52,29 @@ function createDependencyProposals (range: any) {
   }))
 }
 
+function processCursorChange (source: string, position: Position) {
+  const isTab = source === 'tab'
+
+  if (!isTab) {
+    return
+  }
+
+  const content = getLineContent(position.lineNumber)
+  if (!content) {
+    return
+  }
+
+  const eolNumber = getEditor().getModel()?.getLineMaxColumn(position.lineNumber)
+
+  if (
+    eolNumber === position.column &&
+    /\s*(?:[*+-]|\d+\.)/.test(content)
+  ) {
+    const indent = getOneIndent()
+    replaceLine(position.lineNumber, indent + content.trimEnd() + ' ')
+  }
+}
+
 export default {
   name: 'editor-markdown',
   register: (ctx) => {
@@ -91,13 +115,12 @@ export default {
       })
 
       editor.addCommand(KM.Shift | KC.Enter, () => {
-        // getOneIndent removed https://github.com/microsoft/monaco-editor/issues/1565
-        const getOneIndent = () => {
-          const options = editor.getModel()!.getOptions()
-          return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'
-        }
-
         insert(getOneIndent())
+      })
+
+      editor.onDidChangeCursorPosition(e => {
+        processCursorChange(e.source, e.position)
+        e.secondaryPositions.forEach(processCursorChange.bind(null, e.source))
       })
 
       editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_U), () => {

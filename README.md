@@ -88,9 +88,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.12.8](https://github.com/purocean/yn/releases/tag/v3.12.8) 2021-11-25
-1. feat: add full screen mode
-2. upd(help): auto select current language
-3. fix(macro): fix line count
+### [v3.12.9](https://github.com/purocean/yn/releases/tag/v3.12.9) 2021-11-29
+1. feat(preview): add "Convert to Titled Link" context menu
+2. feat(editor): use the tab key indent list item
+3. feat(core): add `ctx.editor.getOneIndet` method
+4. feat(core): add `ctx.editor.insertAt` method
 
 [More release notes](https://github.com/purocean/yn/releases)
+
+## Supports
+
+Wechat Group
+
+<img src="./help/qrcode-wechat.jpg?.inline" width="150">

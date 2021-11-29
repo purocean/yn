@@ -183,5 +183,41 @@ export default {
         return slf.renderToken(tokens, idx, options)
       }
     })
+
+    ctx.view.tapContextMenus((menus, e) => {
+      const target = e.target as HTMLLinkElement
+      const parent = target.parentElement
+      const link = target.getAttribute('href') || ''
+      const text = target.innerText
+
+      if (
+        target.tagName === 'A' &&
+        parent?.dataset?.sourceLine &&
+        text === link &&
+        /^http:\/\/|^https:\/\//.test(link)
+      ) {
+        menus.push({
+          id: 'plugin.markdown-link.transform-link',
+          type: 'normal',
+          label: ctx.i18n.t('markdown-link.convert-to-titled-link'),
+          onClick: async () => {
+            try {
+              const res = await ctx.api.proxyRequest(target.href).then(r => r.text())
+              const match = res.match(/<title[^>]*>([^<]*)<\/title>/si) || []
+              const title = ctx.lib.lodash.unescape(match[1] || '')
+
+              const line = parseInt(parent.dataset.sourceLine || '0')
+              const content = ctx.editor.getLineContent(line)
+                .replace(new RegExp(`(?<!\\()<?${link}>?(?!\\))`, 'i'), `[${title}](${link})`)
+
+              ctx.editor.replaceLine(line, content)
+            } catch (error: any) {
+              console.error(error)
+              ctx.ui.useToast().show('warning', error.message)
+            }
+          }
+        })
+      }
+    })
   }
 } as Plugin

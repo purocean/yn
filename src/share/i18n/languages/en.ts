@@ -376,6 +376,9 @@ const data = {
     'edit-sheet': 'Edit Sheet',
     'create-dialog-title': 'Create Luckysheet File',
   },
+  'markdown-link': {
+    'convert-to-titled-link': 'Convert to Titled Link',
+  },
 }
 
 export type BaseLanguage = typeof data

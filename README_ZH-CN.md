@@ -88,9 +88,16 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.12.8](https://github.com/purocean/yn/releases/tag/v3.12.8) 2021-11-25
-1. feat: 增加全屏模式
-2. upd(help): 自动选择当前语言打开文档
-3. fix(macro): 修复行号计算
+### [v3.12.9](https://github.com/purocean/yn/releases/tag/v3.12.9) 2021-11-29
+1. feat(preview): 增加 “转换为带标题的链接” 上下文菜单
+2. feat(editor): 使用 Tab 键缩进列表
+3. feat(core): 增加 `ctx.editor.getOneIndet` 方法
+4. feat(core): 增加 `ctx.editor.insertAt` 方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
+
+## 支持
+
+加我微信进交流群（备注 Yank Note）
+
+<img src="./help/qrcode-wechat.jpg" width="150">

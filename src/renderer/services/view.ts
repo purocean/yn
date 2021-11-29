@@ -2,8 +2,14 @@ import { Escape } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
+import type { Components } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
+
+export type MenuItem = Components.ContextMenu.Item
+export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
+
+const contextMenuFunList: BuildContextMenu[] = []
 
 function present (flag: boolean) {
   if (flag) {
@@ -74,6 +80,29 @@ export function exitPresent () {
 export function toggleAutoPreview (flag?: boolean) {
   const showXterm = store.state.autoPreview
   store.commit('setAutoPreview', typeof flag === 'boolean' ? flag : !showXterm)
+}
+
+/**
+ * Add a context menu processor.
+ * @param fun
+ */
+export function tapContextMenus (fun: BuildContextMenu) {
+  contextMenuFunList.push(fun)
+}
+
+/**
+ * Get context menus
+ * @param e
+ * @returns
+ */
+export function getContextMenuItems (e: MouseEvent) {
+  const items: MenuItem[] = []
+
+  contextMenuFunList.forEach((fun) => {
+    fun(items, e)
+  })
+
+  return items
 }
 
 registerAction({

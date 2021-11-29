@@ -130,5 +130,27 @@ export default {
         onClick: ctx.action.getActionHandler(actionKeydown)
       })
     })
+
+    ctx.view.tapContextMenus((items, e) => {
+      const el = e.target as HTMLElement
+
+      if (
+        el.tagName === 'IMG' &&
+        /^https:\/\/|^http:\/\/|^data:/.test(el.getAttribute('src') || '')
+      ) {
+        items.push({
+          id: commandClick,
+          type: 'normal',
+          label: ctx.i18n.t('status-bar.tool.convert-img-link'),
+          onClick: async () => {
+            const data = await transformImgOutLink(el as HTMLImageElement)
+            if (data) {
+              replaceValue(data.oldLink, data.replacedLink)
+              refreshTree()
+            }
+          }
+        })
+      }
+    })
   }
 } as Plugin
