@@ -378,7 +378,7 @@ const data: BaseLanguage = {
     'create-dialog-title': '创建 Luckysheet 文件',
   },
   'markdown-link': {
-    'transform-link-with-title': '转换为带标题的链接',
+    'convert-to-titled-link': '转换为带标题的链接',
   },
 }
 
