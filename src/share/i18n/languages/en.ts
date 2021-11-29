@@ -377,7 +377,7 @@ const data = {
     'create-dialog-title': 'Create Luckysheet File',
   },
   'markdown-link': {
-    'transform-link-with-title': 'Transform Link with Title',
+    'convert-to-titled-link': 'Convert to Titled Link',
   },
 }
 

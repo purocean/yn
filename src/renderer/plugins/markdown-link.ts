@@ -199,7 +199,7 @@ export default {
         menus.push({
           id: 'plugin.markdown-link.transform-link',
           type: 'normal',
-          label: ctx.i18n.t('markdown-link.transform-link-with-title'),
+          label: ctx.i18n.t('markdown-link.convert-to-titled-link'),
           onClick: async () => {
             try {
               const res = await ctx.api.proxyRequest(target.href).then(r => r.text())
