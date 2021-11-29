@@ -35,7 +35,7 @@ Transform to Uppercase | Ctrl/Cmd + K, Ctrl/Cmd + U
 Transform to Lowercase | Ctrl/Cmd + K, Ctrl/Cmd + L
 Paste RTF as Document | Ctrl/Cmd + D + V
 Pase Image as Base64 | Ctrl/Cmd + B + V
-Download Remote Image | Ctrl/Cmd + Shift + Click Image
+Show Context Menu in the Preview | Right-click Target (Hold Alt in the Browser)
 Edit Table Cell | Double Click Cell
 Edit Table Cell (Popup) | Ctrl/Cmd + Click
 Copy Heading link | Ctrl/Cmd + Click Heading
@@ -76,7 +76,7 @@ Presentation | F5
 转换小写 | Ctrl/Cmd + K, Ctrl/Cmd + L
 粘贴 HTML 富文本 | Ctrl/Cmd + D + V
 粘贴图片为 base64 链接 | Ctrl/Cmd + B + V
-转换单个外链图片到本地 | Ctrl/Cmd + Shift + 单击图片
+预览界面唤起右键菜单 | 右击目标元素（浏览器中需要按住 Alt）
 编辑表格单元格 | 双击单元格
 编辑表格单元格(弹出框) | Ctrl/Cmd + 单击单元格
 复制文档标题链接 | Ctrl/Cmd + 单击标题
