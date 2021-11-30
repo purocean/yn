@@ -88,9 +88,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.13.0](https://github.com/purocean/yn/releases/tag/v3.13.0) 2021-11-30
+### [v3.13.1](https://github.com/purocean/yn/releases/tag/v3.13.1) 2021-11-30
 1. feat(macro): add "Copy Markdown after Macro Replacement" menu
-2. upd(side-bar): update side bar UI
+2. upd(sidebar): update sidebar UI
 
 [More release notes](https://github.com/purocean/yn/releases)
 
