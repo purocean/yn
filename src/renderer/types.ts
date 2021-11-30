@@ -79,6 +79,7 @@ export namespace Components {
       birthtime?: number;
       marked?: boolean;
       children?: Node[];
+      level: number;
     }
   }
 }

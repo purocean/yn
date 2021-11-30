@@ -1,8 +1,15 @@
 <template>
   <div class="tree-node">
-    <details ref="refDir" @keydown.enter.prevent v-if="item.type === 'dir'" class="name" :title="item.path" :open="item.path === '/'">
+    <details
+      ref="refDir"
+      v-if="item.type === 'dir'"
+      class="name"
+      :title="item.path"
+      :open="item.path === '/'"
+      @keydown.enter.prevent>
       <summary
         :class="{folder: true, 'folder-selected': selected}"
+        :style="`padding-left: ${item.level}em`"
         @contextmenu.exact.prevent.stop="showContextMenu(item)">
         <div class="item">
           <div class="item-label">
@@ -19,12 +26,11 @@
       ref="refFile"
       v-else
       :class="{name: true, 'file-name': true, selected}"
+      :style="`padding-left: ${item.level}em`"
       :title="item.path + '\n\n' + fileTitle"
       @click.exact.prevent="select(item)"
       @contextmenu.exact.prevent.stop="showContextMenu(item)">
-      <div class="item">
-        <div :class="{'item-label': true, marked}"> {{ item.name }} </div>
-      </div>
+      <div :class="{'item-label': true, marked, 'type-md': item.name.endsWith('.md')}"> {{ item.name }} </div>
     </div>
   </div>
 </template>
@@ -144,11 +150,10 @@ export default defineComponent({
 
 <style scoped>
 .tree-node {
-  border-left: 1px var(--g-color-80) solid;
-  font-size: 16px;
-  line-height: 1.4em;
-  padding-left: 1em;
+  font-size: 15px;
+  line-height: 1.6em;
   cursor: default;
+  color: var(--g-color-5);
 }
 
 .tree-node * {
@@ -172,11 +177,11 @@ summary.folder::marker {
 }
 
 .folder:hover {
-  background: var(--g-color-80);
+  background: var(--g-color-90);
 }
 
 .folder-selected {
-  background: var(--g-color-85)
+  background: var(--g-color-93)
 }
 
 .item {
@@ -218,8 +223,8 @@ summary > .item {
 }
 
 .item-action .icon:hover {
-  background: var(--glor-65);
-  color: var(--g-color-35);
+  background: var(--g-color-70);
+  color: var(--g-color-25);
 }
 
 .item:hover .item-action {
@@ -247,18 +252,32 @@ summary > .item {
 .file-name {
   padding-left: 0.2em;
   transition: 50ms ease;
+  border-left: 4px solid transparent;
 }
 
 .file-name.selected {
-  background: var(--g-color-80);
+  background: var(--g-color-85);
+  border-left-color: var(--g-color-50);
 }
 
 .file-name:hover {
-  background: var(--g-color-80);
+  background: var(--g-color-85);
 }
 
-.file-name:active {
-  padding-left: 0.3em;
+.file-name .item-label::before {
+  display: inline-block;
+  width: 12px;
+  margin-right: 4px;
+  content: url(data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIgZGF0YS1wcmVmaXg9ImZhbCIgZGF0YS1pY29uPSJmaWxlLWNoYXJ0LXBpZSIgcm9sZT0iaW1nIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzODQgNTEyIiBjbGFzcz0ic3ZnLWlubGluZS0tZmEgZmEtZmlsZS1jaGFydC1waWUgZmEtdy0xMiI+PHBhdGggZmlsbD0iIzk5OSIgZD0iTTM2OS45IDk3Ljk4TDI4Ni4wMiAxNC4xYy05LTktMjEuMi0xNC4xLTMzLjg5LTE0LjFINDcuOTlDMjEuNS4xIDAgMjEuNiAwIDQ4LjA5djQxNS45MkMwIDQ5MC41IDIxLjUgNTEyIDQ3Ljk5IDUxMmgyODguMDJjMjYuNDkgMCA0Ny45OS0yMS41IDQ3Ljk5LTQ3Ljk5VjEzMS45N2MwLTEyLjY5LTUuMS0yNC45OS0xNC4xLTMzLjk5ek0yNTYuMDMgMzIuNTljMi44LjcgNS4zIDIuMSA3LjQgNC4ybDgzLjg4IDgzLjg4YzIuMSAyLjEgMy41IDQuNiA0LjIgNy40aC05NS40OFYzMi41OXptOTUuOTggNDMxLjQyYzAgOC44LTcuMiAxNi0xNiAxNkg0Ny45OWMtOC44IDAtMTYtNy4yLTE2LTE2VjQ4LjA5YzAtOC44IDcuMi0xNi4wOSAxNi0xNi4wOWgxNzYuMDR2MTA0LjA3YzAgMTMuMyAxMC43IDIzLjkzIDI0IDIzLjkzaDEwMy45OHYzMDQuMDF6TTE5MiAxOTJ2MTI4aDEyNy45OWMuMDEgMCAwLS4wMSAwLS4wMi0uMDEtNzAuNjgtNTcuMjktMTI3Ljk3LTEyNy45Ny0xMjcuOThIMTkyem0zMiAzNy40OWMyNy4yMiA5LjY2IDQ4Ljg1IDMxLjI4IDU4LjUgNTguNTFIMjI0di01OC41MXpNMTc2IDQxNmMtNDQuMTIgMC04MC0zNS44OS04MC04MCAwLTM4LjYzIDI3LjUyLTcwLjk1IDY0LTc4LjM4di0zMmMtNTQuMTMgNy44NS05NiA1NC4xMS05NiAxMTAuMzggMCA2MS43NSA1MC4yNSAxMTIgMTEyIDExMiA1Ni4yNyAwIDEwMi41NC00MS44NyAxMTAuMzgtOTZoLTMyYy03LjQzIDM2LjQ3LTM5Ljc0IDY0LTc4LjM4IDY0eiIgY2xhc3M9IiI+PC9wYXRoPjwvc3ZnPg==);
+  vertical-align: text-top;
+}
+
+.file-name .item-label.type-md::before {
+  content: url(data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIgZGF0YS1wcmVmaXg9ImZhbCIgZGF0YS1pY29uPSJmaWxlLWFsdCIgcm9sZT0iaW1nIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzODQgNTEyIiBjbGFzcz0ic3ZnLWlubGluZS0tZmEgZmEtZmlsZS1hbHQgZmEtdy0xMiI+PHBhdGggZmlsbD0iIzk5OSIgZD0iTTM2OS45IDk3LjlMMjg2IDE0QzI3NyA1IDI2NC44LS4xIDI1Mi4xLS4xSDQ4QzIxLjUgMCAwIDIxLjUgMCA0OHY0MTZjMCAyNi41IDIxLjUgNDggNDggNDhoMjg4YzI2LjUgMCA0OC0yMS41IDQ4LTQ4VjEzMS45YzAtMTIuNy01LjEtMjUtMTQuMS0zNHptLTIyLjYgMjIuN2MyLjEgMi4xIDMuNSA0LjYgNC4yIDcuNEgyNTZWMzIuNWMyLjguNyA1LjMgMi4xIDcuNCA0LjJsODMuOSA4My45ek0zMzYgNDgwSDQ4Yy04LjggMC0xNi03LjItMTYtMTZWNDhjMC04LjggNy4yLTE2IDE2LTE2aDE3NnYxMDRjMCAxMy4zIDEwLjcgMjQgMjQgMjRoMTA0djMwNGMwIDguOC03LjIgMTYtMTYgMTZ6bS00OC0yNDR2OGMwIDYuNi01LjQgMTItMTIgMTJIMTA4Yy02LjYgMC0xMi01LjQtMTItMTJ2LThjMC02LjYgNS40LTEyIDEyLTEyaDE2OGM2LjYgMCAxMiA1LjQgMTIgMTJ6bTAgNjR2OGMwIDYuNi01LjQgMTItMTIgMTJIMTA4Yy02LjYgMC0xMi01LjQtMTItMTJ2LThjMC02LjYgNS40LTEyIDEyLTEyaDE2OGM2LjYgMCAxMiA1LjQgMTIgMTJ6bTAgNjR2OGMwIDYuNi01LjQgMTItMTIgMTJIMTA4Yy02LjYgMC0xMi01LjQtMTItMTJ2LThjMC02LjYgNS40LTEyIDEyLTEyaDE2OGM2LjYgMCAxMiA1LjQgMTIgMTJ6IiBjbGFzcz0iIj48L3BhdGg+PC9zdmc+);
+}
+
+.file-name .item-label:active {
+  transform: translateX(2px);
 }
 
 .marked {
@@ -266,7 +285,6 @@ summary > .item {
 }
 
 .name {
-  border-radius: var(--g-border-radius);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
