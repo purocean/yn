@@ -1,10 +1,11 @@
 import { omit } from 'lodash-es'
 import frontMatter from 'front-matter'
 import type { Plugin } from '@fe/context'
+import type { Doc } from '@fe/types'
+import type { MenuItem } from '@fe/services/status-bar'
 import { render } from '@fe/services/view'
 import { t } from '@fe/services/i18n'
 import { readFile } from '@fe/support/api'
-import type { Doc } from '@fe/types'
 import { getLogger, md5 } from '@fe/utils'
 import { basename, dirname, resolve } from '@fe/utils/path'
 import { getPurchased } from '@fe/others/premium'
@@ -306,6 +307,31 @@ export default {
         state.env.source = state.src
 
         return false
+      })
+    })
+
+    ctx.registerHook('VIEW_RENDERED', ({ renderEnv }) => {
+      ctx.statusBar.tapMenus(menus => {
+        const list = menus['status-bar-tool']?.list
+        if (list) {
+          const id = 'plugin.markdown-macro.copy-markdown'
+          const menu: MenuItem = {
+            id,
+            type: 'normal',
+            hidden: !renderEnv?.attributes?.enableMacro,
+            title: ctx.i18n.t('status-bar.tool.macro-copy-markdown'),
+            onClick: () => {
+              ctx.utils.copyText(renderEnv?.source)
+            }
+          }
+
+          const item = list.find(x => x.id === id)
+          if (item) {
+            Object.assign(item, menu)
+          } else {
+            list.push(menu)
+          }
+        }
       })
     })
   }

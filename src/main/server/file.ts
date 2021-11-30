@@ -24,6 +24,7 @@ interface TreeItem extends XFile {
   birthtime?: number;
   marked?: boolean;
   children?: XFile[];
+  level: number;
 }
 
 function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath: string[]) => Promise<T>, ...target: string[]): Promise<T> {
@@ -112,7 +113,7 @@ async function travels (
   repo: string,
   basePath: string,
   markedFiles: MarkedFile[],
-  data: TreeItem
+  data: TreeItem,
 ): Promise<void> {
   if (!(await fs.stat(location)).isDirectory()) {
     return
@@ -141,7 +142,8 @@ async function travels (
         repo: repo,
         marked: (markedFiles || []).findIndex(f => f.path === xpath && f.repo === repo) > -1,
         birthtime: stat.birthtimeMs,
-        mtime: stat.mtimeMs
+        mtime: stat.mtimeMs,
+        level: data.level + 1,
       })
     } else if (stat.isDirectory()) {
       const dir: TreeItem = {
@@ -149,7 +151,8 @@ async function travels (
         path: getRelativePath(basePath, p),
         type: 'dir',
         repo: repo,
-        children: []
+        children: [],
+        level: data.level + 1,
       }
 
       dirs.push(dir)
@@ -169,7 +172,8 @@ export async function tree (repo: string): Promise<TreeItem[]> {
     type: 'dir',
     path: '/',
     repo: repo,
-    children: []
+    children: [],
+    level: 1,
   }]
 
   const markedFiles = mark.list()
@@ -204,7 +208,7 @@ export async function search (repo: string, str: string) {
         .test(await fs.readFile(p, 'utf-8'))
   }
 
-  const travelFiles = async (location: string, basePath: string) => {
+  const travelFiles = async (location: string, basePath: string, level: number) => {
     // limit results
     if (files.length >= 70) {
       return
@@ -224,7 +228,7 @@ export async function search (repo: string, str: string) {
       const p = path.join(location, x.name)
 
       if (x.isDirectory()) {
-        await travelFiles(p, basePath)
+        await travelFiles(p, basePath, level + 1)
       } else if (x.isFile()) {
         if (await match(p, str)) {
           files.push({
@@ -232,13 +236,14 @@ export async function search (repo: string, str: string) {
             name: x.name,
             path: getRelativePath(basePath, p),
             type: 'file',
+            level: level,
           })
         }
       }
     }))
   }
 
-  await withRepo(repo, repoPath => travelFiles(repoPath, repoPath))
+  await withRepo(repo, repoPath => travelFiles(repoPath, repoPath, 1))
 
   return files
 }

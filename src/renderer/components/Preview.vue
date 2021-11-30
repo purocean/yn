@@ -51,15 +51,17 @@ import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'
 import { showExport } from '@fe/services/document'
 import { getContextMenuItems, toggleAutoPreview } from '@fe/services/view'
+import { useContextMenu } from '@fe/support/ui/context-menu'
 import { useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
+import type { RenderEnv } from '@fe/types'
+
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
-import { useContextMenu } from '@fe/support/ui/context-menu'
 
 const logger = getLogger('preview')
 
@@ -97,6 +99,8 @@ export default defineComponent({
     const scrollToTopStyle = computed(() => ({
       bottom: `max(100vh - ${height.value - (isElectron ? 0 : 20)}px, 40px)`
     }))
+
+    let renderEnv: RenderEnv | null = null
 
     function togglePinOutline () {
       pinOutline.value = !pinOutline.value
@@ -140,7 +144,7 @@ export default defineComponent({
     function handleRendered () {
       updateOutline()
       updateTodoCount()
-      triggerHook('VIEW_RENDERED', { getViewDom })
+      triggerHook('VIEW_RENDERED', { getViewDom, renderEnv })
     }
 
     let updateRender = debounce(render, 100)
@@ -153,7 +157,8 @@ export default defineComponent({
         : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
 
       const startTime = performance.now()
-      renderContent.value = markdown.render(content, { source: content, file: currentFile.value })
+      renderEnv = { source: content, file: currentFile.value }
+      renderContent.value = markdown.render(content, renderEnv)
       const renderTime = performance.now() - startTime
 
       logger.debug('rendered', 'cost', renderTime)

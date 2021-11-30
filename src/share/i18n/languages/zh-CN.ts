@@ -209,12 +209,13 @@ const data: BaseLanguage = {
     },
     'insert': {
       'insert': '插入',
+      'paste-rft': '粘贴富文本',
+      'paste-img-base64': '粘贴图片',
     },
     'tool': {
       'tool': '工具',
-      'paste-rft': '粘贴富文本',
-      'paste-img-base64': '粘贴图片',
       'convert-img-link': '下载外链图片',
+      'macro-copy-markdown': '复制宏替换后的 Markdown'
     },
     'document-info': {
       'selected': '已选择',

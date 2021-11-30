@@ -123,7 +123,7 @@ export default {
         {
           id: pasteImageAsBase64ActionId,
           type: 'normal',
-          title: ctx.i18n.t('status-bar.tool.paste-img-base64'),
+          title: ctx.i18n.t('status-bar.insert.paste-img-base64'),
           subTitle: 'Base64',
           onClick: () => {
             pasteImageFromClipboard(true)
@@ -132,7 +132,7 @@ export default {
         {
           id: pasteRtfActionId,
           type: 'normal',
-          title: ctx.i18n.t('status-bar.tool.paste-rft'),
+          title: ctx.i18n.t('status-bar.insert.paste-rft'),
           subTitle: 'Markdown',
           onClick: pasteRtf
         },

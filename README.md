@@ -88,11 +88,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.12.9](https://github.com/purocean/yn/releases/tag/v3.12.9) 2021-11-29
-1. feat(preview): add "Convert to Titled Link" context menu
-2. feat(editor): use the tab key indent list item
-3. feat(core): add `ctx.editor.getOneIndet` method
-4. feat(core): add `ctx.editor.insertAt` method
+### [v3.13.0](https://github.com/purocean/yn/releases/tag/v3.13.0) 2021-11-30
+1. feat(macro): add "Copy Markdown after Macro Replacement" menu
+2. upd(side-bar): update side bar UI
 
 [More release notes](https://github.com/purocean/yn/releases)
 

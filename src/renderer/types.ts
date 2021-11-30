@@ -79,6 +79,7 @@ export namespace Components {
       birthtime?: number;
       marked?: boolean;
       children?: Node[];
+      level: number;
     }
   }
 }
@@ -86,6 +87,8 @@ export namespace Components {
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
+
+export type RenderEnv = { source: string, file: Doc | null, attributes?: Record<string, any> }
 
 export type BuildInSettings = {
   'repos': { name: string, path: string }[],
@@ -146,7 +149,7 @@ export type BuildInHookTypes = {
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },
   VIEW_SCROLL: { e: WheelEvent },
   VIEW_RENDER: { getViewDom: ()=> HTMLElement | null },
-  VIEW_RENDERED: { getViewDom: ()=> HTMLElement | null },
+  VIEW_RENDERED: { getViewDom: ()=> HTMLElement | null, renderEnv: RenderEnv | null },
   VIEW_MOUNTED: { getViewDom: ()=> HTMLElement | null },
   VIEW_FILE_CHANGE: { getViewDom: ()=> HTMLElement | null },
   VIEW_BEFORE_REFRESH: { getViewDom: ()=> HTMLElement | null },

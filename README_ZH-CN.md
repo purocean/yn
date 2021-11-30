@@ -88,11 +88,9 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.12.9](https://github.com/purocean/yn/releases/tag/v3.12.9) 2021-11-29
-1. feat(preview): 增加 “转换为带标题的链接” 上下文菜单
-2. feat(editor): 使用 Tab 键缩进列表
-3. feat(core): 增加 `ctx.editor.getOneIndet` 方法
-4. feat(core): 增加 `ctx.editor.insertAt` 方法
+### [v3.13.0](https://github.com/purocean/yn/releases/tag/v3.13.0) 2021-11-30
+1. feat(macro): 增加 "复制宏替换后的 Markdown" 菜单
+2. upd(side-bar): 调整侧栏 UI
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
