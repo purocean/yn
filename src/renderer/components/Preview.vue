@@ -74,7 +74,7 @@ export default defineComponent({
     const store = useStore()
 
     const pinOutline = ref(false)
-    const { currentContent, currentFile, autoPreview, presentation } = toRefs(store.state)
+    const { currentContent, currentFile, autoPreview, presentation, inComposition } = toRefs(store.state)
     const fileName = computed(() => currentFile.value?.name)
     const filePath = computed(() => currentFile.value?.path)
 
@@ -147,9 +147,14 @@ export default defineComponent({
       triggerHook('VIEW_RENDERED', { getViewDom, renderEnv })
     }
 
-    let updateRender = debounce(render, 100)
+    let updateRender = debounce(render, 25)
 
-    function render () {
+    function render (checkInComposition = false) {
+      if (checkInComposition && inComposition.value) {
+        logger.debug('render in composition, skip')
+        return
+      }
+
       logger.debug('render')
       // not markdown file, show code block.
       const content = (filePath.value || '').endsWith('.md')
@@ -163,10 +168,10 @@ export default defineComponent({
 
       logger.debug('rendered', 'cost', renderTime)
 
-      updateRender = debounce(render, Math.max(25, renderTime * (renderTime < 100 ? 1.2 : 1.8)))
+      updateRender = debounce(render.bind(null, true), Math.max(25, renderTime * (renderTime < 100 ? 1.2 : 1.8)))
     }
 
-    const renderDebonce = debounce(render, 100, { leading: true })
+    const renderDebounce = debounce(render, 100, { leading: true })
 
     async function keydownHandler (e: KeyboardEvent) {
       triggerHook('VIEW_KEY_DOWN', { e, view: getViewDom()! }, { breakable: true })
@@ -237,14 +242,14 @@ export default defineComponent({
     function refresh () {
       logger.debug('refresh')
       triggerHook('VIEW_BEFORE_REFRESH', { getViewDom })
-      renderDebonce()
+      renderDebounce()
       triggerHook('VIEW_AFTER_REFRESH', { getViewDom })
     }
 
     onMounted(() => {
-      nextTick(renderDebonce)
+      nextTick(renderDebounce)
       triggerHook('VIEW_MOUNTED', { getViewDom })
-      registerAction({ name: 'view.render', handler: renderDebonce })
+      registerAction({ name: 'view.render', handler: renderDebounce })
       registerAction({ name: 'view.refresh', handler: refresh })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
       registerAction({ name: 'view.scroll-top-to', handler: scrollTopTo })
@@ -271,6 +276,7 @@ export default defineComponent({
     watch(filePath, () => {
       // file switched, turn on auto render preview.
       toggleAutoPreview(true)
+      updateRender = debounce(render, 25)
       triggerHook('VIEW_FILE_CHANGE', { getViewDom })
     })
 
