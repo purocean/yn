@@ -224,6 +224,7 @@ const MindMap = defineComponent({
 
     registerHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     onBeforeUnmount(() => {
+      km && km.destroy()
       removeHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     })
 
