@@ -75,6 +75,9 @@ const init = (ele: HTMLElement) => {
   ele.appendChild(div)
 
   const km = new (window as any).kityminder.Minder()
+  // Bug: https://github.com/fex-team/kityminder-editor/issues/704
+  // eslint-disable-next-line no-proto
+  km.__proto__.clearSelect = () => 0
   // Hack, avoid KM editor auto focus.
   km.focus = () => 0
   km.setup(div)
@@ -225,6 +228,7 @@ const MindMap = defineComponent({
     registerHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     onBeforeUnmount(() => {
       km && km.destroy()
+      km = null
       removeHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     })
 
