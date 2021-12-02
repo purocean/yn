@@ -70,7 +70,7 @@
     "autoprefixer": "^10.2.6",
     "crypto-js": "^3.3.0",
     "dayjs": "^1.10.5",
-    "echarts": "^5.1.2",
+    "echarts": "^5.2.2",
     "electron": "11.4.6",
     "electron-builder": "^22.11.7",
     "electron-notarize": "^1.0.0",
