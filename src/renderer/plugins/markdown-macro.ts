@@ -1,7 +1,7 @@
 import { omit } from 'lodash-es'
 import frontMatter from 'front-matter'
 import type { Plugin } from '@fe/context'
-import type { Doc, RenderEnv } from '@fe/types'
+import type { Doc } from '@fe/types'
 import type { MenuItem } from '@fe/services/status-bar'
 import { render } from '@fe/services/view'
 import { t } from '@fe/services/i18n'
@@ -310,8 +310,6 @@ export default {
       })
     })
 
-    let env: RenderEnv | null = null
-
     ctx.statusBar.tapMenus(menus => {
       const list = menus['status-bar-tool']?.list
       if (list) {
@@ -319,10 +317,10 @@ export default {
         const menu: MenuItem = {
           id,
           type: 'normal',
-          hidden: !env?.attributes?.enableMacro,
+          hidden: !(ctx.view.getRenderEnv()?.attributes?.enableMacro),
           title: ctx.i18n.t('status-bar.tool.macro-copy-markdown'),
           onClick: () => {
-            ctx.utils.copyText(env?.source)
+            ctx.utils.copyText(ctx.view.getRenderEnv()?.source)
           }
         }
 
@@ -335,8 +333,7 @@ export default {
       }
     })
 
-    ctx.registerHook('VIEW_RENDERED', ({ renderEnv }) => {
-      env = renderEnv
+    ctx.registerHook('VIEW_RENDERED', () => {
       ctx.statusBar.refreshMenu()
     })
   }

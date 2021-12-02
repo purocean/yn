@@ -187,9 +187,9 @@ export default {
 
     ctx.registerHook('VIEW_ELEMENT_DBCLICK', ({ e }) => handleClick(e, false))
     ctx.registerHook('VIEW_ELEMENT_CLICK', ({ e }) => handleClick(e, true))
-    ctx.registerHook('VIEW_RENDERED', ({ getViewDom }) => {
-      const view: HTMLElement = getViewDom()!
-      view.querySelectorAll('.yank-table-cell').forEach(td => {
+    ctx.registerHook('VIEW_RENDERED', () => {
+      const view = ctx.view.getViewDom()
+      view?.querySelectorAll('.yank-table-cell').forEach(td => {
         (td as HTMLElement).title = t('table-cell-edit.db-click-edit')
       })
     })

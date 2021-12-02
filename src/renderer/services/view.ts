@@ -60,6 +60,22 @@ export function getContentHtml () {
 }
 
 /**
+ * Get view dom.
+ * @returns
+ */
+export function getViewDom () {
+  return getActionHandler('view.get-view-dom')()
+}
+
+/**
+ * Get render env.
+ * @returns
+ */
+export function getRenderEnv () {
+  return getActionHandler('view.get-render-env')()
+}
+
+/**
  * Enter presentation mode.
  */
 export function enterPresent () {

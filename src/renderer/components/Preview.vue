@@ -101,6 +101,7 @@ export default defineComponent({
     }))
 
     let renderEnv: RenderEnv | null = null
+    const getRenderEnv = () => renderEnv
 
     function togglePinOutline () {
       pinOutline.value = !pinOutline.value
@@ -138,13 +139,13 @@ export default defineComponent({
     }
 
     function handleRender () {
-      triggerHook('VIEW_RENDER', { getViewDom })
+      triggerHook('VIEW_RENDER')
     }
 
     function handleRendered () {
       updateOutline()
       updateTodoCount()
-      triggerHook('VIEW_RENDERED', { getViewDom, renderEnv })
+      triggerHook('VIEW_RENDERED')
     }
 
     let updateRender = debounce(render, 25)
@@ -241,19 +242,21 @@ export default defineComponent({
 
     function refresh () {
       logger.debug('refresh')
-      triggerHook('VIEW_BEFORE_REFRESH', { getViewDom })
+      triggerHook('VIEW_BEFORE_REFRESH')
       renderDebounce()
-      triggerHook('VIEW_AFTER_REFRESH', { getViewDom })
+      triggerHook('VIEW_AFTER_REFRESH')
     }
 
     onMounted(() => {
       nextTick(renderDebounce)
-      triggerHook('VIEW_MOUNTED', { getViewDom })
+      triggerHook('VIEW_MOUNTED')
       registerAction({ name: 'view.render', handler: renderDebounce })
       registerAction({ name: 'view.refresh', handler: refresh })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
       registerAction({ name: 'view.scroll-top-to', handler: scrollTopTo })
       registerAction({ name: 'view.get-content-html', handler: getContentHtml })
+      registerAction({ name: 'view.get-view-dom', handler: getViewDom })
+      registerAction({ name: 'view.get-render-env', handler: getRenderEnv })
       registerHook('GLOBAL_RESIZE', resizeHandler)
       window.addEventListener('keydown', keydownHandler, true)
       resizeHandler()
@@ -265,6 +268,8 @@ export default defineComponent({
       removeAction('view.reveal-line')
       removeAction('view.scroll-top-to')
       removeAction('view.get-content-html')
+      removeAction('view.get-view-dom')
+      removeAction('view.get-render-env')
       removeHook('GLOBAL_RESIZE', resizeHandler)
       window.removeEventListener('keydown', keydownHandler)
     })
@@ -277,7 +282,7 @@ export default defineComponent({
       // file switched, turn on auto render preview.
       toggleAutoPreview(true)
       updateRender = debounce(render, 25)
-      triggerHook('VIEW_FILE_CHANGE', { getViewDom })
+      triggerHook('VIEW_FILE_CHANGE')
     })
 
     return {
