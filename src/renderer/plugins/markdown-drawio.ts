@@ -1,5 +1,5 @@
 import Markdown from 'markdown-it'
-import { defineComponent, h, ref, watch } from 'vue'
+import { defineComponent, h, onBeforeUnmount, ref, watch } from 'vue'
 import { Plugin } from '@fe/context'
 import { buildSrc, IFrame } from '@fe/support/embed'
 import * as api from '@fe/support/api'
@@ -38,7 +38,11 @@ const Drawio = defineComponent({
       refIFrame.value.reload()
     }
 
-    setTimeout(resize, 1000)
+    const timer = setTimeout(resize, 1000)
+
+    onBeforeUnmount(() => {
+      clearTimeout(timer)
+    })
 
     const button = (text: string, onClick: any) => h('button', {
       class: 'small',
