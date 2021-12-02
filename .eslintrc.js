@@ -23,7 +23,10 @@ module.exports = {
     'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'comma-dangle': 'off',
-    'no-unused-expressions': 'off'
+    'multiline-ternary': 'off',
+    'node/no-callback-literal': 'off',
+    'no-unused-expressions': 'off',
+    'vue/multi-word-component-names': 'off',
   },
   overrides: [
     {
