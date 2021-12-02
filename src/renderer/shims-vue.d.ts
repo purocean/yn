@@ -24,6 +24,9 @@ declare interface Window {
   registerPlugin: any;
   documentSaved: boolean;
   monaco: any;
+  kityminder: any;
+  kityminderM: any;
+  kityM: any;
 }
 
 declare const __APP_VERSION__: string
