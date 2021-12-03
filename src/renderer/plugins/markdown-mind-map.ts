@@ -2,15 +2,101 @@ import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context'
-import { dataURItoBlobLink, strToBase64 } from '@fe/utils'
+import { dataURItoBlobLink, getLogger, strToBase64 } from '@fe/utils'
 import { openWindow } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/support/embed'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { t } from '@fe/services/i18n'
 
+const logger = getLogger('markdown-mind-map')
+
 const layoutStorageKey = 'mind-map-layout'
 let links = ''
+
+// kityminder has memory leak at CustomEvent, make CustomEvent readonly
+const CustomEvent = window.CustomEvent
+Object.defineProperty(window, 'CustomEvent', {
+  get: () => CustomEvent,
+  set: () => undefined
+})
+
+Object.defineProperty(window, 'kity', {
+  get: () => {
+    logger.debug('new kity')
+    return window.kityM()
+  },
+})
+
+Object.defineProperty(window, 'kityminder', {
+  get: () => {
+    logger.debug('new kityminder')
+    return window.kityminderM()
+  },
+})
+
+function newMinder () {
+  // hack addEventListener, fix memory leak.
+  const realAddEventListener = window.addEventListener.bind(window)
+  const events: {type: string, listener: any}[] = []
+  window.addEventListener = (type: string, listener: any) => {
+    logger.debug('hack addEventListener', type)
+    events.push({ type, listener })
+    realAddEventListener(type, listener)
+  }
+
+  const km = new window.kityminder.Minder()
+
+  // restore addEventListener
+  window.addEventListener = realAddEventListener
+
+  // fix bug: origin enableAnimation has bug not work.
+  km.enableAnimation = function () {
+    km.setOption('enableAnimation', true)
+    km.setOption('layoutAnimationDuration', 300)
+    km.setOption('viewAnimationDuration', 100)
+    km.setOption('zoomAnimationDuration', 300)
+  }
+
+  const paperEvent = 'click dblclick mousedown contextmenu mouseup mousemove mouseover mousewheel DOMMouseScroll touchstart touchmove touchend dragenter dragleave drop'
+
+  const firePharse = km._firePharse.bind(km)
+  km._bindEvents = function () {
+    this._paper.on(paperEvent, firePharse)
+    window.addEventListener('resize', firePharse)
+    events.push({ type: 'resize', listener: firePharse })
+  }
+
+  // disable mouseup event listening
+  km._modules.Select.init = () => 0
+
+  // fix bug: origin dispose has bug not work.
+  km.viewer.dispose = function () {
+    try {
+      document.removeEventListener('keydown', this.hotkeyHandler)
+      this.close()
+    } catch {}
+  }
+
+  // fix bug: https://github.com/fex-team/kityminder-editor/issues/704
+  km.clearSelect = function () {
+    paperEvent.split(' ').forEach(type => this._paper.off(type, firePharse))
+    km.viewer.dispose()
+    events.forEach(({ type, listener }) => {
+      window.removeEventListener(type, listener)
+    })
+  }
+
+  const kmDestroy = km.destroy.bind(km)
+  km.destroy = function () {
+    km._bindEvents = () => 0
+    kmDestroy()
+  }
+
+  // hack, avoid KM editor auto focus.
+  km.focus = () => 0
+  return km
+}
 
 const buildSrcdoc = (json: string, btns: string) => {
   return `
@@ -74,20 +160,12 @@ const init = (ele: HTMLElement) => {
   ele.innerHTML = ''
   ele.appendChild(div)
 
-  const km = new (window as any).kityminder.Minder()
-  // Hack, avoid KM editor auto focus.
-  km.focus = () => 0
+  const km = newMinder()
+
   km.setup(div)
   km.disable()
   km.setOption('defaultTheme', 'fresh-green-compat')
   km.setTemplate(storage.get(layoutStorageKey, 'default'))
-  // origin enableAnimation has bug not work.
-  km.enableAnimation = function () {
-    km.setOption('enableAnimation', true)
-    km.setOption('layoutAnimationDuration', 300)
-    km.setOption('viewAnimationDuration', 100)
-    km.setOption('zoomAnimationDuration', 300)
-  }
 
   const switchLayout = () => {
     const tplList = ['default', 'right', 'structure', 'filetree', 'tianpan', 'fish-bone']
@@ -224,6 +302,8 @@ const MindMap = defineComponent({
 
     registerHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     onBeforeUnmount(() => {
+      km && km.destroy()
+      km = null
       removeHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     })
 

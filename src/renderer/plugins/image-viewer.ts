@@ -3,14 +3,12 @@ import Viewer from 'viewerjs'
 import type { Plugin } from '@fe/context'
 import 'viewerjs/dist/viewer.css'
 
-let viewer: any
-
 export default {
   name: 'image-viewer',
   register: ctx => {
-    ctx.registerHook('VIEW_RENDERED', debounce(({ getViewDom }) => {
-      if (!viewer) {
-        viewer = new Viewer(getViewDom(), {
+    ctx.registerHook('VIEW_MOUNTED', () => {
+      setTimeout(() => {
+        const viewer = new Viewer(ctx.view.getViewDom()!, {
           zIndex: 299999,
           toolbar: {
             zoomIn: 4,
@@ -26,10 +24,12 @@ export default {
             flipVertical: 4,
           }
         })
-      }
 
-      viewer.update()
-    }, 500))
+        ctx.registerHook('VIEW_RENDERED', debounce(() => {
+          viewer.update()
+        }, 500))
+      }, 0)
+    })
 
     ctx.theme.addStyles(`
       body .viewer-backdrop {

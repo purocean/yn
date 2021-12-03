@@ -192,7 +192,7 @@ function render (this: Renderer, tokens: Token[], options: any, env: any) {
     let isChild = false
     const parentNode = vNodeParents.length > 0 ? vNodeParents[vNodeParents.length - 1] : null
     if (vnode && parentNode) {
-      if (parentNode.type !== Comment) {
+      if (typeof parentNode.type === 'string' || parentNode.type === Fragment) {
         const children = Array.isArray(parentNode.children) ? parentNode.children : []
         parentNode.children = children.concat([vnode])
       }

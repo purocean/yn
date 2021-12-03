@@ -7,6 +7,7 @@ import { CtrlCmd, isCommand, LeftClick, Shift } from '@fe/core/command'
 import { replaceValue } from '@fe/services/editor'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
+import { getViewDom } from '@fe/services/view'
 import type { Plugin } from '@fe/context'
 import type { BuildInActionName } from '@fe/types'
 
@@ -56,9 +57,9 @@ async function transformImgOutLink (img: HTMLImageElement) {
 
 const actionKeydown: BuildInActionName = 'plugin.transform-img-link.all'
 const commandClick = 'plugin.transform-img-link.single-by-click'
-let refView: HTMLElement
 
 async function transformAll () {
+  const refView = getViewDom()
   if (!refView) {
     return
   }
@@ -118,9 +119,6 @@ export default {
     })
 
     ctx.registerHook('VIEW_ELEMENT_CLICK', handleClick)
-    ctx.registerHook('VIEW_RENDERED', ({ getViewDom }) => {
-      refView = getViewDom()!
-    })
 
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-tool']?.list?.push({

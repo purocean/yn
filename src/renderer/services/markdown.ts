@@ -1,4 +1,7 @@
 import Markdown from 'markdown-it'
+import MarkdownItSub from 'markdown-it-sub'
+import MarkdownItSup from 'markdown-it-sup'
+import MarkdownItMark from 'markdown-it-mark'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 
@@ -16,6 +19,9 @@ export function registerPlugin (plugin: (md: Markdown, ...args: any) => void, pa
   markdown.use(plugin, params)
 }
 
+markdown.use(MarkdownItSub)
+markdown.use(MarkdownItSup)
+markdown.use(MarkdownItMark)
 markdown.use(MarkdownItAttrs)
 markdown.use(MarkdownItMultimdTable, { multiline: true })
 

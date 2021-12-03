@@ -4,6 +4,7 @@ import { md5 } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { emitResize } from '@fe/services/layout'
 import type { ThemeName } from '@fe/types'
+import { FLAG_DEBUG } from './args'
 
 /**
  * Build embedded page uri.
@@ -13,7 +14,8 @@ import type { ThemeName } from '@fe/types'
  * @returns src
  */
 export function buildSrc (html: string, title = '', globalStyle = false) {
-  return `/embed/?_=${md5(html)}#title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&html=${encodeURIComponent(html)}`
+  const debug = FLAG_DEBUG
+  return `/embed/?_=${md5(html)}#title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&debug=${debug}&html=${encodeURIComponent(html)}`
 }
 
 export const IFrame = defineComponent({

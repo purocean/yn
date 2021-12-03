@@ -310,29 +310,31 @@ export default {
       })
     })
 
-    ctx.registerHook('VIEW_RENDERED', ({ renderEnv }) => {
-      ctx.statusBar.tapMenus(menus => {
-        const list = menus['status-bar-tool']?.list
-        if (list) {
-          const id = 'plugin.markdown-macro.copy-markdown'
-          const menu: MenuItem = {
-            id,
-            type: 'normal',
-            hidden: !renderEnv?.attributes?.enableMacro,
-            title: ctx.i18n.t('status-bar.tool.macro-copy-markdown'),
-            onClick: () => {
-              ctx.utils.copyText(renderEnv?.source)
-            }
-          }
-
-          const item = list.find(x => x.id === id)
-          if (item) {
-            Object.assign(item, menu)
-          } else {
-            list.push(menu)
+    ctx.statusBar.tapMenus(menus => {
+      const list = menus['status-bar-tool']?.list
+      if (list) {
+        const id = 'plugin.markdown-macro.copy-markdown'
+        const menu: MenuItem = {
+          id,
+          type: 'normal',
+          hidden: !(ctx.view.getRenderEnv()?.attributes?.enableMacro),
+          title: ctx.i18n.t('status-bar.tool.macro-copy-markdown'),
+          onClick: () => {
+            ctx.utils.copyText(ctx.view.getRenderEnv()?.source)
           }
         }
-      })
+
+        const item = list.find(x => x.id === id)
+        if (item) {
+          Object.assign(item, menu)
+        } else {
+          list.push(menu)
+        }
+      }
+    })
+
+    ctx.registerHook('VIEW_RENDERED', () => {
+      ctx.statusBar.refreshMenu()
     })
   }
 } as Plugin

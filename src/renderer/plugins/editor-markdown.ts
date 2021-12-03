@@ -131,6 +131,14 @@ export default {
         editor.getAction('editor.action.transformToLowercase').run()
       })
 
+      editor.onDidCompositionStart(() => {
+        ctx.store.commit('setInComposition', true)
+      })
+
+      editor.onDidCompositionEnd(() => {
+        ctx.store.commit('setInComposition', false)
+      })
+
       monaco.languages.setLanguageConfiguration('markdown', {
         onEnterRules: [
           { beforeText: /^\s*> .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '> ' } },

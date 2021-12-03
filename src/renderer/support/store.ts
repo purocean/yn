@@ -17,6 +17,7 @@ export const initState = {
   presentation: false,
   isFullscreen: false,
   currentContent: '',
+  inComposition: false,
   currentRepo: storage.get<Repo>('currentRepo'),
   currentFile: null as Doc | null,
   recentOpenTime: storage.get<Record<string, number>>('recentOpenTime', {}),
@@ -77,6 +78,9 @@ export default createStore({
     },
     setShowXterm (state, data) {
       state.showXterm = data
+    },
+    setInComposition (state, data) {
+      state.inComposition = data
     },
     setSelectionInfo (state, data) {
       state.selectionInfo = data

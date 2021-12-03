@@ -39,7 +39,12 @@ Click the TODO item in preview to try
 
 ## Footnote
 
-Support to use footnote[^1] grammar[^2]
+## Markdown Enhance
+
++ Mark：==marked==
++ Sup：29^th^
++ Sub：H~2~0
++ Footnote：footnote[^1] grammar[^2]
 
 ## Mind Map
 

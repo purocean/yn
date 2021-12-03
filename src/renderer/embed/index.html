@@ -34,6 +34,13 @@
         })
       }
 
+      if (params.get('debug') === 'false') {
+        console.warn = () => 0
+        console.log = () => 0
+        console.info = () => 0
+        console.dir = () => 0
+      }
+
       document.write(params.get('html') || '')
     </script>
   </body>

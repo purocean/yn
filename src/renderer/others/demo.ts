@@ -69,6 +69,15 @@ if (FLAG_DEMO) {
         if (method === 'POST') {
           return Promise.resolve({ status: 'ok', message: 'success' })
         } else if (method === 'GET') {
+          if ((url.searchParams.get('path') || '').includes('_FRAGMENT.md')) {
+            const content = "---\ncustomVarFromOtherDoc: Hello, It's Me.\n---\n*Content from a fragment.*"
+            return Promise.resolve({
+              status: 'ok',
+              message: 'success',
+              data: { content, hash: 'test' }
+            })
+          }
+
           if ((url.searchParams.get('path') || '').endsWith('.luckysheet')) {
             const content = JSON.stringify([{
               name: 'Sheet1',

@@ -1,6 +1,7 @@
 import CryptoJS from 'crypto-js'
 import { useToast } from '@fe/support/ui/toast'
 import { t } from '@fe/services/i18n'
+import { FLAG_DEBUG } from '@fe/support/args'
 
 export * as path from './path'
 export * as storage from './storage'
@@ -39,11 +40,11 @@ export function fileToBase64URL (file: File) {
 export const getLogger = (subject: string) => {
   const logger = (level: string) => (...args: any) => {
     const time = `${new Date().toLocaleString()}.${Date.now() % 1000}`
-    ;(console as any)[level](`[${time}] ${subject} >`, ...args)
+    ;(console as any)[level](`[${time}] [${level}] ${subject} >`, ...args)
   }
 
   return {
-    debug: logger('debug'),
+    debug: FLAG_DEBUG ? logger('debug') : () => 0,
     log: logger('log'),
     info: logger('info'),
     warn: logger('warn'),

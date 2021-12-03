@@ -14,6 +14,9 @@ declare module 'mermaid/dist/mermaid.js'
 declare module 'katex'
 declare module 'luckyexcel'
 declare module 'xterm-theme'
+declare module 'markdown-it-sub'
+declare module 'markdown-it-sup'
+declare module 'markdown-it-mark'
 declare module 'path-browserify' {
   import path from 'path'
   export default path
@@ -24,6 +27,9 @@ declare interface Window {
   registerPlugin: any;
   documentSaved: boolean;
   monaco: any;
+  kityminder: any;
+  kityminderM: any;
+  kityM: any;
 }
 
 declare const __APP_VERSION__: string
