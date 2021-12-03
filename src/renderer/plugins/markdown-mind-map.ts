@@ -95,6 +95,8 @@ function newMinder () {
 
   // hack, avoid KM editor auto focus.
   km.focus = () => 0
+
+  km._setTemplate = km.setTemplate
   return km
 }
 
@@ -253,7 +255,6 @@ const render = async (km: any, content: string) => {
   const code = (content || '').trim()
 
   try {
-    const setTemplate = km.setTemplate
     // hack for avoid auto set template
     km.setTemplate = () => 0
 
@@ -262,7 +263,7 @@ const render = async (km: any, content: string) => {
     km.enableAnimation()
 
     // recover setTemplate
-    km.setTemplate = setTemplate
+    km.setTemplate = km._setTemplate
   } catch (error) {
     await km.importData('text', t('mind-map.convert-error'))
     km.useTemplate('structure')
