@@ -1,8 +1,8 @@
-import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDialogOptions } from 'electron'
+import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, session } from 'electron'
 import * as path from 'path'
 import * as os from 'os'
-
 import * as yargs from 'yargs'
+import ElectronProxyAgent from 'electron-proxy-agent'
 import server from './server'
 import { APP_NAME } from './constant'
 import { inputMenu, selectionMenu, getTrayMenus, getMainMenus } from './menus'
@@ -238,6 +238,13 @@ function refreshMenus () {
   }
 }
 
+function getProxyAgent () {
+  const s = session.defaultSession
+  // prefer socks proxy
+  s.resolveProxy = s.resolveProxy.bind(s, '')
+  return new ElectronProxyAgent(s)
+}
+
 registerAction('show-main-window', showWindow)
 registerAction('hide-main-window', hideWindow)
 registerAction('toggle-fullscreen', toggleFullscreen)
@@ -252,6 +259,7 @@ registerAction('open-in-browser', openInBrowser)
 registerAction('quit', quit)
 registerAction('show-open-dialog', showOpenDialog)
 registerAction('refresh-menus', refreshMenus)
+registerAction('get-proxy-agent', getProxyAgent)
 
 powerMonitor.on('shutdown', quit)
 
