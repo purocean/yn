@@ -516,6 +516,10 @@ export default defineComponent({
   .markdown-body {
     position: relative;
 
+    mark {
+      background: yellow !important;
+    }
+
     fieldset {
       border-style: solid;
       border-radius: var(--g-border-radius);
@@ -600,6 +604,11 @@ export default defineComponent({
 @media screen {
   @include dark-theme {
     .markdown-body {
+      mark {
+        background: #998b10 !important;
+        color: inherit;
+      }
+
       .reduce-brightness, img {
         transition: all .1s ease-in-out;
         filter: brightness(84%);
