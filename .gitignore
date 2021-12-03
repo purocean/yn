@@ -13,3 +13,4 @@ b.bat
 .DS_Store
 .env
 docs
+.idea/

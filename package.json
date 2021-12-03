@@ -18,7 +18,8 @@
     "build": "npm run build:fe && npm run build:main",
     "lint": "vue-tsc --noEmit --esModuleInterop true && eslint src/ --ext .tsx,.ts,.vue",
     "api-doc": "yarn run typedoc --options .typedoc.json",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "rebuild-pty": "electron-rebuild -f -w node-pty"
   },
   "dependencies": {
     "command-exists": "^1.2.9",
