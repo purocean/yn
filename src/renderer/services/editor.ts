@@ -4,6 +4,7 @@ import { isElectron } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import { registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
+import store from '@fe/support/store'
 import { getColorScheme } from './theme'
 
 let monaco: typeof Monaco
@@ -16,7 +17,7 @@ export const defaultOptions: {[key: string]: any} = {
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: 16,
-  wordWrap: false,
+  wordWrap: store.state.wordWrap,
   links: !isElectron,
   // wordWrapColumn: 40,
   // Set this to false to not auto word wrap minified files
@@ -193,7 +194,7 @@ export function getSelectionInfo () {
  */
 export function toggleWrap () {
   const isWrapping = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo).isViewportWrapping
-  getEditor().updateOptions({ wordWrap: (isWrapping ? 'off' : 'on') })
+  store.commit('setWordWrap', (isWrapping ? 'off' : 'on'))
 }
 
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
@@ -233,4 +234,10 @@ registerHook('MONACO_CHANGE_VALUE', payload => {
 
 registerHook('THEME_CHANGE', () => {
   monaco?.editor.setTheme(getColorScheme() === 'dark' ? 'vs-dark' : 'vs')
+})
+
+store.watch(state => state.wordWrap, (wordWrap) => {
+  whenEditorReady().then(({ editor }) => {
+    editor.updateOptions({ wordWrap })
+  })
 })

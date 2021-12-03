@@ -7,6 +7,7 @@ import type { Components, Doc, FileItem, Repo } from '@fe/types'
 export const initState = {
   repositories: {} as Record<string, string>,
   tree: null,
+  wordWrap: storage.get<'off' | 'on'>('wordWrap', 'off'),
   showSide: storage.get('showSide', true),
   showView: storage.get('showView', true),
   showEditor: storage.get('showEditor', true),
@@ -44,6 +45,10 @@ export default createStore({
     },
     setTree (state, data) {
       state.tree = data
+    },
+    setWordWrap (state, data: 'off' | 'on') {
+      state.wordWrap = data
+      storage.set('wordWrap', data)
     },
     setShowView (state, data) {
       state.showView = data
