@@ -4,8 +4,8 @@
       <h4>{{title}}</h4>
       <p v-if="content">{{content}}</p>
       <template v-if="type === 'input'">
-        <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" v-model="inputValue"></textarea>
-        <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" v-model="inputValue">
+        <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue"></textarea>
+        <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue">
       </template>
       <div class="action">
         <button class="btn" @click="cancel">{{$t('cancel')}}</button>
@@ -38,6 +38,7 @@ export default defineComponent({
     const inputType = ref('')
     const inputValue = ref('')
     const inputHint = ref('')
+    const inputReadonly = ref(false)
     const modalWidth = ref<string | undefined>(undefined)
 
     let resolveFun: Function | null = null
@@ -80,6 +81,7 @@ export default defineComponent({
       inputType.value = params.type || 'text'
       inputValue.value = params.value || ''
       inputHint.value = params.hint || ''
+      inputReadonly.value = params.readonly || false
       modalWidth.value = params.modalWidth
 
       show.value = true
@@ -113,6 +115,7 @@ export default defineComponent({
       inputType,
       inputValue,
       inputHint,
+      inputReadonly,
       modalWidth,
     }
   },

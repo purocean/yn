@@ -47,6 +47,11 @@ const data: BaseLanguage = {
       'step-3': '3. 输入激活码，激活高级版功能',
       'send-email': '发送邮件',
       'email-tips': '将在 12 小时内处理',
+      'email-failed': '发送失败？',
+      'email-failed-dialog': {
+        'title': '手动发送邮件',
+        'content': '发送如下内容到 yank-note@outlook.com 索取激活码',
+      },
       'wechat': '微信',
       'alipay': '支付宝',
       'email': {

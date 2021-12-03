@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.14.0](https://github.com/purocean/yn/releases/tag/v3.14.0) 2021-12-03
+### [v3.14.1](https://github.com/purocean/yn/releases/tag/v3.14.1) 2021-12-03
 1. feat(markdown): 支持下标语法
 2. feat(markdown): 支持上标语法
 3. feat(markdown): 支持标记语法

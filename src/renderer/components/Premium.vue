@@ -49,7 +49,10 @@
         <h4>{{$t('premium.buy.step-2')}}</h4>
         <div class="pay-actions">
           <button @click="sendEmail">{{$t('premium.buy.send-email')}}</button>
-          <span class="email-tips">{{$t('premium.buy.email-tips')}}</span>
+          <span class="email-tips">
+            {{$t('premium.buy.email-tips')}}
+            <a href="javascript:void(0)" @click="showEmailDialog">{{$t('premium.buy.email-failed')}}</a>
+          </span>
         </div>
       </div>
       <div class="step">
@@ -74,7 +77,7 @@
         {{$t('premium.activation.tips')}}:
         <a href="mailto:yank-note@outlook.com">{{$t('premium.activation.tips-email')}}</a>
         |
-        <a href="javascript: void">{{$t('premium.activation.tips-wechat')}}</a>
+        <a href="javascript:void(0)">{{$t('premium.activation.tips-wechat')}}</a>
         <img class="qrcode" src="~@fe/assets/qrcode-wechat.jpg" >
       </div>
     </div>
@@ -95,6 +98,7 @@ import { getLicenseInfo, getPurchased, setLicense } from '@fe/others/premium'
 import { useToast } from '@fe/support/ui/toast'
 import { dayjs } from '@fe/context/lib'
 import { FLAG_DEMO } from '@fe/support/args'
+import { useModal } from '@fe/support/ui/modal'
 import XMask from './Mask.vue'
 import SvgIcon from './SvgIcon.vue'
 
@@ -159,6 +163,19 @@ export default defineComponent({
       }
     }
 
+    function showEmailDialog () {
+      const body = t('premium.buy.email.body', num.value.toString(), 'Yank Note Premium')
+
+      useModal().input({
+        type: 'textarea',
+        title: t('premium.buy.email-failed-dialog.title'),
+        content: t('premium.buy.email-failed-dialog.content'),
+        select: true,
+        readonly: true,
+        value: body
+      })
+    }
+
     registerAction({ name: 'premium.show', handler: showPurchase })
 
     onBeforeUnmount(() => {
@@ -167,6 +184,7 @@ export default defineComponent({
 
     return {
       flagDemo: FLAG_DEMO,
+      showEmailDialog,
       showPanel,
       tab,
       switchTab,
@@ -278,6 +296,10 @@ export default defineComponent({
     color: var(--g-color-50);
     font-size: 14px;
     margin-left: 1em;
+
+    a {
+      color: var(--g-color-50);
+    }
   }
 }
 
