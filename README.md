@@ -88,9 +88,12 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.13.1](https://github.com/purocean/yn/releases/tag/v3.13.1) 2021-11-30
-1. feat(macro): add "Copy Markdown after Macro Replacement" menu
-2. upd(sidebar): update sidebar UI
+### [v3.14.0](https://github.com/purocean/yn/releases/tag/v3.14.0) 2021-12-03
+1. feat(markdown): support sup syntax
+2. feat(markdown): support sub syntax
+3. feat(markdown): support mark syntax
+4. upd(plugin): update view hooks, add `ctx.view.getViewDom`, `ctx.view.getRenderEnv` methods
+5. fix: fix memory leak
 
 [More release notes](https://github.com/purocean/yn/releases)
 
