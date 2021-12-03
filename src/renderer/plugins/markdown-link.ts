@@ -202,9 +202,14 @@ export default {
           label: ctx.i18n.t('markdown-link.convert-to-titled-link'),
           onClick: async () => {
             try {
-              const res = await ctx.api.proxyRequest(target.href).then(r => r.text())
+              ctx.ui.useToast().show('info', 'Loading……')
+              const res = await ctx.api.proxyRequest(target.href, { timeout: 10000 }).then(r => r.text())
               const match = res.match(/<title[^>]*>([^<]*)<\/title>/si) || []
-              const title = ctx.lib.lodash.unescape(match[1] || '')
+              const title = ctx.lib.lodash.unescape(match[1] || '').trim()
+
+              if (!title) {
+                throw new Error('No title')
+              }
 
               const line = parseInt(parent.dataset.sourceLine || '0')
               const content = ctx.editor.getLineContent(line)
