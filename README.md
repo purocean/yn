@@ -88,7 +88,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.14.0](https://github.com/purocean/yn/releases/tag/v3.14.0) 2021-12-03
+### [v3.14.1](https://github.com/purocean/yn/releases/tag/v3.14.1) 2021-12-03
 1. feat(markdown): support sup syntax
 2. feat(markdown): support sub syntax
 3. feat(markdown): support mark syntax
