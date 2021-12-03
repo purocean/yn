@@ -88,9 +88,12 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.13.1](https://github.com/purocean/yn/releases/tag/v3.13.1) 2021-11-30
-1. feat(macro): 增加 "复制宏替换后的 Markdown" 菜单
-2. upd(sidebar): 调整侧栏 UI
+### [v3.14.0](https://github.com/purocean/yn/releases/tag/v3.14.0) 2021-12-03
+1. feat(markdown): 支持下标语法
+2. feat(markdown): 支持上标语法
+3. feat(markdown): 支持标记语法
+4. upd(plugin): 更新 view hooks, 增加 `ctx.view.getViewDom`, `ctx.view.getRenderEnv` 方法
+5. fix: 修复内存泄露
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
