@@ -88,12 +88,13 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.14.1](https://github.com/purocean/yn/releases/tag/v3.14.1) 2021-12-03
+### [v3.14.2](https://github.com/purocean/yn/releases/tag/v3.14.2) 2021-12-03
 1. feat(markdown): 支持下标语法
 2. feat(markdown): 支持上标语法
 3. feat(markdown): 支持标记语法
 4. upd(plugin): 更新 view hooks, 增加 `ctx.view.getViewDom`, `ctx.view.getRenderEnv` 方法
-5. fix: 修复内存泄露
+5. fix(mindmap): 修复脑图不能切换布局问题
+6. fix: 修复内存泄露
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
