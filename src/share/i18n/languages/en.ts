@@ -46,6 +46,11 @@ const data = {
       'step-3': '3. Enter the license to activate the advanced features',
       'send-email': 'Send Email',
       'email-tips': 'Will be processed within 12 hours',
+      'email-failed': 'Failed?',
+      'email-failed-dialog': {
+        'title': 'Send Mail Manually',
+        'content': 'Please send the following content to "yank-note@outlook.com" to request license.',
+      },
       'wechat': 'Wechat',
       'alipay': 'Alipay',
       'email': {

@@ -34,6 +34,7 @@ export namespace Components {
       value?: string;
       hint?: string;
       modalWidth?: string;
+      readonly?: boolean;
       select?: boolean | [number, number, 'forward' | 'backward' | 'none'];
     }
   }
