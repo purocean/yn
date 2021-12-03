@@ -298,6 +298,8 @@ const wrapper = async (ctx: any, next: any, fun: any) => {
     await fun(ctx, next)
   } catch (error: any) {
     console.error(error)
+    ctx.set('x-yank-note-api-status', 'error')
+    ctx.set('x-yank-note-api-message', error.message)
     ctx.body = result('error', error.message)
   }
 }

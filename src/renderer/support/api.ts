@@ -32,9 +32,10 @@ async function fetchHttp (input: RequestInfo, init?: RequestInit) {
  * @param usePost
  * @returns
  */
-export function proxyRequest (url: string, reqOptions: Record<string, any> = {}, usePost = false) {
+export async function proxyRequest (url: string, reqOptions: Record<string, any> = {}, usePost = false) {
+  let res: Response
   if (usePost) {
-    return fetch('/api/proxy', {
+    res = await fetch('/api/proxy', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -42,10 +43,16 @@ export function proxyRequest (url: string, reqOptions: Record<string, any> = {},
         options: reqOptions
       })
     })
+  } else {
+    const options = encodeURIComponent(JSON.stringify(reqOptions))
+    res = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&options=${options}`)
   }
 
-  const options = encodeURIComponent(JSON.stringify(reqOptions))
-  return fetch(`/api/proxy?url=${encodeURIComponent(url)}&options=${options}`)
+  if (res.headers.get('x-yank-note-api-status') === 'error') {
+    throw new Error(res.headers.get('x-yank-note-api-message') || 'error')
+  }
+
+  return res
 }
 
 /**
