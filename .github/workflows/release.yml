@@ -70,7 +70,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          prerelease: false
+          prerelease: true
           files: |
             out/Yank-Note*.*
             out/latest*.yml
