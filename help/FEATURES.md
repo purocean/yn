@@ -2,6 +2,9 @@
 headingNumber: true
 enableMacro: true
 customVar: Hello
+define:
+    --APP_NAME--: Yank Note
+    --APP_VERSION--: '[= $ctx.version =]'
 ---
 
 # Yank-Note Features Instructions
@@ -451,8 +454,17 @@ Built-in variables
 
 variable name | type | description
 ---- | ----- | ---
-headingNumber | boolean | whether to enable the page title serial number
-enableMacro | boolean | whether to enable macro replacement
+`headingNumber` | `boolean` | whether to enable the page title serial number
+`enableMacro` | `boolean` | whether to enable macro replacement
+`define` | `Record<string, string>` | Macro definition, string replacing
+
+### Definition
+
+The `define` field can define some text replacement mappings. Supports definition in another file, supports macro expressions. For details, please refer to the Front Matter at the top of this document.
+
+- App Name: --APP_NAME--
+- App Version: --APP_VERSION--
+- From Another File: --TEST_DEFINE--
 
 ## Macro Replacement
 
@@ -513,16 +525,17 @@ Macro code can use variables defined in Front Matter, or use the following built
 
 variable name | type | description
 ---- | ----- | ---
-`$ctx` | object | Editor `ctx`，refer to [Plug-In Development GUide](PLUGIN.md) and [Api Document](https://yn-api-doc.vercel.app/modules/context.html)
-`$include` | (path: string, trim = false) => Result | Introduce other document fragment methods
-`$export` | (key: string, val: any) => Result | Define a variable that can be used in this document
-`$doc` | object | Current document information
-`$doc.basename` | string | File name of current document (no suffix)
-`$doc.name` | string | File name of current document
-`$doc.path` | string | Current document path
-`$doc.repo` | string | Current document repository
-`$doc.content` | string | Current document content
-`$doc.status` | 'loaded', 'save-failed', 'saved' | Current document status
+`$ctx` | `object` | Editor `ctx`，refer to [Plug-In Development GUide](PLUGIN.md) and [Api Document](https://yn-api-doc.vercel.app/modules/context.html)
+`$include` | `(path: string, trim = false) => Result` | Introduce other document fragment methods
+`$export` | `(key: string, val: any) => Result` | Define a variable that can be used in this document
+`$noop` | `() => Result` | no operation, Used for holding text space
+`$doc` | `object` | Current document information
+`$doc.basename` | `string` | File name of current document (no suffix)
+`$doc.name` | `string` | File name of current document
+`$doc.path` | `string` | Current document path
+`$doc.repo` | `string` | Current document repository
+`$doc.content` | `string` | Current document content
+`$doc.status` | `'loaded', 'save-failed', 'saved'` | Current document status
 
 ## Command Line Parameters
 

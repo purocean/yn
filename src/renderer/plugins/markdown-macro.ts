@@ -105,7 +105,8 @@ function transform (
         // single line expression
         return val.trim().replaceAll('\n', magicNewline)
       } else {
-        return `[= define.${match} =]`
+        match = match.replace(/\n|'/, '\\$&')
+        return `[= define['${match}'] =]`
       }
     })
   }
