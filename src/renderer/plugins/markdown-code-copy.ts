@@ -15,6 +15,18 @@ export default {
         float: right;
       }
 
+      .markdown-view .markdown-body .p-mcc-language {
+        position: absolute;
+        top: -13px;
+        right: -11px;
+        opacity: 1;
+        color: var(--g-color-50);
+        font-size: 12px;
+        transition: opacity 200ms;
+        user-select: none;
+        line-height: 1;
+      }
+
       .markdown-view .markdown-body .p-mcc-copy-btn {
         width: 20px;
         height: 20px;
@@ -32,6 +44,10 @@ export default {
 
       .markdown-view .markdown-body pre:hover .p-mcc-copy-btn {
         opacity: 1;
+      }
+
+      .markdown-view .markdown-body pre:hover .p-mcc-language {
+        opacity: 0;
       }
 
       .markdown-view .markdown-body .p-mcc-copy-btn:hover {
@@ -59,11 +75,14 @@ export default {
         }
 
         if (codeNode && Array.isArray(codeNode.children)) {
-          codeNode.children.unshift(h('div', { class: 'p-mcc-copy-btn-wrapper no-print' }, h(
-            'div',
-            { class: 'p-mcc-copy-btn copy-text', 'data-text': code, title: ctx.i18n.t('copy-code') },
-            h(SvgIcon, { name: 'clipboard', style: 'pointer-events: none' }))
-          ))
+          codeNode.children.unshift(h('div', { class: 'p-mcc-copy-btn-wrapper no-print' }, [
+            h('div', { class: 'p-mcc-language' }, token.info),
+            h(
+              'div',
+              { class: 'p-mcc-copy-btn copy-text', 'data-text': code, title: ctx.i18n.t('copy-code') },
+              h(SvgIcon, { name: 'clipboard', style: 'pointer-events: none' })
+            ),
+          ]))
         }
 
         return codeNode as any
