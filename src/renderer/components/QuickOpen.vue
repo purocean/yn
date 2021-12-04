@@ -54,6 +54,8 @@ import fuzzyMatch from '@fe/others/fuzzy-match'
 
 type TabKey = 'marked' | 'search' | 'file'
 
+let lastTab: TabKey = 'marked'
+
 export default defineComponent({
   name: 'quick-open',
   props: {
@@ -75,7 +77,7 @@ export default defineComponent({
 
     const selected = ref<any>(null)
     const searchText = ref('')
-    const currentTab = ref<TabKey>('marked')
+    const currentTab = ref<TabKey>(lastTab)
     const list = ref<any>([])
     const lastFetchTime = ref(0)
 
@@ -298,7 +300,8 @@ export default defineComponent({
       }
     })
 
-    watch(currentTab, () => {
+    watch(currentTab, (val) => {
+      lastTab = val
       list.value = null
       refInput.value!.focus()
       updateDataSource()
