@@ -1,8 +1,7 @@
-import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, session } from 'electron'
+import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDialogOptions } from 'electron'
 import * as path from 'path'
 import * as os from 'os'
 import * as yargs from 'yargs'
-import ElectronProxyAgent from 'electron-proxy-agent'
 import server from './server'
 import { APP_NAME } from './constant'
 import { inputMenu, selectionMenu, getTrayMenus, getMainMenus } from './menus'
@@ -12,6 +11,7 @@ import startup from './startup'
 import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
 import { $t } from './i18n'
+import { getProxyAgent } from './proxy-agent'
 
 const isMacos = os.platform() === 'darwin'
 const isLinux = os.platform() === 'linux'
@@ -236,13 +236,6 @@ function refreshMenus () {
   if (tray) {
     tray.setContextMenu(getTrayMenus())
   }
-}
-
-function getProxyAgent () {
-  const s = session.defaultSession
-  // prefer socks proxy
-  s.resolveProxy = s.resolveProxy.bind(s, '')
-  return new ElectronProxyAgent(s)
 }
 
 registerAction('show-main-window', showWindow)
