@@ -95,6 +95,7 @@ function transform (
   },
 ) {
   const define = { ...vars.define, ...options.cache.$define }
+  vars.define = define
   const keys = Object.keys(define)
   if (keys.length) {
     const reg = new RegExp(keys.map(escapeRegExp).join('|'), 'g')
