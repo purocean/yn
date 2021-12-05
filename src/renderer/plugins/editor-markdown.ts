@@ -6,52 +6,25 @@ import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 
 function getWords (content: string) {
-  const limit = 1000
-  const Segmenter = (window.Intl as any).Segmenter
   const words = new Set<string>()
-  const startAt = performance.now()
 
-  const checkLimit = () => words.size > limit || (performance.now() - startAt) > 200
+  if (content.length > 50000) {
+    return words
+  }
 
-  // use native segmenter
-  if (Segmenter) {
-    const segmenter = new Segmenter(navigator.language, { granularity: 'word' })
-    const reg = /^.+$/mg
-    while (true) {
-      if (checkLimit()) {
-        break
-      }
+  const identifier = /[a-zA-Z_]+\w/g
 
-      const res = reg.exec(content)
-      if (!res) {
-        break
-      }
-
-      for (const { segment, isWordLike } of segmenter.segment(res[0])) {
-        if (checkLimit()) {
-          break
-        }
-
-        if (isWordLike) {
-          words.add(segment)
-        }
-      }
+  while (true) {
+    if (words.size > 1000) {
+      break
     }
-  } else {
-    const identifier = /[a-zA-Z_]+\w/g
 
-    while (true) {
-      if (checkLimit()) {
-        break
-      }
-
-      const res = identifier.exec(content)
-      if (!res) {
-        break
-      }
-
-      words.add(res[0])
+    const res = identifier.exec(content)
+    if (!res) {
+      break
     }
+
+    words.add(res[0])
   }
 
   return words
