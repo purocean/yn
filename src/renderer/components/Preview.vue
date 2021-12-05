@@ -274,10 +274,10 @@ export default defineComponent({
       window.removeEventListener('keydown', keydownHandler)
     })
 
-    watch(
-      () => currentContent.value + filePath.value,
-      () => autoPreview.value && updateRender()
-    )
+    watch([currentContent, filePath, inComposition], () => {
+      autoPreview.value && updateRender()
+    })
+
     watch(filePath, () => {
       // file switched, turn on auto render preview.
       toggleAutoPreview(true)
