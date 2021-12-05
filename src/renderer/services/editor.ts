@@ -1,4 +1,4 @@
-import * as Monaco from 'monaco-editor'
+import type * as Monaco from 'monaco-editor'
 import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'

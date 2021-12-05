@@ -1,14 +1,66 @@
 /* eslint-disable no-template-curly-in-string */
 import dayjs from 'dayjs'
-import type { Position } from 'monaco-editor'
-import { getEditor, getLineContent, getMonaco, getOneIndent, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
+import type * as Monaco from 'monaco-editor'
+import { getEditor, getLineContent, getMonaco, getOneIndent, getValue, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 
-function createDependencyProposals (range: any) {
+function getWords (content: string) {
+  const limit = 1000
+  const Segmenter = (window.Intl as any).Segmenter
+  const words = new Set<string>()
+  const startAt = performance.now()
+
+  const checkLimit = () => words.size > limit || (performance.now() - startAt) > 200
+
+  // use native segmenter
+  if (Segmenter) {
+    const segmenter = new Segmenter(navigator.language, { granularity: 'word' })
+    const reg = /^.+$/mg
+    while (true) {
+      if (checkLimit()) {
+        break
+      }
+
+      const res = reg.exec(content)
+      if (!res) {
+        break
+      }
+
+      for (const { segment, isWordLike } of segmenter.segment(res[0])) {
+        if (checkLimit()) {
+          break
+        }
+
+        if (isWordLike) {
+          words.add(segment)
+        }
+      }
+    }
+  } else {
+    const identifier = /[a-zA-Z_]+\w/g
+
+    while (true) {
+      if (checkLimit()) {
+        break
+      }
+
+      const res = identifier.exec(content)
+      if (!res) {
+        break
+      }
+
+      words.add(res[0])
+    }
+  }
+
+  return words
+}
+
+function createDependencyProposals (range: any, currentWord: string): Monaco.languages.CompletionItem[] {
   const monaco = getMonaco()
 
-  return [
+  const result: Monaco.languages.CompletionItem[] = [
     { name: '![]() Image', insertText: '![${2:Img}]($1)' },
     { name: '[]() Link', insertText: '[${2:Link}]($1)' },
     { name: '# Head', insertText: '# $1' },
@@ -22,9 +74,12 @@ function createDependencyProposals (range: any) {
     { name: '` Code', insertText: '`$1`' },
     { name: '* Italic', insertText: '*$1*' },
     { name: '_ Italic', insertText: '_$1_' },
+    { name: '~ Sub', insertText: '~$1~' },
+    { name: '^ Sup', insertText: '^$1^' },
     { name: '** Bold', insertText: '**$1**' },
     { name: '__ Bold', insertText: '__$1__' },
     { name: '~~ Delete', insertText: '~~$1~~' },
+    { name: '== Mark', insertText: '==$1==' },
     { name: '+ [ ] TODO List', insertText: '+ [ ] ' },
     { name: '- [ ] TODO List', insertText: '- [ ] ' },
     { name: '```', insertText: '```$1\n```\n' },
@@ -41,7 +96,9 @@ function createDependencyProposals (range: any) {
     { name: '[]() Drawio Link', insertText: '[${2:Link}]($1){link-type="drawio"}' },
     { name: '[]() Luckysheet Link', insertText: '[${2:Link}]($1){link-type="luckysheet"}' },
     { name: '||| Table', insertText: '${1:A} | ${2:B} | ${3:C}\n-- | -- | --\na | b | c' },
-    { name: '[= Macro', insertText: '[= $1 =]' },
+    { name: '[= Macro', insertText: '[= ${1:1+1} =]' },
+    { name: '--- Horizontal Line', insertText: '---\n' },
+    { name: '--- Front Matter', insertText: '---\nheadingNumber: true\nenableMacro: true\ndefine:\n    APP_NAME: Yank Note\n---\n' },
   ].map((x, i) => ({
     label: { name: x.name },
     kind: monaco.languages.CompletionItemKind.Snippet,
@@ -50,9 +107,22 @@ function createDependencyProposals (range: any) {
     range: range,
     sortText: i.toString()
   }))
+
+  getWords(getValue()).forEach(word => {
+    if (currentWord !== word) {
+      result.push({
+        label: { name: word },
+        kind: monaco.languages.CompletionItemKind.Text,
+        insertText: word,
+        range: range
+      })
+    }
+  })
+
+  return result
 }
 
-function processCursorChange (source: string, position: Position) {
+function processCursorChange (source: string, position: Monaco.Position) {
   const isTab = source === 'tab'
 
   if (!isTab) {
@@ -140,6 +210,26 @@ export default {
       })
 
       monaco.languages.setLanguageConfiguration('markdown', {
+        surroundingPairs: [
+          { open: '{', close: '}' },
+          { open: '[', close: ']' },
+          { open: '(', close: ')' },
+          { open: '<', close: '>' },
+          { open: '`', close: '`' },
+          { open: "'", close: "'" },
+          { open: '"', close: '"' },
+          { open: '*', close: '*' },
+          { open: '_', close: '_' },
+          { open: '=', close: '=' },
+          { open: '~', close: '~' },
+          { open: '#', close: '#' },
+          { open: '$', close: '$' },
+          { open: '《', close: '》' },
+          { open: '【', close: '】' },
+          { open: '「', close: '」' },
+          { open: '（', close: '）' },
+          { open: '“', close: '”' },
+        ],
         onEnterRules: [
           { beforeText: /^\s*> .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '> ' } },
           { beforeText: /^\s*\+ \[ \] .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '+ [ ] ' } },
@@ -176,8 +266,10 @@ export default {
             endColumn: endColumn
           }
 
+          const word = model.getWordUntilPosition(position)
+
           return {
-            suggestions: createDependencyProposals(range)
+            suggestions: createDependencyProposals(range, word.word)
           }
         }
       })
