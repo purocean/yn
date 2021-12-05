@@ -14,7 +14,7 @@ const emitResizeDebounce = throttle(() => {
  * Trigger resize hook after next tick.
  */
 export function emitResize () {
-  emitResizeDebounce()
+  nextTick(emitResizeDebounce)
 }
 
 /**
