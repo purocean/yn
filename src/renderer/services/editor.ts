@@ -179,7 +179,19 @@ export function getValue () {
  * @param val
  */
 export function replaceValue (search: string, val: string) {
-  getEditor().getModel()!.setValue(getValue().replace(search, val))
+  const editor = getEditor()
+  const model = editor.getModel()
+  const maxLine = model!.getLineCount()
+  const endLineLength = model!.getLineLength(maxLine)
+  const text = model!.getValue().replaceAll(search, val)
+
+  editor.executeEdits('', [
+    {
+      range: new (getMonaco().Range)(1, 1, maxLine, endLineLength + 1),
+      text,
+      forceMoveMarkers: true
+    }
+  ])
 }
 
 /**
