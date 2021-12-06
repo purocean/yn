@@ -17,8 +17,8 @@ export default {
 
       .markdown-view .markdown-body .p-mcc-language {
         position: absolute;
-        top: -13px;
-        right: -11px;
+        top: -11px;
+        right: -8px;
         opacity: 1;
         color: var(--g-color-50);
         font-size: 12px;
