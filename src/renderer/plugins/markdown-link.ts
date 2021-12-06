@@ -202,7 +202,7 @@ export default {
           label: ctx.i18n.t('markdown-link.convert-to-titled-link'),
           onClick: async () => {
             try {
-              ctx.ui.useToast().show('info', 'Loading……')
+              ctx.ui.useToast().show('info', 'Loading……', 0)
               const res = await ctx.api.proxyRequest(target.href, { timeout: 10000 }).then(r => r.text())
               const match = res.match(/<title[^>]*>([^<]*)<\/title>/si) || []
               const title = ctx.lib.lodash.unescape(match[1] || '').trim()
@@ -216,6 +216,7 @@ export default {
                 .replace(new RegExp(`(?<!\\()<?${link}>?(?!\\))`, 'i'), `[${title}](${link})`)
 
               ctx.editor.replaceLine(line, content)
+              ctx.ui.useToast().hide()
             } catch (error: any) {
               console.error(error)
               ctx.ui.useToast().show('warning', error.message)

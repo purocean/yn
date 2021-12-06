@@ -15,16 +15,32 @@ export default defineComponent({
   name: 'toast',
   setup () {
     const toast = ref<ToastData | null>()
+    let timer: any = null
 
-    function show (type: Components.Toast.ToastType, content: string, timeout = 2000) {
-      toast.value = { type, content }
-
-      setTimeout(() => {
-        toast.value = null
-      }, timeout)
+    function clearTimer () {
+      if (timer) {
+        clearTimeout(timer)
+        timer = null
+      }
     }
 
-    return { toast, show }
+    function hide () {
+      clearTimer()
+      toast.value = null
+    }
+
+    function show (type: Components.Toast.ToastType, content: string, timeout = 2000) {
+      clearTimer()
+      toast.value = { type, content }
+
+      if (timeout) {
+        timer = setTimeout(() => {
+          toast.value = null
+        }, timeout)
+      }
+    }
+
+    return { toast, show, hide }
   },
   methods: {
   },
