@@ -6,19 +6,10 @@ import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
 import store from '@fe/support/store'
 import { encodeMarkdownLink, fileToBase64URL } from '@fe/utils'
+import { isKeydown } from '@fe/core/command'
 
 const IMAGE_REG = /^image\/(png|jpg|jpeg|gif)$/i
 const HTML_REG = /^text\/html$/i
-
-let keys: Record<string, boolean> = {}
-
-function recordKeys (e: KeyboardEvent) {
-  if (e.type === 'keydown') {
-    keys[e.key] = true
-  } else {
-    keys = {}
-  }
-}
 
 async function pasteHtml (html: string) {
   const md = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', bulletListMarker: '+' }).turndown(html)
@@ -49,7 +40,7 @@ function paste (e: ClipboardEvent) {
   }
 
   const items = e.clipboardData!.items
-  if (keys.d || keys.D) { // covert RFT to markdown
+  if (isKeydown('D')) { // covert RFT to markdown
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.match(HTML_REG)) {
         items[i].getAsString(pasteHtml)
@@ -62,7 +53,7 @@ function paste (e: ClipboardEvent) {
     for (let i = 0; i < items.length; i++) {
       const fileType = items[i].type
       if (fileType.match(IMAGE_REG)) {
-        const asBase64 = keys.b || keys.B // press key b, paste image as base64
+        const asBase64 = isKeydown('B') // press key b, paste image as base64
         pasteImage(items[i].getAsFile()!, asBase64)
       }
     }
@@ -73,8 +64,6 @@ export default {
   name: 'editor-paste',
   register: (ctx) => {
     window.addEventListener('paste', paste as any, true)
-    window.addEventListener('keydown', recordKeys, true)
-    window.addEventListener('keyup', recordKeys, true)
 
     const pasteImageAsBase64ActionId = 'plugin.editor-paste.insert-image-base64'
     const pasteRtfActionId = 'plugin.editor-paste.insert-rtf'

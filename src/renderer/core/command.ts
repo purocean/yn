@@ -41,6 +41,24 @@ export interface Command {
 
 const commands: { [key: string]: Command } = {}
 
+const keys: Record<string, boolean> = {}
+
+function recordKeys (e: KeyboardEvent) {
+  if (e.type === 'keydown') {
+    keys[e.key.toUpperCase()] = true
+  } else {
+    keys[e.key.toUpperCase()] = false
+  }
+}
+
+/**
+ * Determine whether the user has pressed the key
+ * @param key upper case.
+ */
+export function isKeydown (key: string) {
+  return !!keys[key]
+}
+
 /**
  * Determine whether the user has pressed the Cmd key (macOS) or Ctrl key.
  * @param e
@@ -200,6 +218,7 @@ export function removeCommand (id: string) {
 }
 
 function keydownHandler (e: KeyboardEvent) {
+  recordKeys(e)
   for (const command of Object.values(commands)) {
     if (isCommand(e, command.id)) {
       if (command.when && !command.when()) {
@@ -215,3 +234,4 @@ function keydownHandler (e: KeyboardEvent) {
 }
 
 window.addEventListener('keydown', keydownHandler, true)
+window.addEventListener('keyup', recordKeys, true)
