@@ -44,6 +44,8 @@ Click the TODO item in preview to try
 
 ## Markdown Enhance
 
+Type '/' in the editor to get prompts
+
 + Mark：==marked==
 + Sup：29^th^
 + Sub：H~2~0
