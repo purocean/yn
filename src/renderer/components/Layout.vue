@@ -161,7 +161,7 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       window.removeEventListener('resize', emitResize)
-      window.document.addEventListener('mousemove', resizeFrame)
+      window.document.removeEventListener('mousemove', resizeFrame)
       window.document.removeEventListener('mouseup', resizeDone)
     })
 
