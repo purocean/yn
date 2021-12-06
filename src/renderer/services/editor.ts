@@ -123,6 +123,15 @@ export function replaceLine (line: number, text: string) {
   ])
 }
 
+export function deleteLine (line: number) {
+  getEditor().executeEdits('', [
+    {
+      range: new (getMonaco().Range)(line, 1, line + 1, 1),
+      text: null
+    }
+  ])
+}
+
 /**
  * Reveal line to screen center.
  * @param line
