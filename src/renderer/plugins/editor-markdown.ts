@@ -1,9 +1,10 @@
 /* eslint-disable no-template-curly-in-string */
 import dayjs from 'dayjs'
 import type * as Monaco from 'monaco-editor'
-import { getEditor, getLineContent, getMonaco, getOneIndent, getValue, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
+import { deleteLine, getEditor, getLineContent, getMonaco, getOneIndent, getValue, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
+import { isKeydown } from '@fe/core/command'
 
 function getWords (content: string) {
   const words = new Set<string>()
@@ -96,25 +97,34 @@ function createDependencyProposals (range: any, currentWord: string): Monaco.lan
 }
 
 function processCursorChange (source: string, position: Monaco.Position) {
-  const isTab = source === 'tab'
+  if (source === 'tab') {
+    const content = getLineContent(position.lineNumber)
+    if (!content) {
+      return
+    }
 
-  if (!isTab) {
-    return
-  }
+    const eolNumber = getEditor().getModel()?.getLineMaxColumn(position.lineNumber)
 
-  const content = getLineContent(position.lineNumber)
-  if (!content) {
-    return
-  }
-
-  const eolNumber = getEditor().getModel()?.getLineMaxColumn(position.lineNumber)
-
-  if (
-    eolNumber === position.column &&
-    /\s*(?:[*+-]|\d+\.)/.test(content)
-  ) {
-    const indent = getOneIndent()
-    replaceLine(position.lineNumber, indent + content.trimEnd() + ' ')
+    if (
+      eolNumber === position.column &&
+      /^\s*(?:[*+-]|\d+\.)/.test(content)
+    ) {
+      const indent = getOneIndent()
+      const val = content.trimEnd()
+      const end = /[-+*\].]$/.test(val) ? ' ' : ''
+      replaceLine(position.lineNumber, indent + val + end)
+    }
+  } else if (source === 'keyboard' && isKeydown('ENTER')) {
+    const line = position.lineNumber - 1
+    const content = getLineContent(line)
+    const prevContent = getLineContent(line - 1)
+    if (
+      /^\s*(?:[*+-]|\d+\.)/.test(prevContent) && // previous content must a item
+      /^\s*(?:[*+-]|\d+\.|[*+-] \[ \])\s*$/.test(content) // current content must a empty item
+    ) {
+      deleteLine(line) // remove empty item, now the line is the next line.
+      replaceLine(line, '') // remove auto completion
+    }
   }
 }
 
