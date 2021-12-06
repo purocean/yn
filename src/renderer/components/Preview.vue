@@ -517,7 +517,7 @@ export default defineComponent({
     position: relative;
 
     mark {
-      background: yellow !important;
+      background: #fff8c5 !important;
     }
 
     fieldset {
