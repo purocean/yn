@@ -620,6 +620,12 @@ export default defineComponent({
     }
   }
 
+  .markdown-view {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
   .markdown-view .markdown-body {
     max-width: 800px;
     margin: 0 auto;

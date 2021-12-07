@@ -286,6 +286,7 @@ export default defineComponent({
   flex: 1 1 50%;
   min-width: 50%;
   box-sizing: border-box;
+  position: relative;
 }
 
 .footer {
