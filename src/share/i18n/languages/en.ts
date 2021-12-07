@@ -258,6 +258,7 @@ const data = {
       'rename': 'Rename / Move',
       'delete': 'Delete',
       'open-in-os': 'Open in OS',
+      'reveal-in-os': 'Reveal in OS',
       'refresh': 'Refresh',
       'open-in-terminal': 'Open in Terminal',
       'create-in-cd': 'New File',

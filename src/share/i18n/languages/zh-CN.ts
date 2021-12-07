@@ -259,6 +259,7 @@ const data: BaseLanguage = {
       'rename': '重命名 / 移动',
       'delete': '删除',
       'open-in-os': '在系统中打开',
+      'reveal-in-os': '在系统中显示',
       'refresh': '刷新目录',
       'open-in-terminal': '在终端中打开',
       'create-in-cd': '当前目录创建新文件',

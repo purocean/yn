@@ -241,11 +241,12 @@ export async function upload (repo: string, fileBase64Url: string, filePath: str
 /**
  * Open file in OS.
  * @param file
+ * @param reveal
  * @returns
  */
-export async function openInOS (file: FileItem): Promise<ApiResult<any>> {
+export async function openInOS (file: FileItem, reveal?: boolean): Promise<ApiResult<any>> {
   const { repo, path } = file
-  return fetchHttp(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}`)
+  return fetchHttp(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}&reveal=${reveal ? 'true' : ''}`)
 }
 
 /**
