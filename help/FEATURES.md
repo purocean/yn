@@ -220,7 +220,7 @@ REM --run--
 
 Support to embed HTML widgets in documents.
 
-The first line of the HTMl code block needs to contain the string `--applet--`, and the remaining strings are used as the title of the widget.
+The first line of the HTML code block needs to contain the string `--applet--`, and the remaining strings are used as the title of the widget.
 
 The example is as follows:
 
