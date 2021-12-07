@@ -224,7 +224,11 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
   monaco.editor.defineTheme('vs', {
     base: 'vs',
     inherit: true,
-    rules: [],
+    rules: [
+      { token: 'keyword', foreground: '#0062d1' },
+      { token: 'attribute.name.html', foreground: '#0062d1' },
+      { token: 'attribute.value.html', foreground: '#e52a24' }
+    ],
     colors: {
       'editor.background': '#F2F2F2',
       'minimap.background': '#EEEEEE',
