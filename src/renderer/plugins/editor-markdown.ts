@@ -97,7 +97,26 @@ function createDependencyProposals (range: any, currentWord: string): Monaco.lan
 }
 
 function processCursorChange (source: string, position: Monaco.Position) {
-  if (source === 'tab') {
+  const isEnter = source === 'keyboard' && isKeydown('ENTER')
+  const isTab = source === 'tab'
+  if (isTab || isEnter) {
+    const line = position.lineNumber
+    const content = getLineContent(line)
+    const prevContent = getLineContent(line - 1)
+
+    // auto increase order list item number
+    const reg = /^\s*(\d+)\./
+    const match = prevContent.match(reg)
+    if (match && reg.test(content)) {
+      const num = parseInt(match[0] || '0')
+      // only increase above 1
+      if (num > 1) {
+        replaceLine(line, content.replace(/\d+\./, `${num + 1}.`))
+      }
+    }
+  }
+
+  if (isTab) {
     const content = getLineContent(position.lineNumber)
     if (!content) {
       return
@@ -114,7 +133,7 @@ function processCursorChange (source: string, position: Monaco.Position) {
       const end = /[-+*\].]$/.test(val) ? ' ' : ''
       replaceLine(position.lineNumber, indent + val + end)
     }
-  } else if (source === 'keyboard' && isKeydown('ENTER')) {
+  } else if (isEnter) {
     const line = position.lineNumber - 1
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
@@ -225,7 +244,7 @@ export default {
           { beforeText: /^\s*\+ .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '+ ' } },
           { beforeText: /^\s*- .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '- ' } },
           { beforeText: /^\s*\* .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '* ' } },
-          { beforeText: /^\s*1. .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1. ' } }
+          { beforeText: /^\s*\d+\. .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1. ' } }
         ]
       })
 
