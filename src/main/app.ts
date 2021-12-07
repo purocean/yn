@@ -2,9 +2,10 @@ import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDia
 import * as path from 'path'
 import * as os from 'os'
 import * as yargs from 'yargs'
+import ElectronContextmenu from 'electron-context-menu'
 import server from './server'
 import { APP_NAME } from './constant'
-import { inputMenu, selectionMenu, getTrayMenus, getMainMenus } from './menus'
+import { getTrayMenus, getMainMenus } from './menus'
 import { transformProtocolRequest } from './protocol'
 import opn from 'opn'
 import startup from './startup'
@@ -22,6 +23,17 @@ const trayEnabled = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || 3044
 const devFrontendPort = 8066
 
+ElectronContextmenu({
+  showLookUpSelection: true,
+  showSearchWithGoogle: false,
+  showCopyImage: true,
+  showCopyImageAddress: false,
+  showSaveImage: false,
+  showSaveImageAs: true,
+  showSaveLinkAs: false,
+  showInspectElement: false,
+  showServices: true,
+})
 Menu.setApplicationMenu(getMainMenus())
 
 let fullscreen = false
@@ -287,15 +299,6 @@ if (!gotTheLock) {
   })
 
   app.on('web-contents-created', (_, webContents) => {
-    webContents.on('context-menu', (_, props) => {
-      const { selectionText, isEditable } = props
-      if (isEditable) {
-        inputMenu.popup({ window: win || undefined })
-      } else if (selectionText && selectionText.trim() !== '') {
-        selectionMenu.popup({ window: win || undefined })
-      }
-    })
-
     webContents.on('new-window', (e, url) => {
       const allowList = [
         `${APP_NAME}://`,
