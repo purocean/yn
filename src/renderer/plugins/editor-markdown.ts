@@ -205,6 +205,7 @@ export default {
           { open: '_', close: '_' },
           { open: '=', close: '=' },
           { open: '~', close: '~' },
+          { open: '^', close: '^' },
           { open: '#', close: '#' },
           { open: '$', close: '$' },
           { open: '《', close: '》' },
