@@ -1,16 +1,19 @@
 import * as os from 'os'
-import { globalShortcut, dialog } from 'electron'
+import { globalShortcut } from 'electron'
 import { FLAG_DISABLE_SERVER } from './constant'
-import { $t } from './i18n'
+import { getAction } from './action'
 
 const platform = os.platform()
 
 type AcceleratorType = 'show-main-window' | 'open-in-browser'
+
+const accelerators: Record<AcceleratorType, string> = {
+  'show-main-window': platform === 'darwin' ? 'Shift+Alt+M' : 'Super+N',
+  'open-in-browser': 'Super+Shift+B'
+}
+
 export const getAccelerator = (type: AcceleratorType) => {
-  return {
-    'show-main-window': platform === 'darwin' ? 'Shift+Alt+M' : 'Super+N',
-    'open-in-browser': 'Super+Shift+B'
-  }[type]
+  return accelerators[type]
 }
 
 export const registerShortcut = (shortcuts: {[key in AcceleratorType]?: () => void}) => {
@@ -27,11 +30,8 @@ export const registerShortcut = (shortcuts: {[key in AcceleratorType]?: () => vo
     globalShortcut.register(accelerator, shortcuts[key]!)
 
     if (!globalShortcut.isRegistered(accelerator)) {
-      dialog.showMessageBox({
-        type: 'error',
-        title: $t('app.shortcut.error.title'),
-        message: $t('app.shortcut.error.desc', accelerator),
-      })
+      delete accelerators[key]
+      getAction('refresh-menus')()
     }
   })
 }

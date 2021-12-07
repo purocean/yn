@@ -98,12 +98,6 @@ const data: BaseLanguage = {
         'force-quit': '强制退出',
       }
     },
-    'shortcut': {
-      'error': {
-        'title': '注册快捷键失败',
-        'desc': '冲突 [%s]'
-      },
-    },
     'updater': {
       'found-dialog': {
         'title': 'Yank Note - 发现新版本',

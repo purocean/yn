@@ -97,12 +97,6 @@ const data = {
         'force-quit': 'Force Quit',
       }
     },
-    'shortcut': {
-      'error': {
-        'title': 'Register Shortcut Failed',
-        'desc': 'Conflict [%s]'
-      },
-    },
     'updater': {
       'found-dialog': {
         'title': 'Yank Note - Newer version was found',
