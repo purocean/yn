@@ -50,6 +50,21 @@ define:
 + 下标：H~2~0
 + 脚注：脚注[^1]语法[^2]
 
+### 元素属性书写
+
+此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
+示例红色文字：
+**test**{style="color:red"}
+
+### 图片增强
+
+1. 图片默认会渲染成块元素并居中，背景色透明
+    + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
+    + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
+
+1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
+    例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
+
 ## 思维导图
 
 只需要在列表根节点加上 `{.mindmap}` 即可。
@@ -431,21 +446,6 @@ test 3
 :::
 
 ::::
-
-## 元素属性书写
-
-此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
-示例红色文字：
-**test**{style="color:red"}
-
-## 图片增强
-
-1. 图片默认会渲染成块元素并居中，背景色透明
-    + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
-    + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
-
-1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
-    例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
 
 ## Front Matter
 

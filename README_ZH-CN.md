@@ -41,7 +41,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 特色功能
 
-以下功能具体使用可参考[特色功能说明](./help/FEATURES.md)
+以下功能具体使用可参考[特色功能说明](./help/FEATURES_ZH-CN.md)
 
 - **同步滚动:** 编辑区和预览区同步滚动，预览区可独立滚动
 - **目录大纲:** 预览区目录大纲快速跳转
@@ -77,7 +77,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 - **容器块:** 支持类似 VuePress 默认主题的自定义容器
 - **宏替换:** 支持内嵌 JavaScript 表达式动态替换文档内容
 - **图床:** 支持 [PicGo](https://picgo.github.io/PicGo-Doc/) 图床
-- **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN.md)
+- **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN_ZH-CN.md)
 
 ## 截图
 

@@ -51,6 +51,20 @@ Type '/' in the editor to get prompts
 + Sub：H~2~0
 + Footnote：footnote[^1] grammar[^2]
 
+### Element Attribute
+
+This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
+For example, red text:
+**test**{style="color:red"}
+
+### Image Enhancement
+
+1. The picture will be rendered as a block element and centered by default, with a transparent background color.
+    + If you want to display the image as an inline element, you can add `.inline` after the image link parameter, such as: ![](mas_en.svg?.inline)
+    + If you want to add a white background to the image to optimize the display effect (for some transparent images), you can add `.bgw` after the image link parameter, such as: ![](mas_en.svg?.inline.bgw)
+
+1. You can use [markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize) to set the image size. For example, this is an image with a width of 16px: ![](logo-small.png?.inline =16x)
+
 ## Mind Map
 
 Just need to add `{.mindmap}` to the end of root node of the list.
@@ -433,20 +447,6 @@ test 3
 :::
 
 ::::
-
-## Element Attribute
-
-This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
-For example, red text:
-**test**{style="color:red"}
-
-## Image Enhancement
-
-1. The picture will be rendered as a block element and centered by default, with a transparent background color.
-    + If you want to display the image as an inline element, you can add `.inline` after the image link parameter, such as: ![](mas_en.svg?.inline)
-    + If you want to add a white background to the image to optimize the display effect (for some transparent images), you can add `.bgw` after the image link parameter, such as: ![](mas_en.svg?.inline.bgw)
-
-1. You can use [markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize) to set the image size. For example, this is an image with a width of 16px: ![](logo-small.png?.inline =16x)
 
 ## Front Matter
 
