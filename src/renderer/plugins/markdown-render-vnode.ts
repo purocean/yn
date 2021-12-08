@@ -4,7 +4,7 @@ import Renderer from 'markdown-it/lib/renderer'
 import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
 import { Plugin } from '@fe/context'
 
-const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*/
+const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
 const defaultRules = {} as any
 
 defaultRules.code_inline = function (tokens: Token[], idx: number, _: any, __: any, slf: Renderer) {
