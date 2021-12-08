@@ -32,6 +32,7 @@ export const defaultOptions: {[key: string]: any} = {
     verticalScrollbarSize: 0
   },
   readOnly: FLAG_READONLY,
+  acceptSuggestionOnEnter: 'smart',
 }
 
 /**

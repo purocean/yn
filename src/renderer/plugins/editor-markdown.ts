@@ -128,11 +128,11 @@ function processCursorChange (source: string, position: Monaco.Position) {
 
     if (
       eolNumber === position.column &&
-      /^\s*(?:[*+-]|\d+\.)/.test(content)
+      /^\s*(?:[*+->]|\d+\.)/.test(content)
     ) {
       const indent = getOneIndent()
       const val = content.trimEnd()
-      const end = /[-+*\].]$/.test(val) ? ' ' : ''
+      const end = /[-+*\].>]$/.test(val) ? ' ' : ''
       replaceLine(position.lineNumber, indent + val + end)
     }
   } else if (isEnter) {
@@ -140,8 +140,8 @@ function processCursorChange (source: string, position: Monaco.Position) {
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
     if (
-      /^\s*(?:[*+-]|\d+\.)/.test(prevContent) && // previous content must a item
-      /^\s*(?:[*+-]|\d+\.|[*+-] \[ \])\s*$/.test(content) // current content must a empty item
+      /^\s*(?:[*+->]|\d+\.)/.test(prevContent) && // previous content must a item
+      /^\s*(?:[*+->]|\d+\.|[*+-] \[ \])\s*$/.test(content) // current content must a empty item
     ) {
       deleteLine(line) // remove empty item, now the line is the next line.
       replaceLine(line, '') // remove auto completion
