@@ -169,7 +169,7 @@ export default defineComponent({
       } catch (error: any) {
         logger.error('render', error)
         renderContent.value = h('div', [
-          h('h2', { style: 'color: red' }, '渲染出错'),
+          h('h2', { style: 'color: red' }, 'Error'),
           h('pre', error.stack || error.toString())
         ])
       }
