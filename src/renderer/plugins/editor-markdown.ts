@@ -25,7 +25,9 @@ function getWords (content: string) {
       break
     }
 
-    words.add(res[0])
+    if (res[0].length > 2 && res[0].length < 15) {
+      words.add(res[0])
+    }
   }
 
   return words
