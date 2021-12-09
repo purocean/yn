@@ -7,6 +7,15 @@ export * as path from './path'
 export * as storage from './storage'
 export * as crypto from './crypto'
 
+/**
+ * quote string
+ * @param str
+ * @param quote
+ */
+export function quote (str: string, quote = '`') {
+  return quote + str.replaceAll(quote, '\\' + quote) + quote
+}
+
 export const encodeMarkdownLink = (path: string) => {
   return path
     .replace(/\(/g, '%28')

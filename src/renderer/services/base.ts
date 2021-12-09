@@ -3,7 +3,7 @@ import type { Doc } from '@fe/types'
 import * as api from '@fe/support/api'
 import { getSettings } from './setting'
 import { FLAG_DEMO } from '@fe/support/args'
-import { binMd5, fileToBase64URL, getLogger } from '@fe/utils'
+import { binMd5, quote, fileToBase64URL, getLogger } from '@fe/utils'
 import { basename, resolve, extname, dirname, relative } from '@fe/utils/path'
 import { dayjs } from '@fe/context/lib'
 import { useModal } from '@fe/support/ui/modal'
@@ -65,4 +65,20 @@ export async function inputPassword (title: string, hint: string, throwError = f
   }
 
   return password
+}
+
+/**
+ * open an external uri
+ * @param uri
+ */
+export async function openExternal (uri: string) {
+  api.rpc(`require('electron').shell.openExternal(${quote(uri)})`)
+}
+
+/**
+ * open a path
+ * @param uri
+ */
+export async function openPath (path: string) {
+  api.rpc(`require('electron').shell.openPath(${quote(path)})`)
 }
