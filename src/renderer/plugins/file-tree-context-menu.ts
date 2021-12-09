@@ -48,6 +48,9 @@ export default {
         ] : []),
         { type: 'separator' },
         { id: 'open-in-os', label: t('tree.context-menu.open-in-os'), onClick: () => ctx.doc.openInOS(node) },
+        ...(node.type === 'file' ? [
+          { id: 'reveal-in-os', label: t('tree.context-menu.reveal-in-os'), onClick: () => ctx.doc.openInOS(node, true) }
+        ] : []),
         { id: 'refresh', label: t('tree.context-menu.refresh'), onClick: () => ctx.tree.refreshTree() },
         ...(node.type === 'dir' && !FLAG_DISABLE_XTERM ? [
           { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: revealInXterminal }

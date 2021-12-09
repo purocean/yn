@@ -58,6 +58,8 @@ export default defineComponent({
         return
       }
 
+      clearTimer()
+
       await saveDoc(file, currentContent.value)
     }
 

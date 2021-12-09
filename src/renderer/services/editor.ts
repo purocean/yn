@@ -1,9 +1,10 @@
-import * as Monaco from 'monaco-editor'
+import type * as Monaco from 'monaco-editor'
 import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import { registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
+import store from '@fe/support/store'
 import { getColorScheme } from './theme'
 
 let monaco: typeof Monaco
@@ -16,7 +17,7 @@ export const defaultOptions: {[key: string]: any} = {
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: 16,
-  wordWrap: false,
+  wordWrap: store.state.wordWrap,
   links: !isElectron,
   // wordWrapColumn: 40,
   // Set this to false to not auto word wrap minified files
@@ -31,6 +32,7 @@ export const defaultOptions: {[key: string]: any} = {
     verticalScrollbarSize: 0
   },
   readOnly: FLAG_READONLY,
+  acceptSuggestionOnEnter: 'smart',
 }
 
 /**
@@ -122,6 +124,15 @@ export function replaceLine (line: number, text: string) {
   ])
 }
 
+export function deleteLine (line: number) {
+  getEditor().executeEdits('', [
+    {
+      range: new (getMonaco().Range)(line, 1, line + 1, 1),
+      text: null
+    }
+  ])
+}
+
 /**
  * Reveal line to screen center.
  * @param line
@@ -169,7 +180,19 @@ export function getValue () {
  * @param val
  */
 export function replaceValue (search: string, val: string) {
-  getEditor().getModel()!.setValue(getValue().replace(search, val))
+  const editor = getEditor()
+  const model = editor.getModel()
+  const maxLine = model!.getLineCount()
+  const endLineLength = model!.getLineLength(maxLine)
+  const text = model!.getValue().replaceAll(search, val)
+
+  editor.executeEdits('', [
+    {
+      range: new (getMonaco().Range)(1, 1, maxLine, endLineLength + 1),
+      text,
+      forceMoveMarkers: true
+    }
+  ])
 }
 
 /**
@@ -193,7 +216,7 @@ export function getSelectionInfo () {
  */
 export function toggleWrap () {
   const isWrapping = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo).isViewportWrapping
-  getEditor().updateOptions({ wordWrap: (isWrapping ? 'off' : 'on') })
+  store.commit('setWordWrap', (isWrapping ? 'off' : 'on'))
 }
 
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
@@ -202,7 +225,11 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
   monaco.editor.defineTheme('vs', {
     base: 'vs',
     inherit: true,
-    rules: [],
+    rules: [
+      { token: 'keyword', foreground: '#0062d1' },
+      { token: 'attribute.name.html', foreground: '#0062d1' },
+      { token: 'attribute.value.html', foreground: '#e52a24' }
+    ],
     colors: {
       'editor.background': '#F2F2F2',
       'minimap.background': '#EEEEEE',
@@ -233,4 +260,10 @@ registerHook('MONACO_CHANGE_VALUE', payload => {
 
 registerHook('THEME_CHANGE', () => {
   monaco?.editor.setTheme(getColorScheme() === 'dark' ? 'vs-dark' : 'vs')
+})
+
+store.watch(state => state.wordWrap, (wordWrap) => {
+  whenEditorReady().then(({ editor }) => {
+    editor.updateOptions({ wordWrap })
+  })
 })

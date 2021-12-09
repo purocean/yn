@@ -2,6 +2,9 @@
 headingNumber: true
 enableMacro: true
 customVar: Hello
+define:
+    --APP_NAME--: Yank Note
+    --APP_VERSION--: '[= $ctx.version =]'
 ---
 
 # Yank-Note 特色功能使用说明
@@ -40,10 +43,27 @@ customVar: Hello
 
 ## Markdown 增强
 
+在编辑器中键入 `/` 可以获得提示
+
 + 高亮：==marked==
 + 上标：29^th^
 + 下标：H~2~0
 + 脚注：脚注[^1]语法[^2]
+
+### 元素属性书写
+
+此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
+示例红色文字：
+**test**{style="color:red"}
+
+### 图片增强
+
+1. 图片默认会渲染成块元素并居中，背景色透明
+    + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
+    + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
+
+1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
+    例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
 
 ## 思维导图
 
@@ -214,7 +234,7 @@ REM --run--
 ## 小工具
 
 支持在文档中嵌入 HTML 小工具。
-HTMl代码块第一行需要包含以 `--applet--` 字符串，其余字符串作为小工具标题，示例如下
+HTML 代码块第一行需要包含以 `--applet--` 字符串，其余字符串作为小工具标题，示例如下
 
 ```html
 <!-- --applet-- Hash -->
@@ -427,21 +447,6 @@ test 3
 
 ::::
 
-## 元素属性书写
-
-此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
-示例红色文字：
-**test**{style="color:red"}
-
-## 图片增强
-
-1. 图片默认会渲染成块元素并居中，背景色透明
-    + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
-    + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
-
-1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
-    例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
-
 ## Front Matter
 
 页面支持类似 [Jekyll Front Matter](https://jekyllrb.com/docs/front-matter/) 配置信息
@@ -450,8 +455,17 @@ test 3
 
 变量名 | 类型 | 描述
 ---- | ----- | ---
-headingNumber | boolean | 是否开启页面标题序号编号
-enableMacro | boolean | 是否开启宏替换
+`headingNumber` | `boolean` | 是否开启页面标题序号编号
+`enableMacro` | `boolean` | 是否开启宏替换
+`define` | `Record<string, string>` | 宏定义，定义文本替换
+
+### 文本替换
+
+`define` 字段可以定义一些文本替换映射。支持在另一个文件定义，支持宏表达式。具体可参考本文件顶部 Front Matter 部分。
+
+- 应用名: --APP_NAME--
+- 应用版本: --APP_VERSION--
+- 另一个文件的定义: --TEST_DEFINE--
 
 ## 宏替换
 
@@ -512,16 +526,17 @@ Yank Note 允许你在页面中嵌入宏，用以动态的替换文档。
 
 变量名 | 类型 | 描述
 ---- | ----- | ---
-`$ctx` | object | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/context.html)
-`$include` | (path: string, trim = false) => Result | 引入其他文档片段方法
-`$export` | (key: string, val: any) => Result | 定义一个本文档可以使用的变量
-`$doc` | object | 当前文档信息
-`$doc.basename` | string | 当前文档文件名（无后缀）
-`$doc.name` | string | 当前文档文件名
-`$doc.path` | string | 当前文档路径
-`$doc.repo` | string | 当前文档仓库
-`$doc.content` | string | 当前文档内容
-`$doc.status` | 'loaded', 'save-failed', 'saved' | 当前文档状态
+`$ctx` | `object` | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/context.html)
+`$include` | `(path: string, trim = false) => Result` | 引入其他文档片段方法
+`$export` | `(key: string, val: any) => Result` | 定义一个本文档可以使用的变量
+`$noop` | `() => Result` | 无操作函数，可用于文本占位使用
+`$doc` | `object` | 当前文档信息
+`$doc.basename` | `string` | 当前文档文件名（无后缀）
+`$doc.name` | `string` | 当前文档文件名
+`$doc.path` | `string` | 当前文档路径
+`$doc.repo` | `string` | 当前文档仓库
+`$doc.content` | `string` | 当前文档内容
+`$doc.status` | `'loaded', 'save-failed', 'saved'` | 当前文档状态
 
 ## 命令行参数
 

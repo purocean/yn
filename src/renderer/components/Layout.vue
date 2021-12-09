@@ -34,7 +34,7 @@
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
 import { useStore } from 'vuex'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
-import { emitResize } from '@fe/services/layout'
+import { emitResize, toggleSide, toggleXterm } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
 
 let resizeOrigin: any = null
@@ -51,9 +51,32 @@ export default defineComponent({
     const terminal = ref(null)
     const refs: any = { aside, editor, terminal }
 
+    function resizeOutOfRange (ref: string, outOfRange: null | 'min' | 'max') {
+      if (ref === 'aside' && outOfRange === 'min') {
+        toggleSide(false)
+        return true
+      }
+
+      if (ref === 'terminal' && outOfRange === 'min') {
+        toggleXterm(false)
+        return true
+      }
+
+      return false
+    }
+
+    function clearResize () {
+      if (resizeOrigin) {
+        const ref = refs[resizeOrigin.ref].value
+        ref.style.filter = 'none'
+
+        resizeOrigin = null
+      }
+    }
+
     function resizeFrame (e: MouseEvent) {
       if (e.buttons !== 1) {
-        resizeOrigin = null
+        clearResize()
         return
       }
 
@@ -63,16 +86,52 @@ export default defineComponent({
 
       const ref = refs[resizeOrigin.ref].value
 
+      function checkOutOfRange (value: number) {
+        if (value < resizeOrigin.min || value > resizeOrigin.max) {
+          ref.style.filter = 'opacity(0.5)'
+          resizeOrigin.outOfRange = value < resizeOrigin.min ? 'min' : 'max'
+        } else {
+          ref.style.filter = 'none'
+          resizeOrigin.outOfRange = null
+        }
+      }
+
       if (resizeOrigin.type === 'right') {
         const offsetX = e.clientX - resizeOrigin.mouseX
         const width = (resizeOrigin.targetWidth + offsetX)
+
+        checkOutOfRange(width)
+
         ref.style.width = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, width)) + 'px'
       } else if (resizeOrigin.type === 'top') {
         const offsetY = -(e.clientY - resizeOrigin.mouseY)
         const height = (resizeOrigin.targetHeight + offsetY)
+
+        checkOutOfRange(height)
+
         ref.style.height = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, height)) + 'px'
       }
       emitResize()
+    }
+
+    function resizeDone () {
+      if (!resizeOrigin || !resizeOrigin.outOfRange) {
+        return
+      }
+
+      const ref = refs[resizeOrigin.ref].value
+
+      if (resizeOutOfRange(resizeOrigin.ref, resizeOrigin.outOfRange)) {
+        if (resizeOrigin.type === 'right') {
+          ref.style.width = resizeOrigin.targetWidth + 'px'
+        }
+
+        if (resizeOrigin.type === 'top') {
+          ref.style.height = resizeOrigin.targetHeight + 'px'
+        }
+      }
+
+      clearResize()
     }
 
     function initResize (type: any, ref: any, min: any, max: any, e: any) {
@@ -89,6 +148,7 @@ export default defineComponent({
           targetHeight: refEl.clientHeight,
           targetLeft: refEl.clientLeft,
           targetTop: refEl.clientTop,
+          outOfRange: null, // min max
         }
       }
     }
@@ -96,11 +156,13 @@ export default defineComponent({
     onMounted(() => {
       window.addEventListener('resize', emitResize)
       window.document.addEventListener('mousemove', resizeFrame)
+      window.document.addEventListener('mouseup', resizeDone)
     })
 
     onBeforeUnmount(() => {
       window.removeEventListener('resize', emitResize)
       window.document.removeEventListener('mousemove', resizeFrame)
+      window.document.removeEventListener('mouseup', resizeDone)
     })
 
     const showFooter = $args().get('show-status-bar') !== 'false'
@@ -181,7 +243,7 @@ export default defineComponent({
 }
 
 .sash-top {
-  z-index: 1;
+  z-index: 11;
   width: 100%;
   position: absolute;
   left: 0;
@@ -224,6 +286,7 @@ export default defineComponent({
   flex: 1 1 50%;
   min-width: 50%;
   box-sizing: border-box;
+  position: relative;
 }
 
 .footer {

@@ -1,6 +1,6 @@
 # Yank Note
 
-A **hackable** markdown note application for programmers **[Try it Online >>>](https://yank-note.vercel.app/)**
+A **hackable** markdown note application for programmers **[Download](https://github.com/purocean/yn/releases)** | **[Try it Online >>>](https://yank-note.vercel.app/)**
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
 
@@ -88,13 +88,17 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.14.2](https://github.com/purocean/yn/releases/tag/v3.14.2) 2021-12-03
-1. feat(markdown): support sup syntax
-2. feat(markdown): support sub syntax
-3. feat(markdown): support mark syntax
-4. upd(plugin): update view hooks, add `ctx.view.getViewDom`, `ctx.view.getRenderEnv` methods
-5. fix(mindmap): fix the mind map cannot switch layout
-6. fix: fix memory leak
+### [v3.15.0](https://github.com/purocean/yn/releases/tag/v3.15.0) 2021-12-09
+1. feat(preview): add more context menus to the preview interface
+2. feat(preview): add language information display to the code block
+3. perf(preview): optimize the rendering large documents performance
+4. upd(editor): optimize the editing experience, add more completion
+5. feat(macro): add macro definition
+6. feat(macro): add `$noop` ​​method
+7. feat(plug-in): add `ctx.editor.deleteLine` method
+8. feat(plug-in): add `ctx.ui.useToast().hide` method
+9. upd: other interactive experience optimization
+10. fix: fix rendering bugs
 
 [More release notes](https://github.com/purocean/yn/releases)
 

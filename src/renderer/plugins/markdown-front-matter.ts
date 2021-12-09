@@ -24,7 +24,14 @@ export default {
 
         logger.debug('render', bodyBegin, attributes)
 
-        Object.assign(env, { bodyBegin, attributes, _front_matter_exec_flag: false })
+        let count = 0
+        let bodyBeginPos = 0
+        while (count < bodyBegin) {
+          count++
+          bodyBeginPos = src.indexOf('\n', bodyBeginPos + 1)
+        }
+
+        Object.assign(env, { bodyBegin, bodyBeginPos, attributes, _front_matter_exec_flag: false })
         return render.call(md, src, env)
       }
 

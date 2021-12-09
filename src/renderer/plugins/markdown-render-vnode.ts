@@ -4,7 +4,7 @@ import Renderer from 'markdown-it/lib/renderer'
 import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
 import { Plugin } from '@fe/context'
 
-const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*/
+const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
 const defaultRules = {} as any
 
 defaultRules.code_inline = function (tokens: Token[], idx: number, _: any, __: any, slf: Renderer) {
@@ -14,10 +14,11 @@ defaultRules.code_inline = function (tokens: Token[], idx: number, _: any, __: a
 
 defaultRules.code_block = function (tokens: Token[], idx: number, _: any, __: any, slf: Renderer) {
   const token = tokens[idx]
+  const attrs: any = slf.renderAttrs(token)
   return createVNode(
     'pre',
-    slf.renderAttrs(token) as any,
-    [createVNode('code', {}, token.content)]
+    {},
+    [createVNode('code', attrs, [createVNode(Text, {}, token.content)])]
   )
 }
 
@@ -44,10 +45,10 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
     return highlighted + '\n'
   }
 
-  const buildVNode = (arrts: any) => createVNode(
+  const buildVNode = (attrs: any) => createVNode(
     'pre',
     {},
-    [createVNode('code', { ...arrts, innerHTML: highlighted }, [])]
+    [createVNode('code', { key: highlighted, ...attrs, innerHTML: highlighted }, [])]
   )
 
   // If language exists, inject class gently, without modifying original token.
@@ -120,8 +121,9 @@ function createHtmlVNode (html: string) {
     }
 
     attrs.innerHTML = element.innerHTML
+    attrs.key = element.innerHTML
 
-    children.push(createVNode(tagName, attrs))
+    children.push(createVNode(tagName, attrs, []))
   }
 
   return createVNode(Fragment, {}, children)

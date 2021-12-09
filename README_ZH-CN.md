@@ -1,6 +1,6 @@
 # Yank Note
 
-一款面向程序员的 Markdown 笔记应用 **[在线体验>>>](https://yank-note.vercel.app/)**
+一款面向程序员的 Markdown 笔记应用 **[全平台下载](https://github.com/purocean/yn/releases)** ｜ **[在线体验>>>](https://yank-note.vercel.app/)**
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
 
@@ -41,7 +41,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 特色功能
 
-以下功能具体使用可参考[特色功能说明](./help/FEATURES.md)
+以下功能具体使用可参考[特色功能说明](./help/FEATURES_ZH-CN.md)
 
 - **同步滚动:** 编辑区和预览区同步滚动，预览区可独立滚动
 - **目录大纲:** 预览区目录大纲快速跳转
@@ -77,7 +77,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 - **容器块:** 支持类似 VuePress 默认主题的自定义容器
 - **宏替换:** 支持内嵌 JavaScript 表达式动态替换文档内容
 - **图床:** 支持 [PicGo](https://picgo.github.io/PicGo-Doc/) 图床
-- **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN.md)
+- **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN_ZH-CN.md)
 
 ## 截图
 
@@ -88,13 +88,17 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.14.2](https://github.com/purocean/yn/releases/tag/v3.14.2) 2021-12-03
-1. feat(markdown): 支持下标语法
-2. feat(markdown): 支持上标语法
-3. feat(markdown): 支持标记语法
-4. upd(plugin): 更新 view hooks, 增加 `ctx.view.getViewDom`, `ctx.view.getRenderEnv` 方法
-5. fix(mindmap): 修复脑图不能切换布局问题
-6. fix: 修复内存泄露
+### [v3.15.0](https://github.com/purocean/yn/releases/tag/v3.15.0) 2021-12-09
+1. feat(预览): 预览界面增加更多上下文菜单
+2. feat(预览): 代码块增加语言信息展示
+3. perf(预览): 优化大文档渲染性能
+4. upd(编辑器): 优化编辑体验，增加更多自动补全
+5. feat(宏): 增加宏定义功能
+6. feat(宏): 增加 `$noop` 方法
+7. feat(插件): 增加 `ctx.editor.deleteLine` 方法
+8. feat(插件): 增加 `ctx.ui.useToast().hide` 方法
+9. upd: 其他交互体验优化
+10. fix: 修复页面可能会卡死问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

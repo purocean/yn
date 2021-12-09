@@ -97,12 +97,6 @@ const data = {
         'force-quit': 'Force Quit',
       }
     },
-    'shortcut': {
-      'error': {
-        'title': 'Register Shortcut Failed',
-        'desc': 'Conflict [%s]'
-      },
-    },
     'updater': {
       'found-dialog': {
         'title': 'Yank Note - Newer version was found',
@@ -264,6 +258,7 @@ const data = {
       'rename': 'Rename / Move',
       'delete': 'Delete',
       'open-in-os': 'Open in OS',
+      'reveal-in-os': 'Reveal in OS',
       'refresh': 'Refresh',
       'open-in-terminal': 'Open in Terminal',
       'create-in-cd': 'New File',

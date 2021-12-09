@@ -141,10 +141,16 @@ export default {
           type: 'normal',
           label: ctx.i18n.t('status-bar.tool.convert-img-link'),
           onClick: async () => {
-            const data = await transformImgOutLink(el as HTMLImageElement)
-            if (data) {
-              replaceValue(data.oldLink, data.replacedLink)
-              refreshTree()
+            try {
+              ctx.ui.useToast().show('info', 'Loading……', 0)
+              const data = await transformImgOutLink(el as HTMLImageElement)
+              if (data) {
+                replaceValue(data.oldLink, data.replacedLink)
+                refreshTree()
+              }
+              ctx.ui.useToast().hide()
+            } catch (error: any) {
+              ctx.ui.useToast().show('warning', error.message)
             }
           }
         })

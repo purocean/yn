@@ -6,21 +6,6 @@ import { getAccelerator } from './shortcut'
 import { checkForUpdates } from './updater'
 import { $t } from './i18n'
 
-export const selectionMenu = Menu.buildFromTemplate([
-  { role: 'copy' },
-])
-
-export const inputMenu = Menu.buildFromTemplate([
-  { role: 'copy' },
-  { role: 'paste' },
-  { role: 'cut' },
-  { type: 'separator' },
-  { role: 'undo' },
-  { role: 'redo' },
-  { type: 'separator' },
-  { role: 'selectAll' },
-])
-
 export const getMainMenus = () => process.platform === 'darwin' ? Menu.buildFromTemplate([
   {
     label: 'Application',

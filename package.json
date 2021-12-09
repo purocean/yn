@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.14.2",
+  "version": "3.15.0",
   "description": "Yank Note: A hackable markdown note application for programmers",
   "main": "dist/main/app.js",
   "license": "GPL-3.0",
@@ -23,11 +23,14 @@
   },
   "dependencies": {
     "command-exists": "^1.2.9",
+    "electron-context-menu": "^3.1.1",
     "electron-log": "^4.3.5",
     "electron-progressbar": "^2.0.1",
     "electron-store": "^5.2.0",
     "electron-updater": "^4.3.9",
     "fs-extra": "^10.0.0",
+    "http-proxy-agent": "^5.0.0",
+    "https-proxy-agent": "^5.0.0",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
     "lodash": "^4.17.21",
@@ -41,6 +44,7 @@
     "request": "^2.88.2",
     "safe-buffer": "^5.2.1",
     "socket.io": "^2.4.0",
+    "socks-proxy-agent": "^6.1.1",
     "transliteration": "^2.2.0",
     "yargs": "^15.3.1"
   },

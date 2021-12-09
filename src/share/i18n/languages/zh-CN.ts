@@ -98,12 +98,6 @@ const data: BaseLanguage = {
         'force-quit': '强制退出',
       }
     },
-    'shortcut': {
-      'error': {
-        'title': '注册快捷键失败',
-        'desc': '冲突 [%s]'
-      },
-    },
     'updater': {
       'found-dialog': {
         'title': 'Yank Note - 发现新版本',
@@ -265,6 +259,7 @@ const data: BaseLanguage = {
       'rename': '重命名 / 移动',
       'delete': '删除',
       'open-in-os': '在系统中打开',
+      'reveal-in-os': '在系统中显示',
       'refresh': '刷新目录',
       'open-in-terminal': '在终端中打开',
       'create-in-cd': '当前目录创建新文件',

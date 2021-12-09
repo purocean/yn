@@ -80,7 +80,7 @@ const attachment = async (ctx: any, next: any) => {
 const open = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/open')) {
     if (ctx.method === 'GET') {
-      file.open(ctx.query.repo, ctx.query.path)
+      file.open(ctx.query.repo, ctx.query.path, !!ctx.query.reveal)
       ctx.body = result()
     }
   } else {
@@ -190,8 +190,9 @@ const proxy = async (ctx: any, next: any) => {
     const data = ctx.method === 'POST' ? ctx.request.body : ctx.query
     const url = data.url
     const options = typeof data.options === 'string' ? JSON.parse(ctx.query.options) : data.options
+    const agent = await getAction('get-proxy-agent')(url)
     await new Promise<void>((resolve, reject) => {
-      request({ url, encoding: null, ...options }, function (err: any, response: any, body: any) {
+      request({ url, agent, encoding: null, ...options }, function (err: any, response: any, body: any) {
         if (err) {
           reject(err)
         } else {
@@ -298,6 +299,8 @@ const wrapper = async (ctx: any, next: any, fun: any) => {
     await fun(ctx, next)
   } catch (error: any) {
     console.error(error)
+    ctx.set('x-yank-note-api-status', 'error')
+    ctx.set('x-yank-note-api-message', error.message)
     ctx.body = result('error', error.message)
   }
 }

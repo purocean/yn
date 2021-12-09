@@ -70,7 +70,7 @@ if (FLAG_DEMO) {
           return Promise.resolve({ status: 'ok', message: 'success' })
         } else if (method === 'GET') {
           if ((url.searchParams.get('path') || '').includes('_FRAGMENT.md')) {
-            const content = "---\ncustomVarFromOtherDoc: Hello, It's Me.\n---\n*Content from a fragment.*"
+            const content = "---\ncustomVarFromOtherDoc: Hello, It's Me.\ndefine:\n    --TEST_DEFINE--: definition from a fragment.\n---\n*Content from a fragment.*"
             return Promise.resolve({
               status: 'ok',
               message: 'success',

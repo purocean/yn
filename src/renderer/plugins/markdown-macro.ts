@@ -1,4 +1,4 @@
-import { omit } from 'lodash-es'
+import { escapeRegExp, omit } from 'lodash-es'
 import frontMatter from 'front-matter'
 import type { Plugin } from '@fe/context'
 import type { Doc } from '@fe/types'
@@ -12,15 +12,22 @@ import { getPurchased } from '@fe/others/premium'
 import ctx from '@fe/context'
 
 type Result = { __macroResult: true, vars?: Record<string, any>, value: string }
+type CacheItem = {
+  $define: Record<string, any>
+  $include?: Record<string, CacheItem>
+} & Record<string, Result | Promise<Result>>
+type MacroCache = Record<string, CacheItem>
 
 const logger = getLogger('plugin-macro')
+const magicNewline = '--yn-macro-new-line--'
 
 const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
-let macroCache: Record<string, Record<string, Result | Promise<Result>>> = {}
+let macroCache: MacroCache = {}
 
 const globalVars = {
   $export: exportVar,
   $ctx: ctx,
+  $noop: noop,
 }
 
 function lineCount (str: string) {
@@ -61,6 +68,8 @@ function wrapResult (result: any) {
 function macro (exp: string, vars: Record<string, any>): Result | Promise<Result> {
   logger.debug('macro', exp)
 
+  exp = exp.replaceAll(magicNewline, '\n')
+
   const FunctionConstructor = exp.startsWith('await') ? AsyncFunction : Function
   const fun = new FunctionConstructor('vars', `with (vars) { return (${exp}); }`)
 
@@ -81,16 +90,34 @@ function transform (
   options: {
     autoRerender: boolean,
     purchased: boolean,
-    cache: Record<string, Result | Promise<Result>>,
+    cache: CacheItem,
     callback?: (result: Result | Promise<Result>, match: string, matchPos: number) => void
   },
 ) {
+  const define = { ...vars.define, ...options.cache.$define }
+  vars.define = define
+  const keys = Object.keys(define)
+  if (keys.length) {
+    const reg = new RegExp(keys.map(escapeRegExp).join('|'), 'g')
+    src = src.replace(reg, match => {
+      const val = define[match]
+      // only support single line macro expression
+      if (typeof val === 'string' && /^\s*\[=.+?=\]\s*$/s.test(val)) {
+        // single line expression
+        return val.trim().replaceAll('\n', magicNewline)
+      } else {
+        match = match.replace(/\n|'/, '\\$&')
+        return `[= define['${match}'] =]`
+      }
+    })
+  }
+
   return src.replace(/\[=.+?=\]/gs, (match, matchPos) => {
     try {
       const exp = match
         .substring(2, match.length - 2)
         .trim()
-        .replace(/(?:=\\\]|\[\\=)/g, x => x.replace('\\', ''))
+        .replace(/=\\\]|\[\\=/g, x => x.replace('\\', ''))
 
       const id = md5(exp)
 
@@ -121,13 +148,13 @@ function transform (
       }
 
       if (result.vars) {
-        Object.assign(vars, result.vars)
+        Object.assign(vars, result.vars, { define })
       }
 
       return result.value
     } catch {}
 
-    return match
+    return match.replaceAll(magicNewline, '\n')
   })
 }
 
@@ -135,11 +162,16 @@ function exportVar (key: string, val: any): Result {
   return { __macroResult: true, vars: { [key]: val }, value: '' }
 }
 
+// do nothing, text placeholder
+function noop () {
+  return { __macroResult: true, value: '' }
+}
+
 async function include (
   options: {
     belongDoc: Doc | undefined | null
     purchased: boolean,
-    cache: Record<string, Result | Promise<Result>>,
+    cache: CacheItem,
     count: number,
   },
   path: string,
@@ -166,7 +198,7 @@ async function include (
     const fm = frontMatter(content)
 
     // merge front-matter attributes to current document vars.
-    const vars = {
+    const vars: Record<string, any> = {
       ...globalVars,
       $include: include.bind(null, { ...options, belongDoc: file, count: options.count + 1 }),
       $doc: {
@@ -175,18 +207,21 @@ async function include (
       },
     }
 
-    if (fm.attributes && typeof fm.attributes === 'object') {
-      Object.assign(vars, fm.attributes)
-    }
-
-    const cache: any = options.cache
+    const cache = options.cache
     if (options.count === 0 && !options.cache.$include) {
       cache.$include = {}
     }
 
+    if (fm.attributes && typeof fm.attributes === 'object') {
+      Object.assign(vars, fm.attributes)
+      if (vars.define && typeof vars.define === 'object') {
+        Object.assign(cache.$define, vars.define)
+      }
+    }
+
     const cacheKey = '' + options.count + file.repo + file.path
-    if (!cache.$include[cacheKey]) {
-      cache.$include[cacheKey] = {}
+    if (!cache.$include![cacheKey]) {
+      cache.$include![cacheKey] = { $define: {} } as CacheItem
     }
 
     const body = trim ? fm.body.trim() : fm.body
@@ -197,7 +232,7 @@ async function include (
       vars,
       {
         ...options,
-        cache: cache.$include[cacheKey],
+        cache: cache.$include![cacheKey],
         autoRerender: false,
         callback: res => {
           if (res instanceof Promise) {
@@ -216,7 +251,7 @@ async function include (
         vars,
         {
           ...options,
-          cache: cache.$include[cacheKey],
+          cache: cache.$include![cacheKey],
           autoRerender: false,
         }
       )
@@ -243,15 +278,17 @@ export default {
 
         const cacheKey = '' + file.repo + file.path
         // remove other file cache.
-        macroCache = { [cacheKey]: macroCache[cacheKey] || {} }
+        macroCache = { [cacheKey]: macroCache[cacheKey] || { $define: {} } }
 
         if (!env.attributes || !env.attributes.enableMacro) {
           return false
         }
 
+        const cache = macroCache[cacheKey]
+
         const options = {
           purchased: getPurchased() || file.repo === '__help__',
-          cache: macroCache[cacheKey],
+          cache,
           autoRerender: true,
         }
 
@@ -272,7 +309,11 @@ export default {
         let lineOffset = 0
         let posOffset = 0
 
-        state.src = transform(state.src, vars, {
+        const bodyBeginPos = env.bodyBeginPos || 0
+        const head = state.src.substring(0, bodyBeginPos)
+        const body = state.src.substring(bodyBeginPos)
+
+        state.src = head + transform(body, vars, {
           ...options,
           callback: (result, match, matchPos) => {
             if (result instanceof Promise) {

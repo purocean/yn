@@ -42,7 +42,7 @@
 <script lang="ts">
 import { debounce } from 'lodash-es'
 import { useStore } from 'vuex'
-import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { extname } from '@fe/utils/path'
 import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
@@ -164,7 +164,15 @@ export default defineComponent({
 
       const startTime = performance.now()
       renderEnv = { source: content, file: currentFile.value }
-      renderContent.value = markdown.render(content, renderEnv)
+      try {
+        renderContent.value = markdown.render(content, renderEnv)
+      } catch (error: any) {
+        logger.error('render', error)
+        renderContent.value = h('div', [
+          h('h2', { style: 'color: red' }, 'Error'),
+          h('pre', error.stack || error.toString())
+        ])
+      }
       const renderTime = performance.now() - startTime
 
       logger.debug('rendered', 'cost', renderTime)
@@ -274,10 +282,10 @@ export default defineComponent({
       window.removeEventListener('keydown', keydownHandler)
     })
 
-    watch(
-      () => currentContent.value + filePath.value,
-      () => autoPreview.value && updateRender()
-    )
+    watch([currentContent, filePath, inComposition], () => {
+      autoPreview.value && updateRender()
+    })
+
     watch(filePath, () => {
       // file switched, turn on auto render preview.
       toggleAutoPreview(true)
@@ -517,7 +525,7 @@ export default defineComponent({
     position: relative;
 
     mark {
-      background: yellow !important;
+      background: #fff8c5 !important;
     }
 
     fieldset {
@@ -618,6 +626,12 @@ export default defineComponent({
         }
       }
     }
+  }
+
+  .markdown-view {
+    position: absolute;
+    width: 100%;
+    height: 100%;
   }
 
   .markdown-view .markdown-body {

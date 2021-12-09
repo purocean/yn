@@ -453,9 +453,10 @@ export async function unmarkDoc (doc: Doc) {
 /**
  * Open in OS.
  * @param doc
+ * @param reveal
  */
-export async function openInOS (doc: Doc) {
-  await api.openInOS(doc)
+export async function openInOS (doc: Doc, reveal?: boolean) {
+  await api.openInOS(doc, reveal)
 }
 
 /**

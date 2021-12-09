@@ -96,7 +96,7 @@ const RunCode = defineComponent({
             onClick: runInXterm
           }),
         ]),
-        h('div', { class: 'p-mcr-run-code-result', style: 'padding: .5em 0 0 0', innerHTML: runResult }),
+        h('div', { class: 'p-mcr-run-code-result', style: 'padding: .5em 0 0 0', key: runResult, innerHTML: runResult }),
         h('div', { class: 'p-mcr-clear-btn-wrapper no-print' }, h(
           h(
             'div',

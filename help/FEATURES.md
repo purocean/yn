@@ -2,6 +2,9 @@
 headingNumber: true
 enableMacro: true
 customVar: Hello
+define:
+    --APP_NAME--: Yank Note
+    --APP_VERSION--: '[= $ctx.version =]'
 ---
 
 # Yank-Note Features Instructions
@@ -41,10 +44,26 @@ Click the TODO item in preview to try
 
 ## Markdown Enhance
 
+Type '/' in the editor to get prompts
+
 + Mark：==marked==
 + Sup：29^th^
 + Sub：H~2~0
 + Footnote：footnote[^1] grammar[^2]
+
+### Element Attribute
+
+This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
+For example, red text:
+**test**{style="color:red"}
+
+### Image Enhancement
+
+1. The picture will be rendered as a block element and centered by default, with a transparent background color.
+    + If you want to display the image as an inline element, you can add `.inline` after the image link parameter, such as: ![](mas_en.svg?.inline)
+    + If you want to add a white background to the image to optimize the display effect (for some transparent images), you can add `.bgw` after the image link parameter, such as: ![](mas_en.svg?.inline.bgw)
+
+1. You can use [markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize) to set the image size. For example, this is an image with a width of 16px: ![](logo-small.png?.inline =16x)
 
 ## Mind Map
 
@@ -215,7 +234,7 @@ REM --run--
 
 Support to embed HTML widgets in documents.
 
-The first line of the HTMl code block needs to contain the string `--applet--`, and the remaining strings are used as the title of the widget.
+The first line of the HTML code block needs to contain the string `--applet--`, and the remaining strings are used as the title of the widget.
 
 The example is as follows:
 
@@ -429,20 +448,6 @@ test 3
 
 ::::
 
-## Element Attribute
-
-This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
-For example, red text:
-**test**{style="color:red"}
-
-## Image Enhancement
-
-1. The picture will be rendered as a block element and centered by default, with a transparent background color.
-    + If you want to display the image as an inline element, you can add `.inline` after the image link parameter, such as: ![](mas_en.svg?.inline)
-    + If you want to add a white background to the image to optimize the display effect (for some transparent images), you can add `.bgw` after the image link parameter, such as: ![](mas_en.svg?.inline.bgw)
-
-1. You can use [markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize) to set the image size. For example, this is an image with a width of 16px: ![](logo-small.png?.inline =16x)
-
 ## Front Matter
 
 The page supports configuration information similar to [Jekyll Front Matter](https://jekyllrb.com/docs/front-matter/)
@@ -451,8 +456,17 @@ Built-in variables
 
 variable name | type | description
 ---- | ----- | ---
-headingNumber | boolean | whether to enable the page title serial number
-enableMacro | boolean | whether to enable macro replacement
+`headingNumber` | `boolean` | whether to enable the page title serial number
+`enableMacro` | `boolean` | whether to enable macro replacement
+`define` | `Record<string, string>` | Macro definition, string replacing
+
+### Definition
+
+The `define` field can define some text replacement mappings. Supports definition in another file, supports macro expressions. For details, please refer to the Front Matter at the top of this document.
+
+- App Name: --APP_NAME--
+- App Version: --APP_VERSION--
+- From Another File: --TEST_DEFINE--
 
 ## Macro Replacement
 
@@ -513,16 +527,17 @@ Macro code can use variables defined in Front Matter, or use the following built
 
 variable name | type | description
 ---- | ----- | ---
-`$ctx` | object | Editor `ctx`，refer to [Plug-In Development GUide](PLUGIN.md) and [Api Document](https://yn-api-doc.vercel.app/modules/context.html)
-`$include` | (path: string, trim = false) => Result | Introduce other document fragment methods
-`$export` | (key: string, val: any) => Result | Define a variable that can be used in this document
-`$doc` | object | Current document information
-`$doc.basename` | string | File name of current document (no suffix)
-`$doc.name` | string | File name of current document
-`$doc.path` | string | Current document path
-`$doc.repo` | string | Current document repository
-`$doc.content` | string | Current document content
-`$doc.status` | 'loaded', 'save-failed', 'saved' | Current document status
+`$ctx` | `object` | Editor `ctx`，refer to [Plug-In Development GUide](PLUGIN.md) and [Api Document](https://yn-api-doc.vercel.app/modules/context.html)
+`$include` | `(path: string, trim = false) => Result` | Introduce other document fragment methods
+`$export` | `(key: string, val: any) => Result` | Define a variable that can be used in this document
+`$noop` | `() => Result` | no operation, Used for holding text space
+`$doc` | `object` | Current document information
+`$doc.basename` | `string` | File name of current document (no suffix)
+`$doc.name` | `string` | File name of current document
+`$doc.path` | `string` | Current document path
+`$doc.repo` | `string` | Current document repository
+`$doc.content` | `string` | Current document content
+`$doc.status` | `'loaded', 'save-failed', 'saved'` | Current document status
 
 ## Command Line Parameters
 

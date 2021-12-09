@@ -1,77 +1,151 @@
 /* eslint-disable no-template-curly-in-string */
 import dayjs from 'dayjs'
-import type { Position } from 'monaco-editor'
-import { getEditor, getLineContent, getMonaco, getOneIndent, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
+import type * as Monaco from 'monaco-editor'
+import { deleteLine, getEditor, getLineContent, getMonaco, getOneIndent, getValue, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
+import { isKeydown } from '@fe/core/command'
 
-function createDependencyProposals (range: any) {
+function getWords (content: string) {
+  const words = new Set<string>()
+
+  if (content.length > 50000) {
+    return words
+  }
+
+  const identifier = /[a-zA-Z_]+\w/g
+
+  while (true) {
+    if (words.size > 1000) {
+      break
+    }
+
+    const res = identifier.exec(content)
+    if (!res) {
+      break
+    }
+
+    if (res[0].length > 2 && res[0].length < 15) {
+      words.add(res[0])
+    }
+  }
+
+  return words
+}
+
+function createDependencyProposals (range: any, currentWord: string): Monaco.languages.CompletionItem[] {
   const monaco = getMonaco()
 
-  return [
-    { name: '![]() Image', insertText: '![${2:Img}]($1)' },
-    { name: '[]() Link', insertText: '[${2:Link}]($1)' },
-    { name: '# Head', insertText: '# $1' },
-    { name: '## Head', insertText: '## $1' },
-    { name: '### Head', insertText: '### $1' },
-    { name: '#### Head', insertText: '#### $1' },
-    { name: '##### Head', insertText: '##### $1' },
-    { name: '###### Head', insertText: '###### $1' },
-    { name: '+ List', insertText: '+ ' },
-    { name: '- List', insertText: '- ' },
-    { name: '` Code', insertText: '`$1`' },
-    { name: '* Italic', insertText: '*$1*' },
-    { name: '_ Italic', insertText: '_$1_' },
-    { name: '** Bold', insertText: '**$1**' },
-    { name: '__ Bold', insertText: '__$1__' },
-    { name: '~~ Delete', insertText: '~~$1~~' },
-    { name: '+ [ ] TODO List', insertText: '+ [ ] ' },
-    { name: '- [ ] TODO List', insertText: '- [ ] ' },
-    { name: '```', insertText: '```$1\n```\n' },
-    { name: '[toc]', insertText: '[toc]{type: "${ul}", level: [1,2,3]}' },
-    { name: '+ MindMap', insertText: '+ ${1:Subject}{.mindmap}\n    + ${2:Topic}' },
-    { name: '$ Inline KaTeX', insertText: '$$1$' },
-    { name: '$$ Block KaTeX', insertText: '$$$1$$\n' },
-    { name: '``` ECharts', insertText: '```js\n// --echarts-- \nchart => chart.setOption({\n  xAxis: {\n    type: "category",\n    data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\n  },\n  yAxis: {\n    type: "value"\n  },\n  series: [\n    {\n      data: [150, 230, 224, 218, 135, 147, 260],\n      type: "line"\n    }\n  ]\n})\n```\n' },
-    { name: '``` Run Code', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n' },
-    { name: '``` Applet', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">TEST</button>\n```\n' },
-    { name: '``` Drawio', insertText: '```xml\n<!-- --drawio-- -->\n${1:<!-- mxfile -->}\n```\n' },
-    { name: '``` Mermaid', insertText: '```mermaid\ngraph LR\n${1:A[Hard] --> |Text| B(Round)}\n```\n' },
-    { name: '@startuml Plantuml', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
-    { name: '[]() Drawio Link', insertText: '[${2:Link}]($1){link-type="drawio"}' },
-    { name: '[]() Luckysheet Link', insertText: '[${2:Link}]($1){link-type="luckysheet"}' },
-    { name: '||| Table', insertText: '${1:A} | ${2:B} | ${3:C}\n-- | -- | --\na | b | c' },
-    { name: '[= Macro', insertText: '[= $1 =]' },
+  const result: Monaco.languages.CompletionItem[] = [
+    { name: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
+    { name: '/ []() Link', insertText: '[${2:Link}]($1)' },
+    { name: '/ # Head', insertText: '# $1' },
+    { name: '/ ## Head', insertText: '## $1' },
+    { name: '/ ### Head', insertText: '### $1' },
+    { name: '/ #### Head', insertText: '#### $1' },
+    { name: '/ ##### Head', insertText: '##### $1' },
+    { name: '/ ###### Head', insertText: '###### $1' },
+    { name: '/ + List', insertText: '+ ' },
+    { name: '/ - List', insertText: '- ' },
+    { name: '/ ` Code', insertText: '`$1`' },
+    { name: '/ * Italic', insertText: '*$1*' },
+    { name: '/ _ Italic', insertText: '_$1_' },
+    { name: '/ ~ Sub', insertText: '~$1~' },
+    { name: '/ ^ Sup', insertText: '^$1^' },
+    { name: '/ ** Bold', insertText: '**$1**' },
+    { name: '/ __ Bold', insertText: '__$1__' },
+    { name: '/ ~~ Delete', insertText: '~~$1~~' },
+    { name: '/ == Mark', insertText: '==$1==' },
+    { name: '/ + [ ] TODO List', insertText: '+ [ ] ' },
+    { name: '/ - [ ] TODO List', insertText: '- [ ] ' },
+    { name: '/ ```', insertText: '```$1\n```\n' },
+    { name: '/ [toc]', insertText: '[toc]{type: "${ul}", level: [1,2,3]}' },
+    { name: '/ + MindMap', insertText: '+ ${1:Subject}{.mindmap}\n    + ${2:Topic}' },
+    { name: '/ $ Inline KaTeX', insertText: '$$1$' },
+    { name: '/ $$ Block KaTeX', insertText: '$$$1$$\n' },
+    { name: '/ ``` ECharts', insertText: '```js\n// --echarts-- \nchart => chart.setOption({\n  xAxis: {\n    type: "category",\n    data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\n  },\n  yAxis: {\n    type: "value"\n  },\n  series: [\n    {\n      data: [150, 230, 224, 218, 135, 147, 260],\n      type: "line"\n    }\n  ]\n})\n```\n' },
+    { name: '/ ``` Run Code', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n' },
+    { name: '/ ``` Applet', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">TEST</button>\n```\n' },
+    { name: '/ ``` Drawio', insertText: '```xml\n<!-- --drawio-- -->\n${1:<!-- mxfile -->}\n```\n' },
+    { name: '/ ``` Mermaid', insertText: '```mermaid\ngraph LR\n${1:A[Hard] --> |Text| B(Round)}\n```\n' },
+    { name: '/ @startuml Plantuml', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
+    { name: '/ []() Drawio Link', insertText: '[${2:Link}]($1){link-type="drawio"}' },
+    { name: '/ []() Luckysheet Link', insertText: '[${2:Link}]($1){link-type="luckysheet"}' },
+    { name: '/ ||| Table', insertText: '${1:A} | ${2:B} | ${3:C}\n-- | -- | --\na | b | c' },
+    { name: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
+    { name: '/ --- Horizontal Line', insertText: '---\n' },
+    { name: '/ --- Front Matter', insertText: '---\nheadingNumber: true\nenableMacro: true\ndefine:\n    APP_NAME: Yank Note\n---\n' },
   ].map((x, i) => ({
     label: { name: x.name },
     kind: monaco.languages.CompletionItemKind.Snippet,
     insertText: x.insertText,
     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
     range: range,
-    sortText: i.toString()
+    sortText: i.toString().padStart(3, '0')
   }))
+
+  getWords(getValue()).forEach(word => {
+    if (currentWord !== word) {
+      result.push({
+        label: { name: word },
+        kind: monaco.languages.CompletionItemKind.Text,
+        insertText: word,
+        range: range
+      })
+    }
+  })
+
+  return result
 }
 
-function processCursorChange (source: string, position: Position) {
+function processCursorChange (source: string, position: Monaco.Position) {
+  const isEnter = source === 'keyboard' && isKeydown('ENTER')
   const isTab = source === 'tab'
+  if (isTab || isEnter) {
+    const line = position.lineNumber
+    const content = getLineContent(line)
+    const prevContent = getLineContent(line - 1)
 
-  if (!isTab) {
-    return
+    // auto increase order list item number
+    const reg = /^\s*(\d+)\./
+    const match = prevContent.match(reg)
+    if (match && reg.test(content)) {
+      const num = parseInt(match[0] || '0')
+      // only increase above 1
+      if (num > 1) {
+        replaceLine(line, content.replace(/\d+\./, `${num + 1}.`))
+      }
+    }
   }
 
-  const content = getLineContent(position.lineNumber)
-  if (!content) {
-    return
-  }
+  if (isTab) {
+    const content = getLineContent(position.lineNumber)
+    if (!content) {
+      return
+    }
 
-  const eolNumber = getEditor().getModel()?.getLineMaxColumn(position.lineNumber)
+    const eolNumber = getEditor().getModel()?.getLineMaxColumn(position.lineNumber)
 
-  if (
-    eolNumber === position.column &&
-    /\s*(?:[*+-]|\d+\.)/.test(content)
-  ) {
-    const indent = getOneIndent()
-    replaceLine(position.lineNumber, indent + content.trimEnd() + ' ')
+    if (
+      eolNumber === position.column &&
+      /^\s*(?:[*+->]|\d+\.)/.test(content)
+    ) {
+      const indent = getOneIndent()
+      const val = content.trimEnd()
+      const end = /[-+*\].>]$/.test(val) ? ' ' : ''
+      replaceLine(position.lineNumber, indent + val + end)
+    }
+  } else if (isEnter) {
+    const line = position.lineNumber - 1
+    const content = getLineContent(line)
+    const prevContent = getLineContent(line - 1)
+    if (
+      /^\s*(?:[*+->]|\d+\.)/.test(prevContent) && // previous content must a item
+      /^\s*(?:[*+->]|\d+\.|[*+-] \[ \])\s*$/.test(content) // current content must a empty item
+    ) {
+      deleteLine(line) // remove empty item, now the line is the next line.
+      replaceLine(line, '') // remove auto completion
+    }
   }
 }
 
@@ -140,6 +214,27 @@ export default {
       })
 
       monaco.languages.setLanguageConfiguration('markdown', {
+        surroundingPairs: [
+          { open: '{', close: '}' },
+          { open: '[', close: ']' },
+          { open: '(', close: ')' },
+          { open: '<', close: '>' },
+          { open: '`', close: '`' },
+          { open: "'", close: "'" },
+          { open: '"', close: '"' },
+          { open: '*', close: '*' },
+          { open: '_', close: '_' },
+          { open: '=', close: '=' },
+          { open: '~', close: '~' },
+          { open: '^', close: '^' },
+          { open: '#', close: '#' },
+          { open: '$', close: '$' },
+          { open: '《', close: '》' },
+          { open: '【', close: '】' },
+          { open: '「', close: '」' },
+          { open: '（', close: '）' },
+          { open: '“', close: '”' },
+        ],
         onEnterRules: [
           { beforeText: /^\s*> .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '> ' } },
           { beforeText: /^\s*\+ \[ \] .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '+ [ ] ' } },
@@ -151,7 +246,7 @@ export default {
           { beforeText: /^\s*\+ .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '+ ' } },
           { beforeText: /^\s*- .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '- ' } },
           { beforeText: /^\s*\* .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '* ' } },
-          { beforeText: /^\s*1. .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1. ' } }
+          { beforeText: /^\s*\d+\. .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1. ' } }
         ]
       })
 
@@ -176,8 +271,10 @@ export default {
             endColumn: endColumn
           }
 
+          const word = model.getWordUntilPosition(position)
+
           return {
-            suggestions: createDependencyProposals(range)
+            suggestions: createDependencyProposals(range, word.word)
           }
         }
       })

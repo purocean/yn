@@ -3,6 +3,7 @@ import * as path from 'path'
 import * as crypto from 'crypto'
 import * as NaturalOrderby from 'natural-orderby'
 import * as yargs from 'yargs'
+import { shell } from 'electron'
 import opn from 'opn'
 import * as wsl from '../wsl'
 import mark, { MarkedFile } from './mark'
@@ -183,13 +184,17 @@ export async function tree (repo: string): Promise<TreeItem[]> {
   return data
 }
 
-export function open (repo: string, p: string) {
+export function open (repo: string, p: string, reveal?: boolean) {
   withRepo(repo, async (_, targetPath) => {
     if (isWsl) {
       targetPath = wsl.toWinPath(targetPath)
     }
 
-    opn(targetPath)
+    if (reveal) {
+      shell.showItemInFolder(targetPath)
+    } else {
+      opn(targetPath)
+    }
   }, p)
 }
 
