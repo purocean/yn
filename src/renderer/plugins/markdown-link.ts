@@ -31,7 +31,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
       return true
     }
   } else if (/^file:\/\//i.test(href)) {
-    openPath(href.replace(/^file:\/\//i, ''))
+    openPath(decodeURI(href.replace(/^file:\/\//i, '')))
     return true
   } else { // relative link
     // better scrollIntoView
