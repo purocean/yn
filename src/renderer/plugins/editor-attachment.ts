@@ -45,7 +45,8 @@ function addAttachment (asImage = false) {
 async function linkFile () {
   const { filePaths } = await api.choosePath({ properties: ['openFile', 'multiSelections'] })
   const useList = filePaths.length > 1
-  for (const path of filePaths) {
+  for (let path of filePaths) {
+    path = path.replaceAll('\\', '/')
     const filename = basename(path).replace(/[[\]]/g, '')
     insert(`${useList ? '- ' : ''}[${filename}](file://${encodeMarkdownLink(path)})\n`)
   }
