@@ -6,6 +6,7 @@ import { sleep } from '@fe/utils'
 import { isElectron, nodeRequire } from '@fe/support/env'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
+import { openPath } from '@fe/services/base'
 
 const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
@@ -29,6 +30,9 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
       nodeRequire && nodeRequire('opn')(link.href)
       return true
     }
+  } else if (/^file:\/\//i.test(href)) {
+    openPath(href.replace(/^file:\/\//i, ''))
+    return true
   } else { // relative link
     // better scrollIntoView
     const scrollIntoView = (el: HTMLElement) => {
@@ -118,6 +122,9 @@ function convertLink (state: StateCore) {
       if (attrVal.indexOf('#') > -1) {
         return
       }
+
+      // open other file in os
+      token.attrPush(['class', 'open'])
     }
 
     token.attrSet(`origin-${attrName}`, attrVal)
@@ -182,6 +189,9 @@ export default {
 
         return slf.renderToken(tokens, idx, options)
       }
+
+      // skip link validate
+      md.validateLink = () => true
     })
 
     ctx.view.tapContextMenus((menus, e) => {

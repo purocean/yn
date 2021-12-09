@@ -50,7 +50,7 @@ function htmlInline (state: StateInline): boolean {
 
   const content = state.src.slice(pos, pos + match[0].length)
 
-  const tag = (match[1] || match[2] || match[3] || match[4] || '').toLowerCase()
+  const tag = (match[1] || match[2] || match[3] || match[4] || '')
   if (!tag) { return false }
 
   const setAttrs = (token: Token) => {

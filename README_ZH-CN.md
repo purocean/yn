@@ -88,17 +88,22 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.15.0](https://github.com/purocean/yn/releases/tag/v3.15.0) 2021-12-09
+### [v3.15.2](https://github.com/purocean/yn/releases/tag/v3.15.2) 2021-12-09
 1. feat(预览): 预览界面增加更多上下文菜单
 2. feat(预览): 代码块增加语言信息展示
 3. perf(预览): 优化大文档渲染性能
-4. upd(编辑器): 优化编辑体验，增加更多自动补全
-5. feat(宏): 增加宏定义功能
-6. feat(宏): 增加 `$noop` 方法
-7. feat(插件): 增加 `ctx.editor.deleteLine` 方法
-8. feat(插件): 增加 `ctx.ui.useToast().hide` 方法
-9. upd: 其他交互体验优化
-10. fix: 修复页面可能会卡死问题
+4. feat(编辑器): 增加链接本地文件功能
+5. upd(编辑器): 优化编辑体验，增加更多自动补全
+6. feat(宏): 增加宏定义功能
+7. feat(宏): 增加 `$noop` 方法
+8. feat(插件): 增加 `ctx.editor.deleteLine` 方法
+9. feat(插件): 增加 `ctx.ui.useToast().hide` 方法
+10. feat(插件): 增加 `ctx.base.openExternal` 方法
+11. feat(插件): 增加`ctx.base.openPath` 方法
+12. fix: 修复页面可能渲染异常问题
+13. fix: 修复 Windows 上不能创建文件夹问题
+14. fix: 修复渲染 SVG 问题
+15. upd: 其他交互体验优化
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
