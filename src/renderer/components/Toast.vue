@@ -60,7 +60,7 @@ export default defineComponent({
   margin: auto;
   border-radius: 50px;
   text-align: center;
-  word-break: break-all;
+  overflow-wrap: break-word;
   box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
 }
 
