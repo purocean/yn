@@ -92,13 +92,18 @@ For more information on how to use the following functions, please see [characte
 1. feat(preview): add more context menus to the preview interface
 2. feat(preview): add language information display to the code block
 3. perf(preview): optimize the rendering large documents performance
-4. upd(editor): optimize the editing experience, add more completion
-5. feat(macro): add macro definition
-6. feat(macro): add `$noop` ​​method
-7. feat(plug-in): add `ctx.editor.deleteLine` method
-8. feat(plug-in): add `ctx.ui.useToast().hide` method
-9. upd: other interactive experience optimization
-10. fix: fix rendering bugs
+4. feat(editor): add link local file function
+5. upd(editor): optimize the editing experience, add more completion
+6. feat(macro): add macro definition function
+7. feat(macro): add `$noop` ​​method
+8. feat(plug-in): add `ctx.editor.deleteLine` method
+9. feat(plug-in): add `ctx.ui.useToast().hide` method
+10. feat(plugin): add `ctx.base.openExternal` method
+11. feat(plug-in): add `ctx.base.openPath` method
+12. fix: fix page may be rendered abnormally
+13. fix: fix cannot create folder issue on Windows
+14. fix: fix rendering SVG
+15. upd: other interactive experience optimization
 
 [More release notes](https://github.com/purocean/yn/releases)
 
