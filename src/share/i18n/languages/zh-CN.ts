@@ -332,6 +332,7 @@ const data: BaseLanguage = {
       'paste-rtf-as-markdown': '粘贴富文本为 Markdown',
       'add-attachment': '添加附件',
       'add-doc': '添加文档',
+      'link-file': '链接文件',
       'insert-date': '插入当前日期',
       'insert-time': '插入当前时间',
     }

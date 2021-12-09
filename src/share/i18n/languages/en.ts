@@ -331,6 +331,7 @@ const data = {
       'paste-rtf-as-markdown': 'Paste RTF as Markdown',
       'add-attachment': 'Add Attachment',
       'add-doc': 'Add Document',
+      'link-file': 'Link File',
       'insert-date': 'Insert Today\'s Date',
       'insert-time': 'Insert Current Time',
     }

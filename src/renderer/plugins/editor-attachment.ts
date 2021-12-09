@@ -3,9 +3,10 @@ import { insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import type { Doc } from '@fe/types'
 import { encodeMarkdownLink } from '@fe/utils'
-import { dirname, isBelongTo, join, relative } from '@fe/utils/path'
+import { basename, dirname, isBelongTo, join, relative } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import store from '@fe/support/store'
+import * as api from '@fe/support/api'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
 import { isSameRepo } from '@fe/services/document'
@@ -39,6 +40,15 @@ function addAttachment (asImage = false) {
     }
   }
   input.click()
+}
+
+async function linkFile () {
+  const { filePaths } = await api.choosePath({ properties: ['openFile', 'multiSelections'] })
+  const useList = filePaths.length > 1
+  for (const path of filePaths) {
+    const filename = basename(path).replace(/[[\]]/g, '')
+    insert(`${useList ? '- ' : ''}[${filename}](file://${encodeMarkdownLink(path)})\n`)
+  }
 }
 
 function addDocument (doc: Doc) {
@@ -91,6 +101,15 @@ export default {
         ],
         run: () => getActionHandler('filter.choose-document')().then(addDocument),
       })
+      editor.addAction({
+        id: 'plugin.editor.link-file',
+        contextMenuGroupId: 'modification',
+        label: t('editor.context-menu.link-file'),
+        keybindings: [
+          monaco.KeyMod.Alt | monaco.KeyMod.Shift | monaco.KeyCode.KEY_F
+        ],
+        run: () => linkFile(),
+      })
     })
 
     ctx.statusBar.tapMenus(menus => {
@@ -115,6 +134,13 @@ export default {
           title: ctx.i18n.t('editor.context-menu.add-doc'),
           subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'd']),
           onClick: () => getActionHandler('filter.choose-document')().then(addDocument),
+        },
+        {
+          id: 'plugin.editor.link-file',
+          type: 'normal',
+          title: ctx.i18n.t('editor.context-menu.link-file'),
+          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, ctx.command.Shift, 'f']),
+          onClick: () => linkFile(),
         },
       )
     })
