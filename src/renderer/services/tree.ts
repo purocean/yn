@@ -4,6 +4,7 @@ import { registerAction } from '@fe/core/action'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import * as api from '@fe/support/api'
+import { fetchSettings, getSettings } from './setting'
 
 export type MenuItem = Components.ContextMenu.Item
 export type VueCtx = { localMarked: Ref<boolean | null> }
@@ -56,11 +57,15 @@ export async function refreshTree () {
 /**
  * Refresh repositories.
  */
-export async function refreshRepo () {
+export async function refreshRepo (force = true) {
   refreshTree()
 
   try {
-    const repos = await api.fetchRepositories()
+    const settings = force ? await fetchSettings() : getSettings()
+    const repos: Record<string, string> = {}
+    settings.repos.forEach(({ name, path }) => {
+      repos[name] = path
+    })
     store.commit('setRepositories', repos)
   } catch (error: any) {
     useToast().show('warning', error.message)

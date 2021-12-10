@@ -166,15 +166,6 @@ export async function fetchTree (repo: string): Promise<Components.Tree.Node[]> 
 }
 
 /**
- * Fetch repositories.
- * @returns
- */
-export async function fetchRepositories () {
-  const result = await fetchHttp('/api/repositories')
-  return result.data as Record<string, string>
-}
-
-/**
  * Fetch settings.
  * @returns
  */

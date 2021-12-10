@@ -18,7 +18,6 @@ import { useToast } from '@fe/support/ui/toast'
 import { getThemeName, setTheme } from '@fe/services/theme'
 import { useI18n } from '@fe/services/i18n'
 import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
-import { refreshRepo } from '@fe/services/tree'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
@@ -125,7 +124,6 @@ export default defineComponent({
         }
 
         await writeSettings({ ...value })
-        refreshRepo()
       }
       emit('close')
     }

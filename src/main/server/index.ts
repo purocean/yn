@@ -8,7 +8,6 @@ import request from 'request'
 import { promisify } from 'util'
 import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME } from '../constant'
 import * as file from './file'
-import dataRepository from './repository'
 import run from './run'
 import convert from './convert'
 import plantuml from './plantuml'
@@ -99,14 +98,6 @@ const searchFile = async (ctx: any, next: any) => {
     const repo = ctx.query.repo
 
     ctx.body = result('ok', 'success', await file.search(repo, search))
-  } else {
-    await next()
-  }
-}
-
-const repository = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/repositories')) {
-    ctx.body = result('ok', 'success', dataRepository.list())
   } else {
     await next()
   }
@@ -313,7 +304,6 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, runCode))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, convertFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, searchFile))
-  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, repository))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, markFile))

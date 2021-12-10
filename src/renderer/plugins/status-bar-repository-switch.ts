@@ -62,7 +62,6 @@ export default {
     })
 
     whenEditorReady().then(initRepo)
-    ctx.tree.refreshRepo()
 
     store.watch(() => store.state.repositories, ctx.statusBar.refreshMenu)
     store.watch(() => store.state.currentRepo, ctx.statusBar.refreshMenu)
@@ -78,6 +77,10 @@ export default {
           store.commit('setCurrentRepo', undefined)
         }
       }
+    })
+
+    ctx.registerHook('SETTING_FETCHED', () => {
+      ctx.tree.refreshRepo(false)
     })
   }
 } as Plugin

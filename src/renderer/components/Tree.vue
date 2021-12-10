@@ -19,11 +19,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, toRefs, watch } from 'vue'
+import { computed, defineComponent, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
-import { refreshRepo, refreshTree } from '@fe/services/tree'
-import { showSettingPanel } from '@fe/services/setting'
+import { refreshTree } from '@fe/services/tree'
+import { fetchSettings, showSettingPanel } from '@fe/services/setting'
 import { useI18n } from '@fe/services/i18n'
 import TreeNode from './TreeNode.vue'
 
@@ -35,7 +35,11 @@ export default defineComponent({
     const store = useStore()
     const contextMenu = useContextMenu()
 
-    const { currentRepo, tree, repositories } = toRefs(store.state)
+    const { currentRepo, tree } = toRefs(store.state)
+
+    function refreshRepo () {
+      fetchSettings()
+    }
 
     function showContextMenu () {
       contextMenu.show([
@@ -47,13 +51,9 @@ export default defineComponent({
       ])
     }
 
-    onBeforeMount(() => {
-      refreshTree()
-    })
-
     watch(currentRepo, refreshTree)
 
-    const hasRepo = computed(() => Object.keys(repositories.value).length > 0)
+    const hasRepo = computed(() => !!currentRepo)
 
     return {
       tree,
