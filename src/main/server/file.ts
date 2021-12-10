@@ -4,7 +4,6 @@ import * as crypto from 'crypto'
 import * as NaturalOrderby from 'natural-orderby'
 import * as yargs from 'yargs'
 import { shell } from 'electron'
-import opn from 'opn'
 import * as wsl from '../wsl'
 import mark, { MarkedFile } from './mark'
 import repository from './repository'
@@ -193,7 +192,7 @@ export function open (repo: string, p: string, reveal?: boolean) {
     if (reveal) {
       shell.showItemInFolder(targetPath)
     } else {
-      opn(targetPath)
+      shell.openPath(targetPath)
     }
   }, p)
 }

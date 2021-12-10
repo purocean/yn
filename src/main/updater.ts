@@ -1,8 +1,7 @@
-import { dialog, app } from 'electron'
+import { dialog, app, shell } from 'electron'
 import { autoUpdater, CancellationToken } from 'electron-updater'
 import logger from 'electron-log'
 import ProgressBar from 'electron-progressbar'
-import opn from 'opn'
 import store from './storage'
 import { GITHUB_URL } from './constant'
 import { $t } from './i18n'
@@ -69,7 +68,7 @@ const init = (call: () => void) => {
         cancellationToken.cancel()
       })
     } else if (response === 1) {
-      opn(GITHUB_URL + '/releases')
+      shell.openExternal(GITHUB_URL + '/releases')
     } else if (response === 3) {
       store.set('dontCheckUpdates', true)
     }

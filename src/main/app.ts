@@ -1,4 +1,4 @@
-import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDialogOptions } from 'electron'
+import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, shell } from 'electron'
 import * as path from 'path'
 import * as os from 'os'
 import * as yargs from 'yargs'
@@ -7,7 +7,6 @@ import server from './server'
 import { APP_NAME } from './constant'
 import { getTrayMenus, getMainMenus } from './menus'
 import { transformProtocolRequest } from './protocol'
-import opn from 'opn'
 import startup from './startup'
 import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
@@ -241,7 +240,7 @@ const showTray = () => {
   tray.setContextMenu(getTrayMenus())
 }
 
-const openInBrowser = () => opn(getUrl('prod'))
+const openInBrowser = () => shell.openExternal(getUrl('prod'))
 
 function refreshMenus () {
   Menu.setApplicationMenu(getMainMenus())
@@ -310,7 +309,7 @@ if (!gotTheLock) {
 
       if (!allowList.find(x => url.startsWith(x))) {
         e.preventDefault()
-        opn(url)
+        shell.openExternal(url)
       }
     })
   })

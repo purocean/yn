@@ -3,10 +3,10 @@ import Token from 'markdown-it/lib/token'
 import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { sleep } from '@fe/utils'
-import { isElectron, nodeRequire } from '@fe/support/env'
+import { isElectron } from '@fe/support/env'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
-import { openPath } from '@fe/services/base'
+import { openExternal, openPath } from '@fe/services/base'
 
 const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
@@ -25,9 +25,8 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const href = link.getAttribute('href') || ''
 
   if (/^(http:|https:|ftp:)\/\//i.test(href)) { // external link
-    // use node opn in Electron.
     if (isElectron) {
-      nodeRequire && nodeRequire('opn')(link.href)
+      openExternal(link.href)
       return true
     }
   } else if (/^file:\/\//i.test(href)) {
