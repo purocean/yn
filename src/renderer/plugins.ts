@@ -16,7 +16,6 @@ import editorAttachment from '@fe/plugins/editor-attachment'
 import editorMarkdown from '@fe/plugins/editor-markdown'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
-import tableCellEdit from '@fe/plugins/table-cell-edit'
 import imageViewer from '@fe/plugins/image-viewer'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
@@ -64,7 +63,6 @@ export default [
   editorAttachment,
   editorMarkdown,
   copyText,
-  tableCellEdit,
   switchTodo,
   imageViewer,
   markdownHtml,
