@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.15.4](https://github.com/purocean/yn/releases/tag/v3.15.4) 2021-12-09
+### [v3.15.5](https://github.com/purocean/yn/releases/tag/v3.15.5) 2021-12-10
 1. feat(预览): 预览界面增加更多上下文菜单
 2. feat(预览): 代码块增加语言信息展示
 3. perf(预览): 优化大文档渲染性能
