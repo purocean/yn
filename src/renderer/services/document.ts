@@ -4,7 +4,7 @@ import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { Doc } from '@fe/types'
-import { basename, dirname, isBelongTo, join } from '@fe/utils/path'
+import { basename, dirname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
 import { triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
@@ -114,7 +114,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
         filename = filename.replace(/\/$/, '') + '.md'
       }
 
-      doc.path = join(currentPath, filename)
+      doc.path = join(currentPath, normalizeSep(filename))
     }
   }
 
@@ -177,7 +177,7 @@ export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
         return
       }
 
-      doc.path = join(currentPath, name, '/')
+      doc.path = join(currentPath, normalizeSep(name), '/')
     }
   }
 
