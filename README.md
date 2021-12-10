@@ -88,7 +88,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.15.4](https://github.com/purocean/yn/releases/tag/v3.15.4) 2021-12-09
+### [v3.15.5](https://github.com/purocean/yn/releases/tag/v3.15.5) 2021-12-10
 1. feat(preview): add more context menus to the preview interface
 2. feat(preview): add language information display to the code block
 3. perf(preview): optimize the rendering large documents performance
