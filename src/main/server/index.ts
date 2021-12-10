@@ -12,7 +12,6 @@ import run from './run'
 import convert from './convert'
 import plantuml from './plantuml'
 import shell from '../shell'
-import mark from './mark'
 import config from '../config'
 import { getAction } from '../action'
 
@@ -70,22 +69,6 @@ const attachment = async (ctx: any, next: any) => {
     } else if (ctx.method === 'GET') {
       ctx.type = mime.getType(ctx.query.path)
       ctx.body = await file.read(ctx.query.repo, ctx.query.path)
-    }
-  } else {
-    await next()
-  }
-}
-
-const markFile = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/mark')) {
-    if (ctx.method === 'GET') {
-      ctx.body = result('ok', 'success', mark.list())
-    } else if (ctx.method === 'POST') {
-      mark.add({ repo: ctx.query.repo, path: ctx.query.path })
-      ctx.body = result()
-    } else if (ctx.method === 'DELETE') {
-      mark.remove({ repo: ctx.query.repo, path: ctx.query.path })
-      ctx.body = result()
     }
   } else {
     await next()
@@ -306,7 +289,6 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, searchFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
-  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, markFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))

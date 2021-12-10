@@ -102,7 +102,6 @@ registerHook('SETTING_BEFORE_WRITE', changeLanguage)
 registerHook('DOC_CREATED', refreshTree)
 registerHook('DOC_DELETED', refreshTree)
 registerHook('DOC_MOVED', refreshTree)
-registerHook('DOC_CHANGED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', (payload?: { doc?: Doc | null, message: string }) => {
   if (payload && payload.doc && payload?.message?.indexOf('NOENT')) {

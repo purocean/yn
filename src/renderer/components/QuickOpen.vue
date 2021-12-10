@@ -51,10 +51,13 @@ import { useStore } from 'vuex'
 import * as api from '@fe/support/api'
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
+import { fetchSettings } from '@fe/services/setting'
+import { PathItem } from '@fe/types'
 
 type TabKey = 'marked' | 'search' | 'file'
 
 let lastTab: TabKey = 'marked'
+let markedFilesCache: PathItem[] = []
 
 export default defineComponent({
   name: 'quick-open',
@@ -72,8 +75,9 @@ export default defineComponent({
     const refResult = ref<HTMLUListElement | null>(null)
     const refFilename = ref<HTMLElement[]>([])
     const refFilepath = ref<HTMLElement[]>([])
+    const markedFiles = ref<PathItem[]>(markedFilesCache)
 
-    const { currentRepo, recentOpenTime, tree, markedFiles } = toRefs(store.state)
+    const { currentRepo, recentOpenTime, tree } = toRefs(store.state)
 
     const selected = ref<any>(null)
     const searchText = ref('')
@@ -310,7 +314,9 @@ export default defineComponent({
     onMounted(async () => {
       refInput.value!.focus()
       updateDataSource()
-      await store.dispatch('fetchMarkedFiles')
+      const settings = await fetchSettings()
+      markedFilesCache = settings.mark || []
+      markedFiles.value = markedFilesCache
       updateDataSource()
     })
 

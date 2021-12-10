@@ -2,35 +2,35 @@
   <div class="tree-node">
     <details
       ref="refDir"
-      v-if="item.type === 'dir'"
+      v-if="itemNode.type === 'dir'"
       class="name"
-      :title="item.path"
-      :open="item.path === '/'"
+      :title="itemNode.path"
+      :open="itemNode.path === '/'"
       @keydown.enter.prevent>
       <summary
         :class="{folder: true, 'folder-selected': selected}"
-        :style="`padding-left: ${item.level}em`"
-        @contextmenu.exact.prevent.stop="showContextMenu(item)">
+        :style="`padding-left: ${itemNode.level}em`"
+        @contextmenu.exact.prevent.stop="showContextMenu(itemNode)">
         <div class="item">
           <div class="item-label">
-            {{ item.name === '/' ? currentRepoName : item.name }} <span class="count">({{item.children ? item.children.length : 0}})</span>
+            {{ itemNode.name === '/' ? currentRepoName : itemNode.name }} <span class="count">({{itemNode.children ? itemNode.children.length : 0}})</span>
           </div>
           <div class="item-action">
             <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create-doc')"></svg-icon>
           </div>
         </div>
       </summary>
-      <tree-node v-for="x in item.children" :key="x.path" :item="x"></tree-node>
+      <tree-node v-for="x in (itemNode.children || [])" :key="x.path" :item="x"></tree-node>
     </details>
     <div
       ref="refFile"
       v-else
       :class="{name: true, 'file-name': true, selected}"
-      :style="`padding-left: ${item.level}em`"
-      :title="item.path + '\n\n' + fileTitle"
+      :style="`padding-left: ${itemNode.level}em`"
+      :title="itemNode.path + '\n\n' + fileTitle"
       @click.exact.prevent="select(item)"
-      @contextmenu.exact.prevent.stop="showContextMenu(item)">
-      <div :class="{'item-label': true, marked, 'type-md': item.name.endsWith('.md')}"> {{ item.name }} </div>
+      @contextmenu.exact.prevent.stop="showContextMenu(itemNode)">
+      <div :class="{'item-label': true, marked, 'type-md': itemNode.name.endsWith('.md')}"> {{ itemNode.name }} </div>
     </div>
   </div>
 </template>
@@ -43,7 +43,7 @@ import extensions from '@fe/others/extensions'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems } from '@fe/services/tree'
 import type { Components } from '@fe/types'
-import { createDoc, openInOS, switchDoc } from '@fe/services/document'
+import { createDoc, getMarked, openInOS, switchDoc } from '@fe/services/document'
 import SvgIcon from './SvgIcon.vue'
 import { useI18n } from '@fe/services/i18n'
 
@@ -65,6 +65,8 @@ export default defineComponent({
     const refDir = ref<any>(null)
     const refFile = ref<any>(null)
     const localMarked = ref<boolean | null>(null)
+
+    const itemNode = computed(() => ({ ...props.item, marked: props.item.type === 'file' && getMarked(props.item) }))
 
     watch(() => props.item, () => {
       localMarked.value = null
@@ -99,21 +101,21 @@ export default defineComponent({
         return false
       }
 
-      if (props.item.type === 'dir') {
-        return currentFile.value.repo === props.item.repo && currentFile.value.path.startsWith(props.item.path + '/')
+      if (itemNode.value.type === 'dir') {
+        return currentFile.value.repo === itemNode.value.repo && currentFile.value.path.startsWith(itemNode.value.path + '/')
       }
 
-      return currentFile.value.repo === props.item.repo && currentFile.value.path === props.item.path
+      return currentFile.value.repo === itemNode.value.repo && currentFile.value.path === itemNode.value.path
     })
 
     const shouldOpen = computed(() => {
-      return props.item.type === 'dir' && currentFile.value && currentFile.value.path.startsWith(props.item.path + '/') && currentFile.value.repo === props.item.repo
+      return itemNode.value.type === 'dir' && currentFile.value && currentFile.value.path.startsWith(itemNode.value.path + '/') && currentFile.value.repo === itemNode.value.repo
     })
 
-    const marked = computed(() => localMarked.value ?? props.item.marked)
+    const marked = computed(() => localMarked.value ?? itemNode.value.marked)
 
     watch(selected, val => {
-      if (val && props.item.type === 'file') {
+      if (val && itemNode.value.type === 'file') {
         nextTick(() => {
           refFile.value.scrollIntoViewIfNeeded()
         })
@@ -129,11 +131,12 @@ export default defineComponent({
     }, { immediate: true })
 
     const fileTitle = computed(() => [
-      t('tree.created-at', props.item.birthtime ? new Date(props.item.birthtime).toLocaleString() : '-'),
-      t('tree.updated-at', props.item.mtime ? new Date(props.item.mtime).toLocaleString() : '-'),
+      t('tree.created-at', itemNode.value.birthtime ? new Date(itemNode.value.birthtime).toLocaleString() : '-'),
+      t('tree.updated-at', itemNode.value.mtime ? new Date(itemNode.value.mtime).toLocaleString() : '-'),
     ].join('\n'))
 
     return {
+      itemNode,
       refDir,
       refFile,
       fileTitle,

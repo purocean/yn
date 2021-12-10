@@ -79,8 +79,10 @@ export default {
       }
     })
 
-    ctx.registerHook('SETTING_FETCHED', () => {
-      ctx.tree.refreshRepo(false)
+    ctx.registerHook('SETTING_CHANGED', ({ changedKeys }) => {
+      if (changedKeys.includes('repos')) {
+        ctx.tree.refreshRepo(false)
+      }
     })
   }
 } as Plugin

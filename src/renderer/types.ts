@@ -100,6 +100,7 @@ export type BuildInSettings = {
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,
+  'mark': FileItem[],
 }
 
 export type BuildInActions = {
@@ -172,7 +173,8 @@ export type BuildInHookTypes = {
   DOC_CHANGED: { doc: Doc },
   DOC_BEFORE_EXPORT: { type: ExportTypes },
   I18N_CHANGE_LANGUAGE: { lang: LanguageName },
-  SETTING_FETCHED: { settings: BuildInSettings },
+  SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
+  SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },
 }
 

@@ -1,6 +1,5 @@
 import type { Components, Doc, FileItem, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
-import { basename } from '@fe/utils/path'
 
 export type ApiResult<T = any> = {
   status: 'ok' | 'error',
@@ -124,35 +123,6 @@ export async function moveFile (file: FileItem, newPath: string): Promise<ApiRes
 export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
   const { path, repo } = file
   return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
-}
-
-/**
- * Mark a file.
- * @param file
- * @returns
- */
-export async function markFile (file: FileItem): Promise<ApiResult<any>> {
-  const { path, repo } = file
-  return fetchHttp(`/api/mark?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'POST' })
-}
-
-/**
- * Unmark a file.
- * @param file
- * @returns
- */
-export async function unmarkFile (file: FileItem): Promise<ApiResult<any>> {
-  const { path, repo } = file
-  return fetchHttp(`/api/mark?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
-}
-
-/**
- * Fetch marked files.
- * @returns
- */
-export async function fetchMarkedFiles (): Promise<FileItem[]> {
-  const { data } = await fetchHttp('/api/mark')
-  return data.map((x: PathItem) => ({ ...x, name: basename(x.path) }))
 }
 
 /**

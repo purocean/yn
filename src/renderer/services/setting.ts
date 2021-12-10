@@ -1,10 +1,11 @@
-import { cloneDeepWith } from 'lodash-es'
+import { cloneDeep, cloneDeepWith, isEqual, uniq } from 'lodash-es'
 import { triggerHook } from '@fe/core/hook'
 import { MsgPath } from '@share/i18n'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import store from '@fe/support/store'
-import type{ BuildInSettings } from '@fe/types'
+import { basename } from '@fe/utils/path'
+import type{ BuildInSettings, FileItem, PathItem } from '@fe/types'
 import { getThemeName } from './theme'
 import { t } from './i18n'
 
@@ -130,6 +131,12 @@ function transformSettings (data: any) {
     path: data.repositories[name]
   }))
 
+  data.mark = (data.mark || []).map((item: PathItem) => ({
+    name: basename(item.path),
+    path: item.path,
+    repo: item.repo,
+  })) as FileItem[]
+
   data.theme = getThemeName()
 
   delete data.repositories
@@ -152,6 +159,7 @@ export function getDefaultSetting () {
  * @returns settings
  */
 export async function fetchSettings () {
+  const oldSettings = cloneDeep(getSettings())
   const data = transformSettings(await api.fetchSettings())
 
   Object.assign(settings, {
@@ -159,7 +167,14 @@ export async function fetchSettings () {
     ...data
   })
 
-  triggerHook('SETTING_FETCHED', { settings })
+  triggerHook('SETTING_FETCHED', { settings, oldSettings })
+
+  const changedKeys = uniq([...Object.keys(oldSettings), ...Object.keys(settings)] as (keyof BuildInSettings)[])
+    .filter((key) => !isEqual(settings[key], oldSettings[key]))
+
+  if (changedKeys.length > 0) {
+    triggerHook('SETTING_CHANGED', { settings, oldSettings, changedKeys })
+  }
 
   return settings
 }
@@ -203,6 +218,8 @@ export function getSettings () {
  * @param defaultVal
  * @returns
  */
+export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T]): BuildInSettings[T]
+export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal?: null): BuildInSettings[T] | null
 export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T] | null = null): BuildInSettings[T] | null {
   const settings = getSettings()
   if (typeof settings[key] !== 'undefined') {
