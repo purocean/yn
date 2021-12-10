@@ -77,17 +77,6 @@ const attachment = async (ctx: any, next: any) => {
   }
 }
 
-const open = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/open')) {
-    if (ctx.method === 'GET') {
-      file.open(ctx.query.repo, ctx.query.path, !!ctx.query.reveal)
-      ctx.body = result()
-    }
-  } else {
-    await next()
-  }
-}
-
 const markFile = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/mark')) {
     if (ctx.method === 'GET') {
@@ -320,7 +309,6 @@ const server = (port = 3000) => {
 
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, fileContent))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, attachment))
-  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, open))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, plantumlGen))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, runCode))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, convertFile))

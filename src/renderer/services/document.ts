@@ -8,7 +8,7 @@ import { basename, dirname, isBelongTo, join, normalizeSep } from '@fe/utils/pat
 import { triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
-import { inputPassword } from './base'
+import { getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
 
 const logger = getLogger('document')
@@ -456,7 +456,15 @@ export async function unmarkDoc (doc: Doc) {
  * @param reveal
  */
 export async function openInOS (doc: Doc, reveal?: boolean) {
-  await api.openInOS(doc, reveal)
+  const repo = getRepo(doc.repo)
+  if (repo) {
+    const path = join(repo.path, doc.path)
+    if (reveal) {
+      openPath(path)
+    } else {
+      showItemInFolder(path)
+    }
+  }
 }
 
 /**

@@ -3,13 +3,10 @@ import * as path from 'path'
 import * as crypto from 'crypto'
 import * as NaturalOrderby from 'natural-orderby'
 import * as yargs from 'yargs'
-import { shell } from 'electron'
-import * as wsl from '../wsl'
 import mark, { MarkedFile } from './mark'
 import repository from './repository'
 
 const readonly = !!(yargs.argv.readonly)
-const isWsl = wsl.isWsl
 const ignorePath = /node_modules/
 
 interface XFile {
@@ -181,20 +178,6 @@ export async function tree (repo: string): Promise<TreeItem[]> {
   await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, markedFiles, data[0]))
 
   return data
-}
-
-export function open (repo: string, p: string, reveal?: boolean) {
-  withRepo(repo, async (_, targetPath) => {
-    if (isWsl) {
-      targetPath = wsl.toWinPath(targetPath)
-    }
-
-    if (reveal) {
-      shell.showItemInFolder(targetPath)
-    } else {
-      shell.openPath(targetPath)
-    }
-  }, p)
 }
 
 export async function search (repo: string, str: string) {

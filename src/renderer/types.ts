@@ -92,7 +92,7 @@ export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 export type RenderEnv = { source: string, file: Doc | null, attributes?: Record<string, any> }
 
 export type BuildInSettings = {
-  'repos': { name: string, path: string }[],
+  'repos': Repo[],
   'theme': ThemeName,
   'language': LanguageName,
   'assets-dir': string,

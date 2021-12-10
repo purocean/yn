@@ -203,7 +203,7 @@ export function getSettings () {
  * @param defaultVal
  * @returns
  */
-export function getSetting (key: keyof BuildInSettings, defaultVal: any = null) {
+export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T] | null = null): BuildInSettings[T] | null {
   const settings = getSettings()
   if (typeof settings[key] !== 'undefined') {
     return settings[key]
