@@ -20,6 +20,7 @@ import { useI18n } from '@fe/services/i18n'
 import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
 import { refreshRepo } from '@fe/services/tree'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
 
 JSONEditor.defaults.language = 'en'
@@ -99,10 +100,15 @@ export default defineComponent({
     const ok = async () => {
       const value = editor && editor.getValue()
       if (value) {
-        value.repos.forEach(({ name, path }: any) => {
+        value.repos.forEach((repo: any) => {
+          let { name, path } = repo
           name = name.trim()
           path = path.trim()
-          if (name && !path) {
+
+          if (!name && path) {
+            // default name
+            repo.name = basename(path)
+          } else if (name && !path) {
             const msg = t('setting-panel.error-choose-repo-path')
             toast.show('warning', msg)
             throw new Error(msg)

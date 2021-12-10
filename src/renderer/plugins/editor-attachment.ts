@@ -3,7 +3,7 @@ import { insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import type { Doc } from '@fe/types'
 import { encodeMarkdownLink } from '@fe/utils'
-import { basename, dirname, isBelongTo, join, relative } from '@fe/utils/path'
+import { basename, dirname, isBelongTo, join, normalizeSep, relative } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import store from '@fe/support/store'
 import * as api from '@fe/support/api'
@@ -46,7 +46,7 @@ async function linkFile () {
   const { filePaths } = await api.choosePath({ properties: ['openFile', 'multiSelections'] })
   const useList = filePaths.length > 1
   for (let path of filePaths) {
-    path = path.replaceAll('\\', '/')
+    path = normalizeSep(path)
     const filename = basename(path).replace(/[[\]]/g, '')
     insert(`${useList ? '- ' : ''}[${filename}](file://${encodeMarkdownLink(path)})\n`)
   }
