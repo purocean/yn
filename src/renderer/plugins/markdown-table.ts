@@ -3,12 +3,25 @@ import { useModal } from '@fe/support/ui/modal'
 import { hasCtrlCmd } from '@fe/core/command'
 import { getActionHandler } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
-import { deleteLine, getLineContent, replaceLine } from '@fe/services/editor'
+import { disableSyncScrollAwhile } from '@fe/services/view'
+import * as editor from '@fe/services/editor'
 import { t } from '@fe/services/i18n'
 import type Token from 'markdown-it/lib/token'
 import type Renderer from 'markdown-it/lib/renderer'
 
 const cellClassName = 'yank-table-cell'
+
+function editWrapper<T extends Array<any>, U> (fn: (...args: T) => U) {
+  return function (...args: T) {
+    disableSyncScrollAwhile(() => {
+      fn(...args)
+    })
+  }
+}
+
+const getLineContent = editor.getLineContent
+const deleteLine = editWrapper(editor.deleteLine)
+const replaceLine = editWrapper(editor.replaceLine)
 
 function injectClass (tokens: Token[], idx: number, options: any, env: any, slf: Renderer) {
   const token = tokens[idx]
@@ -198,7 +211,7 @@ async function handleClick (e: MouseEvent, modal: boolean) {
   }
 
   if (['TD', 'TH'].includes(target.tagName) && target.classList.contains(cellClassName)) {
-    if ((hasCtrlCmd(e) && !modal) || (!hasCtrlCmd(e) && modal)) {
+    if ((hasCtrlCmd(e) && !modal) || (!hasCtrlCmd(e) && e.type !== 'contextmenu' && modal)) {
       return false
     }
 
@@ -456,12 +469,39 @@ export default {
     ctx.view.tapContextMenus((menus, e) => {
       const target = e.target as HTMLTableCellElement
       const tagName = target.tagName
-      if ((tagName === 'TD') && target.classList.contains(cellClassName)) {
+      if ((tagName === 'TD' || tagName === 'TH') && target.classList.contains(cellClassName)) {
+        const editMenu = [
+          {
+            id: 'plugin.table.cell-edit.quick-edit',
+            type: 'normal' as any,
+            label: '快速编辑',
+            onClick: () => {
+              handleClick(e, false)
+            }
+          },
+          {
+            id: 'plugin.table.cell-edit.edit',
+            type: 'normal' as any,
+            label: '编辑',
+            onClick: () => {
+              handleClick(e, true)
+            }
+          },
+        ]
+
+        if (tagName === 'TH') {
+          menus.push(...editMenu)
+          return
+        }
+
         const rows = getRows(target)
         const columns = escapedSplit(ctx.editor.getLineContent(rows[1].start))
         const cellIndex = getCellIndex(target)
         const styleText = columns[cellIndex].trim()
+
         menus.push(
+          ...editMenu,
+          { type: 'separator' },
           {
             id: 'plugin.table.cell-edit.align-left',
             type: 'normal',
