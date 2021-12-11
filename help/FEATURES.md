@@ -230,11 +230,11 @@ REM --run--
 1. Support to select a piece of code in the editor and press `Shift + Alt/Option + R` to run the command directly in the terminal. No need to copy and paste.
 1. Switch the working directory of the terminal to the current directory: `right-click directory`
 
-## Widgets
+## Applets
 
-Support to embed HTML widgets in documents.
+Support to embed HTML applets in documents.
 
-The first line of the HTML code block needs to contain the string `--applet--`, and the remaining strings are used as the title of the widget.
+The first line of the HTML code block needs to contain the string `--applet--`, and the remaining strings are used as the title of the applet.
 
 The example is as follows:
 

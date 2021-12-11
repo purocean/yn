@@ -12,11 +12,11 @@ English | [中文说明](./README_ZH-CN.md)
 
 ## Highlights
 
-- **Easy to use**：Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
-- **Powerful**：Widgets, runnable code blocks, tables, Plantuml, Drawio, macro replacements, etc., can be embedded in the document.
-- **High compatibility**：Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
-- **Plug-in extension**：Support users to write their own plug-ins to expand the functionality of the editor.
-- **Encryption supported**：Use encryption to save private files such as account number, and the password can be set separately for each file.
+- **Easy to use:** Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
+- **Powerful:** Applets, runnable code blocks, tables, Plantuml, Drawio, macro replacements, etc., can be embedded in the document.
+- **High compatibility:** Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
+- **Plug-in extension:** Support users to write their own plug-ins to expand the functionality of the editor.
+- **Encryption supported:** Use encryption to save private files such as account number, and the password can be set separately for each file.
 
 ## Attention
 
@@ -63,7 +63,7 @@ For more information on how to use the following functions, please see [characte
 - **TOC:** write `[toc]{type:** "ol", level:** [1,2,3]}` to generate TOC where you need to generate a directory
 - **Edit table cell:** double-click a table cell to quickly edit
 - **Copy title link:** copy title link path to the clipboard for easy insertion into other files
-- **Embedded Widgets:** document supports embedded HTML widgets
+- **Embedded Applets:** document supports embedded HTML Applets
 - **Embed Plantuml graphics:** you need to install Java and graphviz
 - **Embed drawio graphics:** document supports embedded drawio graphics
 - **Embed ECharts graphics:** document supports embeded Echarts graphics
