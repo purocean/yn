@@ -99,7 +99,10 @@ const schema: Schema = {
   required: ['theme', 'language'],
 }
 
-const settings = getDefaultSetting()
+const settings = {
+  ...getDefaultSetting(),
+  ...transformSettings(window._INIT_SETTINGS)
+}
 
 if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
@@ -181,24 +184,31 @@ export async function fetchSettings () {
 
 /**
  * Write settings.
- * @param data settings
+ * @param settings
  * @returns settings
  */
-export async function writeSettings (data: Record<string, any>) {
-  const repositories: any = {}
-  data.repos.forEach(({ name, path }: any) => {
-    name = name.trim()
-    path = path.trim()
-    if (name && path) {
-      repositories[name] = path
-    }
-  })
+export async function writeSettings (settings: Record<string, any>) {
+  const data = cloneDeep(settings)
 
-  delete data.repos
-  delete data.theme
-  data.repositories = repositories
+  if (data.repos) {
+    const repositories: any = {}
+    data.repos.forEach(({ name, path }: any) => {
+      name = name.trim()
+      path = path.trim()
+      if (name && path) {
+        repositories[name] = path
+      }
+    })
 
-  triggerHook('SETTING_BEFORE_WRITE', { settings })
+    delete data.repos
+    data.repositories = repositories
+  }
+
+  if (data.theme) {
+    delete data.theme
+  }
+
+  triggerHook('SETTING_BEFORE_WRITE', { settings } as any)
 
   await api.writeSettings(data)
   return await fetchSettings()
@@ -236,9 +246,7 @@ export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal:
  * @returns
  */
 export async function setSetting<T extends keyof BuildInSettings> (key: T, val: BuildInSettings[T]) {
-  const settings = getSettings()
-  settings[key] = val
-  await writeSettings(settings)
+  await writeSettings({ [key]: val })
 }
 
 /**

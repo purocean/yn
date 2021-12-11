@@ -91,7 +91,7 @@ const doc = getLastOpenFile()
 switchDoc(doc)
 
 function changeLanguage ({ settings }: { settings: BuildInSettings }) {
-  if (settings.language !== getLanguage()) {
+  if (settings.language && settings.language !== getLanguage()) {
     setLanguage(settings.language)
   }
 }

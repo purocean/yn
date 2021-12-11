@@ -30,6 +30,7 @@ declare interface Window {
   kityminder: any;
   kityminderM: any;
   kityM: any;
+  _INIT_SETTINGS: any;
 }
 
 declare const __APP_VERSION__: string

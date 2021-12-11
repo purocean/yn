@@ -208,7 +208,12 @@ const userPlugin = async (ctx: any, next: any) => {
 const setting = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/settings')) {
     if (ctx.method === 'GET') {
-      ctx.body = result('ok', 'success', config.getAll())
+      if (ctx.path.endsWith('js')) {
+        ctx.type = 'application/javascript; charset=utf-8'
+        ctx.body = '_INIT_SETTINGS = ' + JSON.stringify(config.getAll())
+      } else {
+        ctx.body = result('ok', 'success', config.getAll())
+      }
     } else if (ctx.method === 'POST') {
       const data = { ...config.getAll(), ...ctx.request.body }
       config.setAll(data)
