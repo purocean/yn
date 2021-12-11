@@ -91,6 +91,11 @@ export async function showItemInFolder (path: string) {
   api.rpc(`require('electron').shell.showItemInFolder(${quote(path)})`)
 }
 
+/**
+ * get repo by name
+ * @param name
+ * @returns
+ */
 export function getRepo (name: string) {
   return (getSetting('repos') || []).find(x => x.name === name)
 }
