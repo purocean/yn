@@ -171,7 +171,7 @@ function math_plugin (md: any, options: any) {
     try {
       return katex.renderToString(latex, options)
     } catch (error: any) {
-      if (options.throwOnError) { console.error(error) }
+      if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
@@ -187,7 +187,7 @@ function math_plugin (md: any, options: any) {
       const html = katex.renderToString(latex, options)
       return h('p', { ...token.meta?.attrs, class: 'source-line', key: html, innerHTML: html }, '')
     } catch (error: any) {
-      if (options.throwOnError) { console.error(error) }
+      if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
