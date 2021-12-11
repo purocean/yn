@@ -225,8 +225,8 @@ export default defineComponent({
       }
     }
 
-    function revealLine (line: number) {
-      if (line <= 1) {
+    function revealLine (startLine: number, endLine?: number) {
+      if (startLine <= 1) {
         scrollTopTo(0)
         return
       }
@@ -234,7 +234,8 @@ export default defineComponent({
       const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>('.markdown-body .source-line')
       for (let i = 0; i < nodes.length; i++) {
         const el = nodes[i]
-        if (parseInt(el.dataset.sourceLine || '0') >= line) {
+        const lineNumber = parseInt(el.dataset.sourceLine || '0')
+        if (lineNumber >= startLine && lineNumber <= (endLine || Number.MAX_SAFE_INTEGER)) {
           el.scrollIntoView()
           break
         }

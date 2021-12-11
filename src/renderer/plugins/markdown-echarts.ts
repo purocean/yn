@@ -13,6 +13,7 @@ const logger = getLogger('echarts')
 const Echarts = defineComponent({
   name: 'echarts',
   props: {
+    attrs: Object,
     code: {
       type: String,
       default: '',
@@ -137,7 +138,7 @@ const Echarts = defineComponent({
         return h('img', { src: imgSrc.value })
       }
 
-      return h('div', { class: 'echarts-wrapper' }, [
+      return h('div', { ...props.attrs, class: 'source-line echarts-wrapper' }, [
         h('div', { class: 'echarts-action no-print' }, [
           h('button', { class: 'small', onClick: () => exportData('png') }, 'PNG'),
         ]),
@@ -158,7 +159,7 @@ const MarkdownItPlugin = (md: Markdown) => {
       return temp(tokens, idx, options, env, slf)
     }
 
-    return h(Echarts, { code }) as any
+    return h(Echarts, { attrs: token.meta?.attrs, code }) as any
   }
 }
 

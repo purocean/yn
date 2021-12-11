@@ -21,7 +21,6 @@ import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownMacro from './plugins/markdown-macro'
 import markdownFrontMatter from '@fe/plugins/markdown-front-matter'
-import markdownSourceLine from '@fe/plugins/markdown-source-line'
 import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
@@ -69,7 +68,6 @@ export default [
   markdownRenderVnode,
   markdownMacro,
   markdownFrontMatter,
-  markdownSourceLine,
   markdownImsize,
   markdownToc,
   markdownCodeHighlight,

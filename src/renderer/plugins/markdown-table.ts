@@ -5,8 +5,16 @@ import { getActionHandler } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import { deleteLine, getLineContent, replaceLine } from '@fe/services/editor'
 import { t } from '@fe/services/i18n'
+import type Token from 'markdown-it/lib/token'
+import type Renderer from 'markdown-it/lib/renderer'
 
 const cellClassName = 'yank-table-cell'
+
+function injectClass (tokens: Token[], idx: number, options: any, env: any, slf: Renderer) {
+  const token = tokens[idx]
+  token.attrJoin('class', cellClassName)
+  return slf.renderToken(tokens, idx, options)
+}
 
 function resetInput (input: HTMLTextAreaElement) {
   input.parentElement!.style.position = ''
@@ -431,6 +439,9 @@ export default {
           parent: table
         } as any
       }
+
+      md.renderer.rules.td_open = injectClass
+      md.renderer.rules.th_open = injectClass
     })
 
     ctx.registerHook('VIEW_ELEMENT_DBCLICK', ({ e }) => handleClick(e, false))

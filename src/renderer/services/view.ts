@@ -36,11 +36,12 @@ export function refresh () {
 }
 
 /**
- * REveal a line.
- * @param line
+ * Reveal line.
+ * @param startLine
+ * @param endLine
  */
-export function revealLine (line: number) {
-  getActionHandler('view.reveal-line')(line)
+export function revealLine (startLine: number, endLine?: number) {
+  getActionHandler('view.reveal-line')(startLine, endLine)
 }
 
 /**

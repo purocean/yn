@@ -276,6 +276,7 @@ const render = async (km: any, content: string) => {
 const MindMap = defineComponent({
   name: 'mind-map',
   props: {
+    attrs: Object,
     content: {
       type: String,
       default: ''
@@ -308,7 +309,7 @@ const MindMap = defineComponent({
       removeHook('I18N_CHANGE_LANGUAGE', renderMindMap)
     })
 
-    return () => h('div', { ref: container, class: 'mind-map reduce-brightness' })
+    return () => h('div', { ...props.attrs, ref: container, class: 'source-line mind-map reduce-brightness' })
   }
 })
 
@@ -321,7 +322,7 @@ const renderRule: Renderer.RenderRule = (tokens, idx, options, { bMarks, source 
       .replace(/\{.mindmap[^}]*\}/gm, '')
       .replace(/^(\s*)([+-]*|\d+.) /gm, '$1')
 
-    return h(MindMap, { content }) as any
+    return h(MindMap, { attrs: token.meta?.attrs, content }) as any
   }
 
   return slf.renderToken(tokens, idx, options)

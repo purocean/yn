@@ -39,7 +39,8 @@ const MarkdownItPlugin = (md: Markdown) => {
         win.resize()
       },
       iframeProps: {
-        class: 'applet-iframe',
+        ...token.meta?.attrs,
+        class: 'source-line applet-iframe',
         height: '20px',
       }
     })

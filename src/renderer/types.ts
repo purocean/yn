@@ -106,7 +106,7 @@ export type BuildInSettings = {
 
 export type BuildInActions = {
   'view.refresh': () => void,
-  'view.reveal-line': (line: number) => void,
+  'view.reveal-line': (startLine: number, endLine?: number) => void,
   'view.scroll-top-to': (top: number) => void,
   'view.get-content-html': () => string,
   'view.get-view-dom': () => HTMLElement | null,

@@ -5,8 +5,6 @@ import StateInline from 'markdown-it/lib/rules_inline/state_inline'
 import { getKeyLabel } from '@fe/core/command'
 import ctx, { Plugin } from '@fe/context'
 
-import { injectLineNumbers } from './markdown-source-line'
-
 const slugify = (s: string) => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
 
 const defaults = {
@@ -174,7 +172,7 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
       header.attrSet('title', getKeyLabel('CtrlCmd') + ' + ' + ctx.i18n.t('click-to-copy-link'))
     }
 
-    return injectLineNumbers(tokens, idx, opt, env, slf)
+    return slf.renderToken(tokens, idx, opt)
   }
 
   // Catch all the tokens for iteration later

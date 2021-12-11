@@ -7,6 +7,49 @@ import { Plugin } from '@fe/context'
 const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
 const defaultRules = {} as any
 
+function getLine (token: Token, env?: Record<string, any>) {
+  const [lineStart, lineEnd] = token.map || [0, 1]
+
+  // macro, calc line offset, see `markdown-macro` plugin.
+  let sOffset = 0
+  if (env?.macroLines && env.bMarks && env.eMarks) {
+    const sPos = env.bMarks[lineStart]
+    for (let i = 0; i < env.macroLines.length; i++) {
+      const { matchPos, lineOffset, posOffset, currentPosOffset } = env.macroLines[i]
+      if (sPos + posOffset > matchPos && sPos + posOffset - currentPosOffset > matchPos) {
+        sOffset = lineOffset
+      } else {
+        break
+      }
+    }
+  }
+
+  return [lineStart + sOffset, lineEnd + sOffset]
+}
+
+export function setSourceLine (token: Token, env?: Record<string, any>) {
+  if (!token.meta) {
+    token.meta = {}
+  }
+
+  if (token.block) {
+    const [lineStart, lineEnd] = getLine(token, env)
+
+    if (token.map) {
+      token.attrJoin('class', 'source-line')
+      token.attrSet('data-source-line', String(lineStart + 1))
+      token.attrSet('data-source-line-end', String(lineEnd + 1))
+      if (!token.meta.attrs) {
+        token.meta.attrs = {}
+      }
+
+      token.attrs?.forEach(([name, val]) => {
+        token.meta.attrs[name] = val
+      })
+    }
+  }
+}
+
 defaultRules.code_inline = function (tokens: Token[], idx: number, _: any, __: any, slf: Renderer) {
   const token = tokens[idx]
   return createVNode('code', slf.renderAttrs(token) as any, token.content)
@@ -170,6 +213,8 @@ function render (this: Renderer, tokens: Token[], options: any, env: any) {
   const vNodeParents: VNode[] = []
 
   return tokens.map((token, i) => {
+    setSourceLine(token, env)
+
     const type = token.type
 
     let vnode: VNode | null = null
