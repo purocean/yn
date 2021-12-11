@@ -344,7 +344,7 @@ export async function saveDoc (doc: Doc, content: string) {
     })
     triggerHook('DOC_SAVED', { doc: store.state.currentFile! })
   } catch (error: any) {
-    store.commit('setCurrentFile', { ...doc, status: 'save-failed' })
+    Object.assign(doc, { status: 'save-failed' })
     useToast().show('warning', error.message)
     throw error
   }
