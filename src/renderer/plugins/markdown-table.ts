@@ -3,8 +3,10 @@ import { useModal } from '@fe/support/ui/modal'
 import { hasCtrlCmd } from '@fe/core/command'
 import { getActionHandler } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
-import { getLineContent, replaceLine } from '@fe/services/editor'
+import { deleteLine, getLineContent, replaceLine } from '@fe/services/editor'
 import { t } from '@fe/services/i18n'
+
+const cellClassName = 'yank-table-cell'
 
 function resetInput (input: HTMLTextAreaElement) {
   input.parentElement!.style.position = ''
@@ -12,57 +14,113 @@ function resetInput (input: HTMLTextAreaElement) {
   input.remove()
 }
 
+function escapedSplit (str: string) {
+  const result = []
+  const max = str.length
+  let pos = 0
+  let ch = str.charCodeAt(pos)
+  let isEscaped = false
+  let lastPos = 0
+  let current = ''
+
+  while (pos < max) {
+    if (ch === 0x7c/* | */) {
+      if (!isEscaped) {
+        // pipe separating cells, '|'
+        result.push(current + str.substring(lastPos, pos))
+        current = ''
+        lastPos = pos + 1
+      } else {
+        // escaped pipe, '\|'
+        current += str.substring(lastPos, pos - 1)
+        lastPos = pos
+      }
+    }
+
+    isEscaped = (ch === 0x5c/* \ */)
+    pos++
+
+    ch = str.charCodeAt(pos)
+  }
+
+  result.push(current + str.substring(lastPos))
+
+  if (result.length && result[0] === '') result.shift()
+  if (result.length && result[result.length - 1] === '') result.pop()
+
+  return result
+}
+
+function checkLineNumber (start: number, end: number) {
+  if (start >= 0 && end >= 0 && end - start === 1) {
+    return true
+  }
+
+  useToast().show('warning', t('table-cell-edit.limit-single-line'))
+  return false
+}
+
+function columnsToStr (columns: string[], refText: string) {
+  // if (!value.startsWith(' ') && idx > 0) value = ' ' + value
+  // if (!value.endsWith(' ') && idx < columns.length - 1) value += ' '
+
+  let content = columns.map(value => {
+    return value.replace(/\|/g, '\\|').replace(/\n/g, ' ')
+  }).join('|')
+
+  refText = refText.trim()
+
+  if (refText.startsWith('|')) content = '| ' + content.replace(/^ /, '')
+  if (refText.endsWith('|')) content = content.replace(/ $/, '') + ' |'
+
+  return content
+}
+
+function getCellIndex (td: HTMLTableCellElement) {
+  return [...td.parentElement!.children as any]
+    .slice(0, td.cellIndex)
+    .reduce((prev, current) => prev + current.colSpan, 0)
+}
+
+function getRows (td: HTMLTableCellElement) {
+  const tbody = td.parentElement?.parentElement
+  if (!tbody) {
+    return []
+  }
+
+  const rows = [...tbody.children].map(tr => {
+    const td = tr.children[0] as HTMLElement | undefined
+
+    const start = parseInt(td?.dataset?.sourceLine || '0')
+    const end = parseInt(td?.dataset?.sourceLineEnd || '0')
+
+    return { start, end }
+  })
+
+  const firstRow = rows[0]
+
+  // add head
+  rows.unshift(
+    { start: firstRow.start - 2, end: firstRow.start - 1 },
+    { start: firstRow.start - 1, end: firstRow.start },
+  )
+
+  return rows
+}
+
 async function editTableCell (start: number, end: number, cellIndex: number, input: HTMLTextAreaElement | null) {
   const toast = useToast()
   const modal = useModal()
 
-  if (end - start !== 1) {
-    toast.show('warning', t('table-cell-edit.limit-single-line'))
+  if (!checkLineNumber(start, end)) {
     input && input.remove()
     return
   }
 
-  const escapedSplit = (str: string) => {
-    const result = []
-    const max = str.length
-    let pos = 0
-    let ch = str.charCodeAt(pos)
-    let isEscaped = false
-    let lastPos = 0
-    let current = ''
-
-    while (pos < max) {
-      if (ch === 0x7c/* | */) {
-        if (!isEscaped) {
-          // pipe separating cells, '|'
-          result.push(current + str.substring(lastPos, pos))
-          current = ''
-          lastPos = pos + 1
-        } else {
-          // escaped pipe, '\|'
-          current += str.substring(lastPos, pos - 1)
-          lastPos = pos
-        }
-      }
-
-      isEscaped = (ch === 0x5c/* \ */)
-      pos++
-
-      ch = str.charCodeAt(pos)
-    }
-
-    result.push(current + str.substring(lastPos))
-
-    if (result.length && result[0] === '') result.shift()
-    if (result.length && result[result.length - 1] === '') result.pop()
-
-    return result
-  }
-
-  const text = getLineContent(start).trim()
+  const text = getLineContent(start)
 
   const columns = escapedSplit(text)
-  const cellText = columns[cellIndex]?.trim()
+  const cellText = columns[cellIndex]?.replace(/^ | $/g, '')
 
   if (typeof cellText !== 'string') {
     throw new Error(t('table-cell-edit.edit-error'))
@@ -116,13 +174,10 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
 
   if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
   if (!value.endsWith(' ') && cellIndex < columns.length - 1) value += ' '
-  columns[cellIndex] = value.replace(/\|/g, '\\|').replace(/\n/g, ' ')
 
-  let content = columns.join('|').trim()
-  if (text.startsWith('|')) content = '| ' + content
-  if (text.endsWith('|')) content += ' |'
+  columns[cellIndex] = value
 
-  replaceLine(start, content)
+  replaceLine(start, columnsToStr(columns, text))
 }
 
 async function handleClick (e: MouseEvent, modal: boolean) {
@@ -134,18 +189,15 @@ async function handleClick (e: MouseEvent, modal: boolean) {
     return true
   }
 
-  if (['TD', 'TH'].includes(target.tagName) && target.classList.contains('yank-table-cell')) {
+  if (['TD', 'TH'].includes(target.tagName) && target.classList.contains(cellClassName)) {
     if ((hasCtrlCmd(e) && !modal) || (!hasCtrlCmd(e) && modal)) {
       return false
     }
 
     const start = parseInt(target.dataset.sourceLine || '0')
     const end = parseInt(target.dataset.sourceLineEnd || '0')
-    const td = target as HTMLTableDataCellElement
-    const cellIndex = [...td.parentElement!.children as any]
-      .slice(0, td.cellIndex)
-      .reduce((prev, current) => prev + current.colSpan, 0)
-
+    const td = target as HTMLTableCellElement
+    const cellIndex = getCellIndex(td)
     const input = modal ? null : document.createElement('textarea')
 
     if (input) {
@@ -182,6 +234,149 @@ async function handleClick (e: MouseEvent, modal: boolean) {
   return false
 }
 
+function addRow (td: HTMLTableCellElement, offset: -1 | 1) {
+  const rows = getRows(td)
+  if (rows.length < 2) {
+    return
+  }
+
+  const start = parseInt(td.dataset.sourceLine || '0')
+  const end = parseInt(td.dataset.sourceLineEnd || '0')
+
+  if (!checkLineNumber(start, end)) {
+    return
+  }
+
+  const refText = getLineContent(rows[0].start)
+  const cols = escapedSplit(refText)
+  const columns = cols.map((_, idx) => {
+    if (idx === 0) {
+      return '-- '
+    }
+
+    if (idx === cols.length - 1) {
+      return ' --'
+    }
+
+    return ' -- '
+  })
+
+  const str = columnsToStr(columns, refText)
+  const content = getLineContent(start)
+  const text = offset > 0 ? `${content}\n${str}` : `${str}\n${content}`
+
+  replaceLine(start, text)
+}
+
+function removeRow (td: HTMLTableCellElement) {
+  const start = parseInt(td.dataset.sourceLine || '0')
+  const end = parseInt(td.dataset.sourceLineEnd || '0')
+
+  if (!checkLineNumber(start, end)) {
+    return
+  }
+
+  deleteLine(start)
+}
+
+function processColumns (td: HTMLTableCellElement, process: (columns: string[], idx: number) => void) {
+  const rows = getRows(td)
+  if (rows.length < 2) {
+    return
+  }
+
+  const firstRow = rows[0]
+  const refText = getLineContent(firstRow.start)
+
+  rows.forEach(({ start, end }, idx) => {
+    if (!checkLineNumber(start, end)) {
+      return
+    }
+
+    const content = getLineContent(start)
+    const columns = escapedSplit(content)
+
+    process(columns, idx)
+
+    replaceLine(start, columnsToStr(columns, refText))
+  })
+}
+
+function alignCol (td: HTMLTableCellElement, type: 'left' | 'center' | 'right' | 'normal') {
+  const rows = getRows(td)
+  if (rows.length < 2) {
+    return
+  }
+
+  const refText = getLineContent(rows[0].start)
+  const content = getLineContent(rows[1].start)
+  const columns = escapedSplit(content)
+  const cellIndex = getCellIndex(td)
+
+  let val = (columns[cellIndex] || '').replace(/^\s*:*|:*\s*$/g, '')
+
+  switch (type) {
+    case 'left':
+      val = ':' + val
+      break
+    case 'center':
+      val = ':' + val + ':'
+      break
+    case 'right':
+      val = val + ':'
+      break
+  }
+
+  if ((cellIndex === 0)) {
+    val = val + ' '
+  } else if (cellIndex === columns.length - 1) {
+    val = ' ' + val
+  } else {
+    val = ` ${val} `
+  }
+
+  columns[cellIndex] = val
+  replaceLine(rows[1].start, columnsToStr(columns, refText))
+}
+
+function addCol (td: HTMLTableCellElement, offset: 0 | 1) {
+  const cellIndex = getCellIndex(td)
+  processColumns(td, (columns, idx) => {
+    if (cellIndex > columns.length - 1 || cellIndex < 0) {
+      return
+    }
+
+    let val = idx === 1 ? ' -- ' : ' -- '
+
+    if ((offset === 0 && cellIndex === 0)) {
+      val = '-- '
+    }
+
+    if (offset === 1 && cellIndex === columns.length - 1) {
+      val = ' --'
+    }
+
+    if (cellIndex === columns.length - 1) {
+      if (!columns[cellIndex].endsWith(' ')) {
+        columns[cellIndex] += ' '
+      }
+    } else if (cellIndex === 0) {
+      if (!columns[cellIndex].startsWith(' ')) {
+        columns[cellIndex] = ' ' + columns[cellIndex]
+      }
+    }
+
+    columns.splice(cellIndex + offset, 0, val)
+  })
+}
+
+function removeCol (td: HTMLTableCellElement) {
+  const cellIndex = getCellIndex(td)
+  processColumns(td, columns => {
+    columns.splice(cellIndex, 1)
+  })
+}
+
 export default {
   name: 'markdown-table',
   register: (ctx) => {
@@ -198,6 +393,11 @@ export default {
 
         .markdown-view .markdown-body .table-wrapper > table th {
           white-space: nowrap;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table td:hover,
+        .markdown-view .markdown-body .table-wrapper > table th:hover {
+          background: var(--g-color-85);
         }
 
         .markdown-view .markdown-body .table-wrapper > table tr:hover {
@@ -240,6 +440,87 @@ export default {
       view?.querySelectorAll('.yank-table-cell').forEach(td => {
         (td as HTMLElement).title = t('table-cell-edit.db-click-edit')
       })
+    })
+
+    ctx.view.tapContextMenus((menus, e) => {
+      const target = e.target as HTMLTableCellElement
+      const tagName = target.tagName
+      if ((tagName === 'TD') && target.classList.contains(cellClassName)) {
+        const rows = getRows(target)
+        const columns = escapedSplit(ctx.editor.getLineContent(rows[1].start))
+        const cellIndex = getCellIndex(target)
+        const styleText = columns[cellIndex].trim()
+        menus.push(
+          {
+            id: 'plugin.table.cell-edit.align-left',
+            type: 'normal',
+            label: '左对齐',
+            hidden: /^:[^:]*$/.test(styleText),
+            onClick: () => alignCol(target, 'left'),
+          },
+          {
+            id: 'plugin.table.cell-edit.align-center',
+            type: 'normal',
+            label: '居中',
+            hidden: /^:[^:]*:$/.test(styleText),
+            onClick: () => alignCol(target, 'center'),
+          },
+          {
+            id: 'plugin.table.cell-edit.align-right',
+            type: 'normal',
+            label: '右对齐',
+            hidden: /^[^:]*:$/.test(styleText),
+            onClick: () => alignCol(target, 'right'),
+          },
+          {
+            id: 'plugin.table.cell-edit.align-normal',
+            type: 'normal',
+            label: '取消对齐',
+            hidden: /^[^:]*$/.test(styleText),
+            onClick: () => alignCol(target, 'normal'),
+          },
+          { type: 'separator' },
+          {
+            id: 'plugin.table.cell-edit.insert-row-above',
+            type: 'normal',
+            label: '在上面添加行',
+            onClick: () => addRow(target, -1),
+          },
+          {
+            id: 'plugin.table.cell-edit.insert-row-below',
+            type: 'normal',
+            label: '在下面添加行',
+            onClick: () => addRow(target, 1)
+          },
+          {
+            id: 'plugin.table.cell-edit.delete-row',
+            type: 'normal',
+            label: '删除行',
+            hidden: rows.length < 4,
+            onClick: () => removeRow(target)
+          },
+          { type: 'separator' },
+          {
+            id: 'plugin.table.cell-edit.insert-col-left',
+            type: 'normal',
+            label: '在左侧添加列',
+            onClick: () => addCol(target, 0)
+          },
+          {
+            id: 'plugin.table.cell-edit.insert-col-right',
+            type: 'normal',
+            label: '在右侧添加列',
+            onClick: () => addCol(target, 1)
+          },
+          {
+            id: 'plugin.table.cell-edit.delete-col',
+            type: 'normal',
+            label: '删除列',
+            hidden: columns.length < 2,
+            onClick: () => removeCol(target)
+          },
+        )
+      }
     })
   }
 } as Plugin

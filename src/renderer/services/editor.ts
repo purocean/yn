@@ -122,6 +122,7 @@ export function replaceLine (line: number, text: string) {
       forceMoveMarkers: true
     }
   ])
+  getEditor().focus()
 }
 
 export function deleteLine (line: number) {
@@ -131,6 +132,7 @@ export function deleteLine (line: number) {
       text: null
     }
   ])
+  getEditor().focus()
 }
 
 /**
@@ -193,6 +195,7 @@ export function replaceValue (search: string, val: string) {
       forceMoveMarkers: true
     }
   ])
+  getEditor().focus()
 }
 
 /**

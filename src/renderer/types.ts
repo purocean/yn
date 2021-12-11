@@ -44,12 +44,13 @@ export namespace Components {
   }
 
   export namespace ContextMenu {
-    export type SeparatorItem = { type: 'separator' }
+    export type SeparatorItem = { type: 'separator', hidden?: boolean; }
 
     export type NormalItem = {
       type?: 'normal';
       id: string;
       label: string;
+      hidden?: boolean;
       onClick: (item?: NormalItem) => void;
     }
 

@@ -71,7 +71,7 @@ function createDependencyProposals (range: any, currentWord: string): Monaco.lan
     { name: '/ @startuml Plantuml', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
     { name: '/ []() Drawio Link', insertText: '[${2:Link}]($1){link-type="drawio"}' },
     { name: '/ []() Luckysheet Link', insertText: '[${2:Link}]($1){link-type="luckysheet"}' },
-    { name: '/ ||| Table', insertText: '${1:A} | ${2:B} | ${3:C}\n-- | -- | --\na | b | c' },
+    { name: '/ ||| Table', insertText: '| ${1:--} | ${2:--} | ${3:--} |\n| -- | -- | -- |\n| -- | -- | -- |' },
     { name: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
     { name: '/ --- Horizontal Line', insertText: '---\n' },
     { name: '/ --- Front Matter', insertText: '---\nheadingNumber: true\nenableMacro: true\ndefine:\n    APP_NAME: Yank Note\n---\n' },

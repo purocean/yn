@@ -213,7 +213,9 @@ export default defineComponent({
     }
 
     function handleContextMenu (e: MouseEvent) {
-      if (isElectron || e.altKey) {
+      const tagName = (e.target as HTMLElement).tagName
+      const allowTags = ['TD']
+      if (isElectron || e.altKey || allowTags.includes(tagName)) {
         const contextMenuItems = getContextMenuItems(e)
         if (contextMenuItems.length > 0) {
           useContextMenu().show(contextMenuItems)
