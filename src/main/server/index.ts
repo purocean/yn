@@ -263,7 +263,7 @@ const wrapper = async (ctx: any, next: any, fun: any) => {
   } catch (error: any) {
     console.error(error)
     ctx.set('x-yank-note-api-status', 'error')
-    ctx.set('x-yank-note-api-message', error.message)
+    ctx.set('x-yank-note-api-message', encodeURIComponent(error.message))
     ctx.body = result('error', error.message)
   }
 }

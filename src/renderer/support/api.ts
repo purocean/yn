@@ -48,7 +48,8 @@ export async function proxyRequest (url: string, reqOptions: Record<string, any>
   }
 
   if (res.headers.get('x-yank-note-api-status') === 'error') {
-    throw new Error(res.headers.get('x-yank-note-api-message') || 'error')
+    const msg = res.headers.get('x-yank-note-api-message') || 'error'
+    throw new Error(decodeURIComponent(msg))
   }
 
   return res
