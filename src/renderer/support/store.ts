@@ -4,7 +4,6 @@ import * as storage from '@fe/utils/storage'
 import type { Components, Doc, Repo } from '@fe/types'
 
 export const initState = {
-  repositories: {} as Record<string, string>,
   tree: null,
   wordWrap: storage.get<'off' | 'on'>('wordWrap', 'off'),
   showSide: storage.get('showSide', true),
@@ -35,9 +34,6 @@ export type AppState = typeof initState
 export default createStore({
   state: initState,
   mutations: {
-    setRepositories (state, data) {
-      state.repositories = data
-    },
     setTree (state, data) {
       state.tree = data
     },

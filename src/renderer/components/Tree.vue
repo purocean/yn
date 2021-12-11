@@ -3,7 +3,7 @@
     v-if="hasRepo"
     class="side"
     @contextmenu.exact.prevent="showContextMenu"
-    @dblclick="refreshRepo"
+    @dblclick="refresh"
     :title="$t('tree.db-click-refresh')">
     <div class="loading" v-if="tree === null"> {{$t('loading')}} </div>
     <template v-else>
@@ -37,8 +37,9 @@ export default defineComponent({
 
     const { currentRepo, tree } = toRefs(store.state)
 
-    function refreshRepo () {
-      fetchSettings()
+    async function refresh () {
+      await fetchSettings()
+      await refreshTree()
     }
 
     function showContextMenu () {
@@ -46,18 +47,18 @@ export default defineComponent({
         {
           id: 'refresh',
           label: t('tree.context-menu.refresh'),
-          onClick: refreshRepo
+          onClick: refresh
         }
       ])
     }
 
-    watch(currentRepo, refreshTree)
+    watch(currentRepo, refreshTree, { immediate: true })
 
-    const hasRepo = computed(() => !!currentRepo)
+    const hasRepo = computed(() => !!currentRepo.value)
 
     return {
       tree,
-      refreshRepo,
+      refresh,
       showContextMenu,
       showSettingPanel,
       hasRepo,

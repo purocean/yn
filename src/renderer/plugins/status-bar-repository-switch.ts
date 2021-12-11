@@ -17,9 +17,11 @@ export default {
     }
 
     function chooseRepoByName (name?: string) {
-      const { repositories } = store.state
-      if (name && repositories[name]) {
-        choose({ name, path: repositories[name] })
+      if (name) {
+        const repo = ctx.base.getRepo(name)
+        if (repo) {
+          choose(repo)
+        }
       }
     }
 
@@ -39,7 +41,7 @@ export default {
     }
 
     ctx.statusBar.tapMenus(menus => {
-      const { currentRepo, repositories } = store.state
+      const { currentRepo } = store.state
 
       menus['status-bar-repository-switch'] = {
         id: 'status-bar-repository-switch',
@@ -47,9 +49,7 @@ export default {
         title: currentRepo
           ? ctx.i18n.t('status-bar.repo.repo', currentRepo.name)
           : ctx.i18n.t('status-bar.repo.no-data'),
-        list: Object.keys(repositories).map(name => {
-          const path = repositories[name]
-
+        list: ctx.setting.getSetting('repos', []).map(({ name, path }) => {
           return {
             id: name,
             type: 'normal',
@@ -63,25 +63,18 @@ export default {
 
     whenEditorReady().then(initRepo)
 
-    store.watch(() => store.state.repositories, ctx.statusBar.refreshMenu)
     store.watch(() => store.state.currentRepo, ctx.statusBar.refreshMenu)
 
-    store.watch(() => store.state.repositories, val => {
+    ctx.registerHook('SETTING_FETCHED', ({ settings }) => {
       const { currentRepo } = store.state
-      const keys = Object.keys(val)
-      if (!currentRepo || keys.indexOf(currentRepo.name) < 0) {
-        if (keys.length > 0) {
-          const name = keys[0]
-          store.commit('setCurrentRepo', { name, path: val[name] })
+      const { repos } = settings
+
+      if (!currentRepo || !repos.some(x => x.name === currentRepo.name && x.path === currentRepo.path)) {
+        if (repos.length > 0) {
+          store.commit('setCurrentRepo', { ...repos[0] })
         } else {
           store.commit('setCurrentRepo', undefined)
         }
-      }
-    })
-
-    ctx.registerHook('SETTING_CHANGED', ({ changedKeys }) => {
-      if (changedKeys.includes('repos')) {
-        ctx.tree.refreshRepo(false)
       }
     })
   }
