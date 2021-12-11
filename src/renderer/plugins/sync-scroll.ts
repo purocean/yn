@@ -9,17 +9,6 @@ export default {
 
     const STORAGE_KEY = 'plugin.scroll-position'
 
-    let enableSyncScroll = true
-    let xTimer: any
-    async function disableSyncScroll (fn: Function) {
-      clearTimeout(xTimer)
-      enableSyncScroll = false
-      await fn()
-      xTimer = setTimeout(() => {
-        enableSyncScroll = true
-      }, 500)
-    }
-
     function saveScrollPosition (scrollTop: ScrollTop) {
       const key = ctx.doc.toUri(ctx.store.state.currentFile)
       const data: Record<string, ScrollTop> = ctx.storage.get(STORAGE_KEY, {})
@@ -38,7 +27,7 @@ export default {
 
         await ctx.editor.whenEditorReady()
 
-        disableSyncScroll(async () => {
+        ctx.view.disableSyncScrollAwhile(async () => {
           ctx.editor.setScrollToTop(position.editor || 0)
           if (typeof position.view === 'number') {
             await sleep(0)
@@ -56,7 +45,7 @@ export default {
         const endLine = Math.max(startLine, visibleRange.endLineNumber)
 
         const top = editor.getScrollTop()
-        if (enableSyncScroll) {
+        if (ctx.view.getEnableSyncScroll()) {
           ctx.view.revealLine(startLine, startLine + (endLine - startLine) / 2)
         }
         savePosition({ editor: top })
@@ -80,7 +69,7 @@ export default {
         target.classList.contains('source-line') &&
         window.getSelection()!.toString().length < 1
       ) {
-        disableSyncScroll(() => {
+        ctx.view.disableSyncScrollAwhile(() => {
           ctx.editor.revealLineInCenter(parseInt(target.dataset.sourceLine || '0'))
         })
       }
