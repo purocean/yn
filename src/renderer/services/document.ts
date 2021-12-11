@@ -472,9 +472,9 @@ export async function openInOS (doc: Doc, reveal?: boolean) {
   if (repo) {
     const path = join(repo.path, doc.path)
     if (reveal) {
-      openPath(path)
-    } else {
       showItemInFolder(path)
+    } else {
+      openPath(path)
     }
   }
 }
