@@ -4,7 +4,6 @@ import { registerAction } from '@fe/core/action'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import * as api from '@fe/support/api'
-import { fetchSettings, getSettings } from './setting'
 
 export type MenuItem = Components.ContextMenu.Item
 export type VueCtx = { localMarked: Ref<boolean | null> }
