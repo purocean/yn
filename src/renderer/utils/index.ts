@@ -13,7 +13,7 @@ export * as crypto from './crypto'
  * @param quote
  */
 export function quote (str: string, quote = '`') {
-  return quote + str.replaceAll(quote, '\\' + quote) + quote
+  return quote + str.replace('\\', '\\\\').replaceAll(quote, '\\' + quote) + quote
 }
 
 export const encodeMarkdownLink = (path: string) => {
