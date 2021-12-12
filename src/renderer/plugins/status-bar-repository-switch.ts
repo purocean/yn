@@ -75,6 +75,8 @@ export default {
         } else {
           store.commit('setCurrentRepo', undefined)
         }
+      } else {
+        ctx.statusBar.refreshMenu()
       }
     })
   }
