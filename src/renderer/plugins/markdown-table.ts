@@ -395,6 +395,10 @@ function removeCol (td: HTMLTableCellElement) {
   const cellIndex = getCellIndex(td)
   processColumns(td, columns => {
     columns.splice(cellIndex, 1)
+    if (columns.length > 0) {
+      columns[0] = columns[0].replace(/^\s*/g, '')
+      columns[columns.length - 1] = columns[columns.length - 1].replace(/\s*$/g, '')
+    }
   })
 }
 
