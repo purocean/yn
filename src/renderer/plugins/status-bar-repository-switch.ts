@@ -47,7 +47,7 @@ export default {
         id: 'status-bar-repository-switch',
         position: 'left',
         title: currentRepo
-          ? ctx.i18n.t('status-bar.repo.repo', currentRepo.name)
+          ? ctx.i18n.t('status-bar.repo.repo', currentRepo.name.substring(0, 10))
           : ctx.i18n.t('status-bar.repo.no-data'),
         list: ctx.setting.getSetting('repos', []).map(({ name, path }) => {
           return {
