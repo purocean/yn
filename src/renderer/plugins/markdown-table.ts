@@ -308,7 +308,7 @@ function addRow (td: HTMLTableCellElement, offset: -1 | 1) {
   replaceLine(start, text)
 }
 
-function removeRow (td: HTMLTableCellElement) {
+function deleteRow (td: HTMLTableCellElement) {
   const start = parseInt(td.dataset.sourceLine || '0')
   const end = parseInt(td.dataset.sourceLineEnd || '0')
 
@@ -411,7 +411,7 @@ function addCol (td: HTMLTableCellElement, offset: 0 | 1) {
   })
 }
 
-function removeCol (td: HTMLTableCellElement) {
+function deleteCol (td: HTMLTableCellElement) {
   const cellIndex = getCellIndex(td)
   processColumns(td, columns => {
     columns.splice(cellIndex, 1)
@@ -514,23 +514,23 @@ export default {
         const editRowMenu: Components.ContextMenu.Item[] = tagName === 'TD' ? [
           { type: 'separator' },
           {
-            id: 'plugin.table.cell-edit.insert-row-above',
+            id: 'plugin.table.cell-edit.add-row-above',
             type: 'normal',
-            label: '在上面添加行',
+            label: ctx.i18n.t('table-cell-edit.context-menu.add-row-above'),
             onClick: () => addRow(target, -1),
           },
           {
-            id: 'plugin.table.cell-edit.insert-row-below',
+            id: 'plugin.table.cell-edit.add-row-below',
             type: 'normal',
-            label: '在下面添加行',
+            label: ctx.i18n.t('table-cell-edit.context-menu.add-row-below'),
             onClick: () => addRow(target, 1)
           },
           {
             id: 'plugin.table.cell-edit.delete-row',
             type: 'normal',
-            label: '删除行',
+            label: ctx.i18n.t('table-cell-edit.context-menu.delete-row'),
             hidden: rows.length < 4,
-            onClick: () => removeRow(target)
+            onClick: () => deleteRow(target)
           },
         ] : []
 
@@ -538,7 +538,7 @@ export default {
           {
             id: 'plugin.table.cell-edit.quick-edit',
             type: 'normal' as any,
-            label: '快速编辑',
+            label: ctx.i18n.t('table-cell-edit.context-menu.quick-edit'),
             onClick: () => {
               handleClick(e, false)
             }
@@ -546,7 +546,7 @@ export default {
           {
             id: 'plugin.table.cell-edit.edit',
             type: 'normal' as any,
-            label: '编辑',
+            label: ctx.i18n.t('table-cell-edit.context-menu.edit'),
             onClick: () => {
               handleClick(e, true)
             }
@@ -555,51 +555,51 @@ export default {
           {
             id: 'plugin.table.cell-edit.align-left',
             type: 'normal',
-            label: '左对齐',
+            label: ctx.i18n.t('table-cell-edit.context-menu.align-left'),
             hidden: /^:[^:]*$/.test(styleText),
             onClick: () => alignCol(target, 'left'),
           },
           {
             id: 'plugin.table.cell-edit.align-center',
             type: 'normal',
-            label: '居中',
+            label: ctx.i18n.t('table-cell-edit.context-menu.align-center'),
             hidden: /^:[^:]*:$/.test(styleText),
             onClick: () => alignCol(target, 'center'),
           },
           {
             id: 'plugin.table.cell-edit.align-right',
             type: 'normal',
-            label: '右对齐',
+            label: ctx.i18n.t('table-cell-edit.context-menu.align-right'),
             hidden: /^[^:]*:$/.test(styleText),
             onClick: () => alignCol(target, 'right'),
           },
           {
             id: 'plugin.table.cell-edit.align-normal',
             type: 'normal',
-            label: '取消对齐',
+            label: ctx.i18n.t('table-cell-edit.context-menu.align-normal'),
             hidden: /^[^:]*$/.test(styleText),
             onClick: () => alignCol(target, 'normal'),
           },
           ...editRowMenu,
           { type: 'separator' },
           {
-            id: 'plugin.table.cell-edit.insert-col-left',
+            id: 'plugin.table.cell-edit.add-col-left',
             type: 'normal',
-            label: '在左侧添加列',
+            label: ctx.i18n.t('table-cell-edit.context-menu.add-col-left'),
             onClick: () => addCol(target, 0)
           },
           {
-            id: 'plugin.table.cell-edit.insert-col-right',
+            id: 'plugin.table.cell-edit.add-col-right',
             type: 'normal',
-            label: '在右侧添加列',
+            label: ctx.i18n.t('table-cell-edit.context-menu.add-col-right'),
             onClick: () => addCol(target, 1)
           },
           {
             id: 'plugin.table.cell-edit.delete-col',
             type: 'normal',
-            label: '删除列',
+            label: ctx.i18n.t('table-cell-edit.context-menu.delete-col'),
             hidden: columns.length < 2,
-            onClick: () => removeCol(target)
+            onClick: () => deleteCol(target)
           },
         )
       }
