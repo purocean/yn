@@ -129,7 +129,11 @@ export function tapSchema (fun: (schema: Schema) => void) {
 }
 
 function transformSettings (data: any) {
-  data.repos = Object.keys(data.repositories).map(name => ({
+  if (!data) {
+    return {}
+  }
+
+  data.repos = Object.keys(data.repositories || {}).map(name => ({
     name,
     path: data.repositories[name]
   }))

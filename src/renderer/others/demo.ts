@@ -17,8 +17,6 @@ if (FLAG_DEMO) {
   const xOpen = window.open
   const cache: {[key: string]: string} = {}
 
-  window._INIT_SETTINGS = settings
-
   window.addEventListener('error', e => {
     const target = e.target as HTMLImageElement
     if (target.tagName === 'IMG') {
