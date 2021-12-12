@@ -8,6 +8,7 @@ import * as editor from '@fe/services/editor'
 import { t } from '@fe/services/i18n'
 import type Token from 'markdown-it/lib/token'
 import type Renderer from 'markdown-it/lib/renderer'
+import type { Components } from '@fe/types'
 
 const cellClassName = 'yank-table-cell'
 
@@ -82,9 +83,6 @@ function checkLineNumber (start: number, end: number) {
 }
 
 function columnsToStr (columns: string[], refText: string) {
-  // if (!value.startsWith(' ') && idx > 0) value = ' ' + value
-  // if (!value.endsWith(' ') && idx < columns.length - 1) value += ' '
-
   let content = columns.map(value => {
     return value.replace(/\|/g, '\\|').replace(/\n/g, ' ')
   }).join('|')
@@ -103,30 +101,50 @@ function getCellIndex (td: HTMLTableCellElement) {
     .reduce((prev, current) => prev + current.colSpan, 0)
 }
 
-function getRows (td: HTMLTableCellElement) {
-  const tbody = td.parentElement?.parentElement
-  if (!tbody) {
+type Row = { type: 'head' | 'hr' | 'body', start: number, end: number }
+function getRows (td: HTMLTableCellElement): Row[] {
+  let tbody
+  let thead
+  if (td.tagName === 'TD') {
+    tbody = td.parentElement?.parentElement
+    thead = tbody?.previousElementSibling
+  } else if (td.tagName === 'TH') {
+    thead = td.parentElement?.parentElement
+    tbody = thead?.nextElementSibling
+  } else {
     return []
   }
 
-  const rows = [...tbody.children].map(tr => {
+  if (!tbody || !thead) {
+    return []
+  }
+
+  const headRows: Row[] = [...thead.children].map(th => {
+    const td = th.children[0] as HTMLElement | undefined
+
+    const start = parseInt(td?.dataset?.sourceLine || '0')
+    const end = parseInt(td?.dataset?.sourceLineEnd || '0')
+
+    return { type: 'head', start, end }
+  })
+
+  if (headRows.length < 1) {
+    return []
+  }
+
+  const bodyRows: Row[] = [...tbody.children].map(tr => {
     const td = tr.children[0] as HTMLElement | undefined
 
     const start = parseInt(td?.dataset?.sourceLine || '0')
     const end = parseInt(td?.dataset?.sourceLineEnd || '0')
 
-    return { start, end }
+    return { type: 'body', start, end }
   })
 
-  const firstRow = rows[0]
-
-  // add head
-  rows.unshift(
-    { start: firstRow.start - 2, end: firstRow.start - 1 },
-    { start: firstRow.start - 1, end: firstRow.start },
-  )
-
-  return rows
+  const lastHeadRows = headRows[headRows.length - 1]
+  return headRows.concat([
+    { type: 'hr', start: lastHeadRows.start + 1, end: lastHeadRows.end + 1 }
+  ]).concat(bodyRows)
 }
 
 async function editTableCell (start: number, end: number, cellIndex: number, input: HTMLTextAreaElement | null) {
@@ -231,7 +249,7 @@ async function handleClick (e: MouseEvent, modal: boolean) {
       input.style.color = 'var(--g-color-0)'
       input.style.border = '1px #93e632 solid'
       input.style.backgroundColor = 'var(--g-color-96)'
-      input.style.fontSize = '14px'
+      input.style.fontSize = '13px'
       input.style.position = 'absolute'
       input.style.display = 'block'
       input.style.padding = '4px'
@@ -256,11 +274,6 @@ async function handleClick (e: MouseEvent, modal: boolean) {
 }
 
 function addRow (td: HTMLTableCellElement, offset: -1 | 1) {
-  const rows = getRows(td)
-  if (rows.length < 2) {
-    return
-  }
-
   const start = parseInt(td.dataset.sourceLine || '0')
   const end = parseInt(td.dataset.sourceLineEnd || '0')
 
@@ -268,7 +281,13 @@ function addRow (td: HTMLTableCellElement, offset: -1 | 1) {
     return
   }
 
-  const refText = getLineContent(rows[0].start)
+  const rows = getRows(td)
+  const hr = rows.find(x => x.type === 'hr')
+  if (!hr) {
+    return
+  }
+
+  const refText = getLineContent(hr.start)
   const cols = escapedSplit(refText)
   const columns = cols.map((_, idx) => {
     if (idx === 0) {
@@ -300,16 +319,17 @@ function removeRow (td: HTMLTableCellElement) {
   deleteLine(start)
 }
 
-function processColumns (td: HTMLTableCellElement, process: (columns: string[], idx: number) => void) {
+function processColumns (td: HTMLTableCellElement, process: (columns: string[], row: Row) => void) {
   const rows = getRows(td)
-  if (rows.length < 2) {
+  const hr = rows.find(x => x.type === 'hr')
+  if (!hr) {
     return
   }
 
-  const firstRow = rows[0]
-  const refText = getLineContent(firstRow.start)
+  const refText = getLineContent(hr.start)
 
-  rows.forEach(({ start, end }, idx) => {
+  rows.forEach((row) => {
+    const { start, end } = row
     if (!checkLineNumber(start, end)) {
       return
     }
@@ -317,7 +337,7 @@ function processColumns (td: HTMLTableCellElement, process: (columns: string[], 
     const content = getLineContent(start)
     const columns = escapedSplit(content)
 
-    process(columns, idx)
+    process(columns, row)
 
     replaceLine(start, columnsToStr(columns, refText))
   })
@@ -325,12 +345,12 @@ function processColumns (td: HTMLTableCellElement, process: (columns: string[], 
 
 function alignCol (td: HTMLTableCellElement, type: 'left' | 'center' | 'right' | 'normal') {
   const rows = getRows(td)
-  if (rows.length < 2) {
+  const hr = rows.find(x => x.type === 'hr')
+  if (!hr) {
     return
   }
 
-  const refText = getLineContent(rows[0].start)
-  const content = getLineContent(rows[1].start)
+  const content = getLineContent(hr.start)
   const columns = escapedSplit(content)
   const cellIndex = getCellIndex(td)
 
@@ -357,17 +377,17 @@ function alignCol (td: HTMLTableCellElement, type: 'left' | 'center' | 'right' |
   }
 
   columns[cellIndex] = val
-  replaceLine(rows[1].start, columnsToStr(columns, refText))
+  replaceLine(hr.start, columnsToStr(columns, content))
 }
 
 function addCol (td: HTMLTableCellElement, offset: 0 | 1) {
   const cellIndex = getCellIndex(td)
-  processColumns(td, (columns, idx) => {
+  processColumns(td, columns => {
     if (cellIndex > columns.length - 1 || cellIndex < 0) {
       return
     }
 
-    let val = idx === 1 ? ' -- ' : ' -- '
+    let val = ' -- '
 
     if ((offset === 0 && cellIndex === 0)) {
       val = '-- '
@@ -481,7 +501,40 @@ export default {
       const target = e.target as HTMLTableCellElement
       const tagName = target.tagName
       if ((tagName === 'TD' || tagName === 'TH') && target.classList.contains(cellClassName)) {
-        const editMenu = [
+        const rows = getRows(target)
+        const hr = rows.find(x => x.type === 'hr')
+        if (!hr) {
+          return
+        }
+
+        const columns = escapedSplit(ctx.editor.getLineContent(hr.start))
+        const cellIndex = getCellIndex(target)
+        const styleText = columns[cellIndex].trim()
+
+        const editRowMenu: Components.ContextMenu.Item[] = tagName === 'TD' ? [
+          { type: 'separator' },
+          {
+            id: 'plugin.table.cell-edit.insert-row-above',
+            type: 'normal',
+            label: '在上面添加行',
+            onClick: () => addRow(target, -1),
+          },
+          {
+            id: 'plugin.table.cell-edit.insert-row-below',
+            type: 'normal',
+            label: '在下面添加行',
+            onClick: () => addRow(target, 1)
+          },
+          {
+            id: 'plugin.table.cell-edit.delete-row',
+            type: 'normal',
+            label: '删除行',
+            hidden: rows.length < 4,
+            onClick: () => removeRow(target)
+          },
+        ] : []
+
+        menus.push(
           {
             id: 'plugin.table.cell-edit.quick-edit',
             type: 'normal' as any,
@@ -498,20 +551,6 @@ export default {
               handleClick(e, true)
             }
           },
-        ]
-
-        if (tagName === 'TH') {
-          menus.push(...editMenu)
-          return
-        }
-
-        const rows = getRows(target)
-        const columns = escapedSplit(ctx.editor.getLineContent(rows[1].start))
-        const cellIndex = getCellIndex(target)
-        const styleText = columns[cellIndex].trim()
-
-        menus.push(
-          ...editMenu,
           { type: 'separator' },
           {
             id: 'plugin.table.cell-edit.align-left',
@@ -541,26 +580,7 @@ export default {
             hidden: /^[^:]*$/.test(styleText),
             onClick: () => alignCol(target, 'normal'),
           },
-          { type: 'separator' },
-          {
-            id: 'plugin.table.cell-edit.insert-row-above',
-            type: 'normal',
-            label: '在上面添加行',
-            onClick: () => addRow(target, -1),
-          },
-          {
-            id: 'plugin.table.cell-edit.insert-row-below',
-            type: 'normal',
-            label: '在下面添加行',
-            onClick: () => addRow(target, 1)
-          },
-          {
-            id: 'plugin.table.cell-edit.delete-row',
-            type: 'normal',
-            label: '删除行',
-            hidden: rows.length < 4,
-            onClick: () => removeRow(target)
-          },
+          ...editRowMenu,
           { type: 'separator' },
           {
             id: 'plugin.table.cell-edit.insert-col-left',
