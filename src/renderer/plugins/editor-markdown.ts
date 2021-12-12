@@ -103,6 +103,10 @@ function processCursorChange (source: string, position: Monaco.Position) {
   const isTab = source === 'tab'
   if (isTab || isEnter) {
     const line = position.lineNumber
+    if (line < 2) {
+      return
+    }
+
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
 
@@ -137,6 +141,10 @@ function processCursorChange (source: string, position: Monaco.Position) {
     }
   } else if (isEnter) {
     const line = position.lineNumber - 1
+    if (line < 2) {
+      return
+    }
+
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
     if (
