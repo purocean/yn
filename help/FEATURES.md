@@ -165,9 +165,19 @@ First header | Second header
 List:        | More  \
 - [ ] over   | data  \
 - several    |
------ | -----
 Test | Test
 [Test Table]
+
+First header | Second header
+:-----------:|:--------------:
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+Test | Test
+[Small Table]
+{.small}
 
 ## Katex
 

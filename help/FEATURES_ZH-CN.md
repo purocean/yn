@@ -166,9 +166,19 @@ First header | Second header
 List:        | More  \
 - [ ] over   | data  \
 - several    |
------ | -----
 Test | Test
 [测试表格]
+
+First header | Second header
+:-----------:|:--------------:
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+Test | Test
+[小尺寸表格]
+{.small}
 
 ## Katex 公式
 

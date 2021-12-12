@@ -412,6 +412,13 @@ export default {
           margin-bottom: 16px;
         }
 
+        .markdown-view .markdown-body table.small td,
+        .markdown-view .markdown-body table.small th {
+          padding: 3px 6px;
+          font-size: 14px;
+          line-height: 1.3;
+        }
+
         .markdown-view .markdown-body .table-wrapper > table {
           margin-bottom: 6px;
         }
