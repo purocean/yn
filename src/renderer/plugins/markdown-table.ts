@@ -189,8 +189,15 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
           cancel()
         }
 
-        if (e.key === 'Enter' && hasCtrlCmd(e)) {
-          ok()
+        if (e.key === 'Enter') {
+          // insert br
+          if (e.shiftKey || hasCtrlCmd(e)) {
+            const startPos = input.selectionStart
+            const endPos = input.selectionEnd
+            input.value = input.value.substring(0, startPos) + '\n' + input.value.substring(endPos)
+          } else {
+            ok()
+          }
         }
       }
     }))
