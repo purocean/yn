@@ -46,10 +46,10 @@ Click the TODO item in preview to try
 
 Type '/' in the editor to get prompts
 
-+ Mark：==marked==
-+ Sup：29^th^
-+ Sub：H~2~0
-+ Footnote：footnote[^1] grammar[^2]
++ Mark: ==marked==
++ Sup: 29^th^
++ Sub: H~2~0
++ Footnote: footnote[^1] grammar[^2]
 
 ### Element Attribute
 
@@ -501,8 +501,8 @@ If the expression needs to contain [\= or =\], please enter `[\=` or `=\]` to es
 - whether to enable the page title serial number:  [= headingNumber =]
 - use variable:  [= customVar =]
 - custom variable:  [= $export('testVar', 'Test') =][= testVar =]
-- application version： [= $ctx.version =]
-- current document name： [= $doc.basename =]
+- application version: [= $ctx.version =]
+- current document name: [= $doc.basename =]
 - current time:  [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]
 - qualifier escape:  [= '[\= =\]' =]
 - Arithmetic:  [= (1 + 2) / 2 =]
