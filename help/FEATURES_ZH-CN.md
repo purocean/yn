@@ -159,7 +159,7 @@ a -> b
 此功能使用 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 实现
 支持在表格中使用多行文本和列表。支持表格说明渲染
 
-另外您可以使用：`Ctrl/Cmd + 单击单元格` 快捷编辑表格单元格内容
+您可以双击/右键单元格快捷编辑单元格内容
 
 First header | Second header
 -------------|---------------
