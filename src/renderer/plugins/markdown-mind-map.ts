@@ -129,6 +129,19 @@ function newMinder () {
     return icon
   }
 
+  const importJson = km.importJson.bind(km)
+  km.importJson = function (json: any) {
+    if (json) {
+      // hack for avoid auto set template
+      km.setTemplate = () => 0
+      km.disableAnimation()
+      importJson(json)
+      km.enableAnimation()
+      // recover setTemplate
+      km.setTemplate = km._setTemplate
+    }
+  }
+
   return km
 }
 
@@ -300,15 +313,7 @@ const render = async (km: any, content: string) => {
   const code = (content || '').trim()
 
   try {
-    // hack for avoid auto set template
-    km.setTemplate = () => 0
-
-    km.disableAnimation()
     await km.importData('text', code)
-    km.enableAnimation()
-
-    // recover setTemplate
-    km.setTemplate = km._setTemplate
   } catch (error) {
     await km.importData('text', t('mind-map.convert-error'))
     km.execCommand('camera')
