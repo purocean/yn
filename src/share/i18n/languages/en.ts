@@ -361,7 +361,7 @@ const data = {
     'zoom-in': 'Zoom In',
     'zoom-out': 'Zoom Out',
     'fit-height': 'Fit',
-    'switch-layout': 'Switch Layout',
+    'switch-layout': 'Layout',
     'switch-loose': 'Compact/Loose',
     'convert-error': 'Conversion error\n    1. Please ensure that the outline has only one root item.\n    2. Please ensure that the outline level is correct.',
   },
