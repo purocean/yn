@@ -279,7 +279,6 @@ const render = async (km: any, content: string) => {
     km.setTemplate = km._setTemplate
   } catch (error) {
     await km.importData('text', t('mind-map.convert-error'))
-    km.useTemplate('structure')
     km.execCommand('camera')
   }
 }
