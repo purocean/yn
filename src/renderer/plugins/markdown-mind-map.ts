@@ -97,6 +97,38 @@ function newMinder () {
   km.focus = () => 0
 
   km._setTemplate = km.setTemplate
+
+  const importNode = km.importNode.bind(km)
+  km.importNode = function (node: any, json: any) {
+    if (json && json.data && json.data.text) {
+      json.data.text = (json.data.text as string).replace(/^\[(\d+)\]\s*/, (match, $1) => {
+        const num = parseInt($1)
+        if (num > 0) {
+          json.data.priority = num
+          return ''
+        }
+
+        return match
+      })
+    }
+
+    return importNode(node, json)
+  }
+
+  const priorityRender = km._modules.PriorityModule.renderers.left
+  const priorityIconCreate = priorityRender.prototype.create
+  priorityRender.prototype.create = () => {
+    const icon = priorityIconCreate()
+    const setValue = icon.setValue.bind(icon)
+    icon.setValue = function (val: number) {
+      this.mask.fill('#A3A3A3')
+      this.back.fill('#515151')
+      setValue(val)
+    }
+
+    return icon
+  }
+
   return km
 }
 

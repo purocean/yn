@@ -70,16 +70,16 @@ For example, red text:
 Just need to add `{.mindmap}` to the end of root node of the list.
 
 + Central node{.mindmap}
-    + State Visibility
-    + Environmental Appropriate
-    + User Controllable
-    + Consistency
-    + Error Proofing
-    + Accessibility
-    + Agility and Efficiency
-    + Grace and Simplicity
-    + Fault Tolerance
-    + Friendly Help
+    + [1] State Visibility
+    + [2] Environmental Appropriate
+    + [3] User Controllable
+    + [4] Consistency
+    + [5] Error Proofing
+    + [6] Accessibility
+    + [7] Agility and Efficiency
+    + [8] Grace and Simplicity
+    + [9] Fault Tolerance
+    + [10] Friendly Help
 
 Mind map is implemented using [kityminder-core](https://github.com/fex-team/kityminder-core).
 
