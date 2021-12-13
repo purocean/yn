@@ -159,6 +159,7 @@ const init = (ele: HTMLElement) => {
   div.setAttribute('minder-data-type', 'text')
   div.style.position = 'relative'
   div.style.height = '400px'
+  div.style.minHeight = '400px'
   ele.innerHTML = ''
   ele.appendChild(div)
 
@@ -194,6 +195,17 @@ const init = (ele: HTMLElement) => {
 
   const zoomOut = () => km.execCommand('zoomOut')
   const zoomIn = () => km.execCommand('zoomIn')
+  const fitHeight = () => {
+    const kmView = ele.firstElementChild as HTMLElement | null
+    const svgG = kmView?.firstElementChild?.lastElementChild
+    if (kmView && svgG) {
+      kmView.style.height = (svgG.getBoundingClientRect().height + 60) + 'px'
+      km._modules.View.events.resize.apply(km)
+      setTimeout(() => {
+        km.execCommand('camera')
+      }, 0)
+    }
+  }
 
   const exportData = async (type: 'png' | 'svg' | 'km') => {
     const download = (url: string, name: string) => {
@@ -242,6 +254,7 @@ const init = (ele: HTMLElement) => {
     const srcdoc = buildSrcdoc(JSON.stringify(km.exportJson()), actionsStr)
     openWindow(buildSrc(srcdoc, t('view-figure')), '_blank', { backgroundColor: '#fff' })
   }))
+  action.prepend(buildButton(t('mind-map.fit-height'), fitHeight, 'fitHeight'))
   action.appendChild(buildButton('PNG', () => exportData('png')))
   action.appendChild(buildButton('SVG', () => exportData('svg')))
   action.appendChild(buildButton('KM', () => exportData('km')))
@@ -298,15 +311,24 @@ const MindMap = defineComponent({
       render(km, props.content)
     }, 200, { leading: true })
 
+    function clean () {
+      km && km.destroy()
+      km = null
+    }
+
+    function onLanguageChange () {
+      clean()
+      renderMindMap()
+    }
+
     watch(() => props.content, renderMindMap)
 
     onMounted(() => setTimeout(renderMindMap, 0))
 
-    registerHook('I18N_CHANGE_LANGUAGE', renderMindMap)
+    registerHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
     onBeforeUnmount(() => {
-      km && km.destroy()
-      km = null
-      removeHook('I18N_CHANGE_LANGUAGE', renderMindMap)
+      clean()
+      removeHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
     })
 
     return () => h('div', { ...props.attrs, ref: container, class: 'source-line mind-map reduce-brightness' })

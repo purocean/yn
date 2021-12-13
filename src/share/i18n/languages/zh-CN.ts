@@ -361,6 +361,7 @@ const data: BaseLanguage = {
   'mind-map': {
     'zoom-in': '放大',
     'zoom-out': '缩小',
+    'fit-height': '适应高度',
     'switch-layout': '切换布局',
     'switch-loose': '紧凑/宽松',
     'convert-error': '转换错误\n    1. 请保证大纲只有一个根项目\n    2. 请保证大纲层级正确',
