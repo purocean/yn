@@ -59,7 +59,7 @@ function createDependencyProposals (range: any, currentWord: string): Monaco.lan
     { name: '/ + [ ] TODO List', insertText: '+ [ ] ' },
     { name: '/ - [ ] TODO List', insertText: '- [ ] ' },
     { name: '/ ```', insertText: '```$1\n```\n' },
-    { name: '/ [toc]', insertText: '[toc]{type: "${1|ul,ol|}", level: [1,2,3]}' },
+    { name: '/ [toc]', insertText: '[toc]{type: "${1|ul,ol|}", level: [2,3]}' },
     { name: '/ + MindMap', insertText: '+ ${1:Subject}{.mindmap}\n    + ${2:Topic}' },
     { name: '/ $ Inline KaTeX', insertText: '$$1$' },
     { name: '/ $$ Block KaTeX', insertText: '$$$1$$\n' },
