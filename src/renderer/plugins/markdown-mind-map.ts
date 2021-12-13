@@ -267,10 +267,8 @@ const render = async (km: any, content: string) => {
   } catch (error) {
     await km.importData('text', t('mind-map.convert-error'))
     km.useTemplate('structure')
+    km.execCommand('camera')
   }
-
-  km.execCommand('hand')
-  km.execCommand('camera')
 }
 
 const MindMap = defineComponent({
@@ -293,6 +291,8 @@ const MindMap = defineComponent({
 
       if (!km) {
         km = init(container.value)
+        km.execCommand('hand')
+        km.execCommand('camera')
       }
 
       render(km, props.content)
