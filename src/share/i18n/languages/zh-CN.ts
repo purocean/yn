@@ -356,7 +356,7 @@ const data: BaseLanguage = {
     'clear': '清空',
   },
   'drawio': {
-    'adjust-height': '调整高度',
+    'fit-height': '适应高度',
   },
   'mind-map': {
     'zoom-in': '放大',

@@ -57,7 +57,7 @@ const Drawio = defineComponent({
           style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
         },
         [
-          button(t('drawio.adjust-height'), resize),
+          button(t('drawio.fit-height'), resize),
           button(t('reload'), reload),
           button(t('open-in-new-window'), () => openWindow(buildSrc(srcdoc.value, t('view-figure')))),
         ]

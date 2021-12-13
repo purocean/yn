@@ -355,7 +355,7 @@ const data = {
     'clear': 'Clear',
   },
   'drawio': {
-    'adjust-height': 'Adjust Height',
+    'fit-height': 'Fit Height',
   },
   'mind-map': {
     'zoom-in': 'Zoom In',
