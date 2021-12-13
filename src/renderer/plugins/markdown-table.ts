@@ -509,7 +509,13 @@ export default {
 
         const columns = escapedSplit(ctx.editor.getLineContent(hr.start))
         const cellIndex = getCellIndex(target)
-        const styleText = columns[cellIndex].trim()
+        const styleText = (columns[cellIndex] || '').trim()
+
+        if (!styleText) {
+          const msg = 'Incorrect table format'
+          ctx.ui.useToast().show('warning', msg)
+          throw new Error(msg)
+        }
 
         const editRowMenu: Components.ContextMenu.Item[] = tagName === 'TD' ? [
           { type: 'separator' },
