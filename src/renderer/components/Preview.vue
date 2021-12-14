@@ -59,7 +59,6 @@ import type { RenderEnv } from '@fe/types'
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
 
-import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
 
