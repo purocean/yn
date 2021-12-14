@@ -19,6 +19,12 @@ const result = (status: 'ok' | 'error' = 'ok', message = 'success', data: any = 
   return { status, message, data }
 }
 
+const noCache = (ctx: any) => {
+  ctx.set('Cache-Control', 'no-store, no-cache, must-revalidate')
+  ctx.set('Pragma', 'no-cache')
+  ctx.set('Expires', 0)
+}
+
 const fileContent = async (ctx: any, next: any) => {
   if (ctx.path === '/api/file') {
     if (ctx.method === 'GET') {
@@ -217,6 +223,7 @@ const customCss = async (ctx: any, next: any) => {
     ctx.body = result('ok', 'success', files)
   } else if (ctx.path.startsWith('/api/custom-css')) {
     ctx.type = 'text/css'
+    noCache(ctx)
     const filename = config.get('custom-css', 'github.css')
     ctx.body = await fs.readFile(path.join(USER_THEME_DIR, filename))
   } else {
@@ -229,6 +236,7 @@ const setting = async (ctx: any, next: any) => {
     if (ctx.method === 'GET') {
       if (ctx.path.endsWith('js')) {
         ctx.type = 'application/javascript; charset=utf-8'
+        noCache(ctx)
         ctx.body = '_INIT_SETTINGS = ' + JSON.stringify(config.getAll())
       } else {
         ctx.body = result('ok', 'success', config.getAll())
