@@ -16,7 +16,8 @@
             {{ itemNode.name === '/' ? currentRepoName : itemNode.name }} <span class="count">({{itemNode.children ? itemNode.children.length : 0}})</span>
           </div>
           <div class="item-action">
-            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create-doc')"></svg-icon>
+            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFolder()" :title="$t('tree.context-menu.create-dir')"></svg-icon>
+            <svg-icon class="icon" name="plus" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create-doc')"></svg-icon>
           </div>
         </div>
       </summary>
@@ -43,7 +44,7 @@ import extensions from '@fe/others/extensions'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems } from '@fe/services/tree'
 import type { Components } from '@fe/types'
-import { createDoc, getMarked, openInOS, switchDoc } from '@fe/services/document'
+import { createDir, createDoc, getMarked, openInOS, switchDoc } from '@fe/services/document'
 import SvgIcon from './SvgIcon.vue'
 import { useI18n } from '@fe/services/i18n'
 
@@ -76,6 +77,10 @@ export default defineComponent({
 
     async function createFile () {
       await createDoc({ repo: props.item.repo }, props.item)
+    }
+
+    async function createFolder () {
+      await createDir({ repo: props.item.repo }, props.item)
     }
 
     async function select (node: Components.Tree.Node) {
@@ -146,6 +151,7 @@ export default defineComponent({
       showContextMenu,
       select,
       createFile,
+      createFolder,
     }
   },
 })
