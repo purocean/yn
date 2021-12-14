@@ -1,5 +1,5 @@
 <template>
-  <XMask :show="showPanel" @close="close">
+<XMask :show="showPanel" @close="close">
   <div class="permium-wrapper" @click.stop>
     <h2>{{$t('premium.premium')}}</h2>
     <group-tabs :tabs="tabs" v-model="tab" />
@@ -82,7 +82,7 @@
       <button v-if="tab === 'activation' && license.trim()" class="btn" @click="activate">{{$t('ok')}}</button>
     </div>
   </div>
-  </XMask>
+</XMask>
 </template>
 
 <script lang="ts">
