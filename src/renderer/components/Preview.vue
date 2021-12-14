@@ -157,10 +157,13 @@ export default defineComponent({
       }
 
       logger.debug('render')
-      // not markdown file, show code block.
-      const content = (filePath.value || '').endsWith('.md')
-        ? currentContent.value
-        : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
+
+      let content = currentContent.value
+
+      // not markdown file, displace as code.
+      if (filePath.value && !filePath.value.endsWith('.md')) {
+        content = '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
+      }
 
       const startTime = performance.now()
       renderEnv = { source: content, file: currentFile.value }
