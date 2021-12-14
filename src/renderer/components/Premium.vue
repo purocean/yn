@@ -2,11 +2,7 @@
   <XMask :show="showPanel" @close="close">
   <div class="permium-wrapper" @click.stop>
     <h2>{{$t('premium.premium')}}</h2>
-    <div class="tabs">
-      <div :class="{tab: true, selected: tab === 'intro'}" @click="switchTab('intro')">{{$t('premium.intro.intro')}}</div>
-      <div v-if="!purchased" :class="{tab: true, selected: tab === 'buy'}" @click="switchTab('buy')">{{$t('premium.buy.buy')}}</div>
-      <div v-if="!flagDemo" :class="{tab: true, selected: tab === 'activation'}" @click="switchTab('activation')">{{$t('premium.activation.license')}}</div>
-    </div>
+    <group-tabs :tabs="tabs" v-model="tab" />
     <div v-show="tab === 'intro'" class="intro">
       <div v-if="!purchased" class="desc">{{$t('premium.intro.desc')}}</div>
       <div class="plan-wrapper">
@@ -101,10 +97,11 @@ import { FLAG_DEMO } from '@fe/support/args'
 import { useModal } from '@fe/support/ui/modal'
 import XMask from './Mask.vue'
 import SvgIcon from './SvgIcon.vue'
+import GroupTabs from './GroupTabs.vue'
 
 export default defineComponent({
   name: 'premium',
-  components: { XMask, SvgIcon },
+  components: { XMask, SvgIcon, GroupTabs },
   setup () {
     const { t } = useI18n()
     const showPanel = ref(false)
@@ -176,6 +173,22 @@ export default defineComponent({
       })
     }
 
+    const tabs = computed(() => {
+      const data: { label: string, value: Tab }[] = [
+        { value: 'intro', label: t('premium.intro.intro') },
+      ]
+
+      if (!purchased.value) {
+        data.push({ value: 'buy', label: t('premium.buy.buy') })
+      }
+
+      if (!FLAG_DEMO) {
+        data.push({ value: 'buy', label: t('premium.activation.license') })
+      }
+
+      return data
+    })
+
     registerAction({ name: 'premium.show', handler: showPurchase })
 
     onBeforeUnmount(() => {
@@ -183,10 +196,10 @@ export default defineComponent({
     })
 
     return {
-      flagDemo: FLAG_DEMO,
       showEmailDialog,
       showPanel,
       tab,
+      tabs,
       switchTab,
       paypal,
       sendEmail,
@@ -337,33 +350,6 @@ export default defineComponent({
         margin-left: 220px;
         display: block;
       }
-    }
-  }
-}
-
-.tabs {
-  display: flex;
-  background: var(--g-color-80);
-  border-radius: var(--g-border-radius);
-  border: 1px solid var(--g-color-70);
-  margin-bottom: 16px;
-
-  .tab {
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 2;
-    padding: 0 1em;
-    color: var(--g-color-20);
-    border-radius: var(--g-border-radius);
-
-    &:hover {
-      background: var(--g-color-85);
-    }
-
-    &.selected {
-      color: var(--g-color-0);
-      font-weight: 500;
-      background: var(--g-color-65);
     }
   }
 }
