@@ -301,6 +301,11 @@ const data = {
     'add': 'Add %s',
     'delete-warning': 'Are you sure you want to remove this node?',
     'error-choose-repo-path': 'Please choose repository path',
+    'tabs': {
+      'repos': 'Repositories',
+      'appearance': 'Appearance',
+      'other': 'Other',
+    },
     'schema': {
       'repos': {
         'repos': 'Repositories',
