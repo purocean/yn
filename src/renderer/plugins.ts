@@ -1,3 +1,4 @@
+import customStyles from './plugins/custom-styles'
 import documentHistoryStack from '@fe/plugins/document-history-stack'
 import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
@@ -45,6 +46,7 @@ import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 
 export default [
+  customStyles,
   documentHistoryStack,
   fileTreeContextMenu,
   statusBarSetting,

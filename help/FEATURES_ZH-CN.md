@@ -22,6 +22,7 @@ define:
 1. 配置文件 `<home>/yank-note/config.json`
 1. 回收站 `<home>/yank-note/trash`
 1. 插件 `<home>/yank-note/plugins`
+1. 主题 `<home>/yank-note/themes`
 
 ## TOC 生成
 

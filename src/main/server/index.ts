@@ -6,7 +6,7 @@ import bodyParser from 'koa-body'
 import * as mime from 'mime'
 import request from 'request'
 import { promisify } from 'util'
-import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME } from '../constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR } from '../constant'
 import * as file from './file'
 import run from './run'
 import convert from './convert'
@@ -205,6 +205,25 @@ const userPlugin = async (ctx: any, next: any) => {
   }
 }
 
+const customCss = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/custom-styles')) {
+    const files: string[] = []
+    for (const x of await fs.readdir(USER_THEME_DIR, { withFileTypes: true })) {
+      if (x.isFile() && x.name.endsWith('.css')) {
+        files.push(x.name)
+      }
+    }
+
+    ctx.body = result('ok', 'success', files)
+  } else if (ctx.path.startsWith('/api/custom-css')) {
+    ctx.type = 'text/css'
+    const filename = config.get('custom-css', 'github.css')
+    ctx.body = await fs.readFile(path.join(USER_THEME_DIR, filename))
+  } else {
+    await next()
+  }
+}
+
 const setting = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/settings')) {
     if (ctx.method === 'GET') {
@@ -295,6 +314,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, customCss))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
@@ -331,7 +351,7 @@ const server = (port = 3000) => {
     }
 
     if (!(await sendFile(path.resolve(STATIC_DIR, urlPath), false))) {
-      await sendFile(path.resolve(USER_PLUGIN_DIR, urlPath), true)
+      await sendFile(path.resolve(USER_THEME_DIR, urlPath), true)
     }
   })
 

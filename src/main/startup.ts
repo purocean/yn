@@ -1,15 +1,11 @@
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import * as path from 'path'
-import { USER_DIR, TRASH_DIR, USER_PLUGIN_DIR } from './constant'
+import { USER_DIR, TRASH_DIR, USER_PLUGIN_DIR, USER_THEME_DIR, RESOURCES_DIR } from './constant'
 import './updater'
 
 export default function () {
-  if (!fs.existsSync(USER_DIR)) {
-    fs.mkdirSync(USER_DIR)
-  }
-  if (!fs.existsSync(TRASH_DIR)) {
-    fs.mkdirSync(TRASH_DIR)
-  }
+  fs.ensureDirSync(USER_DIR)
+  fs.ensureDirSync(TRASH_DIR)
   if (!fs.existsSync(USER_PLUGIN_DIR)) {
     fs.mkdirSync(USER_PLUGIN_DIR)
     fs.writeFileSync(path.join(USER_PLUGIN_DIR, 'plugin-example.js'), `
@@ -25,4 +21,14 @@ window.registerPlugin({
 });
     `.trim())
   }
+
+  fs.ensureDirSync(USER_THEME_DIR)
+
+  const styles = ['github.css']
+  styles.forEach(style => {
+    fs.writeFileSync(
+      path.join(USER_THEME_DIR, style),
+      fs.readFileSync(path.join(RESOURCES_DIR, style))
+    )
+  })
 }

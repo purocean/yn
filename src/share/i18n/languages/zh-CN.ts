@@ -313,6 +313,7 @@ const data: BaseLanguage = {
       },
       'theme': '主题',
       'language': '语言',
+      'custom-css': '自定义 CSS',
       'assets-dir': '图片存放目录',
       'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, date',
       'shell': 'Shell',
@@ -396,6 +397,12 @@ const data: BaseLanguage = {
   },
   'markdown-link': {
     'convert-to-titled-link': '转换为带标题的链接',
+  },
+  'custom-css': {
+    'change-confirm': {
+      'title': '提示',
+      'content': '更改自定义 CSS 需要重载页面，是否继续？',
+    }
   },
 }
 

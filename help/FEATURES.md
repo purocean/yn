@@ -22,6 +22,7 @@ Directory description
 1. configuration file `<home>/yank-note/config.json`
 1. recycle bin `<home>/yank-note/trash`
 1. plug-ins `<home>/yank-note/plugins`
+1. themes `<home>/yank-note/themes`
 
 ## TOC Generation
 

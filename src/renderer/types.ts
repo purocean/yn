@@ -96,6 +96,7 @@ export type BuildInSettings = {
   'repos': Repo[],
   'theme': ThemeName,
   'language': LanguageName,
+  'custom-css': string,
   'assets-dir': string,
   'shell': string,
   'plugin.image-hosting-picgo.server-url': string,

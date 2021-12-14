@@ -312,6 +312,7 @@ const data = {
       },
       'theme': 'Theme',
       'language': 'Language',
+      'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, date.',
       'shell': 'Shell',
@@ -395,6 +396,12 @@ const data = {
   },
   'markdown-link': {
     'convert-to-titled-link': 'Convert to Titled Link',
+  },
+  'custom-css': {
+    'change-confirm': {
+      'title': 'Attention',
+      'content': '更改自定义 CSS 需要重载页面，是否继续？',
+    }
   },
 }
 

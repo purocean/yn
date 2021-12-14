@@ -19,6 +19,7 @@ export type Schema = {
     title: TTitle,
     description?: TTitle,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
+    enum?: string[],
     items?: {
       type: string,
       title: TTitle,
@@ -83,6 +84,12 @@ const schema: Schema = {
       type: 'string',
       enum: ['system', 'en', 'zh-CN']
     },
+    'custom-css': {
+      defaultValue: 'github',
+      title: 'T_setting-panel.schema.custom-css',
+      type: 'string',
+      enum: ['github.css']
+    },
     'assets-dir': {
       defaultValue: './FILES/{docSlug}',
       title: 'T_setting-panel.schema.assets-dir',
@@ -96,7 +103,7 @@ const schema: Schema = {
       type: 'string',
     },
   } as Partial<Schema['properties']> as any,
-  required: ['theme', 'language'],
+  required: ['theme', 'language', 'custom-css'],
 }
 
 const settings = {

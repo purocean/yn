@@ -137,6 +137,15 @@ export async function fetchTree (repo: string): Promise<Components.Tree.Node[]> 
 }
 
 /**
+ * Fetch custom styles.
+ * @returns
+ */
+export async function fetchCustomStyles (): Promise<string[]> {
+  const result = await fetchHttp('/api/custom-styles')
+  return result.data
+}
+
+/**
  * Fetch settings.
  * @returns
  */
