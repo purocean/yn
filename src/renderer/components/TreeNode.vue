@@ -217,7 +217,6 @@ summary > .item {
   display: none;
   align-content: center;
   justify-content: space-around;
-  padding-right: 8px;
   flex: none;
 }
 
