@@ -564,6 +564,12 @@ name               | use         | default value |  description                 
 --init-repo       | Initial repository name    | none   | string                    | --init-repo='test'
 --init-file       | Load file path  | none   | file path, relative to repository path     | --init-file='/1.md'
 
+## Custom Styles
+
+1. Right click the tray icon and click "Open Main Dir", go to the `themes` folder.
+2. Copy `github.css` to a new CSS file ans modify it.
+3. Open Setting => Appearance => Custom CSS switch CSS file.
+
 ## Plug-In Development
 
 Please refer to [Plug-In Development Guide](PLUGIN.md)
