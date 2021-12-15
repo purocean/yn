@@ -2,7 +2,7 @@
   <div class="editor-wrapper" @click.stop>
     <h3>{{$t('setting-panel.setting')}}</h3>
     <group-tabs :tabs="tabs" v-model="tab" />
-    <div ref="refEditor" class="editor" @click="onClick" />
+    <div v-show="isReady" ref="refEditor" class="editor" @click="onClick" />
     <div class="action">
       <button class="btn" @click="cancel">{{$t('cancel')}}</button>
       <button class="btn primary" @click="ok">{{$t('ok')}}</button>
@@ -41,6 +41,7 @@ export default defineComponent({
     const toast = useToast()
     const refEditor = ref<HTMLElement>()
     const tab = ref<Tab['label']>('repos')
+    const isReady = ref(false)
     const tabs: Tab[] = [
       { label: t('setting-panel.tabs.repos') as any, value: 'repos' },
       { label: t('setting-panel.tabs.appearance') as any, value: 'appearance' },
@@ -102,6 +103,7 @@ export default defineComponent({
 
       editor.setValue(value)
       updateTab()
+      isReady.value = true
     })
 
     setLanguage()
@@ -181,7 +183,7 @@ export default defineComponent({
 
     watch(tab, updateTab)
 
-    return { tab, tabs, show, refEditor, cancel, ok, onClick }
+    return { isReady, tab, tabs, show, refEditor, cancel, ok, onClick }
   },
 })
 </script>
