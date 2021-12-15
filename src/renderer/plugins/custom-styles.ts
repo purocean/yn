@@ -22,5 +22,16 @@ export default {
         }
       }
     })
+
+    ctx.registerHook('STARTUP', () => {
+      const head = document.getElementsByTagName('head')[0]
+      const cssLink = document.createElement('link')
+      cssLink.href = '/api/custom-css'
+      cssLink.id = 'custom-css'
+      cssLink.type = 'text/css'
+      cssLink.rel = 'stylesheet'
+
+      head.appendChild(cssLink)
+    })
   }
 } as Plugin
