@@ -60,7 +60,7 @@ export default {
       }
     })
 
-    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
+    function clickScroll (e: MouseEvent) {
       const target = e.target as HTMLElement
 
       if (
@@ -75,6 +75,19 @@ export default {
       }
 
       return false
+    }
+
+    let clickTimer: number | null = null
+    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
+      if (clickTimer) {
+        clearTimeout(clickTimer)
+        clickTimer = null
+      } else {
+        clickTimer = setTimeout(() => {
+          clickScroll(e)
+          clickTimer = null
+        }, 200) as any
+      }
     })
   }
 } as Plugin
