@@ -6,7 +6,7 @@ import bodyParser from 'koa-body'
 import * as mime from 'mime'
 import request from 'request'
 import { promisify } from 'util'
-import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR } from '../constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES } from '../constant'
 import * as file from './file'
 import run from './run'
 import convert from './convert'
@@ -212,10 +212,8 @@ const userPlugin = async (ctx: any, next: any) => {
 }
 
 const customCss = async (ctx: any, next: any) => {
-  const buildInStyles = ['github.css']
-
   if (ctx.path.startsWith('/api/custom-styles')) {
-    const files: string[] = [...buildInStyles]
+    const files: string[] = [...BUILD_IN_STYLES]
     for (const x of await fs.readdir(USER_THEME_DIR, { withFileTypes: true })) {
       if (x.isFile() && x.name.endsWith('.css')) {
         files.push(x.name)
@@ -225,7 +223,7 @@ const customCss = async (ctx: any, next: any) => {
     ctx.body = result('ok', 'success', Array.from(new Set(files)))
   } else if (ctx.path.startsWith('/api/custom-css')) {
     const configKey = 'custom-css'
-    const defaultCss = buildInStyles[0]
+    const defaultCss = BUILD_IN_STYLES[0]
 
     ctx.type = 'text/css'
     noCache(ctx)
@@ -236,12 +234,10 @@ const customCss = async (ctx: any, next: any) => {
     } catch (error) {
       console.error(error)
 
-      buildInStyles.forEach(style => {
-        fs.writeFileSync(
-          path.join(USER_THEME_DIR, style),
-          fs.readFileSync(path.join(RESOURCES_DIR, style))
-        )
-      })
+      await fs.writeFile(
+        path.join(USER_THEME_DIR, defaultCss),
+        await fs.readFile(path.join(RESOURCES_DIR, defaultCss))
+      )
 
       config.set(configKey, defaultCss)
       ctx.body = await fs.readFile(path.join(USER_THEME_DIR, defaultCss))
