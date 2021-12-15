@@ -3,10 +3,12 @@ import type { Plugin } from '@fe/context'
 export default {
   name: 'custom-styles',
   register: (ctx) => {
-    ctx.registerHook('STARTUP', async () => {
+    ctx.registerHook('SETTING_PANEL_BEFORE_SHOW', async () => {
       const customStyles = await ctx.api.fetchCustomStyles()
-      ctx.setting.tapSchema((schema) => {
-        schema.properties['custom-css'].enum = customStyles
+      ctx.setting.changeSchema((schema) => {
+        if (customStyles) {
+          schema.properties['custom-css'].enum = customStyles
+        }
       })
     })
 

@@ -175,6 +175,7 @@ export type BuildInHookTypes = {
   DOC_CHANGED: { doc: Doc },
   DOC_BEFORE_EXPORT: { type: ExportTypes },
   I18N_CHANGE_LANGUAGE: { lang: LanguageName },
+  SETTING_PANEL_BEFORE_SHOW: {},
   SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },

@@ -19,7 +19,7 @@ import { useToast } from '@fe/support/ui/toast'
 import { getThemeName, setTheme } from '@fe/services/theme'
 import { useI18n } from '@fe/services/i18n'
 import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
-import { registerHook, removeHook } from '@fe/core/hook'
+import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
 import GroupTabs from '@fe/components/GroupTabs.vue'
@@ -50,7 +50,6 @@ export default defineComponent({
     const show = computed(() => store.state.showSetting)
 
     let editor: any = null
-    const schema: any = getSchema()
 
     function setLanguage () {
       JSONEditor.defaults.languages.en.button_move_down_title = '⬇'
@@ -61,6 +60,10 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      await triggerHook('SETTING_PANEL_BEFORE_SHOW', {}, { breakable: true })
+
+      const schema: any = getSchema()
+
       editor = new JSONEditor(refEditor.value, {
         theme: 'html',
         disable_collapse: true,

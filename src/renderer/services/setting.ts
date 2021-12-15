@@ -131,7 +131,7 @@ export function getSchema () {
  * Change Schema.
  * @param fun
  */
-export function tapSchema (fun: (schema: Schema) => void) {
+export function changeSchema (fun: (schema: Schema) => void) {
   fun(schema)
 }
 

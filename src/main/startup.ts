@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import { USER_DIR, TRASH_DIR, USER_PLUGIN_DIR, USER_THEME_DIR, RESOURCES_DIR } from './constant'
+import { USER_DIR, TRASH_DIR, USER_PLUGIN_DIR, USER_THEME_DIR } from './constant'
 import './updater'
 
 export default function () {
@@ -23,12 +23,4 @@ window.registerPlugin({
   }
 
   fs.ensureDirSync(USER_THEME_DIR)
-
-  const styles = ['github.css']
-  styles.forEach(style => {
-    fs.writeFileSync(
-      path.join(USER_THEME_DIR, style),
-      fs.readFileSync(path.join(RESOURCES_DIR, style))
-    )
-  })
 }
