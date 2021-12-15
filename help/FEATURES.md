@@ -41,8 +41,6 @@ Click the TODO item in preview to try
 2. The encryption and decryption processes are both completed at the frontend.
 3. Be sure to keep the password of the encrypted document properly. Once the password is lost, it can only be cracked violently.
 
-## Footnote
-
 ## Markdown Enhance
 
 Type '/' in the editor to get prompts
@@ -50,7 +48,7 @@ Type '/' in the editor to get prompts
 + Mark: ==marked==
 + Sup: 29^th^
 + Sub: H~2~0
-+ Footnote: footnote[^1] grammar[^2]
++ Footnote: footnote[^1] syntax[^2]
 
 ### Element Attribute
 
