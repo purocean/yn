@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="./assets/favicon.ico">
     <link rel="stylesheet" href="./styles/index.scss">
-    <link rel="stylesheet" href="/api/custom-css">
     <title>Yank Note</title>
     <script>
       // 强制 monaco-editor 使用 浏览器模式
@@ -23,6 +22,17 @@
     <script src="/api/settings/js"></script>
   </head>
   <body>
+    <script>
+      const head = document.getElementsByTagName('head')[0]
+      const cssLink = document.createElement('link')
+      cssLink.href = '/api/custom-css'
+      cssLink.id='custom-css'
+      cssLink.type='text/css'
+      cssLink.rel='stylesheet'
+
+      head.appendChild(cssLink)
+    </script>
+
     <div id="app"></div>
     <script type="module" src="./index.ts"></script>
   </body>
