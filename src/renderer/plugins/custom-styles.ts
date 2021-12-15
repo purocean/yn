@@ -3,6 +3,21 @@ import type { Plugin } from '@fe/context'
 export default {
   name: 'custom-styles',
   register: (ctx) => {
+    ctx.registerHook('STARTUP', () => {
+      const head = document.getElementsByTagName('head')[0]
+      const cssLink = document.createElement('link')
+      cssLink.id = 'custom-css'
+      cssLink.rel = 'stylesheet'
+      cssLink.type = 'text/css'
+      cssLink.href = ctx.args.FLAG_DEMO ? '/github.css' : '/api/custom-css'
+
+      head.appendChild(cssLink)
+    })
+
+    if (ctx.args.FLAG_DEMO) {
+      return
+    }
+
     ctx.registerHook('SETTING_PANEL_BEFORE_SHOW', async () => {
       const customStyles = await ctx.api.fetchCustomStyles()
       ctx.setting.changeSchema((schema) => {
@@ -21,17 +36,6 @@ export default {
           window.location.reload()
         }
       }
-    })
-
-    ctx.registerHook('STARTUP', () => {
-      const head = document.getElementsByTagName('head')[0]
-      const cssLink = document.createElement('link')
-      cssLink.href = '/api/custom-css'
-      cssLink.id = 'custom-css'
-      cssLink.type = 'text/css'
-      cssLink.rel = 'stylesheet'
-
-      head.appendChild(cssLink)
     })
   }
 } as Plugin
