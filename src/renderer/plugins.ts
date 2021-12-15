@@ -1,4 +1,5 @@
 import customStyles from './plugins/custom-styles'
+import electronZoom from './plugins/electron-zoom'
 import documentHistoryStack from '@fe/plugins/document-history-stack'
 import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
@@ -47,6 +48,7 @@ import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 
 export default [
   customStyles,
+  electronZoom,
   documentHistoryStack,
   fileTreeContextMenu,
   statusBarSetting,

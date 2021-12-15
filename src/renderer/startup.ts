@@ -1,11 +1,9 @@
-import { isElectron, nodeRequire } from '@fe/support/env'
 import { init } from '@fe/core/plugin'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, Repo } from '@fe/types'
-import { hasCtrlCmd } from '@fe/core/command'
 import { showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
 import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
@@ -51,40 +49,6 @@ function getLastOpenFile (repoName?: string): Doc | null {
 
 export default function startup () {
   triggerHook('STARTUP')
-
-  // enable page zoom in electron.
-  if (isElectron) {
-    const webContents = nodeRequire('electron').remote.getCurrentWebContents()
-
-    const changeZoomFactor = (zoomIn: boolean) => {
-      const currentZoomFactor = webContents.getZoomFactor()
-      const factor = currentZoomFactor + (zoomIn ? 0.1 : -0.1)
-
-      if (factor > 0.2 && factor < 3) {
-        webContents.setZoomFactor(factor)
-      }
-    }
-
-    window.addEventListener('keydown', e => {
-      if (hasCtrlCmd(e)) {
-        if (e.key === '0') {
-          webContents.setZoomFactor(1)
-        } else if (e.key === '=') {
-          changeZoomFactor(true)
-        } else if (e.key === '-') {
-          changeZoomFactor(false)
-        }
-      }
-    })
-
-    window.addEventListener('mousewheel', event => {
-      const e = event as WheelEvent
-
-      if (hasCtrlCmd(e)) {
-        changeZoomFactor(e.deltaY < 0)
-      }
-    })
-  }
 }
 
 const doc = getLastOpenFile()
