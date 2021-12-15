@@ -262,7 +262,8 @@ async function handleClick (e: MouseEvent, modal: boolean) {
       input.style.fontSize = '13px'
       input.style.position = 'absolute'
       input.style.display = 'block'
-      input.style.padding = '4px'
+      input.style.padding = '3px'
+      input.style.lineHeight = '1.2'
       ;(input as any).autofocus = true
       input.placeholder = t('table-cell-edit.esc-to-cancel')
       setTimeout(() => {
