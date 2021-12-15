@@ -198,6 +198,9 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
           } else {
             ok()
           }
+
+          e.preventDefault()
+          e.stopPropagation()
         }
       }
     }))
