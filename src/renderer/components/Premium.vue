@@ -183,7 +183,7 @@ export default defineComponent({
       }
 
       if (!FLAG_DEMO) {
-        data.push({ value: 'buy', label: t('premium.activation.license') })
+        data.push({ value: 'activation', label: t('premium.activation.license') })
       }
 
       return data
