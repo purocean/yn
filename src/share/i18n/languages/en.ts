@@ -405,7 +405,7 @@ const data = {
   'custom-css': {
     'change-confirm': {
       'title': 'Attention',
-      'content': '更改自定义 CSS 需要重载页面，是否继续？',
+      'content': 'Changing the custom CSS requires the page to be reloaded. Do you want to continue?',
     }
   },
 }
