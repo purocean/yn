@@ -83,14 +83,19 @@ function checkLineNumber (start: number, end: number) {
 }
 
 function columnsToStr (columns: string[], refText: string) {
+  if (columns.length > 0) {
+    columns[0] = columns[0].replace(/^\s*/g, '')
+    columns[columns.length - 1] = columns[columns.length - 1].replace(/\s*$/g, '')
+  }
+
   let content = columns.map(value => {
     return value.replace(/\|/g, '\\|').replace(/\n/g, ' ')
   }).join('|')
 
   refText = refText.trim()
 
-  if (refText.startsWith('|')) content = '| ' + content.replace(/^ /, '')
-  if (refText.endsWith('|')) content = content.replace(/ $/, '') + ' |'
+  if (refText.startsWith('|')) content = '| ' + content
+  if (refText.endsWith('|')) content = content + ' |'
 
   return content
 }
@@ -300,17 +305,7 @@ function addRow (td: HTMLTableCellElement, offset: -1 | 1) {
 
   const refText = getLineContent(hr.start)
   const cols = escapedSplit(refText)
-  const columns = cols.map((_, idx) => {
-    if (idx === 0) {
-      return '-- '
-    }
-
-    if (idx === cols.length - 1) {
-      return ' --'
-    }
-
-    return ' -- '
-  })
+  const columns = cols.map(() => ' -- ')
 
   const str = columnsToStr(columns, refText)
   const content = getLineContent(start)
@@ -379,15 +374,7 @@ function alignCol (td: HTMLTableCellElement, type: 'left' | 'center' | 'right' |
       break
   }
 
-  if ((cellIndex === 0)) {
-    val = val + ' '
-  } else if (cellIndex === columns.length - 1) {
-    val = ' ' + val
-  } else {
-    val = ` ${val} `
-  }
-
-  columns[cellIndex] = val
+  columns[cellIndex] = ` ${val} `
   replaceLine(hr.start, columnsToStr(columns, content))
 }
 
@@ -398,27 +385,15 @@ function addCol (td: HTMLTableCellElement, offset: 0 | 1) {
       return
     }
 
-    let val = ' -- '
-
-    if ((offset === 0 && cellIndex === 0)) {
-      val = '-- '
+    if (!columns[cellIndex].startsWith(' ')) {
+      columns[cellIndex] = ' ' + columns[cellIndex]
     }
 
-    if (offset === 1 && cellIndex === columns.length - 1) {
-      val = ' --'
+    if (!columns[cellIndex].endsWith(' ')) {
+      columns[cellIndex] += ' '
     }
 
-    if (cellIndex === columns.length - 1) {
-      if (!columns[cellIndex].endsWith(' ')) {
-        columns[cellIndex] += ' '
-      }
-    } else if (cellIndex === 0) {
-      if (!columns[cellIndex].startsWith(' ')) {
-        columns[cellIndex] = ' ' + columns[cellIndex]
-      }
-    }
-
-    columns.splice(cellIndex + offset, 0, val)
+    columns.splice(cellIndex + offset, 0, ' -- ')
   })
 }
 
@@ -426,10 +401,6 @@ function deleteCol (td: HTMLTableCellElement) {
   const cellIndex = getCellIndex(td)
   processColumns(td, columns => {
     columns.splice(cellIndex, 1)
-    if (columns.length > 0) {
-      columns[0] = columns[0].replace(/^\s*/g, '')
-      columns[columns.length - 1] = columns[columns.length - 1].replace(/\s*$/g, '')
-    }
   })
 }
 
