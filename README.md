@@ -88,8 +88,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.16.0](https://github.com/purocean/yn/releases/tag/v3.16.0) 2021-12-16
-### [v3.16.0](https://github.com/purocean/yn/releases/tag/v3.16.0) 2021-12-16
+### [v3.16.1](https://github.com/purocean/yn/releases/tag/v3.16.1) 2021-12-16
 1. feat(table): enhanced table editing, now you can operate table rows and columns by context menu
 2. feat(table): support small size table
 3. feat(theme): support custom CSS style

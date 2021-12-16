@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.16.0](https://github.com/purocean/yn/releases/tag/v3.16.0) 2021-12-16
+### [v3.16.1](https://github.com/purocean/yn/releases/tag/v3.16.1) 2021-12-16
 1. feat(表格): 增强表格编辑，现在可以通过右键菜单操作表格行列
 2. feat(表格): 支持小尺寸表格样式
 3. feat(主题): 支持自定义 CSS 样式
