@@ -6,7 +6,7 @@ import { sleep } from '@fe/utils'
 import { isElectron } from '@fe/support/env'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
-import { openExternal, openPath } from '@fe/services/base'
+import { getRepo, openExternal, openPath } from '@fe/services/base'
 
 const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
@@ -17,11 +17,6 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { repo: fileRepo, path: filePath } = currentFile
 
   // open attachment in os
-  if (link.classList.contains('open')) {
-    fetch(link.href.replace('api/attachment', 'api/open'))
-    return true
-  }
-
   const href = link.getAttribute('href') || ''
 
   if (/^(http:|https:|ftp:)\/\//i.test(href)) { // external link
@@ -31,6 +26,10 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
     }
   } else if (/^file:\/\//i.test(href)) {
     openPath(decodeURI(href.replace(/^file:\/\//i, '')))
+    return true
+  } else if (link.classList.contains('open')) {
+    const path = link.getAttribute('origin-href') || decodeURI(href)
+    openPath(join(getRepo(fileRepo)?.path || '/', path))
     return true
   } else { // relative link
     // better scrollIntoView
