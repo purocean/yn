@@ -1,7 +1,6 @@
 import type { Plugin } from '@fe/context'
 import { useModal } from '@fe/support/ui/modal'
 import { hasCtrlCmd } from '@fe/core/command'
-import { getActionHandler } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import { disableSyncScrollAwhile } from '@fe/services/view'
 import * as editor from '@fe/services/editor'
@@ -181,10 +180,9 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
       const ok = () => {
         if (input.value !== cellText) {
           resolve(input.value)
-          getActionHandler('view.refresh')()
         }
 
-        cancel()
+        resetInput(input)
       }
 
       input.onblur = ok
