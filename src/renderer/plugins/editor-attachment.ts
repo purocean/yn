@@ -24,7 +24,7 @@ async function uploadFile (file: any, asImage: boolean) {
   if (asImage) {
     insert(`![Img](${encodeMarkdownLink(assetPath)})\n`)
   } else {
-    insert(`[${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){class=open target=_blank}\n`)
+    insert(`[${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){.open}\n`)
   }
 
   refreshTree()
