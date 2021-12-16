@@ -88,22 +88,32 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.15.5](https://github.com/purocean/yn/releases/tag/v3.15.5) 2021-12-10
-1. feat(preview): add more context menus to the preview interface
-2. feat(preview): add language information display to the code block
-3. perf(preview): optimize the rendering large documents performance
-4. feat(editor): add link local file function
-5. upd(editor): optimize the editing experience, add more completion
-6. feat(macro): add macro definition function
-7. feat(macro): add `$noop` ​​method
-8. feat(plug-in): add `ctx.editor.deleteLine` method
-9. feat(plug-in): add `ctx.ui.useToast().hide` method
-10. feat(plugin): add `ctx.base.openExternal` method
-11. feat(plug-in): add `ctx.base.openPath` method
-12. fix: fix page may be rendered abnormally
-13. fix: fix cannot create folder issue on Windows
-14. fix: fix rendering SVG
-15. upd: other interactive experience optimization
+### [v3.16.0](https://github.com/purocean/yn/releases/tag/v3.16.0) 2021-12-16
+### [v3.16.0](https://github.com/purocean/yn/releases/tag/v3.16.0) 2021-12-16
+1. feat(table): enhanced table editing, now you can operate table rows and columns by context menu
+2. feat(table): support small size table
+3. feat(theme): support custom CSS style
+4. feat(document): supports linking local files through the `file://` protocol
+5. feta(sidebar): add create folder button
+6. feta(editor): add emoji completion
+7. feta(mind map): add priority definition
+8. feta(mind map): add fit button
+9. fix: fix bugs
+10. upd: improve user experience
+11. feat(plug-in): add `ctx.base.showItemInFolder` method
+12. feat(plugin): add `ctx.base.getRepo` method
+13. feat(plugin): add `ctx.base.getMarkedFiles`
+14. feat(plugin): add `ctx.base.isMarked` method
+15. feat(plug-in): add `ctx.view.getEnableSyncScroll`
+16. feat(plug-in): add `ctx.view.disableSyncScrollAwhile` method
+17. feat(plug-in): add `SETTING_CHANGED` hook
+18. feat(plugin): add `SETTING_PANEL_BEFORE_SHOW` hook
+19. upd(plugin): remove `ctx.tree.refreshRepo` method
+20. upd(plugin): remove `ctx.api.markFile` method
+21. upd(plugin): remove `ctx.api.unmarkFile` method
+22. upd(plugin): remove `ctx.api.fetchMarkedFiles`
+23. upd(plugin): remove `ctx.api.fetchRepositories` method
+24. upd(plugin): remove `ctx.api.openInOS` method
 
 [More release notes](https://github.com/purocean/yn/releases)
 

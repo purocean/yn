@@ -88,22 +88,31 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.15.5](https://github.com/purocean/yn/releases/tag/v3.15.5) 2021-12-10
-1. feat(预览): 预览界面增加更多上下文菜单
-2. feat(预览): 代码块增加语言信息展示
-3. perf(预览): 优化大文档渲染性能
-4. feat(编辑器): 增加链接本地文件功能
-5. upd(编辑器): 优化编辑体验，增加更多自动补全
-6. feat(宏): 增加宏定义功能
-7. feat(宏): 增加 `$noop` 方法
-8. feat(插件): 增加 `ctx.editor.deleteLine` 方法
-9. feat(插件): 增加 `ctx.ui.useToast().hide` 方法
-10. feat(插件): 增加 `ctx.base.openExternal` 方法
-11. feat(插件): 增加`ctx.base.openPath` 方法
-12. fix: 修复页面可能渲染异常问题
-13. fix: 修复 Windows 上不能创建文件夹问题
-14. fix: 修复渲染 SVG 问题
-15. upd: 其他交互体验优化
+### [v3.16.0](https://github.com/purocean/yn/releases/tag/v3.16.0) 2021-12-16
+1. feat(表格): 增强表格编辑，现在可以通过右键菜单操作表格行列
+2. feat(表格): 支持小尺寸表格样式
+3. feat(主题): 支持自定义 CSS 样式
+4. feat(文档): 支持通过 `file://` 协议链接本地文件
+5. feta(侧栏): 增加创建文件夹按钮
+6. feta(编辑器): 增加 emoji 补全
+7. feta(脑图): 增加优先级定义
+8. feta(脑图): 增加适应高度按钮
+9. fix: 修复一些 Bug
+10. upd: 进一步整体使用体验
+11. feat(插件): 增加`ctx.base.showItemInFolder` 方法
+12. feat(插件): 增加`ctx.base.getRepo` 方法
+13. feat(插件): 增加`ctx.base.getMarkedFiles` 方法
+14. feat(插件): 增加`ctx.base.isMarked` 方法
+15. feat(插件): 增加`ctx.view.getEnableSyncScroll` 方法
+16. feat(插件): 增加`ctx.view.disableSyncScrollAwhile` 方法
+17. feat(插件): 增加`SETTING_CHANGED` 钩子
+18. feat(插件): 增加`SETTING_PANEL_BEFORE_SHOW` 钩子
+19. upd(插件): 移除`ctx.tree.refreshRepo` 方法
+20. upd(插件): 移除`ctx.api.markFile` 方法
+21. upd(插件): 移除`ctx.api.unmarkFile` 方法
+22. upd(插件): 移除`ctx.api.fetchMarkedFiles` 方法
+23. upd(插件): 移除`ctx.api.fetchRepositories` 方法
+24. upd(插件): 移除`ctx.api.openInOS` 方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
