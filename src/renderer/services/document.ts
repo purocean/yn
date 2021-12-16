@@ -458,7 +458,7 @@ export function getMarkedFiles () {
   return getSetting('mark', [])
 }
 
-export function getMarked (doc: PathItem) {
+export function isMarked (doc: PathItem) {
   return getMarkedFiles().findIndex(x => doc.repo === x.repo && doc.path === x.path) > -1
 }
 

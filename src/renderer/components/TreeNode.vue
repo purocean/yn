@@ -44,7 +44,7 @@ import extensions from '@fe/others/extensions'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems } from '@fe/services/tree'
 import type { Components } from '@fe/types'
-import { createDir, createDoc, getMarked, openInOS, switchDoc } from '@fe/services/document'
+import { createDir, createDoc, isMarked, openInOS, switchDoc } from '@fe/services/document'
 import SvgIcon from './SvgIcon.vue'
 import { useI18n } from '@fe/services/i18n'
 
@@ -67,7 +67,7 @@ export default defineComponent({
     const refFile = ref<any>(null)
     const localMarked = ref<boolean | null>(null)
 
-    const itemNode = computed(() => ({ ...props.item, marked: props.item.type === 'file' && getMarked(props.item) }))
+    const itemNode = computed(() => ({ ...props.item, marked: props.item.type === 'file' && isMarked(props.item) }))
 
     watch(() => props.item, () => {
       localMarked.value = null
