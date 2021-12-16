@@ -22,6 +22,7 @@ Directory description
 1. configuration file `<home>/yank-note/config.json`
 1. recycle bin `<home>/yank-note/trash`
 1. plug-ins `<home>/yank-note/plugins`
+1. themes `<home>/yank-note/themes`
 
 ## TOC Generation
 
@@ -40,16 +41,14 @@ Click the TODO item in preview to try
 2. The encryption and decryption processes are both completed at the frontend.
 3. Be sure to keep the password of the encrypted document properly. Once the password is lost, it can only be cracked violently.
 
-## Footnote
-
 ## Markdown Enhance
 
 Type '/' in the editor to get prompts
 
-+ Mark：==marked==
-+ Sup：29^th^
-+ Sub：H~2~0
-+ Footnote：footnote[^1] grammar[^2]
++ Mark: ==marked==
++ Sup: 29^th^
++ Sub: H~2~0
++ Footnote: footnote[^1] syntax[^2]
 
 ### Element Attribute
 
@@ -70,16 +69,16 @@ For example, red text:
 Just need to add `{.mindmap}` to the end of root node of the list.
 
 + Central node{.mindmap}
-    + State Visibility
-    + Environmental Appropriate
-    + User Controllable
-    + Consistency
-    + Error Proofing
-    + Accessibility
-    + Agility and Efficiency
-    + Grace and Simplicity
-    + Fault Tolerance
-    + Friendly Help
+    + [1] State Visibility
+    + [2] Environmental Appropriate
+    + [3] User Controllable
+    + [4] Consistency
+    + [5] Error Proofing
+    + [6] Accessibility
+    + [7] Agility and Efficiency
+    + [8] Grace and Simplicity
+    + [9] Fault Tolerance
+    + [10] Friendly Help
 
 Mind map is implemented using [kityminder-core](https://github.com/fex-team/kityminder-core).
 
@@ -158,16 +157,26 @@ a -> b
 This feature is implemented using [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table).
 Support the use of multiple lines of text and lists in tables. Support table description rendering.
 
-In addition, you can use: `Ctrl/Cmd + click cell` to quickly edit table cell content.
+You can double click / right click table cell to quickly edit table cell content.
 
 First header | Second header
 -------------|---------------
 List:        | More  \
 - [ ] over   | data  \
 - several    |
------ | -----
 Test | Test
 [Test Table]
+
+First header | Second header
+:-----------:|:--------------:
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+Test | Test
+[Small Table]
+{.small}
 
 ## Katex
 
@@ -230,11 +239,11 @@ REM --run--
 1. Support to select a piece of code in the editor and press `Shift + Alt/Option + R` to run the command directly in the terminal. No need to copy and paste.
 1. Switch the working directory of the terminal to the current directory: `right-click directory`
 
-## Widgets
+## Applets
 
-Support to embed HTML widgets in documents.
+Support to embed HTML applets in documents.
 
-The first line of the HTML code block needs to contain the string `--applet--`, and the remaining strings are used as the title of the widget.
+The first line of the HTML code block needs to contain the string `--applet--`, and the remaining strings are used as the title of the applet.
 
 The example is as follows:
 
@@ -491,8 +500,8 @@ If the expression needs to contain [\= or =\], please enter `[\=` or `=\]` to es
 - whether to enable the page title serial number:  [= headingNumber =]
 - use variable:  [= customVar =]
 - custom variable:  [= $export('testVar', 'Test') =][= testVar =]
-- application version： [= $ctx.version =]
-- current document name： [= $doc.basename =]
+- application version: [= $ctx.version =]
+- current document name: [= $doc.basename =]
 - current time:  [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]
 - qualifier escape:  [= '[\= =\]' =]
 - Arithmetic:  [= (1 + 2) / 2 =]
@@ -552,6 +561,12 @@ name               | use         | default value |  description                 
 --data-dir        | Data directory      | none     |      directory path string       | --data-dir='./.data'
 --init-repo       | Initial repository name    | none   | string                    | --init-repo='test'
 --init-file       | Load file path  | none   | file path, relative to repository path     | --init-file='/1.md'
+
+## Custom Styles
+
+1. Right click the tray icon and click "Open Main Dir", go to the `themes` folder.
+2. Copy `github.css` to a new CSS file ans modify it.
+3. Open Setting => Appearance => Custom CSS switch CSS file.
 
 ## Plug-In Development
 

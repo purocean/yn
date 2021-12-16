@@ -97,6 +97,51 @@ function newMinder () {
   km.focus = () => 0
 
   km._setTemplate = km.setTemplate
+
+  const importNode = km.importNode.bind(km)
+  km.importNode = function (node: any, json: any) {
+    if (json && json.data && json.data.text) {
+      json.data.text = (json.data.text as string).replace(/^\[(\d+)\]\s*/, (match, $1) => {
+        const num = parseInt($1)
+        if (num > 0) {
+          json.data.priority = num
+          return ''
+        }
+
+        return match
+      })
+    }
+
+    return importNode(node, json)
+  }
+
+  const priorityRender = km._modules.PriorityModule.renderers.left
+  const priorityIconCreate = priorityRender.prototype.create
+  priorityRender.prototype.create = () => {
+    const icon = priorityIconCreate()
+    const setValue = icon.setValue.bind(icon)
+    icon.setValue = function (val: number) {
+      this.mask.fill('#A3A3A3')
+      this.back.fill('#515151')
+      setValue(val)
+    }
+
+    return icon
+  }
+
+  const importJson = km.importJson.bind(km)
+  km.importJson = function (json: any) {
+    if (json) {
+      // hack for avoid auto set template
+      km.setTemplate = () => 0
+      km.disableAnimation()
+      importJson(json)
+      km.enableAnimation()
+      // recover setTemplate
+      km.setTemplate = km._setTemplate
+    }
+  }
+
   return km
 }
 
@@ -159,6 +204,7 @@ const init = (ele: HTMLElement) => {
   div.setAttribute('minder-data-type', 'text')
   div.style.position = 'relative'
   div.style.height = '400px'
+  div.style.minHeight = '400px'
   ele.innerHTML = ''
   ele.appendChild(div)
 
@@ -194,6 +240,17 @@ const init = (ele: HTMLElement) => {
 
   const zoomOut = () => km.execCommand('zoomOut')
   const zoomIn = () => km.execCommand('zoomIn')
+  const fitHeight = () => {
+    const kmView = ele.firstElementChild as HTMLElement | null
+    const svgG = kmView?.firstElementChild?.lastElementChild
+    if (kmView && svgG) {
+      kmView.style.height = (svgG.getBoundingClientRect().height + 60) + 'px'
+      km._modules.View.events.resize.apply(km)
+      setTimeout(() => {
+        km.execCommand('camera')
+      }, 0)
+    }
+  }
 
   const exportData = async (type: 'png' | 'svg' | 'km') => {
     const download = (url: string, name: string) => {
@@ -232,7 +289,7 @@ const init = (ele: HTMLElement) => {
 
   const action = document.createElement('div')
   action.className = 'no-print'
-  action.style.cssText = 'position: absolute; right: 10px; top: 3px; z-index: 1; text-align: right'
+  action.style.cssText = 'position: absolute; right: 10px; top: 3px; z-index: 1; text-align: right; background: transparent;'
   action.appendChild(buildButton(t('mind-map.zoom-in'), zoomIn, 'zoomIn'))
   action.appendChild(buildButton(t('mind-map.zoom-out'), zoomOut, 'zoomOut'))
   action.appendChild(buildButton(t('mind-map.switch-layout'), switchLayout, 'switchLayout'))
@@ -242,6 +299,7 @@ const init = (ele: HTMLElement) => {
     const srcdoc = buildSrcdoc(JSON.stringify(km.exportJson()), actionsStr)
     openWindow(buildSrc(srcdoc, t('view-figure')), '_blank', { backgroundColor: '#fff' })
   }))
+  action.prepend(buildButton(t('mind-map.fit-height'), fitHeight, 'fitHeight'))
   action.appendChild(buildButton('PNG', () => exportData('png')))
   action.appendChild(buildButton('SVG', () => exportData('svg')))
   action.appendChild(buildButton('KM', () => exportData('km')))
@@ -255,27 +313,17 @@ const render = async (km: any, content: string) => {
   const code = (content || '').trim()
 
   try {
-    // hack for avoid auto set template
-    km.setTemplate = () => 0
-
-    km.disableAnimation()
     await km.importData('text', code)
-    km.enableAnimation()
-
-    // recover setTemplate
-    km.setTemplate = km._setTemplate
   } catch (error) {
     await km.importData('text', t('mind-map.convert-error'))
-    km.useTemplate('structure')
+    km.execCommand('camera')
   }
-
-  km.execCommand('hand')
-  km.execCommand('camera')
 }
 
 const MindMap = defineComponent({
   name: 'mind-map',
   props: {
+    attrs: Object,
     content: {
       type: String,
       default: ''
@@ -292,23 +340,34 @@ const MindMap = defineComponent({
 
       if (!km) {
         km = init(container.value)
+        km.execCommand('hand')
+        km.execCommand('camera')
       }
 
       render(km, props.content)
     }, 200, { leading: true })
 
+    function clean () {
+      km && km.destroy()
+      km = null
+    }
+
+    function onLanguageChange () {
+      clean()
+      renderMindMap()
+    }
+
     watch(() => props.content, renderMindMap)
 
     onMounted(() => setTimeout(renderMindMap, 0))
 
-    registerHook('I18N_CHANGE_LANGUAGE', renderMindMap)
+    registerHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
     onBeforeUnmount(() => {
-      km && km.destroy()
-      km = null
-      removeHook('I18N_CHANGE_LANGUAGE', renderMindMap)
+      clean()
+      removeHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
     })
 
-    return () => h('div', { ref: container, class: 'mind-map reduce-brightness' })
+    return () => h('div', { ...props.attrs, ref: container, class: 'source-line mind-map reduce-brightness' })
   }
 })
 
@@ -321,7 +380,7 @@ const renderRule: Renderer.RenderRule = (tokens, idx, options, { bMarks, source 
       .replace(/\{.mindmap[^}]*\}/gm, '')
       .replace(/^(\s*)([+-]*|\d+.) /gm, '$1')
 
-    return h(MindMap, { content }) as any
+    return h(MindMap, { attrs: token.meta?.attrs, content }) as any
   }
 
   return slf.renderToken(tokens, idx, options)

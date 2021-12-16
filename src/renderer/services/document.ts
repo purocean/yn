@@ -3,13 +3,14 @@ import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import type { Doc } from '@fe/types'
+import type { Doc, PathItem } from '@fe/types'
 import { basename, dirname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
 import { triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
-import { inputPassword } from './base'
+import { getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
+import { getSetting, setSetting } from './setting'
 
 const logger = getLogger('document')
 
@@ -343,7 +344,7 @@ export async function saveDoc (doc: Doc, content: string) {
     })
     triggerHook('DOC_SAVED', { doc: store.state.currentFile! })
   } catch (error: any) {
-    store.commit('setCurrentFile', { ...doc, status: 'save-failed' })
+    Object.assign(doc, { status: 'save-failed' })
     useToast().show('warning', error.message)
     throw error
   }
@@ -437,7 +438,9 @@ export async function switchDoc (doc: Doc | null) {
  * @param doc
  */
 export async function markDoc (doc: Doc) {
-  await api.markFile(doc)
+  const list = getSetting('mark', []).filter(x => !(x.path === doc.path && x.repo === doc.repo))
+  list.push({ repo: doc.repo, path: doc.path, name: basename(doc.path) })
+  await setSetting('mark', list)
   triggerHook('DOC_CHANGED', { doc })
 }
 
@@ -446,8 +449,17 @@ export async function markDoc (doc: Doc) {
  * @param doc
  */
 export async function unmarkDoc (doc: Doc) {
-  await api.unmarkFile(doc)
+  const list = getSetting('mark', []).filter(x => !(x.path === doc.path && x.repo === doc.repo))
+  await setSetting('mark', list)
   triggerHook('DOC_CHANGED', { doc })
+}
+
+export function getMarkedFiles () {
+  return getSetting('mark', [])
+}
+
+export function isMarked (doc: PathItem) {
+  return getMarkedFiles().findIndex(x => doc.repo === x.repo && doc.path === x.path) > -1
 }
 
 /**
@@ -456,7 +468,15 @@ export async function unmarkDoc (doc: Doc) {
  * @param reveal
  */
 export async function openInOS (doc: Doc, reveal?: boolean) {
-  await api.openInOS(doc, reveal)
+  const repo = getRepo(doc.repo)
+  if (repo) {
+    const path = join(repo.path, doc.path)
+    if (reveal) {
+      showItemInFolder(path)
+    } else {
+      openPath(path)
+    }
+  }
 }
 
 /**

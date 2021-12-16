@@ -313,9 +313,15 @@ const data: BaseLanguage = {
       },
       'theme': '主题',
       'language': '语言',
+      'custom-css': '自定义 CSS',
       'assets-dir': '图片存放目录',
       'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, date',
       'shell': 'Shell',
+    },
+    'tabs': {
+      'repos': '仓库',
+      'appearance': '外观',
+      'other': '其他',
     },
   },
   'quick-open': {
@@ -356,11 +362,12 @@ const data: BaseLanguage = {
     'clear': '清空',
   },
   'drawio': {
-    'adjust-height': '调整高度',
+    'fit-height': '适应高度',
   },
   'mind-map': {
     'zoom-in': '放大',
     'zoom-out': '缩小',
+    'fit-height': '适应高度',
     'switch-layout': '切换布局',
     'switch-loose': '紧凑/宽松',
     'convert-error': '转换错误\n    1. 请保证大纲只有一个根项目\n    2. 请保证大纲层级正确',
@@ -373,6 +380,20 @@ const data: BaseLanguage = {
     'edit-title': '编辑单元格',
     'edit-error': '编辑出错',
     'limit-single-line': '只支持编辑单行文本',
+    'context-menu': {
+      'edit': '编辑',
+      'quick-edit': '快速编辑',
+      'align-left': '左对齐',
+      'align-center': '居中',
+      'align-right': '右对齐',
+      'align-normal': '取消对齐',
+      'add-row-above': '在上面添加行',
+      'add-row-below': '在下面添加行',
+      'delete-row': '删除行',
+      'add-col-left': '在左侧添加列',
+      'add-col-right': '在右侧添加列',
+      'delete-col': '删除列',
+    },
   },
   'lucky-sheet': {
     'saved-at': '保存于',
@@ -381,6 +402,12 @@ const data: BaseLanguage = {
   },
   'markdown-link': {
     'convert-to-titled-link': '转换为带标题的链接',
+  },
+  'custom-css': {
+    'change-confirm': {
+      'title': '提示',
+      'content': '更改自定义 CSS 需要重载页面，是否继续？',
+    }
   },
 }
 

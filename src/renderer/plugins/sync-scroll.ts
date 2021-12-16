@@ -9,17 +9,6 @@ export default {
 
     const STORAGE_KEY = 'plugin.scroll-position'
 
-    let enableSyncScroll = true
-    let xTimer: any
-    async function disableSyncScroll (fn: Function) {
-      clearTimeout(xTimer)
-      enableSyncScroll = false
-      await fn()
-      xTimer = setTimeout(() => {
-        enableSyncScroll = true
-      }, 500)
-    }
-
     function saveScrollPosition (scrollTop: ScrollTop) {
       const key = ctx.doc.toUri(ctx.store.state.currentFile)
       const data: Record<string, ScrollTop> = ctx.storage.get(STORAGE_KEY, {})
@@ -38,7 +27,7 @@ export default {
 
         await ctx.editor.whenEditorReady()
 
-        disableSyncScroll(async () => {
+        ctx.view.disableSyncScrollAwhile(async () => {
           ctx.editor.setScrollToTop(position.editor || 0)
           if (typeof position.view === 'number') {
             await sleep(0)
@@ -51,10 +40,13 @@ export default {
     ctx.editor.whenEditorReady().then(({ editor }) => {
       const savePosition = debounce(saveScrollPosition, 500)
       editor.onDidScrollChange(() => {
-        const line = Math.max(1, editor.getVisibleRanges()[0].startLineNumber - 2)
+        const visibleRange = editor.getVisibleRanges()[0]
+        const startLine = Math.max(1, visibleRange.startLineNumber - 2)
+        const endLine = Math.max(startLine, visibleRange.endLineNumber)
+
         const top = editor.getScrollTop()
-        if (enableSyncScroll) {
-          ctx.view.revealLine(line)
+        if (ctx.view.getEnableSyncScroll()) {
+          ctx.view.revealLine(startLine, startLine + (endLine - startLine) / 2)
         }
         savePosition({ editor: top })
       })
@@ -68,7 +60,7 @@ export default {
       }
     })
 
-    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
+    function clickScroll (e: MouseEvent) {
       const target = e.target as HTMLElement
 
       if (
@@ -77,12 +69,25 @@ export default {
         target.classList.contains('source-line') &&
         window.getSelection()!.toString().length < 1
       ) {
-        disableSyncScroll(() => {
+        ctx.view.disableSyncScrollAwhile(() => {
           ctx.editor.revealLineInCenter(parseInt(target.dataset.sourceLine || '0'))
         })
       }
 
       return false
+    }
+
+    let clickTimer: number | null = null
+    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
+      if (clickTimer) {
+        clearTimeout(clickTimer)
+        clickTimer = null
+      } else {
+        clickTimer = setTimeout(() => {
+          clickScroll(e)
+          clickTimer = null
+        }, 200) as any
+      }
     })
   }
 } as Plugin

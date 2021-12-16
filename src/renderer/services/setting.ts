@@ -1,10 +1,11 @@
-import { cloneDeepWith } from 'lodash-es'
+import { cloneDeep, cloneDeepWith, isEqual, uniq } from 'lodash-es'
 import { triggerHook } from '@fe/core/hook'
 import { MsgPath } from '@share/i18n'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import store from '@fe/support/store'
-import type{ BuildInSettings } from '@fe/types'
+import { basename } from '@fe/utils/path'
+import type{ BuildInSettings, FileItem, PathItem } from '@fe/types'
 import { getThemeName } from './theme'
 import { t } from './i18n'
 
@@ -18,6 +19,7 @@ export type Schema = {
     title: TTitle,
     description?: TTitle,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
+    enum?: string[],
     items?: {
       type: string,
       title: TTitle,
@@ -82,6 +84,12 @@ const schema: Schema = {
       type: 'string',
       enum: ['system', 'en', 'zh-CN']
     },
+    'custom-css': {
+      defaultValue: 'github',
+      title: 'T_setting-panel.schema.custom-css',
+      type: 'string',
+      enum: ['github.css']
+    },
     'assets-dir': {
       defaultValue: './FILES/{docSlug}',
       title: 'T_setting-panel.schema.assets-dir',
@@ -95,10 +103,13 @@ const schema: Schema = {
       type: 'string',
     },
   } as Partial<Schema['properties']> as any,
-  required: ['theme', 'language'],
+  required: ['theme', 'language', 'custom-css'],
 }
 
-const settings = getDefaultSetting()
+const settings = {
+  ...getDefaultSetting(),
+  ...transformSettings(window._INIT_SETTINGS)
+}
 
 if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
@@ -120,15 +131,25 @@ export function getSchema () {
  * Change Schema.
  * @param fun
  */
-export function tapSchema (fun: (schema: Schema) => void) {
+export function changeSchema (fun: (schema: Schema) => void) {
   fun(schema)
 }
 
 function transformSettings (data: any) {
-  data.repos = Object.keys(data.repositories).map(name => ({
+  if (!data) {
+    return {}
+  }
+
+  data.repos = Object.keys(data.repositories || {}).map(name => ({
     name,
     path: data.repositories[name]
   }))
+
+  data.mark = (data.mark || []).map((item: PathItem) => ({
+    name: basename(item.path),
+    path: item.path,
+    repo: item.repo,
+  })) as FileItem[]
 
   data.theme = getThemeName()
 
@@ -152,6 +173,7 @@ export function getDefaultSetting () {
  * @returns settings
  */
 export async function fetchSettings () {
+  const oldSettings = cloneDeep(getSettings())
   const data = transformSettings(await api.fetchSettings())
 
   Object.assign(settings, {
@@ -159,31 +181,45 @@ export async function fetchSettings () {
     ...data
   })
 
-  triggerHook('SETTING_FETCHED', { settings })
+  triggerHook('SETTING_FETCHED', { settings, oldSettings })
+
+  const changedKeys = uniq([...Object.keys(oldSettings), ...Object.keys(settings)] as (keyof BuildInSettings)[])
+    .filter((key) => !isEqual(settings[key], oldSettings[key]))
+
+  if (changedKeys.length > 0) {
+    triggerHook('SETTING_CHANGED', { settings, oldSettings, changedKeys })
+  }
 
   return settings
 }
 
 /**
  * Write settings.
- * @param data settings
+ * @param settings
  * @returns settings
  */
-export async function writeSettings (data: Record<string, any>) {
-  const repositories: any = {}
-  data.repos.forEach(({ name, path }: any) => {
-    name = name.trim()
-    path = path.trim()
-    if (name && path) {
-      repositories[name] = path
-    }
-  })
+export async function writeSettings (settings: Record<string, any>) {
+  const data = cloneDeep(settings)
 
-  delete data.repos
-  delete data.theme
-  data.repositories = repositories
+  if (data.repos) {
+    const repositories: any = {}
+    data.repos.forEach(({ name, path }: any) => {
+      name = name.trim()
+      path = path.trim()
+      if (name && path) {
+        repositories[name] = path
+      }
+    })
 
-  triggerHook('SETTING_BEFORE_WRITE', { settings })
+    delete data.repos
+    data.repositories = repositories
+  }
+
+  if (data.theme) {
+    delete data.theme
+  }
+
+  triggerHook('SETTING_BEFORE_WRITE', { settings } as any)
 
   await api.writeSettings(data)
   return await fetchSettings()
@@ -203,7 +239,9 @@ export function getSettings () {
  * @param defaultVal
  * @returns
  */
-export function getSetting (key: keyof BuildInSettings, defaultVal: any = null) {
+export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T]): BuildInSettings[T]
+export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal?: null): BuildInSettings[T] | null
+export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T] | null = null): BuildInSettings[T] | null {
   const settings = getSettings()
   if (typeof settings[key] !== 'undefined') {
     return settings[key]
@@ -219,9 +257,7 @@ export function getSetting (key: keyof BuildInSettings, defaultVal: any = null) 
  * @returns
  */
 export async function setSetting<T extends keyof BuildInSettings> (key: T, val: BuildInSettings[T]) {
-  const settings = getSettings()
-  settings[key] = val
-  await writeSettings(settings)
+  await writeSettings({ [key]: val })
 }
 
 /**

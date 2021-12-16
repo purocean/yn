@@ -14,7 +14,8 @@ for rendering output.
 
 import katex from 'katex'
 import { h } from 'vue'
-import { Plugin } from '@fe/context'
+import type { Plugin } from '@fe/context'
+import type Token from 'markdown-it/lib/token'
 
 // Test if potential opening or closing delimieter
 // Assumes that there is a "$" at state.src[pos]
@@ -170,7 +171,7 @@ function math_plugin (md: any, options: any) {
     try {
       return katex.renderToString(latex, options)
     } catch (error: any) {
-      if (options.throwOnError) { console.error(error) }
+      if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
@@ -179,18 +180,20 @@ function math_plugin (md: any, options: any) {
     return katexInline(tokens[idx].content)
   }
 
-  const katexBlock = function (latex: any) {
+  const katexBlock = function (token: Token) {
+    const latex = token.content
     options.displayMode = true
     try {
-      return '<p>' + katex.renderToString(latex, options) + '</p>'
+      const html = katex.renderToString(latex, options)
+      return h('p', { ...token.meta?.attrs, class: 'source-line', key: html, innerHTML: html }, '')
     } catch (error: any) {
-      if (options.throwOnError) { console.error(error) }
+      if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
 
   const blockRenderer = function (tokens: any, idx: any) {
-    return katexBlock(tokens[idx].content) + '\n'
+    return katexBlock(tokens[idx])
   }
 
   md.inline.ruler.after('escape', 'math_inline', math_inline)

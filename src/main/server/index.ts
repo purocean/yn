@@ -6,19 +6,23 @@ import bodyParser from 'koa-body'
 import * as mime from 'mime'
 import request from 'request'
 import { promisify } from 'util'
-import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME } from '../constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES } from '../constant'
 import * as file from './file'
-import dataRepository from './repository'
 import run from './run'
 import convert from './convert'
 import plantuml from './plantuml'
 import shell from '../shell'
-import mark from './mark'
 import config from '../config'
 import { getAction } from '../action'
 
 const result = (status: 'ok' | 'error' = 'ok', message = 'success', data: any = null) => {
   return { status, message, data }
+}
+
+const noCache = (ctx: any) => {
+  ctx.set('Cache-Control', 'no-store, no-cache, must-revalidate')
+  ctx.set('Pragma', 'no-cache')
+  ctx.set('Expires', 0)
 }
 
 const fileContent = async (ctx: any, next: any) => {
@@ -77,47 +81,12 @@ const attachment = async (ctx: any, next: any) => {
   }
 }
 
-const open = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/open')) {
-    if (ctx.method === 'GET') {
-      file.open(ctx.query.repo, ctx.query.path, !!ctx.query.reveal)
-      ctx.body = result()
-    }
-  } else {
-    await next()
-  }
-}
-
-const markFile = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/mark')) {
-    if (ctx.method === 'GET') {
-      ctx.body = result('ok', 'success', mark.list())
-    } else if (ctx.method === 'POST') {
-      mark.add({ repo: ctx.query.repo, path: ctx.query.path })
-      ctx.body = result()
-    } else if (ctx.method === 'DELETE') {
-      mark.remove({ repo: ctx.query.repo, path: ctx.query.path })
-      ctx.body = result()
-    }
-  } else {
-    await next()
-  }
-}
-
 const searchFile = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/search')) {
     const search = ctx.query.search
     const repo = ctx.query.repo
 
     ctx.body = result('ok', 'success', await file.search(repo, search))
-  } else {
-    await next()
-  }
-}
-
-const repository = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/repositories')) {
-    ctx.body = result('ok', 'success', dataRepository.list())
   } else {
     await next()
   }
@@ -242,10 +211,52 @@ const userPlugin = async (ctx: any, next: any) => {
   }
 }
 
+const customCss = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/custom-styles')) {
+    const files: string[] = [...BUILD_IN_STYLES]
+    for (const x of await fs.readdir(USER_THEME_DIR, { withFileTypes: true })) {
+      if (x.isFile() && x.name.endsWith('.css')) {
+        files.push(x.name)
+      }
+    }
+
+    ctx.body = result('ok', 'success', Array.from(new Set(files)))
+  } else if (ctx.path.startsWith('/api/custom-css')) {
+    const configKey = 'custom-css'
+    const defaultCss = BUILD_IN_STYLES[0]
+
+    ctx.type = 'text/css'
+    noCache(ctx)
+
+    try {
+      const filename = config.get(configKey, defaultCss)
+      ctx.body = await fs.readFile(path.join(USER_THEME_DIR, filename))
+    } catch (error) {
+      console.error(error)
+
+      await fs.writeFile(
+        path.join(USER_THEME_DIR, defaultCss),
+        await fs.readFile(path.join(RESOURCES_DIR, defaultCss))
+      )
+
+      config.set(configKey, defaultCss)
+      ctx.body = await fs.readFile(path.join(USER_THEME_DIR, defaultCss))
+    }
+  } else {
+    await next()
+  }
+}
+
 const setting = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/settings')) {
     if (ctx.method === 'GET') {
-      ctx.body = result('ok', 'success', config.getAll())
+      if (ctx.path.endsWith('js')) {
+        ctx.type = 'application/javascript; charset=utf-8'
+        noCache(ctx)
+        ctx.body = '_INIT_SETTINGS = ' + JSON.stringify(config.getAll())
+      } else {
+        ctx.body = result('ok', 'success', config.getAll())
+      }
     } else if (ctx.method === 'POST') {
       const data = { ...config.getAll(), ...ctx.request.body }
       config.setAll(data)
@@ -300,7 +311,7 @@ const wrapper = async (ctx: any, next: any, fun: any) => {
   } catch (error: any) {
     console.error(error)
     ctx.set('x-yank-note-api-status', 'error')
-    ctx.set('x-yank-note-api-message', error.message)
+    ctx.set('x-yank-note-api-message', encodeURIComponent(error.message))
     ctx.body = result('error', error.message)
   }
 }
@@ -320,16 +331,14 @@ const server = (port = 3000) => {
 
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, fileContent))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, attachment))
-  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, open))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, plantumlGen))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, runCode))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, convertFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, searchFile))
-  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, repository))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
-  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, markFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, customCss))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
@@ -366,7 +375,7 @@ const server = (port = 3000) => {
     }
 
     if (!(await sendFile(path.resolve(STATIC_DIR, urlPath), false))) {
-      await sendFile(path.resolve(USER_PLUGIN_DIR, urlPath), true)
+      await sendFile(path.resolve(USER_THEME_DIR, urlPath), true)
     }
   })
 

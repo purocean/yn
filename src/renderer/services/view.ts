@@ -9,6 +9,9 @@ import { emitResize } from './layout'
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
 
+let enableSyncScroll = true
+let syncScrollTimer: any
+
 const contextMenuFunList: BuildContextMenu[] = []
 
 function present (flag: boolean) {
@@ -36,11 +39,12 @@ export function refresh () {
 }
 
 /**
- * REveal a line.
- * @param line
+ * Reveal line.
+ * @param startLine
+ * @param endLine
  */
-export function revealLine (line: number) {
-  getActionHandler('view.reveal-line')(line)
+export function revealLine (startLine: number, endLine?: number) {
+  getActionHandler('view.reveal-line')(startLine, endLine)
 }
 
 /**
@@ -119,6 +123,28 @@ export function getContextMenuItems (e: MouseEvent) {
   })
 
   return items
+}
+
+/**
+ * get enableSyncScroll
+ * @returns
+ */
+export function getEnableSyncScroll () {
+  return enableSyncScroll
+}
+
+/**
+ * disable sync scroll for a while
+ * @param fn
+ * @param timeout
+ */
+export async function disableSyncScrollAwhile (fn: Function, timeout = 500) {
+  clearTimeout(syncScrollTimer)
+  enableSyncScroll = false
+  await fn()
+  syncScrollTimer = setTimeout(() => {
+    enableSyncScroll = true
+  }, timeout)
 }
 
 registerAction({

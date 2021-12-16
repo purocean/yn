@@ -43,8 +43,16 @@ export const IFrame = defineComponent({
       }
     }
 
+    const debounceUpdate = debounce(update, props.debounce)
+
     onBeforeMount(update)
-    watch(props, debounce(update, props.debounce))
+    watch(props, () => {
+      if (url.value) {
+        debounceUpdate()
+      } else {
+        nextTick(update)
+      }
+    })
 
     const changeTheme = ({ name }: { name: ThemeName }) => {
       if (name) {
@@ -52,19 +60,18 @@ export const IFrame = defineComponent({
       }
     }
 
-    const refresh = () => {
+    const clean = () => {
       url.value = ''
-      nextTick(update)
     }
 
     registerHook('THEME_CHANGE', changeTheme)
-    registerHook('VIEW_AFTER_REFRESH', refresh)
-    registerHook('VIEW_FILE_CHANGE', refresh)
+    registerHook('VIEW_AFTER_REFRESH', clean)
+    registerHook('VIEW_FILE_CHANGE', clean)
 
     onBeforeUnmount(() => {
       removeHook('THEME_CHANGE', changeTheme)
-      removeHook('VIEW_AFTER_REFRESH', refresh)
-      removeHook('VIEW_FILE_CHANGE', refresh)
+      removeHook('VIEW_AFTER_REFRESH', clean)
+      removeHook('VIEW_FILE_CHANGE', clean)
     })
 
     const onLoad = function () {

@@ -45,6 +45,9 @@ Toggle Word Wrap | Alt/Option + W
 Toggle Preview | Alt/Option + V
 Toggle Terminal | Alt/Option + T
 Presentation | F5
+Zoom In | Ctrl/Cmd + =
+Zoom Out | Ctrl/Cmd + -
+Zoom Reset | Ctrl/Cmd + 0
 
 :::
 ::: group-item [= $ctx.i18n.getCurrentLanguage() === 'zh-CN' ? '*' : '' =]中文
@@ -86,5 +89,8 @@ Presentation | F5
 切换文档预览显示 | Alt/Option + V
 切换终端 | Alt/Option + T
 演示模式 | F5
+缩放放大 | Ctrl/Cmd + =
+缩放缩小 | Ctrl/Cmd + -
+缩放重置 | Ctrl/Cmd + 0
 :::
 ::::

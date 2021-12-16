@@ -1,7 +1,8 @@
 <template>
   <div class="editor-wrapper" @click.stop>
     <h3>{{$t('setting-panel.setting')}}</h3>
-    <div ref="refEditor" class="editor" @click="onClick" />
+    <group-tabs :tabs="tabs" v-model="tab" />
+    <div v-show="isReady" ref="refEditor" class="editor" @click="onClick" />
     <div class="action">
       <button class="btn" @click="cancel">{{$t('cancel')}}</button>
       <button class="btn primary" @click="ok">{{$t('ok')}}</button>
@@ -11,33 +12,45 @@
 
 <script lang="ts">
 import { useStore } from 'vuex'
-import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 import * as api from '@fe/support/api'
 import { useToast } from '@fe/support/ui/toast'
 import { getThemeName, setTheme } from '@fe/services/theme'
 import { useI18n } from '@fe/services/i18n'
 import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
-import { refreshRepo } from '@fe/services/tree'
-import { registerHook, removeHook } from '@fe/core/hook'
+import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
+import GroupTabs from '@fe/components/GroupTabs.vue'
+import { BuildInSettings } from '@fe/types'
 
 JSONEditor.defaults.language = 'en'
 
+type Tab = {
+  label: 'repos' | 'appearance' | 'other',
+  value: string,
+}
+
 export default defineComponent({
   name: 'x-filter',
-  components: {},
+  components: { GroupTabs },
   setup (_, { emit }) {
     const store = useStore()
     const { t } = useI18n()
     const toast = useToast()
-    const refEditor = ref(null)
+    const refEditor = ref<HTMLElement>()
+    const tab = ref<Tab['label']>('repos')
+    const isReady = ref(false)
+    const tabs: Tab[] = [
+      { label: t('setting-panel.tabs.repos') as any, value: 'repos' },
+      { label: t('setting-panel.tabs.appearance') as any, value: 'appearance' },
+      { label: t('setting-panel.tabs.other') as any, value: 'other' },
+    ]
 
     const show = computed(() => store.state.showSetting)
 
     let editor: any = null
-    const schema: any = getSchema()
 
     function setLanguage () {
       JSONEditor.defaults.languages.en.button_move_down_title = '⬇'
@@ -48,6 +61,10 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      await triggerHook('SETTING_PANEL_BEFORE_SHOW', {}, { breakable: true })
+
+      const schema: any = getSchema()
+
       editor = new JSONEditor(refEditor.value, {
         theme: 'html',
         disable_collapse: true,
@@ -85,6 +102,8 @@ export default defineComponent({
       })
 
       editor.setValue(value)
+      updateTab()
+      isReady.value = true
     })
 
     setLanguage()
@@ -107,7 +126,7 @@ export default defineComponent({
 
           if (!name && path) {
             // default name
-            repo.name = basename(path)
+            repo.name = basename(path).substring(0, 10)
           } else if (name && !path) {
             const msg = t('setting-panel.error-choose-repo-path')
             toast.show('warning', msg)
@@ -125,7 +144,6 @@ export default defineComponent({
         }
 
         await writeSettings({ ...value })
-        refreshRepo()
       }
       emit('close')
     }
@@ -145,7 +163,27 @@ export default defineComponent({
       }
     }
 
-    return { show, refEditor, cancel, ok, onClick }
+    function updateTab () {
+      const group: Record<Tab['label'], (keyof BuildInSettings)[]> = {
+        repos: ['repos'],
+        appearance: ['theme', 'language', 'custom-css'],
+        other: ['assets-dir', 'shell', 'plugin.image-hosting-picgo.server-url', 'plugin.image-hosting-picgo.enable-paste-image']
+      }
+
+      refEditor.value?.querySelectorAll<HTMLElement>('.row').forEach(row => {
+        const schemaPath = (row.firstElementChild?.getAttribute('data-schemapath') || '').replace('root.', '')
+
+        if (group[tab.value].includes(schemaPath as any)) {
+          row.hidden = false
+        } else {
+          row.hidden = true
+        }
+      })
+    }
+
+    watch(tab, updateTab)
+
+    return { isReady, tab, tabs, show, refEditor, cancel, ok, onClick }
   },
 })
 </script>
@@ -169,9 +207,15 @@ export default defineComponent({
   max-height: 50vh;
   overflow: auto;
 
+  ::v-deep(div[data-schematype="array"] > .je-header),
   &> ::v-deep(div > .je-header),
   ::v-deep(.je-object__controls){
     display: none;
+  }
+
+  ::v-deep(div[data-schematype="array"] > .je-indented-panel) {
+    padding: 0;
+    margin: 0;
   }
 
   ::v-deep(.je-header) {

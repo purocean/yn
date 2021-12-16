@@ -53,18 +53,4 @@ export async function refreshTree () {
   }
 }
 
-/**
- * Refresh repositories.
- */
-export async function refreshRepo () {
-  refreshTree()
-
-  try {
-    const repos = await api.fetchRepositories()
-    store.commit('setRepositories', repos)
-  } catch (error: any) {
-    useToast().show('warning', error.message)
-  }
-}
-
 registerAction({ name: 'tree.refresh', handler: refreshTree })

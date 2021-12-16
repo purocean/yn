@@ -1,5 +1,4 @@
-import opn from 'opn'
-import { app, Menu } from 'electron'
+import { app, Menu, shell } from 'electron'
 import { getAction } from './action'
 import { FLAG_DISABLE_DEVTOOL, FLAG_DISABLE_SERVER, GITHUB_URL, USER_DIR } from './constant'
 import { getAccelerator } from './shortcut'
@@ -48,7 +47,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
     type: 'normal',
     label: $t('app.tray.open-main-dir'),
     click: () => {
-      opn(USER_DIR)
+      shell.openPath(USER_DIR)
     }
   },
   {
@@ -136,7 +135,7 @@ export const getTrayMenus = () => Menu.buildFromTemplate([
     type: 'normal',
     label: 'GitHub',
     click: () => {
-      opn(GITHUB_URL)
+      shell.openExternal(GITHUB_URL)
     }
   },
   {

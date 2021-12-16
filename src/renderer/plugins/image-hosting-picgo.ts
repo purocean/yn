@@ -9,7 +9,7 @@ export default {
     const settingKeyUrl = 'plugin.image-hosting-picgo.server-url'
     const settingKeyPaste = 'plugin.image-hosting-picgo.enable-paste-image'
 
-    ctx.setting.tapSchema((schema) => {
+    ctx.setting.changeSchema((schema) => {
       schema.properties[settingKeyUrl] = {
         title: 'T_picgo.setting.api-title',
         description: 'T_picgo.setting.api-desc',

@@ -22,6 +22,7 @@ define:
 1. 配置文件 `<home>/yank-note/config.json`
 1. 回收站 `<home>/yank-note/trash`
 1. 插件 `<home>/yank-note/plugins`
+1. 主题 `<home>/yank-note/themes`
 
 ## TOC 生成
 
@@ -70,16 +71,16 @@ define:
 只需要在列表根节点加上 `{.mindmap}` 即可。
 
 + 中心节点{.mindmap}
-    + 状态可见原则
-    + 环境贴切原则
-    + 用户可控原则
-    + 一致性原则
-    + 防错原则
-    + 易取原则
-    + 灵活高效原则
-    + 优美且简约原则
-    + 容错原则
-    + 人性化帮助原则
+    + [1] 状态可见原则
+    + [2] 环境贴切原则
+    + [3] 用户可控原则
+    + [4] 一致性原则
+    + [5] 防错原则
+    + [6] 易取原则
+    + [7] 灵活高效原则
+    + [8] 优美且简约原则
+    + [9] 容错原则
+    + [10] 人性化帮助原则
 
 脑图使用 [kityminder-core](https://github.com/fex-team/kityminder-core) 实现。
 
@@ -159,16 +160,26 @@ a -> b
 此功能使用 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 实现
 支持在表格中使用多行文本和列表。支持表格说明渲染
 
-另外您可以使用：`Ctrl/Cmd + 单击单元格` 快捷编辑表格单元格内容
+您可以双击/右键单元格快捷编辑单元格内容
 
 First header | Second header
 -------------|---------------
 List:        | More  \
 - [ ] over   | data  \
 - several    |
------ | -----
 Test | Test
 [测试表格]
+
+First header | Second header
+:-----------:|:--------------:
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+AAAAAAAAAAAA | BBBBBBBBBBBBBB
+Test | Test
+[小尺寸表格]
+{.small}
 
 ## Katex 公式
 
@@ -551,6 +562,12 @@ Yank Note 允许你在页面中嵌入宏，用以动态的替换文档。
 --data-dir        | 数据目录      | 无     | 目录路径字符串            | --data-dir='./.data'
 --init-repo       | 初始仓库名    | 无    | 字符串                    | --init-repo='test'
 --init-file       | 加载文件路径  | 无    | 文件路径，相对于仓库路径     | --init-file='/1.md'
+
+## 自定义样式
+
+1. 右键点击托盘图标，点击“打开主目录”，进入 `<主目录>/themes` 目录。
+2. 复制 `github.css` 为一个新 CSS 文件，修改 CSS 内容
+3. 打开设置 => 外观 => 自定义 CSS 切换 CSS 配置
 
 ## 插件开发
 

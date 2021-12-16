@@ -12,6 +12,7 @@ let mid = 1
 const Mermaid = defineComponent({
   name: 'mermaid',
   props: {
+    attrs: Object,
     code: {
       type: String,
       default: ''
@@ -52,7 +53,7 @@ const Mermaid = defineComponent({
     onMounted(() => setTimeout(render, 0))
 
     return () => {
-      return h('div', { class: 'mermaid-wrapper' }, [
+      return h('div', { ...props.attrs, class: 'source-line mermaid-wrapper' }, [
         h('div', { class: 'mermaid-action no-print' }, [
           h('button', { class: 'small', onClick: () => exportData() }, 'SVG'),
         ]),
@@ -73,12 +74,12 @@ const MermaidPlugin = (md: Markdown) => {
     const token = tokens[idx]
     const code = token.content.trim()
     if (token.info === 'mermaid') {
-      return h(Mermaid, { code }) as any
+      return h(Mermaid, { attrs: token.meta?.attrs, code }) as any
     }
 
     const firstLine = code.split(/\n/)[0].trim()
     if (firstLine === 'gantt' || firstLine === 'sequenceDiagram' || firstLine.match(/^graph (?:TB|BT|RL|LR|TD);?$/)) {
-      return h(Mermaid, { code }) as any
+      return h(Mermaid, { attrs: token.meta?.attrs, code }) as any
     }
 
     return temp(tokens, idx, options, env, slf)

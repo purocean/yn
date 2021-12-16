@@ -5,6 +5,7 @@ import { deleteLine, getEditor, getLineContent, getMonaco, getOneIndent, getValu
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 import { isKeydown } from '@fe/core/command'
+import emoji from '@fe/others/emoji.json'
 
 function getWords (content: string) {
   const words = new Set<string>()
@@ -33,10 +34,42 @@ function getWords (content: string) {
   return words
 }
 
-function createDependencyProposals (range: any, currentWord: string): Monaco.languages.CompletionItem[] {
+function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.ITextModel, position: Monaco.Position): Monaco.languages.CompletionItem[] {
   const monaco = getMonaco()
 
-  const result: Monaco.languages.CompletionItem[] = [
+  const currentWord = model.getWordUntilPosition(position).word
+  const currentStr = model.getValueInRange(range)
+
+  const result: Monaco.languages.CompletionItem[] = []
+
+  // emoji completion
+  if (currentStr.startsWith(':')) {
+    Object.keys(emoji).forEach((key, i) => {
+      result.push({
+        label: { name: `:${key}: ${(emoji as any)[key]}` },
+        kind: monaco.languages.CompletionItemKind.EnumMember,
+        insertText: (emoji as any)[key],
+        range: range,
+        sortText: (80000 + i).toString()
+      })
+    })
+
+    return result
+  }
+
+  getWords(getValue()).forEach((word, i) => {
+    if (currentWord !== word) {
+      result.push({
+        label: { name: word },
+        kind: monaco.languages.CompletionItemKind.Text,
+        insertText: word,
+        range: range,
+        sortText: (10000 + i).toString()
+      })
+    }
+  })
+
+  ;[
     { name: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
     { name: '/ []() Link', insertText: '[${2:Link}]($1)' },
     { name: '/ # Head', insertText: '# $1' },
@@ -59,7 +92,7 @@ function createDependencyProposals (range: any, currentWord: string): Monaco.lan
     { name: '/ + [ ] TODO List', insertText: '+ [ ] ' },
     { name: '/ - [ ] TODO List', insertText: '- [ ] ' },
     { name: '/ ```', insertText: '```$1\n```\n' },
-    { name: '/ [toc]', insertText: '[toc]{type: "${ul}", level: [1,2,3]}' },
+    { name: '/ [toc]', insertText: '[toc]{type: "${1|ul,ol|}", level: [2,3]}' },
     { name: '/ + MindMap', insertText: '+ ${1:Subject}{.mindmap}\n    + ${2:Topic}' },
     { name: '/ $ Inline KaTeX', insertText: '$$1$' },
     { name: '/ $$ Block KaTeX', insertText: '$$$1$$\n' },
@@ -71,28 +104,20 @@ function createDependencyProposals (range: any, currentWord: string): Monaco.lan
     { name: '/ @startuml Plantuml', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
     { name: '/ []() Drawio Link', insertText: '[${2:Link}]($1){link-type="drawio"}' },
     { name: '/ []() Luckysheet Link', insertText: '[${2:Link}]($1){link-type="luckysheet"}' },
-    { name: '/ ||| Table', insertText: '${1:A} | ${2:B} | ${3:C}\n-- | -- | --\na | b | c' },
+    { name: '/ ||| Table', insertText: '| ${1:--} | ${2:--} | ${3:--} |\n| -- | -- | -- |\n| -- | -- | -- |' },
+    { name: '/ ||| Small Table', insertText: '| ${1:--} | ${2:--} | ${3:--} |\n| -- | -- | -- |\n| -- | -- | -- |\n{.small}' },
     { name: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
     { name: '/ --- Horizontal Line', insertText: '---\n' },
     { name: '/ --- Front Matter', insertText: '---\nheadingNumber: true\nenableMacro: true\ndefine:\n    APP_NAME: Yank Note\n---\n' },
-  ].map((x, i) => ({
-    label: { name: x.name },
-    kind: monaco.languages.CompletionItemKind.Snippet,
-    insertText: x.insertText,
-    insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-    range: range,
-    sortText: i.toString().padStart(3, '0')
-  }))
-
-  getWords(getValue()).forEach(word => {
-    if (currentWord !== word) {
-      result.push({
-        label: { name: word },
-        kind: monaco.languages.CompletionItemKind.Text,
-        insertText: word,
-        range: range
-      })
-    }
+  ].forEach((item, i) => {
+    result.push({
+      label: { name: item.name },
+      kind: monaco.languages.CompletionItemKind.Keyword,
+      insertText: item.insertText,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      range: range,
+      sortText: (20000 + i).toString()
+    })
   })
 
   return result
@@ -103,6 +128,10 @@ function processCursorChange (source: string, position: Monaco.Position) {
   const isTab = source === 'tab'
   if (isTab || isEnter) {
     const line = position.lineNumber
+    if (line < 2) {
+      return
+    }
+
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
 
@@ -137,6 +166,10 @@ function processCursorChange (source: string, position: Monaco.Position) {
     }
   } else if (isEnter) {
     const line = position.lineNumber - 1
+    if (line < 2) {
+      return
+    }
+
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
     if (
@@ -264,17 +297,15 @@ export default {
             endColumn = lineContent.length + 1
           }
 
-          const range = {
+          const range: Monaco.IRange = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
             startColumn: startColumn + 1,
             endColumn: endColumn
           }
 
-          const word = model.getWordUntilPosition(position)
-
           return {
-            suggestions: createDependencyProposals(range, word.word)
+            suggestions: createDependencyProposals(range, model, position)
           }
         }
       })

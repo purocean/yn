@@ -184,7 +184,10 @@ export default defineComponent({
         return { background: '#818181' }
       }
 
-      if (currentFile.value && !isSaved.value && (isEncrypted(currentFile.value) || currentFile.value.status === 'save-failed')) {
+      if (
+        (currentFile.value && !isSaved.value && isEncrypted(currentFile.value)) ||
+        currentFile.value?.status === 'save-failed'
+      ) {
         return { background: '#ff9800ad' }
       }
 

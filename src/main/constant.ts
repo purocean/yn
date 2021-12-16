@@ -16,9 +16,12 @@ export const STATIC_DIR = path.join(__dirname, '../renderer')
 export const HELP_DIR = path.join(__dirname, '../../help')
 export const ASSETS_DIR = path.join(__dirname, 'assets')
 export const USER_PLUGIN_DIR = path.join(USER_DIR, './plugins')
+export const USER_THEME_DIR = path.join(USER_DIR, './themes')
 
 export const BIN_DIR = convertAppPath(path.join(__dirname, '../../bin'))
 export const RESOURCES_DIR = convertAppPath(path.join(__dirname, 'resources'))
+
+export const BUILD_IN_STYLES = ['github.css']
 
 export const GITHUB_URL = 'https://github.com/purocean/yn'
 

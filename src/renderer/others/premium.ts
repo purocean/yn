@@ -68,7 +68,7 @@ export function showPremium () {
 export function getLicenseInfo () {
   try {
     const licenseStr = getSetting('license')
-    return parseLicense(licenseStr)
+    return parseLicense(licenseStr!)
   } catch (error) {
     console.error(error)
   }

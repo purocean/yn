@@ -3,7 +3,7 @@
     v-if="hasRepo"
     class="side"
     @contextmenu.exact.prevent="showContextMenu"
-    @dblclick="refreshRepo"
+    @dblclick="refresh"
     :title="$t('tree.db-click-refresh')">
     <div class="loading" v-if="tree === null"> {{$t('loading')}} </div>
     <template v-else>
@@ -19,11 +19,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, toRefs, watch } from 'vue'
+import { computed, defineComponent, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
-import { refreshRepo, refreshTree } from '@fe/services/tree'
-import { showSettingPanel } from '@fe/services/setting'
+import { refreshTree } from '@fe/services/tree'
+import { fetchSettings, showSettingPanel } from '@fe/services/setting'
 import { useI18n } from '@fe/services/i18n'
 import TreeNode from './TreeNode.vue'
 
@@ -35,29 +35,30 @@ export default defineComponent({
     const store = useStore()
     const contextMenu = useContextMenu()
 
-    const { currentRepo, tree, repositories } = toRefs(store.state)
+    const { currentRepo, tree } = toRefs(store.state)
+
+    async function refresh () {
+      await fetchSettings()
+      await refreshTree()
+    }
 
     function showContextMenu () {
       contextMenu.show([
         {
           id: 'refresh',
           label: t('tree.context-menu.refresh'),
-          onClick: refreshRepo
+          onClick: refresh
         }
       ])
     }
 
-    onBeforeMount(() => {
-      refreshTree()
-    })
+    watch(currentRepo, refreshTree, { immediate: true })
 
-    watch(currentRepo, refreshTree)
-
-    const hasRepo = computed(() => Object.keys(repositories.value).length > 0)
+    const hasRepo = computed(() => !!currentRepo.value)
 
     return {
       tree,
-      refreshRepo,
+      refresh,
       showContextMenu,
       showSettingPanel,
       hasRepo,

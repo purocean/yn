@@ -1,6 +1,5 @@
 import type { Components, Doc, FileItem, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
-import { basename } from '@fe/utils/path'
 
 export type ApiResult<T = any> = {
   status: 'ok' | 'error',
@@ -49,7 +48,8 @@ export async function proxyRequest (url: string, reqOptions: Record<string, any>
   }
 
   if (res.headers.get('x-yank-note-api-status') === 'error') {
-    throw new Error(res.headers.get('x-yank-note-api-message') || 'error')
+    const msg = res.headers.get('x-yank-note-api-message') || 'error'
+    throw new Error(decodeURIComponent(msg))
   }
 
   return res
@@ -127,35 +127,6 @@ export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
 }
 
 /**
- * Mark a file.
- * @param file
- * @returns
- */
-export async function markFile (file: FileItem): Promise<ApiResult<any>> {
-  const { path, repo } = file
-  return fetchHttp(`/api/mark?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'POST' })
-}
-
-/**
- * Unmark a file.
- * @param file
- * @returns
- */
-export async function unmarkFile (file: FileItem): Promise<ApiResult<any>> {
-  const { path, repo } = file
-  return fetchHttp(`/api/mark?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
-}
-
-/**
- * Fetch marked files.
- * @returns
- */
-export async function fetchMarkedFiles (): Promise<FileItem[]> {
-  const { data } = await fetchHttp('/api/mark')
-  return data.map((x: PathItem) => ({ ...x, name: basename(x.path) }))
-}
-
-/**
  * Fetch file tree from a repository.
  * @param repo
  * @returns
@@ -166,12 +137,12 @@ export async function fetchTree (repo: string): Promise<Components.Tree.Node[]> 
 }
 
 /**
- * Fetch repositories.
+ * Fetch custom styles.
  * @returns
  */
-export async function fetchRepositories () {
-  const result = await fetchHttp('/api/repositories')
-  return result.data as Record<string, string>
+export async function fetchCustomStyles (): Promise<string[]> {
+  const result = await fetchHttp('/api/custom-styles')
+  return result.data
 }
 
 /**
@@ -236,17 +207,6 @@ export async function upload (repo: string, fileBase64Url: string, filePath: str
   formData.append('attachment', fileBase64Url)
 
   return fetchHttp('/api/attachment', { method: 'POST', body: formData })
-}
-
-/**
- * Open file in OS.
- * @param file
- * @param reveal
- * @returns
- */
-export async function openInOS (file: FileItem, reveal?: boolean): Promise<ApiResult<any>> {
-  const { repo, path } = file
-  return fetchHttp(`/api/open?repo=${encodeURIComponent(repo)}&path=${encodeURIComponent(path)}&reveal=${reveal ? 'true' : ''}`)
 }
 
 /**

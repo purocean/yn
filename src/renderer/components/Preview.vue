@@ -59,7 +59,6 @@ import type { RenderEnv } from '@fe/types'
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
 
-import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
 
@@ -157,10 +156,13 @@ export default defineComponent({
       }
 
       logger.debug('render')
-      // not markdown file, show code block.
-      const content = (filePath.value || '').endsWith('.md')
-        ? currentContent.value
-        : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
+
+      let content = currentContent.value
+
+      // not markdown file, displace as code.
+      if (filePath.value && !filePath.value.endsWith('.md')) {
+        content = '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
+      }
 
       const startTime = performance.now()
       renderEnv = { source: content, file: currentFile.value }
@@ -213,7 +215,9 @@ export default defineComponent({
     }
 
     function handleContextMenu (e: MouseEvent) {
-      if (isElectron || e.altKey) {
+      const tagName = (e.target as HTMLElement).tagName
+      const allowTags = ['TD', 'TH']
+      if (isElectron || e.altKey || allowTags.includes(tagName)) {
         const contextMenuItems = getContextMenuItems(e)
         if (contextMenuItems.length > 0) {
           useContextMenu().show(contextMenuItems)
@@ -223,8 +227,8 @@ export default defineComponent({
       }
     }
 
-    function revealLine (line: number) {
-      if (line <= 1) {
+    function revealLine (startLine: number, endLine?: number) {
+      if (startLine <= 1) {
         scrollTopTo(0)
         return
       }
@@ -232,7 +236,8 @@ export default defineComponent({
       const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>('.markdown-body .source-line')
       for (let i = 0; i < nodes.length; i++) {
         const el = nodes[i]
-        if (parseInt(el.dataset.sourceLine || '0') >= line) {
+        const lineNumber = parseInt(el.dataset.sourceLine || '0')
+        if (lineNumber >= startLine && lineNumber <= (endLine || Number.MAX_SAFE_INTEGER)) {
           el.scrollIntoView()
           break
         }
@@ -601,6 +606,10 @@ export default defineComponent({
         display: inline-block;
         vertical-align: baseline;
       }
+    }
+
+    table a::after {
+      display: none !important;
     }
 
     .new-page {

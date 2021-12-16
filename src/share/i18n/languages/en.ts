@@ -36,8 +36,8 @@ const data = {
       'desc': 'Yank Note is open-source, I\'ve been constantly updating it since 2018. It consumes my energy and money (such as the annual Apple developer account subscription). Now a paid premium version is available. If you need advanced features or want to support my development, you can buy a license.',
       'free-desc': 'For most users',
       'premium-desc': 'More features',
-      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Widgets\nEncryption\nIntegrated Terminal',
-      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Widgets\nEncryption\nIntegrated Terminal\nMacro Replacement\nDark Mode',
+      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nIntegrated Terminal',
+      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nIntegrated Terminal\nMacro Replacement\nDark Mode',
     },
     'buy': {
       'buy': 'Buy',
@@ -301,6 +301,11 @@ const data = {
     'add': 'Add %s',
     'delete-warning': 'Are you sure you want to remove this node?',
     'error-choose-repo-path': 'Please choose repository path',
+    'tabs': {
+      'repos': 'Repositories',
+      'appearance': 'Appearance',
+      'other': 'Other',
+    },
     'schema': {
       'repos': {
         'repos': 'Repositories',
@@ -312,6 +317,7 @@ const data = {
       },
       'theme': 'Theme',
       'language': 'Language',
+      'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, date.',
       'shell': 'Shell',
@@ -355,12 +361,13 @@ const data = {
     'clear': 'Clear',
   },
   'drawio': {
-    'adjust-height': 'Adjust Height',
+    'fit-height': 'Fit Height',
   },
   'mind-map': {
     'zoom-in': 'Zoom In',
     'zoom-out': 'Zoom Out',
-    'switch-layout': 'Switch Layout',
+    'fit-height': 'Fit',
+    'switch-layout': 'Layout',
     'switch-loose': 'Compact/Loose',
     'convert-error': 'Conversion error\n    1. Please ensure that the outline has only one root item.\n    2. Please ensure that the outline level is correct.',
   },
@@ -372,6 +379,20 @@ const data = {
     'edit-title': 'Edit Cell',
     'edit-error': 'Something wrong',
     'limit-single-line': 'Editing only single lines',
+    'context-menu': {
+      'edit': 'Edit',
+      'quick-edit': 'Quit Edit',
+      'align-left': 'Align Left',
+      'align-center': 'Align Center',
+      'align-right': 'Align Right',
+      'align-normal': 'Align Normal',
+      'add-row-above': 'Add Row Above',
+      'add-row-below': 'Add Row Below',
+      'delete-row': 'Delete Row',
+      'add-col-left': 'Add Column Left',
+      'add-col-right': 'Add Column Right',
+      'delete-col': 'Delete Column',
+    },
   },
   'lucky-sheet': {
     'saved-at': 'Saved at',
@@ -380,6 +401,12 @@ const data = {
   },
   'markdown-link': {
     'convert-to-titled-link': 'Convert to Titled Link',
+  },
+  'custom-css': {
+    'change-confirm': {
+      'title': 'Attention',
+      'content': 'Changing the custom CSS requires the page to be reloaded. Do you want to continue?',
+    }
   },
 }
 

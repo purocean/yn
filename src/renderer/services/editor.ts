@@ -97,14 +97,16 @@ export function insert (text: string) {
  * @param text
  */
 export function insertAt (position: Monaco.Position, text: string) {
-  getEditor().executeEdits('', [
+  const editor = getEditor()
+  editor.executeEdits('', [
     {
       range: new (getMonaco().Range)(position.lineNumber, position.column, position.lineNumber, position.column),
       text,
       forceMoveMarkers: true
     }
   ])
-  getEditor().focus()
+  editor.setPosition(position)
+  editor.focus()
 }
 
 /**
@@ -114,23 +116,30 @@ export function insertAt (position: Monaco.Position, text: string) {
  */
 export function replaceLine (line: number, text: string) {
   const length = getEditor().getModel()!.getLineLength(line)
+  const editor = getEditor()
+  const monaco = getMonaco()
 
-  getEditor().executeEdits('', [
+  editor.executeEdits('', [
     {
-      range: new (getMonaco().Range)(line, 1, line, length + 1),
+      range: new (monaco.Range)(line, 1, line, length + 1),
       text,
       forceMoveMarkers: true
     }
   ])
+  editor.setPosition(new monaco.Position(line, text.length + 1))
+  editor.focus()
 }
 
 export function deleteLine (line: number) {
-  getEditor().executeEdits('', [
+  const editor = getEditor()
+  editor.executeEdits('', [
     {
       range: new (getMonaco().Range)(line, 1, line + 1, 1),
       text: null
     }
   ])
+  editor.setPosition(new (getMonaco().Position)(line, 1))
+  editor.focus()
 }
 
 /**
@@ -193,6 +202,7 @@ export function replaceValue (search: string, val: string) {
       forceMoveMarkers: true
     }
   ])
+  getEditor().focus()
 }
 
 /**

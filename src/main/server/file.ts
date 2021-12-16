@@ -3,14 +3,9 @@ import * as path from 'path'
 import * as crypto from 'crypto'
 import * as NaturalOrderby from 'natural-orderby'
 import * as yargs from 'yargs'
-import { shell } from 'electron'
-import opn from 'opn'
-import * as wsl from '../wsl'
-import mark, { MarkedFile } from './mark'
 import repository from './repository'
 
 const readonly = !!(yargs.argv.readonly)
-const isWsl = wsl.isWsl
 const ignorePath = /node_modules/
 
 interface XFile {
@@ -23,7 +18,6 @@ interface XFile {
 interface TreeItem extends XFile {
   mtime?: number;
   birthtime?: number;
-  marked?: boolean;
   children?: XFile[];
   level: number;
 }
@@ -113,7 +107,6 @@ async function travels (
   location: string,
   repo: string,
   basePath: string,
-  markedFiles: MarkedFile[],
   data: TreeItem,
 ): Promise<void> {
   if (!(await fs.stat(location)).isDirectory()) {
@@ -141,7 +134,6 @@ async function travels (
         path: xpath,
         type: 'file',
         repo: repo,
-        marked: (markedFiles || []).findIndex(f => f.path === xpath && f.repo === repo) > -1,
         birthtime: stat.birthtimeMs,
         mtime: stat.mtimeMs,
         level: data.level + 1,
@@ -157,7 +149,7 @@ async function travels (
       }
 
       dirs.push(dir)
-      await travels(p, repo, basePath, markedFiles, dir)
+      await travels(p, repo, basePath, dir)
     }
   }))
 
@@ -177,25 +169,9 @@ export async function tree (repo: string): Promise<TreeItem[]> {
     level: 1,
   }]
 
-  const markedFiles = mark.list()
-
-  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, markedFiles, data[0]))
+  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0]))
 
   return data
-}
-
-export function open (repo: string, p: string, reveal?: boolean) {
-  withRepo(repo, async (_, targetPath) => {
-    if (isWsl) {
-      targetPath = wsl.toWinPath(targetPath)
-    }
-
-    if (reveal) {
-      shell.showItemInFolder(targetPath)
-    } else {
-      opn(targetPath)
-    }
-  }, p)
 }
 
 export async function search (repo: string, str: string) {

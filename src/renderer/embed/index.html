@@ -32,6 +32,15 @@
         Array.prototype.forEach.call(document.styleSheets, (item) => {
           item.disabled = true
         })
+      } else {
+        const head = document.getElementsByTagName('head')[0]
+        const cssLink = document.createElement('link')
+        cssLink.id = 'custom-css'
+        cssLink.rel = 'stylesheet'
+        cssLink.type = 'text/css'
+        cssLink.href = '/api/custom-css'
+
+        head.appendChild(cssLink)
       }
 
       if (params.get('debug') === 'false') {

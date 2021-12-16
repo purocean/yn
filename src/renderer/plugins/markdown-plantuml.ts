@@ -144,6 +144,7 @@ const MarkdownItPlugin = function umlPlugin (md: Markdown, options: any) {
 const Plantuml = defineComponent({
   name: 'plantuml-image',
   props: {
+    attrs: Object,
     src: String
   },
   setup (props) {
@@ -187,9 +188,10 @@ const Plantuml = defineComponent({
       }
 
       return h('img', {
+        ...props.attrs,
         ref: img,
         alt: 'plantuml',
-        class: 'plantuml-img',
+        class: 'source-line plantuml-img',
         style,
         src: src.value,
         onLoad
@@ -200,7 +202,7 @@ const Plantuml = defineComponent({
 
 function render (tokens: Token[], idx: number) {
   const token = tokens[idx]
-  return h(Plantuml, { src: token.attrGet('src') || emptySrc })
+  return h(Plantuml, { attrs: token.meta?.attrs, src: token.attrGet('src') || emptySrc })
 }
 
 export default {

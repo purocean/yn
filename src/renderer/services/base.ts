@@ -1,7 +1,7 @@
 import { slugify } from 'transliteration'
 import type { Doc } from '@fe/types'
 import * as api from '@fe/support/api'
-import { getSettings } from './setting'
+import { getSetting, getSettings } from './setting'
 import { FLAG_DEMO } from '@fe/support/args'
 import { binMd5, quote, fileToBase64URL, getLogger } from '@fe/utils'
 import { basename, resolve, extname, dirname, relative } from '@fe/utils/path'
@@ -77,8 +77,25 @@ export async function openExternal (uri: string) {
 
 /**
  * open a path
- * @param uri
+ * @param path
  */
 export async function openPath (path: string) {
   api.rpc(`require('electron').shell.openPath(${quote(path)})`)
+}
+
+/**
+ * show item in folder
+ * @param path
+ */
+export async function showItemInFolder (path: string) {
+  api.rpc(`require('electron').shell.showItemInFolder(${quote(path)})`)
+}
+
+/**
+ * get repo by name
+ * @param name
+ * @returns
+ */
+export function getRepo (name: string) {
+  return (getSetting('repos') || []).find(x => x.name === name)
 }

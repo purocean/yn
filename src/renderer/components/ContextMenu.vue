@@ -3,8 +3,8 @@
     <div class="mask" v-if="isShow" @click="hide" @contextmenu.prevent.stop="hide"></div>
     <ul class="menu" ref="refMenu" :style="{visibility: isShow ? 'visible' : 'hidden'}">
       <template v-for="(item, i) in items">
-        <li v-if="item.type === 'separator'" :key="i" :class="item.type || 'normal'"></li>
-        <li v-else :key="item.id" @click="handleClick(item)" :class="item.type || 'normal'">{{item.label}}</li>
+        <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type || 'normal'"></li>
+        <li v-else :key="item.id" v-show="!item.hidden" @click="handleClick(item)" :class="item.type || 'normal'">{{item.label}}</li>
       </template>
     </ul>
   </div>

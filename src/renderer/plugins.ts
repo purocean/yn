@@ -1,3 +1,5 @@
+import customStyles from './plugins/custom-styles'
+import electronZoom from './plugins/electron-zoom'
 import documentHistoryStack from '@fe/plugins/document-history-stack'
 import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
@@ -16,13 +18,11 @@ import editorAttachment from '@fe/plugins/editor-attachment'
 import editorMarkdown from '@fe/plugins/editor-markdown'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
-import tableCellEdit from '@fe/plugins/table-cell-edit'
 import imageViewer from '@fe/plugins/image-viewer'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownMacro from './plugins/markdown-macro'
 import markdownFrontMatter from '@fe/plugins/markdown-front-matter'
-import markdownSourceLine from '@fe/plugins/markdown-source-line'
 import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
@@ -47,6 +47,8 @@ import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 
 export default [
+  customStyles,
+  electronZoom,
   documentHistoryStack,
   fileTreeContextMenu,
   statusBarSetting,
@@ -64,14 +66,12 @@ export default [
   editorAttachment,
   editorMarkdown,
   copyText,
-  tableCellEdit,
   switchTodo,
   imageViewer,
   markdownHtml,
   markdownRenderVnode,
   markdownMacro,
   markdownFrontMatter,
-  markdownSourceLine,
   markdownImsize,
   markdownToc,
   markdownCodeHighlight,

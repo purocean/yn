@@ -1,11 +1,9 @@
 import { pick } from 'lodash-es'
 import { createStore } from 'vuex'
 import * as storage from '@fe/utils/storage'
-import * as api from '@fe/support/api'
-import type { Components, Doc, FileItem, Repo } from '@fe/types'
+import type { Components, Doc, Repo } from '@fe/types'
 
 export const initState = {
-  repositories: {} as Record<string, string>,
   tree: null,
   wordWrap: storage.get<'off' | 'on'>('wordWrap', 'off'),
   showSide: storage.get('showSide', true),
@@ -30,19 +28,12 @@ export const initState = {
     line: 0,
     column: 0
   },
-  markedFiles: [] as FileItem[],
 }
 
 export type AppState = typeof initState
 export default createStore({
   state: initState,
   mutations: {
-    setMarkedFiles (state, files) {
-      state.markedFiles = files
-    },
-    setRepositories (state, data) {
-      state.repositories = data
-    },
     setTree (state, data) {
       state.tree = data
     },
@@ -118,10 +109,4 @@ export default createStore({
       return state.currentContent === state.currentFile?.content
     }
   },
-  actions: {
-    async fetchMarkedFiles ({ commit }) {
-      const files = await api.fetchMarkedFiles()
-      commit('setMarkedFiles', files)
-    },
-  }
 })
