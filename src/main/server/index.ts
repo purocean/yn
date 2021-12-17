@@ -49,10 +49,6 @@ const fileContent = async (ctx: any, next: any) => {
       await file.rm(ctx.query.repo, ctx.query.path)
       ctx.body = result()
     } else if (ctx.method === 'PATCH') {
-      if (await file.exists(ctx.request.body.repo, ctx.request.body.newPath)) {
-        throw new Error('File already exists.')
-      }
-
       await file.mv(ctx.request.body.repo, ctx.request.body.oldPath, ctx.request.body.newPath)
       ctx.body = result()
     }
