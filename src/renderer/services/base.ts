@@ -8,6 +8,7 @@ import { basename, resolve, extname, dirname, relative } from '@fe/utils/path'
 import { dayjs } from '@fe/context/lib'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
+import { isWindows } from '@fe/support/env'
 import { t } from './i18n'
 
 const logger = getLogger('service-base')
@@ -88,6 +89,10 @@ export async function openPath (path: string) {
  * @param path
  */
 export async function showItemInFolder (path: string) {
+  if (isWindows) {
+    path.replaceAll('/', '\\')
+  }
+
   api.rpc(`require('electron').shell.showItemInFolder(${quote(path)})`)
 }
 
