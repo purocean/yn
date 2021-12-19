@@ -139,9 +139,10 @@ function processCursorChange (source: string, position: Monaco.Position) {
     const reg = /^\s*(\d+)\./
     const match = prevContent.match(reg)
     if (match && reg.test(content)) {
-      const num = parseInt(match[0] || '0')
+      const num = isTab ? 0 : parseInt(match[0] || '0')
+
       // only increase above 1
-      if (num > 1) {
+      if (num > 1 || isTab) {
         replaceLine(line, content.replace(/\d+\./, `${num + 1}.`))
       }
     }
