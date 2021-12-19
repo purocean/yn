@@ -90,7 +90,7 @@ export async function openPath (path: string) {
  */
 export async function showItemInFolder (path: string) {
   if (isWindows) {
-    path.replaceAll('/', '\\')
+    path = path.replaceAll('/', '\\')
   }
 
   api.rpc(`require('electron').shell.showItemInFolder(${quote(path)})`)
