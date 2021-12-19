@@ -13,15 +13,13 @@ let editor: Monaco.editor.IStandaloneCodeEditor
 /**
  * Default options.
  */
-export const defaultOptions: {[key: string]: any} = {
+export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: 16,
   wordWrap: store.state.wordWrap,
   links: !isElectron,
   // wordWrapColumn: 40,
-  // Set this to false to not auto word wrap minified files
-  wordWrapMinified: true,
   mouseWheelZoom: true,
   // try "same", "indent" or "none"
   wrappingIndent: 'same',
@@ -33,7 +31,9 @@ export const defaultOptions: {[key: string]: any} = {
   },
   readOnly: FLAG_READONLY,
   acceptSuggestionOnEnter: 'smart',
-  renderControlCharacters: false,
+  unicodeHighlight: {
+    ambiguousCharacters: false,
+  }
 }
 
 /**
