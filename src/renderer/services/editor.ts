@@ -1,6 +1,6 @@
 import type * as Monaco from 'monaco-editor'
 import { FLAG_READONLY } from '@fe/support/args'
-import { isElectron } from '@fe/support/env'
+import { isElectron, isMacOS } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import { registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
@@ -9,6 +9,8 @@ import { getColorScheme } from './theme'
 
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
+
+const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monospace'
 
 /**
  * Default options.
@@ -33,7 +35,9 @@ export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions 
   acceptSuggestionOnEnter: 'smart',
   unicodeHighlight: {
     ambiguousCharacters: false,
-  }
+    invisibleCharacters: false,
+  },
+  fontFamily: isMacOS ? DEFAULT_MAC_FONT_FAMILY : undefined,
 }
 
 /**
