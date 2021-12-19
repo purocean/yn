@@ -3,6 +3,12 @@ import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import fs from 'fs-extra'
 
+// copy vs
+fs.copySync(
+  path.resolve(__dirname, 'node_modules/monaco-editor/min/vs'),
+  path.resolve(__dirname, 'src/renderer/public/vs')
+)
+
 fs.copySync(
   path.resolve(__dirname, 'node_modules/luckysheet/dist'),
   path.resolve(__dirname, 'src/renderer/public/embed')
