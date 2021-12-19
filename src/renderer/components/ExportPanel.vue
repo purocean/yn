@@ -74,7 +74,7 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, ref, toRefs } from 'vue'
-import { isElectron, nodeRequire } from '@fe/support/env'
+import { getElectronRemote, isElectron } from '@fe/support/env'
 import { getContentHtml } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
 import { triggerHook } from '@fe/core/hook'
@@ -150,7 +150,7 @@ export default defineComponent({
         toast.show('info', t('export-panel.loading'))
         await sleep(300)
 
-        const content = nodeRequire('electron').remote.getCurrentWebContents()
+        const content = getElectronRemote().getCurrentWebContents()
 
         const { landscape, pageSize, scaleFactor, printBackground } = convert.pdfOptions
         const buffer: Buffer = await content.printToPDF({

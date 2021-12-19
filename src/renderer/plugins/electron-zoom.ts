@@ -9,7 +9,7 @@ export default {
     }
 
     ctx.registerHook('STARTUP', () => {
-      const webContents = ctx.env.nodeRequire('electron').remote.getCurrentWebContents()
+      const webContents = ctx.env.getElectronRemote().getCurrentWebContents()
 
       function changeZoomFactor (zoomIn: boolean) {
         const currentZoomFactor = webContents.getZoomFactor()
