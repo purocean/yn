@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import type * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { defineComponent, onMounted, ref } from 'vue'
 import { defaultOptions } from '@fe/services/editor'
 import { toUri } from '@fe/services/document'
@@ -20,7 +20,7 @@ export default defineComponent({
     let editor: monaco.editor.IStandaloneCodeEditor | null = null
     const refEditor = ref<HTMLElement | null>(null)
 
-    const getMonaco = () => window.monaco
+    const getMonaco = () => monaco
     const getEditor = () => editor!
     const resize = () => editor && editor.layout()
 
@@ -52,7 +52,7 @@ export default defineComponent({
     function initMonaco () {
       triggerHook('MONACO_BEFORE_INIT', { monaco: getMonaco() })
 
-      editor = getMonaco().editor.create(refEditor.value, defaultOptions)
+      editor = getMonaco().editor.create(refEditor.value!, defaultOptions)
       setModel(toUri(null), '')
 
       setTimeout(() => {
@@ -60,21 +60,7 @@ export default defineComponent({
       }, 500)
     }
 
-    function onGotAmdLoader () {
-      (window as any).require(['vs/editor/editor.main'], initMonaco)
-    }
-
-    onMounted(() => {
-      if (!window.require) {
-        const loaderScript = document.createElement('script')
-        loaderScript.type = 'text/javascript'
-        loaderScript.src = 'vs/loader.js'
-        loaderScript.addEventListener('load', onGotAmdLoader)
-        document.body.appendChild(loaderScript)
-      } else {
-        onGotAmdLoader()
-      }
-    })
+    onMounted(initMonaco)
 
     return {
       refEditor,
