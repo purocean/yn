@@ -33,6 +33,7 @@ export const defaultOptions: {[key: string]: any} = {
   },
   readOnly: FLAG_READONLY,
   acceptSuggestionOnEnter: 'smart',
+  renderControlCharacters: false,
 }
 
 /**

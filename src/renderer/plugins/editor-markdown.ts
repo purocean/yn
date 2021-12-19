@@ -46,7 +46,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
   if (currentStr.startsWith(':')) {
     Object.keys(emoji).forEach((key, i) => {
       result.push({
-        label: { name: `:${key}: ${(emoji as any)[key]}` },
+        label: { label: `:${key}: ${(emoji as any)[key]}` },
         kind: monaco.languages.CompletionItemKind.EnumMember,
         insertText: (emoji as any)[key],
         range: range,
@@ -60,7 +60,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
   getWords(getValue()).forEach((word, i) => {
     if (currentWord !== word) {
       result.push({
-        label: { name: word },
+        label: { label: word },
         kind: monaco.languages.CompletionItemKind.Text,
         insertText: word,
         range: range,
@@ -111,7 +111,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
     { name: '/ --- Front Matter', insertText: '---\nheadingNumber: true\nenableMacro: true\ndefine:\n    APP_NAME: Yank Note\n---\n' },
   ].forEach((item, i) => {
     result.push({
-      label: { name: item.name },
+      label: { label: item.name },
       kind: monaco.languages.CompletionItemKind.Keyword,
       insertText: item.insertText,
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
@@ -202,7 +202,7 @@ export default {
         label: t('editor.context-menu.insert-date'),
         contextMenuGroupId: 'modification',
         keybindings: [
-          KM.Shift | KM.Alt | KC.KEY_D
+          KM.Shift | KM.Alt | KC.KeyD
         ],
         run: insertDate
       })
@@ -212,7 +212,7 @@ export default {
         label: t('editor.context-menu.insert-time'),
         contextMenuGroupId: 'modification',
         keybindings: [
-          KM.Shift | KM.Alt | KC.KEY_T
+          KM.Shift | KM.Alt | KC.KeyT
         ],
         run: insertTime
       })
@@ -230,11 +230,11 @@ export default {
         e.secondaryPositions.forEach(processCursorChange.bind(null, e.source))
       })
 
-      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_U), () => {
+      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyU), () => {
         editor.getAction('editor.action.transformToUppercase').run()
       })
 
-      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_L), () => {
+      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyL), () => {
         editor.getAction('editor.action.transformToLowercase').run()
       })
 

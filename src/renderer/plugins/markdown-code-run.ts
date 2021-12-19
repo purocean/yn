@@ -216,7 +216,7 @@ export default {
         contextMenuGroupId: 'other',
         precondition: 'editorHasSelection',
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R
+          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KeyR
         ],
         run: () => {
           getActionHandler('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))
