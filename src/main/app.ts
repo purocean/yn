@@ -95,31 +95,28 @@ const createWindow = () => {
     ...(isLinux ? { icon: path.join(__dirname, './assets/icon.png') } : undefined)
   })
 
-  // win.maximize()
-  win!.show()
-  win!.setMenu(null)
+  win.setMenu(null)
+  win && win.loadURL(getUrl())
+  win.on('ready-to-show', () => {
+    win!.show()
+  })
 
-  // could not load js correctly when startup
-  setTimeout(() => {
-    win && win.loadURL(getUrl())
-  }, 0)
-
-  win!.on('close', e => {
+  win.on('close', e => {
     if (trayEnabled) {
       hideWindow()
       e.preventDefault()
     }
   })
 
-  win!.on('closed', () => {
+  win.on('closed', () => {
     win = null
   })
 
-  win!.on('enter-full-screen', () => {
+  win.on('enter-full-screen', () => {
     fullscreen = true
   })
 
-  win!.on('leave-full-screen', () => {
+  win.on('leave-full-screen', () => {
     fullscreen = false
   })
 }
