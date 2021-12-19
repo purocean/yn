@@ -304,7 +304,6 @@ if (!gotTheLock) {
 
   app.on('web-contents-created', (_, webContents) => {
     electronRemote.enable(webContents)
-    webContents.openDevTools()
 
     webContents.setWindowOpenHandler(({ url }) => {
       const allowList = [
