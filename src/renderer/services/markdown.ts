@@ -37,3 +37,8 @@ markdown.block.tokenize = function (state, startLine, endLine) {
   state.env.bMarks = state.bMarks
   state.env.eMarks = state.eMarks
 }
+
+markdown.core.ruler.after('normalize', 'after_normalize', state => {
+  state.env.source = state.src
+  return true
+})

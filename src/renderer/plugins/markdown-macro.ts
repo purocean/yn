@@ -272,7 +272,7 @@ export default {
     })
 
     ctx.markdown.registerPlugin(md => {
-      md.core.ruler.after('normalize', 'macro', (state) => {
+      md.core.ruler.after('normalize', 'after_normalize', (state) => {
         const env = state.env || {}
         const file = env.file || {}
 
