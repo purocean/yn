@@ -129,7 +129,7 @@ export async function writeToClipboard (type: string, value: any) {
     return
   }
 
-  return navigator.clipboard.write([new ClipboardItem({
+  return (navigator.clipboard as any).write([new (window as any).ClipboardItem({
     [type]: new Blob([value], { type })
   })])
 }
