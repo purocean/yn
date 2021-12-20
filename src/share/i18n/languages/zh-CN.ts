@@ -208,13 +208,14 @@ const data: BaseLanguage = {
     },
     'insert': {
       'insert': '插入',
-      'paste-rft': '粘贴富文本',
+      'paste-rtf': '粘贴富文本',
       'paste-img-base64': '粘贴图片',
     },
     'tool': {
       'tool': '工具',
       'convert-img-link': '下载外链图片',
-      'macro-copy-markdown': '复制宏替换后的 Markdown'
+      'macro-copy-markdown': '复制宏替换后的 Markdown',
+      'copy-rtf': '拷贝富文本',
     },
     'document-info': {
       'selected': '已选择',

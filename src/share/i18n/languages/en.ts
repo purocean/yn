@@ -207,13 +207,14 @@ const data = {
     },
     'insert': {
       'insert': 'Insert',
-      'paste-rft': 'Paste RTF',
+      'paste-rtf': 'Paste Rich Text',
       'paste-img-base64': 'Paste Image',
     },
     'tool': {
       'tool': 'Tool',
       'convert-img-link': 'Download Remote Image',
-      'macro-copy-markdown': 'Copy Markdown after Macro Replacement'
+      'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
+      'copy-rtf': 'Copy Rich Text'
     },
     'document-info': {
       'selected': 'Selected',

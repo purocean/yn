@@ -45,6 +45,7 @@ import markdownHeadingNumber from './plugins/markdown-heading-number'
 import syncScroll from '@fe/plugins/sync-scroll'
 import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
+import copyRenderedContent from './plugins/copy-rendered-content'
 
 export default [
   customStyles,
@@ -94,4 +95,5 @@ export default [
   syncScroll,
   transformImgOutLink,
   imageHostingPicgo,
+  copyRenderedContent,
 ]
