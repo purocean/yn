@@ -68,6 +68,7 @@ defaultRules.code_block = function (tokens: Token[], idx: number, _: any, __: an
 defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: any, slf: Renderer) {
   const token = tokens[idx]
   const info = token.info ? unescapeAll(token.info).trim() : ''
+  token.attrSet('data-export-text', token.content)
   let langName = ''
   let langAttrs = ''
   let highlighted: any; let i; let arr; let tmpAttrs; let tmpToken

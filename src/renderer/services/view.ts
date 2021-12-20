@@ -1,3 +1,4 @@
+import { escape } from 'lodash-es'
 import { Escape } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
@@ -73,12 +74,16 @@ export function getContentHtml (nodeProcessor?: (node: HTMLElement) => void) {
     }
 
     const filter = (node: HTMLElement) => {
-      if (node.classList.contains('no-print')) {
+      if (node.classList.contains('no-print') || node.classList.contains('skip-export')) {
         node.remove()
         return
       }
 
       if (node.dataset) {
+        if (node.dataset.exportText) {
+          node.innerHTML = escape(node.dataset.exportText)
+        }
+
         Object.keys(node.dataset).forEach(key => {
           delete node.dataset[key]
         })
