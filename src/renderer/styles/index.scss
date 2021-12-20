@@ -82,7 +82,7 @@ html {
     color: var(--g-foreground-color);
   }
 
-  input:not([type=checkbox]):not([type=radio]), textarea:not(.monaco-mouse-cursor-text), select {
+  input:not([type=checkbox]):not([type=radio]), textarea, select {
     display: block;
     width: 100%;
     margin: 0;
