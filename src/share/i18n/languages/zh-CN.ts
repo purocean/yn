@@ -216,6 +216,7 @@ const data: BaseLanguage = {
       'convert-img-link': '下载外链图片',
       'macro-copy-markdown': '复制宏替换后的 Markdown',
       'copy-rtf': '拷贝富文本',
+      'copy-html': '拷贝渲染后的 HTML',
     },
     'document-info': {
       'selected': '已选择',

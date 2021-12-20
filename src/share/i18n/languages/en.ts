@@ -214,7 +214,8 @@ const data = {
       'tool': 'Tool',
       'convert-img-link': 'Download Remote Image',
       'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
-      'copy-rtf': 'Copy Rich Text'
+      'copy-rtf': 'Copy Rich Text',
+      'copy-html': 'Copy Rendered HTML',
     },
     'document-info': {
       'selected': 'Selected',
