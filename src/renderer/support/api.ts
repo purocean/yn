@@ -1,4 +1,4 @@
-import type { Components, Doc, FileItem, PathItem } from '@fe/types'
+import type { Components, Doc, ExportTypes, FileItem, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
 
 export type ApiResult<T = any> = {
@@ -9,6 +9,10 @@ export type ApiResult<T = any> = {
 
 async function fetchHttp (input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init)
+
+  if (!response.headers.get('content-type')?.includes('json')) {
+    return response
+  }
 
   let result: any = null
   try {
@@ -242,6 +246,24 @@ export async function deleteTmpFile (name: string): Promise<ApiResult<any>> {
     `/api/tmp-file?name=${encodeURIComponent(name)}`,
     { method: 'delete' }
   )
+}
+
+/**
+ * Convert file
+ * @param source
+ * @param fromType
+ * @param toType
+ * @returns
+ */
+export async function convertFile (
+  source: string, fromType: 'html' | 'markdown',
+  toType: Exclude<ExportTypes, 'pdf'>
+): Promise<Response> {
+  return fetchHttp(`/api/convert/export.${toType}`, {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ source, fromType, toType }),
+  })
 }
 
 /**
