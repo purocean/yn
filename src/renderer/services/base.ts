@@ -104,3 +104,32 @@ export async function showItemInFolder (path: string) {
 export function getRepo (name: string) {
   return (getSetting('repos') || []).find(x => x.name === name)
 }
+
+export async function readFromClipboard (callback: (type: string, getType: (type: string) => Promise<Blob>) => Promise<void>) {
+  const result = await navigator.permissions.query({ name: 'clipboard-read' as any })
+
+  if (result.state === 'denied') {
+    useToast().show('warning', t('need-clipboard-permission'))
+    return
+  }
+
+  const items: any = await (navigator.clipboard as any).read()
+  for (const item of items) {
+    for (const type of (item.types as string[])) {
+      await callback(type, item.getType.bind(item))
+    }
+  }
+}
+
+export async function writeToClipboard (type: string, value: any) {
+  const result = await navigator.permissions.query({ name: 'clipboard-write' as any })
+
+  if (result.state === 'denied') {
+    useToast().show('warning', t('need-clipboard-permission'))
+    return
+  }
+
+  return navigator.clipboard.write([new ClipboardItem({
+    [type]: new Blob([value], { type })
+  })])
+}

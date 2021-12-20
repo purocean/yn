@@ -68,24 +68,8 @@ export default {
     const pasteImageAsBase64ActionId = 'plugin.editor-paste.insert-image-base64'
     const pasteRtfActionId = 'plugin.editor-paste.insert-rtf'
 
-    const getClipboardContent = async (callback: (type: string, getType: (type: string) => Promise<Blob>) => Promise<void>) => {
-      const result = await navigator.permissions.query({ name: 'clipboard-read' as any })
-
-      if (result.state === 'denied') {
-        ctx.ui.useToast().show('warning', ctx.i18n.t('need-clipboard-permission'))
-        return
-      }
-
-      const items: any = await (navigator.clipboard as any).read()
-      for (const item of items) {
-        for (const type of (item.types as string[])) {
-          await callback(type, item.getType.bind(item))
-        }
-      }
-    }
-
     const pasteImageFromClipboard = async (asBase64: boolean) => {
-      getClipboardContent(async (type, getType) => {
+      ctx.base.readFromClipboard(async (type, getType) => {
         const match = type.match(IMAGE_REG)
         if (match) {
           const file = new File([await getType(type)], 'image.' + match[1], { type })
@@ -97,7 +81,7 @@ export default {
     }
 
     const pasteRtf = () => {
-      getClipboardContent(async (type, getType) => {
+      ctx.base.readFromClipboard(async (type, getType) => {
         if (type.match(HTML_REG)) {
           const html = await (await getType(type)).text()
           await pasteHtml(html)
@@ -121,7 +105,7 @@ export default {
         {
           id: pasteRtfActionId,
           type: 'normal',
-          title: ctx.i18n.t('status-bar.insert.paste-rft'),
+          title: ctx.i18n.t('status-bar.insert.paste-rtf'),
           subTitle: 'Markdown',
           onClick: pasteRtf
         },
