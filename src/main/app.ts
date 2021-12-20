@@ -277,6 +277,11 @@ if (!gotTheLock) {
     showWindow()
   })
 
+  app.on('open-file', (e) => {
+    win && dialog.showMessageBox(win, { message: 'Yank Note dose not support opening files directly.' })
+    e.preventDefault()
+  })
+
   app.on('ready', () => {
     startup()
     serve()
