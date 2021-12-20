@@ -110,36 +110,6 @@ export default defineComponent({
 
     const close = () => store.commit('setShowExport', false)
 
-    function filterHtml (html: string) {
-      const div = document.createElement('div')
-      div.innerHTML = html
-
-      const filter = (node: HTMLElement) => {
-        if (node.classList.contains('no-print')) {
-          node.remove()
-          return
-        }
-
-        if (node.dataset) {
-          Object.keys(node.dataset).forEach(key => {
-            delete node.dataset[key]
-          })
-        }
-
-        node.classList.remove('source-line')
-        node.removeAttribute('title')
-
-        const len = node.children.length
-        for (let i = len - 1; i >= 0; i--) {
-          const ele = node.children[i]
-          filter(ele as HTMLElement)
-        }
-      }
-
-      filter(div)
-      return div.innerHTML
-    }
-
     async function exportPdf (name: string) {
       if (!isElectron) {
         close()
@@ -190,19 +160,12 @@ export default defineComponent({
 
       toast.show('info', t('export-panel.loading'), 5000)
 
-      let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
-
-      // replace localhost to ip, somtimes resolve localhost take too much time on windows.
-      if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
-        baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
-      }
-
       const source = convert.fromType === 'markdown'
         ? currentFile.value.content
-        : getContentHtml().replace(/src="api/g, `src="${baseUrl}api`)
+        : getContentHtml()
 
       convert.fileName = `${fileName.value}.${convert.toType}`
-      convert.source = filterHtml(source)
+      convert.source = source
 
       await sleep(300)
       refExportForm.value!.submit()

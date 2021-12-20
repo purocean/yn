@@ -57,10 +57,61 @@ export function scrollTopTo (top: number) {
 
 /**
  * Get rendered HTML.
+ * @param nodeProcessor
  * @returns HTML
  */
-export function getContentHtml () {
-  return getActionHandler('view.get-content-html')()
+export function getContentHtml (nodeProcessor?: (node: HTMLElement) => void) {
+  function filterHtml (html: string) {
+    const div = document.createElement('div')
+    div.innerHTML = html
+
+    let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
+
+    // replace localhost to ip, somtimes resolve localhost take too much time on windows.
+    if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
+      baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
+    }
+
+    const filter = (node: HTMLElement) => {
+      if (node.classList.contains('no-print')) {
+        node.remove()
+        return
+      }
+
+      if (node.dataset) {
+        Object.keys(node.dataset).forEach(key => {
+          delete node.dataset[key]
+        })
+      }
+
+      node.classList.remove('source-line')
+      node.removeAttribute('title')
+
+      if (node.classList.length < 1) {
+        node.removeAttribute('class')
+      }
+
+      const src = node.getAttribute('src')
+      if (src?.startsWith('api/')) {
+        node.setAttribute('src', `${baseUrl}${src}`)
+      }
+
+      if (nodeProcessor) {
+        nodeProcessor(node)
+      }
+
+      const len = node.children.length
+      for (let i = len - 1; i >= 0; i--) {
+        const ele = node.children[i]
+        filter(ele as HTMLElement)
+      }
+    }
+
+    filter(div)
+    return div.firstElementChild?.innerHTML || ''
+  }
+
+  return filterHtml(getActionHandler('view.get-content-html')())
 }
 
 /**
