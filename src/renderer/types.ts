@@ -16,6 +16,7 @@ export interface Doc extends PathItem {
   passwordHash?: string;
   contentHash?: string;
   status?: 'loaded' | 'save-failed' | 'saved';
+  absolutePath?: string,
 }
 
 export interface Repo {

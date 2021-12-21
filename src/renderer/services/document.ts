@@ -401,6 +401,8 @@ export async function switchDoc (doc: Doc | null) {
       return
     }
 
+    doc.absolutePath = join(getRepo(doc.repo)?.path || '/', doc.path)
+
     const timer = setTimeout(() => {
       store.commit('setCurrentFile', { ...doc, status: undefined })
     }, 150)
