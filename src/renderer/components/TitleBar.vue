@@ -96,6 +96,10 @@ export default defineComponent({
           maximize()
         }
       }
+
+      setTimeout(() => {
+        updateWindowStatus()
+      }, 500)
     }
 
     function close () {
@@ -181,7 +185,7 @@ export default defineComponent({
 
     const titleBarStyles = computed(() => {
       if (isElectron && !isFocused.value) {
-        return { background: '#818181' }
+        return { background: '#6e6e6e' }
       }
 
       if (
@@ -227,7 +231,7 @@ export default defineComponent({
   background: #4e4e4e;
   color: #eee;
   height: 100%;
-  transition: all .3s ease-in-out;
+  transition: all .1s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;

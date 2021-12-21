@@ -301,7 +301,9 @@ if (!gotTheLock) {
   })
 
   app.on('activate', () => {
-    showWindow(false)
+    if (!win) {
+      showWindow(false)
+    }
   })
 
   app.on('web-contents-created', (_, webContents) => {
