@@ -16,7 +16,21 @@ const convert = async (source: string, fromType: string, toType: string) => {
       console.log(binPath, args)
       const process = spawn(binPath, args)
 
-      process.on('close', async () => {
+      let errorMsg = ''
+      process.stderr.on('data', (val) => {
+        errorMsg += val
+      })
+
+      process.stderr.on('data', (val) => {
+        errorMsg += val
+      })
+
+      process.on('close', async (code) => {
+        if (code) {
+          reject(new Error(errorMsg))
+          return
+        }
+
         try {
           const data = await fs.readFile(path)
           await fs.unlink(path)
