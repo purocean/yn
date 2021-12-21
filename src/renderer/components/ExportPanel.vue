@@ -2,7 +2,7 @@
   <XMask :show="showExport" @close="close" :maskCloseable="false">
     <div class="wrapper" @click.stop>
       <h3>{{$t('export-panel.export')}}</h3>
-      <iframe width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
+      <iframe @load="complete" width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
       <form ref="refExportForm" :action="`/api/convert/${convert.fileName}`" method="post" target="export-download">
         <input type="hidden" name="source" :value="convert.source">
         <input type="hidden" name="resourcePath" :value="convert.resourcePath">
@@ -80,6 +80,7 @@ import { getContentHtml } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
 import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
+import { useModal } from '@fe/support/ui/modal'
 import { useI18n } from '@fe/services/i18n'
 import { getRepo } from '@fe/services/base'
 import { sleep } from '@fe/utils'
@@ -189,7 +190,23 @@ export default defineComponent({
       }
     }
 
-    return { showExport, refExportForm, ok, close, convert, isElectron }
+    function complete (e: Event) {
+      const iframe = e.target as HTMLIFrameElement
+      try {
+        const body = iframe.contentWindow?.document.body.innerText
+        if (body) {
+          const result = JSON.parse(body)
+          if (result.message) {
+            useModal().alert({
+              title: 'Error',
+              content: result.message
+            })
+          }
+        }
+      } catch {}
+    }
+
+    return { complete, showExport, refExportForm, ok, close, convert, isElectron }
   },
 })
 </script>
