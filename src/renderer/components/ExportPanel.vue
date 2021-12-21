@@ -5,6 +5,7 @@
       <iframe width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
       <form ref="refExportForm" :action="`/api/convert/${convert.fileName}`" method="post" target="export-download">
         <input type="hidden" name="source" :value="convert.source">
+        <input type="hidden" name="resourcePath" :value="convert.resourcePath">
         <div style="padding: 20px">
           <label class="row-label">
             {{$t('export-panel.format')}}
@@ -74,13 +75,15 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, ref, toRefs } from 'vue'
-import { getElectronRemote, isElectron } from '@fe/support/env'
+import { getElectronRemote, isElectron, isWindows } from '@fe/support/env'
 import { getContentHtml } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
 import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
 import { useI18n } from '@fe/services/i18n'
+import { getRepo } from '@fe/services/base'
 import { sleep } from '@fe/utils'
+import { dirname } from '@fe/utils/path'
 import type { ExportTypes } from '@fe/types'
 import XMask from './Mask.vue'
 
@@ -100,6 +103,7 @@ export default defineComponent({
       source: '',
       toType: 'pdf' as ExportTypes,
       fromType: 'html',
+      resourcePath: '.',
       pdfOptions: {
         landscape: '',
         pageSize: 'A4',
@@ -166,6 +170,11 @@ export default defineComponent({
 
       convert.fileName = `${fileName.value}.${convert.toType}`
       convert.source = source
+
+      convert.resourcePath = [
+        getRepo(currentFile.value.repo)?.path || '.',
+        dirname(currentFile.value.absolutePath)
+      ].join(isWindows ? ';' : ':')
 
       await sleep(300)
       refExportForm.value!.submit()

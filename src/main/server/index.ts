@@ -116,9 +116,10 @@ const convertFile = async (ctx: any, next: any) => {
     const source = ctx.request.body.source
     const fromType = ctx.request.body.fromType
     const toType = ctx.request.body.toType
+    const resourcePath = ctx.request.body.resourcePath
 
     ctx.set('content-type', 'application/octet-stream')
-    ctx.body = await convert(source, fromType, toType)
+    ctx.body = await convert(source, fromType, toType, resourcePath)
   } else {
     await next()
   }

@@ -3,7 +3,6 @@ import { Escape } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import { dirname, join } from '@fe/utils/path'
 import type { Components } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
@@ -63,13 +62,6 @@ export function scrollTopTo (top: number) {
  * @returns HTML
  */
 export function getContentHtml (nodeProcessor?: (node: HTMLElement) => void) {
-  const currentFile = store.state.currentFile
-
-  let basePath = ''
-  if (currentFile && currentFile.absolutePath) {
-    basePath = dirname(currentFile.absolutePath)
-  }
-
   function filterHtml (html: string) {
     const div = document.createElement('div')
     div.innerHTML = html
@@ -110,8 +102,9 @@ export function getContentHtml (nodeProcessor?: (node: HTMLElement) => void) {
       }
 
       const originSrc = node.getAttribute('origin-src')
-      if (basePath && originSrc && !/^[^:]*:|\/\//.test(originSrc)) {
-        node.setAttribute('src', join(basePath, originSrc))
+      if (originSrc) {
+        node.setAttribute('src', originSrc)
+        node.removeAttribute('origin-src')
       }
 
       if (nodeProcessor) {

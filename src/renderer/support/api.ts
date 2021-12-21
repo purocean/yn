@@ -253,16 +253,19 @@ export async function deleteTmpFile (name: string): Promise<ApiResult<any>> {
  * @param source
  * @param fromType
  * @param toType
+ * @param resourcePath
  * @returns
  */
 export async function convertFile (
-  source: string, fromType: 'html' | 'markdown',
-  toType: Exclude<ExportTypes, 'pdf'>
+  source: string,
+  fromType: 'html' | 'markdown',
+  toType: Exclude<ExportTypes, 'pdf'>,
+  resourcePath: string,
 ): Promise<Response> {
   return fetchHttp(`/api/convert/export.${toType}`, {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ source, fromType, toType }),
+    body: JSON.stringify({ source, fromType, toType, resourcePath }),
   })
 }
 

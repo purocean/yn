@@ -6,13 +6,21 @@ import { BIN_DIR, RESOURCES_DIR } from '../constant'
 
 const binPath = path.join(BIN_DIR, os.platform() + '-pandoc-2.7.3' + (os.platform() === 'win32' ? '.exe' : ''))
 const docxTplPath = path.join(RESOURCES_DIR, './tpl.docx')
+const filterPath = path.join(RESOURCES_DIR, './pandoc-filter.lua')
 
-const convert = async (source: string, fromType: string, toType: string) => {
+const convert = async (source: string, fromType: string, toType: string, resourcePath: string) => {
   try {
     const path = os.tmpdir() + `/yn_convert_${new Date().getTime()}.${toType}`
 
     return new Promise((resolve, reject) => {
-      const args = ['--self-contained', '-f', fromType, '-o', path, '--reference-doc', docxTplPath]
+      const args = [
+        '--self-contained',
+        '--lua-filter', filterPath,
+        '--resource-path', resourcePath,
+        '-f', fromType,
+        '-o', path,
+        '--reference-doc', docxTplPath
+      ]
       console.log(binPath, args)
       const process = spawn(binPath, args)
 
