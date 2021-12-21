@@ -2,13 +2,13 @@
   <XMask :show="show" @close="cancel" @key-enter="inputType !== 'textarea' && ok()" :mask-closeable="false" esc-closeable>
     <div class="wrapper" :style="{width: modalWidth}" @click.stop>
       <h4>{{title}}</h4>
-      <p v-if="content">{{content}}</p>
+      <p class="content" v-if="content">{{content}}</p>
       <template v-if="type === 'input'">
         <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue"></textarea>
         <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue">
       </template>
       <div class="action">
-        <button class="btn" @click="cancel">{{$t('cancel')}}</button>
+        <button v-if="type !== 'alert'" class="btn" @click="cancel">{{$t('cancel')}}</button>
         <button class="btn primary" @click="ok">{{$t('ok')}}</button>
       </div>
     </div>
@@ -21,7 +21,7 @@ import type { Components } from '@fe/types'
 import { useI18n } from '@fe/services/i18n'
 import XMask from './Mask.vue'
 
-type ModalType = '' | 'confirm' | 'input'
+type ModalType = '' | 'confirm' | 'input' | 'alert'
 
 export default defineComponent({
   name: 'modal-input',
@@ -60,6 +60,18 @@ export default defineComponent({
 
     function ok () {
       handle(type.value === 'input' ? inputValue.value : true)
+    }
+
+    function alert (params: Components.Modal.AlertModalParams): Promise<boolean> {
+      type.value = 'alert'
+      title.value = params.title || t('modal.info')
+      content.value = params.content || ''
+      show.value = true
+      modalWidth.value = undefined
+
+      return new Promise(resolve => {
+        resolveFun = resolve
+      })
     }
 
     function confirm (params: Components.Modal.ConfirmModalParams): Promise<boolean> {
@@ -107,6 +119,7 @@ export default defineComponent({
       ok,
       cancel,
       confirm,
+      alert,
       input,
       type,
       show,
@@ -150,7 +163,10 @@ h4 {
   padding-top: 10px;
 }
 
-p {
+p.content {
   color: var(--g-color-37);
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-wrap: break-word;
 }
 </style>

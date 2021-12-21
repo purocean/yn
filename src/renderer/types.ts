@@ -27,6 +27,7 @@ export interface Repo {
 export namespace Components {
   export namespace Modal {
     export type ConfirmModalParams = { title?: string; content?: string }
+    export type AlertModalParams = { title?: string; content?: string }
 
     export type InputModalParams = {
       type?: string;
