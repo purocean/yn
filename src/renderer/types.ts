@@ -92,7 +92,7 @@ export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 
-export type RenderEnv = { source: string, file: Doc | null, attributes?: Record<string, any> }
+export type RenderEnv = { source: string, file: Doc | null, renderCount: number, attributes?: Record<string, any> }
 
 export type BuildInSettings = {
   'repos': Repo[],
@@ -152,6 +152,7 @@ export type BuildInHookTypes = {
   ACTION_AFTER_RUN: { name: string }
   THEME_CHANGE: { name: ThemeName },
   EDITOR_PASTE_IMAGE: { file: File },
+  MARKDOWN_BEFORE_RENDER: { src: string, env: RenderEnv }
   VIEW_ELEMENT_CLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },
