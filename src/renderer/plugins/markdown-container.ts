@@ -1,7 +1,7 @@
 import MarkdownItContainer from 'markdown-it-container'
 import { Fragment, h } from 'vue'
-import { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
+import { Plugin } from '@fe/context'
 
 export default {
   name: 'markdown-container',
@@ -138,7 +138,18 @@ export default {
     `)
 
     let groupItemIdx = 0
-    let groupItemName = 0
+    let groupItemSeq = 0
+    let groupItemBase = Date.now()
+    let groupItemName = groupItemBase + groupItemSeq
+
+    ctx.registerHook('MARKDOWN_BEFORE_RENDER', ({ env }) => {
+      // first render, reset count
+      if (env.renderCount === 0) {
+        groupItemBase = Date.now()
+      }
+
+      groupItemSeq = 0
+    })
 
     ctx.markdown.registerPlugin(md => {
       ['tip', 'warning', 'danger', 'details', 'group-item', 'group'].forEach(name => {
@@ -172,7 +183,8 @@ export default {
                 }
               } else if (name === 'group') {
                 groupItemIdx = 0
-                groupItemName++
+                groupItemSeq++
+                groupItemName = groupItemBase + groupItemSeq
               }
 
               const containerTag = name === 'details' ? 'details' : 'div'
