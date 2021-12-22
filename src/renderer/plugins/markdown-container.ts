@@ -179,7 +179,7 @@ export default {
               const titleTag = name === 'details' ? 'summary' : 'p'
               const titleClass = name === 'details' ? '' : 'custom-container-title'
 
-              const children = title ? [h(titleTag, { class: titleClass }, title)] : []
+              const children = (title || name === 'group') ? [h(titleTag, { class: titleClass }, title)] : []
               return h(containerTag, { class: containerClass }, children)
             }
           }
