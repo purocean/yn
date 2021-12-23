@@ -1,3 +1,4 @@
+import juice from 'juice'
 import { escape } from 'lodash-es'
 import { Escape } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
@@ -56,12 +57,26 @@ export function scrollTopTo (top: number) {
   getActionHandler('view.scroll-top-to')(top)
 }
 
+export function getPreviewStyles () {
+  let styles = ''
+  Array.prototype.forEach.call(document.styleSheets, item => {
+    Array.prototype.forEach.call(item.cssRules, (rule) => {
+      if (rule.selectorText && rule.selectorText.includes('.markdown-body')) {
+        styles += rule.cssText.replace(/\.markdown-\S* /g, '') + '\n'
+      }
+    })
+  })
+
+  return styles
+}
+
 /**
  * Get rendered HTML.
+ * @param withInlineStyle
  * @param nodeProcessor
  * @returns HTML
  */
-export function getContentHtml (nodeProcessor?: (node: HTMLElement) => void) {
+export function getContentHtml (withInlineStyle?: boolean, nodeProcessor?: (node: HTMLElement) => void) {
   function filterHtml (html: string) {
     const div = document.createElement('div')
     div.innerHTML = html
@@ -125,7 +140,13 @@ export function getContentHtml (nodeProcessor?: (node: HTMLElement) => void) {
   const html = getActionHandler('view.get-content-html')()
     .replace(/ src="/g, ' loading="lazy" src="')
 
-  return filterHtml(html).replace(/ loading="lazy"/g, '')
+  const filteredHtml = filterHtml(html).replace(/ loading="lazy"/g, '')
+
+  if (withInlineStyle) {
+    return juice(filteredHtml, { extraCss: getPreviewStyles() })
+  }
+
+  return filteredHtml
 }
 
 /**
