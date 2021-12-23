@@ -175,9 +175,12 @@ function processCursorChange (source: string, position: Monaco.Position) {
 
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
+    const nextContent = getLineContent(line + 1)
+    const emptyItemReg = /^\s*(?:[*+->]|\d+\.|[*+-] \[ \])\s*$/
     if (
       /^\s*(?:[*+->]|\d+\.)/.test(prevContent) && // previous content must a item
-      /^\s*(?:[*+->]|\d+\.|[*+-] \[ \])\s*$/.test(content) // current content must a empty item
+      emptyItemReg.test(content) && // current line content must a empty item
+      emptyItemReg.test(nextContent) // next line content must a empty item
     ) {
       deleteLine(line) // remove empty item, now the line is the next line.
       replaceLine(line, '') // remove auto completion
