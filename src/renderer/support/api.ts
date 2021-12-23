@@ -7,7 +7,7 @@ export type ApiResult<T = any> = {
   data: T,
 }
 
-async function fetchHttp (input: RequestInfo, init?: RequestInit) {
+export async function fetchHttp (input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init)
 
   if (!response.headers.get('content-type')?.includes('json')) {
