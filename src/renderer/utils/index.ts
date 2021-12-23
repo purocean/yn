@@ -76,6 +76,14 @@ export function objectInsertAfterKey (obj: {}, key: string, content: {}) {
   return Object.fromEntries(items)
 }
 
+export function downloadContent (filename: string, content: Buffer | string, type = 'application/octet-stream') {
+  const blob = new Blob([content], { type })
+  const link = document.createElement('a')
+  link.href = window.URL.createObjectURL(blob)
+  link.download = filename
+  link.click()
+}
+
 export function md5 (content: any) {
   return CryptoJS.MD5(content).toString()
 }
