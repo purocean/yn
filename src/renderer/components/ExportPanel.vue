@@ -60,6 +60,11 @@
               <div style="margin: 10px 0">
                 <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'markdown'" @change="() => convert.fromType = 'markdown'"> {{$t('export-panel.use-markdown')}} </label>
               </div>
+              <template v-if="localHtml">
+                <div style="margin: 10px 0">
+                  <label><input name="fromType" :value="convert.includeCss" type="checkbox" :checked="convert.includeCss" @change="() => (convert.includeCss = !convert.includeCss)"> {{$t('export-panel.include-css')}} </label>
+                </div>
+              </template>
             </template>
           </div>
         </div>
@@ -83,10 +88,25 @@ import { useToast } from '@fe/support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
 import { useI18n } from '@fe/services/i18n'
 import { getRepo } from '@fe/services/base'
-import { sleep } from '@fe/utils'
+import { downloadContent, sleep } from '@fe/utils'
 import { dirname } from '@fe/utils/path'
 import type { ExportTypes } from '@fe/types'
 import XMask from './Mask.vue'
+
+const buildHtml = (title: string, body: string) => `
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Yank Note" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>${title}</title>
+  </head>
+  <body>
+    ${body}
+  </body>
+</html>
+`
 
 export default defineComponent({
   name: 'export-panel',
@@ -105,6 +125,7 @@ export default defineComponent({
       toType: 'pdf' as ExportTypes,
       fromType: 'html',
       resourcePath: '.',
+      includeCss: false,
       pdfOptions: {
         landscape: '',
         pageSize: 'A4',
@@ -114,6 +135,7 @@ export default defineComponent({
     })
 
     const close = () => store.commit('setShowExport', false)
+    const localHtml = computed(() => convert.toType === 'html' && convert.fromType === 'html')
 
     async function exportPdf (name: string) {
       if (!isElectron) {
@@ -135,11 +157,7 @@ export default defineComponent({
           scaleFactor: Number(scaleFactor)
         })
 
-        const blob = new Blob([buffer], { type: 'application/pdf' })
-        const link = document.createElement('a')
-        link.href = window.URL.createObjectURL(blob)
-        link.download = name + '.pdf'
-        link.click()
+        downloadContent(name + '.pdf', buffer, 'application/pdf')
       }
     }
 
@@ -164,6 +182,15 @@ export default defineComponent({
       window.addEventListener('blur', close, { once: true })
 
       toast.show('info', t('export-panel.loading'), 5000)
+
+      if (localHtml.value) {
+        const html = await getContentHtml({
+          inlineStyle: convert.includeCss,
+          inlineLocalImage: true,
+        })
+        downloadContent(fileName.value + '.html', buildHtml(fileName.value, html))
+        return
+      }
 
       const source = convert.fromType === 'markdown'
         ? currentFile.value.content
@@ -206,7 +233,7 @@ export default defineComponent({
       } catch {}
     }
 
-    return { complete, showExport, refExportForm, ok, close, convert, isElectron }
+    return { localHtml, complete, showExport, refExportForm, ok, close, convert, isElectron }
   },
 })
 </script>

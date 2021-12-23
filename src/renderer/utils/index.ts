@@ -37,7 +37,7 @@ export const dataURItoBlobLink = (dataURI: string) => {
   return window.URL.createObjectURL(blob)
 }
 
-export function fileToBase64URL (file: File) {
+export function fileToBase64URL (file: File | Blob) {
   return new Promise<string>((resolve, reject) => {
     const fr = new FileReader()
     fr.readAsDataURL(file)

@@ -3,14 +3,14 @@ import type { Plugin } from '@fe/context'
 export default {
   name: 'copy-rendered-content',
   register: (ctx) => {
-    function copyHTML (withInlineStyle: boolean) {
-      const html = ctx.view.getContentHtml(withInlineStyle)
+    async function copyHTML (inlineStyle: boolean) {
+      const html = await ctx.view.getContentHtml({ inlineStyle })
       ctx.utils.copyText(html)
     }
 
-    async function copyRTF (withInlineStyle: boolean) {
+    async function copyRTF (inlineStyle: boolean) {
       try {
-        const html = ctx.view.getContentHtml(withInlineStyle)
+        const html = await ctx.view.getContentHtml({ inlineStyle })
         await ctx.base.writeToClipboard('text/html', html)
         ctx.ui.useToast().show('info', ctx.i18n.t('copied'))
       } catch (error: any) {

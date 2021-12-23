@@ -83,16 +83,16 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
     div.innerHTML = html
 
     const filter = async (node: HTMLElement) => {
-      if (node.classList.contains('no-print') || node.classList.contains('skip-export')) {
-        node.remove()
-        return
-      }
-
       if (nodeProcessor) {
         nodeProcessor(node)
       }
 
       if (await triggerHook('VIEW_ON_GET_HTML_FILTER_NODE', { node, options }, { breakable: true })) {
+        return
+      }
+
+      if (node.classList.contains('no-print') || node.classList.contains('skip-export')) {
+        node.remove()
         return
       }
 

@@ -290,7 +290,8 @@ const data = {
     },
     'use-html': 'Use the rendered HTML source',
     'use-markdown': 'Use markdown source',
-    'loading': 'Converting, please wait...'
+    'loading': 'Converting, please wait...',
+    'include-css': 'Include CSS',
   },
   'title-bar': {
     'pin': 'Pin',

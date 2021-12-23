@@ -477,6 +477,14 @@ export default {
       })
     })
 
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
+      // remove table style: width, height
+      if (node.tagName === 'TABLE') {
+        node.style.width = ''
+        node.style.height = ''
+      }
+    })
+
     ctx.view.tapContextMenus((menus, e) => {
       const target = e.target as HTMLTableCellElement
       const tagName = target.tagName
