@@ -232,7 +232,7 @@ export default {
 
         if (code) {
           if (!options.inlineStyle) {
-            node.outerText = code
+            node.outerHTML = ctx.lib.lodash.escape(code)
             return
           }
 
