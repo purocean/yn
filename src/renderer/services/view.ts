@@ -122,6 +122,12 @@ export function getContentHtml (withInlineStyle?: boolean, nodeProcessor?: (node
         node.removeAttribute('origin-src')
       }
 
+      // remove table style: width, height
+      if (node.tagName === 'TABLE') {
+        node.style.width = ''
+        node.style.height = ''
+      }
+
       if (nodeProcessor) {
         nodeProcessor(node)
       }
@@ -137,16 +143,16 @@ export function getContentHtml (withInlineStyle?: boolean, nodeProcessor?: (node
     return div.firstElementChild?.innerHTML || ''
   }
 
-  const html = getActionHandler('view.get-content-html')()
+  let html = getActionHandler('view.get-content-html')()
     .replace(/ src="/g, ' loading="lazy" src="')
 
-  const filteredHtml = filterHtml(html).replace(/ loading="lazy"/g, '')
-
   if (withInlineStyle) {
-    return juice(filteredHtml, { extraCss: getPreviewStyles() })
+    html = juice(html, { extraCss: getPreviewStyles() })
   }
 
-  return filteredHtml
+  return '<section powered-by="Yank Note">\n' +
+    filterHtml(html).replace(/ loading="lazy"/g, '') +
+    '\n</section>'
 }
 
 /**
