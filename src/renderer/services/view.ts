@@ -1,10 +1,10 @@
 import juice from 'juice'
-import { escape } from 'lodash-es'
 import { Escape } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
+import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import type { Components } from '@fe/types'
+import type { BuildInHookTypes, Components } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
 
@@ -72,87 +72,63 @@ export function getPreviewStyles () {
 
 /**
  * Get rendered HTML.
- * @param withInlineStyle
- * @param nodeProcessor
+ * @param _options
  * @returns HTML
  */
-export function getContentHtml (withInlineStyle?: boolean, nodeProcessor?: (node: HTMLElement) => void) {
-  function filterHtml (html: string) {
+export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTML_FILTER_NODE']['options'] = {}) {
+  const { inlineStyle, nodeProcessor } = options
+
+  async function filterHtml (html: string) {
     const div = document.createElement('div')
     div.innerHTML = html
 
-    let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
-
-    // replace localhost to ip, somtimes resolve localhost take too much time on windows.
-    if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
-      baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
-    }
-
-    const filter = (node: HTMLElement) => {
+    const filter = async (node: HTMLElement) => {
       if (node.classList.contains('no-print') || node.classList.contains('skip-export')) {
         node.remove()
         return
-      }
-
-      if (node.dataset) {
-        if (node.dataset.exportText) {
-          node.innerHTML = escape(node.dataset.exportText)
-        }
-
-        Object.keys(node.dataset).forEach(key => {
-          delete node.dataset[key]
-        })
-      }
-
-      node.classList.remove('source-line')
-      node.removeAttribute('title')
-
-      if (node.classList.length < 1) {
-        node.removeAttribute('class')
-      }
-
-      const src = node.getAttribute('src')
-      if (src?.startsWith('api/')) {
-        node.setAttribute('src', `${baseUrl}${src}`)
-      }
-
-      const originSrc = node.getAttribute('origin-src')
-      if (originSrc) {
-        node.setAttribute('src', originSrc)
-        node.removeAttribute('origin-src')
-      }
-
-      // remove table style: width, height
-      if (node.tagName === 'TABLE') {
-        node.style.width = ''
-        node.style.height = ''
       }
 
       if (nodeProcessor) {
         nodeProcessor(node)
       }
 
+      if (await triggerHook('VIEW_ON_GET_HTML_FILTER_NODE', { node, options }, { breakable: true })) {
+        return
+      }
+
+      if (node.classList.length < 1) {
+        node.removeAttribute('class')
+      }
+
+      node.removeAttribute('title')
+
+      if (node.dataset) {
+        Object.keys(node.dataset).forEach(key => {
+          delete node.dataset[key]
+        })
+      }
+
       const len = node.children.length
       for (let i = len - 1; i >= 0; i--) {
         const ele = node.children[i]
-        filter(ele as HTMLElement)
+        await filter(ele as HTMLElement)
       }
     }
 
-    filter(div)
-    return div.firstElementChild?.innerHTML || ''
+    await filter(div)
+
+    div.firstElementChild?.setAttribute('powered-by', 'Yank Note')
+    return div.innerHTML || ''
   }
 
   let html = getActionHandler('view.get-content-html')()
     .replace(/ src="/g, ' loading="lazy" src="')
 
-  if (withInlineStyle) {
+  if (inlineStyle) {
     html = juice(html, { extraCss: getPreviewStyles() })
   }
 
-  return '<section powered-by="Yank Note">\n' +
-    filterHtml(html).replace(/ loading="lazy"/g, '') +
-    '\n</section>'
+  return (await filterHtml(html)).replace(/ loading="lazy"/g, '')
 }
 
 /**
