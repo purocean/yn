@@ -56,7 +56,7 @@ Yank Note 有一些概念，是支撑整个插件体系的基础：
 
 Yank Note 在执行一些操作的时候，会触发一些钩子调用。
 
-使用 [`ctx.registerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#registerHook) 可以注册一个钩子处理方法。使用 [`ctx.triggerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#triggerHook) 则可以触发一个钩子。
+使用 [`ctx.registerHook`](https://yn-api-doc.vercel.app/modules/renderer_core_hook.html#registerHook) 可以注册一个钩子处理方法。使用 [`ctx.triggerHook`](https://yn-api-doc.vercel.app/modules/renderer_core_hook.html#triggerHook) 则可以触发一个钩子。
 
 调用 `triggerHook` 时候附加选项 `{ breakable: true }`，表明这个钩子调用是可中断的。
 
@@ -72,17 +72,17 @@ Yank Note 在执行一些操作的时候，会触发一些钩子调用。
 
 可中断的钩子处理方法需要有返回值 `Promise<boolean> | boolean`。当钩子处理方法返回 `true`，则后续的钩子不再运行。
 
-内部的钩子类型可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInHookTypes)
+内部的钩子类型可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/renderer_types.html#BuildInHookTypes)
 
 ### Action 动作
 
-Yank Note 有一个 Action 中心 [`ctx.action`](https://yn-api-doc.vercel.app/modules/core_action.html)，提供动作的管理和运行。
+Yank Note 有一个 Action 中心 [`ctx.action`](https://yn-api-doc.vercel.app/modules/renderer_core_action.html)，提供动作的管理和运行。
 
-内部 Action 可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/types.html#BuildInActions)
+内部 Action 可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/renderer_types.html#BuildInActions)
 
 ### Command 命令
 
-Yank Note 有一个 Command 中心 [`ctx.command`](https://yn-api-doc.vercel.app/modules/core_command.html)，主要负责快捷键相关的管理和运行。
+Yank Note 有一个 Command 中心 [`ctx.command`](https://yn-api-doc.vercel.app/modules/renderer_core_command.html)，主要负责快捷键相关的管理和运行。
 
 ## 插件能力
 
@@ -97,7 +97,7 @@ Yank Note 有一个 Command 中心 [`ctx.command`](https://yn-api-doc.vercel.app
 console.log(Object.keys(ctx).join('\n'))
 ```
 
-参考 [Api 文档](https://yn-api-doc.vercel.app/modules/context.html) 获得更多使用说明。
+参考 [Api 文档](https://yn-api-doc.vercel.app/modules/renderer_context.html) 获得更多使用说明。
 
 ## 更多
 
