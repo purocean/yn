@@ -194,7 +194,14 @@ export default defineComponent({
 
       const source = convert.fromType === 'markdown'
         ? currentFile.value.content
-        : getContentHtml()
+        : await getContentHtml({
+          nodeProcessor: node => {
+            // for pandoc highlight code
+            if (node.tagName === 'PRE' && node.dataset.lang) {
+              node.classList.add('sourceCode', node.dataset.lang)
+            }
+          }
+        })
 
       convert.fileName = `${fileName.value}.${convert.toType}`
       convert.source = source

@@ -90,7 +90,7 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
 
   const buildVNode = (attrs: any) => createVNode(
     'pre',
-    {},
+    { 'data-info': info, 'data-lang': langName },
     [createVNode('code', { key: highlighted, ...attrs, innerHTML: highlighted }, [])]
   )
 
