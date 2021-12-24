@@ -536,7 +536,7 @@ Macro code can use variables defined in Front Matter, or use the following built
 
 variable name | type | description
 ---- | ----- | ---
-`$ctx` | `object` | Editor `ctx`，refer to [Plug-In Development GUide](PLUGIN.md) and [Api Document](https://yn-api-doc.vercel.app/modules/context.html)
+`$ctx` | `object` | Editor `ctx`，refer to [Plug-In Development GUide](PLUGIN.md) and [Api Document](https://yn-api-doc.vercel.app/modules/renderer_context.html)
 `$include` | `(path: string, trim = false) => Result` | Introduce other document fragment methods
 `$export` | `(key: string, val: any) => Result` | Define a variable that can be used in this document
 `$noop` | `() => Result` | no operation, Used for holding text space

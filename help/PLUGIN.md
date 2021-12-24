@@ -56,9 +56,9 @@ Yank Note has some concepts that are the basis for supporting the entire plug-in
 
 When Yank Note performs some operations, it will trigger some hook calls.
 
-Use [`ctx.registerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#registerHook) to register a hook processing method.
+Use [`ctx.registerHook`](https://yn-api-doc.vercel.app/modules/renderer_core_hook.html#registerHook) to register a hook processing method.
 
-Use [`ctx.triggerHook`](https://yn-api-doc.vercel.app/modules/core_plugin.html#triggerHook) to trigger a hook.
+Use [`ctx.triggerHook`](https://yn-api-doc.vercel.app/modules/renderer_core_hook.html#triggerHook) to trigger a hook.
 
 The option `{ breakable: true }` is appended when calling `triggerHook`, indicating that the hook call is breakable.
 
@@ -74,16 +74,16 @@ The following internal hook call is breakable:
 
 Breakable hook processing methods need to have a return value `Promise<boolean> | boolean`. When the hook processing method returns `true`, the subsequent hooks will no longer run。
 
-For internal hook types, please refer to [Api Document](https://yn-api-doc.vercel.app/modules/types.html#BuildInHookTypes)
+For internal hook types, please refer to [Api Document](https://yn-api-doc.vercel.app/modules/renderer_types.html#BuildInHookTypes)
 
 ### Action
 
-Yank Note has an Action Center [`ctx.action`](https://yn-api-doc.vercel.app/modules/core_action.html), which provides action management and operation。
+Yank Note has an Action Center [`ctx.action`](https://yn-api-doc.vercel.app/modules/renderer_core_action.html), which provides action management and operation。
 
-For internal action, please refer to [Api Document](https://yn-api-doc.vercel.app/modules/types.html#BuildInActions)
+For internal action, please refer to [Api Document](https://yn-api-doc.vercel.app/modules/renderer_types.html#BuildInActions)
 
 ### Command
-Yank Note has a Command Center [`ctx.command`](https://yn-api-doc.vercel.app/modules/core_command.html), which is mainly responsible for the management and operation of shortcut keys.
+Yank Note has a Command Center [`ctx.command`](https://yn-api-doc.vercel.app/modules/renderer_core_command.html), which is mainly responsible for the management and operation of shortcut keys.
 
 ## Plug-In Capabilities
 
@@ -98,7 +98,7 @@ Run the following code, you can see which modules are available of `ctx`.
 console.log(Object.keys(ctx).join('\n'))
 ```
 
-Refer to [Api Document](https://yn-api-doc.vercel.app/modules/context.html) to get more instructions.
+Refer to [Api Document](https://yn-api-doc.vercel.app/modules/renderer_context.html) to get more instructions.
 
 ## More
 

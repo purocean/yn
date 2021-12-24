@@ -7,9 +7,11 @@ import { Plugin } from '@fe/context'
 
 const emptySrc = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
 
+const baseUrl = location.origin + '/api/plantuml/png'
+
 const MarkdownItPlugin = function umlPlugin (md: Markdown, options: any) {
   function generateSourceDefault (umlCode: string) {
-    return location.origin + '/api/plantuml/png?data=' + encodeURIComponent(umlCode)
+    return baseUrl + '?data=' + encodeURIComponent(umlCode)
   }
 
   options = options || {}
@@ -209,5 +211,18 @@ export default {
   name: 'markdown-plantuml',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin, { render })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
+      const srcAttr = node.getAttribute('src')
+      if (options.inlineLocalImage && srcAttr?.startsWith(baseUrl)) {
+        try {
+          const res: Response = await ctx.api.fetchHttp(srcAttr)
+          const base64Url = await ctx.utils.fileToBase64URL(await res.blob())
+          node.setAttribute('src', base64Url)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    })
   }
 } as Plugin

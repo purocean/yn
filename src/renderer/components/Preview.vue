@@ -49,7 +49,7 @@ import { markdown } from '@fe/services/markdown'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'
-import { showExport } from '@fe/services/document'
+import { showExport, toUri } from '@fe/services/document'
 import { getContextMenuItems, toggleAutoPreview } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { useI18n } from '@fe/services/i18n'
@@ -76,6 +76,7 @@ export default defineComponent({
     const { currentContent, currentFile, autoPreview, presentation, inComposition } = toRefs(store.state)
     const fileName = computed(() => currentFile.value?.name)
     const filePath = computed(() => currentFile.value?.path)
+    const fileUri = computed(() => toUri(currentFile.value))
 
     const refViewWrapper = ref<HTMLElement | null>(null)
     const refView = ref<HTMLElement | null>(null)
@@ -101,6 +102,8 @@ export default defineComponent({
 
     let renderEnv: RenderEnv | null = null
     const getRenderEnv = () => renderEnv
+
+    let renderCount = 0
 
     function togglePinOutline () {
       pinOutline.value = !pinOutline.value
@@ -165,7 +168,7 @@ export default defineComponent({
       }
 
       const startTime = performance.now()
-      renderEnv = { source: content, file: currentFile.value }
+      renderEnv = { source: content, file: currentFile.value, renderCount: renderCount++ }
       try {
         renderContent.value = markdown.render(content, renderEnv)
       } catch (error: any) {
@@ -287,11 +290,12 @@ export default defineComponent({
       window.removeEventListener('keydown', keydownHandler)
     })
 
-    watch([currentContent, filePath, inComposition], () => {
+    watch([currentContent, fileUri, inComposition], () => {
       autoPreview.value && updateRender()
     })
 
-    watch(filePath, () => {
+    watch(fileUri, () => {
+      renderCount = 0
       // file switched, turn on auto render preview.
       toggleAutoPreview(true)
       updateRender = debounce(render, 25)

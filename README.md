@@ -20,7 +20,7 @@ English | [中文说明](./README_ZH-CN.md)
 
 ## Attention
 
-- For more extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). If you want to use it to open a foreign Markdown file, **be sure to carefully identify whether the content of the file is trustworthy**.
+- For more extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). If you want to use it to open a foreign Markdown file, ⚠️**be sure to carefully identify whether the content of the file is trustworthy**⚠️.
 - The encryption and decryption of encrypted files are both completed at the front end. Please **be sure to remember your password**. Once the password is lost, it can only be cracked violently.
 
 ## Yank-Note V3 Plan
@@ -88,31 +88,27 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.16.1](https://github.com/purocean/yn/releases/tag/v3.16.1) 2021-12-16
-1. feat(table): enhanced table editing, now you can operate table rows and columns by context menu
-2. feat(table): support small size table
-3. feat(theme): support custom CSS style
-4. feat(document): supports linking local files through the `file://` protocol
-5. feta(sidebar): add create folder button
-6. feta(editor): add emoji completion
-7. feta(mind map): add priority definition
-8. feta(mind map): add fit button
-9. fix: fix bugs
-10. upd: improve user experience
-11. feat(plug-in): add `ctx.base.showItemInFolder` method
-12. feat(plugin): add `ctx.base.getRepo` method
-13. feat(plugin): add `ctx.base.getMarkedFiles`
-14. feat(plugin): add `ctx.base.isMarked` method
-15. feat(plug-in): add `ctx.view.getEnableSyncScroll`
-16. feat(plug-in): add `ctx.view.disableSyncScrollAwhile` method
-17. feat(plug-in): add `SETTING_CHANGED` hook
-18. feat(plugin): add `SETTING_PANEL_BEFORE_SHOW` hook
-19. upd(plugin): remove `ctx.tree.refreshRepo` method
-20. upd(plugin): remove `ctx.api.markFile` method
-21. upd(plugin): remove `ctx.api.unmarkFile` method
-22. upd(plugin): remove `ctx.api.fetchMarkedFiles`
-23. upd(plugin): remove `ctx.api.fetchRepositories` method
-24. upd(plugin): remove `ctx.api.openInOS` method
+### [v3.17.0](https://github.com/purocean/yn/releases/tag/v3.17.0) 2021-12-24
+1. feat: add rich text copy
+2. feat: add HTML copy
+3. upd: optimize editor completion
+4. upd: optimize the export function
+5. upd: upgrade Electron to 15.3.2
+6. upd: upgrade Monaco editor to 0.31.1
+7. upd: optimize window user experience of macOS
+8. fix: fix the problem that files cannot be displayed in Explorer on Windows
+9. fix: fix the problem of text flickering when using the input method
+10. fix: fix the problem of label jumping when editing container block content
+11. feat: add `ctx.utils.downloadContent` method
+12. feat: add `ctx.ui.useModal().alert` method
+13. feat: add `ctx.api.convertFile` method
+14. feat: add `ctx.base.readFromClipboard` method
+15. feat: add `ctx.base.writeToClipboard` method
+16. feat: add `ctx.view.getPreviewStyles` method
+17. feat: add `ctx.view.getPreviewStyles` method
+18. feat: add `ctx.lib.turndown` library
+19. feat: add `ctx.lib.juice` library
+20. upd: add `options` parameter for `ctx.view.getContentHtml`
 
 [More release notes](https://github.com/purocean/yn/releases)
 

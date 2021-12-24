@@ -4,6 +4,7 @@ import MarkdownItSup from 'markdown-it-sup'
 import MarkdownItMark from 'markdown-it-mark'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
+import { triggerHook } from '@fe/core/hook'
 
 /**
  * Markdown-it instance
@@ -17,6 +18,12 @@ export const markdown = Markdown({ linkify: true, breaks: true, html: true })
  */
 export function registerPlugin (plugin: (md: Markdown, ...args: any) => void, params?: any) {
   markdown.use(plugin, params)
+}
+
+const render = markdown.render
+markdown.render = (src: string, env?: any) => {
+  triggerHook('MARKDOWN_BEFORE_RENDER', { src, env })
+  return render.call(markdown, src, env)
 }
 
 markdown.use(MarkdownItSub)
@@ -37,3 +44,8 @@ markdown.block.tokenize = function (state, startLine, endLine) {
   state.env.bMarks = state.bMarks
   state.env.eMarks = state.eMarks
 }
+
+markdown.core.ruler.after('normalize', 'after_normalize', state => {
+  state.env.source = state.src
+  return true
+})

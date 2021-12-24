@@ -1,8 +1,10 @@
+import juice from 'juice'
 import { Escape } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
+import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import type { Components } from '@fe/types'
+import type { BuildInHookTypes, Components } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
 
@@ -55,12 +57,78 @@ export function scrollTopTo (top: number) {
   getActionHandler('view.scroll-top-to')(top)
 }
 
+export function getPreviewStyles () {
+  let styles = ''
+  Array.prototype.forEach.call(document.styleSheets, item => {
+    Array.prototype.forEach.call(item.cssRules, (rule) => {
+      if (rule.selectorText && rule.selectorText.includes('.markdown-body')) {
+        styles += rule.cssText.replace(/\.markdown-\S* /g, '') + '\n'
+      }
+    })
+  })
+
+  return styles
+}
+
 /**
  * Get rendered HTML.
+ * @param options
  * @returns HTML
  */
-export function getContentHtml () {
-  return getActionHandler('view.get-content-html')()
+export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTML_FILTER_NODE']['options'] = {}) {
+  const { inlineStyle, nodeProcessor } = options
+
+  async function filterHtml (html: string) {
+    const div = document.createElement('div')
+    div.innerHTML = html
+
+    const filter = async (node: HTMLElement) => {
+      if (nodeProcessor) {
+        nodeProcessor(node)
+      }
+
+      if (await triggerHook('VIEW_ON_GET_HTML_FILTER_NODE', { node, options }, { breakable: true })) {
+        return
+      }
+
+      if (node.classList.contains('no-print') || node.classList.contains('skip-export')) {
+        node.remove()
+        return
+      }
+
+      if (node.classList.length < 1) {
+        node.removeAttribute('class')
+      }
+
+      node.removeAttribute('title')
+
+      if (node.dataset) {
+        Object.keys(node.dataset).forEach(key => {
+          delete node.dataset[key]
+        })
+      }
+
+      const len = node.children.length
+      for (let i = len - 1; i >= 0; i--) {
+        const ele = node.children[i]
+        await filter(ele as HTMLElement)
+      }
+    }
+
+    await filter(div)
+
+    div.firstElementChild?.setAttribute('powered-by', 'Yank Note')
+    return div.innerHTML || ''
+  }
+
+  let html = getActionHandler('view.get-content-html')()
+    .replace(/ src="/g, ' loading="lazy" src="')
+
+  if (inlineStyle) {
+    html = juice(html, { extraCss: getPreviewStyles() })
+  }
+
+  return (await filterHtml(html)).replace(/ loading="lazy"/g, '')
 }
 
 /**

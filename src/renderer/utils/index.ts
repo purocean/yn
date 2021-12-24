@@ -37,7 +37,7 @@ export const dataURItoBlobLink = (dataURI: string) => {
   return window.URL.createObjectURL(blob)
 }
 
-export function fileToBase64URL (file: File) {
+export function fileToBase64URL (file: File | Blob) {
   return new Promise<string>((resolve, reject) => {
     const fr = new FileReader()
     fr.readAsDataURL(file)
@@ -74,6 +74,14 @@ export function objectInsertAfterKey (obj: {}, key: string, content: {}) {
     items.splice(idx + 1, 0, ...Object.entries(content))
   }
   return Object.fromEntries(items)
+}
+
+export function downloadContent (filename: string, content: Buffer | string, type = 'application/octet-stream') {
+  const blob = new Blob([content], { type })
+  const link = document.createElement('a')
+  link.href = window.URL.createObjectURL(blob)
+  link.download = filename
+  link.click()
 }
 
 export function md5 (content: any) {

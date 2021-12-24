@@ -2,9 +2,10 @@
   <XMask :show="showExport" @close="close" :maskCloseable="false">
     <div class="wrapper" @click.stop>
       <h3>{{$t('export-panel.export')}}</h3>
-      <iframe width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
+      <iframe @load="complete" width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
       <form ref="refExportForm" :action="`/api/convert/${convert.fileName}`" method="post" target="export-download">
         <input type="hidden" name="source" :value="convert.source">
+        <input type="hidden" name="resourcePath" :value="convert.resourcePath">
         <div style="padding: 20px">
           <label class="row-label">
             {{$t('export-panel.format')}}
@@ -59,6 +60,11 @@
               <div style="margin: 10px 0">
                 <label><input name="fromType" :value="convert.fromType" type="radio" :checked="convert.fromType === 'markdown'" @change="() => convert.fromType = 'markdown'"> {{$t('export-panel.use-markdown')}} </label>
               </div>
+              <template v-if="localHtml">
+                <div style="margin: 10px 0">
+                  <label><input name="fromType" :value="convert.includeCss" type="checkbox" :checked="convert.includeCss" @change="() => (convert.includeCss = !convert.includeCss)"> {{$t('export-panel.include-css')}} </label>
+                </div>
+              </template>
             </template>
           </div>
         </div>
@@ -74,15 +80,33 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, ref, toRefs } from 'vue'
-import { isElectron, nodeRequire } from '@fe/support/env'
+import { getElectronRemote, isElectron, isWindows } from '@fe/support/env'
 import { getContentHtml } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
 import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
+import { useModal } from '@fe/support/ui/modal'
 import { useI18n } from '@fe/services/i18n'
-import { sleep } from '@fe/utils'
+import { getRepo } from '@fe/services/base'
+import { downloadContent, sleep } from '@fe/utils'
+import { dirname } from '@fe/utils/path'
 import type { ExportTypes } from '@fe/types'
 import XMask from './Mask.vue'
+
+const buildHtml = (title: string, body: string) => `
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Yank Note" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>${title}</title>
+  </head>
+  <body>
+    ${body}
+  </body>
+</html>
+`
 
 export default defineComponent({
   name: 'export-panel',
@@ -100,6 +124,8 @@ export default defineComponent({
       source: '',
       toType: 'pdf' as ExportTypes,
       fromType: 'html',
+      resourcePath: '.',
+      includeCss: false,
       pdfOptions: {
         landscape: '',
         pageSize: 'A4',
@@ -109,36 +135,7 @@ export default defineComponent({
     })
 
     const close = () => store.commit('setShowExport', false)
-
-    function filterHtml (html: string) {
-      const div = document.createElement('div')
-      div.innerHTML = html
-
-      const filter = (node: HTMLElement) => {
-        if (node.classList.contains('no-print')) {
-          node.remove()
-          return
-        }
-
-        if (node.dataset) {
-          Object.keys(node.dataset).forEach(key => {
-            delete node.dataset[key]
-          })
-        }
-
-        node.classList.remove('source-line')
-        node.removeAttribute('title')
-
-        const len = node.children.length
-        for (let i = len - 1; i >= 0; i--) {
-          const ele = node.children[i]
-          filter(ele as HTMLElement)
-        }
-      }
-
-      filter(div)
-      return div.innerHTML
-    }
+    const localHtml = computed(() => convert.toType === 'html' && convert.fromType === 'html')
 
     async function exportPdf (name: string) {
       if (!isElectron) {
@@ -150,7 +147,7 @@ export default defineComponent({
         toast.show('info', t('export-panel.loading'))
         await sleep(300)
 
-        const content = nodeRequire('electron').remote.getCurrentWebContents()
+        const content = getElectronRemote().getCurrentWebContents()
 
         const { landscape, pageSize, scaleFactor, printBackground } = convert.pdfOptions
         const buffer: Buffer = await content.printToPDF({
@@ -160,11 +157,7 @@ export default defineComponent({
           scaleFactor: Number(scaleFactor)
         })
 
-        const blob = new Blob([buffer], { type: 'application/pdf' })
-        const link = document.createElement('a')
-        link.href = window.URL.createObjectURL(blob)
-        link.download = name + '.pdf'
-        link.click()
+        downloadContent(name + '.pdf', buffer, 'application/pdf')
       }
     }
 
@@ -190,19 +183,33 @@ export default defineComponent({
 
       toast.show('info', t('export-panel.loading'), 5000)
 
-      let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
-
-      // replace localhost to ip, somtimes resolve localhost take too much time on windows.
-      if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
-        baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
+      if (localHtml.value) {
+        const html = await getContentHtml({
+          inlineStyle: convert.includeCss,
+          inlineLocalImage: true,
+        })
+        downloadContent(fileName.value + '.html', buildHtml(fileName.value, html))
+        return
       }
 
       const source = convert.fromType === 'markdown'
         ? currentFile.value.content
-        : getContentHtml().replace(/src="api/g, `src="${baseUrl}api`)
+        : await getContentHtml({
+          nodeProcessor: node => {
+            // for pandoc highlight code
+            if (node.tagName === 'PRE' && node.dataset.lang) {
+              node.classList.add('sourceCode', node.dataset.lang)
+            }
+          }
+        })
 
       convert.fileName = `${fileName.value}.${convert.toType}`
-      convert.source = filterHtml(source)
+      convert.source = source
+
+      convert.resourcePath = [
+        getRepo(currentFile.value.repo)?.path || '.',
+        dirname(currentFile.value.absolutePath)
+      ].join(isWindows ? ';' : ':')
 
       await sleep(300)
       refExportForm.value!.submit()
@@ -217,7 +224,23 @@ export default defineComponent({
       }
     }
 
-    return { showExport, refExportForm, ok, close, convert, isElectron }
+    function complete (e: Event) {
+      const iframe = e.target as HTMLIFrameElement
+      try {
+        const body = iframe.contentWindow?.document.body.innerText
+        if (body) {
+          const result = JSON.parse(body)
+          if (result.message) {
+            useModal().alert({
+              title: 'Error',
+              content: result.message
+            })
+          }
+        }
+      } catch {}
+    }
+
+    return { localHtml, complete, showExport, refExportForm, ok, close, convert, isElectron }
   },
 })
 </script>

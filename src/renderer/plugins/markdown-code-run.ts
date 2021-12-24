@@ -83,7 +83,7 @@ const RunCode = defineComponent({
       const runResult = result.value || cache[hash.value]
 
       return [
-        h('div', { class: 'p-mcr-run-code-action' }, [
+        h('div', { class: 'p-mcr-run-code-action skip-export' }, [
           h('div', {
             title: t('code-run.run'),
             class: 'p-mcr-run-btn',
@@ -96,7 +96,7 @@ const RunCode = defineComponent({
             onClick: runInXterm
           }),
         ]),
-        h('div', { class: 'p-mcr-run-code-result', style: 'padding: .5em 0 0 0', key: runResult, innerHTML: runResult }),
+        h('div', { class: 'p-mcr-run-code-result skip-export', style: 'padding: .5em 0 0 0', key: runResult, innerHTML: runResult }),
         h('div', { class: 'p-mcr-clear-btn-wrapper no-print' }, h(
           h(
             'div',
@@ -216,7 +216,7 @@ export default {
         contextMenuGroupId: 'other',
         precondition: 'editorHasSelection',
         keybindings: [
-          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R
+          monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KeyR
         ],
         run: () => {
           getActionHandler('xterm.run')(editor.getModel()!.getValueInRange(editor.getSelection()!))

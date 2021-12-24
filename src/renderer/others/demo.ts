@@ -35,6 +35,7 @@ if (FLAG_DEMO) {
   }, true)
 
   const fakeFetch = (uri: any, init: any) => Promise.resolve({
+    headers: { get: () => 'application/json' },
     json: () => {
       console.log('mock api >', uri, init)
 

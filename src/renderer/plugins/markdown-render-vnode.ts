@@ -90,7 +90,7 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
 
   const buildVNode = (attrs: any) => createVNode(
     'pre',
-    {},
+    { 'data-info': info, 'data-lang': langName },
     [createVNode('code', { key: highlighted, ...attrs, innerHTML: highlighted }, [])]
   )
 
@@ -271,6 +271,10 @@ export default {
       md.renderer.renderInline = render
       md.renderer.renderAttrs = renderAttrs
       md.renderer.renderToken = renderToken
+    })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
+      node.classList.remove('source-line')
     })
   }
 } as Plugin

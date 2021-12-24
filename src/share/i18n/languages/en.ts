@@ -207,13 +207,15 @@ const data = {
     },
     'insert': {
       'insert': 'Insert',
-      'paste-rft': 'Paste RTF',
+      'paste-rtf': 'Paste Rich Text',
       'paste-img-base64': 'Paste Image',
     },
     'tool': {
       'tool': 'Tool',
       'convert-img-link': 'Download Remote Image',
-      'macro-copy-markdown': 'Copy Markdown after Macro Replacement'
+      'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
+      'copy-rtf': 'Copy Rich Text',
+      'copy-html': 'Copy Rendered HTML',
     },
     'document-info': {
       'selected': 'Selected',
@@ -288,7 +290,8 @@ const data = {
     },
     'use-html': 'Use the rendered HTML source',
     'use-markdown': 'Use markdown source',
-    'loading': 'Converting, please wait...'
+    'loading': 'Converting, please wait...',
+    'include-css': 'Include CSS',
   },
   'title-bar': {
     'pin': 'Pin',

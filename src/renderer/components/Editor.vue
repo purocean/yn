@@ -114,7 +114,7 @@ export default defineComponent({
         changeFile(currentFile.value)
       }
 
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
         saveFile()
       })
     })

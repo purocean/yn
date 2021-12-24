@@ -208,13 +208,15 @@ const data: BaseLanguage = {
     },
     'insert': {
       'insert': '插入',
-      'paste-rft': '粘贴富文本',
+      'paste-rtf': '粘贴富文本',
       'paste-img-base64': '粘贴图片',
     },
     'tool': {
       'tool': '工具',
       'convert-img-link': '下载外链图片',
-      'macro-copy-markdown': '复制宏替换后的 Markdown'
+      'macro-copy-markdown': '复制宏替换后的 Markdown',
+      'copy-rtf': '拷贝富文本',
+      'copy-html': '拷贝渲染后的 HTML',
     },
     'document-info': {
       'selected': '已选择',
@@ -289,7 +291,8 @@ const data: BaseLanguage = {
     },
     'use-html': '使用渲染后的 HTML 转换',
     'use-markdown': '使用 Markdown 转换',
-    'loading': '转换中，请稍候……'
+    'loading': '转换中，请稍候……',
+    'include-css': '包含 CSS',
   },
   'title-bar': {
     'pin': '置顶窗口',

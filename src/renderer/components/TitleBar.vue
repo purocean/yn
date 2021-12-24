@@ -31,7 +31,7 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { isElectron, isMacOS, nodeRequire } from '@fe/support/env'
+import { getElectronRemote, isElectron, isMacOS, nodeRequire } from '@fe/support/env'
 import { isEncrypted } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import SvgIcon from './SvgIcon.vue'
@@ -96,6 +96,10 @@ export default defineComponent({
           maximize()
         }
       }
+
+      setTimeout(() => {
+        updateWindowStatus()
+      }, 500)
     }
 
     function close () {
@@ -110,7 +114,7 @@ export default defineComponent({
       }
 
       if (isElectron && nodeRequire) {
-        win = nodeRequire('electron').remote.getCurrentWindow()
+        win = getElectronRemote().getCurrentWindow()
         hasWin.value = true
         updateWindowStatus()
         win.on('maximize', updateWindowStatus)
@@ -181,7 +185,7 @@ export default defineComponent({
 
     const titleBarStyles = computed(() => {
       if (isElectron && !isFocused.value) {
-        return { background: '#818181' }
+        return { background: '#6e6e6e' }
       }
 
       if (
@@ -227,7 +231,7 @@ export default defineComponent({
   background: #4e4e4e;
   color: #eee;
   height: 100%;
-  transition: all .3s ease-in-out;
+  transition: all .1s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;

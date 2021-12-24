@@ -16,6 +16,7 @@ export interface Doc extends PathItem {
   passwordHash?: string;
   contentHash?: string;
   status?: 'loaded' | 'save-failed' | 'saved';
+  absolutePath?: string,
 }
 
 export interface Repo {
@@ -26,6 +27,7 @@ export interface Repo {
 export namespace Components {
   export namespace Modal {
     export type ConfirmModalParams = { title?: string; content?: string }
+    export type AlertModalParams = { title?: string; content?: string }
 
     export type InputModalParams = {
       type?: string;
@@ -90,7 +92,7 @@ export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 
-export type RenderEnv = { source: string, file: Doc | null, attributes?: Record<string, any> }
+export type RenderEnv = { source: string, file: Doc | null, renderCount: number, attributes?: Record<string, any> }
 
 export type BuildInSettings = {
   'repos': Repo[],
@@ -150,6 +152,7 @@ export type BuildInHookTypes = {
   ACTION_AFTER_RUN: { name: string }
   THEME_CHANGE: { name: ThemeName },
   EDITOR_PASTE_IMAGE: { file: File },
+  MARKDOWN_BEFORE_RENDER: { src: string, env: RenderEnv }
   VIEW_ELEMENT_CLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },
@@ -160,6 +163,7 @@ export type BuildInHookTypes = {
   VIEW_FILE_CHANGE: never,
   VIEW_BEFORE_REFRESH: never,
   VIEW_AFTER_REFRESH: never,
+  VIEW_ON_GET_HTML_FILTER_NODE: { node: HTMLElement, options: { inlineStyle?: boolean, inlineLocalImage?: boolean, nodeProcessor?: (node: HTMLElement) => void } },
   TREE_NODE_SELECT: { node: Components.Tree.Node },
   MONACO_CHANGE_VALUE : { uri: string, value: string },
   MONACO_BEFORE_INIT: { monaco: typeof Monaco },

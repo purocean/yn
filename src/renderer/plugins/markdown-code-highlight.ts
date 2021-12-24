@@ -82,21 +82,12 @@ function addCustomStyles (ctx: Ctx) {
   )
 }
 
-function lineNumbersInternal (element: any, options?: any) {
-  // define options or set default
-  options = options || {
-    singleLine: false
-  }
-
-  // convert options
-  var firstLineIndex = options.singleLine ? 0 : 1
-
+function lineNumbersInternal (element: any, lang: string) {
   duplicateMultilineNodes(element)
-
-  return addLineNumbersBlockFor(element.innerHTML, firstLineIndex)
+  return addLineNumbersBlockFor(element.innerHTML, 1, lang)
 }
 
-function addLineNumbersBlockFor (inputHtml: any, firstLineIndex: any) {
+function addLineNumbersBlockFor (inputHtml: string, firstLineIndex: number, lang: string) {
   var lines = getLines(inputHtml)
 
   // if last line contains only carriage return remove it
@@ -128,7 +119,7 @@ function addLineNumbersBlockFor (inputHtml: any, firstLineIndex: any) {
         ])
     }
 
-    return format('<table class="{0}">{1}</table>', [ TABLE_NAME, html ])
+    return format(`<table class="{0}" data-lang="${lang}">{1}</table>`, [ TABLE_NAME, html ])
   }
 
   return inputHtml
@@ -199,7 +190,7 @@ function highlight (str: string, lang: string) {
     try {
       const element = document.createElement('code')
       element.innerHTML = Highlight.highlight(lang, str).value
-      return lineNumbersInternal(element)
+      return lineNumbersInternal(element, lang)
     } catch (error) {
       logger.error(error)
     }
@@ -208,12 +199,53 @@ function highlight (str: string, lang: string) {
   return ''
 }
 
+export function getHljsStyles () {
+  let styles = ''
+  Array.prototype.forEach.call(document.styleSheets, item => {
+    Array.prototype.forEach.call(item.cssRules, (rule) => {
+      if (rule.selectorText && rule.selectorText.includes('.hljs')) {
+        styles += rule.cssText + '\n'
+      }
+    })
+  })
+
+  return styles
+}
+
 export default {
   name: 'markdown-code-highlight',
   register: (ctx: Ctx) => {
     addCustomStyles(ctx)
     ctx.markdown.registerPlugin(md => {
       md.options.highlight = highlight as any
+    })
+
+    let hljsStyles = ''
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node, options }) => {
+      if (node.tagName === 'TABLE' && node.dataset.lang) {
+        const code = node.parentElement
+          ?.parentElement
+          ?.querySelector<HTMLElement>('.p-mcc-copy-btn.copy-text')
+          ?.dataset
+          ?.text
+
+        if (code) {
+          if (!options.inlineStyle) {
+            node.outerHTML = ctx.lib.lodash.escape(code)
+            return
+          }
+
+          if (!hljsStyles) {
+            hljsStyles = getHljsStyles()
+          }
+
+          node.outerHTML = ctx.lib.juice(
+            Highlight.highlight(node.dataset.lang, code).value,
+            { extraCss: hljsStyles }
+          )
+        }
+      }
     })
   }
 } as Plugin

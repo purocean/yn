@@ -1,12 +1,12 @@
-import customStyles from './plugins/custom-styles'
-import electronZoom from './plugins/electron-zoom'
+import customStyles from '@fe/plugins/custom-styles'
+import electronZoom from '@fe/plugins/electron-zoom'
 import documentHistoryStack from '@fe/plugins/document-history-stack'
 import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
 import statusBarRepositorySwitch from '@fe/plugins/status-bar-repository-switch'
 import statusBarView from '@fe/plugins/status-bar-view'
 import statusBarNavigation from '@fe/plugins/status-bar-navigation'
-import statusBarInsert from './plugins/status-bar-insert'
+import statusBarInsert from '@fe/plugins/status-bar-insert'
 import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarRefresh from '@fe/plugins/status-bar-refresh'
@@ -21,7 +21,7 @@ import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
-import markdownMacro from './plugins/markdown-macro'
+import markdownMacro from '@fe/plugins/markdown-macro'
 import markdownFrontMatter from '@fe/plugins/markdown-front-matter'
 import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
@@ -41,10 +41,11 @@ import markdownApplet from '@fe/plugins/markdown-applet'
 import markdownEcharts from '@fe/plugins/markdown-echarts'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
-import markdownHeadingNumber from './plugins/markdown-heading-number'
+import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
 import syncScroll from '@fe/plugins/sync-scroll'
 import transformImgOutLink from '@fe/plugins/transform-img-out-link'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
+import copyRenderedContent from '@fe/plugins/copy-rendered-content'
 
 export default [
   customStyles,
@@ -94,4 +95,5 @@ export default [
   syncScroll,
   transformImgOutLink,
   imageHostingPicgo,
+  copyRenderedContent,
 ]

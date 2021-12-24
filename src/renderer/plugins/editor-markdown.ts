@@ -43,10 +43,10 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
   const result: Monaco.languages.CompletionItem[] = []
 
   // emoji completion
-  if (currentStr.startsWith(':')) {
+  if (/^:[^:]*$/.test(currentStr)) {
     Object.keys(emoji).forEach((key, i) => {
       result.push({
-        label: { name: `:${key}: ${(emoji as any)[key]}` },
+        label: { label: `:${key}: ${(emoji as any)[key]}` },
         kind: monaco.languages.CompletionItemKind.EnumMember,
         insertText: (emoji as any)[key],
         range: range,
@@ -60,7 +60,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
   getWords(getValue()).forEach((word, i) => {
     if (currentWord !== word) {
       result.push({
-        label: { name: word },
+        label: { label: word },
         kind: monaco.languages.CompletionItemKind.Text,
         insertText: word,
         range: range,
@@ -109,9 +109,11 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
     { name: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
     { name: '/ --- Horizontal Line', insertText: '---\n' },
     { name: '/ --- Front Matter', insertText: '---\nheadingNumber: true\nenableMacro: true\ndefine:\n    APP_NAME: Yank Note\n---\n' },
+    { name: '/ ::: Container', insertText: '${1|:::,::::,:::::|} ${2|tip,warning,danger,details,group,group-item|} ${3:Title}\n${4:Content}\n${1|:::,::::,:::::|}\n' },
+    { name: '/ ::: Group Container', insertText: ':::: group ${1:Title}\n::: group-item Tab 1\ntest 1\n:::\n::: group-item *Tab 2\ntest 2\n:::\n::: group-item Tab 3\ntest 3\n:::\n::::\n' },
   ].forEach((item, i) => {
     result.push({
-      label: { name: item.name },
+      label: { label: item.name },
       kind: monaco.languages.CompletionItemKind.Keyword,
       insertText: item.insertText,
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
@@ -139,9 +141,10 @@ function processCursorChange (source: string, position: Monaco.Position) {
     const reg = /^\s*(\d+)\./
     const match = prevContent.match(reg)
     if (match && reg.test(content)) {
-      const num = parseInt(match[0] || '0')
+      const num = isTab ? 0 : parseInt(match[0] || '0')
+
       // only increase above 1
-      if (num > 1) {
+      if (num > 1 || isTab) {
         replaceLine(line, content.replace(/\d+\./, `${num + 1}.`))
       }
     }
@@ -172,9 +175,12 @@ function processCursorChange (source: string, position: Monaco.Position) {
 
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
+    const nextContent = getLineContent(line + 1)
+    const emptyItemReg = /^\s*(?:[*+->]|\d+\.|[*+-] \[ \])\s*$/
     if (
       /^\s*(?:[*+->]|\d+\.)/.test(prevContent) && // previous content must a item
-      /^\s*(?:[*+->]|\d+\.|[*+-] \[ \])\s*$/.test(content) // current content must a empty item
+      emptyItemReg.test(content) && // current line content must a empty item
+      emptyItemReg.test(nextContent) // next line content must a empty item
     ) {
       deleteLine(line) // remove empty item, now the line is the next line.
       replaceLine(line, '') // remove auto completion
@@ -202,7 +208,7 @@ export default {
         label: t('editor.context-menu.insert-date'),
         contextMenuGroupId: 'modification',
         keybindings: [
-          KM.Shift | KM.Alt | KC.KEY_D
+          KM.Shift | KM.Alt | KC.KeyD
         ],
         run: insertDate
       })
@@ -212,7 +218,7 @@ export default {
         label: t('editor.context-menu.insert-time'),
         contextMenuGroupId: 'modification',
         keybindings: [
-          KM.Shift | KM.Alt | KC.KEY_T
+          KM.Shift | KM.Alt | KC.KeyT
         ],
         run: insertTime
       })
@@ -230,11 +236,11 @@ export default {
         e.secondaryPositions.forEach(processCursorChange.bind(null, e.source))
       })
 
-      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_U), () => {
+      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyU), () => {
         editor.getAction('editor.action.transformToUppercase').run()
       })
 
-      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KEY_K, KM.CtrlCmd | KC.KEY_L), () => {
+      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyL), () => {
         editor.getAction('editor.action.transformToLowercase').run()
       })
 

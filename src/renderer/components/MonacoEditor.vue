@@ -91,3 +91,12 @@ export default defineComponent({
   width: 100%;
 }
 </style>
+
+<style>
+.monaco-editor .inputarea {
+  display: unset;
+  box-sizing: content-box;
+  background: unset;
+  transition: none;
+}
+</style>

@@ -20,7 +20,7 @@
 
 ## 注意事项
 
-- 为了更高的拓展性和方便性，Yank Note 牺牲了安全防护（命令执行，任意文件读写）。如果要用它打开外来 Markdown 文件，**请务必仔细甄别文件内容是值得信任的**。
+- 为了更高的拓展性和方便性，Yank Note 牺牲了安全防护（命令执行，任意文件读写）。如果要用它打开外来 Markdown 文件，⚠️**请务必仔细甄别文件内容是值得信任的**⚠️。
 - 加密文件的加密解密操作均在前端完成，请**务必牢记自己的密码**。一旦密码丢失，就只能暴力破解了。
 
 ## Yank-Note V3 开发计划
@@ -88,31 +88,27 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.16.1](https://github.com/purocean/yn/releases/tag/v3.16.1) 2021-12-16
-1. feat(表格): 增强表格编辑，现在可以通过右键菜单操作表格行列
-2. feat(表格): 支持小尺寸表格样式
-3. feat(主题): 支持自定义 CSS 样式
-4. feat(文档): 支持通过 `file://` 协议链接本地文件
-5. feta(侧栏): 增加创建文件夹按钮
-6. feta(编辑器): 增加 emoji 补全
-7. feta(脑图): 增加优先级定义
-8. feta(脑图): 增加适应高度按钮
-9. fix: 修复一些 Bug
-10. upd: 进一步整体使用体验
-11. feat(插件): 增加`ctx.base.showItemInFolder` 方法
-12. feat(插件): 增加`ctx.base.getRepo` 方法
-13. feat(插件): 增加`ctx.base.getMarkedFiles` 方法
-14. feat(插件): 增加`ctx.base.isMarked` 方法
-15. feat(插件): 增加`ctx.view.getEnableSyncScroll` 方法
-16. feat(插件): 增加`ctx.view.disableSyncScrollAwhile` 方法
-17. feat(插件): 增加`SETTING_CHANGED` 钩子
-18. feat(插件): 增加`SETTING_PANEL_BEFORE_SHOW` 钩子
-19. upd(插件): 移除`ctx.tree.refreshRepo` 方法
-20. upd(插件): 移除`ctx.api.markFile` 方法
-21. upd(插件): 移除`ctx.api.unmarkFile` 方法
-22. upd(插件): 移除`ctx.api.fetchMarkedFiles` 方法
-23. upd(插件): 移除`ctx.api.fetchRepositories` 方法
-24. upd(插件): 移除`ctx.api.openInOS` 方法
+### [v3.17.0](https://github.com/purocean/yn/releases/tag/v3.17.0) 2021-12-24
+1. feat: 新增复制富文本功能
+2. feat: 新增复制 HTML 功能
+3. upd: 优化编辑器补全
+4. upd: 优化导出功能
+5. upd: 升级 Electron 至 15.3.2
+6. upd: 升级 Monaco 编辑器至 0.31.1
+7. upd: 优化Macos 窗口使用体验
+8. fix: 修复 Windows 上不能在资源管理器中显示文件问题
+9. fix: 修复使用输入法时候文字闪烁问题
+10. fix: 修复编辑容器块内容时标签跳动问题
+11. feat: 新增 `ctx.utils.downloadContent` 方法
+12. feat: 新增 `ctx.ui.useModal().alert` 方法
+13. feat: 新增 `ctx.api.convertFile` 方法
+14. feat: 新增 `ctx.base.readFromClipboard` 方法
+15. feat: 新增 `ctx.base.writeToClipboard` 方法
+16. feat: 新增 `ctx.view.getPreviewStyles` 方法
+17. feat: 新增 `ctx.view.getPreviewStyles` 方法
+18. feat: 新增 `ctx.lib.turndown` 库
+19. feat: 新增 `ctx.lib.juice` 库
+20. upd: `ctx.view.getContentHtml` 增加参数配置
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

@@ -537,7 +537,7 @@ Yank Note 允许你在页面中嵌入宏，用以动态的替换文档。
 
 变量名 | 类型 | 描述
 ---- | ----- | ---
-`$ctx` | `object` | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/context.html)
+`$ctx` | `object` | 编辑器 `ctx`，可参考[插件开发指南](PLUGIN.md) 和[Api 文档](https://yn-api-doc.vercel.app/modules/renderer_context.html)
 `$include` | `(path: string, trim = false) => Result` | 引入其他文档片段方法
 `$export` | `(key: string, val: any) => Result` | 定义一个本文档可以使用的变量
 `$noop` | `() => Result` | 无操作函数，可用于文本占位使用

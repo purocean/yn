@@ -158,6 +158,38 @@ function convertLink (state: StateCore) {
 export default {
   name: 'markdown-link',
   register: (ctx) => {
+    let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
+
+    // replace localhost to ip, somtimes resolve localhost take too much time on windows.
+    if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
+      baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
+    }
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
+      const srcAttr = node.getAttribute('src')
+      // local image
+      if (srcAttr?.startsWith('api/')) {
+        if (options.inlineLocalImage) {
+          try {
+            const res: Response = await ctx.api.fetchHttp(srcAttr)
+            const base64Url = await ctx.utils.fileToBase64URL(await res.blob())
+            node.setAttribute('src', base64Url)
+            node.removeAttribute('origin-src')
+          } catch (error) {
+            console.log(error)
+          }
+        } else {
+          node.setAttribute('src', `${baseUrl}${srcAttr}`)
+        }
+      }
+
+      const originSrc = node.getAttribute('origin-src')
+      if (originSrc) {
+        node.setAttribute('src', originSrc)
+        node.removeAttribute('origin-src')
+      }
+    })
+
     ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e, view }) => {
       const target = e.target as HTMLElement
 
