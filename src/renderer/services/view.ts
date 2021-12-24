@@ -72,7 +72,7 @@ export function getPreviewStyles () {
 
 /**
  * Get rendered HTML.
- * @param _options
+ * @param options
  * @returns HTML
  */
 export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTML_FILTER_NODE']['options'] = {}) {
