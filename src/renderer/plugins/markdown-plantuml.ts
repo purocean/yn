@@ -193,7 +193,7 @@ const Plantuml = defineComponent({
         ...props.attrs,
         ref: img,
         alt: 'plantuml',
-        class: 'source-line plantuml-img',
+        class: 'plantuml-img',
         style,
         src: src.value,
         onLoad

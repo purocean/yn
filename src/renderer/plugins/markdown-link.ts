@@ -4,6 +4,7 @@ import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { sleep } from '@fe/utils'
 import { isElectron } from '@fe/support/env'
+import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/constant'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { getRepo, openExternal, openPath } from '@fe/services/base'
@@ -27,8 +28,8 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   } else if (/^file:\/\//i.test(href)) {
     openPath(decodeURI(href.replace(/^file:\/\//i, '')))
     return true
-  } else if (link.classList.contains('open')) {
-    const path = link.getAttribute('origin-href') || decodeURI(href)
+  } else if (link.classList.contains(DOM_CLASS_NAME.MARK_OPEN)) {
+    const path = link.getAttribute(DOM_ATTR_NAME.ORIGIN_HREF) || decodeURI(href)
     openPath(join(getRepo(fileRepo)?.path || '/', path))
     return true
   } else { // relative link
@@ -97,7 +98,8 @@ function convertLink (state: StateCore) {
   }
 
   const link = (token: Token) => {
-    const attrName = token.tag === 'a' ? 'href' : 'src'
+    const isAnchor = token.tag === 'a'
+    const attrName = isAnchor ? 'href' : 'src'
     const attrVal = decodeURIComponent(token.attrGet(attrName) || '')
     if (!attrVal) {
       return
@@ -110,7 +112,7 @@ function convertLink (state: StateCore) {
     const basePath = dirname(path)
     const fileName = basename(attrVal)
 
-    if (token.tag === 'a') {
+    if (isAnchor) {
       // keep markdown file.
       if (fileName.endsWith('.md')) {
         return
@@ -122,10 +124,13 @@ function convertLink (state: StateCore) {
       }
 
       // open other file in os
-      token.attrPush(['class', 'open'])
+      token.attrPush(['class', DOM_CLASS_NAME.MARK_OPEN])
+    } else {
+      token.attrSet(DOM_ATTR_NAME.LOCAL_IMAGE, 'true')
     }
 
-    token.attrSet(`origin-${attrName}`, attrVal)
+    const originAttr = isAnchor ? DOM_ATTR_NAME.ORIGIN_HREF : DOM_ATTR_NAME.ORIGIN_SRC
+    token.attrSet(originAttr, attrVal)
 
     const val = attrVal.replace(/[#?].*$/, '')
 
@@ -166,15 +171,15 @@ export default {
     }
 
     ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
-      const srcAttr = node.getAttribute('src')
       // local image
-      if (srcAttr?.startsWith('api/')) {
+      const srcAttr = node.getAttribute('src')
+      if (srcAttr && node.getAttribute(DOM_ATTR_NAME.LOCAL_IMAGE)) {
         if (options.inlineLocalImage) {
           try {
             const res: Response = await ctx.api.fetchHttp(srcAttr)
             const base64Url = await ctx.utils.fileToBase64URL(await res.blob())
             node.setAttribute('src', base64Url)
-            node.removeAttribute('origin-src')
+            node.removeAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
           } catch (error) {
             console.log(error)
           }
@@ -183,10 +188,10 @@ export default {
         }
       }
 
-      const originSrc = node.getAttribute('origin-src')
+      const originSrc = node.getAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
       if (originSrc) {
         node.setAttribute('src', originSrc)
-        node.removeAttribute('origin-src')
+        node.removeAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
       }
     })
 
