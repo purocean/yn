@@ -185,8 +185,8 @@ export type BuildInHookTypes = {
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },
 }
 
-export type BuildInIOCTypes = {
-  [key in keyof BuildInHookTypes]: any
+export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
+  STATUS_BAR_MENU_TAPPERS: any;
 }
 
 export type FrontMatterAttrs = {
