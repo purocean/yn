@@ -185,6 +185,10 @@ export type BuildInHookTypes = {
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },
 }
 
+export type BuildInIOCTypes = {
+  [key in keyof BuildInHookTypes]: any
+}
+
 export type FrontMatterAttrs = {
   headingNumber?: boolean,
   enableMacro?: boolean,
