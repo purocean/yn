@@ -1,6 +1,7 @@
 import * as storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
 import { showPremium } from '@fe/others/premium'
+import * as ioc from '@fe/core/ioc'
 import * as plugin from '@fe/core/plugin'
 import * as hook from '@fe/core/hook'
 import * as action from '@fe/core/action'
@@ -27,6 +28,7 @@ import * as i18n from '@fe/services/i18n'
 import * as lib from './lib'
 
 const ctx = {
+  ioc,
   base,
   api,
   args,
