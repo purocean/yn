@@ -30,7 +30,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
     return true
   } else if (link.classList.contains(DOM_CLASS_NAME.MARK_OPEN)) {
     const path = link.getAttribute(DOM_ATTR_NAME.ORIGIN_HREF) || decodeURI(href)
-    openPath(join(getRepo(fileRepo)?.path || '/', path))
+    openPath(join(dirname(currentFile.absolutePath || '/'), path))
     return true
   } else { // relative link
     // better scrollIntoView
@@ -124,7 +124,7 @@ function convertLink (state: StateCore) {
       }
 
       // open other file in os
-      token.attrPush(['class', DOM_CLASS_NAME.MARK_OPEN])
+      token.attrJoin('class', DOM_CLASS_NAME.MARK_OPEN)
     } else {
       token.attrSet(DOM_ATTR_NAME.LOCAL_IMAGE, 'true')
     }
