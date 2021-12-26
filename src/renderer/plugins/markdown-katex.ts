@@ -185,7 +185,7 @@ function math_plugin (md: any, options: any) {
     options.displayMode = true
     try {
       const html = katex.renderToString(latex, options)
-      return h('p', { ...token.meta?.attrs, class: 'source-line', key: html, innerHTML: html }, '')
+      return h('p', { ...token.meta?.attrs, key: html, innerHTML: html }, '')
     } catch (error: any) {
       if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)

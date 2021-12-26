@@ -40,7 +40,7 @@ const MarkdownItPlugin = (md: Markdown) => {
       },
       iframeProps: {
         ...token.meta?.attrs,
-        class: 'source-line applet-iframe',
+        class: 'applet-iframe',
         height: '20px',
       }
     })

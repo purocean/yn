@@ -1,5 +1,6 @@
 import { debounce } from 'lodash-es'
-import { getActionHandler } from '../core/action'
+import * as ioc from '@fe/core/ioc'
+import { getActionHandler } from '@fe/core/action'
 
 export type MenuItem = {
   id: string;
@@ -27,8 +28,6 @@ export type Menus = { [id: string]: Menu }
 
 export type MenuTapper = (menus: Menus) => void
 
-const menuTappers: MenuTapper[] = []
-
 const _refreshMenu = debounce(() => {
   getActionHandler('status-bar.refresh-menu')()
 }, 10)
@@ -45,7 +44,7 @@ export function refreshMenu () {
  * @param tapper
  */
 export function tapMenus (tapper: MenuTapper) {
-  menuTappers.push(tapper)
+  ioc.register('STATUS_BAR_MENU_TAPPERS', tapper)
   refreshMenu()
 }
 
@@ -56,6 +55,7 @@ export function tapMenus (tapper: MenuTapper) {
  */
 export function getMenus (position: string) {
   const menus: Menus = {}
-  menuTappers.forEach(tap => tap(menus))
+  const tappers: MenuTapper[] = ioc.get('STATUS_BAR_MENU_TAPPERS')
+  tappers.forEach(tap => tap(menus))
   return Object.values(menus).filter(x => x.position === position)
 }

@@ -13,6 +13,7 @@ import { refreshTree } from '@fe/services/tree'
 import { buildSrc, IFrame } from '@fe/support/embed'
 import { getCurrentLanguage, t, useI18n } from '@fe/services/i18n'
 import { FLAG_DEMO } from '@fe/support/args'
+import { DOM_ATTR_NAME } from '@fe/support/constant'
 import Mask from '@fe/components/Mask.vue'
 
 const logger = getLogger('plugin-markdown-luckysheet')
@@ -330,7 +331,7 @@ const MarkdownItPlugin = (md: Markdown) => {
       return linkTemp(tokens, idx, options, env, slf)
     }
 
-    const url = token.attrGet('origin-href')
+    const url = token.attrGet(DOM_ATTR_NAME.ORIGIN_HREF)
     if (!url || url.includes(':')) {
       return linkTemp(tokens, idx, options, env, slf)
     }

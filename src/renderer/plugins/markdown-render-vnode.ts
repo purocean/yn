@@ -1,8 +1,9 @@
 import { createVNode, Fragment, Comment, Text, VNode } from 'vue'
-import Token from 'markdown-it/lib/token'
-import Renderer from 'markdown-it/lib/renderer'
+import type Token from 'markdown-it/lib/token'
+import type Renderer from 'markdown-it/lib/renderer'
 import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
-import { Plugin } from '@fe/context'
+import { DOM_ATTR_NAME } from '@fe/support/constant'
+import type { Plugin } from '@fe/context'
 
 const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
 const defaultRules = {} as any
@@ -36,9 +37,8 @@ export function setSourceLine (token: Token, env?: Record<string, any>) {
     const [lineStart, lineEnd] = getLine(token, env)
 
     if (token.map) {
-      token.attrJoin('class', 'source-line')
-      token.attrSet('data-source-line', String(lineStart + 1))
-      token.attrSet('data-source-line-end', String(lineEnd + 1))
+      token.attrSet(DOM_ATTR_NAME.SOURCE_LINE_START, String(lineStart + 1))
+      token.attrSet(DOM_ATTR_NAME.SOURCE_LINE_END, String(lineEnd + 1))
       if (!token.meta.attrs) {
         token.meta.attrs = {}
       }
@@ -58,9 +58,17 @@ defaultRules.code_inline = function (tokens: Token[], idx: number, _: any, __: a
 defaultRules.code_block = function (tokens: Token[], idx: number, _: any, __: any, slf: Renderer) {
   const token = tokens[idx]
   const attrs: any = slf.renderAttrs(token)
+  const preAttrs = {
+    [DOM_ATTR_NAME.SOURCE_LINE_START]: attrs[DOM_ATTR_NAME.SOURCE_LINE_START],
+    [DOM_ATTR_NAME.SOURCE_LINE_END]: attrs[DOM_ATTR_NAME.SOURCE_LINE_END],
+  }
+
+  delete attrs[DOM_ATTR_NAME.SOURCE_LINE_START]
+  delete attrs[DOM_ATTR_NAME.SOURCE_LINE_END]
+
   return createVNode(
     'pre',
-    {},
+    preAttrs,
     [createVNode('code', attrs, [createVNode(Text, {}, token.content)])]
   )
 }
@@ -88,11 +96,23 @@ defaultRules.fence = function (tokens: Token[], idx: number, options: any, _: an
     return highlighted + '\n'
   }
 
-  const buildVNode = (attrs: any) => createVNode(
-    'pre',
-    { 'data-info': info, 'data-lang': langName },
-    [createVNode('code', { key: highlighted, ...attrs, innerHTML: highlighted }, [])]
-  )
+  const buildVNode = (attrs: any) => {
+    const preAttrs = {
+      'data-info': info,
+      'data-lang': langName,
+      [DOM_ATTR_NAME.SOURCE_LINE_START]: attrs[DOM_ATTR_NAME.SOURCE_LINE_START],
+      [DOM_ATTR_NAME.SOURCE_LINE_END]: attrs[DOM_ATTR_NAME.SOURCE_LINE_END],
+    }
+
+    delete attrs[DOM_ATTR_NAME.SOURCE_LINE_START]
+    delete attrs[DOM_ATTR_NAME.SOURCE_LINE_END]
+
+    return createVNode(
+      'pre',
+      preAttrs,
+      [createVNode('code', { key: highlighted, ...attrs, innerHTML: highlighted }, [])]
+    )
+  }
 
   // If language exists, inject class gently, without modifying original token.
   // May be, one day we will add .deepClone() for token and simplify this part, but
@@ -271,10 +291,6 @@ export default {
       md.renderer.renderInline = render
       md.renderer.renderAttrs = renderAttrs
       md.renderer.renderToken = renderToken
-    })
-
-    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
-      node.classList.remove('source-line')
     })
   }
 } as Plugin

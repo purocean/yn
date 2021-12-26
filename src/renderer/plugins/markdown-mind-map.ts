@@ -367,7 +367,7 @@ const MindMap = defineComponent({
       removeHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
     })
 
-    return () => h('div', { ...props.attrs, ref: container, class: 'source-line mind-map reduce-brightness' })
+    return () => h('div', { ...props.attrs, ref: container, class: 'mind-map reduce-brightness' })
   }
 })
 

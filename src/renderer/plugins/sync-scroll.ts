@@ -66,7 +66,7 @@ export default {
       if (
         ctx.store.state.showEditor &&
         !ctx.store.state.presentation &&
-        target.classList.contains('source-line') &&
+        target.dataset.sourceLine &&
         window.getSelection()!.toString().length < 1
       ) {
         ctx.view.disableSyncScrollAwhile(() => {

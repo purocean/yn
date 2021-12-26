@@ -39,7 +39,7 @@ export default {
         return true
       }
 
-      if (target.tagName === 'INPUT' && target.parentElement!.classList.contains('source-line')) {
+      if (target.tagName === 'INPUT' && target.parentElement!.dataset.sourceLine) {
         const line = parseInt(target.parentElement!.dataset.sourceLine || '0')
         const checked = (target as HTMLInputElement).checked
         ctx.action.getActionHandler(actionName)(line, checked)

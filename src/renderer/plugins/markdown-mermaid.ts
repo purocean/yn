@@ -53,7 +53,7 @@ const Mermaid = defineComponent({
     onMounted(() => setTimeout(render, 0))
 
     return () => {
-      return h('div', { ...props.attrs, class: 'source-line mermaid-wrapper' }, [
+      return h('div', { ...props.attrs, class: 'mermaid-wrapper' }, [
         h('div', { class: 'mermaid-action no-print' }, [
           h('button', { class: 'small', onClick: () => exportData() }, 'SVG'),
         ]),

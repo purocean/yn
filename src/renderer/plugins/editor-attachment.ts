@@ -11,6 +11,7 @@ import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
 import { isSameRepo } from '@fe/services/document'
 import { useToast } from '@fe/support/ui/toast'
+import { DOM_CLASS_NAME } from '@fe/support/constant'
 import { t } from '@fe/services/i18n'
 
 async function uploadFile (file: any, asImage: boolean) {
@@ -24,7 +25,7 @@ async function uploadFile (file: any, asImage: boolean) {
   if (asImage) {
     insert(`![Img](${encodeMarkdownLink(assetPath)})\n`)
   } else {
-    insert(`[${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){.open}\n`)
+    insert(`[${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){.${DOM_CLASS_NAME.MARK_OPEN}}\n`)
   }
 
   refreshTree()

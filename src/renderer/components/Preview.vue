@@ -52,6 +52,7 @@ import { revealLineInCenter } from '@fe/services/editor'
 import { showExport, toUri } from '@fe/services/document'
 import { getContextMenuItems, toggleAutoPreview } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
+import { DOM_ATTR_NAME } from '@fe/support/constant'
 import { useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
 import type { RenderEnv } from '@fe/types'
@@ -236,7 +237,7 @@ export default defineComponent({
         return
       }
 
-      const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>('.markdown-body .source-line')
+      const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}]`)
       for (let i = 0; i < nodes.length; i++) {
         const el = nodes[i]
         const lineNumber = parseInt(el.dataset.sourceLine || '0')

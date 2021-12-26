@@ -1,6 +1,7 @@
 import * as storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
 import { showPremium } from '@fe/others/premium'
+import * as ioc from '@fe/core/ioc'
 import * as plugin from '@fe/core/plugin'
 import * as hook from '@fe/core/hook'
 import * as action from '@fe/core/action'
@@ -13,6 +14,7 @@ import * as base from '@fe/services/base'
 import * as api from '@fe/support/api'
 import * as embed from '@fe/support/embed'
 import * as args from '@fe/support/args'
+import * as constant from '@fe/support/constant'
 import * as doc from '@fe/services/document'
 import * as view from '@fe/services/view'
 import * as tree from '@fe/services/tree'
@@ -26,9 +28,11 @@ import * as i18n from '@fe/services/i18n'
 import * as lib from './lib'
 
 const ctx = {
+  ioc,
   base,
   api,
   args,
+  constant,
   store,
   action,
   doc,

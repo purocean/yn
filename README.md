@@ -88,7 +88,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.17.0](https://github.com/purocean/yn/releases/tag/v3.17.0) 2021-12-24
+### [v3.17.1](https://github.com/purocean/yn/releases/tag/v3.17.1) 2021-12-24
 1. feat: add rich text copy
 2. feat: add HTML copy
 3. upd: optimize editor completion
