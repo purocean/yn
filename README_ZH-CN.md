@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.17.0](https://github.com/purocean/yn/releases/tag/v3.17.0) 2021-12-24
+### [v3.17.1](https://github.com/purocean/yn/releases/tag/v3.17.1) 2021-12-24
 1. feat: 新增复制富文本功能
 2. feat: 新增复制 HTML 功能
 3. upd: 优化编辑器补全
