@@ -299,9 +299,13 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     return
   }
 
-  await api.moveFile(doc, newPath)
-
-  triggerHook('DOC_MOVED', { oldDoc: doc, newDoc })
+  try {
+    await api.moveFile(doc, newPath)
+    triggerHook('DOC_MOVED', { oldDoc: doc, newDoc })
+  } catch (error: any) {
+    useToast().show('warning', error.message)
+    throw error
+  }
 }
 
 /**
