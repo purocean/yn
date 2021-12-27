@@ -120,7 +120,9 @@ export type BuildInActions = {
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
   'layout.toggle-editor': (visible?: boolean) => void,
+  'control-center.toggle': (visible?: boolean) => void,
   'status-bar.refresh-menu': () => void,
+  'control-center.refresh': () => void,
   'tree.refresh': () => void,
   'editor.toggle-wrap': () => void,
   'filter.show-quick-open': () => void,
@@ -187,6 +189,7 @@ export type BuildInHookTypes = {
 
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   STATUS_BAR_MENU_TAPPERS: any;
+  CONTROL_CENTER_SCHEMA_TAPPERS: any;
 }
 
 export type FrontMatterAttrs = {

@@ -200,12 +200,6 @@ const data: BaseLanguage = {
       'repo': '仓库: %s',
       'no-data': '未选择仓库',
     },
-    'nav': {
-      'nav': '导航',
-      'goto': '快速跳转',
-      'forward': '前进',
-      'back': '后退',
-    },
     'insert': {
       'insert': '插入',
       'paste-rtf': '粘贴富文本',
@@ -229,12 +223,6 @@ const data: BaseLanguage = {
       'features': '特色功能说明',
       'shortcuts': '快捷键',
       'plugin': '插件开发'
-    },
-    'rendering': {
-      'rendering': '同步渲染 - %s',
-      'on': '已开启',
-      'off': '已关闭',
-      'refresh': '重新渲染'
     },
     'terminal': '终端',
     'present': '预览',
@@ -410,6 +398,22 @@ const data: BaseLanguage = {
     'change-confirm': {
       'title': '提示',
       'content': '更改自定义 CSS 需要重载页面，是否继续？',
+    }
+  },
+  'control-center': {
+    'control-center': '控制中心 %s',
+    'switch': {
+      'side-bar': '侧栏 %s',
+      'editor': '编辑器 %s',
+      'view': '预览 %s',
+      'word-wrap': '编辑器换行 %s',
+      'sync-rendering': '同步渲染',
+    },
+    'navigation': {
+      'goto': '跳转 %s',
+      'forward': '前进 %s',
+      'back': '后退 %s',
+      'refresh': '刷新',
     }
   },
 }

@@ -24,6 +24,7 @@
   <SettingPanel />
   <ExportPanel />
   <Premium />
+  <ControlCenter />
 </template>
 
 <script lang="ts">
@@ -44,6 +45,7 @@ import SettingPanel from '@fe/components/SettingPanel.vue'
 import ExportPanel from '@fe/components/ExportPanel.vue'
 import Premium from '@fe/components/Premium.vue'
 import XFilter from '@fe/components/Filter.vue'
+import ControlCenter from '@fe/components/ControlCenter.vue'
 
 export default defineComponent({
   name: 'x-main',
@@ -60,6 +62,7 @@ export default defineComponent({
     Premium,
     SettingPanel,
     ExportPanel,
+    ControlCenter,
   },
   setup () {
     onMounted(startup)

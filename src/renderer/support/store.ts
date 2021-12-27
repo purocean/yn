@@ -13,6 +13,7 @@ export const initState = {
   autoPreview: true,
   showSetting: false,
   showExport: false,
+  showControlCenter: false,
   presentation: false,
   isFullscreen: false,
   currentContent: '',
@@ -58,6 +59,9 @@ export default createStore({
     },
     setShowExport (state, data) {
       state.showExport = data
+    },
+    setShowControlCenter (state, data) {
+      state.showControlCenter = data
     },
     setPresentation (state, data) {
       state.presentation = data

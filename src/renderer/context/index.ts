@@ -25,6 +25,7 @@ import * as editor from '@fe/services/editor'
 import * as theme from '@fe/services/theme'
 import * as setting from '@fe/services/setting'
 import * as i18n from '@fe/services/i18n'
+import * as controlCenter from '@fe/services/control-center'
 import * as lib from './lib'
 
 const ctx = {
@@ -40,6 +41,7 @@ const ctx = {
   tree,
   markdown,
   statusBar,
+  controlCenter,
   layout,
   editor,
   view,

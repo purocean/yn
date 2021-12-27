@@ -199,12 +199,6 @@ const data = {
       'repo': 'Repo: %s',
       'no-data': 'No Repo',
     },
-    'nav': {
-      'nav': 'Navigation',
-      'goto': 'Goto',
-      'forward': 'Forward',
-      'back': 'Back',
-    },
     'insert': {
       'insert': 'Insert',
       'paste-rtf': 'Paste Rich Text',
@@ -228,12 +222,6 @@ const data = {
       'features': 'Features',
       'shortcuts': 'Shortcuts',
       'plugin': 'Create Plugin'
-    },
-    'rendering': {
-      'rendering': 'Synchronous rendering - %s',
-      'on': 'ON',
-      'off': 'OFF',
-      'refresh': 'Refresh'
     },
     'terminal': 'Terminal',
     'present': 'Present',
@@ -409,6 +397,22 @@ const data = {
     'change-confirm': {
       'title': 'Attention',
       'content': 'Changing the custom CSS requires the page to be reloaded. Do you want to continue?',
+    }
+  },
+  'control-center': {
+    'control-center': 'Control Center %s',
+    'switch': {
+      'side-bar': 'Side Bar %s',
+      'editor': 'Editor %s',
+      'view': 'Editor %s',
+      'word-wrap': 'Word Wrap %s',
+      'sync-rendering': 'Synchronous rendering',
+    },
+    'navigation': {
+      'goto': 'Goto %s',
+      'forward': 'Forward %s',
+      'back': 'Back %s',
+      'refresh': 'Refresh',
     }
   },
 }
