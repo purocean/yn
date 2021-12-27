@@ -7,7 +7,7 @@ import { isElectron } from '@fe/support/env'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/constant'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
-import { getRepo, openExternal, openPath } from '@fe/services/base'
+import { openExternal, openPath } from '@fe/services/base'
 
 const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
