@@ -387,16 +387,23 @@ export async function ensureCurrentFileSaved () {
 /**
  * Switch document.
  * @param doc
+ * @param force
  */
-export async function switchDoc (doc: Doc | null) {
+export async function switchDoc (doc: Doc | null, force = false) {
   logger.debug('switchDoc', doc)
 
-  if (toUri(doc) === toUri(store.state.currentFile)) {
+  if (!force && toUri(doc) === toUri(store.state.currentFile)) {
     logger.debug('skip switch', doc)
     return
   }
 
-  await ensureCurrentFileSaved()
+  await ensureCurrentFileSaved().catch(error => {
+    if (force) {
+      console.error(error)
+    } else {
+      throw error
+    }
+  })
 
   try {
     if (!doc) {

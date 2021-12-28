@@ -7,6 +7,7 @@ import store from '@fe/support/store'
 import type { BuildInHookTypes, Components } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
+import { switchDoc } from './document'
 
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
@@ -36,7 +37,12 @@ export function render () {
 /**
  * Refresh view.
  */
-export function refresh () {
+export async function refresh () {
+  if (store.state.currentFile) {
+    const { type, name, path, repo } = store.state.currentFile
+    await switchDoc({ type, name, path, repo }, true)
+  }
+
   getActionHandler('view.refresh')()
 }
 
