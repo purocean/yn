@@ -200,6 +200,12 @@ const data: BaseLanguage = {
       'repo': '仓库: %s',
       'no-data': '未选择仓库',
     },
+    'nav': {
+      'nav': '导航',
+      'goto': '快速跳转',
+      'forward': '前进',
+      'back': '后退',
+    },
     'insert': {
       'insert': '插入',
       'paste-rtf': '粘贴富文本',

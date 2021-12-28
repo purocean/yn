@@ -5,6 +5,7 @@ import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
 import statusBarRepositorySwitch from '@fe/plugins/status-bar-repository-switch'
 import statusBarView from '@fe/plugins/status-bar-view'
+import statusBarNavigation from '@fe/plugins/status-bar-navigation'
 import statusBarInsert from '@fe/plugins/status-bar-insert'
 import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
@@ -54,6 +55,7 @@ export default [
   statusBarSetting,
   statusBarRepositorySwitch,
   statusBarView,
+  statusBarNavigation,
   statusBarInsert,
   statusBarTool,
   statusBarHelp,

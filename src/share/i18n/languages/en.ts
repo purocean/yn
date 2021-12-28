@@ -199,6 +199,12 @@ const data = {
       'repo': 'Repo: %s',
       'no-data': 'No Repo',
     },
+    'nav': {
+      'nav': 'Navigation',
+      'goto': 'Goto',
+      'forward': 'Forward',
+      'back': 'Back',
+    },
     'insert': {
       'insert': 'Insert',
       'paste-rtf': 'Paste Rich Text',

@@ -1,5 +1,5 @@
 import type { Plugin, Ctx } from '@fe/context'
-import type { Doc } from '@fe/types'
+import type { BuildInActionName, Doc } from '@fe/types'
 
 export default {
   name: 'document-history-stack',
@@ -12,6 +12,7 @@ export default {
 
     function refresh () {
       ctx.controlCenter.refresh()
+      ctx.statusBar.refreshMenu()
     }
 
     function go (offset: number) {
@@ -59,6 +60,29 @@ export default {
       name: forwardId,
       handler: () => go(1),
       keys: [ctx.command.Alt, ctx.command.BracketRight],
+    })
+
+    ctx.registerHook('STARTUP', () => {
+      ctx.statusBar.tapMenus(menus => {
+        menus['status-bar-navigation']?.list?.push(
+          {
+            id: forwardId,
+            type: 'normal' as any,
+            title: ctx.i18n.t('status-bar.nav.forward'),
+            disabled: idx >= stack.length - 1,
+            subTitle: ctx.command.getKeysLabel(forwardId),
+            onClick: () => ctx.action.getActionHandler(forwardId)()
+          },
+          {
+            id: backId,
+            type: 'normal' as any,
+            title: ctx.i18n.t('status-bar.nav.back'),
+            disabled: idx <= 0,
+            subTitle: ctx.command.getKeysLabel(backId),
+            onClick: () => ctx.action.getActionHandler(backId)()
+          },
+        )
+      })
     })
 
     ctx.controlCenter.tapSchema(schema => {
