@@ -168,5 +168,7 @@ p.content {
   max-height: 200px;
   overflow-y: auto;
   overflow-wrap: break-word;
+  padding: 4px 0;
+  margin: 12px 0;
 }
 </style>
