@@ -46,7 +46,6 @@ onBeforeUnmount(() => {
 
 watch(() => store.state.showControlCenter, (val) => {
   if (val) {
-    console.log('xxxx')
     nextTick(() => container.value?.focus())
   }
 })
