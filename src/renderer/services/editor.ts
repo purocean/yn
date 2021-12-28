@@ -292,7 +292,7 @@ whenEditorReady().then(({ editor }) => {
   editor.onDidChangeCursorPosition(e => {
     if (store.state.typewriterMode) {
       const sources = ['deleteLeft', 'keyboard']
-      if (sources.includes(e.source) && e.reason === 0) {
+      if (sources.includes(e.source) && (e.reason === 0 || e.reason === 3)) {
         editor.revealPositionInCenter(e.position)
       }
     }
