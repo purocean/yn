@@ -4,6 +4,7 @@
       :class="{'status-bar-menu': true, hidden: menu.hidden}"
       v-for="menu in list"
       :key="menu.id"
+      @mousedown="menu.onMousedown && menu.onMousedown(menu)"
       @click="menu.onClick && menu.onClick(menu)">
       <div class="title" :title="menu.tips">
         <svg-icon v-if="menu.icon" :name="menu.icon" class="title-icon" />

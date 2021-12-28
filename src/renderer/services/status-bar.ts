@@ -21,6 +21,7 @@ export interface Menu {
   hidden?: boolean;
   position: 'left' | 'right';
   onClick?: (menu: Menu) => void;
+  onMousedown?: (menu: Menu) => void;
   list?: MenuItem[];
 }
 
