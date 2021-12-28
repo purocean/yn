@@ -48,6 +48,18 @@ export default {
             },
             {
               type: 'btn',
+              icon: 'paint-roller',
+              title: ctx.i18n.t('control-center.switch.sync-rendering'),
+              checked: ctx.store.state.autoPreview,
+              onClick: () => {
+                ctx.view.toggleAutoPreview()
+                if (ctx.store.state.autoPreview) {
+                  ctx.view.refresh()
+                }
+              }
+            },
+            {
+              type: 'btn',
               icon: 'text-width-solid',
               title: ctx.i18n.t('control-center.switch.word-wrap', ctx.command.getKeysLabel('editor.toggle-wrap')),
               checked: ctx.store.state.wordWrap === 'on',
@@ -57,14 +69,11 @@ export default {
             },
             {
               type: 'btn',
-              icon: 'paint-roller',
-              title: ctx.i18n.t('control-center.switch.sync-rendering'),
-              checked: ctx.store.state.autoPreview,
+              icon: 'keyboard-solid',
+              title: ctx.i18n.t('control-center.switch.typewriter-mode'),
+              checked: ctx.store.state.typewriterMode,
               onClick: () => {
-                ctx.view.toggleAutoPreview()
-                if (ctx.store.state.autoPreview) {
-                  ctx.view.refresh()
-                }
+                ctx.editor.toggleTypewriterMode()
               }
             },
           )

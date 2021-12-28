@@ -234,6 +234,10 @@ export function toggleWrap () {
   store.commit('setWordWrap', (isWrapping ? 'off' : 'on'))
 }
 
+export function toggleTypewriterMode () {
+  store.commit('setTypewriterMode', !store.state.typewriterMode)
+}
+
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
 
 registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
@@ -280,5 +284,17 @@ registerHook('THEME_CHANGE', () => {
 store.watch(state => state.wordWrap, (wordWrap) => {
   whenEditorReady().then(({ editor }) => {
     editor.updateOptions({ wordWrap })
+  })
+})
+
+whenEditorReady().then(({ editor }) => {
+  // typewriter mode
+  editor.onDidChangeCursorPosition(e => {
+    if (store.state.typewriterMode) {
+      const sources = ['deleteLeft', 'keyboard']
+      if (sources.includes(e.source) && e.reason === 0) {
+        editor.revealPositionInCenter(e.position)
+      }
+    }
   })
 })

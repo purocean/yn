@@ -6,6 +6,7 @@ import type { Components, Doc, Repo } from '@fe/types'
 export const initState = {
   tree: null,
   wordWrap: storage.get<'off' | 'on'>('wordWrap', 'off'),
+  typewriterMode: storage.get<boolean>('typewriterMode', false),
   showSide: storage.get('showSide', true),
   showView: storage.get('showView', true),
   showEditor: storage.get('showEditor', true),
@@ -41,6 +42,10 @@ export default createStore({
     setWordWrap (state, data: 'off' | 'on') {
       state.wordWrap = data
       storage.set('wordWrap', data)
+    },
+    setTypewriterMode (state, data: boolean) {
+      state.typewriterMode = data
+      storage.set('typewriterMode', data)
     },
     setShowView (state, data) {
       state.showView = data

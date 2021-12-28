@@ -411,8 +411,9 @@ const data = {
       'side-bar': 'Side Bar %s',
       'editor': 'Editor %s',
       'view': 'Editor %s',
-      'word-wrap': 'Word Wrap %s',
       'sync-rendering': 'Synchronous rendering',
+      'word-wrap': 'Word Wrap %s',
+      'typewriter-mode': 'Typewriter Mode',
     },
     'navigation': {
       'goto': 'Goto %s',
