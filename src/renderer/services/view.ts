@@ -12,7 +12,7 @@ import { switchDoc } from './document'
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
 
-let enableSyncScroll = true
+let tmpEnableSyncScroll = true
 let syncScrollTimer: any
 
 const contextMenuFunList: BuildContextMenu[] = []
@@ -172,8 +172,15 @@ export function exitPresent () {
  * @param flag
  */
 export function toggleAutoPreview (flag?: boolean) {
-  const showXterm = store.state.autoPreview
-  store.commit('setAutoPreview', typeof flag === 'boolean' ? flag : !showXterm)
+  store.commit('setAutoPreview', typeof flag === 'boolean' ? flag : !store.state.autoPreview)
+}
+
+/**
+ * Toggle sync scroll.
+ * @param flag
+ */
+export function toggleSyncScroll (flag?: boolean) {
+  store.commit('setSyncScroll', typeof flag === 'boolean' ? flag : !store.state.syncScroll)
 }
 
 /**
@@ -204,7 +211,7 @@ export function getContextMenuItems (e: MouseEvent) {
  * @returns
  */
 export function getEnableSyncScroll () {
-  return enableSyncScroll
+  return tmpEnableSyncScroll && store.state.syncScroll
 }
 
 /**
@@ -214,10 +221,10 @@ export function getEnableSyncScroll () {
  */
 export async function disableSyncScrollAwhile (fn: Function, timeout = 500) {
   clearTimeout(syncScrollTimer)
-  enableSyncScroll = false
+  tmpEnableSyncScroll = false
   await fn()
   syncScrollTimer = setTimeout(() => {
-    enableSyncScroll = true
+    tmpEnableSyncScroll = true
   }, timeout)
 }
 

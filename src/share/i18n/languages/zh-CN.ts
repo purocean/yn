@@ -412,6 +412,7 @@ const data: BaseLanguage = {
       'side-bar': '侧栏 %s',
       'editor': '编辑器 %s',
       'view': '预览 %s',
+      'sync-scroll': '同步滚动',
       'sync-rendering': '同步渲染',
       'word-wrap': '编辑器换行 %s',
       'typewriter-mode': '打字机模式',

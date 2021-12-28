@@ -12,6 +12,7 @@ export const initState = {
   showEditor: storage.get('showEditor', true),
   showXterm: false,
   autoPreview: true,
+  syncScroll: true,
   showSetting: false,
   showExport: false,
   showControlCenter: false,
@@ -73,6 +74,9 @@ export default createStore({
     },
     setIsFullscreen (state, data) {
       state.isFullscreen = data
+    },
+    setSyncScroll (state, data) {
+      state.syncScroll = data
     },
     setAutoPreview (state, data) {
       state.autoPreview = data

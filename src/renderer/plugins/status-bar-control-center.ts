@@ -48,6 +48,15 @@ export default {
             },
             {
               type: 'btn',
+              icon: 'columns-solid',
+              title: ctx.i18n.t('control-center.switch.sync-scroll'),
+              checked: ctx.store.state.syncScroll,
+              onClick: () => {
+                ctx.view.toggleSyncScroll()
+              }
+            },
+            {
+              type: 'btn',
               icon: 'paint-roller',
               title: ctx.i18n.t('control-center.switch.sync-rendering'),
               checked: ctx.store.state.autoPreview,
