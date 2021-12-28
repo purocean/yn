@@ -1,5 +1,5 @@
 import type { Plugin, Ctx } from '@fe/context'
-import type { BuildInActionName, Doc } from '@fe/types'
+import type { Doc } from '@fe/types'
 
 export default {
   name: 'document-history-stack',
