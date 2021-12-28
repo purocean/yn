@@ -10,7 +10,7 @@ export default {
         position: 'right',
         tips: ctx.i18n.t('control-center.control-center', ctx.command.getKeysLabel('control-center.toggle')),
         icon: 'sliders-h-solid',
-        onClick: () => ctx.controlCenter.toggle()
+        onMousedown: () => ctx.controlCenter.toggle()
       }
     })
 

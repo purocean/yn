@@ -3,7 +3,7 @@
     v-if="store.state.showControlCenter && schema"
     class="control-center"
     tabindex="0"
-    @blur="toggle(false)"
+    @blur="onBlur"
     ref="container"
   >
     <div v-for="(row, category) in schema" :key="category" class="row">
@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 import { registerAction, removeAction } from '@fe/core/action'
 import { getSchema, Schema, toggle } from '@fe/services/control-center'
-import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import SvgIcon from './SvgIcon.vue'
 
@@ -32,6 +32,12 @@ const schema = ref<Schema | null>(null)
 const store = useStore()
 
 const container = ref<HTMLElement>()
+
+function onBlur () {
+  setTimeout(() => {
+    toggle(false)
+  }, 0)
+}
 
 registerAction({
   name: 'control-center.refresh',
@@ -46,7 +52,9 @@ onBeforeUnmount(() => {
 
 watch(() => store.state.showControlCenter, (val) => {
   if (val) {
-    nextTick(() => container.value?.focus())
+    setTimeout(() => {
+      container.value?.focus()
+    }, 0)
   }
 })
 
