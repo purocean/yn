@@ -142,6 +142,9 @@ export type BuildInActions = {
   'plugin.status-bar-help.show-plugin': () => void,
   'plugin.transform-img-link.all': () => void,
   'plugin.switch-todo.switch': (line?: number, checked?: boolean) => void,
+  'plugin.electron-zoom.zoom-in': () => void,
+  'plugin.electron-zoom.zoom-out': () => void,
+  'plugin.electron-zoom.zoom-reset': () => void,
   'premium.show': () => void,
 }
 

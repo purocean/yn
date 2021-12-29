@@ -18,7 +18,23 @@ export default {
     ctx.store.subscribe(() => {
       if (count === 0) {
         ctx.statusBar.tapMenus(menus => {
-          menus['status-bar-view'].list = [
+          menus['status-bar-view'].list?.push(
+            {
+              id: 'word-wrap',
+              type: 'normal',
+              checked: ctx.store.state.wordWrap === 'on',
+              title: ctx.i18n.t('status-bar.view.word-wrap'),
+              subTitle: getKeysLabel('editor.toggle-wrap'),
+              onClick: () => ctx.editor.toggleWrap()
+            },
+            {
+              id: 'typewriter-mode',
+              type: 'normal',
+              checked: ctx.store.state.typewriterMode,
+              title: ctx.i18n.t('status-bar.view.typewriter-mode'),
+              onClick: () => ctx.editor.toggleTypewriterMode()
+            },
+            { type: 'separator' },
             {
               id: 'toggle-side',
               type: 'normal',
@@ -51,23 +67,7 @@ export default {
               subTitle: getKeysLabel('layout.toggle-xterm'),
               onClick: () => ctx.layout.toggleXterm()
             }] : []),
-            { type: 'separator' },
-            {
-              id: 'word-wrap',
-              type: 'normal',
-              checked: ctx.store.state.wordWrap === 'on',
-              title: ctx.i18n.t('status-bar.view.word-wrap'),
-              subTitle: getKeysLabel('editor.toggle-wrap'),
-              onClick: () => ctx.editor.toggleWrap()
-            },
-            {
-              id: 'typewriter-mode',
-              type: 'normal',
-              checked: ctx.store.state.typewriterMode,
-              title: ctx.i18n.t('status-bar.view.typewriter-mode'),
-              onClick: () => ctx.editor.toggleTypewriterMode()
-            },
-          ]
+          )
         })
       } else {
         ctx.statusBar.refreshMenu()

@@ -193,6 +193,9 @@ const data: BaseLanguage = {
       'side-bar': '显示侧栏',
       'word-wrap': '文本换行',
       'typewriter-mode': '打字机模式',
+      'zoom-in': '放大',
+      'zoom-out': '缩小',
+      'zoom-reset': '实际大小',
     },
     'setting': '设置',
     'repo': {

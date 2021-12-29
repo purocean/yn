@@ -192,6 +192,9 @@ const data = {
       'side-bar': 'Show Side Bar',
       'word-wrap': 'Word Wrap',
       'typewriter-mode': 'Typewriter Mode',
+      'zoom-in': 'Zoom In',
+      'zoom-out': 'Zoom Out',
+      'zoom-reset': 'Actual Size',
     },
     'setting': 'Setting',
     'repo': {
