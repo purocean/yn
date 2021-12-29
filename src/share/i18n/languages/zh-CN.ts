@@ -312,6 +312,7 @@ const data: BaseLanguage = {
       },
       'editor': {
         'mouse-wheel-zoom': '鼠标滚动缩放',
+        'font-size': '字体大小',
       },
       'theme': '主题',
       'language': '语言',

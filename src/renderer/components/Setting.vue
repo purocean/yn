@@ -300,6 +300,12 @@ export default defineComponent({
   ::v-deep(.je-checkbox) {
     margin-right: 10px;
   }
+
+  ::v-deep(input[type=range]) {
+    vertical-align: bottom;
+    margin-right: 10px;
+    float: left;
+  }
 }
 
 .action {

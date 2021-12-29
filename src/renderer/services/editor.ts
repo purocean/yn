@@ -19,7 +19,7 @@ const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monos
 export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
-  fontSize: 16,
+  fontSize: getSetting('editor.font-size', 16),
   wordWrap: store.state.wordWrap,
   links: !isElectron,
   // wordWrapColumn: 40,
@@ -303,6 +303,7 @@ whenEditorReady().then(({ editor }) => {
 registerHook('SETTING_FETCHED', ({ settings }) => {
   editor.updateOptions({
     mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
+    fontSize: settings['editor.font-size'],
   })
 })
 

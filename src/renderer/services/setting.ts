@@ -110,6 +110,15 @@ const schema: Schema = {
       format: 'checkbox',
       group: 'editor',
     },
+    'editor.font-size': {
+      defaultValue: 16,
+      title: 'T_setting-panel.schema.editor.font-size',
+      type: 'number',
+      format: 'range',
+      minimum: 12,
+      maximum: 40,
+      group: 'editor',
+    },
     shell: {
       defaultValue: '',
       title: 'T_setting-panel.schema.shell',

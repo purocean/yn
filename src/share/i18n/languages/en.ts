@@ -317,6 +317,7 @@ const data = {
       },
       'editor': {
         'mouse-wheel-zoom': 'Mouse Wheel Zoom',
+        'font-size': 'Font Size',
       },
       'theme': 'Theme',
       'language': 'Language',
