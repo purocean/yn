@@ -12,7 +12,7 @@ export type MenuItem = {
   hidden?: boolean;
   checked?: boolean;
   onClick?: (item: MenuItem) => void;
-} | { type: 'separator' }
+} | { type: 'separator', hidden?: boolean }
 
 export interface Menu {
   id: string;

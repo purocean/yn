@@ -10,9 +10,9 @@
         <svg-icon v-if="menu.icon" :name="menu.icon" class="title-icon" />
         <div v-if="menu.title" class="title-text">{{menu.title}}</div>
       </div>
-      <ul v-if="showList && menu.list && menu.list.length" :class="{list: true, 'has-checked': menu.list.some(x => x.checked)}">
+      <ul v-if="showList && menu.list && menu.list.length" :class="{list: true, 'has-checked': menu.list.some(x => x.type === 'normal' && x.checked)}">
         <template v-for="item in menu.list" :key="item.id">
-          <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type"></li>
+          <li v-if="item.type === 'separator'" v-show="!item.hidden" :class="item.type"></li>
           <li
             v-else
             :class="{[item.type]: true, disabled: item.disabled, hidden: item.hidden}"
