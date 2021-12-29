@@ -310,6 +310,9 @@ const data: BaseLanguage = {
         'path': '路径',
         'path-placeholder': '请选择一个路径'
       },
+      'editor': {
+        'mouse-wheel-zoom': '鼠标滚动缩放',
+      },
       'theme': '主题',
       'language': '语言',
       'custom-css': '自定义 CSS',
@@ -319,6 +322,7 @@ const data: BaseLanguage = {
     },
     'tabs': {
       'repos': '仓库',
+      'editor': '编辑器',
       'appearance': '外观',
       'other': '其他',
     },

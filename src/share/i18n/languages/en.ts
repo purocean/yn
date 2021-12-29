@@ -302,6 +302,7 @@ const data = {
     'error-choose-repo-path': 'Please choose repository path',
     'tabs': {
       'repos': 'Repositories',
+      'editor': 'Editor',
       'appearance': 'Appearance',
       'other': 'Other',
     },
@@ -313,6 +314,9 @@ const data = {
         'name-placeholder': 'Name',
         'path': 'Path',
         'path-placeholder': 'Please select the storage location'
+      },
+      'editor': {
+        'mouse-wheel-zoom': 'Mouse Wheel Zoom',
       },
       'theme': 'Theme',
       'language': 'Language',

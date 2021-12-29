@@ -6,6 +6,7 @@ import { registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
 import { getColorScheme } from './theme'
+import { getSetting } from './setting'
 
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
@@ -22,7 +23,7 @@ export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions 
   wordWrap: store.state.wordWrap,
   links: !isElectron,
   // wordWrapColumn: 40,
-  mouseWheelZoom: true,
+  mouseWheelZoom: getSetting('editor.mouse-wheel-zoom', true),
   // try "same", "indent" or "none"
   wrappingIndent: 'same',
   smoothScrolling: true,
@@ -297,4 +298,16 @@ whenEditorReady().then(({ editor }) => {
       }
     }
   })
+})
+
+registerHook('SETTING_FETCHED', ({ settings }) => {
+  editor.updateOptions({
+    mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
+  })
+})
+
+registerHook('SETTING_CHANGED', ({ changedKeys }) => {
+  if (changedKeys.includes('editor.mouse-wheel-zoom')) {
+    editor.trigger('keyboard', 'editor.action.fontZoomReset', {})
+  }
 })

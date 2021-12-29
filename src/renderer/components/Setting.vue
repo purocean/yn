@@ -44,6 +44,7 @@ export default defineComponent({
     const isReady = ref(false)
     const tabs: Tab[] = [
       { label: t('setting-panel.tabs.repos') as any, value: 'repos' },
+      { label: t('setting-panel.tabs.editor') as any, value: 'editor' },
       { label: t('setting-panel.tabs.appearance') as any, value: 'appearance' },
       { label: t('setting-panel.tabs.other') as any, value: 'other' },
     ]
@@ -177,8 +178,9 @@ export default defineComponent({
 
       const group: Record<Tab['label'], (keyof BuildInSettings)[]> = {
         repos: getPaths('repos'),
+        editor: getPaths('editor'),
         appearance: getPaths('appearance'),
-        other: getPaths('other')
+        other: getPaths('other'),
       }
 
       refEditor.value?.querySelectorAll<HTMLElement>('.row').forEach(row => {

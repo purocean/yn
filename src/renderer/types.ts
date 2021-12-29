@@ -101,6 +101,7 @@ export type BuildInSettings = {
   'custom-css': string,
   'assets-dir': string,
   'shell': string,
+  'editor.mouse-wheel-zoom': boolean,
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,

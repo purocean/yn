@@ -20,7 +20,7 @@ export type Schema = {
     description?: TTitle,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
     enum?: string[],
-    group: 'repos' | 'appearance' | 'other',
+    group: 'repos' | 'appearance' | 'editor' | 'other',
     items?: {
       type: string,
       title: TTitle,
@@ -103,6 +103,13 @@ const schema: Schema = {
       description: 'T_setting-panel.schema.assets-desc',
       group: 'other',
     },
+    'editor.mouse-wheel-zoom': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+    },
     shell: {
       defaultValue: '',
       title: 'T_setting-panel.schema.shell',
@@ -110,7 +117,7 @@ const schema: Schema = {
       group: 'other',
     },
   } as Partial<Schema['properties']> as any,
-  required: ['theme', 'language', 'custom-css'],
+  required: ['theme', 'language', 'custom-css', 'editor.mouse-wheel-zoom'],
 }
 
 const settings = {
