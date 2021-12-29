@@ -186,13 +186,12 @@ const data = {
   'status-bar': {
     'view': {
       'view': 'View',
-      'show': 'Show ',
-      'hide': 'Hide ',
-      'xterm': 'Terminal',
-      'preview': 'Preview',
-      'editor': 'Editor',
-      'side-bar': 'Side Bar',
-      'toggle-wrap': 'Toggle Wrap'
+      'xterm': 'Show Terminal',
+      'preview': 'Show Preview',
+      'editor': 'Show Editor',
+      'side-bar': 'Show Side Bar',
+      'word-wrap': 'Word Wrap',
+      'typewriter-mode': 'Typewriter Mode',
     },
     'setting': 'Setting',
     'repo': {

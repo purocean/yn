@@ -10,6 +10,7 @@ export type MenuItem = {
   subTitle?: string;
   disabled?: boolean;
   hidden?: boolean;
+  checked?: boolean;
   onClick?: (item: MenuItem) => void;
 } | { type: 'separator' }
 

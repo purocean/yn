@@ -10,7 +10,7 @@
         <svg-icon v-if="menu.icon" :name="menu.icon" class="title-icon" />
         <div v-if="menu.title" class="title-text">{{menu.title}}</div>
       </div>
-      <ul class="list" v-if="showList && menu.list && menu.list.length">
+      <ul v-if="showList && menu.list && menu.list.length" :class="{list: true, 'has-checked': menu.list.some(x => x.checked)}">
         <template v-for="item in menu.list" :key="item.id">
           <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type"></li>
           <li
@@ -18,6 +18,7 @@
             :class="{[item.type]: true, disabled: item.disabled, hidden: item.hidden}"
             :title="item.tips"
             @click="handleItemClick(item)">
+            <svg-icon class="checked-icon" v-if="item.checked" name="check-solid" />
             <div class="menu-item-title">{{item.title}}</div>
             <div v-if="item.subTitle" class="menu-item-sub-title">{{item.subTitle}}</div>
           </li>
@@ -47,7 +48,7 @@ export default defineComponent({
     const list = ref(getMenus(props.position))
     const showList = ref(true)
 
-    const handleItemClick = (item: MenuItem) => {
+    const handleItemClick = (item: MenuItem & { type: 'normal' }) => {
       if (item.disabled) {
         return
       }
@@ -142,15 +143,20 @@ export default defineComponent({
   border-radius: var(--g-border-radius);
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+
+  &.has-checked li.normal {
+    padding-left: 20px;
+  }
 }
 
 .list li.normal {
-  padding: 4px .8em;
+  padding: 4px 12px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-radius: var(--g-border-radius);
 
   &:hover {
@@ -171,6 +177,13 @@ export default defineComponent({
 
   &.hidden {
     display: none;
+  }
+
+  .checked-icon {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    transform: translateX(-14px) translateY(-2px) scaleX(0.8);
   }
 
   .menu-item-sub-title {

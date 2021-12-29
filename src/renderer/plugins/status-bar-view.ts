@@ -1,19 +1,15 @@
 import type { Plugin } from '@fe/context'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { getKeysLabel } from '@fe/core/command'
-import type { MsgPath } from '@share/i18n'
 
 export default {
   name: 'status-bar-view',
   register: ctx => {
-    const t = ctx.i18n.t
-    const toggleTitle = (flag: boolean, title: MsgPath) => (flag ? t('status-bar.view.hide') : t('status-bar.view.show')) + t(title)
-
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-view'] = {
         id: 'status-bar-view',
         position: 'left',
-        title: t('status-bar.view.view'),
+        title: ctx.i18n.t('status-bar.view.view'),
         list: []
       }
     })
@@ -26,38 +22,50 @@ export default {
             {
               id: 'toggle-side',
               type: 'normal',
-              title: toggleTitle(ctx.store.state.showSide, 'status-bar.view.side-bar'),
+              title: ctx.i18n.t('status-bar.view.side-bar'),
+              checked: ctx.store.state.showSide,
               subTitle: getKeysLabel('layout.toggle-side'),
               onClick: () => ctx.layout.toggleSide()
             },
             {
               id: 'toggle-editor',
               type: 'normal',
-              title: toggleTitle(ctx.store.state.showEditor, 'status-bar.view.editor'),
+              checked: ctx.store.state.showEditor,
+              title: ctx.i18n.t('status-bar.view.editor'),
               subTitle: getKeysLabel('layout.toggle-editor'),
               onClick: () => ctx.layout.toggleEditor()
             },
             {
               id: 'toggle-view',
               type: 'normal',
-              title: toggleTitle(ctx.store.state.showView, 'status-bar.view.preview'),
+              checked: ctx.store.state.showView,
+              title: ctx.i18n.t('status-bar.view.preview'),
               subTitle: getKeysLabel('layout.toggle-view'),
               onClick: () => ctx.layout.toggleView()
             },
             ...(!FLAG_DISABLE_XTERM ? [{
               id: 'toggle-xterm',
               type: 'normal' as any,
-              title: toggleTitle(ctx.store.state.showXterm, 'status-bar.view.xterm'),
+              checked: ctx.store.state.showXterm,
+              title: ctx.i18n.t('status-bar.view.xterm'),
               subTitle: getKeysLabel('layout.toggle-xterm'),
               onClick: () => ctx.layout.toggleXterm()
             }] : []),
             { type: 'separator' },
             {
-              id: 'toggle-wrap',
+              id: 'word-wrap',
               type: 'normal',
-              title: t('status-bar.view.toggle-wrap'),
+              checked: ctx.store.state.wordWrap === 'on',
+              title: ctx.i18n.t('status-bar.view.word-wrap'),
               subTitle: getKeysLabel('editor.toggle-wrap'),
               onClick: () => ctx.editor.toggleWrap()
+            },
+            {
+              id: 'typewriter-mode',
+              type: 'normal',
+              checked: ctx.store.state.typewriterMode,
+              title: ctx.i18n.t('status-bar.view.typewriter-mode'),
+              onClick: () => ctx.editor.toggleTypewriterMode()
             },
           ]
         })

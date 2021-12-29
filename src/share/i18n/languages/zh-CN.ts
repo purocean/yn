@@ -187,13 +187,12 @@ const data: BaseLanguage = {
   'status-bar': {
     'view': {
       'view': '视图',
-      'show': '显示',
-      'hide': '隐藏',
-      'xterm': '终端',
-      'preview': '预览',
-      'editor': '编辑',
-      'side-bar': '侧栏',
-      'toggle-wrap': '切换换行'
+      'xterm': '显示终端',
+      'preview': '显示预览',
+      'editor': '显示编辑',
+      'side-bar': '显示侧栏',
+      'word-wrap': '文本换行',
+      'typewriter-mode': '打字机模式',
     },
     'setting': '设置',
     'repo': {
