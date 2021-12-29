@@ -121,12 +121,15 @@ export default {
     ctx.registerHook('VIEW_ELEMENT_CLICK', handleClick)
 
     ctx.statusBar.tapMenus(menus => {
-      menus['status-bar-tool']?.list?.push({
-        id: actionKeydown,
-        type: 'normal',
-        title: ctx.i18n.t('status-bar.tool.convert-img-link'),
-        onClick: ctx.action.getActionHandler(actionKeydown)
-      })
+      menus['status-bar-tool']?.list?.push(
+        {
+          id: actionKeydown,
+          type: 'normal',
+          title: ctx.i18n.t('status-bar.tool.convert-img-link'),
+          onClick: ctx.action.getActionHandler(actionKeydown)
+        },
+        { type: 'separator' },
+      )
     })
 
     ctx.view.tapContextMenus((items, e) => {

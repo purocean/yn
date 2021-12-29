@@ -51,6 +51,7 @@ export default {
               subTitle: getKeysLabel('layout.toggle-xterm'),
               onClick: () => ctx.layout.toggleXterm()
             }] : []),
+            { type: 'separator' },
             {
               id: 'toggle-wrap',
               type: 'normal',

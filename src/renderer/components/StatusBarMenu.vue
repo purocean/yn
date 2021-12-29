@@ -11,15 +11,17 @@
         <div v-if="menu.title" class="title-text">{{menu.title}}</div>
       </div>
       <ul class="list" v-if="showList && menu.list && menu.list.length">
-        <li
-          v-for="item in menu.list"
-          :key="item.id"
-          :class="{disabled: item.disabled, hidden: item.hidden}"
-          :title="item.tips"
-          @click="handleItemClick(item)">
-          <div class="menu-item-title">{{item.title}}</div>
-          <div v-if="item.subTitle" class="menu-item-sub-title">{{item.subTitle}}</div>
-        </li>
+        <template v-for="item in menu.list" :key="item.id">
+          <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type"></li>
+          <li
+            v-else
+            :class="{[item.type]: true, disabled: item.disabled, hidden: item.hidden}"
+            :title="item.tips"
+            @click="handleItemClick(item)">
+            <div class="menu-item-title">{{item.title}}</div>
+            <div v-if="item.subTitle" class="menu-item-sub-title">{{item.subTitle}}</div>
+          </li>
+        </template>
       </ul>
     </div>
   </div>
@@ -89,8 +91,7 @@ export default defineComponent({
   overflow-x: hidden;
 }
 
-.status-bar-menu.hidden,
-.status-bar-menu .hidden {
+.status-bar-menu.hidden {
   display: none;
 }
 
@@ -143,7 +144,7 @@ export default defineComponent({
   border-bottom-right-radius: 0;
 }
 
-.list li {
+.list li.normal {
   padding: 4px .8em;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -151,6 +152,10 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   border-radius: var(--g-border-radius);
+
+  &:hover {
+    background: #2f3031;
+  }
 
   &.disabled {
     cursor: default;
@@ -164,6 +169,10 @@ export default defineComponent({
     }
   }
 
+  &.hidden {
+    display: none;
+  }
+
   .menu-item-sub-title {
     font-size: 12px;
     color: var(--g-color-50);
@@ -171,7 +180,16 @@ export default defineComponent({
   }
 }
 
-.list li:hover {
-  background: #2f3031;
+.list li.separator {
+  border-top: 1px #757677 solid;
+  border-bottom: 1px #4e4f50 solid;
+  margin: 3px 0;
+
+  &:first-child,
+  &:last-child,
+  & + li.separator {
+    display: none;
+  }
 }
+
 </style>

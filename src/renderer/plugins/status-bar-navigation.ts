@@ -16,6 +16,7 @@ export default {
             subTitle: ctx.command.getKeysLabel('filter.show-quick-open'),
             onClick: () => ctx.action.getActionHandler('filter.show-quick-open')()
           },
+          { type: 'separator' },
         ]
       }
     })
