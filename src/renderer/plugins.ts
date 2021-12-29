@@ -9,8 +9,8 @@ import statusBarNavigation from '@fe/plugins/status-bar-navigation'
 import statusBarInsert from '@fe/plugins/status-bar-insert'
 import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
-import statusBarControlCenter from '@fe/plugins/status-bar-control-center'
 import statusBarPresentation from '@fe/plugins/status-bar-presentation'
+import statusBarControlCenter from '@fe/plugins/status-bar-control-center'
 import statusBarTerminal from '@fe/plugins/status-bar-terminal'
 import statusBarGet from '@fe/plugins/status-bar-get'
 import editorPaste from '@fe/plugins/editor-paste'
@@ -60,8 +60,8 @@ export default [
   statusBarTool,
   statusBarHelp,
   statusBarTerminal,
-  statusBarPresentation,
   statusBarControlCenter,
+  statusBarPresentation,
   statusBarGet,
   editorPaste,
   editorAttachment,
