@@ -41,34 +41,6 @@ export default {
         keys: [ctx.command.CtrlCmd, '0'],
         handler: () => webContents.setZoomFactor(1)
       })
-
-      ctx.statusBar.tapMenus(menus => {
-        console.log('xxx', menus['status-bar-view'].list)
-        menus['status-bar-view'].list?.push(
-          {
-            id: zoomInId,
-            type: 'normal',
-            title: ctx.i18n.t('status-bar.view.zoom-in'),
-            subTitle: ctx.command.getKeysLabel(zoomInId),
-            onClick: () => ctx.action.getActionHandler(zoomInId)()
-          },
-          {
-            id: zoomOutId,
-            type: 'normal',
-            title: ctx.i18n.t('status-bar.view.zoom-out'),
-            subTitle: ctx.command.getKeysLabel(zoomOutId),
-            onClick: () => ctx.action.getActionHandler(zoomOutId)()
-          },
-          {
-            id: zoomResetId,
-            type: 'normal',
-            title: ctx.i18n.t('status-bar.view.zoom-reset'),
-            subTitle: ctx.command.getKeysLabel(zoomResetId),
-            onClick: () => ctx.action.getActionHandler(zoomResetId)()
-          },
-          { type: 'separator' },
-        )
-      })
     })
   }
 } as Plugin
