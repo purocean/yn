@@ -88,27 +88,21 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.17.1](https://github.com/purocean/yn/releases/tag/v3.17.1) 2021-12-24
-1. feat: add rich text copy
-2. feat: add HTML copy
-3. upd: optimize editor completion
-4. upd: optimize the export function
-5. upd: upgrade Electron to 15.3.2
-6. upd: upgrade Monaco editor to 0.31.1
-7. upd: optimize window user experience of macOS
-8. fix: fix the problem that files cannot be displayed in Explorer on Windows
-9. fix: fix the problem of text flickering when using the input method
-10. fix: fix the problem of label jumping when editing container block content
-11. feat: add `ctx.utils.downloadContent` method
-12. feat: add `ctx.ui.useModal().alert` method
-13. feat: add `ctx.api.convertFile` method
-14. feat: add `ctx.base.readFromClipboard` method
-15. feat: add `ctx.base.writeToClipboard` method
-16. feat: add `ctx.view.getPreviewStyles` method
-17. feat: add `ctx.view.getPreviewStyles` method
-18. feat: add `ctx.lib.turndown` library
-19. feat: add `ctx.lib.juice` library
-20. upd: add `options` parameter for `ctx.view.getContentHtml`
+### [v3.18.0](https://github.com/purocean/yn/releases/tag/v3.18.0) 2021-12-30
+1. feat: add control center
+2. feat: add typewriter mode
+3. feat: add editor configuration items: font size, tab size, ordered list completion strategy and scroll wheel zoom behavior
+4. feat: add the function of disabling synchronous scrolling
+5. upd: display error message when file move/rename failed
+6. upd: update the document content when refreshing
+7. upd: other style update and user experience optimization
+8. feat(plug-in): add `ctx.controlCenter` service
+9. feat(plug-in): add `ctx.editor.toggleTypewriterMode` method
+10. feat(plug-in): Add `onMousedown` event to the status bar menu
+11. feat(plug-in): Add `{ type: 'separator' }` dividing line in the status bar menu
+12. feat(plug-in): Added the `checked` field to the status bar menu
+13. feat(plug-in): configuration items support grouping `group` field
+14. feat(plug-in): `ctx.doc.switchDoc` adds `force` parameter
 
 [More release notes](https://github.com/purocean/yn/releases)
 
