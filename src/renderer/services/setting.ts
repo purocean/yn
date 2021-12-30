@@ -103,13 +103,6 @@ const schema: Schema = {
       description: 'T_setting-panel.schema.assets-desc',
       group: 'other',
     },
-    'editor.mouse-wheel-zoom': {
-      defaultValue: true,
-      title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',
-      type: 'boolean',
-      format: 'checkbox',
-      group: 'editor',
-    },
     'editor.tab-size': {
       defaultValue: 4,
       title: 'T_setting-panel.schema.editor.tab-size',
@@ -134,6 +127,13 @@ const schema: Schema = {
       format: 'range',
       minimum: 12,
       maximum: 40,
+      group: 'editor',
+    },
+    'editor.mouse-wheel-zoom': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',
+      type: 'boolean',
+      format: 'checkbox',
       group: 'editor',
     },
     shell: {
