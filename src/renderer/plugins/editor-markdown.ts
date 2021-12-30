@@ -4,6 +4,7 @@ import type * as Monaco from 'monaco-editor'
 import { deleteLine, getEditor, getLineContent, getMonaco, getOneIndent, getValue, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
+import { getSetting } from '@fe/services/setting'
 import { isKeydown } from '@fe/core/command'
 import emoji from '@fe/others/emoji.json'
 
@@ -134,6 +135,8 @@ function processCursorChange (source: string, position: Monaco.Position) {
       return
     }
 
+    const orderedListCompletion = getSetting('editor.ordered-list-completion', 'auto')
+
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
 
@@ -142,10 +145,19 @@ function processCursorChange (source: string, position: Monaco.Position) {
     const match = prevContent.match(reg)
     if (match && reg.test(content)) {
       const num = isTab ? 0 : parseInt(match[0] || '0')
+      let newNum = num
+      if (orderedListCompletion === 'increase') {
+        newNum = num + 1
+      } else if (orderedListCompletion === 'one') {
+        newNum = 1
+      } else {
+        if (num > 1 || isTab) {
+          newNum = num + 1
+        }
+      }
 
-      // only increase above 1
-      if (num > 1 || isTab) {
-        replaceLine(line, content.replace(/\d+\./, `${num + 1}.`))
+      if (num !== newNum) {
+        replaceLine(line, content.replace(/\d+\./, `${newNum}.`))
       }
     }
   }

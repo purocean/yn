@@ -117,6 +117,16 @@ const schema: Schema = {
       enum: [2, 4],
       group: 'editor',
     },
+    'editor.ordered-list-completion': {
+      defaultValue: 'auto',
+      title: 'T_setting-panel.schema.editor.ordered-list-completion',
+      type: 'string',
+      enum: ['auto', 'increase', 'one'],
+      options: {
+        enum_titles: ['Auto', '1. ···, 2. ···, 3. ···', '1. ···, 1. ···, 1. ···'],
+      },
+      group: 'editor',
+    },
     'editor.font-size': {
       defaultValue: 16,
       title: 'T_setting-panel.schema.editor.font-size',
@@ -133,7 +143,7 @@ const schema: Schema = {
       group: 'other',
     },
   } as Partial<Schema['properties']> as any,
-  required: ['theme', 'language', 'custom-css', 'editor.mouse-wheel-zoom', 'editor.tab-size'],
+  required: ['theme', 'language', 'custom-css', 'editor.mouse-wheel-zoom', 'editor.tab-size', 'editor.ordered-list-completion'],
 }
 
 const settings = {

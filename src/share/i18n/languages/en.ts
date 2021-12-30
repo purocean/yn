@@ -319,6 +319,7 @@ const data = {
         'mouse-wheel-zoom': 'Mouse Wheel Zoom',
         'font-size': 'Font Size',
         'tab-size': 'Tab Size',
+        'ordered-list-completion': 'Ordered List',
       },
       'theme': 'Theme',
       'language': 'Language',
