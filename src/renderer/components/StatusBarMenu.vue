@@ -109,6 +109,7 @@ export default defineComponent({
   width: 12px;
   height: 20px;
   display: block;
+  overflow: hidden;
 }
 
 .title-icon + .title-text {

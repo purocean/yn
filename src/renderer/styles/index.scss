@@ -8,7 +8,6 @@
 }
 
 @mixin root-vars($background, $foreground) {
-  --g-font-family: 'system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif';
   --g-background-color: #{$background};
   --g-foreground-color: #{$foreground};
   @for $i from 0 through 100 {
@@ -37,7 +36,7 @@ html[app-theme=light]:root, :root {
 
 html {
   outline: none;
-  font-family: var(--g-font-family);
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
   accent-color: rgb(20, 112, 251);
 }
 
@@ -121,7 +120,6 @@ html {
     transition: all .1s ease-in-out;
     margin-left: 5px;
     font-weight: 500;
-    font-family: var(--g-font-family);
     outline: none;
 
     &.primary {
