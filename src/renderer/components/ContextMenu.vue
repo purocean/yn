@@ -92,7 +92,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .mask {
   position: fixed;
   top: 0;
@@ -126,6 +126,12 @@ export default defineComponent({
   border-top: 1px var(--g-color-80) solid;
   border-bottom: 1px var(--g-color-70) solid;
   margin: 3px 0;
+
+  &:first-child,
+  &:last-child,
+  & + li.separator {
+    display: none;
+  }
 }
 
 .menu > li.normal {

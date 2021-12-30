@@ -33,39 +33,7 @@ export function openWindow (url: string, target = '_blank', options: Record<stri
       ...options
     }
 
-    const opener: any = window.open(url, target, Object.entries(opts).map(([k, v]) => `${k}=${v}`).join(','))
-
-    const preload = `
-      // enable page zoom in electron.
-      xRequire = require || nodeRequire
-
-      const webContents = xRequire('@electron/remote').getCurrentWebContents()
-
-      const changeZoomFactor = zoomIn => {
-        const currentZoomFactor = webContents.getZoomFactor()
-        const factor = currentZoomFactor + (zoomIn ? 0.1 : -0.1)
-
-        if (factor > 0.2 && factor < 3) {
-          webContents.setZoomFactor(factor)
-        }
-      }
-
-      window.addEventListener('keydown', e => {
-        if (e.ctrlKey || e.metaKey) {
-          if (e.key === '0') {
-            webContents.setZoomFactor(1)
-          } else if (e.key === '=') {
-            changeZoomFactor(true)
-          } else if (e.key === '-') {
-            changeZoomFactor(false)
-          }
-        }
-      })
-    `
-
-    opener.eval(preload)
-
-    return opener
+    return window.open(url, target, Object.entries(opts).map(([k, v]) => `${k}=${v}`).join(','))
   } else {
     return window.open(url, target)
   }

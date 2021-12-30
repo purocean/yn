@@ -424,7 +424,7 @@ export default defineComponent({
 }
 
 .tab > div.selected {
-  background: var(--g-color-66);
+  background: var(--g-color-88);
 }
 
 .input {

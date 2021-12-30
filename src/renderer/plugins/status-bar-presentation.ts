@@ -11,7 +11,10 @@ export default {
         position: 'right',
         tips: ctx.i18n.t('status-bar.present') + ` (${ctx.command.getKeysLabel(action!.name)})`,
         icon: 'presentation',
-        onClick: () => ctx.view.enterPresent()
+        onClick: () => {
+          ctx.view.enterPresent()
+          ctx.controlCenter.toggle(false)
+        }
       }
     })
   }

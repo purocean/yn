@@ -18,7 +18,7 @@ import * as api from '@fe/support/api'
 import { useToast } from '@fe/support/ui/toast'
 import { getThemeName, setTheme } from '@fe/services/theme'
 import { useI18n } from '@fe/services/i18n'
-import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
+import { fetchSettings, getSchema, Schema, writeSettings } from '@fe/services/setting'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
@@ -28,7 +28,7 @@ import { BuildInSettings } from '@fe/types'
 JSONEditor.defaults.language = 'en'
 
 type Tab = {
-  label: 'repos' | 'appearance' | 'other',
+  label: Schema['properties']['repos']['group'],
   value: string,
 }
 
@@ -45,6 +45,7 @@ export default defineComponent({
     const tabs: Tab[] = [
       { label: t('setting-panel.tabs.repos') as any, value: 'repos' },
       { label: t('setting-panel.tabs.appearance') as any, value: 'appearance' },
+      { label: t('setting-panel.tabs.editor') as any, value: 'editor' },
       { label: t('setting-panel.tabs.other') as any, value: 'other' },
     ]
 
@@ -164,10 +165,22 @@ export default defineComponent({
     }
 
     function updateTab () {
+      const schema = getSchema()
+
+      const getPaths = (group: Tab['label']) => Object.keys(schema.properties as any)
+        .filter(key => {
+          const item = schema.properties[key as keyof BuildInSettings]
+
+          return group === 'other'
+            ? (item.group === 'other' || !item.group)
+            : (item.group === group)
+        }) as (keyof BuildInSettings)[]
+
       const group: Record<Tab['label'], (keyof BuildInSettings)[]> = {
-        repos: ['repos'],
-        appearance: ['theme', 'language', 'custom-css'],
-        other: ['assets-dir', 'shell', 'plugin.image-hosting-picgo.server-url', 'plugin.image-hosting-picgo.enable-paste-image']
+        repos: getPaths('repos'),
+        editor: getPaths('editor'),
+        appearance: getPaths('appearance'),
+        other: getPaths('other'),
       }
 
       refEditor.value?.querySelectorAll<HTMLElement>('.row').forEach(row => {
@@ -286,6 +299,12 @@ export default defineComponent({
 
   ::v-deep(.je-checkbox) {
     margin-right: 10px;
+  }
+
+  ::v-deep(input[type=range]) {
+    vertical-align: bottom;
+    margin-right: 10px;
+    float: left;
   }
 }
 

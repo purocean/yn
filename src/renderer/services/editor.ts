@@ -6,6 +6,7 @@ import { registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
 import { getColorScheme } from './theme'
+import { getSetting } from './setting'
 
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
@@ -18,11 +19,11 @@ const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monos
 export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
-  fontSize: 16,
+  fontSize: getSetting('editor.font-size', 16),
   wordWrap: store.state.wordWrap,
   links: !isElectron,
   // wordWrapColumn: 40,
-  mouseWheelZoom: true,
+  mouseWheelZoom: getSetting('editor.mouse-wheel-zoom', true),
   // try "same", "indent" or "none"
   wrappingIndent: 'same',
   smoothScrolling: true,
@@ -38,6 +39,9 @@ export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions 
     invisibleCharacters: false,
   },
   fontFamily: isMacOS ? DEFAULT_MAC_FONT_FAMILY : undefined,
+  detectIndentation: false,
+  insertSpaces: true,
+  tabSize: getSetting('editor.tab-size', 4),
 }
 
 /**
@@ -234,6 +238,10 @@ export function toggleWrap () {
   store.commit('setWordWrap', (isWrapping ? 'off' : 'on'))
 }
 
+export function toggleTypewriterMode () {
+  store.commit('setTypewriterMode', !store.state.typewriterMode)
+}
+
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
 
 registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
@@ -281,4 +289,30 @@ store.watch(state => state.wordWrap, (wordWrap) => {
   whenEditorReady().then(({ editor }) => {
     editor.updateOptions({ wordWrap })
   })
+})
+
+whenEditorReady().then(({ editor }) => {
+  // typewriter mode
+  editor.onDidChangeCursorPosition(e => {
+    if (store.state.typewriterMode) {
+      const sources = ['deleteLeft', 'keyboard']
+      if (sources.includes(e.source) && (e.reason === 0 || e.reason === 3)) {
+        editor.revealPositionInCenter(e.position)
+      }
+    }
+  })
+})
+
+registerHook('SETTING_FETCHED', ({ settings }) => {
+  editor.updateOptions({
+    mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
+    fontSize: settings['editor.font-size'],
+    tabSize: settings['editor.tab-size'],
+  })
+})
+
+registerHook('SETTING_CHANGED', ({ changedKeys }) => {
+  if (changedKeys.includes('editor.mouse-wheel-zoom')) {
+    editor.trigger('keyboard', 'editor.action.fontZoomReset', {})
+  }
 })

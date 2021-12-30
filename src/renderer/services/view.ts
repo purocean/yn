@@ -7,11 +7,12 @@ import store from '@fe/support/store'
 import type { BuildInHookTypes, Components } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
+import { switchDoc } from './document'
 
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
 
-let enableSyncScroll = true
+let tmpEnableSyncScroll = true
 let syncScrollTimer: any
 
 const contextMenuFunList: BuildContextMenu[] = []
@@ -36,7 +37,12 @@ export function render () {
 /**
  * Refresh view.
  */
-export function refresh () {
+export async function refresh () {
+  if (store.state.currentFile) {
+    const { type, name, path, repo } = store.state.currentFile
+    await switchDoc({ type, name, path, repo }, true)
+  }
+
   getActionHandler('view.refresh')()
 }
 
@@ -166,8 +172,15 @@ export function exitPresent () {
  * @param flag
  */
 export function toggleAutoPreview (flag?: boolean) {
-  const showXterm = store.state.autoPreview
-  store.commit('setAutoPreview', typeof flag === 'boolean' ? flag : !showXterm)
+  store.commit('setAutoPreview', typeof flag === 'boolean' ? flag : !store.state.autoPreview)
+}
+
+/**
+ * Toggle sync scroll.
+ * @param flag
+ */
+export function toggleSyncScroll (flag?: boolean) {
+  store.commit('setSyncScroll', typeof flag === 'boolean' ? flag : !store.state.syncScroll)
 }
 
 /**
@@ -198,7 +211,7 @@ export function getContextMenuItems (e: MouseEvent) {
  * @returns
  */
 export function getEnableSyncScroll () {
-  return enableSyncScroll
+  return tmpEnableSyncScroll && store.state.syncScroll
 }
 
 /**
@@ -208,10 +221,10 @@ export function getEnableSyncScroll () {
  */
 export async function disableSyncScrollAwhile (fn: Function, timeout = 500) {
   clearTimeout(syncScrollTimer)
-  enableSyncScroll = false
+  tmpEnableSyncScroll = false
   await fn()
   syncScrollTimer = setTimeout(() => {
-    enableSyncScroll = true
+    tmpEnableSyncScroll = true
   }, timeout)
 }
 

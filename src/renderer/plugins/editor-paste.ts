@@ -109,6 +109,7 @@ export default {
           subTitle: 'Markdown',
           onClick: pasteRtf
         },
+        { type: 'separator' },
       )
     })
 

@@ -365,7 +365,7 @@ export default {
           }
         }
 
-        const item = list.find(x => x.id === id)
+        const item = list.find(x => x.type === 'normal' && x.id === id)
         if (item) {
           Object.assign(item, menu)
         } else {

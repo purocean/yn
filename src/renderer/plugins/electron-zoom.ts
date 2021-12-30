@@ -1,5 +1,5 @@
 import type { Plugin } from '@fe/context'
-import { hasCtrlCmd } from '@fe/core/command'
+import type { BuildInActionName } from '@fe/types'
 
 export default {
   name: 'electron-zoom',
@@ -20,25 +20,27 @@ export default {
         }
       }
 
-      window.addEventListener('keydown', e => {
-        if (hasCtrlCmd(e)) {
-          if (e.key === '0') {
-            webContents.setZoomFactor(1)
-          } else if (e.key === '=') {
-            changeZoomFactor(true)
-          } else if (e.key === '-') {
-            changeZoomFactor(false)
-          }
-        }
+      const zoomInId: BuildInActionName = 'plugin.electron-zoom.zoom-in'
+      const zoomOutId: BuildInActionName = 'plugin.electron-zoom.zoom-out'
+      const zoomResetId: BuildInActionName = 'plugin.electron-zoom.zoom-reset'
+
+      ctx.action.registerAction({
+        name: zoomInId,
+        keys: [ctx.command.CtrlCmd, '='],
+        handler: () => changeZoomFactor(true)
       })
 
-      // window.addEventListener('mousewheel', event => {
-      //   const e = event as WheelEvent
+      ctx.action.registerAction({
+        name: zoomOutId,
+        keys: [ctx.command.CtrlCmd, '-'],
+        handler: () => changeZoomFactor(false)
+      })
 
-      //   if (hasCtrlCmd(e)) {
-      //     changeZoomFactor(e.deltaY < 0)
-      //   }
-      // })
+      ctx.action.registerAction({
+        name: zoomResetId,
+        keys: [ctx.command.CtrlCmd, '0'],
+        handler: () => webContents.setZoomFactor(1)
+      })
     })
   }
 } as Plugin

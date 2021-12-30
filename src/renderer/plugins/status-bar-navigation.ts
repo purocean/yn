@@ -1,6 +1,4 @@
-import { Plugin } from '@fe/context'
-import { getActionHandler } from '@fe/core/action'
-import { getKeysLabel } from '@fe/core/command'
+import type { Plugin } from '@fe/context'
 
 export default {
   name: 'status-bar-navigation',
@@ -15,9 +13,10 @@ export default {
             id: 'show-quick-open',
             type: 'normal',
             title: ctx.i18n.t('status-bar.nav.goto'),
-            subTitle: getKeysLabel('filter.show-quick-open'),
-            onClick: () => getActionHandler('filter.show-quick-open')()
+            subTitle: ctx.command.getKeysLabel('filter.show-quick-open'),
+            onClick: () => ctx.action.getActionHandler('filter.show-quick-open')()
           },
+          { type: 'separator' },
         ]
       }
     })

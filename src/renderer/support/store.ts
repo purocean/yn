@@ -6,13 +6,16 @@ import type { Components, Doc, Repo } from '@fe/types'
 export const initState = {
   tree: null,
   wordWrap: storage.get<'off' | 'on'>('wordWrap', 'off'),
+  typewriterMode: storage.get<boolean>('typewriterMode', false),
   showSide: storage.get('showSide', true),
   showView: storage.get('showView', true),
   showEditor: storage.get('showEditor', true),
   showXterm: false,
   autoPreview: true,
+  syncScroll: true,
   showSetting: false,
   showExport: false,
+  showControlCenter: false,
   presentation: false,
   isFullscreen: false,
   currentContent: '',
@@ -41,6 +44,10 @@ export default createStore({
       state.wordWrap = data
       storage.set('wordWrap', data)
     },
+    setTypewriterMode (state, data: boolean) {
+      state.typewriterMode = data
+      storage.set('typewriterMode', data)
+    },
     setShowView (state, data) {
       state.showView = data
       storage.set('showView', data)
@@ -59,11 +66,17 @@ export default createStore({
     setShowExport (state, data) {
       state.showExport = data
     },
+    setShowControlCenter (state, data) {
+      state.showControlCenter = data
+    },
     setPresentation (state, data) {
       state.presentation = data
     },
     setIsFullscreen (state, data) {
       state.isFullscreen = data
+    },
+    setSyncScroll (state, data) {
+      state.syncScroll = data
     },
     setAutoPreview (state, data) {
       state.autoPreview = data

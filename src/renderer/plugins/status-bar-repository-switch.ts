@@ -55,6 +55,7 @@ export default {
             type: 'normal',
             title: name,
             tips: path,
+            checked: currentRepo && currentRepo.name === name && currentRepo.path === path,
             onClick: () => choose({ name, path })
           }
         })

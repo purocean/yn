@@ -101,6 +101,10 @@ export type BuildInSettings = {
   'custom-css': string,
   'assets-dir': string,
   'shell': string,
+  'editor.mouse-wheel-zoom': boolean,
+  'editor.font-size': number,
+  'editor.tab-size': 2 | 4,
+  'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,
@@ -120,7 +124,9 @@ export type BuildInActions = {
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
   'layout.toggle-editor': (visible?: boolean) => void,
+  'control-center.toggle': (visible?: boolean) => void,
   'status-bar.refresh-menu': () => void,
+  'control-center.refresh': () => void,
   'tree.refresh': () => void,
   'editor.toggle-wrap': () => void,
   'filter.show-quick-open': () => void,
@@ -140,6 +146,9 @@ export type BuildInActions = {
   'plugin.status-bar-help.show-plugin': () => void,
   'plugin.transform-img-link.all': () => void,
   'plugin.switch-todo.switch': (line?: number, checked?: boolean) => void,
+  'plugin.electron-zoom.zoom-in': () => void,
+  'plugin.electron-zoom.zoom-out': () => void,
+  'plugin.electron-zoom.zoom-reset': () => void,
   'premium.show': () => void,
 }
 
@@ -187,6 +196,7 @@ export type BuildInHookTypes = {
 
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   STATUS_BAR_MENU_TAPPERS: any;
+  CONTROL_CENTER_SCHEMA_TAPPERS: any;
 }
 
 export type FrontMatterAttrs = {

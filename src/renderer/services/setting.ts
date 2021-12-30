@@ -19,7 +19,8 @@ export type Schema = {
     title: TTitle,
     description?: TTitle,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
-    enum?: string[],
+    enum?: string[] | number [],
+    group: 'repos' | 'appearance' | 'editor' | 'other',
     items?: {
       type: string,
       title: TTitle,
@@ -48,6 +49,7 @@ const schema: Schema = {
       type: 'array',
       title: 'T_setting-panel.schema.repos.repos',
       format: 'table',
+      group: 'repos',
       items: {
         type: 'object',
         title: 'T_setting-panel.schema.repos.repo',
@@ -76,34 +78,72 @@ const schema: Schema = {
       defaultValue: 'system',
       title: 'T_setting-panel.schema.theme',
       type: 'string',
-      enum: ['system', 'dark', 'light']
+      enum: ['system', 'dark', 'light'],
+      group: 'appearance',
     },
     language: {
       defaultValue: 'system',
       title: 'T_setting-panel.schema.language',
       type: 'string',
-      enum: ['system', 'en', 'zh-CN']
+      enum: ['system', 'en', 'zh-CN'],
+      group: 'appearance',
     },
     'custom-css': {
       defaultValue: 'github',
       title: 'T_setting-panel.schema.custom-css',
       type: 'string',
-      enum: ['github.css']
+      enum: ['github.css'],
+      group: 'appearance',
     },
     'assets-dir': {
       defaultValue: './FILES/{docSlug}',
       title: 'T_setting-panel.schema.assets-dir',
       type: 'string',
       minLength: 1,
-      description: 'T_setting-panel.schema.assets-desc'
+      description: 'T_setting-panel.schema.assets-desc',
+      group: 'other',
+    },
+    'editor.tab-size': {
+      defaultValue: 4,
+      title: 'T_setting-panel.schema.editor.tab-size',
+      type: 'number',
+      enum: [2, 4],
+      group: 'editor',
+    },
+    'editor.ordered-list-completion': {
+      defaultValue: 'auto',
+      title: 'T_setting-panel.schema.editor.ordered-list-completion',
+      type: 'string',
+      enum: ['auto', 'increase', 'one'],
+      options: {
+        enum_titles: ['Auto', '1. ···, 2. ···, 3. ···', '1. ···, 1. ···, 1. ···'],
+      },
+      group: 'editor',
+    },
+    'editor.font-size': {
+      defaultValue: 16,
+      title: 'T_setting-panel.schema.editor.font-size',
+      type: 'number',
+      format: 'range',
+      minimum: 12,
+      maximum: 40,
+      group: 'editor',
+    },
+    'editor.mouse-wheel-zoom': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
     },
     shell: {
       defaultValue: '',
       title: 'T_setting-panel.schema.shell',
       type: 'string',
+      group: 'other',
     },
   } as Partial<Schema['properties']> as any,
-  required: ['theme', 'language', 'custom-css'],
+  required: ['theme', 'language', 'custom-css', 'editor.mouse-wheel-zoom', 'editor.tab-size', 'editor.ordered-list-completion'],
 }
 
 const settings = {
@@ -119,7 +159,7 @@ if (FLAG_DISABLE_XTERM) {
  * Get Schema.
  * @returns Schema
  */
-export function getSchema () {
+export function getSchema (): Schema {
   return cloneDeepWith(schema, val => {
     if (typeof val === 'string' && val.startsWith('T_')) {
       return t(val.substring(2) as any)

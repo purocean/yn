@@ -21,6 +21,7 @@ export default {
 
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-tool']?.list?.push(
+        { type: 'separator' },
         {
           id: 'plugin.copy-rendered-content.copy-rtf',
           type: 'normal',
@@ -35,6 +36,7 @@ export default {
           subTitle: 'Styled',
           onClick: () => copyRTF(true)
         },
+        { type: 'separator' },
         {
           id: 'plugin.copy-rendered-content.copy-html',
           type: 'normal',

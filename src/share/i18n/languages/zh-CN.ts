@@ -187,13 +187,15 @@ const data: BaseLanguage = {
   'status-bar': {
     'view': {
       'view': '视图',
-      'show': '显示',
-      'hide': '隐藏',
-      'xterm': '终端',
-      'preview': '预览',
-      'editor': '编辑',
-      'side-bar': '侧栏',
-      'toggle-wrap': '切换换行'
+      'xterm': '显示终端',
+      'preview': '显示预览',
+      'editor': '显示编辑',
+      'side-bar': '显示侧栏',
+      'word-wrap': '文本换行',
+      'typewriter-mode': '打字机模式',
+      'zoom-in': '放大',
+      'zoom-out': '缩小',
+      'zoom-reset': '实际大小',
     },
     'setting': '设置',
     'repo': {
@@ -229,12 +231,6 @@ const data: BaseLanguage = {
       'features': '特色功能说明',
       'shortcuts': '快捷键',
       'plugin': '插件开发'
-    },
-    'rendering': {
-      'rendering': '同步渲染 - %s',
-      'on': '已开启',
-      'off': '已关闭',
-      'refresh': '重新渲染'
     },
     'terminal': '终端',
     'present': '预览',
@@ -314,6 +310,12 @@ const data: BaseLanguage = {
         'path': '路径',
         'path-placeholder': '请选择一个路径'
       },
+      'editor': {
+        'mouse-wheel-zoom': '鼠标滚动缩放',
+        'font-size': '字体大小',
+        'tab-size': 'Tab 宽度',
+        'ordered-list-completion': '有序列表补全',
+      },
       'theme': '主题',
       'language': '语言',
       'custom-css': '自定义 CSS',
@@ -323,6 +325,7 @@ const data: BaseLanguage = {
     },
     'tabs': {
       'repos': '仓库',
+      'editor': '编辑器',
       'appearance': '外观',
       'other': '其他',
     },
@@ -410,6 +413,24 @@ const data: BaseLanguage = {
     'change-confirm': {
       'title': '提示',
       'content': '更改自定义 CSS 需要重载页面，是否继续？',
+    }
+  },
+  'control-center': {
+    'control-center': '控制中心 %s',
+    'switch': {
+      'side-bar': '侧栏 %s',
+      'editor': '编辑器 %s',
+      'view': '预览 %s',
+      'sync-scroll': '同步滚动',
+      'sync-rendering': '同步渲染',
+      'word-wrap': '编辑器换行 %s',
+      'typewriter-mode': '打字机模式',
+    },
+    'navigation': {
+      'goto': '跳转 %s',
+      'forward': '前进 %s',
+      'back': '后退 %s',
+      'refresh': '刷新',
     }
   },
 }

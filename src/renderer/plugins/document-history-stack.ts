@@ -1,5 +1,5 @@
 import type { Plugin, Ctx } from '@fe/context'
-import type { BuildInActionName, Doc } from '@fe/types'
+import type { Doc } from '@fe/types'
 
 export default {
   name: 'document-history-stack',
@@ -9,6 +9,11 @@ export default {
 
     const backId = 'plugin.document-history-stack.back'
     const forwardId = 'plugin.document-history-stack.forward'
+
+    function refresh () {
+      ctx.controlCenter.refresh()
+      ctx.statusBar.refreshMenu()
+    }
 
     function go (offset: number) {
       const index = idx + offset
@@ -22,39 +27,13 @@ export default {
       }
 
       idx = index
-      updateMenu()
-    }
-
-    function updateMenu () {
-      ctx.statusBar.tapMenus(menus => {
-        const list = menus['status-bar-navigation']?.list || []
-        if (list) {
-          menus['status-bar-navigation'].list = [
-            {
-              id: forwardId,
-              type: 'normal' as any,
-              title: ctx.i18n.t('status-bar.nav.forward'),
-              disabled: idx >= stack.length - 1,
-              subTitle: ctx.command.getKeysLabel(forwardId),
-              onClick: () => ctx.action.getActionHandler(forwardId)()
-            },
-            {
-              id: backId,
-              type: 'normal' as any,
-              title: ctx.i18n.t('status-bar.nav.back'),
-              disabled: idx <= 0,
-              subTitle: ctx.command.getKeysLabel(backId),
-              onClick: () => ctx.action.getActionHandler(backId)()
-            },
-          ].concat(list.filter(x => ![forwardId, backId].includes(x.id as BuildInActionName)) as any)
-        }
-      })
+      refresh()
     }
 
     function removeFromStack (doc?: Doc) {
       stack = stack.filter(x => !ctx.doc.isSubOrSameFile(doc, x))
       idx = stack.length - 1
-      updateMenu()
+      refresh()
     }
 
     ctx.registerHook('DOC_SWITCHED', ({ doc }) => {
@@ -65,7 +44,7 @@ export default {
           idx = stack.length - 1
         }
       }
-      updateMenu()
+      refresh()
     })
 
     ctx.registerHook('DOC_DELETED', ({ doc }) => removeFromStack(doc))
@@ -81,6 +60,50 @@ export default {
       name: forwardId,
       handler: () => go(1),
       keys: [ctx.command.Alt, ctx.command.BracketRight],
+    })
+
+    ctx.registerHook('STARTUP', () => {
+      ctx.statusBar.tapMenus(menus => {
+        menus['status-bar-navigation']?.list?.push(
+          {
+            id: forwardId,
+            type: 'normal' as any,
+            title: ctx.i18n.t('status-bar.nav.forward'),
+            disabled: idx >= stack.length - 1,
+            subTitle: ctx.command.getKeysLabel(forwardId),
+            onClick: () => ctx.action.getActionHandler(forwardId)()
+          },
+          {
+            id: backId,
+            type: 'normal' as any,
+            title: ctx.i18n.t('status-bar.nav.back'),
+            disabled: idx <= 0,
+            subTitle: ctx.command.getKeysLabel(backId),
+            onClick: () => ctx.action.getActionHandler(backId)()
+          },
+        )
+      })
+    })
+
+    ctx.controlCenter.tapSchema(schema => {
+      schema.navigation.items.push(
+        {
+          type: 'btn',
+          icon: 'arrow-left-solid',
+          flat: true,
+          title: ctx.i18n.t('control-center.navigation.back', ctx.command.getKeysLabel(backId)),
+          disabled: idx <= 0,
+          onClick: () => ctx.action.getActionHandler(backId)()
+        },
+        {
+          type: 'btn',
+          icon: 'arrow-right-solid',
+          flat: true,
+          title: ctx.i18n.t('control-center.navigation.forward', ctx.command.getKeysLabel(forwardId)),
+          disabled: idx >= stack.length - 1,
+          onClick: () => ctx.action.getActionHandler(forwardId)()
+        },
+      )
     })
   }
 } as Plugin

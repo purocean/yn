@@ -27,6 +27,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@fe/styles/mixins.scss';
+
 .tabs {
   display: flex;
   background: var(--g-color-80);
@@ -49,8 +51,14 @@ export default defineComponent({
     &.selected {
       color: var(--g-color-0);
       font-weight: 500;
-      background: var(--g-color-65);
+      background: var(--g-color-97);
     }
+  }
+}
+
+@include dark-theme {
+  .tabs .tab.selected {
+    background: var(--g-color-65);
   }
 }
 </style>

@@ -299,9 +299,13 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     return
   }
 
-  await api.moveFile(doc, newPath)
-
-  triggerHook('DOC_MOVED', { oldDoc: doc, newDoc })
+  try {
+    await api.moveFile(doc, newPath)
+    triggerHook('DOC_MOVED', { oldDoc: doc, newDoc })
+  } catch (error: any) {
+    useToast().show('warning', error.message)
+    throw error
+  }
 }
 
 /**
@@ -383,16 +387,23 @@ export async function ensureCurrentFileSaved () {
 /**
  * Switch document.
  * @param doc
+ * @param force
  */
-export async function switchDoc (doc: Doc | null) {
+export async function switchDoc (doc: Doc | null, force = false) {
   logger.debug('switchDoc', doc)
 
-  if (toUri(doc) === toUri(store.state.currentFile)) {
+  if (!force && toUri(doc) === toUri(store.state.currentFile)) {
     logger.debug('skip switch', doc)
     return
   }
 
-  await ensureCurrentFileSaved()
+  await ensureCurrentFileSaved().catch(error => {
+    if (force) {
+      console.error(error)
+    } else {
+      throw error
+    }
+  })
 
   try {
     if (!doc) {

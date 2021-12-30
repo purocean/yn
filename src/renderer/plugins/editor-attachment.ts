@@ -144,6 +144,7 @@ export default {
           subTitle: ctx.command.getKeysLabel([ctx.command.Alt, ctx.command.Shift, 'f']),
           onClick: () => linkFile(),
         },
+        { type: 'separator' },
       )
     })
   }

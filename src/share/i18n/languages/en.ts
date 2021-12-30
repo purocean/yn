@@ -186,13 +186,15 @@ const data = {
   'status-bar': {
     'view': {
       'view': 'View',
-      'show': 'Show ',
-      'hide': 'Hide ',
-      'xterm': 'Terminal',
-      'preview': 'Preview',
-      'editor': 'Editor',
-      'side-bar': 'Side Bar',
-      'toggle-wrap': 'Toggle Wrap'
+      'xterm': 'Show Terminal',
+      'preview': 'Show Preview',
+      'editor': 'Show Editor',
+      'side-bar': 'Show Side Bar',
+      'word-wrap': 'Word Wrap',
+      'typewriter-mode': 'Typewriter Mode',
+      'zoom-in': 'Zoom In',
+      'zoom-out': 'Zoom Out',
+      'zoom-reset': 'Actual Size',
     },
     'setting': 'Setting',
     'repo': {
@@ -228,12 +230,6 @@ const data = {
       'features': 'Features',
       'shortcuts': 'Shortcuts',
       'plugin': 'Create Plugin'
-    },
-    'rendering': {
-      'rendering': 'Synchronous rendering - %s',
-      'on': 'ON',
-      'off': 'OFF',
-      'refresh': 'Refresh'
     },
     'terminal': 'Terminal',
     'present': 'Present',
@@ -306,6 +302,7 @@ const data = {
     'error-choose-repo-path': 'Please choose repository path',
     'tabs': {
       'repos': 'Repositories',
+      'editor': 'Editor',
       'appearance': 'Appearance',
       'other': 'Other',
     },
@@ -317,6 +314,12 @@ const data = {
         'name-placeholder': 'Name',
         'path': 'Path',
         'path-placeholder': 'Please select the storage location'
+      },
+      'editor': {
+        'mouse-wheel-zoom': 'Mouse Wheel Zoom',
+        'font-size': 'Font Size',
+        'tab-size': 'Tab Size',
+        'ordered-list-completion': 'Ordered List',
       },
       'theme': 'Theme',
       'language': 'Language',
@@ -409,6 +412,24 @@ const data = {
     'change-confirm': {
       'title': 'Attention',
       'content': 'Changing the custom CSS requires the page to be reloaded. Do you want to continue?',
+    }
+  },
+  'control-center': {
+    'control-center': 'Control Center %s',
+    'switch': {
+      'side-bar': 'Side Bar %s',
+      'editor': 'Editor %s',
+      'view': 'Editor %s',
+      'sync-scroll': 'Synchronous Scrolling',
+      'sync-rendering': 'Synchronous Rendering',
+      'word-wrap': 'Word Wrap %s',
+      'typewriter-mode': 'Typewriter Mode',
+    },
+    'navigation': {
+      'goto': 'Goto %s',
+      'forward': 'Forward %s',
+      'back': 'Back %s',
+      'refresh': 'Refresh',
     }
   },
 }

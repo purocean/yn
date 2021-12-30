@@ -88,27 +88,21 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.17.1](https://github.com/purocean/yn/releases/tag/v3.17.1) 2021-12-24
-1. feat: 新增复制富文本功能
-2. feat: 新增复制 HTML 功能
-3. upd: 优化编辑器补全
-4. upd: 优化导出功能
-5. upd: 升级 Electron 至 15.3.2
-6. upd: 升级 Monaco 编辑器至 0.31.1
-7. upd: 优化Macos 窗口使用体验
-8. fix: 修复 Windows 上不能在资源管理器中显示文件问题
-9. fix: 修复使用输入法时候文字闪烁问题
-10. fix: 修复编辑容器块内容时标签跳动问题
-11. feat: 新增 `ctx.utils.downloadContent` 方法
-12. feat: 新增 `ctx.ui.useModal().alert` 方法
-13. feat: 新增 `ctx.api.convertFile` 方法
-14. feat: 新增 `ctx.base.readFromClipboard` 方法
-15. feat: 新增 `ctx.base.writeToClipboard` 方法
-16. feat: 新增 `ctx.view.getPreviewStyles` 方法
-17. feat: 新增 `ctx.view.getPreviewStyles` 方法
-18. feat: 新增 `ctx.lib.turndown` 库
-19. feat: 新增 `ctx.lib.juice` 库
-20. upd: `ctx.view.getContentHtml` 增加参数配置
+### [v3.18.0](https://github.com/purocean/yn/releases/tag/v3.18.0) 2021-12-30
+1. feat: 增加控制中心
+2. feat: 增加打字机模式
+3. feat: 增加编辑器配置项：支持配置字体大小、Tab 宽度、有序列表补全策略和滚轮缩放行为
+4. feat: 增加禁用同步滚动功能
+5. upd: 移动/重命名文件失败显示错误信息
+6. upd: 刷新时同时更新文档内容
+7. upd: 其他样式微调和用户体验优化
+8. feat(插件): 增加 `ctx.controlCenter` 服务
+9. feat(插件): 增加 `ctx.editor.toggleTypewriterMode` 方法
+10. feat(插件): 状态栏菜单增加 `onMousedown` 事件
+11. feat(插件): 状态栏菜单增加 `{ type: 'separator' }` 分割线
+12. feat(插件): 状态栏菜单增加 `checked` 字段
+13. feat(插件): 配置项支持分组 `group` 字段
+14. feat(插件): `ctx.doc.switchDoc` 增加 `force` 参数
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
