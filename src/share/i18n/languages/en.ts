@@ -318,6 +318,7 @@ const data = {
       'editor': {
         'mouse-wheel-zoom': 'Mouse Wheel Zoom',
         'font-size': 'Font Size',
+        'tab-size': 'Tab Size',
       },
       'theme': 'Theme',
       'language': 'Language',

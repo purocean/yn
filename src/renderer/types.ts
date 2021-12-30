@@ -103,6 +103,7 @@ export type BuildInSettings = {
   'shell': string,
   'editor.mouse-wheel-zoom': boolean,
   'editor.font-size': number,
+  'editor.tab-size': 2 | 4,
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,

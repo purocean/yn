@@ -39,6 +39,9 @@ export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions 
     invisibleCharacters: false,
   },
   fontFamily: isMacOS ? DEFAULT_MAC_FONT_FAMILY : undefined,
+  detectIndentation: false,
+  insertSpaces: true,
+  tabSize: getSetting('editor.tab-size', 4),
 }
 
 /**
@@ -304,6 +307,7 @@ registerHook('SETTING_FETCHED', ({ settings }) => {
   editor.updateOptions({
     mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
     fontSize: settings['editor.font-size'],
+    tabSize: settings['editor.tab-size'],
   })
 })
 

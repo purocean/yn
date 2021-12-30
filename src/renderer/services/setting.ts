@@ -19,7 +19,7 @@ export type Schema = {
     title: TTitle,
     description?: TTitle,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
-    enum?: string[],
+    enum?: string[] | number [],
     group: 'repos' | 'appearance' | 'editor' | 'other',
     items?: {
       type: string,
@@ -110,6 +110,13 @@ const schema: Schema = {
       format: 'checkbox',
       group: 'editor',
     },
+    'editor.tab-size': {
+      defaultValue: 4,
+      title: 'T_setting-panel.schema.editor.tab-size',
+      type: 'number',
+      enum: [2, 4],
+      group: 'editor',
+    },
     'editor.font-size': {
       defaultValue: 16,
       title: 'T_setting-panel.schema.editor.font-size',
@@ -126,7 +133,7 @@ const schema: Schema = {
       group: 'other',
     },
   } as Partial<Schema['properties']> as any,
-  required: ['theme', 'language', 'custom-css', 'editor.mouse-wheel-zoom'],
+  required: ['theme', 'language', 'custom-css', 'editor.mouse-wheel-zoom', 'editor.tab-size'],
 }
 
 const settings = {
