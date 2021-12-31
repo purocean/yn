@@ -67,6 +67,27 @@ function newMinder () {
     events.push({ type: 'resize', listener: firePharse })
   }
 
+  const camera = km._commands.camera.execute
+  km._commands.camera.execute = function (km: any, focusNode: any) {
+    if (focusNode) {
+      camera.call(this, km, focusNode)
+      return
+    }
+
+    // eslint-disable-next-line no-proto
+    const Point = km.getRoot().getVertexIn().__proto__.constructor
+
+    if (!['right', 'fish-bone'].includes(km.getTemplate())) {
+      camera.call(this, km)
+    } else {
+      const viewport = km.getPaper().getViewPort()
+      const x = viewport.center.x - viewport.center.x / viewport.zoom + 20 / viewport.zoom
+      const y = viewport.center.y
+      const duration = km.getOption('viewAnimationDuration')
+      km._viewDragger.moveTo(new Point(x, y), duration)
+    }
+  }
+
   // disable mouseup event listening
   km._modules.Select.init = () => 0
 
@@ -241,11 +262,13 @@ const init = (ele: HTMLElement) => {
   const zoomOut = () => km.execCommand('zoomOut')
   const zoomIn = () => km.execCommand('zoomIn')
   const fitHeight = () => {
-    const kmView = ele.firstElementChild as HTMLElement | null
-    const svgG = kmView?.firstElementChild?.lastElementChild
+    const paper = km.getPaper()
+    const kmView = paper.container
+    const svgG = paper.shapeNode
     if (kmView && svgG) {
       kmView.style.height = (svgG.getBoundingClientRect().height + 60) + 'px'
       km._modules.View.events.resize.apply(km)
+      km.zoom(km.getZoomValue()) // reset view port
       setTimeout(() => {
         km.execCommand('camera')
       }, 0)
