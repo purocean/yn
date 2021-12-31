@@ -304,15 +304,19 @@ whenEditorReady().then(({ editor }) => {
 })
 
 registerHook('SETTING_FETCHED', ({ settings }) => {
-  editor.updateOptions({
-    mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
-    fontSize: settings['editor.font-size'],
-    tabSize: settings['editor.tab-size'],
+  whenEditorReady().then(({ editor }) => {
+    editor.updateOptions({
+      mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
+      fontSize: settings['editor.font-size'],
+      tabSize: settings['editor.tab-size'],
+    })
   })
 })
 
 registerHook('SETTING_CHANGED', ({ changedKeys }) => {
-  if (changedKeys.includes('editor.mouse-wheel-zoom')) {
-    editor.trigger('keyboard', 'editor.action.fontZoomReset', {})
-  }
+  whenEditorReady().then(({ editor }) => {
+    if (changedKeys.includes('editor.mouse-wheel-zoom')) {
+      editor.trigger('keyboard', 'editor.action.fontZoomReset', {})
+    }
+  })
 })
