@@ -256,7 +256,12 @@ export async function deleteDoc (doc: Doc) {
   })
 
   if (confirm) {
-    await api.deleteFile(doc)
+    try {
+      await api.deleteFile(doc)
+    } catch (error: any) {
+      useToast().show('warning', error.message)
+      throw error
+    }
 
     triggerHook('DOC_DELETED', { doc })
   }
