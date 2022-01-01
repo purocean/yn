@@ -1,4 +1,4 @@
-import { pick } from 'lodash-es'
+import { orderBy, pick } from 'lodash-es'
 import { createStore } from 'vuex'
 import * as storage from '@fe/utils/storage'
 import type { Components, Doc, Repo } from '@fe/types'
@@ -108,7 +108,15 @@ export default createStore({
       storage.set('currentFile', pick(data, 'repo', 'path', 'type', 'name'))
 
       if (data) {
-        state.recentOpenTime = { ...(state.recentOpenTime || {}), [`${data.repo}|${data.path}`]: new Date().valueOf() }
+        const record: Record<string, number> = {
+          ...(state.recentOpenTime || {}),
+          [`${data.repo}|${data.path}`]: Date.now()
+        }
+
+        state.recentOpenTime = Object.fromEntries(
+          orderBy(Object.entries(record), x => x[1], 'desc').slice(0, 100)
+        )
+
         storage.set('recentOpenTime', state.recentOpenTime)
       }
     },
