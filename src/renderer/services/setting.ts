@@ -89,7 +89,7 @@ const schema: Schema = {
       group: 'appearance',
     },
     'custom-css': {
-      defaultValue: 'github',
+      defaultValue: 'github.css',
       title: 'T_setting-panel.schema.custom-css',
       type: 'string',
       enum: ['github.css'],
