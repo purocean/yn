@@ -73,7 +73,7 @@ export async function inputPassword (title: string, hint: string, throwError = f
  * @param uri
  */
 export async function openExternal (uri: string) {
-  api.rpc(`require('electron').shell.openExternal(${quote(uri)})`)
+  await api.rpc(`require('electron').shell.openExternal(${quote(uri)})`)
 }
 
 /**
@@ -81,7 +81,7 @@ export async function openExternal (uri: string) {
  * @param path
  */
 export async function openPath (path: string) {
-  api.rpc(`require('electron').shell.openPath(${quote(path)})`)
+  await api.rpc(`require('electron').shell.openPath(${quote(path)})`)
 }
 
 /**
@@ -93,7 +93,7 @@ export async function showItemInFolder (path: string) {
     path = path.replaceAll('/', '\\')
   }
 
-  api.rpc(`require('electron').shell.showItemInFolder(${quote(path)})`)
+  await api.rpc(`require('electron').shell.showItemInFolder(${quote(path)})`)
 }
 
 /**
