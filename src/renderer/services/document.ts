@@ -31,6 +31,15 @@ function encrypt (content: any, password: string) {
 }
 
 /**
+ * Get absolutePath of document
+ * @param doc
+ * @returns
+ */
+export function getAbsolutePath (doc: Doc) {
+  return join(getRepo(doc.repo)?.path || '/', doc.path)
+}
+
+/**
  * Determine if the document is encrypted.
  * @param doc
  * @returns
@@ -412,7 +421,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
       return
     }
 
-    doc.absolutePath = join(getRepo(doc.repo)?.path || '/', doc.path)
+    doc.absolutePath = getAbsolutePath(doc)
 
     const timer = setTimeout(() => {
       store.commit('setCurrentFile', { ...doc, status: undefined })
