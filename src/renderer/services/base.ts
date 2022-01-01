@@ -97,6 +97,18 @@ export async function showItemInFolder (path: string) {
 }
 
 /**
+ * Trash item
+ * @param path
+ */
+export async function trashItem (path: string) {
+  if (isWindows) {
+    path = path.replaceAll('/', '\\')
+  }
+
+  await api.rpc(`require('electron').shell.trashItem(${quote(path)})`)
+}
+
+/**
  * get repo by name
  * @param name
  * @returns
