@@ -1,11 +1,10 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import { USER_DIR, TRASH_DIR, USER_PLUGIN_DIR, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES } from './constant'
+import { USER_DIR, USER_PLUGIN_DIR, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES } from './constant'
 import './updater'
 
 export default function () {
   fs.ensureDirSync(USER_DIR)
-  fs.ensureDirSync(TRASH_DIR)
   if (!fs.existsSync(USER_PLUGIN_DIR)) {
     fs.mkdirSync(USER_PLUGIN_DIR)
     fs.writeFileSync(path.join(USER_PLUGIN_DIR, 'plugin-example.js'), `

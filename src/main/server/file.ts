@@ -1,3 +1,4 @@
+import { shell } from 'electron'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as crypto from 'crypto'
@@ -65,8 +66,7 @@ export async function rm (repo: string, p: string) {
 
   await withRepo(repo, async (repoPath, targetPath) => {
     if (targetPath !== repoPath) {
-      const newPath = path.join(repository.getTrashPath(repo), p.replace(/\.\./g, '')) + '.' + (new Date()).getTime()
-      await fs.move(targetPath, newPath)
+      await shell.trashItem(targetPath)
     }
   }, p)
 }

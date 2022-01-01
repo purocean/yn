@@ -1,6 +1,5 @@
 import * as path from 'path'
 import config from '../config'
-import { TRASH_DIR } from '../constant'
 import { isWsl, toWslPath } from '../wsl'
 
 const configKey = 'repositories'
@@ -26,12 +25,7 @@ const getPath = (name: string) => {
   return path.isAbsolute(p) ? p : path.resolve(p)
 }
 
-const getTrashPath = (name: string) => {
-  return path.join(TRASH_DIR, name)
-}
-
 export default {
   list,
   getPath,
-  getTrashPath,
 }
