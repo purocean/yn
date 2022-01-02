@@ -5,6 +5,7 @@ import { registerHook, triggerHook } from '@fe/core/hook'
 import { registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
+import { useToast } from '@fe/support/ui/toast'
 import { getColorScheme } from './theme'
 import { getSetting } from './setting'
 
@@ -234,7 +235,13 @@ export function getSelectionInfo () {
  * Toggle editor word wrap.
  */
 export function toggleWrap () {
-  const isWrapping = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo).isViewportWrapping
+  const wrapInfo = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo)
+  const isWrapping = wrapInfo.isViewportWrapping
+  if (wrapInfo.isDominatedByLongLines) {
+    useToast().show('warning', 'Word warp dominated by long lines')
+    return
+  }
+
   store.commit('setWordWrap', (isWrapping ? 'off' : 'on'))
 }
 
