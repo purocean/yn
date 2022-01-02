@@ -170,6 +170,7 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
   }
 
   let value = cellText
+  let inComposition = false
   if (input) {
     input.value = cellText
     value = await (new Promise((resolve) => {
@@ -188,6 +189,10 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
       input.onblur = ok
 
       input.onkeydown = e => {
+        if (inComposition) {
+          return
+        }
+
         if (e.key === 'Escape') {
           cancel()
         }
@@ -206,6 +211,14 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
           e.stopPropagation()
         }
       }
+
+      input.addEventListener('compositionstart', () => {
+        inComposition = true
+      })
+
+      input.addEventListener('compositionend', () => {
+        inComposition = false
+      })
     }))
   } else {
     const inputVal = await modal.input({
