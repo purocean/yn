@@ -171,19 +171,25 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
 
   let value = cellText
   let inComposition = false
+  let nextAction: 'edit-next-cell' | 'edit-prev-cell' | undefined
+  let isCancel = false
+
   if (input) {
     input.value = cellText
     value = await (new Promise((resolve) => {
       const cancel = () => {
         resetInput(input)
+        resolve('')
+        isCancel = true
       }
 
       const ok = () => {
         if (input.value !== cellText) {
           resolve(input.value)
+          resetInput(input)
+        } else {
+          cancel()
         }
-
-        resetInput(input)
       }
 
       input.onblur = ok
@@ -195,6 +201,14 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
 
         if (e.key === 'Escape') {
           cancel()
+        }
+
+        if (e.key === 'Tab') {
+          nextAction = e.shiftKey ? 'edit-prev-cell' : 'edit-next-cell'
+          ok()
+
+          e.preventDefault()
+          e.stopPropagation()
         }
 
         if (e.key === 'Enter') {
@@ -231,18 +245,22 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
 
     if (typeof inputVal !== 'string') {
       toast.show('warning', t('table-cell-edit.canceled'))
-      return
+      isCancel = true
     }
 
     value = inputVal
   }
 
-  if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
-  if (!value.endsWith(' ') && cellIndex < columns.length - 1) value += ' '
+  if (!isCancel) {
+    if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
+    if (!value.endsWith(' ') && cellIndex < columns.length - 1) value += ' '
 
-  columns[cellIndex] = value
+    columns[cellIndex] = value
 
-  replaceLine(start, columnsToStr(columns, text))
+    replaceLine(start, columnsToStr(columns, text))
+  }
+
+  return nextAction
 }
 
 async function handleClick (e: MouseEvent, modal: boolean) {
@@ -259,40 +277,53 @@ async function handleClick (e: MouseEvent, modal: boolean) {
       return false
     }
 
-    const start = parseInt(target.dataset.sourceLine || '0')
-    const end = parseInt(target.dataset.sourceLineEnd || '0')
-    const td = target as HTMLTableCellElement
-    const cellIndex = getCellIndex(td)
-    const input = modal ? null : document.createElement('textarea')
+    const handleEditTableCell = (td: HTMLTableCellElement) => {
+      const start = parseInt(td.dataset.sourceLine || '0')
+      const end = parseInt(td.dataset.sourceLineEnd || '0')
+      const cellIndex = getCellIndex(td)
+      const input = modal ? null : document.createElement('textarea')
 
-    if (input) {
-      target.style.position = 'relative'
-      input.style.left = '0'
-      input.style.top = '0'
-      input.style.height = '100%'
-      input.style.width = '100%'
-      input.style.boxSizing = 'border-box'
-      input.style.color = 'var(--g-color-0)'
-      input.style.border = '1px #93e632 solid'
-      input.style.backgroundColor = 'var(--g-color-96)'
-      input.style.fontSize = '13px'
-      input.style.position = 'absolute'
-      input.style.display = 'block'
-      input.style.padding = '3px'
-      input.style.lineHeight = '1.2'
-      ;(input as any).autofocus = true
-      input.placeholder = t('table-cell-edit.esc-to-cancel')
-      setTimeout(() => {
-        input.focus()
-      }, 0)
+      if (input) {
+        td.style.position = 'relative'
+        input.style.left = '0'
+        input.style.top = '0'
+        input.style.height = '100%'
+        input.style.width = '100%'
+        input.style.boxSizing = 'border-box'
+        input.style.color = 'var(--g-color-0)'
+        input.style.border = '1px #93e632 solid'
+        input.style.backgroundColor = 'var(--g-color-96)'
+        input.style.fontSize = '13px'
+        input.style.position = 'absolute'
+        input.style.display = 'block'
+        input.style.padding = '3px'
+        input.style.lineHeight = '1.2'
+        ;(input as any).autofocus = true
+        input.placeholder = t('table-cell-edit.esc-to-cancel')
+        setTimeout(() => {
+          input.focus()
+        }, 0)
 
-      target.appendChild(input)
+        td.appendChild(input)
+      }
+
+      editTableCell(start, end, cellIndex, input).catch((e: Error) => {
+        useToast().show('warning', e.message)
+        input && resetInput(input)
+      }).then(nextAction => {
+        if (nextAction) {
+          setTimeout(() => {
+            if (nextAction === 'edit-next-cell' && td.nextElementSibling) {
+              handleEditTableCell(td.nextElementSibling as HTMLTableCellElement)
+            } else if (nextAction === 'edit-prev-cell' && td.previousElementSibling) {
+              handleEditTableCell(td.previousElementSibling as HTMLTableCellElement)
+            }
+          }, 0)
+        }
+      })
     }
 
-    editTableCell(start, end, cellIndex, input).catch((e: Error) => {
-      useToast().show('warning', e.message)
-      input && resetInput(input)
-    })
+    handleEditTableCell(target as HTMLTableCellElement)
 
     return preventEvent()
   }
