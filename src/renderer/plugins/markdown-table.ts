@@ -594,6 +594,10 @@ export default {
           margin-bottom: 6px;
         }
 
+        .markdown-view .markdown-body .table-wrapper > table tr {
+          scroll-margin: 2px;
+        }
+
         .markdown-view .markdown-body .table-wrapper > table th {
           white-space: nowrap;
         }

@@ -240,6 +240,15 @@ export default defineComponent({
       const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}]`)
       for (let i = 0; i < nodes.length; i++) {
         const el = nodes[i]
+
+        if (
+          el.tagName === 'TD' ||
+          el.tagName === 'TH' ||
+          el.tagName === 'THEAD' ||
+          el.tagName === 'TBODY') {
+          continue
+        }
+
         const lineNumber = parseInt(el.dataset.sourceLine || '0')
         if (lineNumber >= startLine && lineNumber <= (endLine || Number.MAX_SAFE_INTEGER)) {
           el.scrollIntoView()
