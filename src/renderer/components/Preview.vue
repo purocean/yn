@@ -276,6 +276,7 @@ export default defineComponent({
     onMounted(() => {
       nextTick(renderDebounce)
       triggerHook('VIEW_MOUNTED')
+      registerAction({ name: 'view.render-immediately', handler: render.bind(null, false) })
       registerAction({ name: 'view.render', handler: renderDebounce })
       registerAction({ name: 'view.refresh', handler: refresh })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
@@ -289,6 +290,7 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
+      removeAction('view.render-immediately')
       removeAction('view.render')
       removeAction('view.refresh')
       removeAction('view.reveal-line')

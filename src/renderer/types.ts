@@ -112,6 +112,8 @@ export type BuildInSettings = {
 }
 
 export type BuildInActions = {
+  'view.render-immediately': () => void,
+  'view.render': () => void,
   'view.refresh': () => void,
   'view.reveal-line': (startLine: number, endLine?: number) => void,
   'view.scroll-top-to': (top: number) => void,
