@@ -7,7 +7,7 @@ import { hasCtrlCmd } from '@fe/core/command'
 import { registerHook } from '@fe/core/hook'
 import { DOM_ATTR_NAME } from '@fe/support/constant'
 import { useToast } from '@fe/support/ui/toast'
-import { disableSyncScrollAwhile } from '@fe/services/view'
+import { disableSyncScrollAwhile, renderImmediately } from '@fe/services/view'
 import * as editor from '@fe/services/editor'
 import { t } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
@@ -514,17 +514,12 @@ function toggleSortMode (td: HTMLTableCellElement, flag: boolean) {
     clean()
 
     // restore origin order for vue vnode
-    const restoreOrder = (getSortable: () => Sortable, oldIndex: number, newIndex: number) => {
-      registerHook('VIEW_RENDER', () => {
-        const sortable = getSortable()
-        if (sortable) {
-          const arr = sortable.toArray()
-          const id = arr[newIndex]
-          arr.splice(newIndex, 1)
-          arr.splice(oldIndex, 0, id)
-          sortable.sort(arr)
-        }
-      }, true)
+    const restoreOrder = (sortable: Sortable, oldIndex: number, newIndex: number) => {
+      const arr = sortable.toArray()
+      const id = arr[newIndex]
+      arr.splice(newIndex, 1)
+      arr.splice(oldIndex, 0, id)
+      sortable.sort(arr)
     }
 
     table.colSortable = Sortable.create(theadFirstTr, {
@@ -533,8 +528,9 @@ function toggleSortMode (td: HTMLTableCellElement, flag: boolean) {
       dataIdAttr: DOM_ATTR_NAME.TOKEN_IDX,
       onEnd: ({ oldIndex, newIndex }) => {
         if (typeof oldIndex === 'number' && typeof newIndex === 'number' && oldIndex !== newIndex) {
-          restoreOrder(() => table.colSortable!, oldIndex, newIndex)
+          restoreOrder(table.colSortable!, oldIndex, newIndex)
           sortCol(td, oldIndex, newIndex)
+          renderImmediately()
           nextTick(() => toggleSortMode(td, true))
         }
       }
@@ -547,8 +543,9 @@ function toggleSortMode (td: HTMLTableCellElement, flag: boolean) {
       dataIdAttr: DOM_ATTR_NAME.TOKEN_IDX,
       onEnd: ({ oldIndex, newIndex }) => {
         if (typeof oldIndex === 'number' && typeof newIndex === 'number' && oldIndex !== newIndex) {
-          restoreOrder(() => table.rowSortable!, oldIndex, newIndex)
+          restoreOrder(table.rowSortable!, oldIndex, newIndex)
           sortRow(td, oldIndex, newIndex)
+          renderImmediately()
           nextTick(() => toggleSortMode(td, true))
         }
       }
