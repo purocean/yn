@@ -388,6 +388,7 @@ const data = {
     'context-menu': {
       'edit': 'Edit',
       'quick-edit': 'Quit Edit',
+      'sort-mode': 'Sort Mode',
       'align-left': 'Align Left',
       'align-center': 'Align Center',
       'align-right': 'Align Right',

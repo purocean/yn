@@ -389,6 +389,7 @@ const data: BaseLanguage = {
     'context-menu': {
       'edit': '编辑',
       'quick-edit': '快速编辑',
+      'sort-mode': '排序模式',
       'align-left': '左对齐',
       'align-center': '居中',
       'align-right': '右对齐',

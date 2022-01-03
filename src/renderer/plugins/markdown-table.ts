@@ -1,15 +1,23 @@
+import { nextTick } from 'vue'
+import Sortable from 'sortablejs'
+import { sortBy } from 'lodash-es'
 import type { Plugin } from '@fe/context'
 import { useModal } from '@fe/support/ui/modal'
 import { hasCtrlCmd } from '@fe/core/command'
+import { registerHook } from '@fe/core/hook'
+import { DOM_ATTR_NAME } from '@fe/support/constant'
 import { useToast } from '@fe/support/ui/toast'
 import { disableSyncScrollAwhile } from '@fe/services/view'
 import * as editor from '@fe/services/editor'
 import { t } from '@fe/services/i18n'
+import { getLogger } from '@fe/utils'
 import type Token from 'markdown-it/lib/token'
 import type Renderer from 'markdown-it/lib/renderer'
 import type { Components } from '@fe/types'
 
-const cellClassName = 'yank-table-cell'
+const tableSortMode = 'sort-mode'
+const cellClassName = 'yn-table-cell'
+const logger = getLogger('markdown-table')
 
 function editWrapper<T extends Array<any>, U> (fn: (...args: T) => U) {
   return function (...args: T) {
@@ -176,6 +184,7 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
 
   if (input) {
     input.value = cellText
+    input.select()
     value = await (new Promise((resolve) => {
       const cancel = () => {
         resetInput(input)
@@ -367,8 +376,12 @@ function deleteRow (td: HTMLTableCellElement) {
   deleteLine(start)
 }
 
-function processColumns (td: HTMLTableCellElement, process: (columns: string[], row: Row) => void) {
+function processColumns (td: HTMLTableCellElement, process: (columns: string[]) => void) {
   const rows = getRows(td)
+  if (rows.some(({ start, end }) => !checkLineNumber(start, end))) {
+    return
+  }
+
   const hr = rows.find(x => x.type === 'hr')
   if (!hr) {
     return
@@ -377,15 +390,12 @@ function processColumns (td: HTMLTableCellElement, process: (columns: string[], 
   const refText = getLineContent(hr.start)
 
   rows.forEach((row) => {
-    const { start, end } = row
-    if (!checkLineNumber(start, end)) {
-      return
-    }
+    const { start } = row
 
     const content = getLineContent(start)
     const columns = escapedSplit(content)
 
-    process(columns, row)
+    process(columns)
 
     replaceLine(start, columnsToStr(columns, refText))
   })
@@ -446,6 +456,123 @@ function deleteCol (td: HTMLTableCellElement) {
   })
 }
 
+function sortCol (td: HTMLTableCellElement, oldIndex: number, newIndex: number) {
+  processColumns(td, columns => {
+    if (columns.length - 1 < Math.max(oldIndex, newIndex)) {
+      return
+    }
+
+    const text = columns[oldIndex]
+    columns.splice(oldIndex, 1)
+    columns.splice(newIndex, 0, text)
+  })
+}
+
+function sortRow (td: HTMLTableCellElement, oldIndex: number, newIndex: number) {
+  const rows = sortBy(getRows(td).filter(x => x.type === 'body'), x => x.start)
+  if (rows.length - 1 < Math.max(oldIndex, newIndex)) {
+    return
+  }
+
+  if (rows.some(({ start, end }) => !checkLineNumber(start, end))) {
+    return
+  }
+
+  const oldLine = rows[oldIndex].start
+  const newLine = rows[newIndex].start
+
+  const content = getLineContent(oldLine)
+  deleteLine(oldLine)
+  const prevContent = getLineContent(newLine)
+  replaceLine(newLine, `${content}\n${prevContent}`)
+}
+
+function toggleSortMode (td: HTMLTableCellElement, flag: boolean) {
+  const table: (HTMLElement & { colSortable?: Sortable, rowSortable?: Sortable }) | null | undefined = td.parentElement?.parentElement?.parentElement
+  if (!table || table.tagName !== 'TABLE') {
+    return
+  }
+
+  logger.debug('toggleSortMode', flag)
+
+  const theadFirstTr = table.querySelector<HTMLElement>('thead > tr')
+  const tbody = table.querySelector<HTMLElement>('tbody')
+
+  const clean = () => {
+    logger.debug('toggleSortMode', 'clean')
+    table.onblur = null
+    table.onkeydown = null
+    table.removeAttribute(tableSortMode)
+    table.colSortable?.destroy()
+    delete table.colSortable
+    table.rowSortable?.destroy()
+    table.blur()
+    delete table.rowSortable
+  }
+
+  if (flag && theadFirstTr && tbody) {
+    clean()
+
+    // restore origin order for vue vnode
+    const restoreOrder = (getSortable: () => Sortable, oldIndex: number, newIndex: number) => {
+      registerHook('VIEW_RENDER', () => {
+        const sortable = getSortable()
+        if (sortable) {
+          const arr = sortable.toArray()
+          const id = arr[newIndex]
+          arr.splice(newIndex, 1)
+          arr.splice(oldIndex, 0, id)
+          sortable.sort(arr)
+        }
+      }, true)
+    }
+
+    table.colSortable = Sortable.create(theadFirstTr, {
+      animation: 200,
+      direction: 'horizontal',
+      dataIdAttr: DOM_ATTR_NAME.TOKEN_IDX,
+      onEnd: ({ oldIndex, newIndex }) => {
+        if (typeof oldIndex === 'number' && typeof newIndex === 'number' && oldIndex !== newIndex) {
+          restoreOrder(() => table.colSortable!, oldIndex, newIndex)
+          sortCol(td, oldIndex, newIndex)
+          nextTick(() => toggleSortMode(td, true))
+        }
+      }
+    })
+
+    table.rowSortable = Sortable.create(tbody, {
+      animation: 200,
+      direction: 'vertical',
+      handle: 'td:first-of-type',
+      dataIdAttr: DOM_ATTR_NAME.TOKEN_IDX,
+      onEnd: ({ oldIndex, newIndex }) => {
+        if (typeof oldIndex === 'number' && typeof newIndex === 'number' && oldIndex !== newIndex) {
+          restoreOrder(() => table.rowSortable!, oldIndex, newIndex)
+          sortRow(td, oldIndex, newIndex)
+          nextTick(() => toggleSortMode(td, true))
+        }
+      }
+    })
+
+    table.tabIndex = -1
+
+    table.onblur = () => {
+      toggleSortMode(td, false)
+    }
+
+    table.onkeydown = (e) => {
+      if (e.key === 'Escape') {
+        toggleSortMode(td, false)
+      }
+    }
+
+    table.setAttribute(tableSortMode, 'true')
+    table.focus()
+  } else {
+    clean()
+  }
+}
+
 export default {
   name: 'markdown-table',
   register: (ctx) => {
@@ -493,6 +620,30 @@ export default {
           padding-right: 5px;
           color: #999;
           font-family: monospace;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode],
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] tr {
+          outline: none;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] td:hover,
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] th:hover {
+          background: initial;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] thead tr:first-of-type th {
+          background: var(--g-color-86);
+          cursor: ew-resize;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] tbody tr td:first-of-type {
+          background: var(--g-color-86);
+          cursor: ns-resize;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] .sortable-ghost {
+          opacity: 0.5;
         }
       }
     `)
@@ -587,6 +738,15 @@ export default {
             label: ctx.i18n.t('table-cell-edit.context-menu.edit'),
             onClick: () => {
               handleClick(e, true)
+            }
+          },
+          { type: 'separator' },
+          {
+            id: 'plugin.table.cell-edit.sort-mode',
+            type: 'normal',
+            label: ctx.i18n.t('table-cell-edit.context-menu.sort-mode'),
+            onClick: () => {
+              toggleSortMode(target, true)
             }
           },
           { type: 'separator' },
