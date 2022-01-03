@@ -90,14 +90,17 @@ function checkLineNumber (start: number, end: number) {
 }
 
 function columnsToStr (columns: string[], refText: string) {
-  if (columns.length > 0) {
-    columns[0] = columns[0].replace(/^\s*/g, '')
-    columns[columns.length - 1] = columns[columns.length - 1].replace(/\s*$/g, '')
-  }
-
   let content = columns.map(value => {
+    if (!value.startsWith(' ')) {
+      value = ' ' + value
+    }
+
+    if (!value.endsWith(' ')) {
+      value += ' '
+    }
+
     return value.replace(/\|/g, '\\|').replace(/\n/g, ' ')
-  }).join('|')
+  }).join('|').trim()
 
   refText = refText.trim()
 
@@ -435,14 +438,6 @@ function addCol (td: HTMLTableCellElement, offset: 0 | 1) {
   processColumns(td, columns => {
     if (cellIndex > columns.length - 1 || cellIndex < 0) {
       return
-    }
-
-    if (!columns[cellIndex].startsWith(' ')) {
-      columns[cellIndex] = ' ' + columns[cellIndex]
-    }
-
-    if (!columns[cellIndex].endsWith(' ')) {
-      columns[cellIndex] += ' '
     }
 
     columns.splice(cellIndex + offset, 0, ' -- ')
