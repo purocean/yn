@@ -342,7 +342,7 @@ const data = {
       'paste-image-as-base64': 'Paste Image as Base64',
       'paste-rtf-as-markdown': 'Paste RTF as Markdown',
       'add-attachment': 'Add Attachment',
-      'add-doc': 'Add Document',
+      'link-doc': 'Link Document',
       'link-file': 'Link File',
       'insert-date': 'Insert Today\'s Date',
       'insert-time': 'Insert Current Time',
