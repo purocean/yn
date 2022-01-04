@@ -1,7 +1,7 @@
 <template>
   <div class="context-menu">
     <div class="mask" v-if="isShow" @click="hide" @contextmenu.prevent.stop="hide"></div>
-    <ul class="menu" ref="refMenu" :style="{visibility: isShow ? 'visible' : 'hidden'}">
+    <ul class="menu" ref="refMenu" :style="{visibility: isShow ? 'visible' : 'hidden'}" @contextmenu.prevent>
       <template v-for="(item, i) in items">
         <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type || 'normal'"></li>
         <li v-else :key="item.id" v-show="!item.hidden" @click="handleClick(item)" :class="item.type || 'normal'">{{item.label}}</li>
@@ -120,6 +120,7 @@ export default defineComponent({
   cursor: default;
   box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
+  user-select: none;
 }
 
 .menu > li.separator {
