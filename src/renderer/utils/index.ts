@@ -78,10 +78,15 @@ export function objectInsertAfterKey (obj: {}, key: string, content: {}) {
 
 export function downloadContent (filename: string, content: Buffer | string, type = 'application/octet-stream') {
   const blob = new Blob([content], { type })
+  const href = window.URL.createObjectURL(blob)
   const link = document.createElement('a')
-  link.href = window.URL.createObjectURL(blob)
+  link.href = href
   link.download = filename
   link.click()
+
+  setTimeout(() => {
+    window.URL.revokeObjectURL(href)
+  }, 20000)
 }
 
 export function md5 (content: any) {
