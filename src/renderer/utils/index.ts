@@ -23,20 +23,6 @@ export function encodeMarkdownLink (path: string) {
     .replace(/ /g, '%20')
 }
 
-export function dataURItoBlobLink (dataURI: string) {
-  const byteString = atob(dataURI.split(',')[1])
-  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
-  const ab = new ArrayBuffer(byteString.length)
-  const ia = new Uint8Array(ab)
-
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i)
-  }
-
-  const blob = new Blob([ab], { type: mimeString })
-  return window.URL.createObjectURL(blob)
-}
-
 export function fileToBase64URL (file: File | Blob) {
   return new Promise<string>((resolve, reject) => {
     const fr = new FileReader()
@@ -76,12 +62,13 @@ export function objectInsertAfterKey (obj: {}, key: string, content: {}) {
   return Object.fromEntries(items)
 }
 
-export function downloadContent (filename: string, content: Buffer | string, type = 'application/octet-stream') {
+export function downloadContent (filename: string, content: ArrayBuffer | Buffer | string, type = 'application/octet-stream') {
   const blob = new Blob([content], { type })
   const href = window.URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = href
   link.download = filename
+  link.target = '_blank'
   link.click()
 
   setTimeout(() => {

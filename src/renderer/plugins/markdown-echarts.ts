@@ -5,7 +5,7 @@ import type { Plugin } from '@fe/context'
 import { getColorScheme } from '@fe/services/theme'
 import { debounce } from 'lodash-es'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { dataURItoBlobLink, getLogger, sleep } from '@fe/utils'
+import { downloadDataURL, getLogger, sleep } from '@fe/utils'
 import type { ExportTypes } from '@fe/types'
 
 const logger = getLogger('echarts')
@@ -95,11 +95,7 @@ const Echarts = defineComponent({
         return
       }
 
-      const link = document.createElement('a')
-      link.href = dataURItoBlobLink(chart.getDataURL({ type, pixelRatio: 2 }))
-      link.target = '_blank'
-      link.download = `echarts-${Date.now()}.${type}`
-      link.click()
+      downloadDataURL(`echarts-${Date.now()}.${type}`, chart.getDataURL({ type, pixelRatio: 2 }))
     }
 
     watch(() => props.code, () => {
