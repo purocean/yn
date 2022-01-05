@@ -390,6 +390,8 @@ const data = {
       'edit': 'Edit',
       'quick-edit': 'Quit Edit',
       'sort-mode': 'Sort Mode',
+      'sort-asc': 'Sort ascending',
+      'sort-desc': 'Sort descending',
       'align-left': 'Align Left',
       'align-center': 'Align Center',
       'align-right': 'Align Right',

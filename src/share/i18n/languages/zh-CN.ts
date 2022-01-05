@@ -391,6 +391,8 @@ const data: BaseLanguage = {
       'edit': '编辑',
       'quick-edit': '快速编辑',
       'sort-mode': '排序模式',
+      'sort-asc': '升序',
+      'sort-desc': '降序',
       'align-left': '左对齐',
       'align-center': '居中',
       'align-right': '右对齐',

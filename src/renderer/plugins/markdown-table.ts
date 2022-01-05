@@ -1,6 +1,6 @@
 import { nextTick } from 'vue'
 import Sortable from 'sortablejs'
-import { sortBy } from 'lodash-es'
+import { orderBy } from 'lodash-es'
 import type { Plugin } from '@fe/context'
 import { useModal } from '@fe/support/ui/modal'
 import { hasCtrlCmd } from '@fe/core/command'
@@ -463,7 +463,7 @@ function sortCol (td: HTMLTableCellElement, oldIndex: number, newIndex: number) 
 }
 
 function sortRow (td: HTMLTableCellElement, oldIndex: number, newIndex: number) {
-  const rows = sortBy(getRows(td).filter(x => x.type === 'body'), x => x.start)
+  const rows = orderBy(getRows(td).filter(x => x.type === 'body'), x => x.start)
   if (rows.length - 1 < Math.max(oldIndex, newIndex)) {
     return
   }
@@ -562,6 +562,29 @@ function toggleSortMode (td: HTMLTableCellElement, flag: boolean) {
   } else {
     clean()
   }
+}
+
+function sortRows (td: HTMLTableCellElement, order: 'asc' | 'desc') {
+  const rows = getRows(td).filter(x => x.type === 'body')
+  const cellIndex = getCellIndex(td)
+  const contents = rows.map(row => {
+    const text = getLineContent(row.start)
+    return {
+      sortBy: escapedSplit(text)[cellIndex],
+      text,
+    }
+  })
+
+  orderBy(contents, x => {
+    const number = parseFloat(x.sortBy)
+    if (!isNaN(number) && isFinite(number)) {
+      return number.toString().padStart(32)
+    }
+
+    return x.sortBy
+  }, order).forEach(({ text }, i) => {
+    replaceLine(rows[i].start, text)
+  })
 }
 
 export default {
@@ -742,6 +765,22 @@ export default {
             label: ctx.i18n.t('table-cell-edit.context-menu.sort-mode'),
             onClick: () => {
               toggleSortMode(target, true)
+            }
+          },
+          {
+            id: 'plugin.table.cell-edit.sort-asc',
+            type: 'normal',
+            label: ctx.i18n.t('table-cell-edit.context-menu.sort-asc'),
+            onClick: () => {
+              sortRows(target, 'asc')
+            }
+          },
+          {
+            id: 'plugin.table.cell-edit.sort-desc',
+            type: 'normal',
+            label: ctx.i18n.t('table-cell-edit.context-menu.sort-desc'),
+            onClick: () => {
+              sortRows(target, 'desc')
             }
           },
           { type: 'separator' },
