@@ -197,13 +197,15 @@ export function getValue () {
  * Replace text value.
  * @param search
  * @param val
+ * @param replaceAll
  */
-export function replaceValue (search: string, val: string) {
+export function replaceValue (search: string | RegExp, val: string, replaceAll = true) {
   const editor = getEditor()
   const model = editor.getModel()
   const maxLine = model!.getLineCount()
   const endLineLength = model!.getLineLength(maxLine)
-  const text = model!.getValue().replaceAll(search, val)
+  const content = model!.getValue()
+  const text = replaceAll ? content.replaceAll(search, val) : content.replace(search, val)
 
   editor.executeEdits('', [
     {
