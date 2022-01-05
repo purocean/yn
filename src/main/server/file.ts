@@ -1,8 +1,8 @@
 import { shell } from 'electron'
+import orderBy from 'lodash/orderBy'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as crypto from 'crypto'
-import * as NaturalOrderby from 'natural-orderby'
 import * as yargs from 'yargs'
 import repository from './repository'
 
@@ -153,10 +153,17 @@ async function travels (
     }
   }))
 
-  const sortOptions = [(v: TreeItem) => v && v.name.charCodeAt(0) > 255 ? 1 : 0, (v: TreeItem) => v.name]
+  const sort = (items: TreeItem[]) => orderBy(items, x => {
+    const number = parseFloat(x.name)
+    if (!isNaN(number) && isFinite(number)) {
+      return number.toString().padStart(32)
+    }
 
-  data.children = NaturalOrderby.orderBy(dirs, sortOptions)
-    .concat(NaturalOrderby.orderBy(files, sortOptions))
+    return x.name
+  })
+
+  data.children = sort(dirs)
+    .concat(sort(files))
 }
 
 export async function tree (repo: string): Promise<TreeItem[]> {

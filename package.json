@@ -39,7 +39,6 @@
     "mime": "^2.5.2",
     "mime-types": "^2.1.31",
     "mitt": "^2.1.0",
-    "natural-orderby": "^2.0.3",
     "node-pty": "^0.10.1",
     "plantuml-pipe": "^1.3.6",
     "request": "^2.88.2",
