@@ -16,6 +16,7 @@ const data: BaseLanguage = {
   'copy-code': '复制代码',
   'loading': '加载中',
   'add-image': '添加图片',
+  'upload-image': '上传图片',
   'exit-presentation-msg': '按下 Esc 键退出演示模式',
   'reload': '重载',
   'open-in-new-window': '新窗口打开',

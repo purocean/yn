@@ -15,6 +15,7 @@ const data = {
   'copy-code': 'Copy code',
   'loading': 'Loading',
   'add-image': 'Add Image',
+  'upload-image': 'Upload Image',
   'exit-presentation-msg': 'Press the Esc key to exit',
   'reload': 'Reload',
   'open-in-new-window': 'New Window',

@@ -1,5 +1,6 @@
 import { Plugin, Ctx } from '@fe/context'
 import { FLAG_DEMO } from '@fe/support/args'
+import { DOM_ATTR_NAME } from '@fe/support/constant'
 
 export default {
   name: 'image-hosting-picgo',
@@ -49,7 +50,7 @@ export default {
           throw new Error(msg)
         }
 
-        ctx.ui.useToast().show('info', ctx.i18n.t('picgo.uploading'))
+        ctx.ui.useToast().show('info', ctx.i18n.t('picgo.uploading'), 0)
 
         logger.debug('upload', url, file)
 
@@ -67,6 +68,8 @@ export default {
               headers: { 'Content-Type': 'application/json' }
             },
           ).then(r => r.json())
+
+          ctx.ui.useToast().hide()
 
           if (result.length > 0) {
             return result[0]
@@ -130,6 +133,37 @@ export default {
         subTitle: 'PicGo',
         onClick: addImage
       })
+    })
+
+    ctx.view.tapContextMenus((items, e) => {
+      const el = e.target as HTMLElement
+
+      if (
+        el.tagName === 'IMG' &&
+        el.getAttribute(DOM_ATTR_NAME.LOCAL_IMAGE)
+      ) {
+        items.push({
+          id: 'plugin.image-hosting-picgo.upload-single-image',
+          type: 'normal',
+          label: ctx.i18n.t('upload-image') + ' (PicGo)',
+          onClick: async () => {
+            try {
+              if (!ctx.store.state.currentFile) {
+                throw new Error('No file opened.')
+              }
+
+              const filePath = el.getAttribute(DOM_ATTR_NAME.ORIGIN_SRC)!
+              const fileName = ctx.utils.path.basename(filePath)
+              const res: Response = await ctx.api.fetchHttp(el.getAttribute('src')!)
+              const file = new File([await res.blob()], fileName)
+              const url = await ctx.action.getActionHandler(uploadActionName)(file)
+              ctx.editor.replaceValue(ctx.utils.encodeMarkdownLink(filePath), `${url}`)
+            } catch (error: any) {
+              ctx.ui.useToast().show('warning', error.message)
+            }
+          }
+        })
+      }
     })
   }
 } as Plugin
