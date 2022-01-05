@@ -16,14 +16,14 @@ export function quote (str: string, quote = '`') {
   return quote + str.replaceAll('\\', '\\\\').replaceAll(quote, '\\' + quote) + quote
 }
 
-export const encodeMarkdownLink = (path: string) => {
+export function encodeMarkdownLink (path: string) {
   return path
     .replace(/\(/g, '%28')
     .replace(/\)/g, '%29')
     .replace(/ /g, '%20')
 }
 
-export const dataURItoBlobLink = (dataURI: string) => {
+export function dataURItoBlobLink (dataURI: string) {
   const byteString = atob(dataURI.split(',')[1])
   const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
   const ab = new ArrayBuffer(byteString.length)
@@ -46,7 +46,7 @@ export function fileToBase64URL (file: File | Blob) {
   })
 }
 
-export const getLogger = (subject: string) => {
+export function getLogger (subject: string) {
   const logger = (level: string) => (...args: any) => {
     const time = `${new Date().toLocaleString()}.${Date.now() % 1000}`
     ;(console as any)[level](`[${time}] [${level}] ${subject} >`, ...args)
