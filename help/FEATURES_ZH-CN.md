@@ -369,7 +369,7 @@ chart.setOption({
             }
         }
     ]
-})
+}, true)
 }
 ```
 

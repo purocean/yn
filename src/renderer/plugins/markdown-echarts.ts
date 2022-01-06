@@ -21,6 +21,7 @@ const Echarts = defineComponent({
   },
   setup (props) {
     let chart: echarts.ECharts | null = null
+    let setOption: echarts.ECharts['setOption']
 
     const container = ref<HTMLElement>()
     const error = ref<any>()
@@ -47,12 +48,14 @@ const Echarts = defineComponent({
       if (!chart) {
         logger.debug('init', theme || getColorScheme())
         chart = echarts.init(container.value, theme || getColorScheme())
+        setOption = chart.setOption
       }
 
-      if (typeof animation === 'boolean') {
-        chart.setOption({ animation })
-      } else {
-        chart.setOption({ animation: true })
+      chart.setOption = function (option, ...args: any[]) {
+        setOption.call(this, {
+          animation: typeof animation === 'boolean' ? animation : true,
+          ...option,
+        }, ...args)
       }
 
       try {
