@@ -103,7 +103,7 @@
     "markdown-it-multimd-table": "^4.1.0",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
-    "mermaid": "^8.13.3",
+    "mermaid": "^8.13.8",
     "monaco-editor": "^0.31.1",
     "normalize.css": "^8.0.1",
     "path-browserify": "^1.0.1",
