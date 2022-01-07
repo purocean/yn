@@ -5,7 +5,7 @@ import type { Plugin } from '@fe/context'
 import { getColorScheme } from '@fe/services/theme'
 import { debounce } from 'lodash-es'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { dataURItoBlobLink, getLogger, sleep } from '@fe/utils'
+import { downloadDataURL, getLogger, sleep } from '@fe/utils'
 import type { ExportTypes } from '@fe/types'
 
 const logger = getLogger('echarts')
@@ -21,6 +21,7 @@ const Echarts = defineComponent({
   },
   setup (props) {
     let chart: echarts.ECharts | null = null
+    let setOption: echarts.ECharts['setOption']
 
     const container = ref<HTMLElement>()
     const error = ref<any>()
@@ -47,12 +48,14 @@ const Echarts = defineComponent({
       if (!chart) {
         logger.debug('init', theme || getColorScheme())
         chart = echarts.init(container.value, theme || getColorScheme())
+        setOption = chart.setOption
       }
 
-      if (typeof animation === 'boolean') {
-        chart.setOption({ animation })
-      } else {
-        chart.setOption({ animation: true })
+      chart.setOption = function (option, ...args: any[]) {
+        setOption.call(this, {
+          animation: typeof animation === 'boolean' ? animation : true,
+          ...option,
+        }, ...args)
       }
 
       try {
@@ -95,11 +98,7 @@ const Echarts = defineComponent({
         return
       }
 
-      const link = document.createElement('a')
-      link.href = dataURItoBlobLink(chart.getDataURL({ type, pixelRatio: 2 }))
-      link.target = '_blank'
-      link.download = `echarts-${Date.now()}.${type}`
-      link.click()
+      downloadDataURL(`echarts-${Date.now()}.${type}`, chart.getDataURL({ type, pixelRatio: 2 }))
     }
 
     watch(() => props.code, () => {

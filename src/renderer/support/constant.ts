@@ -4,6 +4,7 @@ export const DOM_ATTR_NAME = {
   ORIGIN_SRC: 'origin-src',
   ORIGIN_HREF: 'origin-href',
   LOCAL_IMAGE: 'local-image',
+  TOKEN_IDX: 'data-token-idx',
 }
 
 export const DOM_CLASS_NAME = {

@@ -26,6 +26,8 @@ import { refreshTree } from '@fe/services/tree'
 import { fetchSettings, showSettingPanel } from '@fe/services/setting'
 import { useI18n } from '@fe/services/i18n'
 import TreeNode from './TreeNode.vue'
+import { createDir, createDoc } from '@fe/services/document'
+import type { Components } from '@fe/types'
 
 export default defineComponent({
   name: 'tree',
@@ -36,6 +38,7 @@ export default defineComponent({
     const contextMenu = useContextMenu()
 
     const { currentRepo, tree } = toRefs(store.state)
+    const hasRepo = computed(() => !!currentRepo.value)
 
     async function refresh () {
       await fetchSettings()
@@ -43,18 +46,33 @@ export default defineComponent({
     }
 
     function showContextMenu () {
-      contextMenu.show([
+      const items: Components.ContextMenu.Item[] = [
         {
           id: 'refresh',
           label: t('tree.context-menu.refresh'),
           onClick: refresh
-        }
-      ])
+        },
+      ]
+
+      if (currentRepo.value && tree.value && tree.value.length) {
+        items.push(
+          {
+            id: 'create-doc',
+            label: t('tree.context-menu.create-doc'),
+            onClick: () => createDoc({ repo: currentRepo.value.name }, tree.value[0])
+          },
+          {
+            id: 'create-dir',
+            label: t('tree.context-menu.create-dir'),
+            onClick: () => createDir({ repo: currentRepo.value.name }, tree.value[0])
+          }
+        )
+      }
+
+      contextMenu.show(items)
     }
 
     watch(currentRepo, refreshTree, { immediate: true })
-
-    const hasRepo = computed(() => !!currentRepo.value)
 
     return {
       tree,

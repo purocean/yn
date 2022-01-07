@@ -16,16 +16,16 @@ export function quote (str: string, quote = '`') {
   return quote + str.replaceAll('\\', '\\\\').replaceAll(quote, '\\' + quote) + quote
 }
 
-export const encodeMarkdownLink = (path: string) => {
+export function encodeMarkdownLink (path: string) {
   return path
     .replace(/\(/g, '%28')
     .replace(/\)/g, '%29')
     .replace(/ /g, '%20')
 }
 
-export const dataURItoBlobLink = (dataURI: string) => {
-  const byteString = atob(dataURI.split(',')[1])
-  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+export function dataURLtoBlob (dataURL: string) {
+  const byteString = atob(dataURL.split(',')[1])
+  const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0]
   const ab = new ArrayBuffer(byteString.length)
   const ia = new Uint8Array(ab)
 
@@ -33,8 +33,7 @@ export const dataURItoBlobLink = (dataURI: string) => {
     ia[i] = byteString.charCodeAt(i)
   }
 
-  const blob = new Blob([ab], { type: mimeString })
-  return window.URL.createObjectURL(blob)
+  return new Blob([ab], { type: mimeString })
 }
 
 export function fileToBase64URL (file: File | Blob) {
@@ -46,7 +45,7 @@ export function fileToBase64URL (file: File | Blob) {
   })
 }
 
-export const getLogger = (subject: string) => {
+export function getLogger (subject: string) {
   const logger = (level: string) => (...args: any) => {
     const time = `${new Date().toLocaleString()}.${Date.now() % 1000}`
     ;(console as any)[level](`[${time}] [${level}] ${subject} >`, ...args)
@@ -76,12 +75,31 @@ export function objectInsertAfterKey (obj: {}, key: string, content: {}) {
   return Object.fromEntries(items)
 }
 
-export function downloadContent (filename: string, content: Buffer | string, type = 'application/octet-stream') {
+export function downloadContent (filename: string, content: ArrayBuffer | Buffer | string, type = 'application/octet-stream') {
   const blob = new Blob([content], { type })
+  const href = window.URL.createObjectURL(blob)
   const link = document.createElement('a')
-  link.href = window.URL.createObjectURL(blob)
+  link.href = href
   link.download = filename
+  link.target = '_blank'
   link.click()
+
+  setTimeout(() => {
+    window.URL.revokeObjectURL(href)
+  }, 20000)
+}
+
+export function downloadDataURL (filename: string, dataURL: string) {
+  const byteString = atob(dataURL.split(',')[1])
+  const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0]
+  const ab = new ArrayBuffer(byteString.length)
+  const ia = new Uint8Array(ab)
+
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i)
+  }
+
+  downloadContent(filename, ab, mimeString)
 }
 
 export function md5 (content: any) {

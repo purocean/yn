@@ -4,7 +4,7 @@ import store from '@fe/support/store'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, Repo } from '@fe/types'
-import { showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
+import { isMarked, markDoc, showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
 import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage } from '@fe/services/i18n'
@@ -70,6 +70,14 @@ registerHook('DOC_SWITCH_FAILED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', (payload?: { doc?: Doc | null, message: string }) => {
   if (payload && payload.doc && payload?.message?.indexOf('NOENT')) {
     unmarkDoc(payload.doc)
+  }
+})
+
+registerHook('DOC_MOVED', async ({ oldDoc, newDoc }) => {
+  if (isMarked(oldDoc)) {
+    await unmarkDoc(oldDoc)
+    await markDoc(newDoc)
+    await refreshTree()
   }
 })
 

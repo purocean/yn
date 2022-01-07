@@ -2,7 +2,7 @@ import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context'
-import { dataURItoBlobLink, getLogger, strToBase64 } from '@fe/utils'
+import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
 import { openWindow } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/support/embed'
@@ -65,6 +65,27 @@ function newMinder () {
     this._paper.on(paperEvent, firePharse)
     window.addEventListener('resize', firePharse)
     events.push({ type: 'resize', listener: firePharse })
+  }
+
+  const camera = km._commands.camera.execute
+  km._commands.camera.execute = function (km: any, focusNode: any) {
+    if (focusNode) {
+      camera.call(this, km, focusNode)
+      return
+    }
+
+    // eslint-disable-next-line no-proto
+    const Point = km.getRoot().getVertexIn().__proto__.constructor
+
+    if (!['right', 'fish-bone'].includes(km.getTemplate())) {
+      camera.call(this, km)
+    } else {
+      const viewport = km.getPaper().getViewPort()
+      const x = viewport.center.x - viewport.center.x / viewport.zoom + 20 / viewport.zoom
+      const y = viewport.center.y
+      const duration = km.getOption('viewAnimationDuration')
+      km._viewDragger.moveTo(new Point(x, y), duration)
+    }
   }
 
   // disable mouseup event listening
@@ -241,11 +262,13 @@ const init = (ele: HTMLElement) => {
   const zoomOut = () => km.execCommand('zoomOut')
   const zoomIn = () => km.execCommand('zoomIn')
   const fitHeight = () => {
-    const kmView = ele.firstElementChild as HTMLElement | null
-    const svgG = kmView?.firstElementChild?.lastElementChild
+    const paper = km.getPaper()
+    const kmView = paper.container
+    const svgG = paper.shapeNode
     if (kmView && svgG) {
       kmView.style.height = (svgG.getBoundingClientRect().height + 60) + 'px'
       km._modules.View.events.resize.apply(km)
+      km.zoom(km.getZoomValue()) // reset view port
       setTimeout(() => {
         km.execCommand('camera')
       }, 0)
@@ -253,25 +276,17 @@ const init = (ele: HTMLElement) => {
   }
 
   const exportData = async (type: 'png' | 'svg' | 'km') => {
-    const download = (url: string, name: string) => {
-      const link = document.createElement('a')
-      link.href = dataURItoBlobLink(url)
-      link.target = '_blank'
-      link.download = name
-      link.click()
-    }
-
     const filename = `mindmap-${Date.now()}.${type}`
 
     switch (type) {
       case 'svg':
-        download('data:image/svg+xml;base64,' + strToBase64(await km.exportData('svg')), filename)
+        downloadDataURL(filename, 'data:image/svg+xml;base64,' + strToBase64(await km.exportData('svg')))
         break
       case 'km':
-        download('data:application/octet-stream;base64,' + strToBase64(await km.exportData('json')), filename)
+        downloadDataURL(filename, 'data:application/octet-stream;base64,' + strToBase64(await km.exportData('json')))
         break
       case 'png':
-        download(await km.exportData('png'), filename)
+        downloadDataURL(filename, await km.exportData('png'))
         break
       default:
         break
@@ -367,7 +382,18 @@ const MindMap = defineComponent({
       removeHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
     })
 
-    return () => h('div', { ...props.attrs, ref: container, class: 'mind-map reduce-brightness' })
+    let focused = false
+
+    return () => h('div', {
+      ref: container,
+      class: 'mind-map reduce-brightness',
+      tabIndex: -1,
+      onClickCapture: () => { container.value?.focus() },
+      onFocus: () => { focused = true },
+      onBlur: () => { focused = false },
+      onMousewheelCapture: (e: WheelEvent) => { !focused && e.stopPropagation() },
+      ...props.attrs,
+    })
   }
 })
 

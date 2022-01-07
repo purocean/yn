@@ -3,7 +3,7 @@ import mermaid from 'mermaid/dist/mermaid.js'
 import { defineComponent, h, onMounted, ref, watch } from 'vue'
 import type { Plugin } from '@fe/context'
 import { debounce } from 'lodash-es'
-import { dataURItoBlobLink, getLogger, strToBase64 } from '@fe/utils'
+import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
 
 const logger = getLogger('mermaid')
 
@@ -39,11 +39,7 @@ const Mermaid = defineComponent({
         return
       }
 
-      const link = document.createElement('a')
-      link.href = dataURItoBlobLink('data:image/svg+xml;base64,' + strToBase64(svg))
-      link.target = '_blank'
-      link.download = `mermaid-${Date.now()}.svg`
-      link.click()
+      downloadDataURL(`mermaid-${Date.now()}.svg`, 'data:image/svg+xml;base64,' + strToBase64(svg))
     }
 
     const renderDebounce = debounce(render, 100)

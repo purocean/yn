@@ -234,6 +234,9 @@ function render (this: Renderer, tokens: Token[], options: any, env: any) {
 
   return tokens.map((token, i) => {
     setSourceLine(token, env)
+    if (token.block) {
+      token.attrSet(DOM_ATTR_NAME.TOKEN_IDX, i.toString())
+    }
 
     const type = token.type
 

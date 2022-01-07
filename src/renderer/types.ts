@@ -112,6 +112,8 @@ export type BuildInSettings = {
 }
 
 export type BuildInActions = {
+  'view.render-immediately': () => void,
+  'view.render': () => void,
   'view.refresh': () => void,
   'view.reveal-line': (startLine: number, endLine?: number) => void,
   'view.scroll-top-to': (top: number) => void,
@@ -144,7 +146,7 @@ export type BuildInActions = {
   'plugin.status-bar-help.show-features': () => void,
   'plugin.status-bar-help.show-shortcuts': () => void,
   'plugin.status-bar-help.show-plugin': () => void,
-  'plugin.transform-img-link.all': () => void,
+  'plugin.image-localization.all': () => void,
   'plugin.switch-todo.switch': (line?: number, checked?: boolean) => void,
   'plugin.electron-zoom.zoom-in': () => void,
   'plugin.electron-zoom.zoom-out': () => void,

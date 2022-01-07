@@ -35,6 +35,13 @@ export function render () {
 }
 
 /**
+ * Render Markdown immediately.
+ */
+export function renderImmediately () {
+  getActionHandler('view.render-immediately')()
+}
+
+/**
  * Refresh view.
  */
 export async function refresh () {

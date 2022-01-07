@@ -5,6 +5,7 @@ import { registerHook, triggerHook } from '@fe/core/hook'
 import { registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
+import { useToast } from '@fe/support/ui/toast'
 import { getColorScheme } from './theme'
 import { getSetting } from './setting'
 
@@ -196,13 +197,15 @@ export function getValue () {
  * Replace text value.
  * @param search
  * @param val
+ * @param replaceAll
  */
-export function replaceValue (search: string, val: string) {
+export function replaceValue (search: string | RegExp, val: string, replaceAll = true) {
   const editor = getEditor()
   const model = editor.getModel()
   const maxLine = model!.getLineCount()
   const endLineLength = model!.getLineLength(maxLine)
-  const text = model!.getValue().replaceAll(search, val)
+  const content = model!.getValue()
+  const text = replaceAll ? content.replaceAll(search, val) : content.replace(search, val)
 
   editor.executeEdits('', [
     {
@@ -234,7 +237,13 @@ export function getSelectionInfo () {
  * Toggle editor word wrap.
  */
 export function toggleWrap () {
-  const isWrapping = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo).isViewportWrapping
+  const wrapInfo = getEditor().getOption(monaco.editor.EditorOption.wrappingInfo)
+  const isWrapping = wrapInfo.isViewportWrapping
+  if (wrapInfo.isDominatedByLongLines) {
+    useToast().show('warning', 'Word warp dominated by long lines')
+    return
+  }
+
   store.commit('setWordWrap', (isWrapping ? 'off' : 'on'))
 }
 
@@ -304,15 +313,19 @@ whenEditorReady().then(({ editor }) => {
 })
 
 registerHook('SETTING_FETCHED', ({ settings }) => {
-  editor.updateOptions({
-    mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
-    fontSize: settings['editor.font-size'],
-    tabSize: settings['editor.tab-size'],
+  whenEditorReady().then(({ editor }) => {
+    editor.updateOptions({
+      mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
+      fontSize: settings['editor.font-size'],
+      tabSize: settings['editor.tab-size'],
+    })
   })
 })
 
 registerHook('SETTING_CHANGED', ({ changedKeys }) => {
-  if (changedKeys.includes('editor.mouse-wheel-zoom')) {
-    editor.trigger('keyboard', 'editor.action.fontZoomReset', {})
-  }
+  whenEditorReady().then(({ editor }) => {
+    if (changedKeys.includes('editor.mouse-wheel-zoom')) {
+      editor.trigger('keyboard', 'editor.action.fontZoomReset', {})
+    }
+  })
 })

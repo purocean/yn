@@ -41,13 +41,14 @@ export interface Command {
 
 const commands: { [key: string]: Command } = {}
 
-const keys: Record<string, boolean> = {}
+let keys: Record<string, boolean> = {}
 
 function recordKeys (e: KeyboardEvent) {
   if (e.type === 'keydown') {
     keys[e.key.toUpperCase()] = true
   } else {
-    keys[e.key.toUpperCase()] = false
+    // keyup event not fired some times such as in key combination.
+    keys = {}
   }
 }
 

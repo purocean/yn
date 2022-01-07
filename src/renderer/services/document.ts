@@ -31,6 +31,15 @@ function encrypt (content: any, password: string) {
 }
 
 /**
+ * Get absolutePath of document
+ * @param doc
+ * @returns
+ */
+export function getAbsolutePath (doc: Doc) {
+  return join(getRepo(doc.repo)?.path || '/', doc.path)
+}
+
+/**
  * Determine if the document is encrypted.
  * @param doc
  * @returns
@@ -247,7 +256,12 @@ export async function deleteDoc (doc: Doc) {
   })
 
   if (confirm) {
-    await api.deleteFile(doc)
+    try {
+      await api.deleteFile(doc)
+    } catch (error: any) {
+      useToast().show('warning', error.message)
+      throw error
+    }
 
     triggerHook('DOC_DELETED', { doc })
   }
@@ -412,7 +426,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
       return
     }
 
-    doc.absolutePath = join(getRepo(doc.repo)?.path || '/', doc.path)
+    doc.absolutePath = getAbsolutePath(doc)
 
     const timer = setTimeout(() => {
       store.commit('setCurrentFile', { ...doc, status: undefined })

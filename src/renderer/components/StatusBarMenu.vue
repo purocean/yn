@@ -1,5 +1,5 @@
 <template>
-  <div class="status-bar-menu-wrapper">
+  <div class="status-bar-menu-wrapper" @contextmenu.prevent>
     <div
       :class="{'status-bar-menu': true, hidden: menu.hidden}"
       v-for="menu in list"

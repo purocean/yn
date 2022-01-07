@@ -88,21 +88,23 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.18.0](https://github.com/purocean/yn/releases/tag/v3.18.0) 2021-12-30
-1. feat: add control center
-2. feat: add typewriter mode
-3. feat: add editor configuration items: font size, tab size, ordered list completion strategy and scroll wheel zoom behavior
-4. feat: add the function of disabling synchronous scrolling
-5. upd: display error message when file move/rename failed
-6. upd: update the document content when refreshing
-7. upd: other style update and user experience optimization
-8. feat(plug-in): add `ctx.controlCenter` service
-9. feat(plug-in): add `ctx.editor.toggleTypewriterMode` method
-10. feat(plug-in): Add `onMousedown` event to the status bar menu
-11. feat(plug-in): Add `{ type: 'separator' }` dividing line in the status bar menu
-12. feat(plug-in): Added the `checked` field to the status bar menu
-13. feat(plug-in): configuration items support grouping `group` field
-14. feat(plug-in): `ctx.doc.switchDoc` adds `force` parameter
+### [v3.19.0](https://github.com/purocean/yn/releases/tag/v3.19.0) 2022-01-07
+1. feat: add sorting function in table editing
+2. feat: add "uploading local images" to the context menu of the preview
+3. feat: add "Create Document" and "Create Folder" to the context menu of the blank area of the sidebar
+4. upd: delete files using system recycle bin
+5. upd: upgrade Mermaid version
+6. upd: optimize Echarts rendering
+7. upd: optimize the experience of using the brain map
+8. upd: other style update and user experience optimization
+9. fix: fix the incorrect order of dragging and dropping of document tabs
+10. feat(plugin): add `ctx.view.renderImmediately` method
+11. feat(plugin): add `ctx.base.trashItem` method
+12. feat(plugin): add `ctx.view.getAbsolutePath` method
+13. feat(plugin): add `ctx.lib.sortablejs` module
+14. feat(plugin): add `ctx.lib.dataURLtoBlob` method
+15. feat(plugin): add `ctx.lib.downloadDataURL` method
+16. upd(plugin): remove `ctx.lib.dataURItoBlobLink` method
 
 [More release notes](https://github.com/purocean/yn/releases)
 

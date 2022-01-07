@@ -84,12 +84,12 @@ export default defineComponent({
       removeTabs(props.list.filter(x => !x.fixed))
     }
 
-    function swapTab (oldIndex: number, newIndex: number) {
-      const list = props.list
+    function changeTabOrder (oldIndex: number, newIndex: number) {
+      const list = [...props.list]
       const tmp = list[oldIndex]
-      list[oldIndex] = list[newIndex]
-      list[newIndex] = tmp
-      emit('change-list', sortTabs([...list]))
+      list.splice(oldIndex, 1)
+      list.splice(newIndex, 0, tmp)
+      emit('change-list', sortTabs(list))
     }
 
     let sortable: Sortable
@@ -99,7 +99,7 @@ export default defineComponent({
         ghostClass: 'on-sort',
         direction: 'horizontal',
         onEnd: ({ oldIndex, newIndex }: { oldIndex?: number; newIndex?: number }) => {
-          swapTab(oldIndex || 0, newIndex || 0)
+          changeTabOrder(oldIndex || 0, newIndex || 0)
         },
         onMove (event: any) {
           if (event.related && event.dragged) {

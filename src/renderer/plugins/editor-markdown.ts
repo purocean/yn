@@ -97,7 +97,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
     { name: '/ + MindMap', insertText: '+ ${1:Subject}{.mindmap}\n    + ${2:Topic}' },
     { name: '/ $ Inline KaTeX', insertText: '$$1$' },
     { name: '/ $$ Block KaTeX', insertText: '$$$1$$\n' },
-    { name: '/ ``` ECharts', insertText: '```js\n// --echarts-- \nchart => chart.setOption({\n  xAxis: {\n    type: "category",\n    data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\n  },\n  yAxis: {\n    type: "value"\n  },\n  series: [\n    {\n      data: [150, 230, 224, 218, 135, 147, 260],\n      type: "line"\n    }\n  ]\n})\n```\n' },
+    { name: '/ ``` ECharts', insertText: '```js\n// --echarts-- \nchart => chart.setOption({\n  xAxis: {\n    type: "category",\n    data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\n  },\n  yAxis: {\n    type: "value"\n  },\n  series: [\n    {\n      data: [150, 230, 224, 218, 135, 147, 260],\n      type: "line"\n    }\n  ]\n}, true)\n```\n' },
     { name: '/ ``` Run Code', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n' },
     { name: '/ ``` Applet', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">TEST</button>\n```\n' },
     { name: '/ ``` Drawio', insertText: '```xml\n<!-- --drawio-- -->\n${1:<!-- mxfile -->}\n```\n' },
@@ -141,7 +141,7 @@ function processCursorChange (source: string, position: Monaco.Position) {
     const prevContent = getLineContent(line - 1)
 
     // auto increase order list item number
-    const reg = /^\s*(\d+)\./
+    const reg = /^\s*(\d+)[.)]/
     const match = prevContent.match(reg)
     if (match && reg.test(content)) {
       const num = isTab ? 0 : parseInt(match[0] || '0')
@@ -157,7 +157,7 @@ function processCursorChange (source: string, position: Monaco.Position) {
       }
 
       if (num !== newNum) {
-        replaceLine(line, content.replace(/\d+\./, `${newNum}.`))
+        replaceLine(line, content.replace(/\d+/, `${newNum}`))
       }
     }
   }
@@ -172,11 +172,11 @@ function processCursorChange (source: string, position: Monaco.Position) {
 
     if (
       eolNumber === position.column &&
-      /^\s*(?:[*+->]|\d+\.)/.test(content)
+      /^\s*(?:[*+->]|\d+[.)])/.test(content)
     ) {
       const indent = getOneIndent()
       const val = content.trimEnd()
-      const end = /[-+*\].>]$/.test(val) ? ' ' : ''
+      const end = /[-+*\].>)]$/.test(val) ? ' ' : ''
       replaceLine(position.lineNumber, indent + val + end)
     }
   } else if (isEnter) {
@@ -188,9 +188,9 @@ function processCursorChange (source: string, position: Monaco.Position) {
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
     const nextContent = getLineContent(line + 1)
-    const emptyItemReg = /^\s*(?:[*+->]|\d+\.|[*+-] \[ \])\s*$/
+    const emptyItemReg = /^\s*(?:[*+->]|\d+[.)]|[*+-] \[ \])\s*$/
     if (
-      /^\s*(?:[*+->]|\d+\.)/.test(prevContent) && // previous content must a item
+      /^\s*(?:[*+->]|\d+[.)])/.test(prevContent) && // previous content must a item
       emptyItemReg.test(content) && // current line content must a empty item
       emptyItemReg.test(nextContent) // next line content must a empty item
     ) {
@@ -297,7 +297,8 @@ export default {
           { beforeText: /^\s*\+ .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '+ ' } },
           { beforeText: /^\s*- .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '- ' } },
           { beforeText: /^\s*\* .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '* ' } },
-          { beforeText: /^\s*\d+\. .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1. ' } }
+          { beforeText: /^\s*\d+\. .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1. ' } },
+          { beforeText: /^\s*\d+\) .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1) ' } },
         ]
       })
 

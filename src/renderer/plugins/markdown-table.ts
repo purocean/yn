@@ -1,15 +1,22 @@
+import { nextTick } from 'vue'
+import Sortable from 'sortablejs'
+import { orderBy } from 'lodash-es'
 import type { Plugin } from '@fe/context'
 import { useModal } from '@fe/support/ui/modal'
 import { hasCtrlCmd } from '@fe/core/command'
+import { DOM_ATTR_NAME } from '@fe/support/constant'
 import { useToast } from '@fe/support/ui/toast'
-import { disableSyncScrollAwhile } from '@fe/services/view'
+import { disableSyncScrollAwhile, renderImmediately } from '@fe/services/view'
 import * as editor from '@fe/services/editor'
 import { t } from '@fe/services/i18n'
+import { getLogger } from '@fe/utils'
 import type Token from 'markdown-it/lib/token'
 import type Renderer from 'markdown-it/lib/renderer'
 import type { Components } from '@fe/types'
 
-const cellClassName = 'yank-table-cell'
+const tableSortMode = 'sort-mode'
+const cellClassName = 'yn-table-cell'
+const logger = getLogger('markdown-table')
 
 function editWrapper<T extends Array<any>, U> (fn: (...args: T) => U) {
   return function (...args: T) {
@@ -82,14 +89,17 @@ function checkLineNumber (start: number, end: number) {
 }
 
 function columnsToStr (columns: string[], refText: string) {
-  if (columns.length > 0) {
-    columns[0] = columns[0].replace(/^\s*/g, '')
-    columns[columns.length - 1] = columns[columns.length - 1].replace(/\s*$/g, '')
-  }
-
   let content = columns.map(value => {
+    if (!value.startsWith(' ')) {
+      value = ' ' + value
+    }
+
+    if (!value.endsWith(' ')) {
+      value += ' '
+    }
+
     return value.replace(/\|/g, '\\|').replace(/\n/g, ' ')
-  }).join('|')
+  }).join('|').trim()
 
   refText = refText.trim()
 
@@ -170,26 +180,46 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
   }
 
   let value = cellText
+  let inComposition = false
+  let nextAction: 'edit-next-cell' | 'edit-prev-cell' | undefined
+  let isCancel = false
+
   if (input) {
     input.value = cellText
+    input.select()
     value = await (new Promise((resolve) => {
       const cancel = () => {
         resetInput(input)
+        resolve('')
+        isCancel = true
       }
 
       const ok = () => {
         if (input.value !== cellText) {
           resolve(input.value)
+          resetInput(input)
+        } else {
+          cancel()
         }
-
-        resetInput(input)
       }
 
       input.onblur = ok
 
       input.onkeydown = e => {
+        if (inComposition) {
+          return
+        }
+
         if (e.key === 'Escape') {
           cancel()
+        }
+
+        if (e.key === 'Tab') {
+          nextAction = e.shiftKey ? 'edit-prev-cell' : 'edit-next-cell'
+          ok()
+
+          e.preventDefault()
+          e.stopPropagation()
         }
 
         if (e.key === 'Enter') {
@@ -206,6 +236,14 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
           e.stopPropagation()
         }
       }
+
+      input.addEventListener('compositionstart', () => {
+        inComposition = true
+      })
+
+      input.addEventListener('compositionend', () => {
+        inComposition = false
+      })
     }))
   } else {
     const inputVal = await modal.input({
@@ -218,18 +256,22 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
 
     if (typeof inputVal !== 'string') {
       toast.show('warning', t('table-cell-edit.canceled'))
-      return
+      isCancel = true
     }
 
     value = inputVal
   }
 
-  if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
-  if (!value.endsWith(' ') && cellIndex < columns.length - 1) value += ' '
+  if (!isCancel) {
+    if (!value.startsWith(' ') && cellIndex > 0) value = ' ' + value
+    if (!value.endsWith(' ') && cellIndex < columns.length - 1) value += ' '
 
-  columns[cellIndex] = value
+    columns[cellIndex] = value
 
-  replaceLine(start, columnsToStr(columns, text))
+    replaceLine(start, columnsToStr(columns, text))
+  }
+
+  return nextAction
 }
 
 async function handleClick (e: MouseEvent, modal: boolean) {
@@ -246,40 +288,53 @@ async function handleClick (e: MouseEvent, modal: boolean) {
       return false
     }
 
-    const start = parseInt(target.dataset.sourceLine || '0')
-    const end = parseInt(target.dataset.sourceLineEnd || '0')
-    const td = target as HTMLTableCellElement
-    const cellIndex = getCellIndex(td)
-    const input = modal ? null : document.createElement('textarea')
+    const handleEditTableCell = (td: HTMLTableCellElement) => {
+      const start = parseInt(td.dataset.sourceLine || '0')
+      const end = parseInt(td.dataset.sourceLineEnd || '0')
+      const cellIndex = getCellIndex(td)
+      const input = modal ? null : document.createElement('textarea')
 
-    if (input) {
-      target.style.position = 'relative'
-      input.style.left = '0'
-      input.style.top = '0'
-      input.style.height = '100%'
-      input.style.width = '100%'
-      input.style.boxSizing = 'border-box'
-      input.style.color = 'var(--g-color-0)'
-      input.style.border = '1px #93e632 solid'
-      input.style.backgroundColor = 'var(--g-color-96)'
-      input.style.fontSize = '13px'
-      input.style.position = 'absolute'
-      input.style.display = 'block'
-      input.style.padding = '3px'
-      input.style.lineHeight = '1.2'
-      ;(input as any).autofocus = true
-      input.placeholder = t('table-cell-edit.esc-to-cancel')
-      setTimeout(() => {
-        input.focus()
-      }, 0)
+      if (input) {
+        td.style.position = 'relative'
+        input.style.left = '0'
+        input.style.top = '0'
+        input.style.height = '100%'
+        input.style.width = '100%'
+        input.style.boxSizing = 'border-box'
+        input.style.color = 'var(--g-color-0)'
+        input.style.border = '1px #93e632 solid'
+        input.style.backgroundColor = 'var(--g-color-96)'
+        input.style.fontSize = '13px'
+        input.style.position = 'absolute'
+        input.style.display = 'block'
+        input.style.padding = '3px'
+        input.style.lineHeight = '1.2'
+        ;(input as any).autofocus = true
+        input.placeholder = t('table-cell-edit.esc-to-cancel')
+        setTimeout(() => {
+          input.focus()
+        }, 0)
 
-      target.appendChild(input)
+        td.appendChild(input)
+      }
+
+      editTableCell(start, end, cellIndex, input).catch((e: Error) => {
+        useToast().show('warning', e.message)
+        input && resetInput(input)
+      }).then(nextAction => {
+        if (nextAction) {
+          setTimeout(() => {
+            if (nextAction === 'edit-next-cell' && td.nextElementSibling) {
+              handleEditTableCell(td.nextElementSibling as HTMLTableCellElement)
+            } else if (nextAction === 'edit-prev-cell' && td.previousElementSibling) {
+              handleEditTableCell(td.previousElementSibling as HTMLTableCellElement)
+            }
+          }, 0)
+        }
+      })
     }
 
-    editTableCell(start, end, cellIndex, input).catch((e: Error) => {
-      useToast().show('warning', e.message)
-      input && resetInput(input)
-    })
+    handleEditTableCell(target as HTMLTableCellElement)
 
     return preventEvent()
   }
@@ -323,8 +378,12 @@ function deleteRow (td: HTMLTableCellElement) {
   deleteLine(start)
 }
 
-function processColumns (td: HTMLTableCellElement, process: (columns: string[], row: Row) => void) {
+function processColumns (td: HTMLTableCellElement, process: (columns: string[]) => void) {
   const rows = getRows(td)
+  if (rows.some(({ start, end }) => !checkLineNumber(start, end))) {
+    return
+  }
+
   const hr = rows.find(x => x.type === 'hr')
   if (!hr) {
     return
@@ -333,15 +392,12 @@ function processColumns (td: HTMLTableCellElement, process: (columns: string[], 
   const refText = getLineContent(hr.start)
 
   rows.forEach((row) => {
-    const { start, end } = row
-    if (!checkLineNumber(start, end)) {
-      return
-    }
+    const { start } = row
 
     const content = getLineContent(start)
     const columns = escapedSplit(content)
 
-    process(columns, row)
+    process(columns)
 
     replaceLine(start, columnsToStr(columns, refText))
   })
@@ -383,14 +439,6 @@ function addCol (td: HTMLTableCellElement, offset: 0 | 1) {
       return
     }
 
-    if (!columns[cellIndex].startsWith(' ')) {
-      columns[cellIndex] = ' ' + columns[cellIndex]
-    }
-
-    if (!columns[cellIndex].endsWith(' ')) {
-      columns[cellIndex] += ' '
-    }
-
     columns.splice(cellIndex + offset, 0, ' -- ')
   })
 }
@@ -399,6 +447,143 @@ function deleteCol (td: HTMLTableCellElement) {
   const cellIndex = getCellIndex(td)
   processColumns(td, columns => {
     columns.splice(cellIndex, 1)
+  })
+}
+
+function sortCol (td: HTMLTableCellElement, oldIndex: number, newIndex: number) {
+  processColumns(td, columns => {
+    if (columns.length - 1 < Math.max(oldIndex, newIndex)) {
+      return
+    }
+
+    const text = columns[oldIndex]
+    columns.splice(oldIndex, 1)
+    columns.splice(newIndex, 0, text)
+  })
+}
+
+function sortRow (td: HTMLTableCellElement, oldIndex: number, newIndex: number) {
+  const rows = orderBy(getRows(td).filter(x => x.type === 'body'), x => x.start)
+  if (rows.length - 1 < Math.max(oldIndex, newIndex)) {
+    return
+  }
+
+  if (rows.some(({ start, end }) => !checkLineNumber(start, end))) {
+    return
+  }
+
+  const oldLine = rows[oldIndex].start
+  const newLine = rows[newIndex].start
+
+  const content = getLineContent(oldLine)
+  deleteLine(oldLine)
+  const prevContent = getLineContent(newLine)
+  replaceLine(newLine, `${content}\n${prevContent}`)
+}
+
+function toggleSortMode (td: HTMLTableCellElement, flag: boolean) {
+  const table: (HTMLElement & { colSortable?: Sortable, rowSortable?: Sortable }) | null | undefined = td.parentElement?.parentElement?.parentElement
+  if (!table || table.tagName !== 'TABLE') {
+    return
+  }
+
+  logger.debug('toggleSortMode', flag)
+
+  const theadFirstTr = table.querySelector<HTMLElement>('thead > tr')
+  const tbody = table.querySelector<HTMLElement>('tbody')
+
+  const clean = () => {
+    logger.debug('toggleSortMode', 'clean')
+    table.onblur = null
+    table.onkeydown = null
+    table.removeAttribute(tableSortMode)
+    table.colSortable?.destroy()
+    delete table.colSortable
+    table.rowSortable?.destroy()
+    table.blur()
+    delete table.rowSortable
+  }
+
+  if (flag && theadFirstTr && tbody) {
+    clean()
+
+    // restore origin order for vue vnode
+    const restoreOrder = (sortable: Sortable, oldIndex: number, newIndex: number) => {
+      const arr = sortable.toArray()
+      const id = arr[newIndex]
+      arr.splice(newIndex, 1)
+      arr.splice(oldIndex, 0, id)
+      sortable.sort(arr)
+    }
+
+    table.colSortable = Sortable.create(theadFirstTr, {
+      animation: 200,
+      direction: 'horizontal',
+      dataIdAttr: DOM_ATTR_NAME.TOKEN_IDX,
+      onEnd: ({ oldIndex, newIndex }) => {
+        if (typeof oldIndex === 'number' && typeof newIndex === 'number' && oldIndex !== newIndex) {
+          restoreOrder(table.colSortable!, oldIndex, newIndex)
+          sortCol(td, oldIndex, newIndex)
+          renderImmediately()
+          nextTick(() => toggleSortMode(td, true))
+        }
+      }
+    })
+
+    table.rowSortable = Sortable.create(tbody, {
+      animation: 200,
+      direction: 'vertical',
+      handle: 'td:first-of-type',
+      dataIdAttr: DOM_ATTR_NAME.TOKEN_IDX,
+      onEnd: ({ oldIndex, newIndex }) => {
+        if (typeof oldIndex === 'number' && typeof newIndex === 'number' && oldIndex !== newIndex) {
+          restoreOrder(table.rowSortable!, oldIndex, newIndex)
+          sortRow(td, oldIndex, newIndex)
+          renderImmediately()
+          nextTick(() => toggleSortMode(td, true))
+        }
+      }
+    })
+
+    table.tabIndex = -1
+
+    table.onblur = () => {
+      toggleSortMode(td, false)
+    }
+
+    table.onkeydown = (e) => {
+      if (e.key === 'Escape') {
+        toggleSortMode(td, false)
+      }
+    }
+
+    table.setAttribute(tableSortMode, 'true')
+    table.focus()
+  } else {
+    clean()
+  }
+}
+
+function sortRows (td: HTMLTableCellElement, order: 'asc' | 'desc') {
+  const rows = getRows(td).filter(x => x.type === 'body')
+  const cellIndex = getCellIndex(td)
+  const contents = rows.map(row => {
+    const text = getLineContent(row.start)
+    return {
+      sortBy: escapedSplit(text)[cellIndex],
+      text,
+    }
+  })
+
+  orderBy(contents, x => {
+    const number = parseFloat(x.sortBy)
+    if (!isNaN(number) && isFinite(number)) {
+      return number.toString().padStart(32)
+    }
+
+    return x.sortBy
+  }, order).forEach(({ text }, i) => {
+    replaceLine(rows[i].start, text)
   })
 }
 
@@ -421,6 +606,10 @@ export default {
 
         .markdown-view .markdown-body .table-wrapper > table {
           margin-bottom: 6px;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table tr {
+          scroll-margin: 2px;
         }
 
         .markdown-view .markdown-body .table-wrapper > table th {
@@ -449,6 +638,30 @@ export default {
           padding-right: 5px;
           color: #999;
           font-family: monospace;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode],
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] tr {
+          outline: none;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] td:hover,
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] th:hover {
+          background: initial;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] thead tr:first-of-type th {
+          background: var(--g-color-86);
+          cursor: ew-resize;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] tbody tr td:first-of-type {
+          background: var(--g-color-86);
+          cursor: ns-resize;
+        }
+
+        .markdown-view .markdown-body .table-wrapper > table[sort-mode] .sortable-ghost {
+          opacity: 0.5;
         }
       }
     `)
@@ -543,6 +756,31 @@ export default {
             label: ctx.i18n.t('table-cell-edit.context-menu.edit'),
             onClick: () => {
               handleClick(e, true)
+            }
+          },
+          { type: 'separator' },
+          {
+            id: 'plugin.table.cell-edit.sort-mode',
+            type: 'normal',
+            label: ctx.i18n.t('table-cell-edit.context-menu.sort-mode'),
+            onClick: () => {
+              toggleSortMode(target, true)
+            }
+          },
+          {
+            id: 'plugin.table.cell-edit.sort-asc',
+            type: 'normal',
+            label: ctx.i18n.t('table-cell-edit.context-menu.sort-asc'),
+            onClick: () => {
+              sortRows(target, 'asc')
+            }
+          },
+          {
+            id: 'plugin.table.cell-edit.sort-desc',
+            type: 'normal',
+            label: ctx.i18n.t('table-cell-edit.context-menu.sort-desc'),
+            onClick: () => {
+              sortRows(target, 'desc')
             }
           },
           { type: 'separator' },

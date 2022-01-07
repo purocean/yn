@@ -95,9 +95,9 @@ export default {
         run: () => addAttachment(false),
       })
       editor.addAction({
-        id: 'plugin.editor.add-document',
+        id: 'plugin.editor.link-doc',
         contextMenuGroupId: 'modification',
-        label: t('editor.context-menu.add-doc'),
+        label: t('editor.context-menu.link-doc'),
         keybindings: [
           monaco.KeyMod.Alt | monaco.KeyCode.KeyD
         ],
@@ -131,9 +131,9 @@ export default {
           onClick: () => addAttachment(false),
         },
         {
-          id: 'plugin.editor.add-document',
+          id: 'plugin.editor.link-doc',
           type: 'normal',
-          title: ctx.i18n.t('editor.context-menu.add-doc'),
+          title: ctx.i18n.t('editor.context-menu.link-doc'),
           subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'd']),
           onClick: () => getActionHandler('filter.choose-document')().then(addDocument),
         },

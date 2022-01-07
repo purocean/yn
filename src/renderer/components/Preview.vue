@@ -240,6 +240,15 @@ export default defineComponent({
       const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}]`)
       for (let i = 0; i < nodes.length; i++) {
         const el = nodes[i]
+
+        if (
+          el.tagName === 'TD' ||
+          el.tagName === 'TH' ||
+          el.tagName === 'THEAD' ||
+          el.tagName === 'TBODY') {
+          continue
+        }
+
         const lineNumber = parseInt(el.dataset.sourceLine || '0')
         if (lineNumber >= startLine && lineNumber <= (endLine || Number.MAX_SAFE_INTEGER)) {
           el.scrollIntoView()
@@ -267,6 +276,7 @@ export default defineComponent({
     onMounted(() => {
       nextTick(renderDebounce)
       triggerHook('VIEW_MOUNTED')
+      registerAction({ name: 'view.render-immediately', handler: render.bind(null, false) })
       registerAction({ name: 'view.render', handler: renderDebounce })
       registerAction({ name: 'view.refresh', handler: refresh })
       registerAction({ name: 'view.reveal-line', handler: revealLine })
@@ -280,6 +290,7 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
+      removeAction('view.render-immediately')
       removeAction('view.render')
       removeAction('view.refresh')
       removeAction('view.reveal-line')
