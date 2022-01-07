@@ -23,9 +23,9 @@ export function encodeMarkdownLink (path: string) {
     .replace(/ /g, '%20')
 }
 
-export function dataURLtoBlob (dataURI: string) {
-  const byteString = atob(dataURI.split(',')[1])
-  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+export function dataURLtoBlob (dataURL: string) {
+  const byteString = atob(dataURL.split(',')[1])
+  const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0]
   const ab = new ArrayBuffer(byteString.length)
   const ia = new Uint8Array(ab)
 
