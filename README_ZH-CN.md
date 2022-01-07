@@ -88,21 +88,23 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.18.0](https://github.com/purocean/yn/releases/tag/v3.18.0) 2021-12-30
-1. feat: 增加控制中心
-2. feat: 增加打字机模式
-3. feat: 增加编辑器配置项：支持配置字体大小、Tab 宽度、有序列表补全策略和滚轮缩放行为
-4. feat: 增加禁用同步滚动功能
-5. upd: 移动/重命名文件失败显示错误信息
-6. upd: 刷新时同时更新文档内容
-7. upd: 其他样式微调和用户体验优化
-8. feat(插件): 增加 `ctx.controlCenter` 服务
-9. feat(插件): 增加 `ctx.editor.toggleTypewriterMode` 方法
-10. feat(插件): 状态栏菜单增加 `onMousedown` 事件
-11. feat(插件): 状态栏菜单增加 `{ type: 'separator' }` 分割线
-12. feat(插件): 状态栏菜单增加 `checked` 字段
-13. feat(插件): 配置项支持分组 `group` 字段
-14. feat(插件): `ctx.doc.switchDoc` 增加 `force` 参数
+### [v3.19.0](https://github.com/purocean/yn/releases/tag/v3.19.0) 2022-01-07
+1. feat: 表格编辑增加排序功能
+2. feat: 预览界面右键菜单新增本地图片上传图床功能
+3. feat: 侧栏空白区域右键菜单新增创建文档和创建文件夹功能
+4. upd: 删除文件使用系统回收站
+5. upd: 升级 Mermaid 版本
+6. upd: 优化 Echarts 渲染
+7. upd: 优化脑图使用体验
+8. upd: 其他样式微调和用户体验优化
+9. fix: 修复文档 Tabs 拖拽排序顺序不正确问题
+10. feat(插件): 新增 `ctx.view.renderImmediately` 方法
+11. feat(插件): 新增 `ctx.base.trashItem` 方法
+12. feat(插件): 新增 `ctx.view.getAbsolutePath` 方法
+13. feat(插件): 新增 `ctx.lib.sortablejs` 模块
+14. feat(插件): 新增 `ctx.lib.dataURLtoBlob` 方法
+15. feat(插件): 新增 `ctx.lib.downloadDataURL` 方法
+16. upd(插件): 移除 `ctx.lib.dataURItoBlobLink` 方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
