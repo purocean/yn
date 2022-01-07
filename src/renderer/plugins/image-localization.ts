@@ -55,8 +55,8 @@ async function transformImgOutLink (img: HTMLImageElement) {
   return null
 }
 
-const actionKeydown: BuildInActionName = 'plugin.transform-img-link.all'
-const commandClick = 'plugin.transform-img-link.single-by-click'
+const actionKeydown: BuildInActionName = 'plugin.image-localization.all'
+const commandClick = 'plugin.image-localization.single-by-click'
 
 async function transformAll () {
   const refView = getViewDom()
@@ -105,7 +105,7 @@ async function handleClick ({ e }: { e: MouseEvent }) {
 }
 
 export default {
-  name: 'transform-img-out-link',
+  name: 'image-localization',
   register: (ctx) => {
     ctx.action.registerAction({
       name: actionKeydown,

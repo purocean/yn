@@ -43,7 +43,7 @@ import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
 import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
 import syncScroll from '@fe/plugins/sync-scroll'
-import transformImgOutLink from '@fe/plugins/transform-img-out-link'
+import imageLocalization from '@fe/plugins/image-localization'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 import copyRenderedContent from '@fe/plugins/copy-rendered-content'
 
@@ -93,7 +93,7 @@ export default [
   markdownContainer,
   markdownHeadingNumber,
   syncScroll,
-  transformImgOutLink,
+  imageLocalization,
   imageHostingPicgo,
   copyRenderedContent,
 ]
