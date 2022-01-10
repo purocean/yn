@@ -7,7 +7,7 @@ import { isElectron } from '@fe/support/env'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/constant'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
-import { openExternal, openPath } from '@fe/services/base'
+import { getRepo, openExternal, openPath } from '@fe/services/base'
 
 const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
@@ -30,7 +30,12 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
     return true
   } else if (link.classList.contains(DOM_CLASS_NAME.MARK_OPEN)) {
     const path = link.getAttribute(DOM_ATTR_NAME.ORIGIN_HREF) || decodeURI(href)
-    openPath(join(dirname(currentFile.absolutePath || '/'), path))
+
+    const basePath = path.startsWith('/')
+      ? (getRepo(fileRepo)?.path || '/')
+      : dirname(currentFile.absolutePath || '/')
+
+    openPath(join(basePath, path))
     return true
   } else { // relative link
     // better scrollIntoView
