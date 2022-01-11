@@ -29,6 +29,9 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2.3.3
+        with:
+          token: ${{ secrets.CI_TOKEN }}
+          submodules: true
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
