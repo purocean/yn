@@ -4,15 +4,51 @@ import path from 'path'
 import fs from 'fs-extra'
 
 // copy vs
-fs.copySync(
-  path.resolve(__dirname, 'node_modules/monaco-editor/min/vs'),
-  path.resolve(__dirname, 'src/renderer/public/vs')
-)
+const vsDist = path.resolve(__dirname, 'src/renderer/public/vs')
+if (!fs.existsSync(vsDist)) {
+  fs.copySync(
+    path.resolve(__dirname, 'node_modules/monaco-editor/min/vs'),
+    vsDist
+  )
+}
 
-fs.copySync(
-  path.resolve(__dirname, 'node_modules/luckysheet/dist'),
-  path.resolve(__dirname, 'src/renderer/public/embed')
-)
+// copy lucky-sheet
+// must use embed dir
+const luckySheetDist = path.resolve(__dirname, 'src/renderer/public/embed')
+if (!fs.existsSync(path.join(luckySheetDist, 'luckysheet.umd.js'))) {
+  fs.copySync(
+    path.resolve(__dirname, 'node_modules/luckysheet/dist'),
+    luckySheetDist,
+    {
+      filter: src => {
+        if (src.includes('demoData') || src.includes('esm.js') || src.includes('index.html')) {
+          return false
+        }
+
+        return true
+      }
+    }
+
+  )
+}
+
+// copy drawio
+const drawioDist = path.resolve(__dirname, 'src/renderer/public/drawio')
+if (!fs.existsSync(drawioDist)) {
+  fs.copySync(
+    path.resolve(__dirname, 'drawio/src/main/webapp'),
+    drawioDist,
+    {
+      filter: src => {
+        if (src.includes('WEB-INF') || src.includes('META-INF')) {
+          return false
+        }
+
+        return true
+      }
+    }
+  )
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({

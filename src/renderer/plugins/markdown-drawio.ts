@@ -245,7 +245,7 @@ async function buildSrcdoc ({ repo, path, content }: F) {
       }
     </style>
     ${div.outerHTML}
-    <script src="${location.origin}/viewer.min.js"></script>
+    <script src="${location.origin}/drawio/js/viewer.min.js"></script>
   `
 }
 
@@ -264,7 +264,7 @@ function buildEditorSrcdoc (file: Doc) {
     </style>
     <script>
       function init (doc) {
-        const DRAW_IFRAME_URL = 'https://embed.diagrams.net/?embed=1&proto=json';
+        const DRAW_IFRAME_URL = '/drawio/index.html?embed=1&proto=json';
 
         const iframe = document.createElement('iframe')
         iframe.style.boxSizing = 'border-box'
