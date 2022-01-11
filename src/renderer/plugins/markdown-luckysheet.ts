@@ -127,21 +127,9 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       window.setStatus = str => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = str
       window.saved = () => getStatus().startsWith('${t('lucky-sheet.saved-at')}') || getStatus() === '${t('file-status.loaded')}'
 
-      async function fetchHttp (input, init) {
-        const response = await fetch(input, init)
-        const result = await response.json()
-        if (result.status !== 'ok') {
-          throw new Error(result.message)
-        }
-
-        return result
-      }
-
       async function readFile (repo, path) {
         try {
-          const result = await fetchHttp(\`/api/file?path=\${encodeURIComponent(path)}&repo=\${encodeURIComponent(repo)}\`)
-          const hash = result.data.hash
-          const content = result.data.content
+          const { hash, content } = await embedCtx.api.readFile({ repo, path })
 
           window.hash = hash
 
@@ -153,13 +141,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
 
       async function writeFile (repo, path, content) {
         try {
-          const result = await fetchHttp('/api/file', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ repo, path, content, old_hash: window.hash })
-          })
-
-          return { hash: result.data }
+          return await embedCtx.api.writeFile({ repo, path, contentHash: window.hash }, content)
         } catch (error) {
           alert(error.message)
           throw error
@@ -199,7 +181,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
         window.luckysheet.create(options)
       }
 
-      init()
+      window.addEventListener('load', init)
     </script>
   `
 }
