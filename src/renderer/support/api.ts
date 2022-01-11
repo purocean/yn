@@ -99,7 +99,7 @@ export async function writeFile (file: Doc, content = '') {
   const result = await fetchHttp('/api/file', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ repo, path, content, old_hash: contentHash })
+    body: JSON.stringify({ repo, path, content, oldHash: contentHash, asBase64 })
   })
 
   return { hash: result.data }

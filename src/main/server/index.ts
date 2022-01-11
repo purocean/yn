@@ -33,7 +33,7 @@ const fileContent = async (ctx: any, next: any) => {
         hash: await file.hash(ctx.query.repo, ctx.query.path)
       })
     } else if (ctx.method === 'POST') {
-      const oldHash = ctx.request.body.old_hash
+      const { oldHash } = ctx.request.body
 
       if (!oldHash) {
         throw new Error('No hash.')
