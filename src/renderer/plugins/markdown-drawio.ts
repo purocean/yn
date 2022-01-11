@@ -54,10 +54,10 @@ const Drawio = defineComponent({
       }
     }
 
-    const timer = setTimeout(resize, 1000)
+    let timer: any
 
     onBeforeUnmount(() => {
-      clearTimeout(timer)
+      timer && clearTimeout(timer)
     })
 
     const button = (text: string, onClick: any) => h('button', {
@@ -128,7 +128,10 @@ const Drawio = defineComponent({
           h(IFrame, {
             html: srcdoc.value,
             ref: refIFrame,
-            onLoad: resize,
+            onLoad: () => {
+              resize()
+              timer = setTimeout(resize, 1000)
+            },
             iframeProps: {
               class: 'drawio',
               height: '300px',
