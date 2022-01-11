@@ -28,22 +28,33 @@ const noCache = (ctx: any) => {
 const fileContent = async (ctx: any, next: any) => {
   if (ctx.path === '/api/file') {
     if (ctx.method === 'GET') {
+      const { repo, path, asBase64 } = ctx.query
+      const content = await file.read(repo, path)
+
       ctx.body = result('ok', 'success', {
-        content: (await file.read(ctx.query.repo, ctx.query.path)).toString(),
-        hash: await file.hash(ctx.query.repo, ctx.query.path)
+        content: content.toString(asBase64 ? 'base64' : undefined),
+        hash: await file.hash(repo, path)
       })
     } else if (ctx.method === 'POST') {
-      const { oldHash } = ctx.request.body
+      const { oldHash, content, asBase64, repo, path } = ctx.request.body
 
       if (!oldHash) {
         throw new Error('No hash.')
-      } else if (oldHash === 'new' && (await file.exists(ctx.request.body.repo, ctx.request.body.path))) {
+      } else if (oldHash === 'new' && (await file.exists(repo, path))) {
         throw new Error('File already exists.')
-      } else if (oldHash !== 'new' && !(await file.checkHash(ctx.request.body.repo, ctx.request.body.path, oldHash))) {
+      } else if (oldHash !== 'new' && !(await file.checkHash(repo, path, oldHash))) {
         throw new Error('File is stale. Please refresh.')
       }
 
-      const hash: string = await file.write(ctx.request.body.repo, ctx.request.body.path, ctx.request.body.content)
+      let saveContent = content
+      if (asBase64) {
+        saveContent = Buffer.from(
+          content.startsWith('data:') ? content.substring(content.indexOf(',') + 1) : content,
+          'base64'
+        )
+      }
+
+      const hash: string = await file.write(repo, path, saveContent)
       ctx.body = result('ok', 'success', hash)
     } else if (ctx.method === 'DELETE') {
       await file.rm(ctx.query.repo, ctx.query.path)

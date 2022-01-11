@@ -72,16 +72,17 @@ async function fetchHelpContent (docName: string) {
 /**
  * Read a file.
  * @param file
+ * @param asBase64
  * @returns
  */
-export async function readFile (file: PathItem) {
+export async function readFile (file: PathItem, asBase64 = false) {
   const { path, repo } = file
 
   if (repo === '__help__') {
     return await fetchHelpContent(path)
   }
 
-  const result = await fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`)
+  const result = await fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}${asBase64 ? '&asBase64=true' : ''}`)
   const hash = result.data.hash
   const content = result.data.content
 
@@ -92,9 +93,10 @@ export async function readFile (file: PathItem) {
  * Write content to a file.
  * @param file
  * @param content
+ * @param asBase64
  * @returns
  */
-export async function writeFile (file: Doc, content = '') {
+export async function writeFile (file: Doc, content = '', asBase64 = false) {
   const { repo, path, contentHash } = file
   const result = await fetchHttp('/api/file', {
     method: 'POST',
