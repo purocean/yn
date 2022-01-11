@@ -129,6 +129,10 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
 
       async function readFile (repo, path) {
         try {
+          if (embedCtx.args.FLAG_DEMO) {
+            repo = 'help'
+          }
+
           const { hash, content } = await embedCtx.api.readFile({ repo, path })
 
           window.hash = hash
@@ -285,8 +289,8 @@ const LuckyComponent = defineComponent({
             style: 'position: absolute; right: 10px; top: 3px; z-index: 1;'
           },
           [
-            button(t('edit'), open),
             button(t('reload'), reload),
+            button(t('edit'), open),
             button(t('open-in-new-window'), () => {
               const html = buildSrcdoc(props.repo!, props.path!, true)
               openWindow(buildSrc(html, t('lucky-sheet.edit-sheet'), false), '_blank', { alwaysOnTop: false })

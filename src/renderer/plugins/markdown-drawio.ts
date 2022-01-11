@@ -6,6 +6,7 @@ import * as api from '@fe/support/api'
 import { isElectron, openWindow } from '@fe/support/env'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
+import { FLAG_DEMO } from '@fe/support/args'
 import { t, useI18n } from '@fe/services/i18n'
 import { emitResize } from '@fe/services/layout'
 import { refreshTree } from '@fe/services/tree'
@@ -16,17 +17,19 @@ import Mask from '@fe/components/Mask.vue'
 const Drawio = defineComponent({
   name: 'drawio',
   props: {
-    url: String,
+    repo: String,
+    path: String,
     content: String
   },
   setup (props) {
     const { t } = useI18n()
     const srcdoc = ref('')
     const refIFrame = ref<any>()
+    const refFullIFrame = ref<any>()
     const fullScreen = ref(false)
 
     const init = async () => {
-      srcdoc.value = await buildSrcdoc({ url: props.url, content: props.content || '' })
+      srcdoc.value = await buildSrcdoc({ repo: props.repo, path: props.path, content: props.content || '' })
     }
 
     watch(props, init, { immediate: true })
@@ -62,15 +65,18 @@ const Drawio = defineComponent({
       onClick
     }, text)
 
+    if (FLAG_DEMO) {
+      watch([refFullIFrame, refIFrame], () => {
+        document.querySelectorAll('iframe.drawio-editor').forEach(x => {
+          (x as any).contentWindow.fetch = window.fetch
+        })
+      })
+    }
+
     return () => {
       let drawioFile: Doc | undefined
-      if (props.url) {
-        const params = new URLSearchParams(props.url.replace(/^.*\?/, ''))
-        const repo = params.get('repo')
-        const path = params.get('path')
-        if (repo && path) {
-          drawioFile = { name: 'diagram.drawio', type: 'file', repo, path }
-        }
+      if (props.repo && props.path) {
+        drawioFile = { name: 'diagram.drawio', type: 'file', repo: props.repo, path: props.path }
       }
 
       const topOffset = isElectron ? '30px' : '0px'
@@ -84,7 +90,7 @@ const Drawio = defineComponent({
         }, [
           h(IFrame, {
             html: buildEditorSrcdoc(drawioFile),
-            ref: refIFrame,
+            ref: refFullIFrame,
             onLoad: (iframe) => {
               iframe.contentWindow!.close = () => {
                 fullScreen.value = false
@@ -135,7 +141,16 @@ const Drawio = defineComponent({
 })
 
 const MarkdownItPlugin = (md: Markdown) => {
-  const render = ({ url, content }: any) => h(Drawio, { url, content })
+  const render = ({ url, content }: any) => {
+    if (url) {
+      const params = new URLSearchParams(url.replace(/^.*\?/, ''))
+      const repo = params.get('repo') || (FLAG_DEMO ? 'help' : '')
+      const path = params.get('path') || ''
+      return h(Drawio, { repo, path, content })
+    }
+
+    h(Drawio, { url, content })
+  }
 
   const linkTemp = md.renderer.rules.link_open!.bind(md.renderer.rules)
   md.renderer.rules.link_open = (tokens, idx, options, env, slf) => {
@@ -170,10 +185,8 @@ const MarkdownItPlugin = (md: Markdown) => {
 
 type F = { repo?: string; path?: string; url?: string; content: string }
 
-async function buildSrcdoc ({ repo, path, content, url }: F) {
-  if (url) {
-    content = await (await fetch(url)).text()
-  } else if (!content && repo && path) {
+async function buildSrcdoc ({ repo, path, content }: F) {
+  if (!content && repo && path) {
     content = (await api.readFile({ repo, path })).content
   }
 
@@ -237,6 +250,10 @@ async function buildSrcdoc ({ repo, path, content, url }: F) {
 }
 
 function buildEditorSrcdoc (file: Doc) {
+  if (FLAG_DEMO) {
+    file.repo = 'help'
+  }
+
   return `
     <style>
       html, body {
@@ -266,7 +283,6 @@ function buildEditorSrcdoc (file: Doc) {
 
             const msg = JSON.parse(evt.data)
             const { event } = msg
-            console.log('xxx', msg)
 
             if (event === 'init') {
               let { content, hash } = await window.embedCtx.api.readFile(doc, asPng)
