@@ -30,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.3
         with:
-          token: ${{ secrets.CI_TOKEN }}
+          token: ${{ github.token }}
           submodules: true
 
       - name: Setup Node.js environment
