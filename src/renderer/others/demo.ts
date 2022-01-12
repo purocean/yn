@@ -6,7 +6,10 @@ import { t } from '@fe/services/i18n'
 
 let settings = {
   repositories: { test: '/path_test' },
-  shell: 'bash'
+  shell: 'bash',
+  mark: [
+    { repo: 'test', path: '/TODO.md' }
+  ]
 }
 
 if (FLAG_DEMO) {
@@ -44,7 +47,7 @@ if (FLAG_DEMO) {
 
       if (uri.startsWith('/api/settings')) {
         if (method === 'POST') {
-          settings = JSON.parse(init.body)
+          settings = { ...settings, ...JSON.parse(init.body) }
         }
 
         return Promise.resolve({
