@@ -409,6 +409,8 @@ async function createLuckysheet (node: Doc) {
 
   try {
     await api.writeFile(file, file.content)
+    const srcdoc = buildSrcdoc(file.repo, file.path, true)
+    openWindow(buildSrc(srcdoc, t('lucky-sheet.edit-sheet'), false), '_blank', { alwaysOnTop: false })
     refreshTree()
   } catch (error: any) {
     useToast().show('warning', error.message)
