@@ -118,7 +118,7 @@ const Drawio = defineComponent({
               ...(drawioFile ? [
                 button(t('edit'), () => { fullScreen.value = true }),
                 button(t('open-in-new-window'), () => {
-                  openWindow(buildSrc(buildEditorSrcdoc(drawioFile!), t('drawio.edit-diagram')))
+                  openWindow(buildSrc(buildEditorSrcdoc(drawioFile!), t('drawio.edit-diagram')), '_blank', { alwaysOnTop: false })
                 }),
               ] : [
                 button(t('open-in-new-window'), () => openWindow(buildSrc(srcdoc.value, t('view-figure')))),
@@ -390,6 +390,8 @@ async function createDrawioFile (node: Doc, fileExt: '.drawio' | '.drawio.png') 
 
   try {
     await api.writeFile(file, content, isBase64)
+    const srcdoc = buildEditorSrcdoc(file)
+    openWindow(buildSrc(srcdoc, t('drawio.edit-diagram')), '_blank', { alwaysOnTop: false })
     refreshTree()
   } catch (error: any) {
     useToast().show('warning', error.message)
@@ -406,7 +408,7 @@ export default {
       if (node.path.toLowerCase().includes('.drawio')) {
         const { repo, path, name, type } = node
         const srcdoc = buildEditorSrcdoc({ repo, path, name, type })
-        openWindow(buildSrc(srcdoc, ctx.i18n.t('drawio.edit-diagram')))
+        openWindow(buildSrc(srcdoc, ctx.i18n.t('drawio.edit-diagram')), '_blank', { alwaysOnTop: false })
 
         return true
       }
