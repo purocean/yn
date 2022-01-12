@@ -21,6 +21,8 @@ export default {
           vueCtx.localMarked.value = true
           await ctx.doc.markDoc(node)
         }
+
+        node.marked = vueCtx.localMarked.value
       }
 
       const isMarkdown = node.type === 'file' && node.path.toLowerCase().endsWith('.md')
