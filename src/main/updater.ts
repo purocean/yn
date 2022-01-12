@@ -14,6 +14,16 @@ let progressBar: any = null
 const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
 const disabled = isAppx || process.mas
 
+const getUpdateInfoAndProvider = (autoUpdater as any).getUpdateInfoAndProvider
+
+const changeUpdateDownloadHost = (host = 'github.com') => {
+  (autoUpdater as any).getUpdateInfoAndProvider = async function () {
+    const result = await getUpdateInfoAndProvider.call(this)
+    result.provider.baseUrl.host = host
+    return result
+  }
+}
+
 const init = (call: () => void) => {
   if (disabled) {
     return
@@ -21,6 +31,9 @@ const init = (call: () => void) => {
 
   autoUpdater.setFeedURL({ provider: 'github', owner: 'purocean', repo: 'yn' })
   autoUpdater.autoDownload = false
+
+  // use fastgit
+  changeUpdateDownloadHost('hub.fastgit.org')
 
   autoUpdater.on('update-available', async info => {
     const { response } = await dialog.showMessageBox({
@@ -53,6 +66,7 @@ const init = (call: () => void) => {
 
       const cancellationToken = new CancellationToken()
       autoUpdater.downloadUpdate(cancellationToken).catch(e => {
+        changeUpdateDownloadHost()
         progressBar && progressBar.close()
         if (e.message !== 'Cancelled') {
           dialog.showMessageBox({
@@ -76,6 +90,7 @@ const init = (call: () => void) => {
 
   autoUpdater.on('error', e => {
     try {
+      changeUpdateDownloadHost()
       progressBar && (progressBar.detail = $t('app.updater.progress-bar.failed', e.toString()))
     } catch (error) {
       console.error(error)
