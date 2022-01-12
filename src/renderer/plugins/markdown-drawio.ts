@@ -276,6 +276,12 @@ function buildEditorSrcdoc (file: Doc) {
         iframe.style.border = 'none'
         iframe.setAttribute('frameborder', '0')
 
+        ${isElectron ? `
+          window.onbeforeunload = evt => {
+            iframe.contentWindow.postMessage(JSON.stringify({ action: 'exit' }), '*');
+          }
+        ` : ''}
+
         const asPng = doc.path.endsWith('.png')
 
         const receive = async function (evt) {
