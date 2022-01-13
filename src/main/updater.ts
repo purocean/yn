@@ -22,11 +22,11 @@ const httpRequest = (Provider.prototype as any).httpRequest
 ;(Provider.prototype as any).httpRequest = function (url: URL, ...args: any[]) {
   const source: Source = config.get('updater.source', 'github.com')
 
-  url.host = source
-  if (source === 'mirror.ghproxy.com' || source === 'ghproxy.com') {
-    if (url.pathname.endsWith('.atom')) {
-      url.host = 'github.com'
-    } else {
+  if (url.pathname.endsWith('.atom')) {
+    url.host = 'github.com'
+  } else {
+    url.host = source
+    if (source === 'mirror.ghproxy.com' || source === 'ghproxy.com') {
       url.pathname = '/https://github.com' + url.pathname
     }
   }
