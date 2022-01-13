@@ -35,12 +35,13 @@ const httpRequest = (Provider.prototype as any).httpRequest
   return httpRequest.call(this, url, ...args)
 }
 
-const getUpdateInfoAndProvider = (autoUpdater as any).getUpdateInfoAndProvider
-;(autoUpdater as any).getUpdateInfoAndProvider = async function () {
-  const result = await getUpdateInfoAndProvider.call(this)
+const setFeedURL = autoUpdater.setFeedURL
+autoUpdater.setFeedURL = async function (options: any) {
+  setFeedURL.call(this, options)
   const source: Source = config.get('updater.source', 'github.com')
-  result.provider.baseUrl.host = source
-  result.provider.getBaseDownloadPath = function (tag: string, fileName: string) {
+  const provider = await (this as any).clientPromise
+  provider.baseUrl.host = source
+  provider.getBaseDownloadPath = function (tag: string, fileName: string) {
     const downloadPath = `${this.basePath}/download/${tag}/${fileName}`
     if (source === 'mirror.ghproxy.com' || source === 'ghproxy.com') {
       return `/https://github.com/${downloadPath}`
@@ -48,7 +49,6 @@ const getUpdateInfoAndProvider = (autoUpdater as any).getUpdateInfoAndProvider
 
     return downloadPath
   }
-  return result
 }
 
 const init = (call: () => void) => {
