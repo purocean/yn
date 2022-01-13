@@ -24,6 +24,7 @@ declare module 'path-browserify' {
 
 declare interface Window {
   ctx: any;
+  embedCtx: any;
   registerPlugin: any;
   documentSaved: boolean;
   monaco: any;

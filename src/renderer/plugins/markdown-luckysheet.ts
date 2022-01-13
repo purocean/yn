@@ -21,6 +21,10 @@ const logger = getLogger('plugin-markdown-luckysheet')
 const fileExt = '.luckysheet'
 
 function buildSrcdoc (repo: string, path: string, full: boolean) {
+  if (!path.endsWith('.luckysheet')) {
+    return 'Error: support luckysheet file only'
+  }
+
   const lang = getCurrentLanguage() === 'zh-CN' ? 'zh' : 'en'
   const options = { container: 'lucky-sheet', lang, plugins: ['chart'], showtoolbarConfig: { print: false } }
   let onload = ''
@@ -127,21 +131,13 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
       window.setStatus = str => document.querySelector('.luckysheet_info_detail .luckysheet_info_detail_save').innerText = str
       window.saved = () => getStatus().startsWith('${t('lucky-sheet.saved-at')}') || getStatus() === '${t('file-status.loaded')}'
 
-      async function fetchHttp (input, init) {
-        const response = await fetch(input, init)
-        const result = await response.json()
-        if (result.status !== 'ok') {
-          throw new Error(result.message)
-        }
-
-        return result
-      }
-
       async function readFile (repo, path) {
         try {
-          const result = await fetchHttp(\`/api/file?path=\${encodeURIComponent(path)}&repo=\${encodeURIComponent(repo)}\`)
-          const hash = result.data.hash
-          const content = result.data.content
+          if (embedCtx.args.FLAG_DEMO) {
+            repo = 'help'
+          }
+
+          const { hash, content } = await embedCtx.api.readFile({ repo, path })
 
           window.hash = hash
 
@@ -153,13 +149,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
 
       async function writeFile (repo, path, content) {
         try {
-          const result = await fetchHttp('/api/file', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ repo, path, content, old_hash: window.hash })
-          })
-
-          return { hash: result.data }
+          return await embedCtx.api.writeFile({ repo, path, contentHash: window.hash }, content)
         } catch (error) {
           alert(error.message)
           throw error
@@ -199,7 +189,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
         window.luckysheet.create(options)
       }
 
-      init()
+      window.addEventListener('load', init)
     </script>
   `
 }
@@ -272,7 +262,7 @@ const LuckyComponent = defineComponent({
       debounce: 1000,
       iframeProps: {
         class: 'lucky-sheet',
-        style: 'margin: 0;display:block;height: ' + (full ? `calc(100vh - ${topOffset})` : '500px'),
+        style: 'background: #fff; margin: 0;display:block;height: ' + (full ? `calc(100vh - ${topOffset})` : '500px'),
         width: '100%'
       }
     })
@@ -303,8 +293,8 @@ const LuckyComponent = defineComponent({
             style: 'position: absolute; right: 10px; top: 3px; z-index: 1;'
           },
           [
-            button(t('edit'), open),
             button(t('reload'), reload),
+            button(t('edit'), open),
             button(t('open-in-new-window'), () => {
               const html = buildSrcdoc(props.repo!, props.path!, true)
               openWindow(buildSrc(html, t('lucky-sheet.edit-sheet'), false), '_blank', { alwaysOnTop: false })
@@ -423,6 +413,8 @@ async function createLuckysheet (node: Doc) {
 
   try {
     await api.writeFile(file, file.content)
+    const srcdoc = buildSrcdoc(file.repo, file.path, true)
+    openWindow(buildSrc(srcdoc, t('lucky-sheet.edit-sheet'), false), '_blank', { alwaysOnTop: false })
     refreshTree()
   } catch (error: any) {
     useToast().show('warning', error.message)

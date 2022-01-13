@@ -4,6 +4,7 @@ nohup.out
 node_modules
 dist
 src/renderer/public/vs
+src/renderer/public/drawio
 src/renderer/public/embed
 out
 bin

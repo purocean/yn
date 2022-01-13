@@ -22,7 +22,7 @@ const MarkdownItPlugin = (md: Markdown) => {
     const html = `
       <style>
         button { margin-left: 0; }
-        input:not([type="checkbox"]):not([type="radio"]), textarea, select { margin: 10px 0; }
+        input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select { margin: 10px 0; }
       </style>
 
       ${code}

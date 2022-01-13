@@ -95,6 +95,13 @@ const schema: Schema = {
       enum: ['github.css'],
       group: 'appearance',
     },
+    'updater.source': {
+      defaultValue: 'github.com',
+      title: 'T_setting-panel.schema.updater.source',
+      type: 'string',
+      enum: ['github.com', 'hub.fastgit.org', 'ghproxy.com', 'mirror.ghproxy.com'],
+      group: 'other',
+    },
     'assets-dir': {
       defaultValue: './FILES/{docSlug}',
       title: 'T_setting-panel.schema.assets-dir',

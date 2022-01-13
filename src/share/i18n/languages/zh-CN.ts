@@ -323,6 +323,9 @@ const data: BaseLanguage = {
       'assets-dir': '图片存放目录',
       'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, date',
       'shell': 'Shell',
+      'updater': {
+        'source': '更新源',
+      },
     },
     'tabs': {
       'repos': '仓库',
@@ -369,7 +372,9 @@ const data: BaseLanguage = {
     'clear': '清空',
   },
   'drawio': {
+    'edit-diagram': '编辑图形',
     'fit-height': '适应高度',
+    'create-drawio-file': '创建 Drawio 文件 %s',
   },
   'mind-map': {
     'zoom-in': '放大',

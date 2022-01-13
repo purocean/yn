@@ -58,13 +58,19 @@ export default defineComponent({
       const y = mouseY + menuHeight > windowHeight ? mouseY - menuHeight : mouseY
 
       refMenu.value.style.left = x + 'px'
-      refMenu.value.style.top = y + 'px'
+      refMenu.value.style.height = y < 0 ? `${menuHeight + y}px` : 'unset'
+      refMenu.value.style.top = y < 0 ? '0px' : y + 'px'
 
       isShow.value = true
     }
 
     function show (menuItems: Components.ContextMenu.Item[]) {
       items.value = menuItems
+
+      if (refMenu.value) {
+        refMenu.value.style.height = 'unset'
+      }
+
       nextTick(() => {
         showMenu()
       })
@@ -110,6 +116,7 @@ export default defineComponent({
   left: -99999px;
   top: -99999px;
   visibility: hidden;
+  overflow-y: auto;
   background: var(--g-color-82);
   border: 1px var(--g-color-84) solid;
   border-left: 0;

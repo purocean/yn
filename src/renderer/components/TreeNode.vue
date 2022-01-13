@@ -1,11 +1,11 @@
 <template>
   <div class="tree-node">
     <details
-      ref="refDir"
       v-if="itemNode.type === 'dir'"
       class="name"
       :title="itemNode.path"
-      :open="itemNode.path === '/'"
+      :open="open"
+      @toggle="(e: any) => open = e.target.open"
       @keydown.enter.prevent>
       <summary
         :class="{folder: true, 'folder-selected': selected}"
@@ -21,7 +21,9 @@
           </div>
         </div>
       </summary>
-      <tree-node v-for="x in (itemNode.children || [])" :key="x.path" :item="x"></tree-node>
+      <template v-if="open">
+        <tree-node v-for="x in (itemNode.children || [])" :key="x.path" :item="x" />
+      </template>
     </details>
     <div
       ref="refFile"
@@ -61,13 +63,12 @@ export default defineComponent({
     const { t } = useI18n()
 
     const store = useStore()
-    const contextMenu = useContextMenu()
 
-    const refDir = ref<any>(null)
     const refFile = ref<any>(null)
     const localMarked = ref<boolean | null>(null)
 
     const itemNode = computed(() => ({ ...props.item, marked: props.item.type === 'file' && isMarked(props.item) }))
+    const open = ref(itemNode.value.path === '/')
 
     watch(() => props.item, () => {
       localMarked.value = null
@@ -96,7 +97,7 @@ export default defineComponent({
     }
 
     function showContextMenu (item: any) {
-      contextMenu.show([...getContextMenuItems(item, { localMarked })])
+      useContextMenu().show([...getContextMenuItems(item, { localMarked })])
     }
 
     const currentRepoName = computed(() => currentRepo.value?.name ?? '/')
@@ -130,7 +131,7 @@ export default defineComponent({
     watch(shouldOpen, val => {
       if (val) {
         nextTick(() => {
-          refDir.value.open = true
+          open.value = true
         })
       }
     }, { immediate: true })
@@ -141,8 +142,8 @@ export default defineComponent({
     ].join('\n'))
 
     return {
+      open,
       itemNode,
-      refDir,
       refFile,
       fileTitle,
       currentRepoName,

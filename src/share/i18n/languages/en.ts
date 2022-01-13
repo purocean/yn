@@ -328,6 +328,9 @@ const data = {
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, date.',
       'shell': 'Shell',
+      'updater': {
+        'source': 'Update Source',
+      },
     }
   },
   'quick-open': {
@@ -368,7 +371,9 @@ const data = {
     'clear': 'Clear',
   },
   'drawio': {
+    'edit-diagram': 'Edit Diagram',
     'fit-height': 'Fit Height',
+    'create-drawio-file': 'Create Drawio File %s',
   },
   'mind-map': {
     'zoom-in': 'Zoom In',
