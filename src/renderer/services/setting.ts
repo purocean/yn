@@ -18,6 +18,7 @@ export type Schema = {
     type: string,
     title: TTitle,
     description?: TTitle,
+    required?: boolean,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
     enum?: string[] | number [],
     group: 'repos' | 'appearance' | 'editor' | 'other',
@@ -80,6 +81,7 @@ const schema: Schema = {
       type: 'string',
       enum: ['system', 'dark', 'light'],
       group: 'appearance',
+      required: true,
     },
     language: {
       defaultValue: 'system',
@@ -87,6 +89,7 @@ const schema: Schema = {
       type: 'string',
       enum: ['system', 'en', 'zh-CN'],
       group: 'appearance',
+      required: true,
     },
     'custom-css': {
       defaultValue: 'github.css',
@@ -94,6 +97,7 @@ const schema: Schema = {
       type: 'string',
       enum: ['github.css'],
       group: 'appearance',
+      required: true,
     },
     'updater.source': {
       defaultValue: 'github.com',
@@ -101,6 +105,7 @@ const schema: Schema = {
       type: 'string',
       enum: ['github.com', 'ghproxy.com', 'mirror.ghproxy.com'],
       group: 'other',
+      required: true,
     },
     'assets-dir': {
       defaultValue: './FILES/{docSlug}',
@@ -116,6 +121,7 @@ const schema: Schema = {
       type: 'number',
       enum: [2, 4],
       group: 'editor',
+      required: true,
     },
     'editor.ordered-list-completion': {
       defaultValue: 'auto',
@@ -126,6 +132,7 @@ const schema: Schema = {
         enum_titles: ['Auto', '1. ···, 2. ···, 3. ···', '1. ···, 1. ···, 1. ···'],
       },
       group: 'editor',
+      required: true,
     },
     'editor.font-size': {
       defaultValue: 16,
@@ -142,6 +149,7 @@ const schema: Schema = {
       type: 'boolean',
       format: 'checkbox',
       group: 'editor',
+      required: true,
     },
     shell: {
       defaultValue: '',
@@ -150,7 +158,7 @@ const schema: Schema = {
       group: 'other',
     },
   } as Partial<Schema['properties']> as any,
-  required: ['theme', 'language', 'custom-css', 'editor.mouse-wheel-zoom', 'editor.tab-size', 'editor.ordered-list-completion'],
+  required: [],
 }
 
 const settings = {
@@ -167,6 +175,8 @@ if (FLAG_DISABLE_XTERM) {
  * @returns Schema
  */
 export function getSchema (): Schema {
+  schema.required = (Object.keys(schema.properties) as any[])
+    .filter((key: keyof Schema['properties']) => schema.properties[key].required)
   return cloneDeepWith(schema, val => {
     if (typeof val === 'string' && val.startsWith('T_')) {
       return t(val.substring(2) as any)
