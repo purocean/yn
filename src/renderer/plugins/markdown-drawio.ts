@@ -141,7 +141,6 @@ const Drawio = defineComponent({
             html: srcdoc.value,
             ref: refIFrame,
             onLoad: () => {
-              console.log('xxxy')
               resize()
             },
             iframeProps: {
