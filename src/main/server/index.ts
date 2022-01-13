@@ -266,9 +266,18 @@ const setting = async (ctx: any, next: any) => {
         ctx.body = result('ok', 'success', config.getAll())
       }
     } else if (ctx.method === 'POST') {
-      const data = { ...config.getAll(), ...ctx.request.body }
+      const oldConfig = config.getAll()
+      const data = { ...oldConfig, ...ctx.request.body }
       config.setAll(data)
-      getAction('i18n.change-language')(data.language)
+
+      if (oldConfig.language !== data.language) {
+        getAction('i18n.change-language')(data.language)
+      }
+
+      if (oldConfig['updater.source'] !== data['updater.source'] && data['updater.source']) {
+        getAction('updater.change-source')(data['updater.source'])
+      }
+
       ctx.body = result('ok', 'success')
     }
   } else {

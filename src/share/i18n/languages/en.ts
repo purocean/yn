@@ -328,6 +328,9 @@ const data = {
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, date.',
       'shell': 'Shell',
+      'updater': {
+        'source': 'Update Source',
+      },
     }
   },
   'quick-open': {

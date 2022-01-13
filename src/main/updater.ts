@@ -1,10 +1,14 @@
 import { dialog, app, shell } from 'electron'
-import { autoUpdater, CancellationToken } from 'electron-updater'
+import { autoUpdater, CancellationToken, Provider } from 'electron-updater'
 import logger from 'electron-log'
 import ProgressBar from 'electron-progressbar'
 import store from './storage'
 import { GITHUB_URL } from './constant'
 import { $t } from './i18n'
+import { registerAction } from './action'
+import config from './config'
+
+type Source = 'github.com' | 'hub.fastgit.org' | 'ghproxy.com' | 'mirror.ghproxy.com'
 
 logger.transports.file.level = 'info'
 autoUpdater.logger = logger
@@ -14,14 +18,21 @@ let progressBar: any = null
 const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
 const disabled = isAppx || process.mas
 
-const getUpdateInfoAndProvider = (autoUpdater as any).getUpdateInfoAndProvider
+const httpRequest = (Provider.prototype as any).httpRequest
+;(Provider.prototype as any).httpRequest = function (url: URL, ...args: any[]) {
+  const source: Source = config.get('updater.source', 'github.com')
 
-const changeUpdateDownloadHost = (host = 'github.com') => {
-  (autoUpdater as any).getUpdateInfoAndProvider = async function () {
-    const result = await getUpdateInfoAndProvider.call(this)
-    result.provider.baseUrl.host = host
-    return result
+  url.host = source
+  if (source === 'mirror.ghproxy.com' || source === 'ghproxy.com') {
+    if (url.pathname.endsWith('.atom')) {
+      url.host = 'github.com'
+    } else {
+      url.pathname = '/https://github.com' + url.pathname
+    }
   }
+
+  console.log('updater httpRequest', source, url.href)
+  return httpRequest.call(this, url, ...args)
 }
 
 const init = (call: () => void) => {
@@ -31,9 +42,6 @@ const init = (call: () => void) => {
 
   autoUpdater.setFeedURL({ provider: 'github', owner: 'purocean', repo: 'yn' })
   autoUpdater.autoDownload = false
-
-  // use fastgit
-  changeUpdateDownloadHost('hub.fastgit.org')
 
   autoUpdater.on('update-available', async info => {
     const { response } = await dialog.showMessageBox({
@@ -66,7 +74,6 @@ const init = (call: () => void) => {
 
       const cancellationToken = new CancellationToken()
       autoUpdater.downloadUpdate(cancellationToken).catch(e => {
-        changeUpdateDownloadHost()
         progressBar && progressBar.close()
         if (e.message !== 'Cancelled') {
           dialog.showMessageBox({
@@ -90,7 +97,6 @@ const init = (call: () => void) => {
 
   autoUpdater.on('error', e => {
     try {
-      changeUpdateDownloadHost()
       progressBar && (progressBar.detail = $t('app.updater.progress-bar.failed', e.toString()))
     } catch (error) {
       console.error(error)
@@ -155,6 +161,10 @@ export function autoCheckForUpdates () {
   }
 }
 
+export function changeSource () {
+  autoUpdater.checkForUpdates()
+}
+
 app.whenReady().then(() => {
   init(() => {
     setTimeout(() => {
@@ -166,3 +176,5 @@ app.whenReady().then(() => {
     autoCheckForUpdates()
   }, 1000)
 })
+
+registerAction('updater.change-source', changeSource)

@@ -323,6 +323,9 @@ const data: BaseLanguage = {
       'assets-dir': '图片存放目录',
       'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, date',
       'shell': 'Shell',
+      'updater': {
+        'source': '更新源',
+      },
     },
     'tabs': {
       'repos': '仓库',
