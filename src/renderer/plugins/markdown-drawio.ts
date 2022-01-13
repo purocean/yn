@@ -73,6 +73,18 @@ const Drawio = defineComponent({
       })
     }
 
+    watch(srcdoc, (val) => {
+      timer && clearTimeout(timer)
+      timer = null
+      if (val) {
+        timer = setTimeout(resize, 1000)
+      }
+    })
+
+    onBeforeUnmount(() => {
+      timer && clearTimeout(timer)
+    })
+
     return () => {
       let drawioFile: Doc | undefined
       if (props.repo && props.path) {
@@ -129,12 +141,13 @@ const Drawio = defineComponent({
             html: srcdoc.value,
             ref: refIFrame,
             onLoad: () => {
+              console.log('xxxy')
               resize()
-              timer = setTimeout(resize, 1000)
             },
             iframeProps: {
               class: 'drawio',
               height: '300px',
+              style: { background: '#fff', },
             },
           })
         ])
@@ -190,7 +203,15 @@ type F = { repo?: string; path?: string; url?: string; content: string }
 
 async function buildSrcdoc ({ repo, path, content }: F) {
   if (!content && repo && path) {
-    content = (await api.readFile({ repo, path })).content
+    try {
+      if (!path.endsWith('.drawio')) {
+        return 'Error: support drawio file only'
+      }
+
+      content = (await api.readFile({ repo, path })).content
+    } catch (error: any) {
+      return error.message
+    }
   }
 
   content = content.replace(/<!--.*?-->/gs, '').trim()

@@ -21,6 +21,10 @@ const logger = getLogger('plugin-markdown-luckysheet')
 const fileExt = '.luckysheet'
 
 function buildSrcdoc (repo: string, path: string, full: boolean) {
+  if (!path.endsWith('.luckysheet')) {
+    return 'Error: support luckysheet file only'
+  }
+
   const lang = getCurrentLanguage() === 'zh-CN' ? 'zh' : 'en'
   const options = { container: 'lucky-sheet', lang, plugins: ['chart'], showtoolbarConfig: { print: false } }
   let onload = ''
@@ -258,7 +262,7 @@ const LuckyComponent = defineComponent({
       debounce: 1000,
       iframeProps: {
         class: 'lucky-sheet',
-        style: 'margin: 0;display:block;height: ' + (full ? `calc(100vh - ${topOffset})` : '500px'),
+        style: 'background: #fff; margin: 0;display:block;height: ' + (full ? `calc(100vh - ${topOffset})` : '500px'),
         width: '100%'
       }
     })
