@@ -99,7 +99,7 @@ const schema: Schema = {
       defaultValue: 'github.com',
       title: 'T_setting-panel.schema.updater.source',
       type: 'string',
-      enum: ['github.com', 'hub.fastgit.org', 'ghproxy.com', 'mirror.ghproxy.com'],
+      enum: ['github.com', 'ghproxy.com', 'mirror.ghproxy.com'],
       group: 'other',
     },
     'assets-dir': {

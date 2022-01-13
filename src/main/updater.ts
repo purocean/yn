@@ -8,7 +8,7 @@ import { $t } from './i18n'
 import { registerAction } from './action'
 import config from './config'
 
-type Source = 'github.com' | 'hub.fastgit.org' | 'ghproxy.com' | 'mirror.ghproxy.com'
+type Source = 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com'
 
 logger.transports.file.level = 'info'
 autoUpdater.logger = logger
@@ -19,20 +19,22 @@ const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
 const disabled = isAppx || process.mas
 
 const httpRequest = (Provider.prototype as any).httpRequest
-;(Provider.prototype as any).httpRequest = function (url: URL, ...args: any[]) {
+;(Provider.prototype as any).httpRequest = function (url: URL, headers: Record<string, string>, ...args: any[]) {
   const source: Source = config.get('updater.source', 'github.com')
 
-  if (url.pathname.endsWith('.atom')) {
-    url.host = 'github.com'
-  } else {
-    url.host = source
-    if (source === 'mirror.ghproxy.com' || source === 'ghproxy.com') {
-      url.pathname = '/https://github.com' + url.pathname
+  if (source !== 'github.com') {
+    headers['user-agent'] = 'curl/7.77.0'
+    console.log('updater httpRequest', url.href)
+
+    if (url.pathname.endsWith('.atom')) {
+      url.host = 'github.com.cnpmjs.org'
+      headers.accept = '*/*'
+      headers['user-agent'] = 'curl/7.77.0'
+      url.pathname = url.pathname.replace('/https://github.com', '')
     }
   }
 
-  console.log('updater httpRequest', source, url.href)
-  return httpRequest.call(this, url, ...args)
+  return httpRequest.call(this, url, headers, ...args)
 }
 
 const setFeedURL = autoUpdater.setFeedURL
@@ -40,15 +42,22 @@ autoUpdater.setFeedURL = async function (options: any) {
   setFeedURL.call(this, options)
   const source: Source = config.get('updater.source', 'github.com')
   const provider = await (this as any).clientPromise
-  provider.baseUrl.host = source
-  provider.getBaseDownloadPath = function (tag: string, fileName: string) {
-    const downloadPath = `${this.basePath}/download/${tag}/${fileName}`
-    if (source === 'mirror.ghproxy.com' || source === 'ghproxy.com') {
-      return `/https://github.com/${downloadPath}`
+  Object.defineProperty(provider, 'baseUrl', {
+    get () {
+      return new URL(`https://${source}/`)
     }
+  })
+  Object.defineProperty(provider, 'basePath', {
+    get () {
+      const basePath = `/${this.options.owner}/${this.options.repo}/releases`
 
-    return downloadPath
-  }
+      if (source.includes('ghproxy')) {
+        return `/https://github.com${basePath}`
+      }
+
+      return basePath
+    },
+  })
 }
 
 const init = (call: () => void) => {

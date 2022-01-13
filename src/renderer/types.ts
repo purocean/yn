@@ -109,7 +109,7 @@ export type BuildInSettings = {
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,
   'mark': FileItem[],
-  'updater.source': 'github.com' | 'hub.fastgit.org' | 'ghproxy.com' | 'mirror.ghproxy.com',
+  'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
 }
 
 export type BuildInActions = {
