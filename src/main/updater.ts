@@ -35,6 +35,22 @@ const httpRequest = (Provider.prototype as any).httpRequest
   return httpRequest.call(this, url, ...args)
 }
 
+const getUpdateInfoAndProvider = (autoUpdater as any).getUpdateInfoAndProvider
+;(autoUpdater as any).getUpdateInfoAndProvider = async function () {
+  const result = await getUpdateInfoAndProvider.call(this)
+  const source: Source = config.get('updater.source', 'github.com')
+  result.provider.baseUrl.host = source
+  result.provider.getBaseDownloadPath = function (tag: string, fileName: string) {
+    const downloadPath = `${this.basePath}/download/${tag}/${fileName}`
+    if (source === 'mirror.ghproxy.com' || source === 'ghproxy.com') {
+      return `/https://github.com/${downloadPath}`
+    }
+
+    return downloadPath
+  }
+  return result
+}
+
 const init = (call: () => void) => {
   if (disabled) {
     return
