@@ -6,7 +6,7 @@ import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { BuildInHookTypes, Components } from '@fe/types'
 import { t } from './i18n'
-import { emitResize } from './layout'
+import { emitResize, toggleView } from './layout'
 import { switchDoc } from './document'
 
 export type MenuItem = Components.ContextMenu.Item
@@ -21,6 +21,7 @@ function present (flag: boolean) {
   if (flag) {
     useToast().show('info', t('exit-presentation-msg'))
   }
+  toggleView(true)
   store.commit('setPresentation', flag)
   setTimeout(() => {
     emitResize()
