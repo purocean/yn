@@ -88,7 +88,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.20.1](https://github.com/purocean/yn/releases/tag/v3.20.1) 2022-01-14
+### [v3.20.2](https://github.com/purocean/yn/releases/tag/v3.20.2) 2022-01-14
 1. feat: add Drawio editing
 2. feat: add setting of upgrade source
 3. upd: upgrade markdown-it
