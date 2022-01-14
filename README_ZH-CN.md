@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.10.1](https://github.com/purocean/yn/releases/tag/v3.10.1) 2022-01-14
+### [v3.20.1](https://github.com/purocean/yn/releases/tag/v3.20.1) 2022-01-14
 1. feat: 增加 Drawio 图形编辑功能
 2. feat: 增加更新镜像源配置
 3. upd: 升级 markdown-it 版本
