@@ -88,23 +88,16 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.19.0](https://github.com/purocean/yn/releases/tag/v3.19.0) 2022-01-07
-1. feat: 表格编辑增加排序功能
-2. feat: 预览界面右键菜单新增本地图片上传图床功能
-3. feat: 侧栏空白区域右键菜单新增创建文档和创建文件夹功能
-4. upd: 删除文件使用系统回收站
-5. upd: 升级 Mermaid 版本
-6. upd: 优化 Echarts 渲染
-7. upd: 优化脑图使用体验
-8. upd: 其他样式微调和用户体验优化
-9. fix: 修复文档 Tabs 拖拽排序顺序不正确问题
-10. feat(插件): 新增 `ctx.view.renderImmediately` 方法
-11. feat(插件): 新增 `ctx.base.trashItem` 方法
-12. feat(插件): 新增 `ctx.view.getAbsolutePath` 方法
-13. feat(插件): 新增 `ctx.lib.sortablejs` 模块
-14. feat(插件): 新增 `ctx.lib.dataURLtoBlob` 方法
-15. feat(插件): 新增 `ctx.lib.downloadDataURL` 方法
-16. upd(插件): 移除 `ctx.lib.dataURItoBlobLink` 方法
+### [v3.10.1](https://github.com/purocean/yn/releases/tag/v3.10.1) 2022-01-14
+1. feat: 增加 Drawio 图形编辑功能
+2. feat: 增加更新镜像源配置
+3. upd: 升级 markdown-it 版本
+4. upd: 优化侧栏内存占用
+5. upd: 其他样式微调和用户体验优化
+6. fix: 修复侧栏文件标记状态不正确
+7. fix: 修复仓库绝对路径附件不能打开问题
+8. feat(plugin): `ctx.api.readFile` 方法增加 `asBase64` 参数
+9. feat(plugin): `ctx.api.writeFile` 方法增加 `asBase64` 参数
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

@@ -88,23 +88,17 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.19.0](https://github.com/purocean/yn/releases/tag/v3.19.0) 2022-01-07
-1. feat: add sorting function in table editing
-2. feat: add "uploading local images" to the context menu of the preview
-3. feat: add "Create Document" and "Create Folder" to the context menu of the blank area of the sidebar
-4. upd: delete files using system recycle bin
-5. upd: upgrade Mermaid version
-6. upd: optimize Echarts rendering
-7. upd: optimize the experience of using the brain map
-8. upd: other style update and user experience optimization
-9. fix: fix the incorrect order of dragging and dropping of document tabs
-10. feat(plugin): add `ctx.view.renderImmediately` method
-11. feat(plugin): add `ctx.base.trashItem` method
-12. feat(plugin): add `ctx.view.getAbsolutePath` method
-13. feat(plugin): add `ctx.lib.sortablejs` module
-14. feat(plugin): add `ctx.lib.dataURLtoBlob` method
-15. feat(plugin): add `ctx.lib.downloadDataURL` method
-16. upd(plugin): remove `ctx.lib.dataURItoBlobLink` method
+### [v3.10.1](https://github.com/purocean/yn/releases/tag/v3.10.1) 2022-01-14
+1. feat: add Drawio editing
+2. feat: add setting of upgrade source
+3. upd: upgrade markdown-it
+4. upd: optimize memory usage of sidebar
+5. upd: other style update and user experience optimization
+6. fix: fix file mark status in the sidebar is incorrect
+7. fix: fix the absolute path attachment of the repository cannot be opened
+8. feat(plugin): add `asBase64` parameter of `ctx.api.readFile` method
+9. feat(plugin): add `asBase64` parameter of `ctx.api.writeFile`method
+
 
 [More release notes](https://github.com/purocean/yn/releases)
 
