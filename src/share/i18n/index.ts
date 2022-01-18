@@ -1,4 +1,5 @@
 import get from 'lodash/get'
+import merge from 'lodash/merge'
 import en, { BaseLanguage } from './languages/en'
 import zhCN from './languages/zh-CN'
 
@@ -33,4 +34,8 @@ export function translate (lang: Language, path: MsgPath, ...args: string[]) {
     idx++
     return args[idx] || ''
   })
+}
+
+export function mergeLanguage (lang: Language, nls: Record<string, any>) {
+  languages[lang] = merge(languages[lang], nls)
 }

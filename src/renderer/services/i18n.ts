@@ -1,5 +1,5 @@
 import { getCurrentInstance, onBeforeUnmount } from 'vue'
-import { Language, MsgPath, translate } from '@share/i18n'
+import { Language, MsgPath, mergeLanguage as _mergeLanguage, translate } from '@share/i18n'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import * as storage from '@fe/utils/storage'
 import { LanguageName } from '@fe/types'
@@ -40,6 +40,16 @@ export function setLanguage (language: LanguageName) {
   lang = language
   storage.set(STORAGE_KEY, language)
   triggerHook('I18N_CHANGE_LANGUAGE', { lang })
+}
+
+/**
+ * Merge natural language strings
+ * @param lang
+ * @param nls
+ */
+export function mergeLanguage (lang: Language, nls: Record<string, any>) {
+  _mergeLanguage(lang, nls)
+  triggerHook('I18N_CHANGE_LANGUAGE', { lang: getLanguage() })
 }
 
 /**
