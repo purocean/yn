@@ -27,9 +27,7 @@ const httpRequest = (Provider.prototype as any).httpRequest
     console.log('updater httpRequest', url.href)
 
     if (url.pathname.endsWith('.atom')) {
-      url.host = 'hub.fastgit.org'
-      headers.accept = '*/*'
-      headers['user-agent'] = 'curl/7.77.0'
+      url.host = 'github.com'
       url.pathname = url.pathname.replace('/https://github.com', '')
     }
   }
