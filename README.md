@@ -88,7 +88,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.21.0](https://github.com/purocean/yn/releases/tag/v3.21.0) 2022-01-20
+### [v3.21.1](https://github.com/purocean/yn/releases/tag/v3.21.1) 2022-01-20
 1. feat: support custom export docx reference document
 2. feat: add `{docName}` placeholder variable to image save directory configuration
 3. feat: supports abbr syntax

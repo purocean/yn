@@ -88,7 +88,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.21.0](https://github.com/purocean/yn/releases/tag/v3.21.0) 2022-01-20
+### [v3.21.1](https://github.com/purocean/yn/releases/tag/v3.21.1) 2022-01-20
 1. feat: 增加自定义导出 docx 参考文档功能
 2. feat: 图片保存目录配置增加 `{docName}` 占位变量
 3. feat: Markdown 解析支持 abbr 语法
