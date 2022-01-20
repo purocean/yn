@@ -2,10 +2,10 @@ import * as os from 'os'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import { spawn } from 'child_process'
-import { BIN_DIR, RESOURCES_DIR } from '../constant'
+import { BIN_DIR, PANDOC_REFERENCE_FILE, RESOURCES_DIR, USER_DIR } from '../constant'
 
 const binPath = path.join(BIN_DIR, os.platform() + '-pandoc-2.7.3' + (os.platform() === 'win32' ? '.exe' : ''))
-const docxTplPath = path.join(RESOURCES_DIR, './tpl.docx')
+const docxTplPath = path.join(USER_DIR, PANDOC_REFERENCE_FILE)
 const filterPath = path.join(RESOURCES_DIR, './pandoc-filter.lua')
 
 const convert = async (source: string, fromType: string, toType: string, resourcePath: string) => {

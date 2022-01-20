@@ -20,7 +20,7 @@ The application generated data is stored in `<home>/yank-note` dir, click the "O
 Directory description
 
 1. configuration file `<home>/yank-note/config.json`
-1. recycle bin `<home>/yank-note/trash`
+1. export docx reference doc `<home>/yank-note/pandoc-reference.docx`
 1. plug-ins `<home>/yank-note/plugins`
 1. themes `<home>/yank-note/themes`
 
