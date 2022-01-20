@@ -86,6 +86,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^8.1.1",
+    "filenamify": "^5.1.0",
     "front-matter": "^4.0.2",
     "highlight.js": "^11.0.1",
     "husky": "^7.0.4",
