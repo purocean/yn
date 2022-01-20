@@ -97,6 +97,7 @@
     "luckyexcel": "^1.0.1",
     "luckysheet": "^2.1.13",
     "markdown-it": "^12.3.2",
+    "markdown-it-abbr": "^1.0.4",
     "markdown-it-attrs": "^4.0.0",
     "markdown-it-container": "^3.0.0",
     "markdown-it-mark": "^3.0.1",
