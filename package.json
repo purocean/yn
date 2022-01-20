@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.20.2",
+  "version": "3.21.0",
   "description": "Yank Note: A hackable markdown note application for programmers",
   "main": "dist/main/app.js",
   "license": "GPL-3.0",
@@ -86,6 +86,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^8.1.1",
+    "filenamify": "^5.1.0",
     "front-matter": "^4.0.2",
     "highlight.js": "^11.0.1",
     "husky": "^7.0.4",
@@ -97,6 +98,7 @@
     "luckyexcel": "^1.0.1",
     "luckysheet": "^2.1.13",
     "markdown-it": "^12.3.2",
+    "markdown-it-abbr": "^1.0.4",
     "markdown-it-attrs": "^4.0.0",
     "markdown-it-container": "^3.0.0",
     "markdown-it-mark": "^3.0.1",

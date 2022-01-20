@@ -22,6 +22,8 @@ export const RESOURCES_DIR = convertAppPath(path.join(__dirname, 'resources'))
 
 export const BUILD_IN_STYLES = ['github.css']
 
+export const PANDOC_REFERENCE_FILE = 'pandoc-reference.docx'
+
 export const GITHUB_URL = 'https://github.com/purocean/yn'
 
 export const FLAG_DISABLE_SERVER = false

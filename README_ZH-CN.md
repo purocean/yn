@@ -88,16 +88,15 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.20.2](https://github.com/purocean/yn/releases/tag/v3.20.2) 2022-01-14
-1. feat: 增加 Drawio 图形编辑功能
-2. feat: 增加更新镜像源配置
-3. upd: 升级 markdown-it 版本
-4. upd: 优化侧栏内存占用
-5. upd: 其他样式微调和用户体验优化
-6. fix: 修复侧栏文件标记状态不正确
-7. fix: 修复仓库绝对路径附件不能打开问题
-8. feat(plugin): `ctx.api.readFile` 方法增加 `asBase64` 参数
-9. feat(plugin): `ctx.api.writeFile` 方法增加 `asBase64` 参数
+### [v3.21.0](https://github.com/purocean/yn/releases/tag/v3.21.0) 2022-01-20
+1. feat: 增加自定义导出 docx 参考文档功能
+2. feat: 图片保存目录配置增加 `{docName}` 占位变量
+3. feat: Markdown 解析支持 abbr 语法
+4. upd: 优化同步滚动体验
+5. fix: 修复隐藏编辑器时点击目录定位可能不正确问题
+6. fix: 修复隐藏预览时候点击演示按钮白屏问题
+7. feat(plugin): 增加`ctx.lib.filenamify` 模块
+8. feat(plugin): 增加`ctx.i18n.mergeLanguage` 方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

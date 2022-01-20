@@ -88,17 +88,15 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.20.2](https://github.com/purocean/yn/releases/tag/v3.20.2) 2022-01-14
-1. feat: add Drawio editing
-2. feat: add setting of upgrade source
-3. upd: upgrade markdown-it
-4. upd: optimize memory usage of sidebar
-5. upd: other style update and user experience optimization
-6. fix: fix file mark status in the sidebar is incorrect
-7. fix: fix the absolute path attachment of the repository cannot be opened
-8. feat(plugin): add `asBase64` parameter of `ctx.api.readFile` method
-9. feat(plugin): add `asBase64` parameter of `ctx.api.writeFile`method
-
+### [v3.21.0](https://github.com/purocean/yn/releases/tag/v3.21.0) 2022-01-20
+1. feat: support custom export docx reference document
+2. feat: add `{docName}` placeholder variable to image save directory configuration
+3. feat: supports abbr syntax
+4. upd: optimize the synchronous scrolling experience
+5. fix: fix the problem that the click directory location may be incorrect when the editor is hidden
+6. fix: fix the white screen problem when clicking the demo button when the preview is hidden
+7. feat(plugin): add `ctx.lib.filenamify` module
+8. feat(plugin): add `ctx.i18n.mergeLanguage` method
 
 [More release notes](https://github.com/purocean/yn/releases)
 

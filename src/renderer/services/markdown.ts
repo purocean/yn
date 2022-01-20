@@ -2,6 +2,7 @@ import Markdown from 'markdown-it'
 import MarkdownItSub from 'markdown-it-sub'
 import MarkdownItSup from 'markdown-it-sup'
 import MarkdownItMark from 'markdown-it-mark'
+import MarkdownItAbbr from 'markdown-it-abbr'
 import MarkdownItAttrs from 'markdown-it-attrs'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 import { triggerHook } from '@fe/core/hook'
@@ -29,6 +30,7 @@ markdown.render = (src: string, env?: any) => {
 markdown.use(MarkdownItSub)
 markdown.use(MarkdownItSup)
 markdown.use(MarkdownItMark)
+markdown.use(MarkdownItAbbr)
 markdown.use(MarkdownItAttrs)
 markdown.use(MarkdownItMultimdTable, { multiline: true })
 

@@ -28,7 +28,7 @@ export default {
       const isMarkdown = node.type === 'file' && node.path.toLowerCase().endsWith('.md')
 
       const disableItems = ctx.args.FLAG_READONLY
-        ? ['duplicate', 'create', 'rename', 'delete', 'openInTerminal', 'create']
+        ? ['duplicate', 'duplicate', 'create-dir', 'create-doc', 'create-in-cd', 'rename', 'delete', 'open-in-terminal']
         : []
 
       const t = ctx.i18n.t

@@ -326,7 +326,7 @@ const data = {
       'language': 'Language',
       'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
-      'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, date.',
+      'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, docName, date.',
       'shell': 'Shell',
       'updater': {
         'source': 'Update Source',

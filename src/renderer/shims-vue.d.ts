@@ -4,6 +4,10 @@ declare module '*.vue' {
   export default component
 }
 
+declare module 'markdown-it-sub'
+declare module 'markdown-it-sup'
+declare module 'markdown-it-mark'
+declare module 'markdown-it-abbr'
 declare module 'markdown-it-container'
 declare module 'markdown-it-task-lists'
 declare module 'markdown-it-attrs'
@@ -11,12 +15,10 @@ declare module 'markdown-it-multimd-table'
 declare module 'markdown-it-katex'
 declare module '@json-editor/json-editor'
 declare module 'mermaid/dist/mermaid.js'
+declare module 'filenamify/browser'
 declare module 'katex'
 declare module 'luckyexcel'
 declare module 'xterm-theme'
-declare module 'markdown-it-sub'
-declare module 'markdown-it-sup'
-declare module 'markdown-it-mark'
 declare module 'path-browserify' {
   import path from 'path'
   export default path

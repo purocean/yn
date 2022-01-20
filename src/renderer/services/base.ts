@@ -1,4 +1,5 @@
 import { slugify } from 'transliteration'
+import filenamify from 'filenamify/browser'
 import type { Doc } from '@fe/types'
 import * as api from '@fe/support/api'
 import { getSetting, getSettings } from './setting'
@@ -28,10 +29,11 @@ export async function upload (file: File, belongDoc: Pick<Doc, 'repo' | 'path'>,
   const fileBase64Url = await fileToBase64URL(file)
 
   const filename = name || binMd5(fileBase64Url).substr(0, 8) + extname(file.name)
-  const dirName = slugify(basename(belongDoc.path))
+  const parentName = basename(belongDoc.path)
   const parentPath = dirname(belongDoc.path)
   const assetsDir = getSettings()['assets-dir']
-    .replace('{docSlug}', dirName.startsWith('.') ? 'upload' : dirName)
+    .replace('{docSlug}', parentName.startsWith('.') ? 'upload' : slugify(parentName))
+    .replace('{docName}', parentName.startsWith('.') ? 'upload' : filenamify(parentName))
     .replace('{date}', dayjs().format('YYYY-MM-DD'))
 
   const path: string = resolve(parentPath, assetsDir, filename)

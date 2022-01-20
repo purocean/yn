@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import { USER_DIR, USER_PLUGIN_DIR, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES } from './constant'
+import { USER_DIR, USER_PLUGIN_DIR, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES, PANDOC_REFERENCE_FILE } from './constant'
 import './updater'
 
 export default function () {
@@ -29,4 +29,10 @@ window.registerPlugin({
       fs.readFileSync(path.join(RESOURCES_DIR, style))
     )
   })
+
+  const docxTplPath = path.join(USER_DIR, PANDOC_REFERENCE_FILE)
+  if (!fs.existsSync(docxTplPath)) {
+    fs.createReadStream(path.join(RESOURCES_DIR, PANDOC_REFERENCE_FILE))
+      .pipe(fs.createWriteStream(docxTplPath))
+  }
 }

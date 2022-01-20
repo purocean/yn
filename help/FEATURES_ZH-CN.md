@@ -20,7 +20,7 @@ define:
 目录说明：
 
 1. 配置文件 `<home>/yank-note/config.json`
-1. 回收站 `<home>/yank-note/trash`
+1. 导出 docx 参考文档 `<home>/yank-note/pandoc-reference.docx`
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
 
@@ -50,6 +50,10 @@ define:
 + 上标：29^th^
 + 下标：H~2~0
 + 脚注：脚注[^1]语法[^2]
++ 缩写：
+    *[HTML]: Hyper Text Markup Language
+    *[W3C]:  World Wide Web Consortium
+    The HTML specification is maintained by the W3C.
 
 ### 元素属性书写
 
