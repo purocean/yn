@@ -41,12 +41,11 @@ export default {
       const savePosition = debounce(saveScrollPosition, 500)
       editor.onDidScrollChange(() => {
         const visibleRange = editor.getVisibleRanges()[0]
-        const startLine = Math.max(1, visibleRange.startLineNumber - 2)
-        const endLine = Math.max(startLine, visibleRange.endLineNumber)
+        const startLine = Math.max(1, visibleRange.startLineNumber - 1)
 
         const top = editor.getScrollTop()
         if (ctx.view.getEnableSyncScroll()) {
-          ctx.view.revealLine(startLine, startLine + (endLine - startLine) / 2)
+          ctx.view.revealLine(startLine)
         }
         savePosition({ editor: top })
       })
