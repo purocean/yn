@@ -198,7 +198,13 @@ export default defineComponent({
     }
 
     function syncScroll (line: number) {
-      revealLineInCenter(line)
+      if (store.state.showEditor) {
+        revealLineInCenter(line)
+      } else {
+        refViewWrapper.value
+          ?.querySelector<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
+          ?.scrollIntoView()
+      }
     }
 
     function scrollTopTo (top: number) {
