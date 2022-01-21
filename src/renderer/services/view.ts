@@ -113,7 +113,9 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
         node.removeAttribute('class')
       }
 
-      node.removeAttribute('title')
+      if (node.tagName !== 'ABBR') {
+        node.removeAttribute('title')
+      }
 
       if (node.dataset) {
         Object.keys(node.dataset).forEach(key => {
