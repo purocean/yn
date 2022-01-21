@@ -494,6 +494,7 @@ If the expression needs to contain [\= or =\], please enter `[\=` or `=\]` to es
 - whether to enable the page title serial number:  [= headingNumber =]
 - use variable:  [= customVar =]
 - custom variable:  [= $export('testVar', 'Test') =][= testVar =]
+- custom function:  [= $export('format', (a, b) => `${a}, ${b}!`) =][= format('HELLO', 'WORLD') =]
 - application version: [= $ctx.version =]
 - current document name: [= $doc.basename =]
 - current time:  [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]
