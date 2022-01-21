@@ -578,7 +578,7 @@ function sortRows (td: HTMLTableCellElement, order: 'asc' | 'desc') {
   orderBy(contents, x => {
     const number = parseFloat(x.sortBy)
     if (!isNaN(number) && isFinite(number)) {
-      return number.toString().padStart(32)
+      return number.toString().padStart(20) + x.sortBy
     }
 
     return x.sortBy
