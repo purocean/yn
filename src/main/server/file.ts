@@ -4,6 +4,10 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as crypto from 'crypto'
 import * as yargs from 'yargs'
+import AdmZip from 'adm-zip'
+import dayjs from 'dayjs'
+import { HISTORY_DIR } from '../constant'
+import config from '../config'
 import repository from './repository'
 
 const readonly = !!(yargs.argv.readonly)
@@ -40,6 +44,30 @@ function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath:
   }))
 }
 
+function getHistoryFilePath (filePath: string) {
+  const historyFileName = path.basename(filePath) + '.' + crypto.createHash('md5').update(filePath).digest('hex') + '.zip'
+  return path.join(HISTORY_DIR, historyFileName)
+}
+
+async function writeHistory (filePath: string, content: any) {
+  const limit = Math.min(10000, config.get('doc-history.number-limit', 100))
+  if (limit < 1) {
+    return
+  }
+
+  const historyFilePath = getHistoryFilePath(filePath)
+
+  const zip = new AdmZip((await fs.pathExists(historyFilePath)) ? historyFilePath : undefined)
+
+  zip.addFile(dayjs().format('YYYY-MM-DD-HH-mm-ss') + '.md', content)
+
+  orderBy(zip.getEntries(), x => x.entryName, 'desc').slice(limit).forEach(entry => {
+    zip.deleteFile(entry)
+  })
+
+  zip.writeZip(historyFilePath)
+}
+
 export function read (repo: string, p: string): Promise<Buffer> {
   return withRepo(repo, (_, targetPath) => fs.readFile(targetPath), p)
 }
@@ -56,6 +84,10 @@ export function write (repo: string, p: string, content: any): Promise<string> {
 
     await fs.ensureFile(filePath)
     await fs.writeFile(filePath, content)
+
+    if (filePath.endsWith('.md')) {
+      await writeHistory(filePath, content)
+    }
 
     return crypto.createHash('md5').update(content).digest('hex')
   }, p)

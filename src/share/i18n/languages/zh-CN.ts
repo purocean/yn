@@ -326,6 +326,9 @@ const data: BaseLanguage = {
       'updater': {
         'source': '更新源',
       },
+      'doc-history': {
+        'number-limit': '版本保留数',
+      },
     },
     'tabs': {
       'repos': '仓库',

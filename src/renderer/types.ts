@@ -110,6 +110,7 @@ export type BuildInSettings = {
   'license': string,
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
+  'doc-history.number-limit': number,
 }
 
 export type BuildInActions = {

@@ -331,6 +331,9 @@ const data = {
       'updater': {
         'source': 'Update Source',
       },
+      'doc-history': {
+        'number-limit': 'Versions Retained',
+      },
     }
   },
   'quick-open': {

@@ -107,6 +107,14 @@ const schema: Schema = {
       group: 'other',
       required: true,
     },
+    'doc-history.number-limit': {
+      defaultValue: 100,
+      title: 'T_setting-panel.schema.doc-history.number-limit',
+      type: 'number',
+      enum: [0, 100, 200, 400, 600, 1000],
+      required: true,
+      group: 'other',
+    },
     'assets-dir': {
       defaultValue: './FILES/{docSlug}',
       title: 'T_setting-panel.schema.assets-dir',

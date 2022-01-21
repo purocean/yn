@@ -21,6 +21,7 @@ define:
 
 1. 配置文件 `<home>/yank-note/config.json`
 1. 导出 docx 参考文档 `<home>/yank-note/pandoc-reference.docx`
+1. 文档历史版本 `<home>/yank-note/histories`
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
 
