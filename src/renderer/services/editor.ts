@@ -194,18 +194,13 @@ export function getValue () {
 }
 
 /**
- * Replace text value.
- * @param search
- * @param val
- * @param replaceAll
+ * Set text value to editor
+ * @param text
  */
-export function replaceValue (search: string | RegExp, val: string, replaceAll = true) {
-  const editor = getEditor()
+export function setValue (text: string) {
   const model = editor.getModel()
   const maxLine = model!.getLineCount()
   const endLineLength = model!.getLineLength(maxLine)
-  const content = model!.getValue()
-  const text = replaceAll ? content.replaceAll(search, val) : content.replace(search, val)
 
   editor.executeEdits('', [
     {
@@ -215,6 +210,20 @@ export function replaceValue (search: string | RegExp, val: string, replaceAll =
     }
   ])
   getEditor().focus()
+}
+
+/**
+ * Replace text value.
+ * @param search
+ * @param val
+ * @param replaceAll
+ */
+export function replaceValue (search: string | RegExp, val: string, replaceAll = true) {
+  const editor = getEditor()
+  const model = editor.getModel()
+  const content = model!.getValue()
+  const text = replaceAll ? content.replaceAll(search, val) : content.replace(search, val)
+  setValue(text)
 }
 
 /**
