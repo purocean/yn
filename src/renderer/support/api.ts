@@ -129,7 +129,7 @@ export async function moveFile (file: FileItem, newPath: string): Promise<ApiRes
  */
 export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
   const { path, repo } = file
-  return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
+  return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`, { method: 'DELETE' })
 }
 
 /**
@@ -138,7 +138,7 @@ export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
  * @returns
  */
 export async function fetchTree (repo: string): Promise<Components.Tree.Node[]> {
-  const result = await fetchHttp(`/api/tree?repo=${repo}`)
+  const result = await fetchHttp(`/api/tree?repo=${encodeURIComponent(repo)}`)
   return result.data
 }
 
@@ -196,7 +196,7 @@ export async function choosePath (options: Record<string, any>): Promise<{ cance
  * @returns
  */
 export async function search (repo: string, text: string): Promise<Pick<Doc, 'repo' | 'type' | 'path' | 'name'>> {
-  const result = await fetchHttp(`/api/search?repo=${repo}&search=${encodeURIComponent(text)}`)
+  const result = await fetchHttp(`/api/search?repo=${encodeURIComponent(repo)}&search=${encodeURIComponent(text)}`)
   return result.data
 }
 
