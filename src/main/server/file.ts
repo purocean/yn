@@ -59,7 +59,7 @@ async function writeHistory (filePath: string, content: any) {
 
   const zip = new AdmZip((await fs.pathExists(historyFilePath)) ? historyFilePath : undefined)
 
-  zip.addFile(dayjs().format('YYYY-MM-DD-HH-mm-ss') + '.md', content)
+  zip.addFile(dayjs().format('YYYY-MM-DD HH-mm-ss') + '.md', content)
 
   orderBy(zip.getEntries(), x => x.entryName, 'desc').slice(limit).forEach(entry => {
     zip.deleteFile(entry)
@@ -86,7 +86,7 @@ export function write (repo: string, p: string, content: any): Promise<string> {
     await fs.writeFile(filePath, content)
 
     if (filePath.endsWith('.md')) {
-      await writeHistory(filePath, content)
+      setTimeout(() => writeHistory(filePath, content), 0)
     }
 
     return crypto.createHash('md5').update(content).digest('hex')
@@ -266,4 +266,43 @@ export async function search (repo: string, str: string) {
   await withRepo(repo, repoPath => travelFiles(repoPath, repoPath, 1))
 
   return files
+}
+
+export function historyList (repo: string, path: string) {
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    if (!(await fs.pathExists(historyFilePath))) {
+      return []
+    }
+
+    const zip = new AdmZip(historyFilePath)
+    return orderBy(zip.getEntries(), x => x.entryName, 'desc').map(x => x.entryName)
+  }, path)
+}
+
+export function historyContent (repo: string, path: string, version: string) {
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    if (!(await fs.pathExists(historyFilePath))) {
+      return ''
+    }
+
+    const zip = new AdmZip(historyFilePath)
+    const entry = zip.getEntry(version)
+    if (!entry) {
+      return ''
+    }
+
+    return await new Promise<string>((resolve, reject) => {
+      entry.getDataAsync((data, err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(data.toString('utf-8'))
+        }
+      })
+    })
+  }, path)
 }

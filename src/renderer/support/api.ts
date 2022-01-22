@@ -132,6 +132,18 @@ export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
   return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`, { method: 'DELETE' })
 }
 
+export async function fetchHistoryList (file: PathItem) {
+  const { path, repo } = file
+  const { data } = await fetchHttp(`/api/history/list?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`)
+  return data
+}
+
+export async function fetchHistoryContent (file: PathItem, version: string) {
+  const { path, repo } = file
+  const { data } = await fetchHttp(`/api/history/content?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}&version=${encodeURIComponent(version)}`)
+  return data
+}
+
 /**
  * Fetch file tree from a repository.
  * @param repo

@@ -65,6 +65,10 @@ const fileContent = async (ctx: any, next: any) => {
     }
   } else if (ctx.path === '/api/tree') {
     ctx.body = result('ok', 'success', (await file.tree(ctx.query.repo)))
+  } else if (ctx.path === '/api/history/list') {
+    ctx.body = result('ok', 'success', (await file.historyList(ctx.query.repo, ctx.query.path)))
+  } else if (ctx.path === '/api/history/content') {
+    ctx.body = result('ok', 'success', (await file.historyContent(ctx.query.repo, ctx.query.path, ctx.query.version)))
   } else {
     await next()
   }
