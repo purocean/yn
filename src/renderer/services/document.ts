@@ -11,6 +11,7 @@ import { getLogger } from '@fe/utils'
 import { getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
+import { getActionHandler } from '@fe/core/action'
 
 const logger = getLogger('document')
 
@@ -525,4 +526,19 @@ export async function showHelp (docName: string) {
  */
 export function showExport () {
   store.commit('setShowExport', true)
+}
+
+/**
+ * show history versions of document
+ * @param doc
+ */
+export function showHistory (doc: Doc) {
+  getActionHandler('doc.show-history')(doc)
+}
+
+/**
+ * hide history panel
+ */
+export function hideHistory () {
+  getActionHandler('doc.hide-history')()
 }

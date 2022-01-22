@@ -25,6 +25,7 @@
   <ExportPanel />
   <Premium />
   <ControlCenter />
+  <DocHistory />
 </template>
 
 <script lang="ts">
@@ -46,6 +47,7 @@ import ExportPanel from '@fe/components/ExportPanel.vue'
 import Premium from '@fe/components/Premium.vue'
 import XFilter from '@fe/components/Filter.vue'
 import ControlCenter from '@fe/components/ControlCenter.vue'
+import DocHistory from '@fe/components/DocHistory.vue'
 
 export default defineComponent({
   name: 'x-main',
@@ -63,6 +65,7 @@ export default defineComponent({
     SettingPanel,
     ExportPanel,
     ControlCenter,
+    DocHistory,
   },
   setup () {
     onMounted(startup)

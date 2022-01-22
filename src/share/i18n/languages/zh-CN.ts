@@ -220,6 +220,7 @@ const data: BaseLanguage = {
       'macro-copy-markdown': '复制宏替换后的 Markdown',
       'copy-rtf': '拷贝富文本',
       'copy-html': '拷贝渲染后的 HTML',
+      'doc-history': '文档历史版本'
     },
     'document-info': {
       'selected': '已选择',
@@ -444,6 +445,15 @@ const data: BaseLanguage = {
       'back': '后退 %s',
       'refresh': '刷新',
     }
+  },
+  'doc-history': {
+    'title': '文档历史版本',
+    'apply-version': '应用选中版本',
+    'no-history': '无历史版本',
+    'content': '内容',
+    'diff': '对比',
+    'history': '历史',
+    'current': '当前',
   },
 }
 

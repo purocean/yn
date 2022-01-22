@@ -219,6 +219,7 @@ const data = {
       'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
       'copy-rtf': 'Copy Rich Text',
       'copy-html': 'Copy Rendered HTML',
+      'doc-history': 'Document History'
     },
     'document-info': {
       'selected': 'Selected',
@@ -443,6 +444,15 @@ const data = {
       'back': 'Back %s',
       'refresh': 'Refresh',
     }
+  },
+  'doc-history': {
+    'title': 'Document History',
+    'apply-version': 'Apply Selected Version',
+    'no-history': 'No History',
+    'content': 'Content',
+    'diff': 'Diff',
+    'history': 'History',
+    'current': 'Current',
   },
 }
 
