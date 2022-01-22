@@ -14,7 +14,7 @@
         <template v-for="item in menu.list" :key="item.id">
           <li v-if="item.type === 'separator' && !item.hidden" :class="item.type"></li>
           <li
-            v-else-if="!item.hidden"
+            v-else-if="item.type !== 'separator' && !item.hidden"
             :class="{[item.type]: true, disabled: item.disabled}"
             :title="item.tips"
             @click="handleItemClick(item)">
