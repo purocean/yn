@@ -5,7 +5,7 @@
 <script lang="ts">
 import type * as monaco from 'monaco-editor'
 import { defineComponent, onMounted, ref } from 'vue'
-import { defaultOptions } from '@fe/services/editor'
+import { getDefaultOptions } from '@fe/services/editor'
 import { toUri } from '@fe/services/document'
 import { triggerHook } from '@fe/core/hook'
 
@@ -52,7 +52,7 @@ export default defineComponent({
     function initMonaco () {
       triggerHook('MONACO_BEFORE_INIT', { monaco: getMonaco() })
 
-      editor = getMonaco().editor.create(refEditor.value, defaultOptions)
+      editor = getMonaco().editor.create(refEditor.value, getDefaultOptions())
       setModel(toUri(null), '')
 
       setTimeout(() => {

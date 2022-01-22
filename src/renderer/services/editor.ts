@@ -15,9 +15,9 @@ let editor: Monaco.editor.IStandaloneCodeEditor
 const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monospace'
 
 /**
- * Default options.
+ * Get default editor options.
  */
-export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
+export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstructionOptions => ({
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: getSetting('editor.font-size', 16),
@@ -43,7 +43,7 @@ export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions 
   detectIndentation: false,
   insertSpaces: true,
   tabSize: getSetting('editor.tab-size', 4),
-}
+})
 
 /**
  * Get Monaco
