@@ -69,6 +69,10 @@ function newMinder () {
 
   const camera = km._commands.camera.execute
   km._commands.camera.execute = function (km: any, focusNode: any) {
+    if (km._status === 'normal') {
+      return
+    }
+
     if (focusNode) {
       camera.call(this, km, focusNode)
       return
@@ -77,14 +81,22 @@ function newMinder () {
     // eslint-disable-next-line no-proto
     const Point = km.getRoot().getVertexIn().__proto__.constructor
 
-    if (!['right', 'fish-bone'].includes(km.getTemplate())) {
-      camera.call(this, km)
-    } else {
+    const tpl = km.getTemplate()
+
+    if (['right', 'fish-bone'].includes(tpl)) {
       const viewport = km.getPaper().getViewPort()
       const x = viewport.center.x - viewport.center.x / viewport.zoom + 20 / viewport.zoom
-      const y = viewport.center.y
+      const y = viewport.center.y + 10 / viewport.zoom
       const duration = km.getOption('viewAnimationDuration')
       km._viewDragger.moveTo(new Point(x, y), duration)
+    } else if (['structure', 'filetree'].includes(tpl)) {
+      const viewport = km.getPaper().getViewPort()
+      const x = viewport.center.x
+      const y = viewport.center.y - viewport.center.y / viewport.zoom + 40 / viewport.zoom
+      const duration = km.getOption('viewAnimationDuration')
+      km._viewDragger.moveTo(new Point(x, y), duration)
+    } else {
+      camera.call(this, km)
     }
   }
 
@@ -150,16 +162,20 @@ function newMinder () {
     return icon
   }
 
+  km.disableAnimationAwhile = async (fn: Function) => {
+    // hack for avoid auto set template
+    km.setTemplate = () => 0
+    km.disableAnimation()
+    await fn()
+    km.enableAnimation()
+    // recover setTemplate
+    km.setTemplate = km._setTemplate
+  }
+
   const importJson = km.importJson.bind(km)
   km.importJson = function (json: any) {
     if (json) {
-      // hack for avoid auto set template
-      km.setTemplate = () => 0
-      km.disableAnimation()
       importJson(json)
-      km.enableAnimation()
-      // recover setTemplate
-      km.setTemplate = km._setTemplate
     }
   }
 
@@ -364,11 +380,14 @@ const MindMap = defineComponent({
 
       if (!km) {
         km = init(container.value)
-        km.execCommand('hand')
-        km.execCommand('camera')
+        km.disableAnimationAwhile(async () => {
+          await render(km, props.content)
+          km.execCommand('hand')
+          km.execCommand('camera')
+        })
+      } else {
+        km.disableAnimationAwhile(() => render(km, props.content))
       }
-
-      render(km, props.content)
     }, 200, { leading: true })
 
     function clean () {
@@ -425,10 +444,18 @@ export default {
   name: 'markdown-mind-map',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body .mind-map {
+        overflow: hidden;
+      }
+
+      .markdown-view .markdown-body .mind-map > div {
+        margin-top: -20px;
+      }
+
       .markdown-view .markdown-body .mind-map .mind-map-action {
         position: absolute;
         right: 10px;
-        top: 3px;
+        top: 23px;
         z-index: 1;
         text-align: right;
         background: transparent;
