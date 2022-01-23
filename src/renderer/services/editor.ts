@@ -186,6 +186,20 @@ export function getLineContent (line: number) {
 }
 
 /**
+ * Get content of lines.
+ * @param lineStart
+ * @param lineEnd
+ * @returns
+ */
+export function getLinesContent (lineStart: number, lineEnd: number) {
+  const model = getEditor().getModel()!
+
+  const lineEndLength = model.getLineLength(lineEnd)
+  const range = new (getMonaco().Range)(lineStart, 1, lineEnd, lineEndLength + 1)
+  return model.getValueInRange(range)
+}
+
+/**
  * Get text value.
  * @returns
  */
