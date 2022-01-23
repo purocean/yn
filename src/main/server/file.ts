@@ -50,7 +50,7 @@ function getHistoryFilePath (filePath: string) {
 }
 
 async function writeHistory (filePath: string, content: any) {
-  const limit = Math.min(10000, config.get('doc-history.number-limit', 100))
+  const limit = Math.min(10000, config.get('doc-history.number-limit', 200))
   if (limit < 1) {
     return
   }
