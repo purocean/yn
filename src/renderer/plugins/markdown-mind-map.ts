@@ -234,8 +234,8 @@ const init = (ele: HTMLElement) => {
   const div = document.createElement('div')
   div.setAttribute('minder-data-type', 'text')
   div.style.position = 'relative'
-  div.style.height = '400px'
-  div.style.minHeight = '400px'
+  div.style.height = '300px'
+  div.style.minHeight = '300px'
   ele.innerHTML = ''
   ele.appendChild(div)
 
