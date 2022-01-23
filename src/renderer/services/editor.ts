@@ -140,6 +140,28 @@ export function replaceLine (line: number, text: string) {
   editor.focus()
 }
 
+/**
+ * Replace text value of lines.
+ * @param lineStart
+ * @param lineEnd
+ * @param text
+ */
+export function replaceLines (lineStart: number, lineEnd: number, text: string) {
+  const lineEndPos = getEditor().getModel()!.getLineLength(lineEnd) + 1
+  const editor = getEditor()
+  const monaco = getMonaco()
+
+  editor.executeEdits('', [
+    {
+      range: new (monaco.Range)(lineStart, 1, lineEnd, lineEndPos),
+      text,
+      forceMoveMarkers: true
+    }
+  ])
+  editor.setPosition(new monaco.Position(lineEnd, lineEndPos))
+  editor.focus()
+}
+
 export function deleteLine (line: number) {
   const editor = getEditor()
   editor.executeEdits('', [
