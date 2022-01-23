@@ -288,10 +288,7 @@ const LuckyComponent = defineComponent({
       h('div', { class: 'lucky-sheet-wrapper reduce-brightness', style: 'position: relative' }, [
         h(
           'div',
-          {
-            class: 'no-print',
-            style: 'position: absolute; right: 10px; top: 3px; z-index: 1;'
-          },
+          { class: 'lucky-sheet-action no-print' },
           [
             button(t('reload'), reload),
             button(t('edit'), open),
@@ -426,6 +423,22 @@ export default {
   name: 'markdown-luckysheet',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
+
+    ctx.theme.addStyles(`
+      .markdown-view .markdown-body .lucky-sheet-wrapper .lucky-sheet-action {
+        position: absolute;
+        right: 10px;
+        top: 3px;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity .2s;
+      }
+
+      .markdown-view .markdown-body .lucky-sheet-wrapper:hover .lucky-sheet-action {
+        opacity: 1;
+      }
+    `)
+
     ctx.registerHook('TREE_NODE_SELECT', async ({ node }) => {
       if (node.path.toLowerCase().endsWith(fileExt)) {
         const srcdoc = buildSrcdoc(node.repo, node.path, true)
