@@ -174,6 +174,16 @@ const buildSrcdoc = (json: string, btns: string) => {
         margin: 0;
         padding: 0;
         height: 100%;
+        background: #fff;
+      }
+
+      .mind-map-action {
+        position: absolute;
+        right: 10px;
+        top: 3px;
+        z-index: 1;
+        text-align: right;
+        background: transparent;
       }
 
       #minder-view {
@@ -266,7 +276,7 @@ const init = (ele: HTMLElement) => {
     const kmView = paper.container
     const svgG = paper.shapeNode
     if (kmView && svgG) {
-      kmView.style.height = (svgG.getBoundingClientRect().height + 60) + 'px'
+      kmView.style.height = (svgG.getBoundingClientRect().height + 40) + 'px'
       km._modules.View.events.resize.apply(km)
       km.zoom(km.getZoomValue()) // reset view port
       setTimeout(() => {
@@ -303,8 +313,7 @@ const init = (ele: HTMLElement) => {
   }
 
   const action = document.createElement('div')
-  action.className = 'no-print'
-  action.style.cssText = 'position: absolute; right: 10px; top: 3px; z-index: 1; text-align: right; background: transparent;'
+  action.className = 'mind-map-action no-print'
   action.appendChild(buildButton(t('mind-map.zoom-in'), zoomIn, 'zoomIn'))
   action.appendChild(buildButton(t('mind-map.zoom-out'), zoomOut, 'zoomOut'))
   action.appendChild(buildButton(t('mind-map.switch-layout'), switchLayout, 'switchLayout'))
@@ -312,7 +321,7 @@ const init = (ele: HTMLElement) => {
   const actionsStr = action.outerHTML.replace(/data-onclick/g, 'onclick')
   action.appendChild(buildButton(t('open-in-new-window'), () => {
     const srcdoc = buildSrcdoc(JSON.stringify(km.exportJson()), actionsStr)
-    openWindow(buildSrc(srcdoc, t('view-figure')), '_blank', { backgroundColor: '#fff' })
+    openWindow(buildSrc(srcdoc, t('view-figure'), true), '_blank', { backgroundColor: '#fff' })
   }))
   action.prepend(buildButton(t('mind-map.fit-height'), fitHeight, 'fitHeight'))
   action.appendChild(buildButton('PNG', () => exportData('png')))
@@ -415,6 +424,23 @@ const renderRule: Renderer.RenderRule = (tokens, idx, options, { bMarks, source 
 export default {
   name: 'markdown-mind-map',
   register: ctx => {
+    ctx.theme.addStyles(`
+      .markdown-view .markdown-body .mind-map .mind-map-action {
+        position: absolute;
+        right: 10px;
+        top: 3px;
+        z-index: 1;
+        text-align: right;
+        background: transparent;
+        opacity: 0;
+        transition: opacity .2s;
+      }
+
+      .markdown-view .markdown-body .mind-map:hover .mind-map-action {
+        opacity: 1;
+      }
+    `)
+
     ctx.markdown.registerPlugin(md => {
       md.renderer.rules.bullet_list_open = renderRule
 
