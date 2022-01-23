@@ -1,5 +1,5 @@
 <template>
-  <XMask :style="{paddingTop: '5vh'}" :show="!!currentDoc" @close="hide">
+  <XMask :style="{paddingTop: '7vh'}" :show="!!currentDoc" @close="hide">
     <div class="history-wrapper" v-if="currentDoc" @click.stop>
       <h3>{{$t('doc-history.title')}}</h3>
       <div class="history">
