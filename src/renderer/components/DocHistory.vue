@@ -6,11 +6,12 @@
         <div class="versions" v-if="versions && versions.length">
           <div
             v-for="(version, i) in versions"
-            :key="version"
-            :class="{item: true, selected: version === currentVersion}"
-            @click="choose(version)">
+            :key="version.value"
+            :class="{item: true, selected: version.value === currentVersion}"
+            :title="version.title"
+            @click="choose(version.value)">
             <span class="seq">{{i.toString().padStart(4, '0')}}</span>
-            <span>{{versionStr(version)}}</span>
+            <span>{{version.label}}</span>
           </div>
         </div>
         <div class="content" v-if="content">
@@ -35,6 +36,7 @@
 </template>
 
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 import type * as Monaco from 'monaco-editor'
 import { useStore } from 'vuex'
 import { ref, onMounted, onUnmounted, watch, toRef } from 'vue'
@@ -63,7 +65,7 @@ const getDisplayTypes = () => [
 
 const currentDoc = ref<Doc | null>(null)
 const currentVersion = ref('')
-const versions = ref<string[]>([])
+const versions = ref<{value: string, label: string, title: string}[]>([])
 const content = ref('')
 const displayType = ref<'content' | 'diff'>('content')
 const refEditor = ref<HTMLElement | null>(null)
@@ -77,12 +79,6 @@ function show (doc: Doc) {
 
 function hide () {
   currentDoc.value = null
-}
-
-function versionStr (version: string) {
-  const tmp = version.replace(/\.md$/i, '').split(' ')
-  tmp[1] = tmp[1].replaceAll('-', ':')
-  return tmp.join(' ')
 }
 
 function choose (version: string) {
@@ -170,11 +166,18 @@ function updateEditor () {
 }
 
 watch(currentDoc, async val => {
-  versions.value = val ? await fetchHistoryList(val) : []
+  versions.value = (val ? await fetchHistoryList(val) : []).map(value => {
+    const tmp = value.replace(/\.md$/i, '').split(' ')
+    tmp[1] = tmp[1].replaceAll('-', ':')
+    const time = tmp.join(' ')
+    const title = dayjs().to(time)
+
+    return { value, label: time, title }
+  })
 })
 
 watch(versions, async val => {
-  currentVersion.value = (val && val.length) ? val[0] : ''
+  currentVersion.value = (val && val.length) ? val[0].value : ''
 })
 
 watch(currentVersion, async val => {
