@@ -65,7 +65,7 @@ export default {
         width: 100%;
       }
 
-      .markdown-view .markdown-body .custom-container.group .custom-container-title {
+      .markdown-view .markdown-body .custom-container.group > .custom-container-title {
         order: 1;
         padding-left: 8px;
         margin: 0;
