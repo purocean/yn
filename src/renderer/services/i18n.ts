@@ -39,7 +39,7 @@ export function getLanguage () {
 export function setLanguage (language: LanguageName) {
   lang = language
   storage.set(STORAGE_KEY, language)
-  triggerHook('I18N_CHANGE_LANGUAGE', { lang })
+  triggerHook('I18N_CHANGE_LANGUAGE', { lang, currentLang: getCurrentLanguage() })
 }
 
 /**
@@ -49,7 +49,7 @@ export function setLanguage (language: LanguageName) {
  */
 export function mergeLanguage (lang: Language, nls: Record<string, any>) {
   _mergeLanguage(lang, nls)
-  triggerHook('I18N_CHANGE_LANGUAGE', { lang: getLanguage() })
+  triggerHook('I18N_CHANGE_LANGUAGE', { lang: getLanguage(), currentLang: getCurrentLanguage() })
 }
 
 /**
