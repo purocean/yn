@@ -1,3 +1,10 @@
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import 'dayjs/locale/zh-cn'
+import 'dayjs/locale/en'
+import { registerHook } from '@fe/core/hook'
+import { getCurrentLanguage } from '@fe/services/i18n'
+
 export * as lodash from 'lodash-es'
 export * as vue from 'vue'
 export { default as dayjs } from 'dayjs'
@@ -6,3 +13,13 @@ export { default as turndown } from 'turndown'
 export { default as juice } from 'juice'
 export { default as sortablejs } from 'sortablejs'
 export { default as filenamify } from 'filenamify/browser'
+
+dayjs.extend(relativeTime)
+dayjs.locale('zh-cn')
+
+function setDayjsLang () {
+  dayjs.locale(getCurrentLanguage() === 'zh-CN' ? 'zh-cn' : 'en')
+}
+
+setDayjsLang()
+registerHook('I18N_CHANGE_LANGUAGE', setDayjsLang)
