@@ -343,7 +343,16 @@ export async function deleteHistoryVersion (repo: string, p: string, version: st
     const historyFilePath = getHistoryFilePath(filePath)
 
     const zip = new AdmZip(historyFilePath)
-    zip.deleteFile(version)
+    if (version === '--all--') {
+      zip.getEntries().slice().forEach(entry => {
+        if (!entry.comment) {
+          zip.deleteFile(entry)
+        }
+      })
+    } else {
+      zip.deleteFile(version)
+    }
+
     zip.writeZip(historyFilePath)
   }, p)
 }

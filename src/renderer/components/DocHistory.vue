@@ -3,6 +3,7 @@
     <div class="history-wrapper" v-if="currentDoc" @click.stop>
       <div class="history">
         <div class="versions-wrapper">
+          <div v-if="listType === 'all'" class="clear" @click="clearVersions">清空</div>
           <GroupTabs class="tabs" :tabs="getListTypes()" v-model="listType" />
           <div class="versions" v-if="xVersions && xVersions.length">
             <div
@@ -153,6 +154,16 @@ async function deleteVersion (version: Version) {
     content: t('doc-history.delete-dialog.content', version.label)
   })) {
     await deleteHistoryVersion(currentDoc.value!, version.value)
+    await fetchVersions()
+  }
+}
+
+async function clearVersions (version: Version) {
+  if (await useModal().confirm({
+    title: t('doc-history.clear-dialog.title'),
+    content: t('doc-history.clear-dialog.content', version.label)
+  })) {
+    await deleteHistoryVersion(currentDoc.value!, '--all--')
     await fetchVersions()
   }
 }
@@ -450,5 +461,18 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-end;
   padding-top: 10px;
+}
+
+.clear {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--g-color-40);
+
+  &:hover {
+    color: var(--g-color-10);
+  }
 }
 </style>

@@ -458,6 +458,10 @@ const data = {
       'title': 'Delete',
       'content': 'Are you sure want to delete [%s]?',
     },
+    'clear-dialog': {
+      'title': 'Clear',
+      'content': 'Are you sure want to clear unmarked versions?',
+    },
     'mark-dialog': {
       'title': 'Mark Version [%s]',
       'hint': 'Input some message (optional)',

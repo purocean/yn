@@ -459,6 +459,10 @@ const data: BaseLanguage = {
       'title': '删除版本',
       'content': '你确定要删除版本 [%s] 吗？',
     },
+    'clear-dialog': {
+      'title': '清除版本',
+      'content': '你确定要清除未标记的版本吗？',
+    },
     'mark-dialog': {
       'title': '标记版本 [%s]',
       'hint': '输入一些信息（可选）',
