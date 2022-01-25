@@ -70,6 +70,25 @@ async function writeHistory (filePath: string, content: any) {
   zip.writeZip(historyFilePath)
 }
 
+async function moveHistory (oldPath: string, newPath: string) {
+  if (!oldPath.endsWith('.md')) {
+    return
+  }
+
+  const oldHistoryPath = getHistoryFilePath(oldPath)
+  const newHistoryPath = getHistoryFilePath(newPath)
+
+  if (!(await fs.pathExists(oldHistoryPath))) {
+    return
+  }
+
+  if (await fs.pathExists(newHistoryPath)) {
+    await fs.unlink(newHistoryPath)
+  }
+
+  await fs.move(oldHistoryPath, newHistoryPath)
+}
+
 export function read (repo: string, p: string): Promise<Buffer> {
   return withRepo(repo, (_, targetPath) => fs.readFile(targetPath), p)
 }
@@ -111,6 +130,9 @@ export async function mv (repo: string, oldPath: string, newPath: string) {
   await withRepo(repo, async (_, oldP, newP) => {
     if (oldPath !== newP) {
       await fs.move(oldP, newP)
+      setTimeout(async () => {
+        await moveHistory(oldP, newP)
+      }, 0)
     }
   }, oldPath, newPath)
 }
