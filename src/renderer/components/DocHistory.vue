@@ -158,10 +158,10 @@ async function deleteVersion (version: Version) {
   }
 }
 
-async function clearVersions (version: Version) {
+async function clearVersions () {
   if (await useModal().confirm({
     title: t('doc-history.clear-dialog.title'),
-    content: t('doc-history.clear-dialog.content', version.label)
+    content: t('doc-history.clear-dialog.content')
   })) {
     await deleteHistoryVersion(currentDoc.value!, '--all--')
     await fetchVersions()
