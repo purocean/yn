@@ -332,6 +332,7 @@ onUnmounted(() => {
   width: 100%;
   box-sizing: border-box;
   color: var(--g-color-30);
+  pointer-events: none;
 }
 
 .content {
