@@ -7,7 +7,7 @@
           <div
             v-for="(version, i) in versions"
             :key="version.value"
-            :class="{item: true, selected: version.value === currentVersion.value}"
+            :class="{item: true, selected: version.value === currentVersion?.value}"
             :title="version.title"
             @click="choose(version)">
             <span class="seq">{{i.toString().padStart(4, '0')}}</span>
@@ -26,7 +26,7 @@
         <div class="content" v-else>{{$t('doc-history.no-history')}}</div>
       </div>
 
-      <div class="doc-name">{{currentVersion.label}} {{currentVersion.title}} {{currentDoc.name}}</div>
+      <div class="doc-name">{{currentVersion?.label}} {{currentVersion?.title}} {{currentDoc.name}}</div>
 
       <div class="action">
         <button class="btn" @click="hide">{{$t('close')}}</button>
