@@ -1,4 +1,4 @@
-import { Plugin } from '@fe/context'
+import type { Plugin } from '@fe/context'
 
 export default {
   name: 'status-bar-tool',
@@ -8,16 +8,7 @@ export default {
         id: 'status-bar-tool',
         position: 'left',
         title: ctx.i18n.t('status-bar.tool.tool'),
-        list: [
-          {
-            id: 'show-doc-history',
-            type: 'normal',
-            title: ctx.i18n.t('status-bar.tool.doc-history'),
-            hidden: !ctx.store.state.currentFile,
-            onClick: () => ctx.doc.showHistory(ctx.store.state.currentFile!)
-          },
-          { type: 'separator' },
-        ]
+        list: []
       }
     })
   }

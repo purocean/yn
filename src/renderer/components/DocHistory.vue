@@ -1,5 +1,5 @@
 <template>
-  <XMask :style="{paddingTop: '7vh'}" :show="!!currentDoc" @close="hide">
+  <XMask :mask-closeable="false" :style="{paddingTop: '7vh'}" :show="!!currentDoc" @close="hide">
     <div class="history-wrapper" v-if="currentDoc" @click.stop>
       <h3>{{$t('doc-history.title')}}</h3>
       <div class="history">
@@ -42,6 +42,7 @@ import { useStore } from 'vuex'
 import { ref, onMounted, onUnmounted, watch, toRef } from 'vue'
 import { removeAction, registerAction } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { Alt } from '@fe/core/command'
 import { fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
 import { getDefaultOptions, getMonaco, setValue } from '@fe/services/editor'
 import { isSameFile } from '@fe/services/document'
@@ -73,7 +74,8 @@ const refEditor = ref<HTMLElement | null>(null)
 const currentContent = toRef<AppState, 'currentContent'>(store.state, 'currentContent')
 const currentFile = toRef<AppState, 'currentFile'>(store.state, 'currentFile')
 
-function show (doc: Doc) {
+function show (doc?: Doc) {
+  doc ??= currentFile.value!
   currentDoc.value = doc
 }
 
@@ -187,7 +189,7 @@ watch(currentVersion, async val => {
 watch([content, displayType, refEditor], updateEditor)
 
 onMounted(() => {
-  registerAction({ name: 'doc.show-history', handler: show })
+  registerAction({ name: 'doc.show-history', handler: show, keys: [Alt, 'h'] })
   registerAction({ name: 'doc.hide-history', handler: hide })
 
   registerHook('GLOBAL_RESIZE', layoutEditor)
