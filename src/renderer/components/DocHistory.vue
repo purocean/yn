@@ -7,9 +7,9 @@
           <div
             v-for="(version, i) in versions"
             :key="version.value"
-            :class="{item: true, selected: version.value === currentVersion}"
+            :class="{item: true, selected: version.value === currentVersion.value}"
             :title="version.title"
-            @click="choose(version.value)">
+            @click="choose(version)">
             <span class="seq">{{i.toString().padStart(4, '0')}}</span>
             <span>{{version.label}}</span>
           </div>
@@ -45,13 +45,17 @@ import { registerHook, removeHook } from '@fe/core/hook'
 import { Alt } from '@fe/core/command'
 import { fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
 import { getDefaultOptions, getMonaco, setValue } from '@fe/services/editor'
-import { isSameFile } from '@fe/services/document'
+import { isEncrypted, isSameFile } from '@fe/services/document'
+import { inputPassword } from '@fe/services/base'
 import { useI18n } from '@fe/services/i18n'
+import type { AppState } from '@fe/support/store'
 import { getLogger } from '@fe/utils'
 import type { Doc } from '@fe/types'
-import type { AppState } from '@fe/support/store'
+import { decrypt } from '@fe/utils/crypto'
 import XMask from './Mask.vue'
 import GroupTabs from './GroupTabs.vue'
+
+type Version = {value: string, label: string, title: string, encrypted: boolean}
 
 const logger = getLogger('doc-history-component')
 
@@ -65,8 +69,8 @@ const getDisplayTypes = () => [
 ]
 
 const currentDoc = ref<Doc | null>(null)
-const currentVersion = ref('')
-const versions = ref<{value: string, label: string, title: string}[]>([])
+const currentVersion = ref<Version>()
+const versions = ref<Version[]>([])
 const content = ref('')
 const displayType = ref<'content' | 'diff'>('content')
 const refEditor = ref<HTMLElement | null>(null)
@@ -83,7 +87,7 @@ function hide () {
   currentDoc.value = null
 }
 
-function choose (version: string) {
+function choose (version: Version) {
   currentVersion.value = version
 }
 
@@ -169,21 +173,40 @@ function updateEditor () {
 
 watch(currentDoc, async val => {
   versions.value = (val ? await fetchHistoryList(val) : []).map(value => {
-    const tmp = value.replace(/\.md$/i, '').split(' ')
+    const arr = value.split('.')
+    const name = arr[0]
+    const encrypted = isEncrypted({ path: value })
+    const tmp = name.split(' ')
     tmp[1] = tmp[1].replaceAll('-', ':')
     const time = tmp.join(' ')
     const title = dayjs().to(time)
 
-    return { value, label: time, title }
+    return { value, label: time, title, encrypted }
   })
 })
 
 watch(versions, async val => {
-  currentVersion.value = (val && val.length) ? val[0].value : ''
+  currentVersion.value = (val && val.length) ? val[0] : undefined
 })
 
 watch(currentVersion, async val => {
-  content.value = (val && currentDoc.value) ? await fetchHistoryContent(currentDoc.value, val) : ''
+  if (val && currentDoc.value) {
+    let data = await fetchHistoryContent(currentDoc.value, val.value)
+
+    if (val.encrypted) {
+      try {
+        const password = await inputPassword(t('document.password-open'), 'History Version', true)
+        const decrypted = decrypt(data, password)
+        data = decrypted.content
+      } catch {
+        data = t('document.wrong-password')
+      }
+    }
+
+    content.value = data
+  } else {
+    content.value = ''
+  }
 })
 
 watch([content, displayType, refEditor], updateEditor)

@@ -45,8 +45,8 @@ export function getAbsolutePath (doc: Doc) {
  * @param doc
  * @returns
  */
-export function isEncrypted (doc?: Pick<Doc, 'path'> | null) {
-  return doc && doc.path.toLowerCase().endsWith('.c.md')
+export function isEncrypted (doc?: Pick<Doc, 'path'> | null): boolean {
+  return !!(doc && doc.path.toLowerCase().endsWith('.c.md'))
 }
 
 /**

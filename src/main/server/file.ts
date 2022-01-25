@@ -59,7 +59,9 @@ async function writeHistory (filePath: string, content: any) {
 
   const zip = new AdmZip((await fs.pathExists(historyFilePath)) ? historyFilePath : undefined)
 
-  zip.addFile(dayjs().format('YYYY-MM-DD HH-mm-ss') + '.md', content)
+  const ext = filePath.endsWith('.c.md') ? '.c.md' : '.mc'
+
+  zip.addFile(dayjs().format('YYYY-MM-DD HH-mm-ss') + ext, content)
 
   orderBy(zip.getEntries(), x => x.entryName, 'desc').slice(limit).forEach(entry => {
     zip.deleteFile(entry)
