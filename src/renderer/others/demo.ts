@@ -70,7 +70,7 @@ if (FLAG_DEMO) {
       }
 
       if (uri.startsWith('/api/history/list')) {
-        return Promise.resolve({ status: 'ok', message: 'success', data: ['2022-01-01 12-12-00.md', '2022-01-01 12-13-00.md', '2022-01-01 12-14-00.md'] })
+        return Promise.resolve({ status: 'ok', message: 'success', data: [{ name: '2022-01-01 12-12-00.md', comment: 'Test' }, { name: '2022-01-01 12-13-00.md', comment: '--marked--' }, { name: '2022-01-01 12-14-00.md', comment: '' }] })
       }
 
       if (uri.startsWith('/api/history/content')) {
