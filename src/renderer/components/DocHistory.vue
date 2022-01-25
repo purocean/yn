@@ -445,7 +445,7 @@ onUnmounted(() => {
     display: flex;
     justify-content: space-around;
     position: absolute;
-    top: -20px;
+    top: 10px;
     font-size: 12px;
     color: var(--g-color-40);
   }
