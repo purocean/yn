@@ -132,7 +132,7 @@ export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
   return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`, { method: 'DELETE' })
 }
 
-export async function fetchHistoryList (file: PathItem): Promise<string[]> {
+export async function fetchHistoryList (file: PathItem): Promise<{name: string, comment: string}[]> {
   const { path, repo } = file
   const { data } = await fetchHttp(`/api/history/list?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`)
   return data
@@ -150,6 +150,16 @@ export async function deleteHistoryVersion (file: PathItem, version: string) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ repo, path, version })
+  })
+  return data
+}
+
+export async function commentHistoryVersion (file: PathItem, version: string, msg: string) {
+  const { path, repo } = file
+  const { data } = await fetchHttp('/api/history/comment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo, path, version, msg })
   })
   return data
 }

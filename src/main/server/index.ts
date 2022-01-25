@@ -72,6 +72,9 @@ const fileContent = async (ctx: any, next: any) => {
   } else if (ctx.path === '/api/history/delete') {
     const { repo, path, version } = ctx.request.body
     ctx.body = result('ok', 'success', (await file.deleteHistoryVersion(repo, path, version)))
+  } else if (ctx.path === '/api/history/comment') {
+    const { repo, path, version, msg } = ctx.request.body
+    ctx.body = result('ok', 'success', (await file.commentHistoryVersion(repo, path, version, msg)))
   } else {
     await next()
   }

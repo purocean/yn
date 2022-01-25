@@ -446,16 +446,21 @@ const data = {
     }
   },
   'doc-history': {
-    'title': 'Document History',
     'apply-version': 'Apply Selected Version',
     'no-history': 'No History',
     'content': 'Content',
     'diff': 'Diff',
     'history': 'History',
     'current': 'Current',
+    'all': 'All',
+    'marked': 'Marked',
     'delete-dialog': {
       'title': 'Delete',
       'content': 'Are you sure want to delete [%s]?',
+    },
+    'mark-dialog': {
+      'title': 'Mark Version [%s]',
+      'hint': 'Input some message (optional)',
     },
   },
 }

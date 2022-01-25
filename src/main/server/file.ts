@@ -64,7 +64,9 @@ async function writeHistory (filePath: string, content: any) {
   zip.addFile(dayjs().format('YYYY-MM-DD HH-mm-ss') + ext, content)
 
   orderBy(zip.getEntries(), x => x.entryName, 'desc').slice(limit).forEach(entry => {
-    zip.deleteFile(entry)
+    if (!entry.comment) {
+      zip.deleteFile(entry)
+    }
   })
 
   zip.writeZip(historyFilePath)
@@ -87,18 +89,6 @@ async function moveHistory (oldPath: string, newPath: string) {
   }
 
   await fs.move(oldHistoryPath, newHistoryPath)
-}
-
-export async function deleteHistoryVersion (repo: string, p: string, version: string) {
-  if (readonly) throw new Error('Readonly')
-
-  return withRepo(repo, async (_, filePath) => {
-    const historyFilePath = getHistoryFilePath(filePath)
-
-    const zip = new AdmZip(historyFilePath)
-    zip.deleteFile(version)
-    zip.writeZip(historyFilePath)
-  }, p)
 }
 
 export function read (repo: string, p: string): Promise<Buffer> {
@@ -313,7 +303,10 @@ export function historyList (repo: string, path: string) {
     }
 
     const zip = new AdmZip(historyFilePath)
-    return orderBy(zip.getEntries(), x => x.entryName, 'desc').map(x => x.entryName)
+    return orderBy(zip.getEntries(), x => x.entryName, 'desc').map(x => ({
+      name: x.entryName,
+      comment: x.comment
+    }))
   }, path)
 }
 
@@ -341,4 +334,35 @@ export function historyContent (repo: string, path: string, version: string) {
       })
     })
   }, path)
+}
+
+export async function deleteHistoryVersion (repo: string, p: string, version: string) {
+  if (readonly) throw new Error('Readonly')
+
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    const zip = new AdmZip(historyFilePath)
+    zip.deleteFile(version)
+    zip.writeZip(historyFilePath)
+  }, p)
+}
+
+export async function commentHistoryVersion (repo: string, p: string, version: string, msg: string) {
+  if (readonly) throw new Error('Readonly')
+
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    const zip = new AdmZip(historyFilePath)
+    const entry = zip.getEntry(version)
+
+    if (!entry) {
+      return
+    }
+
+    entry.comment = msg
+
+    zip.writeZip(historyFilePath)
+  }, p)
 }

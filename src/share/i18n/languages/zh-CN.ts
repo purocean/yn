@@ -447,16 +447,21 @@ const data: BaseLanguage = {
     }
   },
   'doc-history': {
-    'title': '文档历史版本',
     'apply-version': '应用选中版本',
     'no-history': '无历史版本',
     'content': '内容',
     'diff': '对比',
     'history': '历史',
     'current': '当前',
+    'all': '全部',
+    'marked': '已标记',
     'delete-dialog': {
       'title': '删除版本',
       'content': '你确定要删除版本 [%s] 吗？',
+    },
+    'mark-dialog': {
+      'title': '标记版本 [%s]',
+      'hint': '输入一些信息（可选）',
     },
   },
 }

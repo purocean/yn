@@ -1,22 +1,32 @@
 <template>
   <XMask :mask-closeable="false" :style="{paddingTop: '7vh'}" :show="!!currentDoc" @close="hide">
     <div class="history-wrapper" v-if="currentDoc" @click.stop>
-      <h3>{{$t('doc-history.title')}}</h3>
       <div class="history">
-        <div class="versions" v-if="versions && versions.length">
-          <div
-            v-for="(version, i) in versions"
-            :key="version.value"
-            :class="{item: true, selected: version.value === currentVersion?.value}"
-            :title="version.title"
-            @click="choose(version)">
-            <span class="seq">{{i.toString().padStart(4, '0')}}</span>
-            <span>{{version.label}}</span>
-            <svg-icon class="delete" name="trash-solid" @click="deleteVersion(version)" />
+        <div class="versions-wrapper">
+          <GroupTabs class="tabs" :tabs="getListTypes()" v-model="listType" />
+          <div class="versions" v-if="xVersions && xVersions.length">
+            <div
+              v-for="(version, i) in xVersions"
+              :key="version.value"
+              :class="{item: true, selected: version.value === currentVersion?.value}"
+              :title="version.title"
+              @click="choose(version)">
+              <div class="title">
+                <span class="seq">{{i.toString().padStart(4, '0')}}</span>
+                <span>{{version.label}}</span>
+                <svg-icon v-if="version.comment" class="action-icon" style="width: 15px" name="star-solid" @click.stop />
+                <div class="actions" @click.stop>
+                  <svg-icon class="action-icon" style="width: 12px" name="trash-solid" @click="deleteVersion(version)" />
+                  <svg-icon v-if="version.comment" class="action-icon" style="width: 15px" name="star-solid" @click="unmarkVersion(version)" />
+                  <svg-icon v-else class="action-icon" style="width: 15px" name="star-regular" @click="markVersion(version)" />
+                </div>
+              </div>
+              <div v-if="version.comment && version.comment !== MARKED" class="comment">{{version.comment}}</div>
+            </div>
           </div>
         </div>
         <div class="content" v-if="content">
-          <GroupTabs :tabs="getDisplayTypes()" v-model="displayType" />
+          <GroupTabs class="tabs" :tabs="getDisplayTypes()" v-model="displayType" />
           <div class="diff-tips" v-if="displayType === 'diff'">
             <div>{{$t('doc-history.history')}}</div>
             <div>{{$t('doc-history.current')}}</div>
@@ -40,11 +50,11 @@
 import dayjs from 'dayjs'
 import type * as Monaco from 'monaco-editor'
 import { useStore } from 'vuex'
-import { ref, onMounted, onUnmounted, watch, toRef } from 'vue'
+import { ref, onMounted, onUnmounted, watch, toRef, computed } from 'vue'
 import { removeAction, registerAction } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { Alt } from '@fe/core/command'
-import { deleteHistoryVersion, fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
+import { commentHistoryVersion, deleteHistoryVersion, fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
 import { getDefaultOptions, getMonaco, setValue } from '@fe/services/editor'
 import { isEncrypted, isSameFile } from '@fe/services/document'
 import { inputPassword } from '@fe/services/base'
@@ -58,7 +68,9 @@ import XMask from './Mask.vue'
 import GroupTabs from './GroupTabs.vue'
 import { useModal } from '@fe/support/ui/modal'
 
-type Version = {value: string, label: string, title: string, encrypted: boolean}
+type Version = {value: string, label: string, title: string, encrypted: boolean, comment: string}
+
+const MARKED = '--marked--'
 
 const logger = getLogger('doc-history-component')
 
@@ -71,15 +83,29 @@ const getDisplayTypes = () => [
   { label: t('doc-history.diff'), value: 'diff' },
 ]
 
+const getListTypes = () => [
+  { label: t('doc-history.all'), value: 'all' },
+  { label: t('doc-history.marked'), value: 'marked' },
+]
+
 const currentDoc = ref<Doc | null>(null)
 const currentVersion = ref<Version>()
 const versions = ref<Version[]>([])
 const content = ref('')
 const displayType = ref<'content' | 'diff'>('content')
+const listType = ref<'all' | 'marked'>('all')
 const refEditor = ref<HTMLElement | null>(null)
 
 const currentContent = toRef<AppState, 'currentContent'>(store.state, 'currentContent')
 const currentFile = toRef<AppState, 'currentFile'>(store.state, 'currentFile')
+
+const xVersions = computed(() => {
+  if (listType.value === 'marked') {
+    return versions.value.filter(x => x.comment)
+  }
+
+  return versions.value
+})
 
 function show (doc?: Doc) {
   doc ??= currentFile.value!
@@ -91,7 +117,7 @@ function hide () {
 }
 
 async function fetchVersions () {
-  versions.value = (currentDoc.value ? await fetchHistoryList(currentDoc.value) : []).map(value => {
+  versions.value = (currentDoc.value ? await fetchHistoryList(currentDoc.value) : []).map(({ name: value, comment }) => {
     const arr = value.split('.')
     const name = arr[0]
     const encrypted = isEncrypted({ path: value })
@@ -100,8 +126,25 @@ async function fetchVersions () {
     const time = tmp.join(' ')
     const title = dayjs().to(time)
 
-    return { value, label: time, title, encrypted }
+    return { value, label: time, title, encrypted, comment }
   })
+}
+
+async function markVersion (version: Version) {
+  const msg = await useModal().input({
+    title: t('doc-history.mark-dialog.title', version.label),
+    hint: t('doc-history.mark-dialog.hint')
+  })
+
+  if (typeof msg === 'string') {
+    await commentHistoryVersion(currentDoc.value!, version.value, msg || MARKED)
+    await fetchVersions()
+  }
+}
+
+async function unmarkVersion (version: Version) {
+  await commentHistoryVersion(currentDoc.value!, version.value, '')
+  await fetchVersions()
 }
 
 async function deleteVersion (version: Version) {
@@ -201,6 +244,10 @@ function updateEditor () {
 watch(currentDoc, fetchVersions)
 
 watch(versions, async val => {
+  if (val.find(x => x.value === currentVersion.value?.value)) {
+    return
+  }
+
   currentVersion.value = (val && val.length) ? val[0] : undefined
 })
 
@@ -263,12 +310,19 @@ onUnmounted(() => {
   height: 65vh;
 }
 
+.versions-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 278px;
+  flex: none;
+}
+
 .versions {
   overflow-y: auto;
   height: 100%;
-  width: 276px;
+  width: 100%;
   box-sizing: border-box;
-  flex: none;
   font-family: monospace;
   font-size: 16px;
   background-color: var(--g-color-88);
@@ -279,18 +333,27 @@ onUnmounted(() => {
     padding-right: 4px;
     line-height: 1.5em;
     cursor: pointer;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    border-radius: var(--g-border-radius);
+    position: relative;
+    background-color: var(--g-color-88);
+    border-bottom: 1px var(--g-color-80) solid;
+    color: var(--g-color-30);
 
-    .delete {
+    .title {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      line-height: 2;
+    }
+
+    .comment {
+      overflow-wrap: break-word;
+    }
+
+    .action-icon {
       color: var(--g-color-50);
-      width: 12px;
-      margin-left: 4px;
+      margin-left: 6px;
       vertical-align: sub;
       transition: color 0.1s;
-      display: none;
 
       &:hover {
         color: var(--g-color-20);
@@ -299,14 +362,17 @@ onUnmounted(() => {
 
     &:hover {
       background-color: var(--g-color-82);
+      border-radius: var(--g-border-radius);
 
-      .delete {
+      .actions {
         display: inline-block;
       }
     }
 
     &.selected {
       background-color: var(--g-color-74);
+      border-radius: var(--g-border-radius);
+      color: var(--g-color-0);
     }
   }
 
@@ -316,6 +382,14 @@ onUnmounted(() => {
     min-width: 2em;
     margin-right: 6px;
     color: var(--g-color-50)
+  }
+
+  .actions {
+    position: absolute;
+    display: none;
+    right: 0;
+    background-color: var(--g-color-82);
+    padding-right: 6px;
   }
 }
 
@@ -335,10 +409,25 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
+.tabs {
+  display: inline-flex;
+  margin-bottom: 8px;
+  z-index: 1;
+  flex: none;
+
+  ::v-deep(.tab) {
+    line-height: 1.5;
+    font-size: 14px;
+  }
+}
+
 .content {
   width: 100%;
   text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   &>.diff-tips {
     width: 100%;
@@ -350,22 +439,10 @@ onUnmounted(() => {
     color: var(--g-color-40);
   }
 
-  &>.tabs {
-    display: inline-flex;
-    position: absolute;
-    top: -30px;
-    margin-left: -80px;
-    z-index: 1;
-
-    ::v-deep(.tab) {
-      line-height: 1.5;
-      font-size: 14px;
-    }
-  }
-
   &>.display {
     text-align: left;
     height: 100%;
+    width: 100%;
   }
 }
 
