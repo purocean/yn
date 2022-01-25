@@ -89,6 +89,18 @@ async function moveHistory (oldPath: string, newPath: string) {
   await fs.move(oldHistoryPath, newHistoryPath)
 }
 
+export async function deleteHistoryVersion (repo: string, p: string, version: string) {
+  if (readonly) throw new Error('Readonly')
+
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    const zip = new AdmZip(historyFilePath)
+    zip.deleteFile(version)
+    zip.writeZip(historyFilePath)
+  }, p)
+}
+
 export function read (repo: string, p: string): Promise<Buffer> {
   return withRepo(repo, (_, targetPath) => fs.readFile(targetPath), p)
 }

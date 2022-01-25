@@ -454,6 +454,10 @@ const data: BaseLanguage = {
     'diff': '对比',
     'history': '历史',
     'current': '当前',
+    'delete-dialog': {
+      'title': '删除版本',
+      'content': '你确定要删除版本 [%s] 吗？',
+    },
   },
 }
 

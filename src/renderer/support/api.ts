@@ -144,6 +144,16 @@ export async function fetchHistoryContent (file: PathItem, version: string): Pro
   return data
 }
 
+export async function deleteHistoryVersion (file: PathItem, version: string) {
+  const { path, repo } = file
+  const { data } = await fetchHttp('/api/history/delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo, path, version })
+  })
+  return data
+}
+
 /**
  * Fetch file tree from a repository.
  * @param repo

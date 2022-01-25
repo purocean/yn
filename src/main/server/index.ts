@@ -69,6 +69,9 @@ const fileContent = async (ctx: any, next: any) => {
     ctx.body = result('ok', 'success', (await file.historyList(ctx.query.repo, ctx.query.path)))
   } else if (ctx.path === '/api/history/content') {
     ctx.body = result('ok', 'success', (await file.historyContent(ctx.query.repo, ctx.query.path, ctx.query.version)))
+  } else if (ctx.path === '/api/history/delete') {
+    const { repo, path, version } = ctx.request.body
+    ctx.body = result('ok', 'success', (await file.deleteHistoryVersion(repo, path, version)))
   } else {
     await next()
   }

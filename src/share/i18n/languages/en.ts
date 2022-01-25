@@ -173,7 +173,7 @@ const data = {
     },
     'delete-dialog': {
       'title': 'Delete a File',
-      'content': 'Are you sure delete %s?'
+      'content': 'Are you sure want to delete %s?'
     },
     'move-dialog': {
       'title': 'Move/Rename a File',
@@ -453,6 +453,10 @@ const data = {
     'diff': 'Diff',
     'history': 'History',
     'current': 'Current',
+    'delete-dialog': {
+      'title': 'Delete',
+      'content': 'Are you sure want to delete [%s]?',
+    },
   },
 }
 

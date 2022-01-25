@@ -12,6 +12,7 @@
             @click="choose(version)">
             <span class="seq">{{i.toString().padStart(4, '0')}}</span>
             <span>{{version.label}}</span>
+            <svg-icon class="delete" name="trash-solid" @click="deleteVersion(version)" />
           </div>
         </div>
         <div class="content" v-if="content">
@@ -25,7 +26,7 @@
         <div class="content" v-else>{{$t('doc-history.no-history')}}</div>
       </div>
 
-      <div class="doc-name">{{currentDoc.name}}</div>
+      <div class="doc-name">{{currentVersion.label}} {{currentVersion.title}} {{currentDoc.name}}</div>
 
       <div class="action">
         <button class="btn" @click="hide">{{$t('close')}}</button>
@@ -43,7 +44,7 @@ import { ref, onMounted, onUnmounted, watch, toRef } from 'vue'
 import { removeAction, registerAction } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { Alt } from '@fe/core/command'
-import { fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
+import { deleteHistoryVersion, fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
 import { getDefaultOptions, getMonaco, setValue } from '@fe/services/editor'
 import { isEncrypted, isSameFile } from '@fe/services/document'
 import { inputPassword } from '@fe/services/base'
@@ -52,8 +53,10 @@ import type { AppState } from '@fe/support/store'
 import { getLogger } from '@fe/utils'
 import type { Doc } from '@fe/types'
 import { decrypt } from '@fe/utils/crypto'
+import SvgIcon from '@fe/components/SvgIcon.vue'
 import XMask from './Mask.vue'
 import GroupTabs from './GroupTabs.vue'
+import { useModal } from '@fe/support/ui/modal'
 
 type Version = {value: string, label: string, title: string, encrypted: boolean}
 
@@ -85,6 +88,30 @@ function show (doc?: Doc) {
 
 function hide () {
   currentDoc.value = null
+}
+
+async function fetchVersions () {
+  versions.value = (currentDoc.value ? await fetchHistoryList(currentDoc.value) : []).map(value => {
+    const arr = value.split('.')
+    const name = arr[0]
+    const encrypted = isEncrypted({ path: value })
+    const tmp = name.split(' ')
+    tmp[1] = tmp[1].replaceAll('-', ':')
+    const time = tmp.join(' ')
+    const title = dayjs().to(time)
+
+    return { value, label: time, title, encrypted }
+  })
+}
+
+async function deleteVersion (version: Version) {
+  if (await useModal().confirm({
+    title: t('doc-history.delete-dialog.title'),
+    content: t('doc-history.delete-dialog.content', version.label)
+  })) {
+    await deleteHistoryVersion(currentDoc.value!, version.value)
+    await fetchVersions()
+  }
 }
 
 function choose (version: Version) {
@@ -171,19 +198,7 @@ function updateEditor () {
   }
 }
 
-watch(currentDoc, async val => {
-  versions.value = (val ? await fetchHistoryList(val) : []).map(value => {
-    const arr = value.split('.')
-    const name = arr[0]
-    const encrypted = isEncrypted({ path: value })
-    const tmp = name.split(' ')
-    tmp[1] = tmp[1].replaceAll('-', ':')
-    const time = tmp.join(' ')
-    const title = dayjs().to(time)
-
-    return { value, label: time, title, encrypted }
-  })
-})
+watch(currentDoc, fetchVersions)
 
 watch(versions, async val => {
   currentVersion.value = (val && val.length) ? val[0] : undefined
@@ -251,7 +266,7 @@ onUnmounted(() => {
 .versions {
   overflow-y: auto;
   height: 100%;
-  width: 265px;
+  width: 276px;
   box-sizing: border-box;
   flex: none;
   font-family: monospace;
@@ -261,7 +276,7 @@ onUnmounted(() => {
 
   .item {
     padding-left: 4px;
-    padding-right: 10px;
+    padding-right: 4px;
     line-height: 1.5em;
     cursor: pointer;
     text-overflow: ellipsis;
@@ -269,8 +284,25 @@ onUnmounted(() => {
     overflow: hidden;
     border-radius: var(--g-border-radius);
 
+    .delete {
+      color: var(--g-color-50);
+      width: 12px;
+      margin-left: 4px;
+      vertical-align: sub;
+      transition: color 0.1s;
+      display: none;
+
+      &:hover {
+        color: var(--g-color-20);
+      }
+    }
+
     &:hover {
       background-color: var(--g-color-82);
+
+      .delete {
+        display: inline-block;
+      }
     }
 
     &.selected {
@@ -288,11 +320,17 @@ onUnmounted(() => {
 }
 
 .doc-name {
+  padding-right: 240px;
   font-size: 14px;
   font-weight: normal;
   margin-left: 6px;
   position: absolute;
   bottom: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  box-sizing: border-box;
   color: var(--g-color-30);
 }
 
