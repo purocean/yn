@@ -304,8 +304,9 @@ const data = {
     'error-choose-repo-path': 'Please choose repository path',
     'tabs': {
       'repos': 'Repositories',
-      'editor': 'Editor',
       'appearance': 'Appearance',
+      'editor': 'Editor',
+      'image': 'Image',
       'other': 'Other',
     },
     'schema': {
@@ -334,6 +335,10 @@ const data = {
       },
       'doc-history': {
         'number-limit': 'Versions Retained',
+      },
+      'server': {
+        'port': 'Listen Port',
+        'port-desc': 'Need to restart the application.'
       },
     }
   },

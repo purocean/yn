@@ -330,11 +330,16 @@ const data: BaseLanguage = {
       'doc-history': {
         'number-limit': '版本保留数',
       },
+      'server': {
+        'port': '监听端口',
+        'port-desc': '需要重启应用',
+      },
     },
     'tabs': {
       'repos': '仓库',
-      'editor': '编辑器',
       'appearance': '外观',
+      'editor': '编辑器',
+      'image': '图片',
       'other': '其他',
     },
   },

@@ -46,6 +46,7 @@ export default defineComponent({
       { label: t('setting-panel.tabs.repos') as any, value: 'repos' },
       { label: t('setting-panel.tabs.appearance') as any, value: 'appearance' },
       { label: t('setting-panel.tabs.editor') as any, value: 'editor' },
+      { label: t('setting-panel.tabs.image') as any, value: 'image' },
       { label: t('setting-panel.tabs.other') as any, value: 'other' },
     ]
 
@@ -180,6 +181,7 @@ export default defineComponent({
         repos: getPaths('repos'),
         editor: getPaths('editor'),
         appearance: getPaths('appearance'),
+        image: getPaths('image'),
         other: getPaths('other'),
       }
 

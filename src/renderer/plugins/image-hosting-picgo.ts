@@ -21,7 +21,7 @@ export default {
           patternmessage: 'T_picgo.setting.api-msg',
           inputAttributes: { placeholder: 'http://127.0.0.1:36677/upload' }
         },
-        group: 'other',
+        group: 'image',
       }
 
       schema.properties[settingKeyPaste] = {
@@ -29,7 +29,7 @@ export default {
         type: 'boolean',
         format: 'checkbox',
         defaultValue: false,
-        group: 'other',
+        group: 'image',
       }
     })
 

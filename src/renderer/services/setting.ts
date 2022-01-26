@@ -21,7 +21,7 @@ export type Schema = {
     required?: boolean,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
     enum?: string[] | number [],
-    group: 'repos' | 'appearance' | 'editor' | 'other',
+    group: 'repos' | 'appearance' | 'editor' | 'image' | 'other',
     items?: {
       type: string,
       title: TTitle,
@@ -124,7 +124,7 @@ const schema: Schema = {
       type: 'string',
       minLength: 1,
       description: 'T_setting-panel.schema.assets-desc',
-      group: 'other',
+      group: 'image',
     },
     'editor.tab-size': {
       defaultValue: 4,
@@ -168,6 +168,16 @@ const schema: Schema = {
       type: 'string',
       group: 'other',
     },
+    'server.port': {
+      defaultValue: 3044,
+      title: 'T_setting-panel.schema.server.port',
+      description: 'T_setting-panel.schema.server.port-desc',
+      type: 'number',
+      group: 'other',
+      required: true,
+      minimum: 10,
+      maximum: 65535,
+    }
   } as Partial<Schema['properties']> as any,
   required: [],
 }
