@@ -60,14 +60,16 @@ import { getDefaultOptions, getMonaco, setValue } from '@fe/services/editor'
 import { isEncrypted, isSameFile } from '@fe/services/document'
 import { inputPassword } from '@fe/services/base'
 import { useI18n } from '@fe/services/i18n'
+import { useModal } from '@fe/support/ui/modal'
+import { useToast } from '@fe/support/ui/toast'
 import type { AppState } from '@fe/support/store'
 import { getLogger } from '@fe/utils'
 import type { Doc } from '@fe/types'
 import { decrypt } from '@fe/utils/crypto'
+import { getPurchased, showPremium } from '@fe/others/premium'
 import SvgIcon from '@fe/components/SvgIcon.vue'
 import XMask from './Mask.vue'
 import GroupTabs from './GroupTabs.vue'
-import { useModal } from '@fe/support/ui/modal'
 
 type Version = {value: string, label: string, title: string, encrypted: boolean, comment: string}
 
@@ -132,6 +134,12 @@ async function fetchVersions () {
 }
 
 async function markVersion (version: Version) {
+  if (!getPurchased()) {
+    useToast().show('warning', t('premium.need-purchase', 'Mark'))
+    showPremium()
+    return
+  }
+
   const msg = await useModal().input({
     title: t('doc-history.mark-dialog.title', version.label),
     hint: t('doc-history.mark-dialog.hint')
