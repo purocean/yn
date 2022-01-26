@@ -433,7 +433,7 @@ const data = {
     }
   },
   'control-center': {
-    'control-center': 'Control Center %s',
+    'control-center': 'Control Center (%s)',
     'switch': {
       'side-bar': 'Side Bar %s',
       'editor': 'Editor %s',

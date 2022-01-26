@@ -434,7 +434,7 @@ const data: BaseLanguage = {
     }
   },
   'control-center': {
-    'control-center': '控制中心 %s',
+    'control-center': '控制中心 (%s)',
     'switch': {
       'side-bar': '侧栏 %s',
       'editor': '编辑器 %s',
