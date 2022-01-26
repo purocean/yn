@@ -111,7 +111,7 @@ const schema: Schema = {
       defaultValue: 500,
       title: 'T_setting-panel.schema.doc-history.number-limit',
       type: 'number',
-      enum: [0, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000],
+      enum: [0, 10, 20, 50, 100, 200, 500, 1000],
       options: {
         enum_titles: ['Disable'],
       },
