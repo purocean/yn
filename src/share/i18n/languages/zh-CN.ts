@@ -463,6 +463,7 @@ const data: BaseLanguage = {
     'mark': '标记',
     'unmark': '取消标记',
     'delete': '删除',
+    'edit-message': '编辑消息',
     'delete-dialog': {
       'title': '删除版本',
       'content': '你确定要删除版本 [%s] 吗？',

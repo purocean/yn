@@ -462,6 +462,7 @@ const data = {
     'mark': 'Mark',
     'unmark': 'Unmark',
     'delete': 'Delete',
+    'edit-message': 'Edit Message',
     'delete-dialog': {
       'title': 'Delete',
       'content': 'Are you sure want to delete [%s]?',

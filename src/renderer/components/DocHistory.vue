@@ -17,12 +17,16 @@
                 <span>{{version.label}}</span>
                 <svg-icon v-if="version.comment" class="action-icon" style="width: 15px" name="star-solid" @click.stop />
                 <div class="actions" @click.stop>
-                  <svg-icon class="action-icon" :title="$t('doc-history.delete')" style="width: 12px" name="trash-solid" @click="deleteVersion(version)" />
-                  <svg-icon v-if="version.comment" :title="$t('doc-history.unmark')" class="action-icon" style="width: 15px" name="star-solid" @click="unmarkVersion(version)" />
-                  <svg-icon v-else class="action-icon" :title="$t('doc-history.mark')" style="width: 15px" name="star-regular" @click="markVersion(version)" />
+                  <svg-icon class="action-icon" :title="$t('doc-history.delete')" width="12px" name="trash-solid" @click="deleteVersion(version)" />
+                  <svg-icon v-if="version.comment" :title="$t('doc-history.unmark')" class="action-icon" width="15px" name="star-solid" @click="unmarkVersion(version)" />
+                  <svg-icon v-else class="action-icon" :title="$t('doc-history.mark')" width="15px" name="star-regular" @click="markVersion(version)" />
                 </div>
               </div>
-              <div v-if="version.comment && version.comment !== MARKED" class="comment">{{version.comment}}</div>
+              <div v-if="version.comment" class="comment">
+                <span v-if="version.comment !== MARKED">{{version.comment}}</span>
+                <i v-else>No Message</i>
+                <svg-icon width="12px" class="action-icon" name="pen-solid" :title="$t('doc-history.edit-message')" @click.stop="editVersionComment(version)" />
+              </div>
             </div>
           </div>
         </div>
@@ -57,7 +61,7 @@ import { removeAction, registerAction } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { Alt } from '@fe/core/command'
 import { commentHistoryVersion, deleteHistoryVersion, fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
-import { getDefaultOptions, getMonaco, setValue } from '@fe/services/editor'
+import { getDefaultOptions, getMonaco, setValue, whenEditorReady } from '@fe/services/editor'
 import { isEncrypted, isSameFile } from '@fe/services/document'
 import { inputPassword } from '@fe/services/base'
 import { useI18n } from '@fe/services/i18n'
@@ -173,6 +177,20 @@ async function unmarkVersion (version: Version) {
   await changeVersionComment(version, '')
 }
 
+async function editVersionComment (version: Version) {
+  let msg: string | null = version.comment === MARKED ? '' : version.comment
+
+  msg = await useModal().input({
+    title: t('doc-history.mark-dialog.title', version.label),
+    hint: t('doc-history.mark-dialog.hint'),
+    value: msg,
+  })
+
+  if (typeof msg === 'string') {
+    await changeVersionComment(version, msg || MARKED)
+  }
+}
+
 async function deleteVersion (version: Version) {
   if (await useModal().confirm({
     title: t('doc-history.delete-dialog.title'),
@@ -220,8 +238,10 @@ function cleanEditor () {
   }
 }
 
-function updateEditor () {
+async function updateEditor () {
   logger.debug('updateEditor', !!refEditor.value, !!displayType.value, !!content.value)
+
+  await whenEditorReady()
 
   if (!refEditor.value || !displayType.value || !content.value) {
     cleanEditor()
@@ -388,6 +408,14 @@ onUnmounted(() => {
 
     .comment {
       overflow-wrap: break-word;
+      .action-icon {
+        display: none;
+      }
+
+      i {
+        display: none;
+        color: var(--g-color-40);
+      }
     }
 
     .action-icon {
@@ -408,15 +436,25 @@ onUnmounted(() => {
       .actions {
         display: inline-block;
       }
+
+      .comment {
+        i {
+          display: inline;
+        }
+
+        .action-icon {
+          display: inline-block;
+        }
+      }
     }
 
     &.selected {
-      background-color: var(--g-color-74);
+      background-color: var(--g-color-78);
       border-radius: var(--g-border-radius);
       color: var(--g-color-0);
 
       .actions {
-        background: var(--g-color-74);
+        background: var(--g-color-78);
       }
     }
   }

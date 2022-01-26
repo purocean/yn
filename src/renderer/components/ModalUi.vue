@@ -86,7 +86,7 @@ export default defineComponent({
       })
     }
 
-    function input (params: Components.Modal.InputModalParams): Promise<string> {
+    function input (params: Components.Modal.InputModalParams): Promise<string | null> {
       type.value = 'input'
       title.value = params.title || t('modal.input-placeholder')
       content.value = params.content || ''
