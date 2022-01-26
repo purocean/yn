@@ -455,6 +455,9 @@ const data: BaseLanguage = {
     'current': '当前',
     'all': '全部',
     'marked': '已标记',
+    'mark': '标记',
+    'unmark': '取消标记',
+    'delete': '删除',
     'delete-dialog': {
       'title': '删除版本',
       'content': '你确定要删除版本 [%s] 吗？',

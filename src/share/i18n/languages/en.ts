@@ -454,6 +454,9 @@ const data = {
     'current': 'Current',
     'all': 'All',
     'marked': 'Marked',
+    'mark': 'Mark',
+    'unmark': 'Unmark',
+    'delete': 'Delete',
     'delete-dialog': {
       'title': 'Delete',
       'content': 'Are you sure want to delete [%s]?',

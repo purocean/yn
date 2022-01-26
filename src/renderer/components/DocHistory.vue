@@ -17,9 +17,9 @@
                 <span>{{version.label}}</span>
                 <svg-icon v-if="version.comment" class="action-icon" style="width: 15px" name="star-solid" @click.stop />
                 <div class="actions" @click.stop>
-                  <svg-icon class="action-icon" style="width: 12px" name="trash-solid" @click="deleteVersion(version)" />
-                  <svg-icon v-if="version.comment" class="action-icon" style="width: 15px" name="star-solid" @click="unmarkVersion(version)" />
-                  <svg-icon v-else class="action-icon" style="width: 15px" name="star-regular" @click="markVersion(version)" />
+                  <svg-icon class="action-icon" :title="$t('doc-history.delete')" style="width: 12px" name="trash-solid" @click="deleteVersion(version)" />
+                  <svg-icon v-if="version.comment" :title="$t('doc-history.unmark')" class="action-icon" style="width: 15px" name="star-solid" @click="unmarkVersion(version)" />
+                  <svg-icon v-else class="action-icon" :title="$t('doc-history.mark')" style="width: 15px" name="star-regular" @click="markVersion(version)" />
                 </div>
               </div>
               <div v-if="version.comment && version.comment !== MARKED" class="comment">{{version.comment}}</div>
@@ -34,7 +34,7 @@
           </div>
           <div class="display" ref="refEditor"></div>
         </div>
-        <div class="content" v-else>{{$t('doc-history.no-history')}}</div>
+        <div class="content no-history" v-else>{{$t('doc-history.no-history')}}</div>
       </div>
 
       <div class="doc-name">{{currentVersion?.label}} {{currentVersion?.title}} {{currentDoc.name}}</div>
@@ -482,5 +482,11 @@ onUnmounted(() => {
   &:hover {
     color: var(--g-color-10);
   }
+}
+
+.no-history {
+  padding-top: 100px;
+  position: absolute;
+  left: 0;
 }
 </style>
