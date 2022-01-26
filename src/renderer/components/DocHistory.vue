@@ -122,18 +122,23 @@ function hide () {
 }
 
 async function fetchVersions () {
-  versions.value = null
-  versions.value = (currentDoc.value ? await fetchHistoryList(currentDoc.value) : []).map(({ name: value, comment }) => {
-    const arr = value.split('.')
-    const name = arr[0]
-    const encrypted = isEncrypted({ path: value })
-    const tmp = name.split(' ')
-    tmp[1] = tmp[1].replaceAll('-', ':')
-    const time = tmp.join(' ')
-    const title = dayjs().to(time)
+  try {
+    versions.value = null
+    versions.value = (currentDoc.value ? await fetchHistoryList(currentDoc.value) : []).map(({ name: value, comment }) => {
+      const arr = value.split('.')
+      const name = arr[0]
+      const encrypted = isEncrypted({ path: value })
+      const tmp = name.split(' ')
+      tmp[1] = tmp[1].replaceAll('-', ':')
+      const time = tmp.join(' ')
+      const title = dayjs().to(time)
 
-    return { value, label: time, title, encrypted, comment }
-  })
+      return { value, label: time, title, encrypted, comment }
+    })
+  } catch (error) {
+    versions.value = []
+    console.error(error)
+  }
 }
 
 async function markVersion (version: Version) {
