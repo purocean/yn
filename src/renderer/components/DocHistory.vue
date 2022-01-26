@@ -141,6 +141,17 @@ async function fetchVersions () {
   }
 }
 
+async function changeVersionComment (version: Version, msg: string) {
+  await commentHistoryVersion(currentDoc.value!, version.value, msg)
+  versions.value = (versions.value || []).map(x => {
+    if (x.value === version.value) {
+      x.comment = msg
+    }
+
+    return x
+  })
+}
+
 async function markVersion (version: Version) {
   if (!getPurchased()) {
     useToast().show('warning', t('premium.need-purchase', 'Mark'))
@@ -154,14 +165,12 @@ async function markVersion (version: Version) {
   })
 
   if (typeof msg === 'string') {
-    await commentHistoryVersion(currentDoc.value!, version.value, msg || MARKED)
-    await fetchVersions()
+    await changeVersionComment(version, msg || MARKED)
   }
 }
 
 async function unmarkVersion (version: Version) {
-  await commentHistoryVersion(currentDoc.value!, version.value, '')
-  await fetchVersions()
+  await changeVersionComment(version, '')
 }
 
 async function deleteVersion (version: Version) {
@@ -170,7 +179,7 @@ async function deleteVersion (version: Version) {
     content: t('doc-history.delete-dialog.content', version.label)
   })) {
     await deleteHistoryVersion(currentDoc.value!, version.value)
-    await fetchVersions()
+    versions.value = (versions.value || []).filter(x => x.value !== version.value)
   }
 }
 
@@ -339,7 +348,7 @@ onUnmounted(() => {
 
 .history {
   display: flex;
-  height: 65vh;
+  height: 75vh;
 }
 
 .versions-wrapper {
@@ -405,6 +414,10 @@ onUnmounted(() => {
       background-color: var(--g-color-74);
       border-radius: var(--g-border-radius);
       color: var(--g-color-0);
+
+      .actions {
+        background: var(--g-color-74);
+      }
     }
   }
 
