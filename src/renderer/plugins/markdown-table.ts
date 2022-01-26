@@ -259,7 +259,7 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
       isCancel = true
     }
 
-    value = inputVal
+    value = inputVal || ''
   }
 
   if (!isCancel) {

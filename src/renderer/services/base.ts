@@ -67,7 +67,7 @@ export async function inputPassword (title: string, hint: string, throwError = f
     }
   }
 
-  return password
+  return password || ''
 }
 
 /**

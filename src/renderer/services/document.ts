@@ -278,7 +278,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     throw new Error('Could\'t move/rename root dir.')
   }
 
-  newPath = newPath ?? await useModal().input({
+  newPath ??= await useModal().input({
     title: t('document.move-dialog.title'),
     hint: t('document.move-dialog.content'),
     content: t('document.current-path', doc.path),
@@ -289,7 +289,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
       doc.name.lastIndexOf('.') > -1 ? doc.path.lastIndexOf('.') : doc.path.length,
       'forward'
     ]
-  })
+  }) || ''
 
   if (!newPath) {
     return
