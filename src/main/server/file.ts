@@ -49,6 +49,29 @@ function getHistoryFilePath (filePath: string) {
   return path.join(HISTORY_DIR, historyFileName)
 }
 
+function readHistoryZip (zipFilePath: string) {
+  const compressedZip = new AdmZip(zipFilePath)
+  const entry = compressedZip.getEntry('versions.zip')
+
+  if (!entry) {
+    throw new Error('history zip file error')
+  }
+
+  return new AdmZip(entry.getData())
+}
+
+function writeHistoryZip (zip: AdmZip, zipFilePath: string) {
+  // store only
+  zip.getEntries().forEach(entry => {
+    entry.header.method = 0
+  })
+
+  // compress entire file
+  const compressedZip = new AdmZip()
+  compressedZip.addFile('versions.zip', zip.toBuffer())
+  compressedZip.writeZip(zipFilePath)
+}
+
 async function writeHistory (filePath: string, content: any) {
   const limit = Math.min(10000, config.get('doc-history.number-limit', 200))
   if (limit < 1) {
@@ -57,9 +80,15 @@ async function writeHistory (filePath: string, content: any) {
 
   const historyFilePath = getHistoryFilePath(filePath)
 
-  const zip = new AdmZip((await fs.pathExists(historyFilePath)) ? historyFilePath : undefined)
+  let zip: AdmZip
 
-  const ext = filePath.endsWith('.c.md') ? '.c.md' : '.mc'
+  if ((await fs.pathExists(historyFilePath))) {
+    zip = readHistoryZip(historyFilePath)
+  } else {
+    zip = new AdmZip()
+  }
+
+  const ext = filePath.endsWith('.c.md') ? '.c.md' : '.md'
 
   zip.addFile(dayjs().format('YYYY-MM-DD HH-mm-ss') + ext, content)
 
@@ -69,7 +98,7 @@ async function writeHistory (filePath: string, content: any) {
     }
   })
 
-  zip.writeZip(historyFilePath)
+  writeHistoryZip(zip, historyFilePath)
 }
 
 async function moveHistory (oldPath: string, newPath: string) {
@@ -302,7 +331,7 @@ export function historyList (repo: string, path: string) {
       return []
     }
 
-    const zip = new AdmZip(historyFilePath)
+    const zip = readHistoryZip(historyFilePath)
     return orderBy(zip.getEntries(), x => x.entryName, 'desc').map(x => ({
       name: x.entryName,
       comment: x.comment
@@ -318,7 +347,7 @@ export function historyContent (repo: string, path: string, version: string) {
       return ''
     }
 
-    const zip = new AdmZip(historyFilePath)
+    const zip = readHistoryZip(historyFilePath)
     const entry = zip.getEntry(version)
     if (!entry) {
       return ''
@@ -342,7 +371,7 @@ export async function deleteHistoryVersion (repo: string, p: string, version: st
   return withRepo(repo, async (_, filePath) => {
     const historyFilePath = getHistoryFilePath(filePath)
 
-    const zip = new AdmZip(historyFilePath)
+    const zip = readHistoryZip(historyFilePath)
     if (version === '--all--') {
       zip.getEntries().slice().forEach(entry => {
         if (!entry.comment) {
@@ -353,7 +382,7 @@ export async function deleteHistoryVersion (repo: string, p: string, version: st
       zip.deleteFile(version)
     }
 
-    zip.writeZip(historyFilePath)
+    writeHistoryZip(zip, historyFilePath)
   }, p)
 }
 
@@ -363,7 +392,7 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
   return withRepo(repo, async (_, filePath) => {
     const historyFilePath = getHistoryFilePath(filePath)
 
-    const zip = new AdmZip(historyFilePath)
+    const zip = readHistoryZip(historyFilePath)
     const entry = zip.getEntry(version)
 
     if (!entry) {
@@ -372,6 +401,6 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
 
     entry.comment = msg
 
-    zip.writeZip(historyFilePath)
+    writeHistoryZip(zip, historyFilePath)
   }, p)
 }
