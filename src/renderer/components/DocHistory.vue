@@ -34,7 +34,8 @@
           </div>
           <div class="display" ref="refEditor"></div>
         </div>
-        <div class="content no-history" v-else>{{$t('doc-history.no-history')}}</div>
+        <div class="content no-history" v-if="versions === null">{{$t('loading')}}</div>
+        <div class="content no-history" v-else-if="versions.length === 0">{{$t('doc-history.no-history')}}</div>
       </div>
 
       <div class="doc-name">{{currentVersion?.label}} {{currentVersion?.title}} {{currentDoc.name}}</div>
@@ -93,7 +94,7 @@ const getListTypes = () => [
 
 const currentDoc = ref<Doc | null>(null)
 const currentVersion = ref<Version>()
-const versions = ref<Version[]>([])
+const versions = ref<Version[] | null>([])
 const content = ref('')
 const displayType = ref<'content' | 'diff'>('content')
 const listType = ref<'all' | 'marked'>('all')
@@ -104,7 +105,7 @@ const currentFile = toRef<AppState, 'currentFile'>(store.state, 'currentFile')
 
 const xVersions = computed(() => {
   if (listType.value === 'marked') {
-    return versions.value.filter(x => x.comment)
+    return (versions.value || []).filter(x => x.comment)
   }
 
   return versions.value
@@ -117,9 +118,11 @@ function show (doc?: Doc) {
 
 function hide () {
   currentDoc.value = null
+  versions.value = null
 }
 
 async function fetchVersions () {
+  versions.value = null
   versions.value = (currentDoc.value ? await fetchHistoryList(currentDoc.value) : []).map(({ name: value, comment }) => {
     const arr = value.split('.')
     const name = arr[0]
@@ -263,6 +266,11 @@ function updateEditor () {
 watch(currentDoc, fetchVersions)
 
 watch(versions, async val => {
+  if (!val) {
+    currentVersion.value = undefined
+    return
+  }
+
   if (val.find(x => x.value === currentVersion.value?.value)) {
     return
   }
