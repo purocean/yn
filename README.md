@@ -13,7 +13,7 @@ English | [中文说明](./README_ZH-CN.md)
 ## Highlights
 
 - **Easy to use:** Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
-- **Powerful:** Applets, runnable code blocks, tables, Plantuml, Drawio, macro replacements, etc., can be embedded in the document.
+- **Powerful:** Support version control; Applets, runnable code blocks, tables, Plantuml, Drawio, macro replacements, etc., can be embedded in the document.
 - **High compatibility:** Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
 - **Plug-in extension:** Support users to write their own plug-ins to expand the functionality of the editor.
 - **Encryption supported:** Use encryption to save private files such as account number, and the password can be set separately for each file.
@@ -45,6 +45,7 @@ For more information on how to use the following functions, please see [characte
 
 - **Sync scrolling:** the editing area and the preview area scroll synchronously, and the preview area can be scrolled independently
 - **Outline:** quickly jump to the corresponding location of the document through the directory outline in the preview area
+- **Version Control:** Support backtracking document history versions
 - **Encryption:** files ending with `.c.md` are treated as encrypted files
 - **Auto-save:** automatically save files after editing, with orange title bar reminder for unsaved files (encrypted documents are not automatically saved)
 - **Editing:** automatic completion of list
@@ -88,7 +89,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.22.0](https://github.com/purocean/yn/releases/tag/v3.22.0) 2022-01-27
+### [v3.22.1](https://github.com/purocean/yn/releases/tag/v3.22.1) 2022-01-27
 1. feat: add document history version control function
 2. feat: support custom listening port
 3. upd: optimize mind map interaction
