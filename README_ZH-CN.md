@@ -88,15 +88,27 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.21.1](https://github.com/purocean/yn/releases/tag/v3.21.1) 2022-01-20
-1. feat: 增加自定义导出 docx 参考文档功能
-2. feat: 图片保存目录配置增加 `{docName}` 占位变量
-3. feat: Markdown 解析支持 abbr 语法
-4. upd: 优化同步滚动体验
-5. fix: 修复隐藏编辑器时点击目录定位可能不正确问题
-6. fix: 修复隐藏预览时候点击演示按钮白屏问题
-7. feat(plugin): 增加`ctx.lib.filenamify` 模块
-8. feat(plugin): 增加`ctx.i18n.mergeLanguage` 方法
+### [v3.22.0](https://github.com/purocean/yn/releases/tag/v3.22.0) 2022-01-27
+1. feat: 增加文档历史版本控制功能
+2. feat: 支持自定义监听端口
+3. upd: 优化脑图交互
+4. upd: 升级 `markdown-it-multimd-table` 依赖
+5. upd: 其他体验优化
+6. fix: 修复某些情况下文件排序不稳定问题
+7. fix: 修复自定义容器嵌套样式问题
+8. fix: 修复某些情况下不能展示“转换为带标题链接”菜单问题
+9. fix: 修复导出/复制 HTML 时 `abbr` 标签丢失 `title` 属性问题
+10. feat(插件): 增加 `ctx.doc.showHistory` 方法
+11. feat(插件): 增加 `ctx.doc.hideHistory` 方法
+12. feat(插件): 增加 `ctx.editor.getDefaultOptions` 方法
+13. feat(插件): 增加 `ctx.editor.replaceLines` 方法
+14. feat(插件): 增加 `ctx.editor.getLinesContent` 方法
+15. feat(插件): 增加 `ctx.editor.setValue` 方法
+16. feat(插件): 增加 `ctx.api.fetchHistoryList` 方法
+17. feat(插件): 增加 `ctx.api.fetchHistoryContent` 方法
+18. feat(插件): 增加 `ctx.api.deleteHistoryVersion` 方法
+19. feat(插件): 增加 `ctx.api.commentHistoryVersion` 方法
+20. feat(插件): 给 `I18N_CHANGE_LANGUAGE` 钩子增加 `currentLang` 参数
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
