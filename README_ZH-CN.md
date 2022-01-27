@@ -89,7 +89,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.22.0](https://github.com/purocean/yn/releases/tag/v3.22.0) 2022-01-27
+### [v3.22.1](https://github.com/purocean/yn/releases/tag/v3.22.1) 2022-01-27
 1. feat: 增加文档历史版本控制功能
 2. feat: 支持自定义监听端口
 3. upd: 优化脑图交互
