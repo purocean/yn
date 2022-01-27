@@ -189,6 +189,7 @@ const settings = {
 
 if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
+  delete (schema.properties as any)['server.port']
 }
 
 /**
