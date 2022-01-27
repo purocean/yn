@@ -38,8 +38,8 @@ const data: BaseLanguage = {
       'desc': 'Yank Note 是一款面向程序员的开源笔记应用，从 2018 年开始，一直在不断更新。 因为软件的开发和维护需要精力和资金（如每年的苹果开发者账号订阅），现推出付费高级版。如果您需要高级版功能，或想支持我的开发，可以选择购买高级版。',
       'free-desc': '满足大部分用户需求',
       'premium-desc': '更多高级功能',
-      'free-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端',
-      'premium-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端\n宏替换\n暗色主题',
+      'free-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端\n文档历史',
+      'premium-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端\n文档历史 (增强)\n宏替换\n暗色主题',
     },
     'buy': {
       'buy': '购买',
@@ -220,6 +220,7 @@ const data: BaseLanguage = {
       'macro-copy-markdown': '复制宏替换后的 Markdown',
       'copy-rtf': '拷贝富文本',
       'copy-html': '拷贝渲染后的 HTML',
+      'doc-history': '文档历史版本'
     },
     'document-info': {
       'selected': '已选择',
@@ -326,11 +327,19 @@ const data: BaseLanguage = {
       'updater': {
         'source': '更新源',
       },
+      'doc-history': {
+        'number-limit': '版本保留数',
+      },
+      'server': {
+        'port': '监听端口',
+        'port-desc': '需要重启应用',
+      },
     },
     'tabs': {
       'repos': '仓库',
-      'editor': '编辑器',
       'appearance': '外观',
+      'editor': '编辑器',
+      'image': '图片',
       'other': '其他',
     },
   },
@@ -425,7 +434,7 @@ const data: BaseLanguage = {
     }
   },
   'control-center': {
-    'control-center': '控制中心 %s',
+    'control-center': '控制中心 (%s)',
     'switch': {
       'side-bar': '侧栏 %s',
       'editor': '编辑器 %s',
@@ -441,6 +450,32 @@ const data: BaseLanguage = {
       'back': '后退 %s',
       'refresh': '刷新',
     }
+  },
+  'doc-history': {
+    'apply-version': '应用选中版本',
+    'no-history': '无历史版本',
+    'content': '内容',
+    'diff': '对比',
+    'history': '历史',
+    'current': '当前',
+    'all': '全部',
+    'marked': '已标记',
+    'mark': '标记',
+    'unmark': '取消标记',
+    'delete': '删除',
+    'edit-message': '编辑消息',
+    'delete-dialog': {
+      'title': '删除版本',
+      'content': '你确定要删除版本 [%s] 吗？',
+    },
+    'clear-dialog': {
+      'title': '清除版本',
+      'content': '你确定要清除未标记的版本吗？',
+    },
+    'mark-dialog': {
+      'title': '标记版本 [%s]',
+      'hint': '输入一些信息（可选）',
+    },
   },
 }
 

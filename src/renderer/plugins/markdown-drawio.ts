@@ -120,10 +120,7 @@ const Drawio = defineComponent({
         h('div', { class: 'drawio-wrapper reduce-brightness', style: 'position: relative' }, [
           h(
             'div',
-            {
-              class: 'no-print',
-              style: 'position: absolute; right: 15px; top: 3px; z-index: 1;'
-            },
+            { class: 'drawio-action no-print' },
             [
               button(t('drawio.fit-height'), resize),
               button(t('reload'), reload),
@@ -423,6 +420,21 @@ export default {
   name: 'markdown-drawio',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
+
+    ctx.theme.addStyles(`
+      .markdown-view .markdown-body .drawio-wrapper .drawio-action {
+        position: absolute;
+        right: 15px;
+        top: 2px;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity .2s;
+      }
+
+      .markdown-view .markdown-body .drawio-wrapper:hover .drawio-action {
+        opacity: 1;
+      }
+    `)
 
     ctx.registerHook('TREE_NODE_SELECT', async ({ node }) => {
       if (node.path.toLowerCase().includes('.drawio')) {

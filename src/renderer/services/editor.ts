@@ -15,9 +15,9 @@ let editor: Monaco.editor.IStandaloneCodeEditor
 const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monospace'
 
 /**
- * Default options.
+ * Get default editor options.
  */
-export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
+export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstructionOptions => ({
   value: '',
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: getSetting('editor.font-size', 16),
@@ -43,7 +43,7 @@ export const defaultOptions: Monaco.editor.IStandaloneEditorConstructionOptions 
   detectIndentation: false,
   insertSpaces: true,
   tabSize: getSetting('editor.tab-size', 4),
-}
+})
 
 /**
  * Get Monaco
@@ -140,6 +140,28 @@ export function replaceLine (line: number, text: string) {
   editor.focus()
 }
 
+/**
+ * Replace text value of lines.
+ * @param lineStart
+ * @param lineEnd
+ * @param text
+ */
+export function replaceLines (lineStart: number, lineEnd: number, text: string) {
+  const lineEndPos = getEditor().getModel()!.getLineLength(lineEnd) + 1
+  const editor = getEditor()
+  const monaco = getMonaco()
+
+  editor.executeEdits('', [
+    {
+      range: new (monaco.Range)(lineStart, 1, lineEnd, lineEndPos),
+      text,
+      forceMoveMarkers: true
+    }
+  ])
+  editor.setPosition(new monaco.Position(lineEnd, lineEndPos))
+  editor.focus()
+}
+
 export function deleteLine (line: number) {
   const editor = getEditor()
   editor.executeEdits('', [
@@ -186,11 +208,44 @@ export function getLineContent (line: number) {
 }
 
 /**
+ * Get content of lines.
+ * @param lineStart
+ * @param lineEnd
+ * @returns
+ */
+export function getLinesContent (lineStart: number, lineEnd: number) {
+  const model = getEditor().getModel()!
+
+  const lineEndLength = model.getLineLength(lineEnd)
+  const range = new (getMonaco().Range)(lineStart, 1, lineEnd, lineEndLength + 1)
+  return model.getValueInRange(range)
+}
+
+/**
  * Get text value.
  * @returns
  */
 export function getValue () {
   return getEditor().getModel()!.getValue(getMonaco().editor.DefaultEndOfLine.LF as number)
+}
+
+/**
+ * Set text value to editor
+ * @param text
+ */
+export function setValue (text: string) {
+  const model = editor.getModel()
+  const maxLine = model!.getLineCount()
+  const endLineLength = model!.getLineLength(maxLine)
+
+  editor.executeEdits('', [
+    {
+      range: new (getMonaco().Range)(1, 1, maxLine, endLineLength + 1),
+      text,
+      forceMoveMarkers: true
+    }
+  ])
+  getEditor().focus()
 }
 
 /**
@@ -202,19 +257,9 @@ export function getValue () {
 export function replaceValue (search: string | RegExp, val: string, replaceAll = true) {
   const editor = getEditor()
   const model = editor.getModel()
-  const maxLine = model!.getLineCount()
-  const endLineLength = model!.getLineLength(maxLine)
   const content = model!.getValue()
   const text = replaceAll ? content.replaceAll(search, val) : content.replace(search, val)
-
-  editor.executeEdits('', [
-    {
-      range: new (getMonaco().Range)(1, 1, maxLine, endLineLength + 1),
-      text,
-      forceMoveMarkers: true
-    }
-  ])
-  getEditor().focus()
+  setValue(text)
 }
 
 /**

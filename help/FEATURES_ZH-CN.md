@@ -21,6 +21,7 @@ define:
 
 1. 配置文件 `<home>/yank-note/config.json`
 1. 导出 docx 参考文档 `<home>/yank-note/pandoc-reference.docx`
+1. 文档历史版本 `<home>/yank-note/histories`
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
 
@@ -495,6 +496,7 @@ Yank Note 允许你在页面中嵌入宏，用以动态的替换文档。
 - 是否开启页面标题序号编号: [= headingNumber =]
 - 使用变量: [= customVar =]
 - 定义变量: [= $export('testVar', 'Test') =][= testVar =]
+- 定义函数:  [= $export('format', (a, b) => `${a}, ${b}!`) =][= format('HELLO', 'WORLD') =]
 - 应用版本：[= $ctx.version =]
 - 当前文档名: [= $doc.basename =]
 - 当前时间: [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]

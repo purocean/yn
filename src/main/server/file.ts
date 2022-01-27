@@ -4,6 +4,10 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as crypto from 'crypto'
 import * as yargs from 'yargs'
+import AdmZip from 'adm-zip'
+import dayjs from 'dayjs'
+import { HISTORY_DIR } from '../constant'
+import config from '../config'
 import repository from './repository'
 
 const readonly = !!(yargs.argv.readonly)
@@ -40,6 +44,82 @@ function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath:
   }))
 }
 
+function getHistoryFilePath (filePath: string) {
+  const historyFileName = path.basename(filePath) + '.' + crypto.createHash('md5').update(filePath).digest('hex') + '.zip'
+  return path.join(HISTORY_DIR, historyFileName)
+}
+
+function readHistoryZip (zipFilePath: string) {
+  const compressedZip = new AdmZip(zipFilePath)
+  const entry = compressedZip.getEntry('versions.zip')
+
+  if (!entry) {
+    throw new Error('history zip file error')
+  }
+
+  return new AdmZip(entry.getData())
+}
+
+function writeHistoryZip (zip: AdmZip, zipFilePath: string) {
+  // store only
+  zip.getEntries().forEach(entry => {
+    entry.header.method = 0
+  })
+
+  // compress entire file
+  const compressedZip = new AdmZip()
+  compressedZip.addFile('versions.zip', zip.toBuffer())
+  compressedZip.writeZip(zipFilePath)
+}
+
+async function writeHistory (filePath: string, content: any) {
+  const limit = Math.min(10000, config.get('doc-history.number-limit', 500))
+  if (limit < 1) {
+    return
+  }
+
+  const historyFilePath = getHistoryFilePath(filePath)
+
+  let zip: AdmZip
+
+  if ((await fs.pathExists(historyFilePath))) {
+    zip = readHistoryZip(historyFilePath)
+  } else {
+    zip = new AdmZip()
+  }
+
+  const ext = filePath.endsWith('.c.md') ? '.c.md' : '.md'
+
+  zip.addFile(dayjs().format('YYYY-MM-DD HH-mm-ss') + ext, content)
+
+  orderBy(zip.getEntries(), x => x.entryName, 'desc').slice(limit).forEach(entry => {
+    if (!entry.comment) {
+      zip.deleteFile(entry)
+    }
+  })
+
+  writeHistoryZip(zip, historyFilePath)
+}
+
+async function moveHistory (oldPath: string, newPath: string) {
+  if (!oldPath.endsWith('.md')) {
+    return
+  }
+
+  const oldHistoryPath = getHistoryFilePath(oldPath)
+  const newHistoryPath = getHistoryFilePath(newPath)
+
+  if (!(await fs.pathExists(oldHistoryPath))) {
+    return
+  }
+
+  if (await fs.pathExists(newHistoryPath)) {
+    await fs.unlink(newHistoryPath)
+  }
+
+  await fs.move(oldHistoryPath, newHistoryPath)
+}
+
 export function read (repo: string, p: string): Promise<Buffer> {
   return withRepo(repo, (_, targetPath) => fs.readFile(targetPath), p)
 }
@@ -56,6 +136,10 @@ export function write (repo: string, p: string, content: any): Promise<string> {
 
     await fs.ensureFile(filePath)
     await fs.writeFile(filePath, content)
+
+    if (filePath.endsWith('.md')) {
+      setTimeout(() => writeHistory(filePath, content), 0)
+    }
 
     return crypto.createHash('md5').update(content).digest('hex')
   }, p)
@@ -77,6 +161,9 @@ export async function mv (repo: string, oldPath: string, newPath: string) {
   await withRepo(repo, async (_, oldP, newP) => {
     if (oldPath !== newP) {
       await fs.move(oldP, newP)
+      setTimeout(async () => {
+        await moveHistory(oldP, newP)
+      }, 0)
     }
   }, oldPath, newPath)
 }
@@ -156,7 +243,7 @@ async function travels (
   const sort = (items: TreeItem[]) => orderBy(items, x => {
     const number = parseFloat(x.name)
     if (!isNaN(number) && isFinite(number)) {
-      return number.toString().padStart(32)
+      return number.toString().padStart(20) + x.name
     }
 
     return x.name
@@ -234,4 +321,86 @@ export async function search (repo: string, str: string) {
   await withRepo(repo, repoPath => travelFiles(repoPath, repoPath, 1))
 
   return files
+}
+
+export function historyList (repo: string, path: string) {
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    if (!(await fs.pathExists(historyFilePath))) {
+      return []
+    }
+
+    const zip = readHistoryZip(historyFilePath)
+    return orderBy(zip.getEntries(), x => x.entryName, 'desc').map(x => ({
+      name: x.entryName,
+      comment: x.comment
+    }))
+  }, path)
+}
+
+export function historyContent (repo: string, path: string, version: string) {
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    if (!(await fs.pathExists(historyFilePath))) {
+      return ''
+    }
+
+    const zip = readHistoryZip(historyFilePath)
+    const entry = zip.getEntry(version)
+    if (!entry) {
+      return ''
+    }
+
+    return await new Promise<string>((resolve, reject) => {
+      entry.getDataAsync((data, err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(data.toString('utf-8'))
+        }
+      })
+    })
+  }, path)
+}
+
+export async function deleteHistoryVersion (repo: string, p: string, version: string) {
+  if (readonly) throw new Error('Readonly')
+
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    const zip = readHistoryZip(historyFilePath)
+    if (version === '--all--') {
+      zip.getEntries().slice().forEach(entry => {
+        if (!entry.comment) {
+          zip.deleteFile(entry)
+        }
+      })
+    } else {
+      zip.deleteFile(version)
+    }
+
+    writeHistoryZip(zip, historyFilePath)
+  }, p)
+}
+
+export async function commentHistoryVersion (repo: string, p: string, version: string, msg: string) {
+  if (readonly) throw new Error('Readonly')
+
+  return withRepo(repo, async (_, filePath) => {
+    const historyFilePath = getHistoryFilePath(filePath)
+
+    const zip = readHistoryZip(historyFilePath)
+    const entry = zip.getEntry(version)
+
+    if (!entry) {
+      return
+    }
+
+    entry.comment = msg
+
+    writeHistoryZip(zip, historyFilePath)
+  }, p)
 }

@@ -11,6 +11,7 @@ import { getLogger } from '@fe/utils'
 import { getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
+import { getActionHandler } from '@fe/core/action'
 
 const logger = getLogger('document')
 
@@ -44,8 +45,8 @@ export function getAbsolutePath (doc: Doc) {
  * @param doc
  * @returns
  */
-export function isEncrypted (doc?: Pick<Doc, 'path'> | null) {
-  return doc && doc.path.toLowerCase().endsWith('.c.md')
+export function isEncrypted (doc?: Pick<Doc, 'path'> | null): boolean {
+  return !!(doc && doc.path.toLowerCase().endsWith('.c.md'))
 }
 
 /**
@@ -277,7 +278,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     throw new Error('Could\'t move/rename root dir.')
   }
 
-  newPath = newPath ?? await useModal().input({
+  newPath ??= await useModal().input({
     title: t('document.move-dialog.title'),
     hint: t('document.move-dialog.content'),
     content: t('document.current-path', doc.path),
@@ -288,7 +289,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
       doc.name.lastIndexOf('.') > -1 ? doc.path.lastIndexOf('.') : doc.path.length,
       'forward'
     ]
-  })
+  }) || ''
 
   if (!newPath) {
     return
@@ -525,4 +526,19 @@ export async function showHelp (docName: string) {
  */
 export function showExport () {
   store.commit('setShowExport', true)
+}
+
+/**
+ * show history versions of document
+ * @param doc
+ */
+export function showHistory (doc: Doc) {
+  getActionHandler('doc.show-history')(doc)
+}
+
+/**
+ * hide history panel
+ */
+export function hideHistory () {
+  getActionHandler('doc.hide-history')()
 }

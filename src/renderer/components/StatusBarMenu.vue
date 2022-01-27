@@ -12,10 +12,10 @@
       </div>
       <ul v-if="showList && menu.list && menu.list.length" :class="{list: true, 'has-checked': menu.list.some(x => x.type === 'normal' && x.checked)}">
         <template v-for="item in menu.list" :key="item.id">
-          <li v-if="item.type === 'separator'" v-show="!item.hidden" :class="item.type"></li>
+          <li v-if="item.type === 'separator' && !item.hidden" :class="item.type"></li>
           <li
-            v-else
-            :class="{[item.type]: true, disabled: item.disabled, hidden: item.hidden}"
+            v-else-if="item.type !== 'separator' && !item.hidden"
+            :class="{[item.type]: true, disabled: item.disabled}"
             :title="item.tips"
             @click="handleItemClick(item)">
             <svg-icon class="checked-icon" v-if="item.checked" name="check-solid" />
@@ -174,10 +174,6 @@ export default defineComponent({
     .menu-item-title {
       color: var(--g-color-50);
     }
-  }
-
-  &.hidden {
-    display: none;
   }
 
   .checked-icon {

@@ -16,6 +16,7 @@ export const HELP_DIR = path.join(__dirname, '../../help')
 export const ASSETS_DIR = path.join(__dirname, 'assets')
 export const USER_PLUGIN_DIR = path.join(USER_DIR, './plugins')
 export const USER_THEME_DIR = path.join(USER_DIR, './themes')
+export const HISTORY_DIR = path.join(USER_DIR, './histories')
 
 export const BIN_DIR = convertAppPath(path.join(__dirname, '../../bin'))
 export const RESOURCES_DIR = convertAppPath(path.join(__dirname, 'resources'))

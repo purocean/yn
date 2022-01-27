@@ -129,7 +129,39 @@ export async function moveFile (file: FileItem, newPath: string): Promise<ApiRes
  */
 export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
   const { path, repo } = file
-  return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${repo}`, { method: 'DELETE' })
+  return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`, { method: 'DELETE' })
+}
+
+export async function fetchHistoryList (file: PathItem): Promise<{name: string, comment: string}[]> {
+  const { path, repo } = file
+  const { data } = await fetchHttp(`/api/history/list?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`)
+  return data
+}
+
+export async function fetchHistoryContent (file: PathItem, version: string): Promise<string> {
+  const { path, repo } = file
+  const { data } = await fetchHttp(`/api/history/content?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}&version=${encodeURIComponent(version)}`)
+  return data
+}
+
+export async function deleteHistoryVersion (file: PathItem, version: string) {
+  const { path, repo } = file
+  const { data } = await fetchHttp('/api/history/delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo, path, version })
+  })
+  return data
+}
+
+export async function commentHistoryVersion (file: PathItem, version: string, msg: string) {
+  const { path, repo } = file
+  const { data } = await fetchHttp('/api/history/comment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo, path, version, msg })
+  })
+  return data
 }
 
 /**
@@ -138,7 +170,7 @@ export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
  * @returns
  */
 export async function fetchTree (repo: string): Promise<Components.Tree.Node[]> {
-  const result = await fetchHttp(`/api/tree?repo=${repo}`)
+  const result = await fetchHttp(`/api/tree?repo=${encodeURIComponent(repo)}`)
   return result.data
 }
 
@@ -196,7 +228,7 @@ export async function choosePath (options: Record<string, any>): Promise<{ cance
  * @returns
  */
 export async function search (repo: string, text: string): Promise<Pick<Doc, 'repo' | 'type' | 'path' | 'name'>> {
-  const result = await fetchHttp(`/api/search?repo=${repo}&search=${encodeURIComponent(text)}`)
+  const result = await fetchHttp(`/api/search?repo=${encodeURIComponent(repo)}&search=${encodeURIComponent(text)}`)
   return result.data
 }
 

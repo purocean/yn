@@ -110,6 +110,8 @@ export type BuildInSettings = {
   'license': string,
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
+  'doc-history.number-limit': number,
+  'server.port': number,
 }
 
 export type BuildInActions = {
@@ -123,6 +125,8 @@ export type BuildInActions = {
   'view.get-render-env': () => RenderEnv | null,
   'view.enter-presentation': () => void,
   'view.exit-presentation': () => void,
+  'doc.show-history': (doc?: Doc) => void
+  'doc.hide-history': () => void,
   'layout.toggle-view': (visible?: boolean) => void,
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
@@ -190,7 +194,7 @@ export type BuildInHookTypes = {
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
   DOC_BEFORE_EXPORT: { type: ExportTypes },
-  I18N_CHANGE_LANGUAGE: { lang: LanguageName },
+  I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
   SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },

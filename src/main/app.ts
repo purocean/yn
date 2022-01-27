@@ -13,6 +13,7 @@ import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
 import { $t } from './i18n'
 import { getProxyAgent } from './proxy-agent'
+import config from './config'
 
 const electronContextMenu = require('electron-context-menu')
 const electronRemote = require('@electron/remote/main')
@@ -23,7 +24,7 @@ const isLinux = os.platform() === 'linux'
 let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
 
 const trayEnabled = !(yargs.argv['disable-tray'])
-const backendPort = Number(yargs.argv.port) || 3044
+const backendPort = Number(yargs.argv.port) || config.get('server.port', 3044)
 const devFrontendPort = 8066
 
 electronRemote.initialize()

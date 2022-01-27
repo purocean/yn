@@ -243,7 +243,7 @@ export default {
       if (
         target.tagName === 'A' &&
         parent?.dataset?.sourceLine &&
-        text === link &&
+        (text === link || text === decodeURI(link)) &&
         /^http:\/\/|^https:\/\//.test(link)
       ) {
         menus.push({
@@ -261,11 +261,13 @@ export default {
                 throw new Error('No title')
               }
 
-              const line = parseInt(parent.dataset.sourceLine || '0')
-              const content = ctx.editor.getLineContent(line)
+              const lineStart = parseInt(parent.getAttribute(DOM_ATTR_NAME.SOURCE_LINE_START) || '0')
+              const lineEnd = parseInt(parent.getAttribute(DOM_ATTR_NAME.SOURCE_LINE_END) || '0') - 1
+
+              const content = ctx.editor.getLinesContent(lineStart, lineEnd)
                 .replace(new RegExp(`(?<!\\()<?${link}>?(?!\\))`, 'i'), `[${title}](${link})`)
 
-              ctx.editor.replaceLine(line, content)
+              ctx.editor.replaceLine(lineStart, content)
               ctx.ui.useToast().hide()
             } catch (error: any) {
               console.error(error)

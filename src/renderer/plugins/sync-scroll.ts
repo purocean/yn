@@ -1,11 +1,9 @@
-import { debounce } from 'lodash-es'
 import type { Plugin } from '@fe/context'
-import { sleep } from '@fe/utils'
 
 export default {
   name: 'sync-scroll',
   register: (ctx) => {
-    type ScrollTop = { editor?: number, view?: number }
+    type ScrollTop = { editor?: number, view?: number, updatedAt: number }
 
     const STORAGE_KEY = 'plugin.scroll-position'
 
@@ -13,13 +11,16 @@ export default {
       const key = ctx.doc.toUri(ctx.store.state.currentFile)
       const data: Record<string, ScrollTop> = ctx.storage.get(STORAGE_KEY, {})
       data[key] = { ...data[key], ...scrollTop }
-      ctx.storage.set(STORAGE_KEY, data)
+
+      ctx.storage.set(STORAGE_KEY, Object.fromEntries(
+        ctx.lib.lodash.orderBy(Object.entries(data), x => x[1].updatedAt || 0, 'desc').slice(0, 100)
+      ))
     }
 
     // restore scroll bar location after file switched.
     ctx.registerHook('DOC_SWITCHED', async ({ doc }) => {
       if (doc) {
-        await sleep(0)
+        await ctx.utils.sleep(0)
 
         const key = ctx.doc.toUri(ctx.store.state.currentFile)
         const data: Record<string, ScrollTop> = ctx.storage.get(STORAGE_KEY, {})
@@ -30,7 +31,7 @@ export default {
         ctx.view.disableSyncScrollAwhile(async () => {
           ctx.editor.setScrollToTop(position.editor || 0)
           if (typeof position.view === 'number') {
-            await sleep(0)
+            await ctx.utils.sleep(0)
             ctx.view.scrollTopTo(position.view)
           }
         })
@@ -38,7 +39,7 @@ export default {
     })
 
     ctx.editor.whenEditorReady().then(({ editor }) => {
-      const savePosition = debounce(saveScrollPosition, 500)
+      const savePosition = ctx.lib.lodash.debounce(saveScrollPosition, 500)
       editor.onDidScrollChange(() => {
         const visibleRange = editor.getVisibleRanges()[0]
         const startLine = Math.max(1, visibleRange.startLineNumber - 1)
@@ -47,15 +48,15 @@ export default {
         if (ctx.view.getEnableSyncScroll()) {
           ctx.view.revealLine(startLine)
         }
-        savePosition({ editor: top })
+        savePosition({ editor: top, updatedAt: Date.now() })
       })
     })
 
-    const savePosition = debounce(saveScrollPosition, 500)
+    const savePosition = ctx.lib.lodash.debounce(saveScrollPosition, 500)
     ctx.registerHook('VIEW_SCROLL', ({ e }) => {
       if (ctx.store.state.currentFile?.status) {
         const { scrollTop } = e.target as HTMLElement
-        savePosition({ view: scrollTop })
+        savePosition({ view: scrollTop, updatedAt: Date.now() })
       }
     })
 

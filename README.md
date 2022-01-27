@@ -88,15 +88,27 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.21.1](https://github.com/purocean/yn/releases/tag/v3.21.1) 2022-01-20
-1. feat: support custom export docx reference document
-2. feat: add `{docName}` placeholder variable to image save directory configuration
-3. feat: supports abbr syntax
-4. upd: optimize the synchronous scrolling experience
-5. fix: fix the problem that the click directory location may be incorrect when the editor is hidden
-6. fix: fix the white screen problem when clicking the demo button when the preview is hidden
-7. feat(plugin): add `ctx.lib.filenamify` module
-8. feat(plugin): add `ctx.i18n.mergeLanguage` method
+### [v3.22.0](https://github.com/purocean/yn/releases/tag/v3.22.0) 2022-01-27
+1. feat: add document history version control function
+2. feat: support custom listening port
+3. upd: optimize mind map interaction
+4. upd: upgrade `markdown-it-multimd-table` dependency
+5. upd: other experience optimization
+6. fix: fix unstable file sorting in some cases
+7. fix: fix custom container nesting style
+8. fix: fix menu item "Convert to Link with Title" could not be displayed in some cases
+9. fix: fix `abbr` tag missing `title` attribute when exporting/copying HTML
+10. feat(plugin): add `ctx.doc.showHistory` method
+11. feat(plugin): add `ctx.doc.hideHistory` method
+12. feat(plugin): add `ctx.editor.getDefaultOptions` method
+13. feat(plugin): add `ctx.editor.replaceLines` method
+14. feat(plugin): add `ctx.editor.getLinesContent` method
+15. feat(plugin): add `ctx.editor.setValue` method
+16. feat(plugin): add `ctx.api.fetchHistoryList` method
+17. feat(plugin): add `ctx.api.fetchHistoryContent` method
+18. feat(plugin): add `ctx.api.deleteHistoryVersion` method
+19. feat(plugin): add `ctx.api.commentHistoryVersion` method
+20. feat(plugin): add `currentLang` parameter to `I18N_CHANGE_LANGUAGE` hook
 
 [More release notes](https://github.com/purocean/yn/releases)
 

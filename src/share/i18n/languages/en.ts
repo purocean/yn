@@ -37,8 +37,8 @@ const data = {
       'desc': 'Yank Note is open-source, I\'ve been constantly updating it since 2018. It consumes my energy and money (such as the annual Apple developer account subscription). Now a paid premium version is available. If you need advanced features or want to support my development, you can buy a license.',
       'free-desc': 'For most users',
       'premium-desc': 'More features',
-      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nIntegrated Terminal',
-      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nIntegrated Terminal\nMacro Replacement\nDark Mode',
+      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nIntegrated Terminal\nDocument History',
+      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nIntegrated Terminal\nDocument History(Advanced)\nMacro Replacement\nDark Mode',
     },
     'buy': {
       'buy': 'Buy',
@@ -173,7 +173,7 @@ const data = {
     },
     'delete-dialog': {
       'title': 'Delete a File',
-      'content': 'Are you sure delete %s?'
+      'content': 'Are you sure want to delete %s?'
     },
     'move-dialog': {
       'title': 'Move/Rename a File',
@@ -219,6 +219,7 @@ const data = {
       'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
       'copy-rtf': 'Copy Rich Text',
       'copy-html': 'Copy Rendered HTML',
+      'doc-history': 'Document History'
     },
     'document-info': {
       'selected': 'Selected',
@@ -303,8 +304,9 @@ const data = {
     'error-choose-repo-path': 'Please choose repository path',
     'tabs': {
       'repos': 'Repositories',
-      'editor': 'Editor',
       'appearance': 'Appearance',
+      'editor': 'Editor',
+      'image': 'Image',
       'other': 'Other',
     },
     'schema': {
@@ -330,6 +332,13 @@ const data = {
       'shell': 'Shell',
       'updater': {
         'source': 'Update Source',
+      },
+      'doc-history': {
+        'number-limit': 'Versions Retained',
+      },
+      'server': {
+        'port': 'Listen Port',
+        'port-desc': 'Need to restart the application.'
       },
     }
   },
@@ -424,7 +433,7 @@ const data = {
     }
   },
   'control-center': {
-    'control-center': 'Control Center %s',
+    'control-center': 'Control Center (%s)',
     'switch': {
       'side-bar': 'Side Bar %s',
       'editor': 'Editor %s',
@@ -440,6 +449,32 @@ const data = {
       'back': 'Back %s',
       'refresh': 'Refresh',
     }
+  },
+  'doc-history': {
+    'apply-version': 'Apply Selected Version',
+    'no-history': 'No History',
+    'content': 'Content',
+    'diff': 'Diff',
+    'history': 'History',
+    'current': 'Current',
+    'all': 'All',
+    'marked': 'Marked',
+    'mark': 'Mark',
+    'unmark': 'Unmark',
+    'delete': 'Delete',
+    'edit-message': 'Edit Message',
+    'delete-dialog': {
+      'title': 'Delete',
+      'content': 'Are you sure want to delete [%s]?',
+    },
+    'clear-dialog': {
+      'title': 'Clear',
+      'content': 'Are you sure want to clear unmarked versions?',
+    },
+    'mark-dialog': {
+      'title': 'Mark Version [%s]',
+      'hint': 'Input some message (optional)',
+    },
   },
 }
 

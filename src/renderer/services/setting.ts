@@ -21,7 +21,7 @@ export type Schema = {
     required?: boolean,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
     enum?: string[] | number [],
-    group: 'repos' | 'appearance' | 'editor' | 'other',
+    group: 'repos' | 'appearance' | 'editor' | 'image' | 'other',
     items?: {
       type: string,
       title: TTitle,
@@ -107,13 +107,24 @@ const schema: Schema = {
       group: 'other',
       required: true,
     },
+    'doc-history.number-limit': {
+      defaultValue: 500,
+      title: 'T_setting-panel.schema.doc-history.number-limit',
+      type: 'number',
+      enum: [0, 10, 20, 50, 100, 200, 500, 1000],
+      options: {
+        enum_titles: ['Disable'],
+      },
+      required: true,
+      group: 'other',
+    },
     'assets-dir': {
       defaultValue: './FILES/{docSlug}',
       title: 'T_setting-panel.schema.assets-dir',
       type: 'string',
       minLength: 1,
       description: 'T_setting-panel.schema.assets-desc',
-      group: 'other',
+      group: 'image',
     },
     'editor.tab-size': {
       defaultValue: 4,
@@ -157,6 +168,16 @@ const schema: Schema = {
       type: 'string',
       group: 'other',
     },
+    'server.port': {
+      defaultValue: 3044,
+      title: 'T_setting-panel.schema.server.port',
+      description: 'T_setting-panel.schema.server.port-desc',
+      type: 'number',
+      group: 'other',
+      required: true,
+      minimum: 10,
+      maximum: 65535,
+    }
   } as Partial<Schema['properties']> as any,
   required: [],
 }
