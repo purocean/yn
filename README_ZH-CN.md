@@ -82,6 +82,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 截图
 
+![截图](./help/6_ZH-CN.png)
 ![截图](./help/2_ZH-CN.png)
 ![截图](./help/3_ZH-CN.png)
 ![截图](./help/4_ZH-CN.png)
