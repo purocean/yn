@@ -89,7 +89,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.22.0](https://github.com/purocean/yn/releases/tag/v3.22.0) 2022-01-27
+### [v3.22.1](https://github.com/purocean/yn/releases/tag/v3.22.1) 2022-01-27
 1. feat: add document history version control function
 2. feat: support custom listening port
 3. upd: optimize mind map interaction
