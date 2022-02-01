@@ -106,4 +106,14 @@ whenEditorReady().then(({ editor }) => {
   }
 })
 
+store.watch(() => store.state.currentRepo, (val) => {
+  document.documentElement.setAttribute('repo-name', val?.name || '')
+}, { immediate: true })
+
+store.watch(() => store.state.currentFile, (val) => {
+  document.documentElement.setAttribute('current-file-repo', val?.repo || '')
+  document.documentElement.setAttribute('current-file-name', val?.name || '')
+  document.documentElement.setAttribute('current-file-path', val?.path || '')
+}, { immediate: true })
+
 fetchSettings()
