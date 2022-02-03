@@ -8,7 +8,7 @@ export default {
     ctx.markdown.registerPlugin(md => {
       const render = md.render
 
-      const originOptions = ctx.lib.lodash.cloneDeep(md.options)
+      let originOptions: typeof md.options
 
       md.render = (src: string, env?: any) => {
         let bodyBegin = 0
@@ -33,13 +33,13 @@ export default {
           bodyBeginPos = src.indexOf('\n', bodyBeginPos + 1)
         }
 
+        if (!originOptions) {
+          originOptions = { ...md.options }
+        }
+
+        Object.assign(md.options, originOptions)
         if (attributes.mdOptions && typeof attributes.mdOptions === 'object') {
-          (md as any).options = {
-            ...ctx.lib.lodash.cloneDeep(originOptions),
-            ...attributes.mdOptions
-          }
-        } else {
-          (md as any).options = ctx.lib.lodash.cloneDeep(originOptions)
+          Object.assign(md.options, attributes.mdOptions)
         }
 
         Object.assign(env, { bodyBegin, bodyBeginPos, attributes, _front_matter_exec_flag: false })
