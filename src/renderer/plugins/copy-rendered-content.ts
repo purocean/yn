@@ -4,7 +4,8 @@ export default {
   name: 'copy-rendered-content',
   register: (ctx) => {
     async function copyHTML (inlineStyle: boolean) {
-      const html = await ctx.view.getContentHtml({ inlineStyle })
+      // TODO copy panel
+      const html = await ctx.view.getContentHtml({ inlineStyle, highlightCode: inlineStyle })
       ctx.utils.copyText(html)
     }
 
