@@ -463,6 +463,11 @@ variable name | type | description
 `headingNumber` | `boolean` | whether to enable the page title serial number
 `enableMacro` | `boolean` | whether to enable macro replacement
 `define` | `Record<string, string>` | Macro definition, string replacing
+`mdOptions` | `Record<string, boolean>` | Markdown-it parse options
+`mdOptions.html` | `boolean` | Enable HTML tags in source
+`mdOptions.breaks` | `boolean` | Convert `\n` in paragraphs into `<br>`
+`mdOptions.linkify` | `boolean` | Autoconvert URL-like text to links
+`mdOptions.typographer` | `boolean` | Enable some language-neutral replacement + quotes beautification
 
 ### Definition
 

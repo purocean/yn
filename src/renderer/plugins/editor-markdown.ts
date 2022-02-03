@@ -108,7 +108,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
     { name: '/ ||| Small Table', insertText: '| ${1:--} | ${2:--} | ${3:--} |\n| -- | -- | -- |\n| -- | -- | -- |\n{.small}' },
     { name: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
     { name: '/ --- Horizontal Line', insertText: '---\n' },
-    { name: '/ --- Front Matter', insertText: '---\nheadingNumber: true\nenableMacro: true\ndefine:\n    APP_NAME: Yank Note\n---\n' },
+    { name: '/ --- Front Matter', insertText: '---\nheadingNumber: true\nenableMacro: true\nmdOptions: { linkify: true, breaks: true }\ndefine:\n    APP_NAME: Yank Note\n---\n' },
     { name: '/ ::: Container', insertText: '${1|:::,::::,:::::|} ${2|tip,warning,danger,details,group,group-item|} ${3:Title}\n${4:Content}\n${1|:::,::::,:::::|}\n' },
     { name: '/ ::: Group Container', insertText: ':::: group ${1:Title}\n::: group-item Tab 1\ntest 1\n:::\n::: group-item *Tab 2\ntest 2\n:::\n::: group-item Tab 3\ntest 3\n:::\n::::\n' },
   ].forEach((item, i) => {
