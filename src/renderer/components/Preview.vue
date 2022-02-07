@@ -26,9 +26,14 @@
         </div>
       </div>
       <div class="catalog" :style="{maxHeight: `min(${(height - 120) + 'px'}, 70vh)`}">
-        <div v-for="(head, index) in heads" :key="index" :style="{paddingLeft: `${head.level + 1}em`}" @click="syncScroll(head.sourceLine)">
+        <div
+          v-for="(head, index) in heads"
+          :key="index"
+          :class="head.class"
+          :style="{paddingLeft: `${head.level + 1}em`}"
+          @click="syncScroll(head.sourceLine)">
           {{ head.text }}
-          <span style="color: var(--g-color-60);font-size: 12px;padding-left: .5em">{{head.tag}}</span>
+          <span class="tag-name">{{head.tag}}</span>
         </div>
       </div>
     </div>
@@ -90,6 +95,7 @@ export default defineComponent({
     const height = ref(1024)
     const heads = ref<{
       tag: string;
+      class: string[];
       text: string;
       level: number;
       sourceLine: number;
@@ -119,10 +125,12 @@ export default defineComponent({
       const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
       const nodes = refView.value!.querySelectorAll<HTMLHeadElement>(tags.join(','))
       heads.value = Array.from(nodes).map(node => {
+        const tag = node.tagName.toLowerCase()
         return {
-          tag: node.tagName.toLowerCase(),
+          tag,
+          class: [...node.classList, 'tag-' + tag],
           text: node.innerText,
-          level: tags.indexOf(node.tagName.toLowerCase()),
+          level: tags.indexOf(tag),
           sourceLine: parseInt(node.dataset.sourceLine || '0')
         }
       })
@@ -444,13 +452,20 @@ export default defineComponent({
     padding-bottom: 1em;
 
     & > div {
-      padding: .5em;
+      font-size: 14px;
+      line-height: 18px;
+      padding: 7px .5em;
       display: flex;
-      align-items: center;
       border-radius: var(--g-border-radius);
 
       &:hover {
         background: var(--g-color-75);
+      }
+
+      .tag-name {
+        color: var(--g-color-60);
+        font-size: 12px;
+        padding-left: 0.5em;
       }
     }
   }
@@ -502,7 +517,7 @@ export default defineComponent({
 
   &.pined, &:hover {
     max-height: 75vh;
-    max-width: 20em;
+    max-width: 28em;
     box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
 
     .outline-pin {
