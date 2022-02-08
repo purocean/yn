@@ -381,7 +381,7 @@ const data: BaseLanguage = {
     'clear': '清空',
   },
   'drawio': {
-    'edit-diagram': '编辑图形',
+    'edit-diagram': '编辑图形 - %s',
     'fit-height': '适应高度',
     'create-drawio-file': '创建 Drawio 文件 %s',
   },

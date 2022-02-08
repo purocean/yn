@@ -380,7 +380,7 @@ const data = {
     'clear': 'Clear',
   },
   'drawio': {
-    'edit-diagram': 'Edit Diagram',
+    'edit-diagram': 'Edit Diagram - %s',
     'fit-height': 'Fit Height',
     'create-drawio-file': 'Create Drawio File %s',
   },
