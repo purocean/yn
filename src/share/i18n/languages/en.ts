@@ -217,8 +217,7 @@ const data = {
       'tool': 'Tool',
       'convert-img-link': 'Download Remote Image',
       'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
-      'copy-rtf': 'Copy Rich Text',
-      'copy-html': 'Copy Rendered HTML',
+      'copy-content': 'Copy Rendered Content',
       'doc-history': 'Document History'
     },
     'document-info': {
@@ -380,7 +379,7 @@ const data = {
     'clear': 'Clear',
   },
   'drawio': {
-    'edit-diagram': 'Edit Diagram',
+    'edit-diagram': 'Edit Diagram - %s',
     'fit-height': 'Fit Height',
     'create-drawio-file': 'Create Drawio File %s',
   },
@@ -475,6 +474,14 @@ const data = {
       'title': 'Mark Version [%s]',
       'hint': 'Input some message (optional)',
     },
+  },
+  'copy-rendered-content': {
+    'options': 'Options: ',
+    'type': 'Copy Type: ',
+    'inline-style': 'Inline Style',
+    'inline-image': 'Inline Local Image',
+    'highlight-code': 'Highlight Code',
+    'rtf': 'Rich Text Format',
   },
 }
 

@@ -209,6 +209,7 @@ export default defineComponent({
 
     .preview {
       width: 100%;
+      display: block !important;
     }
   }
 }

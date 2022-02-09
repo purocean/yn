@@ -231,19 +231,22 @@ export default {
           ?.text
 
         if (code) {
-          if (!options.inlineStyle) {
+          if (options.highlightCode) {
+            if (options.inlineStyle) {
+              if (!hljsStyles) {
+                hljsStyles = getHljsStyles()
+              }
+
+              node.outerHTML = ctx.lib.juice(
+                Highlight.highlight(node.dataset.lang, code).value,
+                { extraCss: hljsStyles }
+              )
+            } else {
+              node.outerHTML = Highlight.highlight(node.dataset.lang, code).value
+            }
+          } else {
             node.outerHTML = ctx.lib.lodash.escape(code)
-            return
           }
-
-          if (!hljsStyles) {
-            hljsStyles = getHljsStyles()
-          }
-
-          node.outerHTML = ctx.lib.juice(
-            Highlight.highlight(node.dataset.lang, code).value,
-            { extraCss: hljsStyles }
-          )
         }
       }
     })

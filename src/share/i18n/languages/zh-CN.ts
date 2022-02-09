@@ -218,8 +218,7 @@ const data: BaseLanguage = {
       'tool': '工具',
       'convert-img-link': '下载外链图片',
       'macro-copy-markdown': '复制宏替换后的 Markdown',
-      'copy-rtf': '拷贝富文本',
-      'copy-html': '拷贝渲染后的 HTML',
+      'copy-content': '复制渲染内容',
       'doc-history': '文档历史版本'
     },
     'document-info': {
@@ -381,7 +380,7 @@ const data: BaseLanguage = {
     'clear': '清空',
   },
   'drawio': {
-    'edit-diagram': '编辑图形',
+    'edit-diagram': '编辑图形 - %s',
     'fit-height': '适应高度',
     'create-drawio-file': '创建 Drawio 文件 %s',
   },
@@ -476,6 +475,14 @@ const data: BaseLanguage = {
       'title': '标记版本 [%s]',
       'hint': '输入一些信息（可选）',
     },
+  },
+  'copy-rendered-content': {
+    'options': '选项: ',
+    'type': '复制类型: ',
+    'inline-style': '内联样式',
+    'inline-image': '内联本地图片',
+    'highlight-code': '高亮代码',
+    'rtf': '富文本',
   },
 }
 

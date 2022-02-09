@@ -464,6 +464,11 @@ test 3
 `headingNumber` | `boolean` | 是否开启页面标题序号编号
 `enableMacro` | `boolean` | 是否开启宏替换
 `define` | `Record<string, string>` | 宏定义，定义文本替换
+`mdOptions` | `Record<string, boolean>` | Markdown-it 解析参数
+`mdOptions.html` | `boolean` | 开启 HTML 解析
+`mdOptions.breaks` | `boolean` | 转换 `\n` 成 `<br>`
+`mdOptions.linkify` | `boolean` | 自动转换链接
+`mdOptions.typographer` | `boolean` | 开启语言替换和引号美化
 
 ### 文本替换
 

@@ -82,6 +82,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Screenshots
 
+![Screenshot](./help/6.png)
 ![Screenshot](./help/2.png)
 ![Screenshot](./help/3.png)
 ![Screenshot](./help/4.png)
@@ -89,27 +90,13 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.22.1](https://github.com/purocean/yn/releases/tag/v3.22.1) 2022-01-27
-1. feat: add document history version control function
-2. feat: support custom listening port
-3. upd: optimize mind map interaction
-4. upd: upgrade `markdown-it-multimd-table` dependency
-5. upd: other experience optimization
-6. fix: fix unstable file sorting in some cases
-7. fix: fix custom container nesting style
-8. fix: fix menu item "Convert to Link with Title" could not be displayed in some cases
-9. fix: fix `abbr` tag missing `title` attribute when exporting/copying HTML
-10. feat(plugin): add `ctx.doc.showHistory` method
-11. feat(plugin): add `ctx.doc.hideHistory` method
-12. feat(plugin): add `ctx.editor.getDefaultOptions` method
-13. feat(plugin): add `ctx.editor.replaceLines` method
-14. feat(plugin): add `ctx.editor.getLinesContent` method
-15. feat(plugin): add `ctx.editor.setValue` method
-16. feat(plugin): add `ctx.api.fetchHistoryList` method
-17. feat(plugin): add `ctx.api.fetchHistoryContent` method
-18. feat(plugin): add `ctx.api.deleteHistoryVersion` method
-19. feat(plugin): add `ctx.api.commentHistoryVersion` method
-20. feat(plugin): add `currentLang` parameter to `I18N_CHANGE_LANGUAGE` hook
+### [v3.23.0](https://github.com/purocean/yn/releases/tag/v3.23.0) 2022-02-09
+1. feat: outline supports serial number display
+2. feat: copy RTF/HTML added highlight code, inline local image options
+3. feat: Front Matter adds Markdown-it rendering options configuration
+4. feat: `html` node adds current document information to custom styles for different repositories or documents
+5. upd: adjust the behavior of entering demo mode when the preview is hidden
+6. upd: slightly improve the performance of katex rendering
 
 [More release notes](https://github.com/purocean/yn/releases)
 

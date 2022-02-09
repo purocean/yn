@@ -10,7 +10,7 @@ import { FLAG_DEMO } from '@fe/support/args'
 import { t, useI18n } from '@fe/services/i18n'
 import { emitResize } from '@fe/services/layout'
 import { refreshTree } from '@fe/services/tree'
-import { join } from '@fe/utils/path'
+import { basename, join } from '@fe/utils/path'
 import type { Doc } from '@fe/types'
 import Mask from '@fe/components/Mask.vue'
 
@@ -19,17 +19,21 @@ const Drawio = defineComponent({
   props: {
     repo: String,
     path: String,
+    name: String,
     content: String
   },
   setup (props) {
     const { t } = useI18n()
     const srcdoc = ref('')
+    const xml = ref('')
     const refIFrame = ref<any>()
     const refFullIFrame = ref<any>()
     const fullScreen = ref(false)
 
     const init = async () => {
-      srcdoc.value = await buildSrcdoc({ repo: props.repo, path: props.path, content: props.content || '' })
+      const { html, content } = await buildSrcdoc({ repo: props.repo, path: props.path, content: props.content || '' })
+      srcdoc.value = html
+      xml.value = content
     }
 
     watch(props, init, { immediate: true })
@@ -88,7 +92,7 @@ const Drawio = defineComponent({
     return () => {
       let drawioFile: Doc | undefined
       if (props.repo && props.path) {
-        drawioFile = { name: 'diagram.drawio', type: 'file', repo: props.repo, path: props.path }
+        drawioFile = { name: props.name || 'diagram.drawio', type: 'file', repo: props.repo, path: props.path }
       }
 
       const topOffset = isElectron ? '30px' : '0px'
@@ -127,7 +131,7 @@ const Drawio = defineComponent({
               ...(drawioFile ? [
                 button(t('edit'), () => { fullScreen.value = true }),
                 button(t('open-in-new-window'), () => {
-                  openWindow(buildSrc(buildEditorSrcdoc(drawioFile!), t('drawio.edit-diagram')), '_blank', { alwaysOnTop: false })
+                  openWindow(buildSrc(buildEditorSrcdoc(drawioFile!), t('drawio.edit-diagram', drawioFile!.name)), '_blank', { alwaysOnTop: false })
                 }),
               ] : [
                 button(t('open-in-new-window'), () => openWindow(buildSrc(srcdoc.value, t('view-figure')))),
@@ -136,6 +140,7 @@ const Drawio = defineComponent({
           ),
           h(IFrame, {
             html: srcdoc.value,
+            'data-xml': xml.value,
             ref: refIFrame,
             onLoad: () => {
               resize()
@@ -158,7 +163,7 @@ const MarkdownItPlugin = (md: Markdown) => {
       const params = new URLSearchParams(url.replace(/^.*\?/, ''))
       const repo = params.get('repo') || (FLAG_DEMO ? 'help' : '')
       const path = params.get('path') || ''
-      return h(Drawio, { repo, path, content })
+      return h(Drawio, { repo, path, name: basename(path), content })
     }
 
     h(Drawio, { url, content })
@@ -197,16 +202,16 @@ const MarkdownItPlugin = (md: Markdown) => {
 
 type F = { repo?: string; path?: string; url?: string; content: string }
 
-async function buildSrcdoc ({ repo, path, content }: F) {
+async function buildSrcdoc ({ repo, path, content }: F): Promise<{ html: string, content: string }> {
   if (!content && repo && path) {
     try {
       if (!path.endsWith('.drawio')) {
-        return 'Error: support drawio file only'
+        return { html: 'Error: support drawio file only', content: '' }
       }
 
       content = (await api.readFile({ repo, path })).content
     } catch (error: any) {
-      return error.message
+      return { html: error.message, content: '' }
     }
   }
 
@@ -224,7 +229,7 @@ async function buildSrcdoc ({ repo, path, content }: F) {
     xml: content,
   })
 
-  return `
+  const html = `
     <style>
       ::selection {
         background: #d3d3d3;
@@ -267,6 +272,8 @@ async function buildSrcdoc ({ repo, path, content }: F) {
     ${div.outerHTML}
     <script src="${location.origin}/drawio/js/viewer.min.js"></script>
   `
+
+  return { html, content }
 }
 
 function buildEditorSrcdoc (file: Doc) {
@@ -408,7 +415,7 @@ async function createDrawioFile (node: Doc, fileExt: '.drawio' | '.drawio.png') 
   try {
     await api.writeFile(file, content, isBase64)
     const srcdoc = buildEditorSrcdoc(file)
-    openWindow(buildSrc(srcdoc, t('drawio.edit-diagram')), '_blank', { alwaysOnTop: false })
+    openWindow(buildSrc(srcdoc, t('drawio.edit-diagram', file.name)), '_blank', { alwaysOnTop: false })
     refreshTree()
   } catch (error: any) {
     useToast().show('warning', error.message)
@@ -440,7 +447,7 @@ export default {
       if (node.path.toLowerCase().includes('.drawio')) {
         const { repo, path, name, type } = node
         const srcdoc = buildEditorSrcdoc({ repo, path, name, type })
-        openWindow(buildSrc(srcdoc, ctx.i18n.t('drawio.edit-diagram')), '_blank', { alwaysOnTop: false })
+        openWindow(buildSrc(srcdoc, ctx.i18n.t('drawio.edit-diagram', name)), '_blank', { alwaysOnTop: false })
 
         return true
       }
@@ -465,6 +472,18 @@ export default {
             onClick: () => createDrawioFile(node, '.drawio.png')
           },
         )
+      }
+    })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
+      if (node.tagName === 'IFRAME' && node.className === 'drawio' && node.dataset.xml) {
+        node.style.width = '100%'
+        node.style.border = 'none'
+        node.style.height = '1024px'
+        node.style.maxHeight = '100vh'
+        ;(node as HTMLIFrameElement).src =
+          'https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&edit=_blank&layers=1&nav=1&title=#R' +
+          encodeURIComponent(node.dataset.xml)
       }
     })
   }

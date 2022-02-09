@@ -26,8 +26,8 @@ export interface Repo {
 
 export namespace Components {
   export namespace Modal {
-    export type ConfirmModalParams = { title?: string; content?: string }
-    export type AlertModalParams = { title?: string; content?: string }
+    export type ConfirmModalParams = { title?: string; content?: string; component?: any }
+    export type AlertModalParams = { title?: string; content?: string; component?: any }
 
     export type InputModalParams = {
       type?: string;
@@ -179,7 +179,15 @@ export type BuildInHookTypes = {
   VIEW_FILE_CHANGE: never,
   VIEW_BEFORE_REFRESH: never,
   VIEW_AFTER_REFRESH: never,
-  VIEW_ON_GET_HTML_FILTER_NODE: { node: HTMLElement, options: { inlineStyle?: boolean, inlineLocalImage?: boolean, nodeProcessor?: (node: HTMLElement) => void } },
+  VIEW_ON_GET_HTML_FILTER_NODE: {
+    node: HTMLElement,
+    options: {
+      inlineStyle?: boolean,
+      inlineLocalImage?: boolean,
+      highlightCode?: boolean,
+      nodeProcessor?: (node: HTMLElement) => void
+    }
+  },
   TREE_NODE_SELECT: { node: Components.Tree.Node },
   MONACO_CHANGE_VALUE : { uri: string, value: string },
   MONACO_BEFORE_INIT: { monaco: typeof Monaco },

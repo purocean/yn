@@ -166,34 +166,32 @@ function math_plugin (md: any, options: any) {
   options = options || {}
 
   // set KaTeX as the renderer for markdown-it-simplemath
-  const katexInline = function (latex: any) {
+  const inlineRenderer = function (tokens: Token[], idx: number) {
+    const latex = tokens[idx].content
+
     options.displayMode = false
     try {
-      return katex.renderToString(latex, options)
+      const html = katex.renderToString(latex, options)
+      const innerHTML = html.replace(/^<span class="katex">/, '')
+        .replace(/<\/span>$/, '')
+      return h('span', { class: 'katex', key: idx + innerHTML, innerHTML })
     } catch (error: any) {
       if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
 
-  const inlineRenderer = function (tokens: any, idx: any) {
-    return katexInline(tokens[idx].content)
-  }
-
-  const katexBlock = function (token: Token) {
+  const blockRenderer = function (tokens: Token[], idx: number) {
+    const token = tokens[idx]
     const latex = token.content
     options.displayMode = true
     try {
       const html = katex.renderToString(latex, options)
-      return h('p', { ...token.meta?.attrs, key: html, innerHTML: html }, '')
+      return h('p', { ...token.meta?.attrs, key: idx + html, innerHTML: html }, '')
     } catch (error: any) {
       if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
-  }
-
-  const blockRenderer = function (tokens: any, idx: any) {
-    return katexBlock(tokens[idx])
   }
 
   md.inline.ruler.after('escape', 'math_inline', math_inline)

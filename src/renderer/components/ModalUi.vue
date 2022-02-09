@@ -2,6 +2,7 @@
   <XMask :show="show" @close="cancel" @key-enter="inputType !== 'textarea' && ok()" :mask-closeable="false" esc-closeable>
     <div class="wrapper" :style="{width: modalWidth}" @click.stop>
       <h4>{{title}}</h4>
+      <component v-if="component" :is="component" />
       <p class="content" v-if="content">{{content}}</p>
       <template v-if="type === 'input'">
         <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue"></textarea>
@@ -16,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, nextTick, ref, shallowRef } from 'vue'
 import type { Components } from '@fe/types'
 import { useI18n } from '@fe/services/i18n'
 import XMask from './Mask.vue'
@@ -35,6 +36,7 @@ export default defineComponent({
     const show = ref(false)
     const title = ref('')
     const content = ref('')
+    const component = shallowRef()
     const inputType = ref('')
     const inputValue = ref('')
     const inputHint = ref('')
@@ -46,6 +48,7 @@ export default defineComponent({
     function handle (val: any) {
       show.value = false
       inputValue.value = ''
+      component.value = undefined
 
       try {
         resolveFun && resolveFun(val)
@@ -66,6 +69,7 @@ export default defineComponent({
       type.value = 'alert'
       title.value = params.title || t('modal.info')
       content.value = params.content || ''
+      component.value = params.component
       show.value = true
       modalWidth.value = undefined
 
@@ -78,6 +82,7 @@ export default defineComponent({
       type.value = 'confirm'
       title.value = params.title || t('modal.info')
       content.value = params.content || ''
+      component.value = params.component
       show.value = true
       modalWidth.value = undefined
 
@@ -125,6 +130,7 @@ export default defineComponent({
       show,
       title,
       content,
+      component,
       inputType,
       inputValue,
       inputHint,
