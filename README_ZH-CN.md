@@ -90,27 +90,13 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.22.1](https://github.com/purocean/yn/releases/tag/v3.22.1) 2022-01-27
-1. feat: 增加文档历史版本控制功能
-2. feat: 支持自定义监听端口
-3. upd: 优化脑图交互
-4. upd: 升级 `markdown-it-multimd-table` 依赖
-5. upd: 其他体验优化
-6. fix: 修复某些情况下文件排序不稳定问题
-7. fix: 修复自定义容器嵌套样式问题
-8. fix: 修复某些情况下不能展示“转换为带标题链接”菜单问题
-9. fix: 修复导出/复制 HTML 时 `abbr` 标签丢失 `title` 属性问题
-10. feat(插件): 增加 `ctx.doc.showHistory` 方法
-11. feat(插件): 增加 `ctx.doc.hideHistory` 方法
-12. feat(插件): 增加 `ctx.editor.getDefaultOptions` 方法
-13. feat(插件): 增加 `ctx.editor.replaceLines` 方法
-14. feat(插件): 增加 `ctx.editor.getLinesContent` 方法
-15. feat(插件): 增加 `ctx.editor.setValue` 方法
-16. feat(插件): 增加 `ctx.api.fetchHistoryList` 方法
-17. feat(插件): 增加 `ctx.api.fetchHistoryContent` 方法
-18. feat(插件): 增加 `ctx.api.deleteHistoryVersion` 方法
-19. feat(插件): 增加 `ctx.api.commentHistoryVersion` 方法
-20. feat(插件): 给 `I18N_CHANGE_LANGUAGE` 钩子增加 `currentLang` 参数
+### [v3.23.0](https://github.com/purocean/yn/releases/tag/v3.23.0) 2022-02-09
+1. feat: 目录大纲支持序号展示
+2. feat: 复制副文本/HTML新增高亮代码、内联本地图片选项
+3. feat: Front Matter 增加 Markdown-it 渲染参数配置
+4. feat: `html` 节点增加当前文档信息，方便针对不同仓库/文档自定义样式
+5. upd: 调整隐藏预览情况下进入演示模式行为
+6. upd: 略微提高渲染 katex 公式性能
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
