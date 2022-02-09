@@ -25,12 +25,15 @@ const Drawio = defineComponent({
   setup (props) {
     const { t } = useI18n()
     const srcdoc = ref('')
+    const xml = ref('')
     const refIFrame = ref<any>()
     const refFullIFrame = ref<any>()
     const fullScreen = ref(false)
 
     const init = async () => {
-      srcdoc.value = await buildSrcdoc({ repo: props.repo, path: props.path, content: props.content || '' })
+      const { html, content } = await buildSrcdoc({ repo: props.repo, path: props.path, content: props.content || '' })
+      srcdoc.value = html
+      xml.value = content
     }
 
     watch(props, init, { immediate: true })
@@ -137,6 +140,7 @@ const Drawio = defineComponent({
           ),
           h(IFrame, {
             html: srcdoc.value,
+            'data-xml': xml.value,
             ref: refIFrame,
             onLoad: () => {
               resize()
@@ -198,16 +202,16 @@ const MarkdownItPlugin = (md: Markdown) => {
 
 type F = { repo?: string; path?: string; url?: string; content: string }
 
-async function buildSrcdoc ({ repo, path, content }: F) {
+async function buildSrcdoc ({ repo, path, content }: F): Promise<{ html: string, content: string }> {
   if (!content && repo && path) {
     try {
       if (!path.endsWith('.drawio')) {
-        return 'Error: support drawio file only'
+        return { html: 'Error: support drawio file only', content: '' }
       }
 
       content = (await api.readFile({ repo, path })).content
     } catch (error: any) {
-      return error.message
+      return { html: error.message, content: '' }
     }
   }
 
@@ -225,7 +229,7 @@ async function buildSrcdoc ({ repo, path, content }: F) {
     xml: content,
   })
 
-  return `
+  const html = `
     <style>
       ::selection {
         background: #d3d3d3;
@@ -268,6 +272,8 @@ async function buildSrcdoc ({ repo, path, content }: F) {
     ${div.outerHTML}
     <script src="${location.origin}/drawio/js/viewer.min.js"></script>
   `
+
+  return { html, content }
 }
 
 function buildEditorSrcdoc (file: Doc) {
@@ -466,6 +472,18 @@ export default {
             onClick: () => createDrawioFile(node, '.drawio.png')
           },
         )
+      }
+    })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
+      if (node.tagName === 'IFRAME' && node.className === 'drawio' && node.dataset.xml) {
+        node.style.width = '100%'
+        node.style.border = 'none'
+        node.style.height = '1024px'
+        node.style.maxHeight = '100vh'
+        ;(node as HTMLIFrameElement).src =
+          'https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&edit=_blank&layers=1&nav=1&title=#R' +
+          encodeURIComponent(node.dataset.xml)
       }
     })
   }
