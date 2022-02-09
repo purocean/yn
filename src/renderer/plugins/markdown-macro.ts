@@ -351,27 +351,29 @@ export default {
       })
     })
 
-    ctx.statusBar.tapMenus(menus => {
-      const list = menus['status-bar-tool']?.list
-      if (list) {
-        const id = 'plugin.markdown-macro.copy-markdown'
-        const menu: MenuItem = {
-          id,
-          type: 'normal',
-          hidden: !(ctx.view.getRenderEnv()?.attributes?.enableMacro),
-          title: ctx.i18n.t('status-bar.tool.macro-copy-markdown'),
-          onClick: () => {
-            ctx.utils.copyText(ctx.view.getRenderEnv()?.source)
+    ctx.registerHook('STARTUP', () => {
+      ctx.statusBar.tapMenus(menus => {
+        const list = menus['status-bar-tool']?.list
+        if (list) {
+          const id = 'plugin.markdown-macro.copy-markdown'
+          const menu: MenuItem = {
+            id,
+            type: 'normal',
+            hidden: !(ctx.view.getRenderEnv()?.attributes?.enableMacro),
+            title: ctx.i18n.t('status-bar.tool.macro-copy-markdown'),
+            onClick: () => {
+              ctx.utils.copyText(ctx.view.getRenderEnv()?.source)
+            }
+          }
+
+          const item = list.find(x => x.type === 'normal' && x.id === id)
+          if (item) {
+            Object.assign(item, menu)
+          } else {
+            list.push(menu)
           }
         }
-
-        const item = list.find(x => x.type === 'normal' && x.id === id)
-        if (item) {
-          Object.assign(item, menu)
-        } else {
-          list.push(menu)
-        }
-      }
+      })
     })
 
     ctx.registerHook('VIEW_RENDERED', () => {
