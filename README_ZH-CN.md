@@ -92,7 +92,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ### [v3.23.0](https://github.com/purocean/yn/releases/tag/v3.23.0) 2022-02-09
 1. feat: 目录大纲支持序号展示
-2. feat: 复制副文本/HTML新增高亮代码、内联本地图片选项
+2. feat: 复制富文本/HTML新增高亮代码、内联本地图片选项
 3. feat: Front Matter 增加 Markdown-it 渲染参数配置
 4. feat: `html` 节点增加当前文档信息，方便针对不同仓库/文档自定义样式
 5. upd: 调整隐藏预览情况下进入演示模式行为
