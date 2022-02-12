@@ -112,6 +112,7 @@ export type BuildInSettings = {
   'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
   'doc-history.number-limit': number,
   'server.port': number,
+  'keep-running-after-closing-window': boolean,
 }
 
 export type BuildInActions = {

@@ -103,7 +103,7 @@ const createWindow = () => {
   })
 
   win.on('close', e => {
-    if (trayEnabled) {
+    if (trayEnabled && config.get('keep-running-after-closing-window', !process.mas)) {
       hideWindow()
       e.preventDefault()
     }
