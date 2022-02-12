@@ -192,6 +192,10 @@ if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any)['server.port']
 }
 
+if (FLAG_MAS) {
+  delete (schema.properties as any)['updater.source']
+}
+
 /**
  * Get Schema.
  * @returns Schema
