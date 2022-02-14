@@ -89,7 +89,7 @@ import { useModal } from '@fe/support/ui/modal'
 import { useI18n } from '@fe/services/i18n'
 import { getRepo } from '@fe/services/base'
 import { downloadContent, sleep } from '@fe/utils'
-import { dirname } from '@fe/utils/path'
+import { basename, dirname } from '@fe/utils/path'
 import type { ExportTypes } from '@fe/types'
 import XMask from './Mask.vue'
 
@@ -118,7 +118,7 @@ export default defineComponent({
     const toast = useToast()
     const refExportForm = ref<HTMLFormElement | null>(null)
     const { showExport, currentFile } = toRefs(store.state)
-    const fileName = computed(() => currentFile.value?.name || 'export.md')
+    const fileName = computed(() => basename(currentFile.value?.name || 'export.md', '.md'))
     const convert = reactive({
       fileName: '',
       source: '',
