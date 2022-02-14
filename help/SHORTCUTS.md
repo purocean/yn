@@ -20,6 +20,9 @@ Add Cursor Above/Below | Ctrl/Cmd + Alt/Option + ↑/↓
 Add Selection to Next Find Match | Ctrl/Cmd + D
 Find | Ctrl/Cmd + F
 Go to File | Ctrl/Cmd + P
+Back | Ctrl/Cmd + [
+Forward | Ctrl/Cmd + ]
+Refresh | Ctrl/Cmd + R
 Save | Ctrl/Cmd + S
 Join Lines | Ctrl/Cmd + J
 Add New Line, avoid completion | Alt/Option + Enter
@@ -65,6 +68,9 @@ Zoom Reset | Ctrl/Cmd + 0
 为下一个匹配项添加光标 | Ctrl/Cmd + D
 查找 | Ctrl/Cmd + F
 打开文件快速跳转面板 | Ctrl/Cmd + P
+后退 | Ctrl/Cmd + [
+前进 | Ctrl/Cmd + ]
+刷新 | Ctrl/Cmd + R
 保存文档 | Ctrl/Cmd + S
 连接行 | Ctrl/Cmd + J
 强制插入新行，忽略预置补全规则 | Alt/Option + Enter
