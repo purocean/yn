@@ -448,7 +448,7 @@ const data: BaseLanguage = {
       'goto': '跳转 %s',
       'forward': '前进 %s',
       'back': '后退 %s',
-      'refresh': '刷新',
+      'refresh': '刷新 %s',
     }
   },
   'doc-history': {

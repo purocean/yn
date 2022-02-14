@@ -447,7 +447,7 @@ const data = {
       'goto': 'Goto %s',
       'forward': 'Forward %s',
       'back': 'Back %s',
-      'refresh': 'Refresh',
+      'refresh': 'Refresh %s',
     }
   },
   'doc-history': {

@@ -100,7 +100,7 @@ export default {
           type: 'btn',
           icon: 'sync-alt-solid',
           flat: true,
-          title: ctx.i18n.t('control-center.navigation.refresh'),
+          title: ctx.i18n.t('control-center.navigation.refresh', ctx.command.getKeysLabel('view.refresh')),
           onClick: () => {
             ctx.view.refresh()
             ctx.controlCenter.toggle(false)

@@ -1,5 +1,5 @@
 import juice from 'juice'
-import { Escape } from '@fe/core/command'
+import { CtrlCmd, Escape, registerCommand } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
@@ -255,4 +255,10 @@ registerAction({
         .filter(x => x.tagName === 'DIV' && x.clientWidth > 10 && x.clientHeight > 10)
         .length < 2
   }
+})
+
+registerCommand({
+  id: 'view.refresh',
+  handler: refresh,
+  keys: [CtrlCmd, 'r']
 })
