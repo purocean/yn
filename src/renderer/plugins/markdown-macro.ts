@@ -23,6 +23,7 @@ const magicNewline = '--yn-macro-new-line--'
 
 const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
 let macroCache: MacroCache = {}
+let macroOuterVars = {}
 
 const globalVars = {
   $export: exportVar,
@@ -126,7 +127,9 @@ function transform (
         if (options.cache[id]) {
           result = options.cache[id]
         } else {
+          macroOuterVars = vars
           result = macro(exp, vars)
+          macroOuterVars = {}
           if (result instanceof Promise) {
             options.cache[id] = result
               .catch(() => ({ __macroResult: true, value: match } as Result))
@@ -152,7 +155,9 @@ function transform (
       }
 
       return result.value
-    } catch {}
+    } catch {
+      macroOuterVars = {}
+    }
 
     return match.replaceAll(magicNewline, '\n')
   })
@@ -191,6 +196,8 @@ async function include (
     return { __macroResult: true, value: 'Error: $include markdown file only' }
   }
 
+  const outerVars = { ...macroOuterVars }
+
   try {
     const absolutePath = resolve(dirname(belongDoc.path), path)
     const file: Doc = { type: 'file', name: basename(absolutePath), repo: belongDoc.repo, path: absolutePath }
@@ -199,6 +206,7 @@ async function include (
 
     // merge front-matter attributes to current document vars.
     const vars: Record<string, any> = {
+      ...outerVars,
       ...globalVars,
       $include: include.bind(null, { ...options, belongDoc: file, count: options.count + 1 }),
       $doc: {
