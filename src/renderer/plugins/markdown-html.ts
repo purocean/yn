@@ -48,10 +48,21 @@ function htmlInline (state: StateInline): boolean {
   const match = state.src.slice(pos).match(HTML_TAG_RE)
   if (!match) { return false }
 
-  const content = state.src.slice(pos, pos + match[0].length)
-
   const tag = (match[1] || match[2] || match[3] || match[4] || '')
   if (!tag) { return false }
+
+  const content = state.src.slice(pos, pos + match[0].length)
+
+  // comment detected
+  if (content === '<!--') {
+    const idx = state.src.indexOf('-->', pos)
+    if (idx < 0) {
+      return false
+    } else {
+      state.pos = idx + 3
+      return true
+    }
+  }
 
   const setAttrs = (token: Token) => {
     const div = document.createElement('div')
@@ -105,11 +116,29 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
   if (!state.md.options.html) { return false }
   if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false }
 
+  lineText = state.src.slice(pos, max)
+
+  // comment detected
+  if (lineText.startsWith('<!--')) {
+    for (nextLine = startLine; nextLine < endLine; nextLine++) {
+      pos = state.bMarks[nextLine] + state.tShift[nextLine]
+      max = state.eMarks[nextLine]
+      lineText = state.src.slice(pos, max)
+
+      if (lineText.endsWith('-->')) {
+        nextLine++
+        break
+      }
+    }
+
+    state.line = nextLine
+    return true
+  }
+
   const inlineParse: any = state.md.inline.parse.bind(state.md.inline)
   const pushState = state.push
   const prevHtmlTags = (state.md as any)._prev_block_html_tags
 
-  lineText = state.src.slice(pos, max)
   // invoke inline parse function
   inlineParse(lineText, state.md, state.env, state.tokens, prevHtmlTags, pushState)
 
