@@ -26,6 +26,23 @@ function isLetter (ch: number) {
   return (lc >= 0x61/* a */) && (lc <= 0x7a/* z */)
 }
 
+function setAttrs (token: Token, content: string) {
+  const div = document.createElement('div')
+  div.innerHTML = content
+
+  const element = div.children[0]
+  if (!element) {
+    return
+  }
+
+  const attrs: [string, any][] = []
+  for (let i = 0; i < element.attributes.length; i++) {
+    const attr = element.attributes[i]
+    attrs.push([attr.name, attr.value])
+    token.attrs = attrs
+  }
+}
+
 function htmlInline (state: StateInline): boolean {
   const pos = state.pos
 
@@ -64,23 +81,6 @@ function htmlInline (state: StateInline): boolean {
     }
   }
 
-  const setAttrs = (token: Token) => {
-    const div = document.createElement('div')
-    div.innerHTML = content
-
-    const element = div.children[0]
-    if (!element) {
-      return
-    }
-
-    const attrs: [string, any][] = []
-    for (let i = 0; i < element.attributes.length; i++) {
-      const attr = element.attributes[i]
-      attrs.push([attr.name, attr.value])
-      token.attrs = attrs
-    }
-  }
-
   const prevHtmlTags = (state.md as any)._prev_inline_html_tags
 
   let token: Token
@@ -100,7 +100,7 @@ function htmlInline (state: StateInline): boolean {
   }
 
   token.content = content
-  setAttrs(token)
+  setAttrs(token, content)
 
   state.pos += match[0].length
   return true
