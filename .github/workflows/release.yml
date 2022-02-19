@@ -12,9 +12,11 @@ jobs:
         include:
         - os: macos-latest
           platform: 'mac'
-        - os: windows-latest
+        - os: windows-2019
           platform: 'win'
         - os: ubuntu-latest
+          platform: 'linux'
+        - os: ubuntu-18.04
           platform: 'linux'
     runs-on: ${{ matrix.os }}
     env:
@@ -58,6 +60,11 @@ jobs:
         if: matrix.platform != 'mac'
         run: |
           yarn run electron-builder --${{ matrix.platform }} -p never | sed 's/identityName=.*$//'
+
+      - name: Rename Artifact for Ubuntu-18.04
+        if: matrix.os == 'ubuntu-18.04'
+        run: |
+          mv out/*.deb out/`basename -s .deb *.deb`-ubuntu-18.04.deb
 
       - name: Electron-Mac
         if: matrix.platform == 'mac'
