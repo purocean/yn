@@ -19,6 +19,7 @@ export default async function (data: any) {
 
   if (api === 'local') {
     const puml = new PlantUmlPipe({
+      split: false,
       outputFormat: 'png',
       plantUmlArgs: ['-charset', 'UTF-8'],
       jarPath: convertAppPath(addDefaultsToOptions({}).jarPath)
