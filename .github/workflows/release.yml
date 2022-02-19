@@ -63,7 +63,7 @@ jobs:
       - name: Rename Artifact for Ubuntu-18.04
         if: matrix.os == 'ubuntu-18.04'
         run: |
-          mv out/*.deb out/`basename -s .deb *.deb`-ubuntu-18.04.deb
+          mv out/*.deb out/`basename -s .deb out/*.deb`-ubuntu-18.04.deb
 
       - name: Electron-Mac
         if: matrix.platform == 'mac'
