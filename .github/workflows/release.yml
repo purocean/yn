@@ -8,16 +8,15 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
         include:
-        - os: macos-latest
-          platform: 'mac'
-        - os: windows-2019
-          platform: 'win'
-        - os: ubuntu-latest
-          platform: 'linux'
-        - os: ubuntu-18.04
-          platform: 'linux'
+          - os: macos-latest
+            platform: 'mac'
+          - os: windows-2019
+            platform: 'win'
+          - os: ubuntu-latest
+            platform: 'linux'
+          - os: ubuntu-18.04
+            platform: 'linux'
     runs-on: ${{ matrix.os }}
     env:
       npm_config_disturl: https://atom.io/download/electron
