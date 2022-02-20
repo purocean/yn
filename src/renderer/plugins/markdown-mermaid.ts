@@ -1,9 +1,10 @@
 import Markdown from 'markdown-it'
 import mermaid from 'mermaid/dist/mermaid.js'
-import { defineComponent, h, onMounted, ref, watch } from 'vue'
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Plugin } from '@fe/context'
 import { debounce } from 'lodash-es'
 import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
+import { registerHook, removeHook } from '@fe/core/hook'
 
 const logger = getLogger('mermaid')
 
@@ -48,6 +49,11 @@ const Mermaid = defineComponent({
 
     onMounted(() => setTimeout(render, 0))
 
+    registerHook('THEME_CHANGE', renderDebounce)
+    onBeforeUnmount(() => {
+      removeHook('THEME_CHANGE', renderDebounce)
+    })
+
     return () => {
       return h('div', { ...props.attrs, class: 'mermaid-wrapper' }, [
         h('div', { class: 'mermaid-action no-print' }, [
@@ -56,7 +62,7 @@ const Mermaid = defineComponent({
         h('div', {
           ref: container,
           key: props.code,
-          class: 'mermaid reduce-brightness',
+          class: 'mermaid',
           innerHTML: result.value,
         })
       ])
@@ -103,11 +109,17 @@ export default {
       .markdown-view .markdown-body .mermaid-wrapper:hover .mermaid-action {
         opacity: 1;
       }
-
-      .markdown-view .markdown-body .mermaid {
-        background: #fff;
-      }
     `)
+
     ctx.markdown.registerPlugin(MermaidPlugin)
+
+    function setTheme () {
+      mermaid.mermaidAPI.initialize({
+        theme: ctx.theme.getColorScheme() === 'dark' ? 'dark' : 'forest'
+      })
+    }
+
+    setTheme()
+    ctx.registerHook('THEME_CHANGE', setTheme)
   }
 } as Plugin
