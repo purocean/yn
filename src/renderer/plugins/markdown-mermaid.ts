@@ -5,8 +5,23 @@ import type { Plugin } from '@fe/context'
 import { debounce } from 'lodash-es'
 import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { getColorScheme } from '@fe/services/theme'
 
 const logger = getLogger('mermaid')
+
+function initMermaidTheme (colorScheme?: 'light' | 'dark') {
+  colorScheme ??= getColorScheme()
+  const theme = {
+    light: 'default',
+    dark: 'dark',
+  }[colorScheme]
+
+  if (mermaid.mermaidAPI.getConfig().theme === theme) {
+    return
+  }
+
+  mermaid.mermaidAPI.initialize({ theme })
+}
 
 let mid = 1
 
@@ -54,6 +69,15 @@ const Mermaid = defineComponent({
       downloadDataURL(`mermaid-${Date.now()}.svg`, url)
     }
 
+    async function beforeDocExport () {
+      initMermaidTheme('light')
+      render()
+      setTimeout(async () => {
+        initMermaidTheme()
+        render()
+      }, 500)
+    }
+
     const renderDebounce = debounce(render, 100)
 
     watch(() => props.code, renderDebounce)
@@ -61,8 +85,10 @@ const Mermaid = defineComponent({
     onMounted(() => setTimeout(render, 0))
 
     registerHook('THEME_CHANGE', renderDebounce)
+    registerHook('DOC_BEFORE_EXPORT', beforeDocExport)
     onBeforeUnmount(() => {
       removeHook('THEME_CHANGE', renderDebounce)
+      removeHook('DOC_BEFORE_EXPORT', beforeDocExport)
     })
 
     return () => {
@@ -146,13 +172,7 @@ export default {
 
     ctx.markdown.registerPlugin(MermaidPlugin)
 
-    function setTheme () {
-      mermaid.mermaidAPI.initialize({
-        theme: ctx.theme.getColorScheme() === 'dark' ? 'dark' : 'default'
-      })
-    }
-
-    setTheme()
-    ctx.registerHook('THEME_CHANGE', setTheme)
+    initMermaidTheme()
+    ctx.registerHook('THEME_CHANGE', () => initMermaidTheme())
   }
 } as Plugin
