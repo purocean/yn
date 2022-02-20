@@ -134,6 +134,7 @@ export default {
       }
 
       .markdown-view .markdown-body .mermaid-wrapper .mermaid-image {
+        filter: none;
         position: absolute;
         width: 100%;
         height: 100%;
