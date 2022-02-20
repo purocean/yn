@@ -70,7 +70,7 @@ html {
     background: #fff !important;
   }
 
-  .no-print {
+  .skip-print {
     display: none !important;
   }
 }
@@ -142,4 +142,20 @@ html {
       cursor: not-allowed;
     }
   }
+}
+
+.new-page {
+  page-break-before: always;
+}
+
+.bgw {
+  background-color: #fff !important;
+}
+
+.inline {
+  display: inline !important;
+}
+
+.block {
+  display: block !important;
 }

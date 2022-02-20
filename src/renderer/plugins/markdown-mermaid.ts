@@ -93,7 +93,7 @@ const Mermaid = defineComponent({
 
     return () => {
       return h('div', { ...props.attrs, class: 'mermaid-wrapper' }, [
-        h('div', { class: 'mermaid-action no-print' }, [
+        h('div', { class: 'mermaid-action skip-print' }, [
           h('button', { class: 'small', onClick: exportData }, 'SVG'),
         ]),
         h('div', {

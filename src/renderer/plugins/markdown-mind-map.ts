@@ -329,7 +329,7 @@ const init = (ele: HTMLElement) => {
   }
 
   const action = document.createElement('div')
-  action.className = 'mind-map-action no-print'
+  action.className = 'mind-map-action skip-print'
   action.appendChild(buildButton(t('mind-map.zoom-in'), zoomIn, 'zoomIn'))
   action.appendChild(buildButton(t('mind-map.zoom-out'), zoomOut, 'zoomOut'))
   action.appendChild(buildButton(t('mind-map.switch-layout'), switchLayout, 'switchLayout'))

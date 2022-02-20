@@ -75,7 +75,7 @@ export default {
         }
 
         if (codeNode && Array.isArray(codeNode.children)) {
-          codeNode.children.unshift(h('div', { class: 'p-mcc-copy-btn-wrapper no-print' }, [
+          codeNode.children.unshift(h('div', { class: 'p-mcc-copy-btn-wrapper skip-print' }, [
             h('div', { class: 'p-mcc-language' }, token.info),
             h(
               'div',

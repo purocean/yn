@@ -59,8 +59,21 @@ define:
 ### 元素属性书写
 
 此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
-示例红色文字：
-**test**{style="color:red"}
+
+- 红色文字，白色背景{.bgw style="color:red"}
+- 显示为**块元素**{.block}
+
+**一些内置样式类：**
+
+| 类名 | 说明 |
+| -- | -- |
+| `new-page` | 打印/导出PDF时在此元素前分页 |
+| `skip-print` | 打印/导出PDF时跳过此元素 |
+| `skip-export` | 导出/复制HTML时跳过此元素 |
+| `inline` | 当前元素显示为行内元素 |
+| `block` | 当前元素显示为块元素 |
+| `reduce-brightness` | 使用暗色主题时候降低此元素亮度 |
+| `bgw` | 设置当前元素背景为白色 |
 
 ### 图片增强
 
