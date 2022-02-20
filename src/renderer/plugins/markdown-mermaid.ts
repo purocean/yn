@@ -1,9 +1,10 @@
 import Markdown from 'markdown-it'
 import mermaid from 'mermaid/dist/mermaid.js'
-import { defineComponent, h, onMounted, ref, watch } from 'vue'
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Plugin } from '@fe/context'
 import { debounce } from 'lodash-es'
 import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
+import { registerHook, removeHook } from '@fe/core/hook'
 
 const logger = getLogger('mermaid')
 
@@ -21,25 +22,36 @@ const Mermaid = defineComponent({
   setup (props) {
     const container = ref<HTMLElement>()
     const result = ref('')
+    const img = ref('')
+
+    function getImageUrl (code?: string) {
+      const svg = code || container.value?.innerHTML
+      if (!svg) {
+        return ''
+      }
+
+      return 'data:image/svg+xml;base64,' + strToBase64(svg)
+    }
 
     function render () {
       logger.debug('render', props.code)
       try {
         mermaid.render(`mermaid-${mid++}`, props.code, (svgCode: string) => {
           result.value = svgCode
+          img.value = getImageUrl(svgCode)
         }, container.value)
       } catch (error) {
         logger.error('render', error)
       }
     }
 
-    const exportData = async () => {
-      const svg = container.value?.innerHTML
-      if (!svg) {
+    function exportData () {
+      const url = getImageUrl()
+      if (!url) {
         return
       }
 
-      downloadDataURL(`mermaid-${Date.now()}.svg`, 'data:image/svg+xml;base64,' + strToBase64(svg))
+      downloadDataURL(`mermaid-${Date.now()}.svg`, url)
     }
 
     const renderDebounce = debounce(render, 100)
@@ -48,16 +60,25 @@ const Mermaid = defineComponent({
 
     onMounted(() => setTimeout(render, 0))
 
+    registerHook('THEME_CHANGE', renderDebounce)
+    onBeforeUnmount(() => {
+      removeHook('THEME_CHANGE', renderDebounce)
+    })
+
     return () => {
       return h('div', { ...props.attrs, class: 'mermaid-wrapper' }, [
         h('div', { class: 'mermaid-action no-print' }, [
-          h('button', { class: 'small', onClick: () => exportData() }, 'SVG'),
+          h('button', { class: 'small', onClick: exportData }, 'SVG'),
         ]),
         h('div', {
           ref: container,
           key: props.code,
-          class: 'mermaid reduce-brightness',
+          class: 'mermaid-container',
           innerHTML: result.value,
+        }),
+        h('img', {
+          src: img.value,
+          class: 'mermaid-image',
         })
       ])
     }
@@ -104,10 +125,33 @@ export default {
         opacity: 1;
       }
 
-      .markdown-view .markdown-body .mermaid {
-        background: #fff;
+      .markdown-view .markdown-body .mermaid-wrapper .mermaid-container {
+        visibility: hidden;
+      }
+
+      .markdown-view .markdown-body .mermaid-wrapper .mermaid-container > svg {
+        display: block;
+      }
+
+      .markdown-view .markdown-body .mermaid-wrapper .mermaid-image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: block;
       }
     `)
+
     ctx.markdown.registerPlugin(MermaidPlugin)
+
+    function setTheme () {
+      mermaid.mermaidAPI.initialize({
+        theme: ctx.theme.getColorScheme() === 'dark' ? 'dark' : 'default'
+      })
+    }
+
+    setTheme()
+    ctx.registerHook('THEME_CHANGE', setTheme)
   }
 } as Plugin

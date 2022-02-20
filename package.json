@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.23.0",
+  "version": "3.24.0",
   "description": "Yank Note: A hackable markdown note application for programmers",
   "main": "dist/main/app.js",
   "license": "GPL-3.0",
@@ -42,7 +42,7 @@
     "mime-types": "^2.1.31",
     "mitt": "^2.1.0",
     "node-pty": "^0.10.1",
-    "plantuml-pipe": "^1.3.6",
+    "plantuml-pipe": "^1.4.0",
     "request": "^2.88.2",
     "safe-buffer": "^5.2.1",
     "socket.io": "^2.4.0",

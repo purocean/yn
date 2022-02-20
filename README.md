@@ -90,13 +90,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.23.0](https://github.com/purocean/yn/releases/tag/v3.23.0) 2022-02-09
-1. feat: outline supports serial number display
-2. feat: copy RTF/HTML added highlight code, inline local image options
-3. feat: Front Matter adds Markdown-it rendering options configuration
-4. feat: `html` node adds current document information to custom styles for different repositories or documents
-5. upd: adjust the behavior of entering demo mode when the preview is hidden
-6. upd: slightly improve the performance of katex rendering
+### [v3.24.0](https://github.com/purocean/yn/releases/tag/v3.24.0) 2022-02-20
+1. feat: add "Keep running after closing window" setting item
+2. feat: add refresh preview shortcut `Ctrl/Cmd + R`
+3. feat: Mermaid graphics support dark theme
+4. feat: Mermaid graphics support zoom in preview
+5. upd: remove `.md` from export file name
+6. upd: upgrade PlantUML version
+7. fix: Fixed PlantUML not rendering correctly in some cases
+8. fix: fix the problem that empty line comments are not supported in some cases
+9. chore: add Ubuntu-18.04 artifact
 
 [More release notes](https://github.com/purocean/yn/releases)
 

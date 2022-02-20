@@ -301,6 +301,7 @@ const data = {
     'add': 'Add %s',
     'delete-warning': 'Are you sure you want to remove this node?',
     'error-choose-repo-path': 'Please choose repository path',
+    'keep-running-after-closing-window': 'Keep Running after Closing Window',
     'tabs': {
       'repos': 'Repositories',
       'appearance': 'Appearance',
@@ -446,7 +447,7 @@ const data = {
       'goto': 'Goto %s',
       'forward': 'Forward %s',
       'back': 'Back %s',
-      'refresh': 'Refresh',
+      'refresh': 'Refresh %s',
     }
   },
   'doc-history': {

@@ -470,23 +470,25 @@ test 3
 `mdOptions.linkify` | `boolean` | 自动转换链接
 `mdOptions.typographer` | `boolean` | 开启语言替换和引号美化
 
+## 宏替换
+
+> <a href="javascript: ctx.showPremium()">高级版可用</a>
+
+Yank Note 允许你在页面中嵌入宏，用以动态地替换文档。
+
+使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`
+
 ### 文本替换
 
-`define` 字段可以定义一些文本替换映射。支持在另一个文件定义，支持宏表达式。具体可参考本文件顶部 Front Matter 部分。
+Front Matter 中的 `define` 字段可以定义一些文本替换映射。支持在另一个文件定义，支持宏表达式。具体可参考本文件顶部 Front Matter 部分。
 
 - 应用名: --APP_NAME--
 - 应用版本: --APP_VERSION--
 - 另一个文件的定义: --TEST_DEFINE--
 
-## 宏替换
+### 宏表达式
 
-> <a href="javascript: ctx.showPremium()">高级版可用</a>
-
-Yank Note 允许你在页面中嵌入宏，用以动态的替换文档。
-
-### 使用
-
-使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`
+语法：
 
 ```md
 [= <expression> =]
@@ -534,7 +536,7 @@ Yank Note 允许你在页面中嵌入宏，用以动态的替换文档。
 
 ### 可用变量
 
-宏代码可以使用在 Front Matter 定义的变量，也可以使用下面的内置变量
+宏表达式可以使用在 Front Matter 定义的变量，也可以使用下面的内置变量
 
 变量名 | 类型 | 描述
 ---- | ----- | ---

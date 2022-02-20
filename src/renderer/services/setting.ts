@@ -2,7 +2,7 @@ import { cloneDeep, cloneDeepWith, isEqual, uniq } from 'lodash-es'
 import { triggerHook } from '@fe/core/hook'
 import { MsgPath } from '@share/i18n'
 import * as api from '@fe/support/api'
-import { FLAG_DISABLE_XTERM } from '@fe/support/args'
+import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import store from '@fe/support/store'
 import { basename } from '@fe/utils/path'
 import type{ BuildInSettings, FileItem, PathItem } from '@fe/types'
@@ -177,6 +177,14 @@ const schema: Schema = {
       required: true,
       minimum: 10,
       maximum: 65535,
+    },
+    'keep-running-after-closing-window': {
+      defaultValue: !FLAG_MAS,
+      title: 'T_setting-panel.keep-running-after-closing-window',
+      type: 'boolean',
+      group: 'other',
+      format: 'checkbox',
+      required: true,
     }
   } as Partial<Schema['properties']> as any,
   required: [],
@@ -190,6 +198,11 @@ const settings = {
 if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
   delete (schema.properties as any)['server.port']
+  delete (schema.properties as any)['updater.source']
+}
+
+if (FLAG_MAS) {
+  delete (schema.properties as any)['updater.source']
 }
 
 /**

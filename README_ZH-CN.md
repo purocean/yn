@@ -90,13 +90,16 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.23.0](https://github.com/purocean/yn/releases/tag/v3.23.0) 2022-02-09
-1. feat: 目录大纲支持序号展示
-2. feat: 复制副文本/HTML新增高亮代码、内联本地图片选项
-3. feat: Front Matter 增加 Markdown-it 渲染参数配置
-4. feat: `html` 节点增加当前文档信息，方便针对不同仓库/文档自定义样式
-5. upd: 调整隐藏预览情况下进入演示模式行为
-6. upd: 略微提高渲染 katex 公式性能
+### [v3.24.0](https://github.com/purocean/yn/releases/tag/v3.24.0) 2022-02-20
+1. feat: 增加“关闭窗口后保持运行”设置项
+2. feat: 增加刷新预览快捷键 `Ctrl/Cmd + R`
+3. feat: Mermaid 图形支持暗黑主题
+4. feat: Mermaid 图形支持放大预览
+5. upd: 导出文件名去除 `.md`
+6. upd: 升级 PlantUML 版本
+7. fix: 修复某些情况下 PlantUML 不能正确渲染问题
+8. fix: 修复某些情况下不支持空行注释问题
+9. chore: 增加 Ubuntu-18.04 构建产物
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
