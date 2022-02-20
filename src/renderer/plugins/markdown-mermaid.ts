@@ -73,7 +73,7 @@ const Mermaid = defineComponent({
         h('div', {
           ref: container,
           key: props.code,
-          class: 'mermaid-container',
+          class: 'mermaid-container skip-export',
           innerHTML: result.value,
         }),
         h('img', {
