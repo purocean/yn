@@ -104,6 +104,7 @@ const Mermaid = defineComponent({
         }),
         h('img', {
           src: img.value,
+          alt: 'mermaid',
           class: 'mermaid-image',
         })
       ])
