@@ -17,9 +17,23 @@ const readJson = () => {
   }
 }
 
-const getAll = () => readJson() || {}
+let cache: any = null
+let readAt = 0
+const getAll = () => {
+  if (Date.now() - readAt > 1000) {
+    cache = null
+  }
+
+  if (!cache) {
+    cache = readJson() || {}
+    readAt = Date.now()
+  }
+
+  return cache
+}
 
 const setAll = (data: any) => {
+  cache = null
   writeJson(data)
 }
 
