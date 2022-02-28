@@ -331,6 +331,7 @@ const data: BaseLanguage = {
         'number-limit': '版本保留数',
       },
       'server': {
+        'host': '监听主机',
         'port': '监听端口',
         'port-desc': '需要重启应用',
       },

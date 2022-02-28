@@ -1,4 +1,5 @@
 import * as os from 'os'
+import ip from 'ip'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import Koa from 'koa'
@@ -13,6 +14,7 @@ import convert from './convert'
 import plantuml from './plantuml'
 import shell from '../shell'
 import config from '../config'
+import * as jwt from '../jwt'
 import { getAction } from '../action'
 
 const result = (status: 'ok' | 'error' = 'ok', message = 'success', data: any = null) => {
@@ -23,6 +25,65 @@ const noCache = (ctx: any) => {
   ctx.set('Cache-Control', 'no-store, no-cache, must-revalidate')
   ctx.set('Pragma', 'no-cache')
   ctx.set('Expires', 0)
+}
+
+const checkPermission = (ctx: any, next: any) => {
+  const token = ctx.query._token || (ctx.headers.authorization || '').replace('Bearer ', '')
+
+  if (
+    ctx.req._protocol ||
+    (!token && (
+      ip.isEqual(ctx.request.ip, '127.0.0.1') ||
+      ip.isEqual(ctx.request.ip, '::1'))
+    )
+  ) {
+    ctx.req.jwt = { role: 'admin' }
+    return next()
+  }
+
+  if (!ctx.path.startsWith('/api')) {
+    return next()
+  }
+
+  const allowList = {
+    public: [
+      '/api/help',
+      '/api/custom-css',
+      '/api/custom-styles',
+      '/api/plugins',
+      '/api/attachment',
+      '/api/plantuml',
+      '/api/settings/js',
+    ],
+    guest: [
+      '/api/file',
+      '/api/settings',
+    ]
+  }
+
+  if (ctx.method === 'GET' && allowList.public.some(x => ctx.path.startsWith(x))) {
+    return next()
+  }
+
+  let payload
+  try {
+    payload = jwt.verify(token)
+    ctx.req.jwt = payload
+  } catch (error) {
+    ctx.status = 401
+    throw error
+  }
+
+  if (payload.role === 'admin') {
+    return next()
+  }
+
+  if (payload.role === 'guest' && ctx.method === 'GET' && allowList.guest.some(x => ctx.path.startsWith(x))) {
+    return next()
+  }
+
+  ctx.status = 403
+  throw new Error('Forbidden')
 }
 
 const fileContent = async (ctx: any, next: any) => {
@@ -268,12 +329,25 @@ const customCss = async (ctx: any, next: any) => {
 const setting = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/settings')) {
     if (ctx.method === 'GET') {
+      const getSettings = () => {
+        if (ctx.req.jwt && ctx.req.jwt.role === 'admin') {
+          return config.getAll()
+        } else {
+          const data = { ...config.getAll() }
+          data.repositories = {}
+          data.mark = []
+          delete data['server.jwt-secret']
+          delete data.license
+          return data
+        }
+      }
+
       if (ctx.path.endsWith('js')) {
         ctx.type = 'application/javascript; charset=utf-8'
         noCache(ctx)
-        ctx.body = '_INIT_SETTINGS = ' + JSON.stringify(config.getAll())
+        ctx.body = '_INIT_SETTINGS = ' + JSON.stringify(getSettings())
       } else {
-        ctx.body = result('ok', 'success', config.getAll())
+        ctx.body = result('ok', 'success', getSettings())
       }
     } else if (ctx.method === 'POST') {
       const oldConfig = config.getAll()
@@ -356,6 +430,7 @@ const server = (port = 3000) => {
     }
   }))
 
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, checkPermission))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, fileContent))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, attachment))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, plantumlGen))
@@ -440,9 +515,10 @@ const server = (port = 3000) => {
     socket.on('disconnect', () => ptyProcess.kill())
   })
 
-  server.listen(port, 'localhost')
+  const host = config.get('server.host', 'localhost')
+  server.listen(port, host)
 
-  console.log(`Address: http://localhost:${port}`)
+  console.log(`Address: http://${host}:${port}`)
 
   return callback
 }

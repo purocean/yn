@@ -168,6 +168,14 @@ const schema: Schema = {
       type: 'string',
       group: 'other',
     },
+    'server.host': {
+      defaultValue: 'localhost',
+      title: 'T_setting-panel.schema.server.host',
+      type: 'string',
+      enum: ['localhost', '0.0.0.0'],
+      group: 'other',
+      required: true,
+    },
     'server.port': {
       defaultValue: 3044,
       title: 'T_setting-panel.schema.server.port',
@@ -197,6 +205,7 @@ const settings = {
 
 if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
+  delete (schema.properties as any)['server.host']
   delete (schema.properties as any)['server.port']
   delete (schema.properties as any)['updater.source']
 }

@@ -337,6 +337,7 @@ const data = {
         'number-limit': 'Versions Retained',
       },
       'server': {
+        'host': 'Listen Host',
         'port': 'Listen Port',
         'port-desc': 'Need to restart the application.'
       },

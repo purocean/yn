@@ -111,6 +111,7 @@ export type BuildInSettings = {
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
   'doc-history.number-limit': number,
+  'server.host': string,
   'server.port': number,
   'keep-running-after-closing-window': boolean,
 }
