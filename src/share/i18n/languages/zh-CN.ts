@@ -219,7 +219,8 @@ const data: BaseLanguage = {
       'convert-img-link': '下载外链图片',
       'macro-copy-markdown': '复制宏替换后的 Markdown',
       'copy-content': '复制渲染内容',
-      'doc-history': '文档历史版本'
+      'doc-history': '文档历史版本',
+      'share-preview': '分享预览',
     },
     'document-info': {
       'selected': '已选择',
@@ -485,6 +486,10 @@ const data: BaseLanguage = {
     'inline-image': '内联本地图片',
     'highlight-code': '高亮代码',
     'rtf': '富文本',
+  },
+  'share-preview': {
+    'expire': '到期',
+    'tips': '请先在设置中配置监听主机 “0.0.0.0”',
   },
 }
 
