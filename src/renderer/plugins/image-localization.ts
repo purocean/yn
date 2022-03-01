@@ -128,7 +128,6 @@ export default {
           title: ctx.i18n.t('status-bar.tool.convert-img-link'),
           onClick: ctx.action.getActionHandler(actionKeydown)
         },
-        { type: 'separator' },
       )
     })
 
