@@ -4,7 +4,6 @@ import type TBrowserWindow from 'electron'
 import * as path from 'path'
 import * as os from 'os'
 import * as yargs from 'yargs'
-import ip from 'ip'
 import server from './server'
 import { APP_NAME } from './constant'
 import { getTrayMenus, getMainMenus } from './menus'
@@ -14,7 +13,6 @@ import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
 import { $t } from './i18n'
 import { getProxyAgent } from './proxy-agent'
-import { getToken } from './jwt'
 import config from './config'
 
 const electronContextMenu = require('electron-context-menu')
@@ -63,19 +61,12 @@ const getUrl = (mode?: typeof urlMode) => {
     searchParams.set('port', backendPort.toString())
   }
 
-  const proto = mode === 'scheme' ? APP_NAME : 'http'
-  const port = proto === 'http' ? (mode === 'dev' ? devFrontendPort : backendPort) : ''
-  const host = (proto === 'http' && config.get('server.host') === '0.0.0.0')
-    ? ip.address()
-    : 'localhost'
-
-  if (host !== 'localhost') {
-    searchParams.set('token', getToken({ role: 'admin' }, '3d'))
-  }
-
   const query = searchParams.toString()
 
-  return `${proto}://${host}:${port}` + (query ? `?${query}` : '')
+  const proto = mode === 'scheme' ? APP_NAME : 'http'
+  const port = proto === 'http' ? (mode === 'dev' ? devFrontendPort : backendPort) : ''
+
+  return `${proto}://localhost:${port}` + (query ? `?${query}` : '')
 }
 
 const hideWindow = () => {

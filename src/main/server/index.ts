@@ -17,6 +17,10 @@ import config from '../config'
 import * as jwt from '../jwt'
 import { getAction } from '../action'
 
+const isLocalhost = (address: string) => {
+  return ip.isEqual(address, '127.0.0.1') || ip.isEqual(address, '::1')
+}
+
 const result = (status: 'ok' | 'error' = 'ok', message = 'success', data: any = null) => {
   return { status, message, data }
 }
@@ -30,13 +34,7 @@ const noCache = (ctx: any) => {
 const checkPermission = (ctx: any, next: any) => {
   const token = ctx.query._token || (ctx.headers.authorization || '').replace('Bearer ', '')
 
-  if (
-    ctx.req._protocol ||
-    (!token && (
-      ip.isEqual(ctx.request.ip, '127.0.0.1') ||
-      ip.isEqual(ctx.request.ip, '::1'))
-    )
-  ) {
+  if (ctx.req._protocol || (!token && isLocalhost(ctx.request.ip))) {
     ctx.req.jwt = { role: 'admin' }
     return next()
   }
@@ -495,6 +493,11 @@ const server = (port = 3000) => {
   const pty = require('node-pty')
 
   io.on('connection', (socket: any) => {
+    if (!isLocalhost(socket.client.conn.remoteAddress)) {
+      socket.disconnect()
+      return
+    }
+
     const ptyProcess = pty.spawn(shell.getShell(), [], {
       name: 'xterm-color',
       cols: 80,
