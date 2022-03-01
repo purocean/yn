@@ -75,12 +75,12 @@ export default {
     })
 
     const link = ctx.lib.vue.ref('')
+    const ip = ctx.lib.vue.ref('')
 
     const panel = ctx.lib.vue.defineComponent({
       setup () {
         const expire = ctx.lib.vue.ref('2h')
-        const ip = ctx.lib.vue.ref('')
-        const ips = ctx.lib.vue.ref([])
+        const ips = ctx.lib.vue.ref([] as string[])
 
         ctx.lib.vue.onMounted(async () => {
           ips.value = await ctx.api.rpc(`
@@ -91,7 +91,9 @@ export default {
               .map(x => x.address)
               .filter(x => ip.isV4Format(x) && !ip.isLoopback(x))
           `)
-          ip.value = ips.value[0]
+          if (!ips.value.includes(ip.value)) {
+            ip.value = ips.value[0]
+          }
         })
 
         ctx.lib.vue.watch([expire, ip], async ([expire, ip]) => {
@@ -167,7 +169,6 @@ export default {
 
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-tool']?.list?.push(
-        { type: 'separator' },
         {
           id: 'plugin.share-preview',
           type: 'normal',
