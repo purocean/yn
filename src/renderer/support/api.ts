@@ -1,5 +1,6 @@
 import type { Components, Doc, ExportTypes, FileItem, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
+import { JWT_TOKEN } from './args'
 
 export type ApiResult<T = any> = {
   status: 'ok' | 'error',
@@ -7,7 +8,17 @@ export type ApiResult<T = any> = {
   data: T,
 }
 
+function getAuthHeader (): Record<string, string> {
+  return JWT_TOKEN ? { Authorization: 'Bearer ' + JWT_TOKEN } : {}
+}
+
 export async function fetchHttp (input: RequestInfo, init?: RequestInit) {
+  if (!init) {
+    init = {}
+  }
+
+  init.headers = { ...init.headers, ...getAuthHeader() }
+
   const response = await fetch(input, init)
 
   if (!response.headers.get('content-type')?.includes('json')) {
@@ -40,7 +51,7 @@ export async function proxyRequest (url: string, reqOptions: Record<string, any>
   if (usePost) {
     res = await fetch('/api/proxy', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
       body: JSON.stringify({
         url: url,
         options: reqOptions
@@ -48,7 +59,9 @@ export async function proxyRequest (url: string, reqOptions: Record<string, any>
     })
   } else {
     const options = encodeURIComponent(JSON.stringify(reqOptions))
-    res = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&options=${options}`)
+    res = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&options=${options}`, {
+      headers: getAuthHeader()
+    })
   }
 
   if (res.headers.get('x-yank-note-api-status') === 'error') {

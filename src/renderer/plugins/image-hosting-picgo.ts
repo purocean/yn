@@ -54,7 +54,7 @@ export default {
 
         logger.debug('upload', url, file)
 
-        const tmpFileName = 'picgo-tmp-file-' + file.name
+        const tmpFileName = 'picgo-' + file.name
 
         try {
           const { data: { path } } = await ctx.api.writeTmpFile(tmpFileName, await ctx.utils.fileToBase64URL(file), true)

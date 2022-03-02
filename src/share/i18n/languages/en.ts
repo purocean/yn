@@ -218,7 +218,8 @@ const data = {
       'convert-img-link': 'Download Remote Image',
       'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
       'copy-content': 'Copy Rendered Content',
-      'doc-history': 'Document History'
+      'doc-history': 'Document History',
+      'share-preview': 'Share Preview',
     },
     'document-info': {
       'selected': 'Selected',
@@ -337,6 +338,7 @@ const data = {
         'number-limit': 'Versions Retained',
       },
       'server': {
+        'host': 'Listen Host',
         'port': 'Listen Port',
         'port-desc': 'Need to restart the application.'
       },
@@ -481,8 +483,14 @@ const data = {
     'type': 'Copy Type: ',
     'inline-style': 'Inline Style',
     'inline-image': 'Inline Local Image',
+    'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',
     'rtf': 'Rich Text Format',
+    'complete': 'Conversion completed, click OK to copy',
+  },
+  'share-preview': {
+    'expire': 'Expire',
+    'tips': 'Please configure the listening host "0.0.0.0" in the settings first',
   },
 }
 

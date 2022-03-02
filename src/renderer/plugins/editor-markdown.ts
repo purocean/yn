@@ -40,6 +40,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
 
   const currentWord = model.getWordUntilPosition(position).word
   const currentStr = model.getValueInRange(range)
+  const replaceRange = { ...range, endColumn: range.startColumn + 1 }
 
   const result: Monaco.languages.CompletionItem[] = []
 
@@ -50,7 +51,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
         label: { label: `:${key}: ${(emoji as any)[key]}` },
         kind: monaco.languages.CompletionItemKind.EnumMember,
         insertText: (emoji as any)[key],
-        range: range,
+        range: replaceRange,
         sortText: (80000 + i).toString()
       })
     })
@@ -64,7 +65,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
         label: { label: word },
         kind: monaco.languages.CompletionItemKind.Text,
         insertText: word,
-        range: range,
+        range: replaceRange,
         sortText: (10000 + i).toString()
       })
     }
@@ -117,7 +118,7 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
       kind: monaco.languages.CompletionItemKind.Keyword,
       insertText: item.insertText,
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      range: range,
+      range: replaceRange,
       sortText: (20000 + i).toString()
     })
   })

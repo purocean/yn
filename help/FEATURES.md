@@ -58,8 +58,21 @@ Type '/' in the editor to get prompts
 ### Element Attribute
 
 This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
-For example, red text:
-**test**{style="color:red"}
+
+- Red Text, White background {.bgw style="color:red"}
+- Display As **Block Element**{.block}
+
+**Some built-in style classes:**
+
+| Class Name | Description |
+| -- | -- |
+| `new-page` | Page break before this element when printing/exporting PDF |
+| `skip-print` | Skip this element when printing/exporting PDF |
+| `skip-export` | Skip this element when exporting/copying HTML |
+| `inline` | The current element is displayed as an inline element |
+| `block` | The current element is displayed as a block element |
+| `reduce-brightness` | Reduce the brightness of this element when using dark theme |
+| `bgw` | Set current element background to white |
 
 ### Image Enhancement
 

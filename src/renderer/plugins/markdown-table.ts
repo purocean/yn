@@ -5,6 +5,7 @@ import type { Plugin } from '@fe/context'
 import { useModal } from '@fe/support/ui/modal'
 import { hasCtrlCmd } from '@fe/core/command'
 import { DOM_ATTR_NAME } from '@fe/support/constant'
+import { FLAG_READONLY } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
 import { disableSyncScrollAwhile, renderImmediately } from '@fe/services/view'
 import * as editor from '@fe/services/editor'
@@ -275,6 +276,10 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
 }
 
 async function handleClick (e: MouseEvent, modal: boolean) {
+  if (FLAG_READONLY) {
+    return
+  }
+
   const target = e.target as HTMLElement
 
   const preventEvent = () => {
@@ -684,6 +689,10 @@ export default {
     ctx.registerHook('VIEW_ELEMENT_DBCLICK', ({ e }) => handleClick(e, false))
     ctx.registerHook('VIEW_ELEMENT_CLICK', ({ e }) => handleClick(e, true))
     ctx.registerHook('VIEW_RENDERED', () => {
+      if (ctx.args.FLAG_READONLY) {
+        return
+      }
+
       const view = ctx.view.getViewDom()
       view?.querySelectorAll('.yank-table-cell').forEach(td => {
         (td as HTMLElement).title = t('table-cell-edit.db-click-edit')
@@ -699,6 +708,10 @@ export default {
     })
 
     ctx.view.tapContextMenus((menus, e) => {
+      if (ctx.args.FLAG_READONLY) {
+        return
+      }
+
       const target = e.target as HTMLTableCellElement
       const tagName = target.tagName
       if ((tagName === 'TD' || tagName === 'TH') && target.classList.contains(cellClassName)) {

@@ -2,6 +2,7 @@ import { upperFirst } from 'lodash-es'
 import { getLogger } from '@fe/utils'
 import { isMacOS } from '@fe/support/env'
 import { getActionHandler } from './action'
+import { FLAG_DISABLE_SHORTCUTS } from '@fe/support/args'
 
 const logger = getLogger('command')
 
@@ -220,6 +221,12 @@ export function removeCommand (id: string) {
 
 function keydownHandler (e: KeyboardEvent) {
   recordKeys(e)
+
+  if (FLAG_DISABLE_SHORTCUTS) {
+    logger.warn('shortcut disabled')
+    return
+  }
+
   for (const command of Object.values(commands)) {
     if (isCommand(e, command.id)) {
       if (command.when && !command.when()) {

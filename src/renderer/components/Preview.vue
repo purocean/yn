@@ -670,10 +670,6 @@ export default defineComponent({
     table a::after {
       display: none !important;
     }
-
-    .new-page {
-      page-break-before: always;
-    }
   }
 }
 

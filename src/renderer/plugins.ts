@@ -47,6 +47,7 @@ import syncScroll from '@fe/plugins/sync-scroll'
 import imageLocalization from '@fe/plugins/image-localization'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 import copyRenderedContent from '@fe/plugins/copy-rendered-content'
+import sharePreview from '@fe/plugins/share-preview'
 
 export default [
   customStyles,
@@ -98,4 +99,5 @@ export default [
   imageLocalization,
   imageHostingPicgo,
   copyRenderedContent,
+  sharePreview,
 ]

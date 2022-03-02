@@ -219,7 +219,8 @@ const data: BaseLanguage = {
       'convert-img-link': '下载外链图片',
       'macro-copy-markdown': '复制宏替换后的 Markdown',
       'copy-content': '复制渲染内容',
-      'doc-history': '文档历史版本'
+      'doc-history': '文档历史版本',
+      'share-preview': '分享预览',
     },
     'document-info': {
       'selected': '已选择',
@@ -331,6 +332,7 @@ const data: BaseLanguage = {
         'number-limit': '版本保留数',
       },
       'server': {
+        'host': '监听主机',
         'port': '监听端口',
         'port-desc': '需要重启应用',
       },
@@ -482,8 +484,14 @@ const data: BaseLanguage = {
     'type': '复制类型: ',
     'inline-style': '内联样式',
     'inline-image': '内联本地图片',
+    'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',
     'rtf': '富文本',
+    'complete': '转换完成，点击确定复制',
+  },
+  'share-preview': {
+    'expire': '到期',
+    'tips': '请先在设置中配置监听主机 “0.0.0.0”',
   },
 }
 
