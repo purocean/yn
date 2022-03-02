@@ -90,16 +90,14 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.24.0](https://github.com/purocean/yn/releases/tag/v3.24.0) 2022-02-20
-1. feat: 增加“关闭窗口后保持运行”设置项
-2. feat: 增加刷新预览快捷键 `Ctrl/Cmd + R`
-3. feat: Mermaid 图形支持暗黑主题
-4. feat: Mermaid 图形支持放大预览
-5. upd: 导出文件名去除 `.md`
-6. upd: 升级 PlantUML 版本
-7. fix: 修复某些情况下 PlantUML 不能正确渲染问题
-8. fix: 修复某些情况下不支持空行注释问题
-9. chore: 增加 Ubuntu-18.04 构建产物
+### [v3.25.0](https://github.com/purocean/yn/releases/tag/v3.25.0) 2022-03-02
+1. feat: 增加局域网内分享预览功能
+2. feat: 拷贝富文本/HTML增加“上传本地图片到图床”选项
+3. feat: 增加一些内置样式类
+4. upd: 升级 Drawio 版本
+5. upd: 优化导出/打印 Mermaid 样式
+6. fix: 修复编辑器自动补全可能删除整行内容问题
+7. feat(插件): 给 `VIEW_ON_GET_HTML_FILTER_NODE` 钩子增加 `uploadLocalImage` 选项
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
