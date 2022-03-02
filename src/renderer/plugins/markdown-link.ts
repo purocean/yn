@@ -179,12 +179,23 @@ export default {
       // local image
       const srcAttr = node.getAttribute('src')
       if (srcAttr && node.getAttribute(DOM_ATTR_NAME.LOCAL_IMAGE)) {
-        if (options.inlineLocalImage) {
+        if (options.inlineLocalImage || options.uploadLocalImage) {
           try {
+            const originSrc = node.getAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
             const res: Response = await ctx.api.fetchHttp(srcAttr)
-            const base64Url = await ctx.utils.fileToBase64URL(await res.blob())
-            node.setAttribute('src', base64Url)
-            node.removeAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
+            const file = new File([await res.blob()], originSrc ? ctx.utils.path.basename(originSrc) : 'img')
+
+            let url: string | undefined
+            if (options.inlineLocalImage) {
+              url = await ctx.utils.fileToBase64URL(file)
+            } else if (options.uploadLocalImage) {
+              url = await ctx.action.getActionHandler('plugin.image-hosting-picgo.upload')(file)
+            }
+
+            if (url) {
+              node.setAttribute('src', url)
+              node.removeAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
+            }
           } catch (error) {
             console.log(error)
           }

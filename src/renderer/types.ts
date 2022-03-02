@@ -148,7 +148,7 @@ export type BuildInActions = {
   'xterm.init': () => void,
   'plugin.document-history-stack.back': () => void,
   'plugin.document-history-stack.forward': () => void,
-  'plugin.image-hosting-picgo.upload': (file: File) => void,
+  'plugin.image-hosting-picgo.upload': (file: File) => Promise<string | undefined>,
   'plugin.status-bar-help.show-readme': () => void,
   'plugin.status-bar-help.show-features': () => void,
   'plugin.status-bar-help.show-shortcuts': () => void,
@@ -186,6 +186,7 @@ export type BuildInHookTypes = {
     options: {
       inlineStyle?: boolean,
       inlineLocalImage?: boolean,
+      uploadLocalImage?: boolean,
       highlightCode?: boolean,
       nodeProcessor?: (node: HTMLElement) => void
     }

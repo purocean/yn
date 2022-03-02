@@ -484,8 +484,10 @@ const data: BaseLanguage = {
     'type': '复制类型: ',
     'inline-style': '内联样式',
     'inline-image': '内联本地图片',
+    'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',
     'rtf': '富文本',
+    'complete': '转换完成，点击确定复制',
   },
   'share-preview': {
     'expire': '到期',

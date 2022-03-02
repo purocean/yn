@@ -483,8 +483,10 @@ const data = {
     'type': 'Copy Type: ',
     'inline-style': 'Inline Style',
     'inline-image': 'Inline Local Image',
+    'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',
     'rtf': 'Rich Text Format',
+    'complete': 'Conversion completed, click OK to copy',
   },
   'share-preview': {
     'expire': 'Expire',

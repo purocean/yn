@@ -6,18 +6,30 @@ export default {
     const options = ctx.lib.vue.reactive({
       inlineStyle: false,
       inlineLocalImage: false,
+      uploadLocalImage: false,
       highlightCode: false,
       type: 'rtf' as 'html' | 'rtf',
     })
 
     const panel = ctx.lib.vue.defineComponent({
       setup () {
+        ctx.lib.vue.watch(() => ({ ...options }), (val, prev) => {
+          if (val.uploadLocalImage && val.inlineLocalImage) {
+            if (!prev.uploadLocalImage) {
+              options.inlineLocalImage = false
+            } else {
+              options.uploadLocalImage = false
+            }
+          }
+        })
+
         return () => <div class="copy-rendered-content">
           <div>
             <div class="label">{ctx.i18n.t('copy-rendered-content.options')}</div>
             <div>
-              <label><input v-model={options.inlineStyle} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-style')} </label>
               <label><input v-model={options.inlineLocalImage} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-image')} </label>
+              <label><input v-model={options.uploadLocalImage} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.upload-image')} </label>
+              <label><input v-model={options.inlineStyle} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-style')} </label>
               <label><input v-model={options.highlightCode} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.highlight-code')} </label>
             </div>
           </div>
@@ -38,7 +50,13 @@ export default {
         component: panel,
       })) {
         try {
+          const startedAt = Date.now()
+          ctx.ui.useToast().show('info', ctx.i18n.t('loading'), 10000)
           const html = await ctx.view.getContentHtml(options)
+
+          if (Date.now() - startedAt > 3000) {
+            await ctx.ui.useModal().alert({ content: ctx.i18n.t('copy-rendered-content.complete') })
+          }
 
           if (options.type === 'rtf') {
             await ctx.base.writeToClipboard('text/html', html)
