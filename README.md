@@ -90,16 +90,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.24.0](https://github.com/purocean/yn/releases/tag/v3.24.0) 2022-02-20
-1. feat: add "Keep running after closing window" setting item
-2. feat: add refresh preview shortcut `Ctrl/Cmd + R`
-3. feat: Mermaid graphics support dark theme
-4. feat: Mermaid graphics support zoom in preview
-5. upd: remove `.md` from export file name
-6. upd: upgrade PlantUML version
-7. fix: Fixed PlantUML not rendering correctly in some cases
-8. fix: fix the problem that empty line comments are not supported in some cases
-9. chore: add Ubuntu-18.04 artifact
+### [v3.25.0](https://github.com/purocean/yn/releases/tag/v3.25.0) 2022-03-02
+1. feat: add the sharing preview function in the local area network
+2. feat: add "Upload local image to image bed" option to Copy RTF/HTML
+3. feat: add some built-in style classes
+4. upd: upgrade Drawio version
+5. upd: optimize export/print Mermaid style
+6. fix: fix editor auto-completion may delete the entire line of content
+7. feat(plugin): add `uploadLocalImage` option to `VIEW_ON_GET_HTML_FILTER_NODE` hook
 
 [More release notes](https://github.com/purocean/yn/releases)
 
