@@ -162,6 +162,13 @@ const schema: Schema = {
       group: 'editor',
       required: true,
     },
+    'auto-save': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.auto-save',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+    },
     shell: {
       defaultValue: '',
       title: 'T_setting-panel.schema.shell',

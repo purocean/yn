@@ -331,6 +331,7 @@ const data = {
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, docName, date.',
       'shell': 'Shell',
+      'auto-save': 'Auto Save',
       'updater': {
         'source': 'Update Source',
       },

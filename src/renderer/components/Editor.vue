@@ -12,6 +12,7 @@ import { isEncrypted, saveDoc, toUri } from '@fe/services/document'
 import { whenEditorReady } from '@fe/services/editor'
 import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
+import { getSetting } from '@fe/services/setting'
 
 export default defineComponent({
   name: 'editor',
@@ -67,6 +68,10 @@ export default defineComponent({
       clearTimer()
 
       if (!(currentFile.value && currentFile.value.repo && currentFile.value.path)) {
+        return
+      }
+
+      if (!getSetting('auto-save', true)) {
         return
       }
 

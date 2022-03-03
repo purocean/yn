@@ -98,6 +98,7 @@ export type BuildInSettings = {
   'repos': Repo[],
   'theme': ThemeName,
   'language': LanguageName,
+  'auto-save': boolean,
   'custom-css': string,
   'assets-dir': string,
   'shell': string,
