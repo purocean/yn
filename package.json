@@ -100,7 +100,7 @@
     "jest": "^27.4.5",
     "jest-extended": "^1.2.0",
     "juice": "^8.0.0",
-    "katex": "^0.13.11",
+    "katex": "^0.15.02",
     "lodash-es": "^4.17.21",
     "luckyexcel": "^1.0.1",
     "luckysheet": "^2.1.13",
