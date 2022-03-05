@@ -71,7 +71,9 @@ export default defineComponent({
         return
       }
 
-      if (!getSetting('auto-save', true)) {
+      const autoSave = getSetting('auto-save', 2000)
+
+      if (!autoSave) {
         return
       }
 
@@ -82,7 +84,7 @@ export default defineComponent({
         }
 
         saveFile()
-      }, 2000)
+      }, autoSave)
     }
 
     async function changeFile (current?: Doc | null) {

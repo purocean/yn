@@ -163,11 +163,15 @@ const schema: Schema = {
       required: true,
     },
     'auto-save': {
-      defaultValue: true,
+      defaultValue: 2000,
       title: 'T_setting-panel.schema.auto-save',
-      type: 'boolean',
-      format: 'checkbox',
+      enum: [0, 2000, 4000, 8000, 30000, 60000],
+      options: {
+        enum_titles: ['Disable', '2s', '4s', '8s', '30s', '60s'],
+      },
+      type: 'number',
       group: 'editor',
+      required: true,
     },
     shell: {
       defaultValue: '',

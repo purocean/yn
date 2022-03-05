@@ -26,6 +26,7 @@ const data: BaseLanguage = {
   'save': '保存',
   'close': '关闭',
   'edit': '编辑',
+  'discard': '放弃',
   'premium': {
     'need-purchase': '[%s] 需要高级版',
     'buy-license': '立即购买',
@@ -139,6 +140,10 @@ const data: BaseLanguage = {
       'cancel': '取消',
       'discard': '放弃保存并退出',
     },
+  },
+  'save-check-dialog': {
+    'title': '提示',
+    'desc': '文档尚未保存，是否要保存？',
   },
   'file-status': {
     'unsaved': '未保存',

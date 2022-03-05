@@ -24,6 +24,7 @@ const data = {
   'no-password': 'No password was entered',
   'save': 'Save',
   'close': 'Close',
+  'discard': 'Discard',
   'edit': 'Edit',
   'premium': {
     'need-purchase': '[%s] Premium is required',
@@ -138,6 +139,10 @@ const data = {
       'cancel': 'Cancel',
       'discard': 'Discard Changes and exit',
     },
+  },
+  'save-check-dialog': {
+    'title': 'Attention',
+    'desc': 'The document has not been saved, do you want to save it?',
   },
   'file-status': {
     'unsaved': 'Unsaved',
