@@ -189,7 +189,7 @@ function highlight (str: string, lang: string) {
   if (lang && Highlight.getLanguage(lang)) {
     try {
       const element = document.createElement('code')
-      element.innerHTML = Highlight.highlight(lang, str).value
+      element.innerHTML = Highlight.highlight(str, { language: lang }).value
       return lineNumbersInternal(element, lang)
     } catch (error) {
       logger.error(error)
