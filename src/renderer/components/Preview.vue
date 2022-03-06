@@ -55,7 +55,7 @@ import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'
 import { showExport, toUri } from '@fe/services/document'
-import { getContextMenuItems, toggleAutoPreview } from '@fe/services/view'
+import { getContextMenuItems } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { DOM_ATTR_NAME } from '@fe/support/constant'
 import { useI18n } from '@fe/services/i18n'
@@ -344,8 +344,6 @@ export default defineComponent({
 
     watch(fileUri, () => {
       renderCount = 0
-      // file switched, turn on auto render preview.
-      toggleAutoPreview(true)
       updateRender = debounce(render, 25)
       triggerHook('VIEW_FILE_CHANGE')
     })
