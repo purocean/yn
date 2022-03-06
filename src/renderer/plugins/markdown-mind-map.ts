@@ -14,6 +14,9 @@ const logger = getLogger('markdown-mind-map')
 const layoutStorageKey = 'mind-map-layout'
 let links = ''
 
+let mindMapId = 0
+const instances = new Map()
+
 // kityminder has memory leak at CustomEvent, make CustomEvent readonly
 const CustomEvent = window.CustomEvent
 Object.defineProperty(window, 'CustomEvent', {
@@ -370,6 +373,7 @@ const MindMap = defineComponent({
     }
   },
   setup (props) {
+    const id = `mind-map-${mindMapId++}`
     const container = ref<HTMLElement>()
 
     let km: any = null
@@ -385,6 +389,7 @@ const MindMap = defineComponent({
           km.execCommand('hand')
           km.execCommand('camera')
         })
+        instances.set(id, km)
       } else {
         km.disableAnimationAwhile(() => render(km, props.content))
       }
@@ -393,6 +398,7 @@ const MindMap = defineComponent({
     function clean () {
       km && km.destroy()
       km = null
+      instances.delete(id)
     }
 
     function onLanguageChange () {
@@ -413,6 +419,7 @@ const MindMap = defineComponent({
     let focused = false
 
     return () => h('div', {
+      id,
       ref: container,
       class: 'mind-map reduce-brightness',
       tabIndex: -1,
@@ -487,6 +494,16 @@ export default {
       document.body.appendChild(script2)
 
       links = [style.outerHTML, script1.outerHTML, script2.outerHTML].join('\n')
+    })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node }) => {
+      if (node.classList.contains('mind-map') && node.id) {
+        const km = instances.get(node.id)
+        if (km) {
+          const svg = await km.exportData('svg')
+          node.outerHTML = svg
+        }
+      }
     })
   }
 } as Plugin
