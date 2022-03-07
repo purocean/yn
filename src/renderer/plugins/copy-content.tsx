@@ -9,7 +9,7 @@ export default {
       inlineLocalImage: false,
       uploadLocalImage: false,
       highlightCode: false,
-      type: 'rtf' as 'html' | 'rtf' | 'markdown',
+      type: 'rt' as 'html' | 'rt' | 'markdown',
     })
 
     const panel = ctx.lib.vue.defineComponent({
@@ -28,7 +28,7 @@ export default {
           <div>
             <div class="label">{ctx.i18n.t('copy-content.type')}</div>
             <div>
-              <label><input v-model={options.type} type="radio" value="rtf" /> {ctx.i18n.t('copy-content.rtf')}</label>
+              <label><input v-model={options.type} type="radio" value="rt" /> {ctx.i18n.t('copy-content.rt')}</label>
               <label><input v-model={options.type} type="radio" value="html" /> HTML </label>
               <label><input v-model={options.type} type="radio" value="markdown" /> Markdown </label>
             </div>
@@ -110,7 +110,7 @@ export default {
             await ctx.ui.useModal().alert({ content: ctx.i18n.t('copy-content.complete') })
           }
 
-          if (options.type === 'rtf') {
+          if (options.type === 'rt') {
             await ctx.base.writeToClipboard('text/html', content)
             ctx.ui.useToast().show('info', ctx.i18n.t('copied'))
           } else {

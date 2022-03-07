@@ -215,7 +215,7 @@ const data = {
     },
     'insert': {
       'insert': 'Insert',
-      'paste-rtf': 'Paste Rich Text',
+      'paste-rt': 'Paste Rich Text',
       'paste-img-base64': 'Paste Image',
     },
     'tool': {
@@ -360,7 +360,7 @@ const data = {
     'context-menu': {
       'paste-image': 'Paste Image',
       'paste-image-as-base64': 'Paste Image as Base64',
-      'paste-rtf-as-markdown': 'Paste RTF as Markdown',
+      'paste-rt-as-markdown': 'Paste Rich Text as Markdown',
       'add-attachment': 'Add Attachment',
       'link-doc': 'Link Document',
       'link-file': 'Link File',
@@ -490,7 +490,7 @@ const data = {
     'inline-image': 'Inline Local Image',
     'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',
-    'rtf': 'Rich Text Format',
+    'rt': 'Rich Text',
     'complete': 'Conversion completed, click OK to copy',
   },
   'share-preview': {

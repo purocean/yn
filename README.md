@@ -92,7 +92,7 @@ For more information on how to use the following functions, please see [characte
 
 ### [v3.25.0](https://github.com/purocean/yn/releases/tag/v3.25.0) 2022-03-02
 1. feat: add the sharing preview function in the local area network
-2. feat: add "Upload local image to image bed" option to Copy RTF/HTML
+2. feat: add "Upload local image to image bed" option to Copy Content
 3. feat: add some built-in style classes
 4. upd: upgrade Drawio version
 5. upd: optimize export/print Mermaid style

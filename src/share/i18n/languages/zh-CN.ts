@@ -216,7 +216,7 @@ const data: BaseLanguage = {
     },
     'insert': {
       'insert': '插入',
-      'paste-rtf': '粘贴富文本',
+      'paste-rt': '粘贴富文本',
       'paste-img-base64': '粘贴图片',
     },
     'tool': {
@@ -361,7 +361,7 @@ const data: BaseLanguage = {
     'context-menu': {
       'paste-image': '粘贴图片',
       'paste-image-as-base64': '粘贴图片为 Base64',
-      'paste-rtf-as-markdown': '粘贴富文本为 Markdown',
+      'paste-rt-as-markdown': '粘贴富文本为 Markdown',
       'add-attachment': '添加附件',
       'link-doc': '链接文档',
       'link-file': '链接文件',
@@ -491,7 +491,7 @@ const data: BaseLanguage = {
     'inline-image': '内联本地图片',
     'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',
-    'rtf': '富文本',
+    'rt': '富文本',
     'complete': '转换完成，点击确定复制',
   },
   'share-preview': {

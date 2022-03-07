@@ -66,7 +66,7 @@ export default {
     window.addEventListener('paste', paste as any, true)
 
     const pasteImageAsBase64ActionId = 'plugin.editor-paste.insert-image-base64'
-    const pasteRtfActionId = 'plugin.editor-paste.insert-rtf'
+    const pasteRtfActionId = 'plugin.editor-paste.insert-rt'
 
     const pasteImageFromClipboard = async (asBase64: boolean) => {
       ctx.base.readFromClipboard(async (type, getType) => {
@@ -105,7 +105,7 @@ export default {
         {
           id: pasteRtfActionId,
           type: 'normal',
-          title: ctx.i18n.t('status-bar.insert.paste-rtf'),
+          title: ctx.i18n.t('status-bar.insert.paste-rt'),
           subTitle: 'Markdown',
           onClick: pasteRtf
         },
@@ -136,7 +136,7 @@ export default {
 
       editor.addAction({
         id: pasteRtfActionId,
-        label: ctx.i18n.t('editor.context-menu.paste-rtf-as-markdown'),
+        label: ctx.i18n.t('editor.context-menu.paste-rt-as-markdown'),
         contextMenuGroupId: 'clipboard',
         contextMenuOrder: 3,
         run: pasteRtf,

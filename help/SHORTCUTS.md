@@ -36,7 +36,7 @@ Insert Document Link | Alt/Option + D
 Run Selection in Terminal | Shift + Alt/Option + R
 Transform to Uppercase | Ctrl/Cmd + K, Ctrl/Cmd + U
 Transform to Lowercase | Ctrl/Cmd + K, Ctrl/Cmd + L
-Paste RTF as Document | Ctrl/Cmd + D + V
+Paste Rich Text as Document | Ctrl/Cmd + D + V
 Pase Image as Base64 | Ctrl/Cmd + B + V
 Show Context Menu in the Preview | Right-click Target (Hold Alt in the Browser)
 Edit Table Cell | Double Click Cell
