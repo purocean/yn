@@ -62,7 +62,10 @@
               </div>
               <template v-if="localHtml">
                 <div style="margin: 10px 0">
-                  <label><input name="fromType" :value="convert.includeCss" type="checkbox" :checked="convert.includeCss" @change="() => (convert.includeCss = !convert.includeCss)"> {{$t('export-panel.include-css')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineLocalImage" type="checkbox" /> {{$t('copy-rendered-content.inline-image')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.uploadLocalImage" type="checkbox" /> {{$t('copy-rendered-content.upload-image')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineStyle" type="checkbox" /> {{$t('copy-rendered-content.inline-style')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.highlightCode" type="checkbox" /> {{$t('copy-rendered-content.highlight-code')}} </label>
                 </div>
               </template>
             </template>
@@ -79,7 +82,7 @@
 
 <script lang="ts">
 import { useStore } from 'vuex'
-import { computed, defineComponent, reactive, ref, toRefs } from 'vue'
+import { computed, defineComponent, reactive, ref, toRefs, watch } from 'vue'
 import { getElectronRemote, isElectron, isWindows } from '@fe/support/env'
 import { getContentHtml } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
@@ -126,11 +129,27 @@ export default defineComponent({
       fromType: 'html',
       resourcePath: '.',
       includeCss: false,
+      localHtmlOptions: {
+        inlineLocalImage: false,
+        uploadLocalImage: false,
+        inlineStyle: false,
+        highlightCode: false,
+      },
       pdfOptions: {
         landscape: '',
         pageSize: 'A4',
         scaleFactor: '100',
         printBackground: true,
+      }
+    })
+
+    watch(() => ({ ...convert.localHtmlOptions }), (val, prev) => {
+      if (val.uploadLocalImage && val.inlineLocalImage) {
+        if (!prev.uploadLocalImage) {
+          convert.localHtmlOptions.inlineLocalImage = false
+        } else {
+          convert.localHtmlOptions.uploadLocalImage = false
+        }
       }
     })
 
@@ -184,10 +203,7 @@ export default defineComponent({
       toast.show('info', t('export-panel.loading'), 5000)
 
       if (localHtml.value) {
-        const html = await getContentHtml({
-          inlineStyle: convert.includeCss,
-          inlineLocalImage: true,
-        })
+        const html = await getContentHtml(convert.localHtmlOptions)
         downloadContent(fileName.value + '.html', buildHtml(fileName.value, html))
         return
       }
