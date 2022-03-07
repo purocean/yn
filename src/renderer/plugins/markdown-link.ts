@@ -2,7 +2,7 @@ import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
 import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import { sleep } from '@fe/utils'
+import { removeQuery, sleep } from '@fe/utils'
 import { isElectron } from '@fe/support/env'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/constant'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
@@ -137,14 +137,14 @@ function convertLink (state: StateCore) {
     const originAttr = isAnchor ? DOM_ATTR_NAME.ORIGIN_HREF : DOM_ATTR_NAME.ORIGIN_SRC
     token.attrSet(originAttr, attrVal)
 
-    const val = attrVal.replace(/[#?].*$/, '')
+    const originPath = removeQuery(attrVal)
 
     if (repo === '__help__') {
-      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(val)}`)
+      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(originPath)}`)
       return
     }
 
-    const filePath = resolve(basePath, val)
+    const filePath = resolve(basePath, originPath)
     token.attrSet(attrName, `api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
   }
 

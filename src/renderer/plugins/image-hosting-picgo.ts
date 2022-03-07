@@ -152,12 +152,12 @@ export default {
                 throw new Error('No file opened.')
               }
 
-              const filePath = el.getAttribute(DOM_ATTR_NAME.ORIGIN_SRC)!
-              const fileName = ctx.utils.path.basename(filePath)
+              const originSrc = el.getAttribute(DOM_ATTR_NAME.ORIGIN_SRC)!
+              const fileName = ctx.utils.path.basename(ctx.utils.removeQuery(originSrc))
               const res: Response = await ctx.api.fetchHttp(el.getAttribute('src')!)
               const file = new File([await res.blob()], fileName)
               const url = await ctx.action.getActionHandler(uploadActionName)(file)
-              ctx.editor.replaceValue(ctx.utils.encodeMarkdownLink(filePath), `${url}`)
+              ctx.editor.replaceValue(ctx.utils.encodeMarkdownLink(originSrc), `${url}`)
             } catch (error: any) {
               ctx.ui.useToast().show('warning', error.message)
             }

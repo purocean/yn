@@ -64,7 +64,7 @@ export default {
             const originSrc = token.attrGet(ctx.constant.DOM_ATTR_NAME.ORIGIN_SRC)
             if (srcAttr && originSrc) {
               const res: Response = await ctx.api.fetchHttp(srcAttr)
-              const fileName = ctx.utils.path.basename(originSrc)
+              const fileName = ctx.utils.path.basename(ctx.utils.removeQuery(originSrc))
               const file = new File(
                 [await res.blob()],
                 fileName,
@@ -79,8 +79,8 @@ export default {
               }
 
               if (url) {
-                markdown = markdown.replace(
-                  new RegExp(ctx.utils.encodeMarkdownLink(originSrc), 'g'),
+                markdown = markdown.replaceAll(
+                  ctx.utils.encodeMarkdownLink(originSrc),
                   ctx.utils.encodeMarkdownLink(url)
                 )
               }
