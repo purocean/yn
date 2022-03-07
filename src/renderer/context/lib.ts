@@ -13,6 +13,7 @@ export { default as turndown } from 'turndown'
 export { default as juice } from 'juice'
 export { default as sortablejs } from 'sortablejs'
 export { default as filenamify } from 'filenamify/browser'
+export { default as mime } from 'mime'
 
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
