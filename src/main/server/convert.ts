@@ -4,7 +4,7 @@ import * as path from 'path'
 import { spawn } from 'child_process'
 import { BIN_DIR, PANDOC_REFERENCE_FILE, RESOURCES_DIR, USER_DIR } from '../constant'
 
-const binPath = path.join(BIN_DIR, os.platform() + '-pandoc-2.7.3' + (os.platform() === 'win32' ? '.exe' : ''))
+const binPath = path.join(BIN_DIR, os.platform() + '-pandoc-2.17.1.1' + (os.platform() === 'win32' ? '.exe' : ''))
 const docxTplPath = path.join(USER_DIR, PANDOC_REFERENCE_FILE)
 const filterPath = path.join(RESOURCES_DIR, './pandoc-filter.lua')
 
