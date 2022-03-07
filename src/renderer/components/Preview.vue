@@ -177,7 +177,7 @@ export default defineComponent({
       }
 
       const startTime = performance.now()
-      renderEnv = { source: content, file: currentFile.value, renderCount: renderCount++ }
+      renderEnv = { tokens: [], source: content, file: currentFile.value, renderCount: renderCount++ }
       try {
         renderContent.value = markdown.render(content, renderEnv)
       } catch (error: any) {

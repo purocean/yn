@@ -54,11 +54,10 @@ export default {
       }
 
       const processImg = async (tokens: Token[]) => {
-        for (let token of tokens) {
+        for (const token of tokens) {
           if (token.children) {
             await processImg(token.children)
           }
-
 
           if (token.tag === 'img' && token.attrGet(ctx.constant.DOM_ATTR_NAME.LOCAL_IMAGE)) {
             const srcAttr = token.attrGet('src')
