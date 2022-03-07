@@ -1,4 +1,5 @@
 import type { Plugin } from '@fe/context'
+import type Token from 'markdown-it/lib/token'
 
 export default {
   name: 'copy-rendered-content',
@@ -8,7 +9,7 @@ export default {
       inlineLocalImage: false,
       uploadLocalImage: false,
       highlightCode: false,
-      type: 'rtf' as 'html' | 'rtf',
+      type: 'rtf' as 'html' | 'rtf' | 'markdown',
     })
 
     const panel = ctx.lib.vue.defineComponent({
@@ -25,24 +26,74 @@ export default {
 
         return () => <div class="copy-rendered-content">
           <div>
-            <div class="label">{ctx.i18n.t('copy-rendered-content.options')}</div>
-            <div>
-              <label><input v-model={options.inlineLocalImage} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-image')} </label>
-              <label><input v-model={options.uploadLocalImage} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.upload-image')} </label>
-              <label><input v-model={options.inlineStyle} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-style')} </label>
-              <label><input v-model={options.highlightCode} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.highlight-code')} </label>
-            </div>
-          </div>
-          <div>
             <div class="label">{ctx.i18n.t('copy-rendered-content.type')}</div>
             <div>
               <label><input v-model={options.type} type="radio" value="rtf" /> {ctx.i18n.t('copy-rendered-content.rtf')}</label>
               <label><input v-model={options.type} type="radio" value="html" /> HTML </label>
+              <label><input v-model={options.type} type="radio" value="markdown" /> Markdown </label>
+            </div>
+          </div>
+          <div>
+            <div class="label">{ctx.i18n.t('copy-rendered-content.options')}</div>
+            <div>
+              <label><input v-model={options.inlineLocalImage} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-image')} </label>
+              <label><input v-model={options.uploadLocalImage} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.upload-image')} </label>
+              {options.type !== 'markdown' && <label><input v-model={options.inlineStyle} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-style')} </label>}
+              {options.type !== 'markdown' && <label><input v-model={options.highlightCode} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.highlight-code')} </label>}
             </div>
           </div>
         </div>
       }
     })
+
+    async function transformMarkdown () {
+      let markdown = ctx.store.state.currentContent
+      const tokens = ctx.view.getRenderEnv()?.tokens
+      if (!markdown || !tokens) {
+        return
+      }
+
+      const processImg = async (tokens: Token[]) => {
+        for (let token of tokens) {
+          if (token.children) {
+            await processImg(token.children)
+          }
+
+
+          if (token.tag === 'img' && token.attrGet(ctx.constant.DOM_ATTR_NAME.LOCAL_IMAGE)) {
+            const srcAttr = token.attrGet('src')
+            const originSrc = token.attrGet(ctx.constant.DOM_ATTR_NAME.ORIGIN_SRC)
+            if (srcAttr && originSrc) {
+              const res: Response = await ctx.api.fetchHttp(srcAttr)
+              const fileName = ctx.utils.path.basename(originSrc)
+              const file = new File(
+                [await res.blob()],
+                fileName,
+                { type: ctx.lib.mime.getType(fileName) || undefined }
+              )
+
+              let url: string | undefined
+              if (options.inlineLocalImage) {
+                url = await ctx.utils.fileToBase64URL(file)
+              } else if (options.uploadLocalImage) {
+                url = await ctx.action.getActionHandler('plugin.image-hosting-picgo.upload')(file)
+              }
+
+              if (url) {
+                markdown = markdown.replace(
+                  new RegExp(ctx.utils.encodeMarkdownLink(originSrc), 'g'),
+                  ctx.utils.encodeMarkdownLink(url)
+                )
+              }
+            }
+          }
+        }
+      }
+
+      await processImg(tokens)
+
+      return markdown
+    }
 
     async function copyContent () {
       if (await ctx.ui.useModal().confirm({
@@ -52,17 +103,19 @@ export default {
         try {
           const startedAt = Date.now()
           ctx.ui.useToast().show('info', ctx.i18n.t('loading'), 10000)
-          const html = await ctx.view.getContentHtml(options)
+          const content = options.type === 'markdown'
+            ? await transformMarkdown()
+            : await ctx.view.getContentHtml(options)
 
           if (Date.now() - startedAt > 3000) {
             await ctx.ui.useModal().alert({ content: ctx.i18n.t('copy-rendered-content.complete') })
           }
 
           if (options.type === 'rtf') {
-            await ctx.base.writeToClipboard('text/html', html)
+            await ctx.base.writeToClipboard('text/html', content)
             ctx.ui.useToast().show('info', ctx.i18n.t('copied'))
           } else {
-            ctx.utils.copyText(html)
+            ctx.utils.copyText(content)
           }
         } catch (error: any) {
           console.error(error)

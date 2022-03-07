@@ -1,4 +1,5 @@
 import type { Language } from '@share/i18n'
+import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
 
 export interface PathItem {
@@ -92,7 +93,13 @@ export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 
-export type RenderEnv = { source: string, file: Doc | null, renderCount: number, attributes?: Record<string, any> }
+export type RenderEnv = {
+  source: string,
+  file: Doc | null,
+  renderCount: number,
+  attributes?: Record<string, any>,
+  tokens: Token[]
+}
 
 export type BuildInSettings = {
   'repos': Repo[],

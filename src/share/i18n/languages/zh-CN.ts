@@ -295,7 +295,6 @@ const data: BaseLanguage = {
     'use-html': '使用渲染后的 HTML 转换',
     'use-markdown': '使用 Markdown 转换',
     'loading': '转换中，请稍候……',
-    'include-css': '包含 CSS',
   },
   'title-bar': {
     'pin': '置顶窗口',
