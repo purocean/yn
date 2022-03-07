@@ -62,10 +62,10 @@
               </div>
               <template v-if="localHtml">
                 <div style="margin: 10px 0">
-                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineLocalImage" type="checkbox" /> {{$t('copy-rendered-content.inline-image')}} </label>
-                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.uploadLocalImage" type="checkbox" /> {{$t('copy-rendered-content.upload-image')}} </label>
-                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineStyle" type="checkbox" /> {{$t('copy-rendered-content.inline-style')}} </label>
-                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.highlightCode" type="checkbox" /> {{$t('copy-rendered-content.highlight-code')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineLocalImage" type="checkbox" /> {{$t('copy-content.inline-image')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.uploadLocalImage" type="checkbox" /> {{$t('copy-content.upload-image')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineStyle" type="checkbox" /> {{$t('copy-content.inline-style')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.highlightCode" type="checkbox" /> {{$t('copy-content.highlight-code')}} </label>
                 </div>
               </template>
             </template>

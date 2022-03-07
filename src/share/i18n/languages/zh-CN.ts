@@ -223,7 +223,7 @@ const data: BaseLanguage = {
       'tool': '工具',
       'convert-img-link': '下载外链图片',
       'macro-copy-markdown': '复制宏替换后的 Markdown',
-      'copy-content': '复制渲染内容',
+      'copy-content': '复制内容',
       'doc-history': '文档历史版本',
       'share-preview': '分享预览',
     },
@@ -484,7 +484,7 @@ const data: BaseLanguage = {
       'hint': '输入一些信息（可选）',
     },
   },
-  'copy-rendered-content': {
+  'copy-content': {
     'options': '选项: ',
     'type': '复制类型: ',
     'inline-style': '内联样式',

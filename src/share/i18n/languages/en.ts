@@ -222,7 +222,7 @@ const data = {
       'tool': 'Tool',
       'convert-img-link': 'Download Remote Image',
       'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
-      'copy-content': 'Copy Rendered Content',
+      'copy-content': 'Copy Content',
       'doc-history': 'Document History',
       'share-preview': 'Share Preview',
     },
@@ -483,7 +483,7 @@ const data = {
       'hint': 'Input some message (optional)',
     },
   },
-  'copy-rendered-content': {
+  'copy-content': {
     'options': 'Options: ',
     'type': 'Copy Type: ',
     'inline-style': 'Inline Style',

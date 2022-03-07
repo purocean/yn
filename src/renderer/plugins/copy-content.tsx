@@ -2,7 +2,7 @@ import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
 
 export default {
-  name: 'copy-rendered-content',
+  name: 'copy-content',
   register: (ctx) => {
     const options = ctx.lib.vue.reactive({
       inlineStyle: false,
@@ -24,22 +24,22 @@ export default {
           }
         })
 
-        return () => <div class="copy-rendered-content">
+        return () => <div class="copy-content">
           <div>
-            <div class="label">{ctx.i18n.t('copy-rendered-content.type')}</div>
+            <div class="label">{ctx.i18n.t('copy-content.type')}</div>
             <div>
-              <label><input v-model={options.type} type="radio" value="rtf" /> {ctx.i18n.t('copy-rendered-content.rtf')}</label>
+              <label><input v-model={options.type} type="radio" value="rtf" /> {ctx.i18n.t('copy-content.rtf')}</label>
               <label><input v-model={options.type} type="radio" value="html" /> HTML </label>
               <label><input v-model={options.type} type="radio" value="markdown" /> Markdown </label>
             </div>
           </div>
           <div>
-            <div class="label">{ctx.i18n.t('copy-rendered-content.options')}</div>
+            <div class="label">{ctx.i18n.t('copy-content.options')}</div>
             <div>
-              <label><input v-model={options.inlineLocalImage} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-image')} </label>
-              <label><input v-model={options.uploadLocalImage} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.upload-image')} </label>
-              {options.type !== 'markdown' && <label><input v-model={options.inlineStyle} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.inline-style')} </label>}
-              {options.type !== 'markdown' && <label><input v-model={options.highlightCode} type="checkbox" /> {ctx.i18n.t('copy-rendered-content.highlight-code')} </label>}
+              <label><input v-model={options.inlineLocalImage} type="checkbox" /> {ctx.i18n.t('copy-content.inline-image')} </label>
+              <label><input v-model={options.uploadLocalImage} type="checkbox" /> {ctx.i18n.t('copy-content.upload-image')} </label>
+              {options.type !== 'markdown' && <label><input v-model={options.inlineStyle} type="checkbox" /> {ctx.i18n.t('copy-content.inline-style')} </label>}
+              {options.type !== 'markdown' && <label><input v-model={options.highlightCode} type="checkbox" /> {ctx.i18n.t('copy-content.highlight-code')} </label>}
             </div>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default {
             : await ctx.view.getContentHtml(options)
 
           if (Date.now() - startedAt > 3000) {
-            await ctx.ui.useModal().alert({ content: ctx.i18n.t('copy-rendered-content.complete') })
+            await ctx.ui.useModal().alert({ content: ctx.i18n.t('copy-content.complete') })
           }
 
           if (options.type === 'rtf') {
@@ -127,7 +127,7 @@ export default {
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-tool']?.list?.push(
         {
-          id: 'plugin.copy-rendered-content.copy-content',
+          id: 'plugin.copy-content.copy-content',
           type: 'normal',
           title: ctx.i18n.t('status-bar.tool.copy-content'),
           onClick: () => copyContent()
@@ -136,26 +136,26 @@ export default {
     })
 
     ctx.theme.addStyles(`
-      .copy-rendered-content {
+      .copy-content {
         margin-top: 20px;
       }
 
-      .copy-rendered-content > div {
+      .copy-content > div {
         padding: 4px 12px;
         display: flex;
       }
 
-      .copy-rendered-content > div > div {
+      .copy-content > div > div {
         display: flex;
         flex-wrap: wrap;
       }
 
-      .copy-rendered-content .label {
+      .copy-content .label {
         width: 100px;
         flex: none;
       }
 
-      .copy-rendered-content label {
+      .copy-content label {
         margin-left: 12px;
         white-space: nowrap;
         margin-bottom: 8px;

@@ -46,7 +46,7 @@ import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
 import syncScroll from '@fe/plugins/sync-scroll'
 import imageLocalization from '@fe/plugins/image-localization'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
-import copyRenderedContent from '@fe/plugins/copy-rendered-content'
+import copyContent from '@fe/plugins/copy-content'
 import sharePreview from '@fe/plugins/share-preview'
 
 export default [
@@ -98,6 +98,6 @@ export default [
   syncScroll,
   imageLocalization,
   imageHostingPicgo,
-  copyRenderedContent,
+  copyContent,
   sharePreview,
 ]
