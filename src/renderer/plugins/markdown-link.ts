@@ -9,6 +9,16 @@ import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { getRepo, openExternal, openPath } from '@fe/services/base'
 
+function getElement (id: string) {
+  id = id.replaceAll('%28', '(').replaceAll('%29', ')')
+  return document.getElementById(id) ||
+    document.getElementById(decodeURIComponent(id)) ||
+    document.getElementById(encodeURIComponent(id)) ||
+    document.getElementById(id.replace(/^h-/, '')) ||
+    document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
+    document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
+}
+
 const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
   if (!currentFile) {
@@ -66,10 +76,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
         // jump anchor
         if (hash) {
           await sleep(50)
-          const el = document.getElementById(hash) ||
-            document.getElementById(encodeURIComponent(hash)) ||
-            document.getElementById(hash.replace(/^h-/, '')) ||
-            document.getElementById(encodeURIComponent(hash.replace(/^h-/, '')))
+          const el = getElement(hash)
 
           if (el) {
             await sleep(0)
@@ -85,7 +92,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
 
       return true
     } else if (href && href.startsWith('#')) { // for anchor
-      const el = document.getElementById(href.replace(/^#/, ''))
+      const el = getElement(href.replace(/^#/, ''))
       el && scrollIntoView(el)
       return true
     }
