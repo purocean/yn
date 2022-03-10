@@ -1,58 +1,18 @@
 /* eslint-disable no-template-curly-in-string */
 import dayjs from 'dayjs'
 import type * as Monaco from 'monaco-editor'
-import { deleteLine, getEditor, getLineContent, getMonaco, getOneIndent, getValue, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
+import { deleteLine, getEditor, getLineContent, getMonaco, getOneIndent, insert, replaceLine, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
 import { isKeydown } from '@fe/core/command'
 
-function getWords (content: string) {
-  const words = new Set<string>()
-
-  if (content.length > 50000) {
-    return words
-  }
-
-  const identifier = /[a-zA-Z_]+\w/g
-
-  while (true) {
-    if (words.size > 1000) {
-      break
-    }
-
-    const res = identifier.exec(content)
-    if (!res) {
-      break
-    }
-
-    if (res[0].length > 2 && res[0].length < 15) {
-      words.add(res[0])
-    }
-  }
-
-  return words
-}
-
-function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.ITextModel, position: Monaco.Position): Monaco.languages.CompletionItem[] {
+function createDependencyProposals (range: Monaco.IRange): Monaco.languages.CompletionItem[] {
   const monaco = getMonaco()
 
-  const currentWord = model.getWordUntilPosition(position).word
   const replaceRange = { ...range, endColumn: range.startColumn + 1 }
 
   const result: Monaco.languages.CompletionItem[] = []
-
-  getWords(getValue()).forEach((word, i) => {
-    if (currentWord !== word) {
-      result.push({
-        label: { label: word },
-        kind: monaco.languages.CompletionItemKind.Text,
-        insertText: word,
-        range: replaceRange,
-        sortText: (10000 + i).toString()
-      })
-    }
-  })
 
   ;[
     { name: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
