@@ -17,6 +17,7 @@ import statusBarGet from '@fe/plugins/status-bar-get'
 import editorPaste from '@fe/plugins/editor-paste'
 import editorAttachment from '@fe/plugins/editor-attachment'
 import editorMarkdown from '@fe/plugins/editor-markdown'
+import editorEmoji from '@fe/plugins/editor-emoji'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
@@ -69,6 +70,7 @@ export default [
   editorPaste,
   editorAttachment,
   editorMarkdown,
+  editorEmoji,
   copyText,
   switchTodo,
   imageViewer,

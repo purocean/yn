@@ -6,7 +6,6 @@ import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
 import { isKeydown } from '@fe/core/command'
-import emoji from '@fe/others/emoji.json'
 
 function getWords (content: string) {
   const words = new Set<string>()
@@ -39,25 +38,9 @@ function createDependencyProposals (range: Monaco.IRange, model: Monaco.editor.I
   const monaco = getMonaco()
 
   const currentWord = model.getWordUntilPosition(position).word
-  const currentStr = model.getValueInRange(range)
   const replaceRange = { ...range, endColumn: range.startColumn + 1 }
 
   const result: Monaco.languages.CompletionItem[] = []
-
-  // emoji completion
-  if (/^:[^:]*$/.test(currentStr)) {
-    Object.keys(emoji).forEach((key, i) => {
-      result.push({
-        label: { label: `:${key}: ${(emoji as any)[key]}` },
-        kind: monaco.languages.CompletionItemKind.EnumMember,
-        insertText: (emoji as any)[key],
-        range: replaceRange,
-        sortText: (80000 + i).toString()
-      })
-    })
-
-    return result
-  }
 
   getWords(getValue()).forEach((word, i) => {
     if (currentWord !== word) {
