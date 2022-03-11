@@ -122,7 +122,7 @@ function convertLink (state: StateCore) {
     }
 
     const basePath = dirname(path)
-    const fileName = basename(attrVal)
+    const fileName = basename(removeQuery(attrVal))
 
     if (isAnchor) {
       // keep markdown file.
@@ -190,7 +190,7 @@ export default {
           try {
             const originSrc = node.getAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
             const res: Response = await ctx.api.fetchHttp(srcAttr)
-            const fileName = originSrc ? ctx.utils.path.basename(originSrc) : 'img'
+            const fileName = originSrc ? ctx.utils.path.basename(removeQuery(originSrc)) : 'img'
             const file = new File(
               [await res.blob()],
               fileName,
