@@ -218,13 +218,17 @@ export default {
 
     ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
       const srcAttr = node.getAttribute('src')
-      if (options.inlineLocalImage && srcAttr?.startsWith(baseUrl)) {
-        try {
-          const res: Response = await ctx.api.fetchHttp(srcAttr)
-          const base64Url = await ctx.utils.fileToBase64URL(await res.blob())
-          node.setAttribute('src', base64Url)
-        } catch (error) {
-          console.log(error)
+      if (srcAttr?.startsWith(baseUrl)) {
+        node.removeAttribute('style')
+
+        if (options.preferPng || options.inlineLocalImage) {
+          try {
+            const res: Response = await ctx.api.fetchHttp(srcAttr)
+            const base64Url = await ctx.utils.fileToBase64URL(await res.blob())
+            node.setAttribute('src', base64Url)
+          } catch (error) {
+            console.log(error)
+          }
         }
       }
     })
