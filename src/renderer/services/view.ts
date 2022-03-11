@@ -74,7 +74,10 @@ export function getPreviewStyles () {
   let styles = ''
   Array.prototype.forEach.call(document.styleSheets, item => {
     Array.prototype.forEach.call(item.cssRules, (rule) => {
-      if (rule.selectorText && rule.selectorText.includes('.markdown-body')) {
+      if (rule.selectorText && (
+        rule.selectorText.includes('.markdown-body') ||
+        rule.selectorText.startsWith('.katex')
+      )) {
         styles += rule.cssText.replace(/\.markdown-\S* /g, '') + '\n'
       }
     })
