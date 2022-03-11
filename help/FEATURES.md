@@ -15,7 +15,7 @@ English | [中文](./FEATURES_ZH-CN.md)
 
 ## Data Storage
 
-The application generated data is stored in `<home>/yank-note` dir, click the "Open Main Dir" menu in the tray menu to view them.
+The application generated data is stored in `<home>/yank-note` dir, click the "Open Main Dir" menu in the tray to view them.
 
 Directory description
 
