@@ -172,12 +172,14 @@ const Plantuml = defineComponent({
     }
 
     const load = debounce((val: string) => {
-      src.value = val
+      src.value = emptySrc
+      setTimeout(() => {
+        src.value = val
+      }, 0)
     }, 1000)
 
     watch(() => props.src, val => {
-      src.value = emptySrc
-      nextTick(() => load(val || ''))
+      load(val || '')
     })
 
     onMounted(() => {
