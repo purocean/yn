@@ -15,6 +15,7 @@ export { default as sortablejs } from 'sortablejs'
 export { default as filenamify } from 'filenamify/browser'
 export { default as mime } from 'mime'
 export { default as markdownit } from 'markdown-it'
+export { default as domtoimage } from 'dom-to-image'
 
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
