@@ -1,5 +1,6 @@
 import Markdown from 'markdown-it'
 import mermaid from 'mermaid/dist/mermaid.js'
+import DomToImage from 'dom-to-image'
 import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Plugin } from '@fe/context'
 import { debounce } from 'lodash-es'
@@ -36,6 +37,7 @@ const Mermaid = defineComponent({
   },
   setup (props) {
     const container = ref<HTMLElement>()
+    const imgRef = ref<HTMLElement>()
     const result = ref('')
     const img = ref('')
 
@@ -60,13 +62,27 @@ const Mermaid = defineComponent({
       }
     }
 
-    function exportData () {
+    function exportSvg () {
       const url = getImageUrl()
       if (!url) {
         return
       }
 
       downloadDataURL(`mermaid-${Date.now()}.svg`, url)
+    }
+
+    async function exportPng () {
+      if (!imgRef.value) {
+        return
+      }
+
+      const width = imgRef.value.clientWidth
+      const height = imgRef.value.clientHeight
+
+      const dataUrl = await DomToImage
+        .toPng(imgRef.value, { width: width * 2, height: height * 2 })
+
+      downloadDataURL(`mermaid-${Date.now()}.png`, dataUrl)
     }
 
     async function beforeDocExport () {
@@ -94,7 +110,8 @@ const Mermaid = defineComponent({
     return () => {
       return h('div', { ...props.attrs, class: 'mermaid-wrapper' }, [
         h('div', { class: 'mermaid-action skip-print' }, [
-          h('button', { class: 'small', onClick: exportData }, 'SVG'),
+          h('button', { class: 'small', onClick: exportSvg }, 'SVG'),
+          h('button', { class: 'small', onClick: exportPng }, 'PNG'),
         ]),
         h('div', {
           ref: container,
@@ -104,6 +121,7 @@ const Mermaid = defineComponent({
         }),
         h('img', {
           src: img.value,
+          ref: imgRef,
           alt: 'mermaid',
           class: 'mermaid-image',
         })
