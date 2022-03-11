@@ -196,6 +196,7 @@ export type BuildInHookTypes = {
       inlineLocalImage?: boolean,
       uploadLocalImage?: boolean,
       highlightCode?: boolean,
+      preferPng?: boolean,
       nodeProcessor?: (node: HTMLElement) => void
     }
   },

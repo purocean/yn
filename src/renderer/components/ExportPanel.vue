@@ -128,7 +128,6 @@ export default defineComponent({
       toType: 'pdf' as ExportTypes,
       fromType: 'html',
       resourcePath: '.',
-      includeCss: false,
       localHtmlOptions: {
         inlineLocalImage: false,
         uploadLocalImage: false,
@@ -211,6 +210,7 @@ export default defineComponent({
       const source = convert.fromType === 'markdown'
         ? currentFile.value.content
         : await getContentHtml({
+          preferPng: true,
           nodeProcessor: node => {
             // for pandoc highlight code
             if (node.tagName === 'PRE' && node.dataset.lang) {
