@@ -496,12 +496,21 @@ export default {
       links = [style.outerHTML, script1.outerHTML, script2.outerHTML].join('\n')
     })
 
-    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node }) => {
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
       if (node.classList.contains('mind-map') && node.id) {
         const km = instances.get(node.id)
         if (km) {
-          const svg = await km.exportData('svg')
-          node.outerHTML = svg
+          const img = document.createElement('img')
+          img.alt = 'mind-map'
+
+          if (options.preferPng) {
+            img.src = await km.exportData('png')
+          } else {
+            const svg = await km.exportData('svg')
+            img.src = 'data:image/svg+xml;base64,' + ctx.utils.strToBase64(svg)
+          }
+
+          node.outerHTML = img.outerHTML
         }
       }
     })
