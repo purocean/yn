@@ -22,6 +22,9 @@ define:
 1. 配置文件 `<home>/yank-note/config.json`
 1. 导出 docx 参考文档 `<home>/yank-note/pandoc-reference.docx`
 1. 文档历史版本 `<home>/yank-note/histories`
+    ::: tip
+    如果您不小心丢失了您的文档数据，您可以到此文件夹尝试找回。
+    :::
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
 
@@ -166,7 +169,12 @@ journey
 
 ## Plantuml 图形
 
-系统需要有 Java 环境，并安装有 graphviz
+系统需要有 Java 环境，并安装有 Graphviz
+
+::: warning
+如果提示 `Cannot find Graphviz`，请参考 [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
+:::
+
 示例如下
 
 @startuml
