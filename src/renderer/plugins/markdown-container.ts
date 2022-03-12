@@ -192,7 +192,13 @@ export default {
               const titleClass = name === 'details' ? '' : 'custom-container-title'
 
               const children = (title || name === 'group') ? [h(titleTag, { class: titleClass }, title)] : []
-              return h(containerTag, { class: containerClass }, children)
+              const props: Record<string, any> = { class: containerClass }
+
+              if (name === 'group') {
+                props.key = groupItemName
+              }
+
+              return h(containerTag, props, children)
             }
           }
         })
