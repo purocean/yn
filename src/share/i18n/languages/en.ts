@@ -336,6 +336,7 @@ const data = {
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, docName, date.',
       'shell': 'Shell',
       'auto-save': 'Auto Save',
+      'plantuml-api': 'Plantuml Endpoint',
       'updater': {
         'source': 'Update Source',
       },

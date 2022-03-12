@@ -330,6 +330,7 @@ const data: BaseLanguage = {
       'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, docName, date',
       'shell': 'Shell',
       'auto-save': '自动保存',
+      'plantuml-api': 'Plantuml 端点',
       'updater': {
         'source': '更新源',
       },

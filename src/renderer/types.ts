@@ -122,6 +122,7 @@ export type BuildInSettings = {
   'server.host': string,
   'server.port': number,
   'keep-running-after-closing-window': boolean,
+  'plantuml-api': string,
 }
 
 export type BuildInActions = {

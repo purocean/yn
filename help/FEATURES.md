@@ -22,7 +22,7 @@ Directory description
 1. configuration file `<home>/yank-note/config.json`
 1. export docx reference doc `<home>/yank-note/pandoc-reference.docx`
 1. document versions `<home>/yank-note/histories`
-    ::: tip   
+    ::: tip
     If you accidentally lost your document content, you can check this folder and try to recovery it.
     :::
 1. plug-ins `<home>/yank-note/plugins`
@@ -166,10 +166,12 @@ journey
 ```
 
 ## Plantuml
-The system needs to have Java environment and Graphviz installed.
+
+
+If you are configured to use local endpoint in the Setting, the system needs to have a Java environment with Graphviz installed.
 
 ::: warning
-if it prompts an error `Cannot find Graphviz`, 
+if it prompts an error `Cannot find Graphviz`,
 Please refer to [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
 :::
 

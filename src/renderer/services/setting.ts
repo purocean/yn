@@ -107,6 +107,17 @@ const schema: Schema = {
       group: 'other',
       required: true,
     },
+    'plantuml-api': {
+      defaultValue: 'local',
+      title: 'T_setting-panel.schema.plantuml-api',
+      type: 'string',
+      enum: ['local', 'https://www.plantuml.com/plantuml/png/{data}'],
+      options: {
+        enum_titles: ['Local - Need Java and Graphviz', 'Online (plantuml.com)'],
+      },
+      required: true,
+      group: 'other',
+    },
     'doc-history.number-limit': {
       defaultValue: 500,
       title: 'T_setting-panel.schema.doc-history.number-limit',

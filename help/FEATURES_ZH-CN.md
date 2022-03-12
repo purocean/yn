@@ -169,7 +169,7 @@ journey
 
 ## Plantuml 图形
 
-系统需要有 Java 环境，并安装有 Graphviz
+如果在配置中选择使用本地端点，则系统需要有 Java 环境，并安装有 Graphviz
 
 ::: warning
 如果提示 `Cannot find Graphviz`，请参考 [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
