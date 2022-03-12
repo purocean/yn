@@ -8,5 +8,11 @@ export const DOM_ATTR_NAME = {
 }
 
 export const DOM_CLASS_NAME = {
-  MARK_OPEN: 'open'
+  MARK_OPEN: 'open',
+  SKIP_EXPORT: 'skip-export',
+  SKIP_PRINT: 'skip-print',
+  REDUCE_BRIGHTNESS: 'reduce-brightness',
+  INLINE: 'inline',
+  BLOCK: 'block',
+  BGW: 'bgw',
 }

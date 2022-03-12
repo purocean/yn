@@ -2,7 +2,7 @@
 
 A **hackable** markdown note application for programmers **[Download](https://github.com/purocean/yn/releases)** | **[Try it Online >>>](https://yank-note.vercel.app/)**
 
-[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not ecommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
 English | [中文说明](./README_ZH-CN.md)
 
@@ -13,7 +13,7 @@ English | [中文说明](./README_ZH-CN.md)
 ## Highlights
 
 - **Easy to use:** Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
-- **Powerful:** Support version control; Applets, runnable code blocks, tables, Plantuml, Drawio, macro replacements, etc., can be embedded in the document.
+- **Powerful:** Support version control; Applets, runnable code blocks, tables, PlantUML, Drawio, macro replacements, etc., can be embedded in the document.
 - **High compatibility:** Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
 - **Plug-in extension:** Support users to write their own plug-ins to expand the functionality of the editor.
 - **Encryption supported:** Use encryption to save private files such as account number, and the password can be set separately for each file.
@@ -65,7 +65,7 @@ For more information on how to use the following functions, please see [characte
 - **Edit table cell:** double-click a table cell to quickly edit
 - **Copy title link:** copy title link path to the clipboard for easy insertion into other files
 - **Embedded Applets:** document supports embedded HTML Applets
-- **Embed Plantuml graphics:** you need to install Java and graphviz
+- **Embed PlantUML graphics:** document supports embedded plantUML graphics
 - **Embed drawio graphics:** document supports embedded drawio graphics
 - **Embed ECharts graphics:** document supports embeded Echarts graphics
 - **Embed Mermaid graphics:** document supports embeded Mermaid graphics
@@ -90,16 +90,30 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.24.0](https://github.com/purocean/yn/releases/tag/v3.24.0) 2022-02-20
-1. feat: add "Keep running after closing window" setting item
-2. feat: add refresh preview shortcut `Ctrl/Cmd + R`
-3. feat: Mermaid graphics support dark theme
-4. feat: Mermaid graphics support zoom in preview
-5. upd: remove `.md` from export file name
-6. upd: upgrade PlantUML version
-7. fix: Fixed PlantUML not rendering correctly in some cases
-8. fix: fix the problem that empty line comments are not supported in some cases
-9. chore: add Ubuntu-18.04 artifact
+### [v3.26.0](https://github.com/purocean/yn/releases/tag/v3.26.0) 2022-03-12
+
+1. feat: added image/link auto-completion for local path
+2. feat: support to configure PlantUML endpoint, can configure the official online rendering endpoint of PlantUML
+3. feat: support to configure automatic save interval
+4. feat: Copy Content supports copying Markdown after processing images
+5. feat: export HTML support more options
+6. feat: Mermaid graphics support download PNG
+7. upd: upgrade KaTeX version, support more syntax
+8. fix: fix the problem of resetting the "sync rendering" state after switching files
+9. fix: export: fix "Inline Images" may lose pictures
+10. fix: export: fix the exported HTML KaTeX cannot be rendered correctly
+11. fix: export: fix the exported Docx Mermaid graphics cannot be rendered correctly
+12. fix: export: fix PlantUML cannot be exported
+13. fix: export: fix the mind map of the exported document may be cropped
+14. fix: fix the problem that some special character anchors cannot jump
+15. feat(plugin): `ctx.ui.useModal` method supports custom action buttons
+16. feat(plugin): `ctx.view.getRenderEnv` method adds `tokens` return field
+17. feat(plugin): `VIEW_ON_GET_HTML_FILTER_NODE` hook adds `options.preferPng` parameter
+18. feat(plugin): add `ctx.utils.removeQuery` method
+19. feat(plugin): add `ctx.lib.mime` module
+20. feat(plugin): add `ctx.lib.markdownit` module
+21. feat(plugin): add `ctx.lib.domtoimage` module
+22. feat(plugin): add `ctx.lib.pako` module
 
 [More release notes](https://github.com/purocean/yn/releases)
 

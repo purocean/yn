@@ -23,6 +23,10 @@ export function encodeMarkdownLink (path: string) {
     .replace(/ /g, '%20')
 }
 
+export function removeQuery (url: string) {
+  return url.replace(/[#?].*$/, '')
+}
+
 export function dataURLtoBlob (dataURL: string) {
   const byteString = atob(dataURL.split(',')[1])
   const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0]

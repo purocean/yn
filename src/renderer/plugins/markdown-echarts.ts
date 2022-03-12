@@ -138,7 +138,7 @@ const Echarts = defineComponent({
       }
 
       return h('div', { ...props.attrs, class: 'echarts-wrapper' }, [
-        h('div', { class: 'echarts-action no-print' }, [
+        h('div', { class: 'echarts-action skip-print' }, [
           h('button', { class: 'small', onClick: () => exportData('png') }, 'PNG'),
         ]),
         h('div', { ref: container, class: 'echarts' }),

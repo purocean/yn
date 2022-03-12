@@ -277,7 +277,7 @@ const LuckyComponent = defineComponent({
         h(
           'div',
           {
-            class: 'no-print',
+            class: 'skip-print',
             style: 'position: absolute; right: 10px; margin-top: 15px; z-index: 1;'
           },
           button(t('close'), close),
@@ -288,7 +288,7 @@ const LuckyComponent = defineComponent({
       h('div', { class: 'lucky-sheet-wrapper reduce-brightness', style: 'position: relative' }, [
         h(
           'div',
-          { class: 'lucky-sheet-action no-print' },
+          { class: 'lucky-sheet-action skip-print' },
           [
             button(t('reload'), reload),
             button(t('edit'), open),

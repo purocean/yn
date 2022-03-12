@@ -6,6 +6,8 @@ export interface Instance extends ComponentPublicInstance {
   alert: (params: Components.Modal.AlertModalParams) => Promise<boolean>;
   confirm: (params: Components.Modal.ConfirmModalParams) => Promise<boolean>;
   input: (params: Components.Modal.InputModalParams) => Promise<string | null>;
+  cancel: () => void;
+  ok: () => void;
 }
 
 let instance: Instance

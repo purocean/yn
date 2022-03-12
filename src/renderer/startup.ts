@@ -14,6 +14,7 @@ import { setTheme } from '@fe/services/theme'
 import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
+import { MODE } from './support/args'
 
 init(plugins, ctx)
 
@@ -96,7 +97,7 @@ whenEditorReady().then(({ editor }) => {
 
   const { currentFile } = store.state
 
-  if (!currentFile) {
+  if (!currentFile && MODE === 'normal') {
     // no recent file, show readme.
     showHelp(
       ctx.i18n.getCurrentLanguage() === 'zh-CN'

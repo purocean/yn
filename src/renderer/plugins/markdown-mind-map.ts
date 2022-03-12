@@ -14,6 +14,9 @@ const logger = getLogger('markdown-mind-map')
 const layoutStorageKey = 'mind-map-layout'
 let links = ''
 
+let mindMapId = 0
+const instances = new Map()
+
 // kityminder has memory leak at CustomEvent, make CustomEvent readonly
 const CustomEvent = window.CustomEvent
 Object.defineProperty(window, 'CustomEvent', {
@@ -329,7 +332,7 @@ const init = (ele: HTMLElement) => {
   }
 
   const action = document.createElement('div')
-  action.className = 'mind-map-action no-print'
+  action.className = 'mind-map-action skip-print'
   action.appendChild(buildButton(t('mind-map.zoom-in'), zoomIn, 'zoomIn'))
   action.appendChild(buildButton(t('mind-map.zoom-out'), zoomOut, 'zoomOut'))
   action.appendChild(buildButton(t('mind-map.switch-layout'), switchLayout, 'switchLayout'))
@@ -370,6 +373,7 @@ const MindMap = defineComponent({
     }
   },
   setup (props) {
+    const id = `mind-map-${mindMapId++}`
     const container = ref<HTMLElement>()
 
     let km: any = null
@@ -385,6 +389,7 @@ const MindMap = defineComponent({
           km.execCommand('hand')
           km.execCommand('camera')
         })
+        instances.set(id, km)
       } else {
         km.disableAnimationAwhile(() => render(km, props.content))
       }
@@ -393,6 +398,7 @@ const MindMap = defineComponent({
     function clean () {
       km && km.destroy()
       km = null
+      instances.delete(id)
     }
 
     function onLanguageChange () {
@@ -413,6 +419,7 @@ const MindMap = defineComponent({
     let focused = false
 
     return () => h('div', {
+      id,
       ref: container,
       class: 'mind-map reduce-brightness',
       tabIndex: -1,
@@ -487,6 +494,25 @@ export default {
       document.body.appendChild(script2)
 
       links = [style.outerHTML, script1.outerHTML, script2.outerHTML].join('\n')
+    })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
+      if (node.classList.contains('mind-map') && node.id) {
+        const km = instances.get(node.id)
+        if (km) {
+          const img = document.createElement('img')
+          img.alt = 'mind-map'
+
+          if (options.preferPng) {
+            img.src = await km.exportData('png')
+          } else {
+            const svg = await km.exportData('svg')
+            img.src = 'data:image/svg+xml;base64,' + ctx.utils.strToBase64(svg)
+          }
+
+          node.outerHTML = img.outerHTML
+        }
+      }
     })
   }
 } as Plugin

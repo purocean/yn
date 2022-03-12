@@ -24,6 +24,7 @@ const data = {
   'no-password': 'No password was entered',
   'save': 'Save',
   'close': 'Close',
+  'discard': 'Discard',
   'edit': 'Edit',
   'premium': {
     'need-purchase': '[%s] Premium is required',
@@ -139,6 +140,10 @@ const data = {
       'discard': 'Discard Changes and exit',
     },
   },
+  'save-check-dialog': {
+    'title': 'Attention',
+    'desc': 'The document has not been saved, do you want to save it?',
+  },
   'file-status': {
     'unsaved': 'Unsaved',
     'saving': 'Saving',
@@ -210,15 +215,16 @@ const data = {
     },
     'insert': {
       'insert': 'Insert',
-      'paste-rtf': 'Paste Rich Text',
+      'paste-rt': 'Paste Rich Text',
       'paste-img-base64': 'Paste Image',
     },
     'tool': {
       'tool': 'Tool',
       'convert-img-link': 'Download Remote Image',
       'macro-copy-markdown': 'Copy Markdown after Macro Replacement',
-      'copy-content': 'Copy Rendered Content',
-      'doc-history': 'Document History'
+      'copy-content': 'Copy Content',
+      'doc-history': 'Document History',
+      'share-preview': 'Share Preview',
     },
     'document-info': {
       'selected': 'Selected',
@@ -288,7 +294,6 @@ const data = {
     'use-html': 'Use the rendered HTML source',
     'use-markdown': 'Use markdown source',
     'loading': 'Converting, please wait...',
-    'include-css': 'Include CSS',
   },
   'title-bar': {
     'pin': 'Pin',
@@ -330,6 +335,8 @@ const data = {
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, docName, date.',
       'shell': 'Shell',
+      'auto-save': 'Auto Save',
+      'plantuml-api': 'PlantUML Endpoint',
       'updater': {
         'source': 'Update Source',
       },
@@ -337,6 +344,7 @@ const data = {
         'number-limit': 'Versions Retained',
       },
       'server': {
+        'host': 'Listen Host',
         'port': 'Listen Port',
         'port-desc': 'Need to restart the application.'
       },
@@ -353,7 +361,7 @@ const data = {
     'context-menu': {
       'paste-image': 'Paste Image',
       'paste-image-as-base64': 'Paste Image as Base64',
-      'paste-rtf-as-markdown': 'Paste RTF as Markdown',
+      'paste-rt-as-markdown': 'Paste Rich Text as Markdown',
       'add-attachment': 'Add Attachment',
       'link-doc': 'Link Document',
       'link-file': 'Link File',
@@ -476,13 +484,19 @@ const data = {
       'hint': 'Input some message (optional)',
     },
   },
-  'copy-rendered-content': {
+  'copy-content': {
     'options': 'Options: ',
     'type': 'Copy Type: ',
     'inline-style': 'Inline Style',
     'inline-image': 'Inline Local Image',
+    'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',
-    'rtf': 'Rich Text Format',
+    'rt': 'Rich Text',
+    'complete': 'Conversion completed, click OK to copy',
+  },
+  'share-preview': {
+    'expire': 'Expire',
+    'tips': 'Please configure the listening host "0.0.0.0" in the settings first',
   },
 }
 

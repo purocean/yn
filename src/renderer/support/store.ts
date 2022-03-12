@@ -4,7 +4,7 @@ import * as storage from '@fe/utils/storage'
 import type { Components, Doc, Repo } from '@fe/types'
 
 export const initState = {
-  tree: null,
+  tree: null as Components.Tree.Node[] | null,
   wordWrap: storage.get<'off' | 'on'>('wordWrap', 'off'),
   typewriterMode: storage.get<boolean>('typewriterMode', false),
   showSide: storage.get('showSide', true),

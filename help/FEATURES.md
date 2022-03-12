@@ -15,13 +15,16 @@ English | [中文](./FEATURES_ZH-CN.md)
 
 ## Data Storage
 
-The application generated data is stored in `<home>/yank-note` dir, click the "Open Main Dir" menu in the tray menu to view them.
+The application generated data is stored in `<home>/yank-note` dir, click the "Open Main Dir" menu in the tray to view them.
 
 Directory description
 
 1. configuration file `<home>/yank-note/config.json`
 1. export docx reference doc `<home>/yank-note/pandoc-reference.docx`
 1. document versions `<home>/yank-note/histories`
+    ::: tip
+    If you accidentally lost your document content, you can check this folder and try to recovery it.
+    :::
 1. plug-ins `<home>/yank-note/plugins`
 1. themes `<home>/yank-note/themes`
 
@@ -58,8 +61,21 @@ Type '/' in the editor to get prompts
 ### Element Attribute
 
 This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
-For example, red text:
-**test**{style="color:red"}
+
+- Red Text, White background {.bgw style="color:red"}
+- Display As **Block Element**{.block}
+
+**Some built-in style classes:**
+
+| Class Name | Description |
+| -- | -- |
+| `new-page` | Page break before this element when printing/exporting PDF |
+| `skip-print` | Skip this element when printing/exporting PDF |
+| `skip-export` | Skip this element when exporting/copying HTML |
+| `inline` | The current element is displayed as an inline element |
+| `block` | The current element is displayed as a block element |
+| `reduce-brightness` | Reduce the brightness of this element when using dark theme |
+| `bgw` | Set current element background to white |
 
 ### Image Enhancement
 
@@ -149,8 +165,16 @@ journey
       Sit down: 3: Me
 ```
 
-## Plantuml
-The system needs to have Java environment and graphviz installed.
+## PlantUML
+
+You can configure the use of local endpoint or PlantUML online endpoint to generate graph in Settings.
+
+::: warning
+If you are use local endpoint, the system needs to have a Java environment with Graphviz installed.
+If it prompts an error `Cannot find Graphviz`,
+Please refer to [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
+:::
+
 The example is as follows
 
 @startuml

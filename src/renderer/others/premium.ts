@@ -4,7 +4,7 @@ import { getActionHandler } from '@fe/core/action'
 import { decrypt } from '@fe/utils/crypto'
 import { getSetting, setSetting } from '@fe/services/setting'
 import { refresh } from '@fe/services/view'
-import { FLAG_DEMO } from '@fe/support/args'
+import { FLAG_DEMO, MODE } from '@fe/support/args'
 
 interface License {
   name: string,
@@ -52,7 +52,7 @@ export function getPurchased (force = false) {
     return purchased
   }
 
-  if (FLAG_DEMO) {
+  if (FLAG_DEMO || MODE === 'share-preview') {
     return true
   }
 

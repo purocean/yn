@@ -2,7 +2,7 @@
 
 一款面向程序员的 Markdown 笔记应用 **[全平台下载](https://github.com/purocean/yn/releases)** ｜ **[在线体验>>>](https://yank-note.vercel.app/)**
 
-[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Mac App Store 版本说明](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
 [English](./README.md) | 中文说明
 
@@ -13,7 +13,7 @@
 ## 特色
 
 - **使用方便**：使用 Monaco 内核，专为 Markdown 优化，拥有和 VSCode 一样的编辑体验。
-- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、Plantuml 图形、Drawio 图形、宏替换等。
+- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等。
 - **兼容性强**：数据保存为本地 Markdown 文件；拓展功能尽量用 Markdown 原有的语法实现。
 - **插件拓展**：支持用户编写自己的插件来拓展编辑器的功能。
 - **支持加密**：用来保存账号等隐私文件，文件可单独设置密码。
@@ -65,8 +65,8 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 - **编辑表格单元格:** 双击表格单元格即可快速编辑
 - **复制标题链接:** 复制标题链接路径到剪切板，便于插入到其他文件
 - **嵌入小工具:** 文档支持内嵌 HTML 小工具
-- **嵌入 Plantuml 图形:** 需要安装 Java，graphviz
-- **嵌入 drawio 图形:** 文档支持内嵌 drawio 图形
+- **嵌入 PlantUML 图形:** 在文档内内嵌 PlantUML 图形
+- **嵌入 drawio 图形:** 在文档中内嵌 drawio 图形
 - **嵌入 ECharts 图形:** 在文档中嵌入 Echarts 图形
 - **嵌入 Mermaid 图形:** 在文档中嵌入 Mermaid 图形
 - **嵌入 Luckysheet 表格:** 在文档中嵌入 Luckysheet 表格
@@ -90,16 +90,30 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.24.0](https://github.com/purocean/yn/releases/tag/v3.24.0) 2022-02-20
-1. feat: 增加“关闭窗口后保持运行”设置项
-2. feat: 增加刷新预览快捷键 `Ctrl/Cmd + R`
-3. feat: Mermaid 图形支持暗黑主题
-4. feat: Mermaid 图形支持放大预览
-5. upd: 导出文件名去除 `.md`
-6. upd: 升级 PlantUML 版本
-7. fix: 修复某些情况下 PlantUML 不能正确渲染问题
-8. fix: 修复某些情况下不支持空行注释问题
-9. chore: 增加 Ubuntu-18.04 构建产物
+### [v3.26.0](https://github.com/purocean/yn/releases/tag/v3.26.0) 2022-03-12
+
+1. feat: 新增图片/链接本地路径自动补全
+2. feat: 支持配置 PlantUML 端点，可配置 PlantUML 官方在线渲染地址
+3. feat: 支持配置自动保存间隔
+4. feat: 复制内容支持复制处理图片后的 Markdown
+5. feat: 导出 HTML 支持更多选项
+6. feat: Mermaid 图形支持下载 PNG 图片
+7. upd: 升级 KaTeX 版本，支持更多公式语法
+8. fix: 修复切换文件后重置“同步渲染”状态问题
+9. fix: 导出：修复“内联图片”可能丢失图片问题
+10. fix: 导出：修复导出 HTML 公式不能正确渲染问题
+11. fix: 导出：修复导出 Docx Mermaid 图形不能正确渲染问题
+12. fix: 导出：修复不能导出 PlantUML 问题
+13. fix: 导出：修复导出文档脑图可能被裁切问题
+14. fix: 修复一些特殊字符锚点不能跳转问题
+15. feat(插件): `ctx.ui.useModal` 方法支持自定义操作按钮
+16. feat(插件): `ctx.view.getRenderEnv` 方法增加 `tokens` 返回字段
+17. feat(插件): `VIEW_ON_GET_HTML_FILTER_NODE` 钩子增加 `options.preferPng` 参数
+18. feat(插件): 新增 `ctx.utils.removeQuery` 方法
+19. feat(插件): 新增 `ctx.lib.mime` 模块
+20. feat(插件): 新增 `ctx.lib.markdownit` 模块
+21. feat(插件): 新增 `ctx.lib.domtoimage` 模块
+22. feat(插件): 新增 `ctx.lib.pako` 模块
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

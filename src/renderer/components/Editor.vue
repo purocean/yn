@@ -12,6 +12,7 @@ import { isEncrypted, saveDoc, toUri } from '@fe/services/document'
 import { whenEditorReady } from '@fe/services/editor'
 import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
+import { getSetting } from '@fe/services/setting'
 
 export default defineComponent({
   name: 'editor',
@@ -70,6 +71,12 @@ export default defineComponent({
         return
       }
 
+      const autoSave = getSetting('auto-save', 2000)
+
+      if (!autoSave) {
+        return
+      }
+
       timer = window.setTimeout(() => {
         // prevent auto save encrypted file.
         if (!currentFile.value || isEncrypted(currentFile.value)) {
@@ -77,7 +84,7 @@ export default defineComponent({
         }
 
         saveFile()
-      }, 2000)
+      }, autoSave)
     }
 
     async function changeFile (current?: Doc | null) {

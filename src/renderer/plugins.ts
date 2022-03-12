@@ -17,6 +17,10 @@ import statusBarGet from '@fe/plugins/status-bar-get'
 import editorPaste from '@fe/plugins/editor-paste'
 import editorAttachment from '@fe/plugins/editor-attachment'
 import editorMarkdown from '@fe/plugins/editor-markdown'
+import editorMdSyntax from '@fe/plugins/editor-md-syntax'
+import editorWords from '@fe/plugins/editor-words'
+import editorEmoji from '@fe/plugins/editor-emoji'
+import editorPathCompletion from '@fe/plugins/editor-path-completion'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
@@ -46,7 +50,8 @@ import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
 import syncScroll from '@fe/plugins/sync-scroll'
 import imageLocalization from '@fe/plugins/image-localization'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
-import copyRenderedContent from '@fe/plugins/copy-rendered-content'
+import copyContent from '@fe/plugins/copy-content'
+import sharePreview from '@fe/plugins/share-preview'
 
 export default [
   customStyles,
@@ -68,6 +73,10 @@ export default [
   editorPaste,
   editorAttachment,
   editorMarkdown,
+  editorMdSyntax,
+  editorEmoji,
+  editorWords,
+  editorPathCompletion,
   copyText,
   switchTodo,
   imageViewer,
@@ -97,5 +106,6 @@ export default [
   syncScroll,
   imageLocalization,
   imageHostingPicgo,
-  copyRenderedContent,
+  copyContent,
+  sharePreview,
 ]

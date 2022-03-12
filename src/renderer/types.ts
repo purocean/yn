@@ -1,4 +1,5 @@
 import type { Language } from '@share/i18n'
+import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
 
 export interface PathItem {
@@ -26,8 +27,8 @@ export interface Repo {
 
 export namespace Components {
   export namespace Modal {
-    export type ConfirmModalParams = { title?: string; content?: string; component?: any }
-    export type AlertModalParams = { title?: string; content?: string; component?: any }
+    export type ConfirmModalParams = { title?: string; content?: string; component?: any; action?: any }
+    export type AlertModalParams = { title?: string; content?: string; component?: any; action?: any }
 
     export type InputModalParams = {
       type?: string;
@@ -92,12 +93,19 @@ export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 
-export type RenderEnv = { source: string, file: Doc | null, renderCount: number, attributes?: Record<string, any> }
+export type RenderEnv = {
+  source: string,
+  file: Doc | null,
+  renderCount: number,
+  attributes?: Record<string, any>,
+  tokens: Token[]
+}
 
 export type BuildInSettings = {
   'repos': Repo[],
   'theme': ThemeName,
   'language': LanguageName,
+  'auto-save': number,
   'custom-css': string,
   'assets-dir': string,
   'shell': string,
@@ -111,8 +119,10 @@ export type BuildInSettings = {
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
   'doc-history.number-limit': number,
+  'server.host': string,
   'server.port': number,
   'keep-running-after-closing-window': boolean,
+  'plantuml-api': string,
 }
 
 export type BuildInActions = {
@@ -147,7 +157,7 @@ export type BuildInActions = {
   'xterm.init': () => void,
   'plugin.document-history-stack.back': () => void,
   'plugin.document-history-stack.forward': () => void,
-  'plugin.image-hosting-picgo.upload': (file: File) => void,
+  'plugin.image-hosting-picgo.upload': (file: File) => Promise<string | undefined>,
   'plugin.status-bar-help.show-readme': () => void,
   'plugin.status-bar-help.show-features': () => void,
   'plugin.status-bar-help.show-shortcuts': () => void,
@@ -185,7 +195,9 @@ export type BuildInHookTypes = {
     options: {
       inlineStyle?: boolean,
       inlineLocalImage?: boolean,
+      uploadLocalImage?: boolean,
       highlightCode?: boolean,
+      preferPng?: boolean,
       nodeProcessor?: (node: HTMLElement) => void
     }
   },

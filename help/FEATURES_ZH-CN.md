@@ -15,13 +15,16 @@ define:
 
 ## 应用数据
 
-应用相关的数据目录存放在 `<home>/yank-note` 下面，点击托盘菜单“打开主目录”接口即可查看
+应用相关的数据目录存放在 `<home>/yank-note` 下面，点击托盘菜单“打开主目录”即可查看
 
 目录说明：
 
 1. 配置文件 `<home>/yank-note/config.json`
 1. 导出 docx 参考文档 `<home>/yank-note/pandoc-reference.docx`
 1. 文档历史版本 `<home>/yank-note/histories`
+    ::: tip
+    如果您不小心丢失了您的文档数据，您可以到此文件夹尝试找回。
+    :::
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
 
@@ -59,8 +62,21 @@ define:
 ### 元素属性书写
 
 此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
-示例红色文字：
-**test**{style="color:red"}
+
+- 红色文字，白色背景{.bgw style="color:red"}
+- 显示为**块元素**{.block}
+
+**一些内置样式类：**
+
+| 类名 | 说明 |
+| -- | -- |
+| `new-page` | 打印/导出PDF时在此元素前分页 |
+| `skip-print` | 打印/导出PDF时跳过此元素 |
+| `skip-export` | 导出/复制HTML时跳过此元素 |
+| `inline` | 当前元素显示为行内元素 |
+| `block` | 当前元素显示为块元素 |
+| `reduce-brightness` | 使用暗色主题时候降低此元素亮度 |
+| `bgw` | 设置当前元素背景为白色 |
 
 ### 图片增强
 
@@ -151,9 +167,15 @@ journey
       Sit down: 3: Me
 ```
 
-## Plantuml 图形
+## PlantUML 图形
 
-系统需要有 Java 环境，并安装有 graphviz
+您可以在“设置”中配置使用本地端点或 PlantUML 在线端点来生成图形。
+
+::: warning
+如果使用本地端点，则系统需要有 Java 环境，并安装有 Graphviz
+如果提示 `Cannot find Graphviz`，请参考 [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
+:::
+
 示例如下
 
 @startuml

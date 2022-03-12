@@ -1,12 +1,28 @@
 import Markdown from 'markdown-it'
 import mermaid from 'mermaid/dist/mermaid.js'
+import DomToImage from 'dom-to-image'
 import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Plugin } from '@fe/context'
 import { debounce } from 'lodash-es'
 import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { getColorScheme } from '@fe/services/theme'
 
 const logger = getLogger('mermaid')
+
+function initMermaidTheme (colorScheme?: 'light' | 'dark') {
+  colorScheme ??= getColorScheme()
+  const theme = {
+    light: 'default',
+    dark: 'dark',
+  }[colorScheme]
+
+  if (mermaid.mermaidAPI.getConfig().theme === theme) {
+    return
+  }
+
+  mermaid.mermaidAPI.initialize({ theme })
+}
 
 let mid = 1
 
@@ -21,6 +37,7 @@ const Mermaid = defineComponent({
   },
   setup (props) {
     const container = ref<HTMLElement>()
+    const imgRef = ref<HTMLElement>()
     const result = ref('')
     const img = ref('')
 
@@ -45,13 +62,36 @@ const Mermaid = defineComponent({
       }
     }
 
-    function exportData () {
+    function exportSvg () {
       const url = getImageUrl()
       if (!url) {
         return
       }
 
       downloadDataURL(`mermaid-${Date.now()}.svg`, url)
+    }
+
+    async function exportPng () {
+      if (!imgRef.value) {
+        return
+      }
+
+      const width = imgRef.value.clientWidth
+      const height = imgRef.value.clientHeight
+
+      const dataUrl = await DomToImage
+        .toPng(imgRef.value, { width: width * 2, height: height * 2 })
+
+      downloadDataURL(`mermaid-${Date.now()}.png`, dataUrl)
+    }
+
+    async function beforeDocExport () {
+      initMermaidTheme('light')
+      render()
+      setTimeout(async () => {
+        initMermaidTheme()
+        render()
+      }, 500)
     }
 
     const renderDebounce = debounce(render, 100)
@@ -61,23 +101,28 @@ const Mermaid = defineComponent({
     onMounted(() => setTimeout(render, 0))
 
     registerHook('THEME_CHANGE', renderDebounce)
+    registerHook('DOC_BEFORE_EXPORT', beforeDocExport)
     onBeforeUnmount(() => {
       removeHook('THEME_CHANGE', renderDebounce)
+      removeHook('DOC_BEFORE_EXPORT', beforeDocExport)
     })
 
     return () => {
       return h('div', { ...props.attrs, class: 'mermaid-wrapper' }, [
-        h('div', { class: 'mermaid-action no-print' }, [
-          h('button', { class: 'small', onClick: exportData }, 'SVG'),
+        h('div', { class: 'mermaid-action skip-print' }, [
+          h('button', { class: 'small', onClick: exportSvg }, 'SVG'),
+          h('button', { class: 'small', onClick: exportPng }, 'PNG'),
         ]),
         h('div', {
           ref: container,
           key: props.code,
-          class: 'mermaid-container',
+          class: 'mermaid-container skip-export',
           innerHTML: result.value,
         }),
         h('img', {
           src: img.value,
+          ref: imgRef,
+          alt: 'mermaid',
           class: 'mermaid-image',
         })
       ])
@@ -134,6 +179,7 @@ export default {
       }
 
       .markdown-view .markdown-body .mermaid-wrapper .mermaid-image {
+        filter: none;
         position: absolute;
         width: 100%;
         height: 100%;
@@ -145,13 +191,29 @@ export default {
 
     ctx.markdown.registerPlugin(MermaidPlugin)
 
-    function setTheme () {
-      mermaid.mermaidAPI.initialize({
-        theme: ctx.theme.getColorScheme() === 'dark' ? 'dark' : 'default'
-      })
-    }
+    initMermaidTheme()
+    ctx.registerHook('THEME_CHANGE', () => initMermaidTheme())
 
-    setTheme()
-    ctx.registerHook('THEME_CHANGE', setTheme)
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
+      if (options.preferPng && node.tagName === 'IMG' && node.classList.contains('mermaid-image')) {
+        try {
+          const img = document.createElement('img')
+          img.style.position = 'absolute'
+          img.style.left = '200vw'
+          img.src = (node as HTMLImageElement).src
+          document.body.appendChild(img)
+          const width = img.clientWidth
+          const height = img.clientHeight
+          document.body.removeChild(img)
+
+          // svg to img
+          const dataUrl = await ctx.lib.domtoimage
+            .toPng(node, { width: width * 2, height: height * 2 })
+          ;(node as HTMLImageElement).src = dataUrl
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    })
   }
 } as Plugin

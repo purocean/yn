@@ -91,13 +91,13 @@ const RunCode = defineComponent({
           }),
           h('div', {
             title: t('code-run.run-in-xterm-tips', getKeyLabel(CtrlCmd)),
-            class: 'p-mcr-run-xterm-btn no-print',
+            class: 'p-mcr-run-xterm-btn skip-print',
             hidden: isJs.value,
             onClick: runInXterm
           }),
         ]),
         h('div', { class: 'p-mcr-run-code-result skip-export', style: 'padding: .5em 0 0 0', key: runResult, innerHTML: runResult }),
-        h('div', { class: 'p-mcr-clear-btn-wrapper no-print' }, h(
+        h('div', { class: 'p-mcr-clear-btn-wrapper skip-print' }, h(
           h(
             'div',
             { class: 'p-mcr-clear-btn', style: { display: runResult ? 'flex' : 'none' }, title: t('code-run.clear'), onClick: clearResult },

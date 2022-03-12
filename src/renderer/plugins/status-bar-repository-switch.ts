@@ -36,7 +36,7 @@ export default {
       }
 
       if (initFilePath) {
-        switchDoc({ type: 'file', repo: currentRepo!.name, name: basename(initFilePath), path: initFilePath })
+        switchDoc({ type: 'file', repo: initRepoName || currentRepo!.name, name: basename(initFilePath), path: initFilePath })
       }
     }
 

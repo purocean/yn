@@ -9,8 +9,11 @@
         <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue">
       </template>
       <div class="action">
-        <button v-if="type !== 'alert'" class="btn" @click="cancel">{{$t('cancel')}}</button>
-        <button class="btn primary" @click="ok">{{$t('ok')}}</button>
+        <component v-if="action" :is="action" />
+        <template v-else>
+          <button v-if="type !== 'alert'" class="btn" @click="cancel">{{$t('cancel')}}</button>
+          <button class="btn primary" @click="ok">{{$t('ok')}}</button>
+        </template>
       </div>
     </div>
   </XMask>
@@ -37,6 +40,7 @@ export default defineComponent({
     const title = ref('')
     const content = ref('')
     const component = shallowRef()
+    const action = shallowRef()
     const inputType = ref('')
     const inputValue = ref('')
     const inputHint = ref('')
@@ -49,6 +53,7 @@ export default defineComponent({
       show.value = false
       inputValue.value = ''
       component.value = undefined
+      action.value = undefined
 
       try {
         resolveFun && resolveFun(val)
@@ -70,6 +75,7 @@ export default defineComponent({
       title.value = params.title || t('modal.info')
       content.value = params.content || ''
       component.value = params.component
+      action.value = params.action
       show.value = true
       modalWidth.value = undefined
 
@@ -83,6 +89,7 @@ export default defineComponent({
       title.value = params.title || t('modal.info')
       content.value = params.content || ''
       component.value = params.component
+      action.value = params.action
       show.value = true
       modalWidth.value = undefined
 
@@ -100,6 +107,8 @@ export default defineComponent({
       inputHint.value = params.hint || ''
       inputReadonly.value = params.readonly || false
       modalWidth.value = params.modalWidth
+      component.value = undefined
+      action.value = undefined
 
       show.value = true
 
@@ -131,6 +140,7 @@ export default defineComponent({
       title,
       content,
       component,
+      action,
       inputType,
       inputValue,
       inputHint,

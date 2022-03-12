@@ -2,12 +2,22 @@ import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
 import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import { sleep } from '@fe/utils'
+import { removeQuery, sleep } from '@fe/utils'
 import { isElectron } from '@fe/support/env'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/constant'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { getRepo, openExternal, openPath } from '@fe/services/base'
+
+function getElement (id: string) {
+  id = id.replaceAll('%28', '(').replaceAll('%29', ')')
+  return document.getElementById(id) ||
+    document.getElementById(decodeURIComponent(id)) ||
+    document.getElementById(encodeURIComponent(id)) ||
+    document.getElementById(id.replace(/^h-/, '')) ||
+    document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
+    document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
+}
 
 const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
@@ -66,10 +76,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
         // jump anchor
         if (hash) {
           await sleep(50)
-          const el = document.getElementById(hash) ||
-            document.getElementById(encodeURIComponent(hash)) ||
-            document.getElementById(hash.replace(/^h-/, '')) ||
-            document.getElementById(encodeURIComponent(hash.replace(/^h-/, '')))
+          const el = getElement(hash)
 
           if (el) {
             await sleep(0)
@@ -85,7 +92,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
 
       return true
     } else if (href && href.startsWith('#')) { // for anchor
-      const el = document.getElementById(href.replace(/^#/, ''))
+      const el = getElement(href.replace(/^#/, ''))
       el && scrollIntoView(el)
       return true
     }
@@ -115,7 +122,7 @@ function convertLink (state: StateCore) {
     }
 
     const basePath = dirname(path)
-    const fileName = basename(attrVal)
+    const fileName = basename(removeQuery(attrVal))
 
     if (isAnchor) {
       // keep markdown file.
@@ -137,14 +144,14 @@ function convertLink (state: StateCore) {
     const originAttr = isAnchor ? DOM_ATTR_NAME.ORIGIN_HREF : DOM_ATTR_NAME.ORIGIN_SRC
     token.attrSet(originAttr, attrVal)
 
-    const val = attrVal.replace(/[#?].*$/, '')
+    const originPath = removeQuery(attrVal)
 
     if (repo === '__help__') {
-      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(val)}`)
+      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(originPath)}`)
       return
     }
 
-    const filePath = resolve(basePath, val)
+    const filePath = resolve(basePath, originPath)
     token.attrSet(attrName, `api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
   }
 
@@ -179,12 +186,28 @@ export default {
       // local image
       const srcAttr = node.getAttribute('src')
       if (srcAttr && node.getAttribute(DOM_ATTR_NAME.LOCAL_IMAGE)) {
-        if (options.inlineLocalImage) {
+        if (options.inlineLocalImage || options.uploadLocalImage) {
           try {
+            const originSrc = node.getAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
             const res: Response = await ctx.api.fetchHttp(srcAttr)
-            const base64Url = await ctx.utils.fileToBase64URL(await res.blob())
-            node.setAttribute('src', base64Url)
-            node.removeAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
+            const fileName = originSrc ? ctx.utils.path.basename(removeQuery(originSrc)) : 'img'
+            const file = new File(
+              [await res.blob()],
+              fileName,
+              { type: ctx.lib.mime.getType(fileName) || undefined }
+            )
+
+            let url: string | undefined
+            if (options.inlineLocalImage) {
+              url = await ctx.utils.fileToBase64URL(file)
+            } else if (options.uploadLocalImage) {
+              url = await ctx.action.getActionHandler('plugin.image-hosting-picgo.upload')(file)
+            }
+
+            if (url) {
+              node.setAttribute('src', url)
+              node.removeAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
+            }
           } catch (error) {
             console.log(error)
           }

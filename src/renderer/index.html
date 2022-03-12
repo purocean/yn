@@ -18,6 +18,69 @@
 
       // 设置初始主题
       window.document.documentElement.setAttribute('app-theme', JSON.parse(localStorage['app.theme'] || '"system"'))
+
+      function _$args () {
+        const win = window.opener || window.parent || window
+        return new URLSearchParams(win.location.search)
+      }
+
+      const MODE = _$args().get('mode') || 'normal'
+
+      if (MODE === 'share-preview') {
+        Object.defineProperty(window, 'localStorage', {
+          value: (function () {
+            const s = {}
+
+            Object.defineProperty(s, 'setItem', {
+              get: () => {
+                return (k, v) => {
+                  s[String(k)] = String(v)
+                }
+              }
+            })
+
+            Object.defineProperty(s, 'getItem', {
+              get: () => {
+                return (k) => {
+                  if (Object.prototype.hasOwnProperty.call(s, String(k))) {
+                    return s[String(k)]
+                  } else {
+                    return null
+                  }
+                }
+              }
+            })
+
+            Object.defineProperty(s, 'removeItem', {
+              get: () => {
+                return (k) => {
+                  if (Object.prototype.hasOwnProperty.call(s, String(k))) {
+                    delete s[String(k)]
+                  }
+                }
+              }
+            })
+
+            Object.defineProperty(s, 'clear', {
+              get: () => {
+                return () => {
+                  for (const k in s) {
+                    delete s[String(k)]
+                  }
+                }
+              }
+            })
+
+            Object.defineProperty(s, 'length', {
+              get: () => {
+                return Object.keys(s).length
+              }
+            })
+
+            return s
+          })(),
+        })
+      }
     </script>
     <script src="/api/settings/js"></script>
   </head>

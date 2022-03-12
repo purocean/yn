@@ -212,6 +212,7 @@ const serve = () => {
     protocol.registerStreamProtocol('yank-note', async (request, callback) => {
       // transform protocol data to koa request.
       const { req, res, out } = await transformProtocolRequest(request)
+      ;(req as any)._protocol = true
 
       await handler(req, res)
       callback({

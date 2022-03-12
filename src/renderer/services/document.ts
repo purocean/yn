@@ -1,3 +1,4 @@
+import { Fragment, h } from 'vue'
 import { Optional } from 'utility-types'
 import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
@@ -5,13 +6,13 @@ import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { Doc, PathItem } from '@fe/types'
 import { basename, dirname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
+import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
 import { getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
-import { getActionHandler } from '@fe/core/action'
 
 const logger = getLogger('document')
 
@@ -378,19 +379,56 @@ export async function ensureCurrentFileSaved () {
     return
   }
 
+  const unsaved = !store.getters.isSaved && currentFile.repo !== '__help__'
+
+  if (!unsaved) {
+    return
+  }
+
+  const fileURI = toUri(currentFile)
+  const checkFile = () => {
+    if (fileURI !== toUri(store.state.currentFile)) {
+      throw new Error('Save Error')
+    }
+  }
+
+  const saveContent = async () => {
+    checkFile()
+    await saveDoc(currentFile, currentContent)
+  }
+
   try {
-    if (isEncrypted(currentFile)) {
-      if (!store.getters.isSaved && !(await useModal().confirm({
-        title: t('quit-check-dialog.title'),
-        content: t('quit-check-dialog.desc'),
-      }))) {
-        throw new Error('Please save document.')
-      } else {
-        store.commit('setCurrentFile', null)
-      }
+    const autoSave = !isEncrypted(currentFile) && getSetting('auto-save', 2000)
+    if (autoSave) {
+      await saveContent()
     } else {
-      if (currentFile && currentContent && currentFile.content !== currentContent && currentFile.repo !== '__help__') {
-        await saveDoc(currentFile, currentContent)
+      const confirm = await useModal().confirm({
+        title: t('save-check-dialog.title'),
+        content: t('save-check-dialog.desc'),
+        action: h(Fragment, [
+          h('button', {
+            onClick: async () => {
+              await saveContent()
+              useModal().ok()
+            }
+          }, t('save')),
+          h('button', {
+            onClick: () => useModal().ok()
+          }, t('discard')),
+          h('button', {
+            onClick: () => useModal().cancel()
+          }, t('cancel')),
+        ])
+      })
+
+      checkFile()
+
+      if (confirm) {
+        if (!store.getters.isSaved && currentFile.content) {
+          store.state.currentContent = currentFile.content!
+        }
+      } else {
+        throw new Error('Document not saved')
       }
     }
   } catch (error: any) {

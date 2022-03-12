@@ -1,4 +1,4 @@
-import mime from 'mime-types'
+import mime from 'mime'
 import * as api from '@fe/support/api'
 import { encodeMarkdownLink } from '@fe/utils'
 import { useToast } from '@fe/support/ui/toast'
@@ -43,7 +43,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
     const headers = JSON.parse(img.getAttribute('headers') || '{}')
     const res = await api.proxyRequest(img.src, { method: 'get', headers })
     const blob = await res.blob()
-    const imgFile = new File([blob!], 'file.' + mime.extension(res.headers.get('content-type')!))
+    const imgFile = new File([blob!], 'file.' + mime.getExtension(res.headers.get('content-type')!))
     const assetPath = await upload(imgFile, currentFile)
     replacedLink = assetPath
   }
@@ -128,7 +128,6 @@ export default {
           title: ctx.i18n.t('status-bar.tool.convert-img-link'),
           onClick: ctx.action.getActionHandler(actionKeydown)
         },
-        { type: 'separator' },
       )
     })
 

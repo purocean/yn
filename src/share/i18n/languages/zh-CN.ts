@@ -26,6 +26,7 @@ const data: BaseLanguage = {
   'save': '保存',
   'close': '关闭',
   'edit': '编辑',
+  'discard': '放弃',
   'premium': {
     'need-purchase': '[%s] 需要高级版',
     'buy-license': '立即购买',
@@ -140,6 +141,10 @@ const data: BaseLanguage = {
       'discard': '放弃保存并退出',
     },
   },
+  'save-check-dialog': {
+    'title': '提示',
+    'desc': '文档尚未保存，是否要保存？',
+  },
   'file-status': {
     'unsaved': '未保存',
     'saving': '保存中',
@@ -211,15 +216,16 @@ const data: BaseLanguage = {
     },
     'insert': {
       'insert': '插入',
-      'paste-rtf': '粘贴富文本',
+      'paste-rt': '粘贴富文本',
       'paste-img-base64': '粘贴图片',
     },
     'tool': {
       'tool': '工具',
       'convert-img-link': '下载外链图片',
       'macro-copy-markdown': '复制宏替换后的 Markdown',
-      'copy-content': '复制渲染内容',
-      'doc-history': '文档历史版本'
+      'copy-content': '复制内容',
+      'doc-history': '文档历史版本',
+      'share-preview': '分享预览',
     },
     'document-info': {
       'selected': '已选择',
@@ -289,7 +295,6 @@ const data: BaseLanguage = {
     'use-html': '使用渲染后的 HTML 转换',
     'use-markdown': '使用 Markdown 转换',
     'loading': '转换中，请稍候……',
-    'include-css': '包含 CSS',
   },
   'title-bar': {
     'pin': '置顶窗口',
@@ -324,6 +329,8 @@ const data: BaseLanguage = {
       'assets-dir': '图片存放目录',
       'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, docName, date',
       'shell': 'Shell',
+      'auto-save': '自动保存',
+      'plantuml-api': 'PlantUML 端点',
       'updater': {
         'source': '更新源',
       },
@@ -331,6 +338,7 @@ const data: BaseLanguage = {
         'number-limit': '版本保留数',
       },
       'server': {
+        'host': '监听主机',
         'port': '监听端口',
         'port-desc': '需要重启应用',
       },
@@ -354,7 +362,7 @@ const data: BaseLanguage = {
     'context-menu': {
       'paste-image': '粘贴图片',
       'paste-image-as-base64': '粘贴图片为 Base64',
-      'paste-rtf-as-markdown': '粘贴富文本为 Markdown',
+      'paste-rt-as-markdown': '粘贴富文本为 Markdown',
       'add-attachment': '添加附件',
       'link-doc': '链接文档',
       'link-file': '链接文件',
@@ -477,13 +485,19 @@ const data: BaseLanguage = {
       'hint': '输入一些信息（可选）',
     },
   },
-  'copy-rendered-content': {
+  'copy-content': {
     'options': '选项: ',
     'type': '复制类型: ',
     'inline-style': '内联样式',
     'inline-image': '内联本地图片',
+    'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',
-    'rtf': '富文本',
+    'rt': '富文本',
+    'complete': '转换完成，点击确定复制',
+  },
+  'share-preview': {
+    'expire': '到期',
+    'tips': '请先在设置中配置监听主机 “0.0.0.0”',
   },
 }
 

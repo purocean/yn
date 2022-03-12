@@ -2,6 +2,7 @@ import juice from 'juice'
 import { CtrlCmd, Escape, registerCommand } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
+import { DOM_CLASS_NAME } from '@fe/support/constant'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { BuildInHookTypes, Components } from '@fe/types'
@@ -73,7 +74,10 @@ export function getPreviewStyles () {
   let styles = ''
   Array.prototype.forEach.call(document.styleSheets, item => {
     Array.prototype.forEach.call(item.cssRules, (rule) => {
-      if (rule.selectorText && rule.selectorText.includes('.markdown-body')) {
+      if (rule.selectorText && (
+        rule.selectorText.includes('.markdown-body') ||
+        rule.selectorText.startsWith('.katex')
+      )) {
         styles += rule.cssText.replace(/\.markdown-\S* /g, '') + '\n'
       }
     })
@@ -103,7 +107,7 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
         return
       }
 
-      if (node.classList.contains('no-print') || node.classList.contains('skip-export')) {
+      if (node.classList.contains(DOM_CLASS_NAME.SKIP_PRINT) || node.classList.contains(DOM_CLASS_NAME.SKIP_EXPORT)) {
         node.remove()
         return
       }

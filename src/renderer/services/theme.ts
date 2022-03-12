@@ -56,7 +56,7 @@ export function addStyles (style: string) {
 }
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  if (getThemeName() === 'system') {
+  if (getThemeName() === 'system' && !window.matchMedia('print').matches) {
     setTheme('system')
   }
 })

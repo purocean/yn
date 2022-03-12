@@ -114,7 +114,7 @@ const Drawio = defineComponent({
               }
             },
             iframeProps: {
-              class: 'drawio-editor no-print',
+              class: 'drawio-editor skip-print',
               style: { background: 'rgba(255, 255, 255, 0.5)', position: 'absolute', zIndex: 1, margin: 0, display: 'block', height: `calc(100vh - ${topOffset})` },
               width: '100%'
             },
@@ -124,7 +124,7 @@ const Drawio = defineComponent({
         h('div', { class: 'drawio-wrapper reduce-brightness', style: 'position: relative' }, [
           h(
             'div',
-            { class: 'drawio-action no-print' },
+            { class: 'drawio-action skip-print' },
             [
               button(t('drawio.fit-height'), resize),
               button(t('reload'), reload),
