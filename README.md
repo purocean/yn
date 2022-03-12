@@ -90,14 +90,30 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.25.0](https://github.com/purocean/yn/releases/tag/v3.25.0) 2022-03-02
-1. feat: add the sharing preview function in the local area network
-2. feat: add "Upload local image to image bed" option to Copy Content
-3. feat: add some built-in style classes
-4. upd: upgrade Drawio version
-5. upd: optimize export/print Mermaid style
-6. fix: fix editor auto-completion may delete the entire line of content
-7. feat(plugin): add `uploadLocalImage` option to `VIEW_ON_GET_HTML_FILTER_NODE` hook
+### [v3.26.0](https://github.com/purocean/yn/releases/tag/v3.26.0) 2022-03-12
+
+1. feat: added image/link auto-completion for local path
+2. feat: support to configure PlantUML endpoint, can configure the official online rendering endpoint of PlantUML
+3. feat: support to configure automatic save interval
+4. feat: Copy Content supports copying Markdown after processing images
+5. feat: export HTML support more options
+6. feat: Mermaid graphics support download PNG
+7. upd: upgrade KaTeX version, support more syntax
+8. fix: fix the problem of resetting the "sync rendering" state after switching files
+9. fix: export: fix "Inline Images" may lose pictures
+10. fix: export: fix the exported HTML KaTeX cannot be rendered correctly
+11. fix: export: fix the exported Docx Mermaid graphics cannot be rendered correctly
+12. fix: export: fix PlantUML cannot be exported
+13. fix: export: fix the mind map of the exported document may be cropped
+14. fix: fix the problem that some special character anchors cannot jump
+15. feat(plugin): `ctx.ui.useModal` method supports custom action buttons
+16. feat(plugin): `ctx.view.getRenderEnv` method adds `tokens` return field
+17. feat(plugin): `VIEW_ON_GET_HTML_FILTER_NODE` hook adds `options.preferPng` parameter
+18. feat(plugin): add `ctx.utils.removeQuery` method
+19. feat(plugin): add `ctx.lib.mime` module
+20. feat(plugin): add `ctx.lib.markdownit` module
+21. feat(plugin): add `ctx.lib.domtoimage` module
+22. feat(plugin): add `ctx.lib.pako` module
 
 [More release notes](https://github.com/purocean/yn/releases)
 
