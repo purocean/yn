@@ -167,11 +167,12 @@ journey
       Sit down: 3: Me
 ```
 
-## Plantuml 图形
+## PlantUML 图形
 
-如果在配置中选择使用本地端点，则系统需要有 Java 环境，并安装有 Graphviz
+您可以在“设置”中配置使用本地端点或 PlantUML 在线端点来生成图形。
 
 ::: warning
+如果使用本地端点，则系统需要有 Java 环境，并安装有 Graphviz
 如果提示 `Cannot find Graphviz`，请参考 [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
 :::
 

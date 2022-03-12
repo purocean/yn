@@ -165,13 +165,13 @@ journey
       Sit down: 3: Me
 ```
 
-## Plantuml
+## PlantUML
 
-
-If you are configured to use local endpoint in the Setting, the system needs to have a Java environment with Graphviz installed.
+You can configure the use of local endpoint or PlantUML online endpoint to generate graph in Settings.
 
 ::: warning
-if it prompts an error `Cannot find Graphviz`,
+If you are use local endpoint, the system needs to have a Java environment with Graphviz installed.
+If it prompts an error `Cannot find Graphviz`,
 Please refer to [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
 :::
 
