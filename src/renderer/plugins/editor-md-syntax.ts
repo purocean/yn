@@ -61,7 +61,7 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     { name: '/ ``` Run Code', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n' },
     { name: '/ ``` Applet', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">TEST</button>\n```\n' },
     { name: '/ ``` Mermaid', insertText: '```mermaid\ngraph LR\n${1:A[Hard] --> |Text| B(Round)}\n```\n' },
-    { name: '/ @startuml Plantuml', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
+    { name: '/ @startuml PlantUML', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
     { name: '/ []() Drawio Link', insertText: '[${2:Drawio}]($1){link-type="drawio"}' },
     { name: '/ []() Luckysheet Link', insertText: '[${2:Luckysheet}]($1){link-type="luckysheet"}' },
     { name: '/ ||| Table', insertText: '| ${1:--} | ${2:--} | ${3:--} |\n| -- | -- | -- |\n| -- | -- | -- |' },
