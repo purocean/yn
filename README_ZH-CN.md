@@ -90,14 +90,30 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.25.0](https://github.com/purocean/yn/releases/tag/v3.25.0) 2022-03-02
-1. feat: 增加局域网内分享预览功能
-2. feat: 拷贝富文本/HTML增加“上传本地图片到图床”选项
-3. feat: 增加一些内置样式类
-4. upd: 升级 Drawio 版本
-5. upd: 优化导出/打印 Mermaid 样式
-6. fix: 修复编辑器自动补全可能删除整行内容问题
-7. feat(插件): 给 `VIEW_ON_GET_HTML_FILTER_NODE` 钩子增加 `uploadLocalImage` 选项
+### [v3.26.0](https://github.com/purocean/yn/releases/tag/v3.26.0) 2022-03-12
+
+1. feat: 新增图片/链接本地路径自动补全
+2. feat: 支持配置 PlantUML 端点，可配置 PlantUML 官方在线渲染地址
+3. feat: 支持配置自动保存间隔
+4. feat: 复制内容支持复制处理图片后的 Markdown
+5. feat: 导出 HTML 支持更多选项
+6. feat: Mermaid 图形支持下载 PNG 图片
+7. upd: 升级 KaTeX 版本，支持更多公式语法
+8. fix: 修复切换文件后重置“同步渲染”状态问题
+9. fix: 导出：修复“内联图片”可能丢失图片问题
+10. fix: 导出：修复导出 HTML 公式不能正确渲染问题
+11. fix: 导出：修复导出 Docx Mermaid 图形不能正确渲染问题
+12. fix: 导出：修复不能导出 PlantUML 问题
+13. fix: 导出：修复导出文档脑图可能被裁切问题
+14. fix: 修复一些特殊字符锚点不能跳转问题
+15. feat(插件): `ctx.ui.useModal` 方法支持自定义操作按钮
+16. feat(插件): `ctx.view.getRenderEnv` 方法增加 `tokens` 返回字段
+17. feat(插件): `VIEW_ON_GET_HTML_FILTER_NODE` 钩子增加 `options.preferPng` 参数
+18. feat(插件): 新增 `ctx.utils.removeQuery` 方法
+19. feat(插件): 新增 `ctx.lib.mime` 模块
+20. feat(插件): 新增 `ctx.lib.markdownit` 模块
+21. feat(插件): 新增 `ctx.lib.domtoimage` 模块
+22. feat(插件): 新增 `ctx.lib.pako` 模块
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
