@@ -123,13 +123,23 @@ export default {
       }
     }
 
+    const id = 'plugin.copy-content.copy-content'
+
+    ctx.action.registerAction({
+      name: id,
+      handler: copyContent,
+      keys: [ctx.command.CtrlCmd, ctx.command.Shift, 'c'],
+    })
+
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-tool']?.list?.push(
         {
-          id: 'plugin.copy-content.copy-content',
+          id,
           type: 'normal',
           title: ctx.i18n.t('status-bar.tool.copy-content'),
-          onClick: () => copyContent()
+          subTitle: ctx.command.getKeysLabel(id),
+          onClick: () => copyContent(),
+          order: 100,
         },
       )
     })
