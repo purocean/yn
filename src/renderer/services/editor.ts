@@ -308,8 +308,8 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
       { token: 'attribute.value.html', foreground: '#e52a24' }
     ],
     colors: {
-      'editor.background': '#F2F2F2',
-      'minimap.background': '#EEEEEE',
+      'editor.background': '#ffffff',
+      'minimap.background': '#f2f2f2',
     }
   })
 
