@@ -144,9 +144,22 @@ export default {
       })
 
       const md = ctx.lib.lodash.cloneDeep(language)
-      md.tokenizer.root.unshift([/\[=/, { token: 'keyword', next: '@monacoEnd', nextEmbedded: 'text/javascript' }])
+      md.tokenizer.root.unshift(
+        [/^:{3,}.*$/, 'tag'],
+        [/==\S.*\S?==/, 'keyword'],
+        [/~\S[^~]*\S?~/, 'string'],
+        [/\^\S[^^]*\S?\^/, 'string'],
+        [/^@@startuml$/, { token: 'string', next: '@plantuml' }],
+        [/\[=/, { token: 'keyword', next: '@monacoEnd', nextEmbedded: 'text/javascript' }],
+      )
+
       md.tokenizer.monacoEnd = [
         [/=\]/, { token: 'keyword', next: '@pop', nextEmbedded: '@pop' }]
+      ]
+
+      md.tokenizer.plantuml = [
+        [/^@@enduml$/, { token: 'string', next: '@pop' }],
+        [/.*$/, 'variable.source']
       ]
       monaco.languages.setMonarchTokensProvider('markdown', md)
     })

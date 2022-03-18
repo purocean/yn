@@ -7,6 +7,7 @@ import { debounce } from 'lodash-es'
 import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { getColorScheme } from '@fe/services/theme'
+import monacoMermaid from '@fe/others/monaco-mermaid'
 
 const logger = getLogger('mermaid')
 
@@ -214,6 +215,10 @@ export default {
           console.error(error)
         }
       }
+    })
+
+    ctx.editor.whenEditorReady().then(({ monaco }) => {
+      monacoMermaid(monaco)
     })
   }
 } as Plugin
