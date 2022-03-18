@@ -489,6 +489,7 @@ const data: BaseLanguage = {
     'options': '选项: ',
     'type': '复制类型: ',
     'inline-style': '内联样式',
+    'include-style': '包含样式',
     'inline-image': '内联本地图片',
     'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',

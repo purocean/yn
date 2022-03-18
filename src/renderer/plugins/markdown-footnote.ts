@@ -380,7 +380,7 @@ export default {
   name: 'markdown-footnote',
   register: ctx => {
     ctx.theme.addStyles(`
-      .footnote-backref {
+      .markdown-view .markdown-body .footnote-backref {
         padding: 0 4px;
         font-family: system-ui;
         vertical-align: middle;

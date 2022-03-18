@@ -243,7 +243,7 @@ export default {
 
         if (code) {
           if (options.highlightCode) {
-            if (options.inlineStyle) {
+            if (options.inlineStyle || options.includeStyle) {
               if (!hljsStyles) {
                 hljsStyles = getHljsStyles()
               }

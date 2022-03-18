@@ -488,6 +488,7 @@ const data = {
     'options': 'Options: ',
     'type': 'Copy Type: ',
     'inline-style': 'Inline Style',
+    'include-style': 'Include Style',
     'inline-image': 'Inline Local Image',
     'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',

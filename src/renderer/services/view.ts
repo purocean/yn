@@ -71,14 +71,20 @@ export function scrollTopTo (top: number) {
 }
 
 export function getPreviewStyles () {
-  let styles = ''
+  let styles = 'article.markdown-body { max-width: 980px; margin: 20px auto; }'
   Array.prototype.forEach.call(document.styleSheets, item => {
+    // inject global styles, normalize.css
+    const flag = item.cssRules[0] &&
+      item.cssRules[0].selectorText === 'html' &&
+      item.cssRules[0].cssText === 'html { line-height: 1.15; text-size-adjust: 100%; }'
+
     Array.prototype.forEach.call(item.cssRules, (rule) => {
       if (rule.selectorText && (
+        flag ||
         rule.selectorText.includes('.markdown-body') ||
         rule.selectorText.startsWith('.katex')
       )) {
-        styles += rule.cssText.replace(/\.markdown-\S* /g, '') + '\n'
+        styles += rule.cssText.replace(/\.markdown-view /g, '') + '\n'
       }
     })
   })

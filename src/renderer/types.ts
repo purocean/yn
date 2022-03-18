@@ -194,6 +194,7 @@ export type BuildInHookTypes = {
     node: HTMLElement,
     options: {
       inlineStyle?: boolean,
+      includeStyle?: boolean,
       inlineLocalImage?: boolean,
       uploadLocalImage?: boolean,
       highlightCode?: boolean,
