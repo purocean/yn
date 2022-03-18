@@ -151,8 +151,8 @@ export default {
         [/\^\S[^^]*\S?\^/, 'string'],
         [/^@@startuml$/, { token: 'string', next: '@plantuml' }],
         [/\[=/, { token: 'keyword', next: '@monacoEnd', nextEmbedded: 'text/javascript' }],
-        [/\$\$/, { token: 'keyword', next: '@latexBlockEnd', nextEmbedded: 'latex' }],
-        [/\$(?=\S)/, { token: 'keyword', next: '@latexInlineEnd', nextEmbedded: 'latex' }],
+        [/\$\$/, { token: 'tag', next: '@latexBlockEnd', nextEmbedded: 'latex' }],
+        [/\$(?=\S)/, { token: 'tag', next: '@latexInlineEnd', nextEmbedded: 'latex' }],
       )
 
       md.tokenizer.monacoEnd = [
@@ -165,11 +165,11 @@ export default {
       ]
 
       md.tokenizer.latexBlockEnd = [
-        [/\$\$/, { token: 'keyword', next: '@pop', nextEmbedded: '@pop' }],
+        [/\$\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
       ]
 
       md.tokenizer.latexInlineEnd = [
-        [/\$/, { token: 'keyword', next: '@pop', nextEmbedded: '@pop' }],
+        [/\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
       ]
 
       monaco.languages.setMonarchTokensProvider('markdown', md)
