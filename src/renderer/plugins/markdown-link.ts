@@ -19,6 +19,15 @@ function getElement (id: string) {
     document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
 }
 
+function getAnchorElement (target: HTMLElement) {
+  let cur: HTMLElement | null = target
+  while (cur && cur.tagName !== 'A' && cur.tagName !== 'ARTICLE') {
+    cur = cur.parentElement
+  }
+
+  return cur?.tagName === 'A' ? <HTMLAnchorElement>cur : null
+}
+
 const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   const { currentFile } = store.state
   if (!currentFile) {
@@ -224,17 +233,13 @@ export default {
     })
 
     ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e, view }) => {
-      const target = e.target as HTMLElement
+      const anchorTarget = getAnchorElement(<HTMLElement>e.target)
 
-      const preventEvent = () => {
-        e.preventDefault()
-        e.stopPropagation()
-        return true
-      }
-
-      if (target.tagName === 'A' || target.parentElement?.tagName === 'A') {
-        if (handleLink(target as HTMLAnchorElement, view)) {
-          return preventEvent()
+      if (anchorTarget) {
+        if (handleLink(anchorTarget, view)) {
+          e.preventDefault()
+          e.stopPropagation()
+          return true
         } else {
           return true
         }
