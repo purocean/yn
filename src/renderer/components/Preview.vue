@@ -609,10 +609,14 @@ export default defineComponent({
     }
 
     img {
+      --skip-contain: 1;
+      cursor: zoom-in;
+    }
+
+    img {
       display: block;
       margin-left: auto;
       margin-right: auto;
-      cursor: zoom-in;
 
       &.inline,
       &[src*=".inline"],

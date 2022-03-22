@@ -84,6 +84,11 @@ export function getPreviewStyles () {
         rule.selectorText.includes('.markdown-body') ||
         rule.selectorText.startsWith('.katex')
       )) {
+        // skip contain rules
+        if (rule?.style?.getPropertyValue('--skip-contain')) {
+          return
+        }
+
         styles += rule.cssText.replace(/\.markdown-view /g, '') + '\n'
       }
     })
