@@ -28,9 +28,14 @@ const transformCdCommand = (command: string) => {
     return `cd '${path.replace(/'/g, '\\\'')}'`
   }
 
+  const shell = getShell()
   // transform path for WSL shell.
-  if (getShell().indexOf('wsl.exe') > -1) {
+  if (shell.endsWith('wsl.exe')) {
     return `cd '${toWslPath(path).replace(/'/g, '\\\'')}'`
+  }
+
+  if (shell.endsWith('powershell.exe')) {
+    return `cd '${path}'\n`
   }
 
   // change dir for Windows.
