@@ -35,7 +35,7 @@ const transformCdCommand = (command: string) => {
   }
 
   if (shell.endsWith('powershell.exe')) {
-    return `cd '${path}'\n`
+    return `cd '${path}'\r\n`
   }
 
   // change dir for Windows.
