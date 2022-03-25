@@ -67,6 +67,13 @@ export function toggleXterm (visible?: boolean) {
     }
   })
 }
+/**
+ * Toggle outline visible.
+ * @param visible
+ */
+export function toggleOutline (visible?: boolean) {
+  store.commit('setShowOutline', typeof visible === 'boolean' ? visible : !store.state.showOutline)
+}
 
 registerAction({ name: 'layout.toggle-side', handler: toggleSide, keys: [Alt, 'e'] })
 registerAction({ name: 'layout.toggle-editor', handler: toggleEditor, keys: [Alt, 'x'] })

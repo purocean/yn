@@ -26,6 +26,8 @@ const data = {
   'close': 'Close',
   'discard': 'Discard',
   'edit': 'Edit',
+  'outline': 'Outline',
+  'files': 'Files',
   'premium': {
     'need-purchase': '[%s] Premium is required',
     'buy-license': 'Buy License',

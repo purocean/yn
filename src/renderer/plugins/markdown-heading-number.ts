@@ -46,31 +46,31 @@ export default {
                 counter(h6counter) ".\\0000a0\\0000a0";
       }
 
-      .markdown-view .outline .tag-h1.show-number { counter-reset: outline-h2counter; }
-      .markdown-view .outline .tag-h2.show-number { counter-reset: outline-h3counter; }
-      .markdown-view .outline .tag-h3.show-number { counter-reset: outline-h4counter; }
-      .markdown-view .outline .tag-h4.show-number { counter-reset: outline-h5counter; }
-      .markdown-view .outline .tag-h5.show-number { counter-reset: outline-h6counter; }
+      .outline-toc .tag-h1.show-number { counter-reset: outline-h2counter; }
+      .outline-toc .tag-h2.show-number { counter-reset: outline-h3counter; }
+      .outline-toc .tag-h3.show-number { counter-reset: outline-h4counter; }
+      .outline-toc .tag-h4.show-number { counter-reset: outline-h5counter; }
+      .outline-toc .tag-h5.show-number { counter-reset: outline-h6counter; }
 
-      .markdown-view .outline .tag-h2.show-number:before {
+      .outline-toc .tag-h2.show-number:before {
         counter-increment: outline-h2counter;
         content: counter(outline-h2counter) ".\\0000a0\\0000a0";
       }
 
-      .markdown-view .outline .tag-h3.show-number:before {
+      .outline-toc .tag-h3.show-number:before {
         counter-increment: outline-h3counter;
         content: counter(outline-h2counter) "."
                 counter(outline-h3counter) ".\\0000a0\\0000a0";
       }
 
-      .markdown-view .outline .tag-h4.show-number:before {
+      .outline-toc .tag-h4.show-number:before {
         counter-increment: outline-h4counter;
         content: counter(outline-h2counter) "."
                 counter(outline-h3counter) "."
                 counter(outline-h4counter) ".\\0000a0\\0000a0";
       }
 
-      .markdown-view .outline .tag-h5.show-number:before {
+      .outline-toc .tag-h5.show-number:before {
         counter-increment: outline-h5counter;
         content: counter(outline-h2counter) "."
                 counter(outline-h3counter) "."
@@ -78,7 +78,7 @@ export default {
                 counter(outline-h5counter) ".\\0000a0\\0000a0";
       }
 
-      .markdown-view .outline .tag-h6.show-number:before {
+      .outline-toc .tag-h6.show-number:before {
         counter-increment: outline-h6counter;
         content: counter(outline-h2counter) "."
                 counter(outline-h3counter) "."

@@ -231,6 +231,18 @@ export default defineComponent({
   flex: none;
   height: 100%;
   border-right: 1px solid var(--g-color-86);
+  display: flex;
+  flex-direction: column;
+  background: var(--g-color-98);
+
+  ::v-deep(.action-bar .btns) {
+    opacity: 0;
+    transition: 0.2s;
+  }
+
+  &:hover ::v-deep(.action-bar .btns) {
+    opacity: 1;
+  }
 }
 
 .sash-right {

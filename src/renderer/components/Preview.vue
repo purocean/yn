@@ -26,15 +26,7 @@
         </div>
       </div>
       <div class="catalog" :style="{maxHeight: `min(${(height - 120) + 'px'}, 70vh)`}">
-        <div
-          v-for="(head, index) in heads"
-          :key="index"
-          :class="head.class"
-          :style="{paddingLeft: `${head.level + 1}em`}"
-          @click="syncScroll(head.sourceLine)">
-          {{ head.text }}
-          <span class="tag-name">{{head.tag}}</span>
-        </div>
+        <Outline :headings="heads" :auto-scroll="false" @click-item="(head: any) => syncScroll(head.sourceLine)" />
       </div>
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="scrollToTopStyle" @click="scrollToTop">TOP</div>
@@ -55,7 +47,7 @@ import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'
 import { showExport, toUri } from '@fe/services/document'
-import { getContextMenuItems } from '@fe/services/view'
+import { getContextMenuItems, getHeadings, Heading } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { DOM_ATTR_NAME } from '@fe/support/constant'
 import { useI18n } from '@fe/services/i18n'
@@ -64,6 +56,7 @@ import type { RenderEnv } from '@fe/types'
 
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
+import Outline from './Outline.vue'
 
 import 'highlight.js/styles/atom-one-dark.css'
 import 'katex/dist/katex.min.css'
@@ -72,7 +65,7 @@ const logger = getLogger('preview')
 
 export default defineComponent({
   name: 'xview',
-  components: { Render, SvgIcon },
+  components: { Render, SvgIcon, Outline },
   setup () {
     useI18n()
 
@@ -93,13 +86,7 @@ export default defineComponent({
 
     const width = ref(1024)
     const height = ref(1024)
-    const heads = ref<{
-      tag: string;
-      class: string[];
-      text: string;
-      level: number;
-      sourceLine: number;
-    }[]>([])
+    const heads = ref<Heading[]>([])
     const todoCount = ref(0)
     const todoDoneCount = ref(0)
     const scrollTop = ref(0)
@@ -122,18 +109,7 @@ export default defineComponent({
     }
 
     function updateOutline () {
-      const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-      const nodes = refView.value!.querySelectorAll<HTMLHeadElement>(tags.join(','))
-      heads.value = Array.from(nodes).map(node => {
-        const tag = node.tagName.toLowerCase()
-        return {
-          tag,
-          class: [...node.classList, 'tag-' + tag],
-          text: node.innerText,
-          level: tags.indexOf(tag),
-          sourceLine: parseInt(node.dataset.sourceLine || '0')
-        }
-      })
+      heads.value = getHeadings()
     }
 
     function updateTodoCount () {
@@ -447,25 +423,6 @@ export default defineComponent({
     cursor: pointer;
     overflow: auto;
     overflow-x: hidden;
-    padding-bottom: 1em;
-
-    & > div {
-      font-size: 14px;
-      line-height: 18px;
-      padding: 7px .5em;
-      display: flex;
-      border-radius: var(--g-border-radius);
-
-      &:hover {
-        background: var(--g-color-75);
-      }
-
-      .tag-name {
-        color: var(--g-color-60);
-        font-size: 12px;
-        padding-left: 0.5em;
-      }
-    }
   }
 
   .outline-title {

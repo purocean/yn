@@ -12,6 +12,13 @@ import { switchDoc } from './document'
 
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
+export type Heading = {
+  tag: string;
+  class: string[];
+  text: string;
+  level: number;
+  sourceLine: number;
+}
 
 let tmpEnableSyncScroll = true
 let syncScrollTimer: any
@@ -166,6 +173,29 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
  */
 export function getViewDom () {
   return getActionHandler('view.get-view-dom')()
+}
+
+/**
+ * Get Headings
+ */
+export function getHeadings (): Heading[] {
+  const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+  const dom = getViewDom()
+  if (!dom) {
+    return []
+  }
+
+  const nodes = dom.querySelectorAll<HTMLHeadElement>(tags.join(','))
+  return Array.from(nodes).map(node => {
+    const tag = node.tagName.toLowerCase()
+    return {
+      tag,
+      class: [...node.classList, 'tag-' + tag],
+      text: node.innerText,
+      level: tags.indexOf(tag),
+      sourceLine: parseInt(node.dataset.sourceLine || '0')
+    }
+  })
 }
 
 /**

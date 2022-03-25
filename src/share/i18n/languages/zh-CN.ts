@@ -27,6 +27,8 @@ const data: BaseLanguage = {
   'close': '关闭',
   'edit': '编辑',
   'discard': '放弃',
+  'outline': '目录',
+  'files': '文件',
   'premium': {
     'need-purchase': '[%s] 需要高级版',
     'buy-license': '立即购买',
