@@ -81,6 +81,10 @@ onBeforeUnmount(() => {
     display: flex;
   }
 
+  & > .btns {
+    background: var(--g-color-98);
+  }
+
   .btn {
     width: 30px;
     height: 30px;
