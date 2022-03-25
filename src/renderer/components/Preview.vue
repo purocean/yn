@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="catalog" :style="{maxHeight: `min(${(height - 120) + 'px'}, 70vh)`}">
-        <Outline :headings="heads" :auto-scroll="false" @click-item="(head: any) => syncScroll(head.sourceLine)" />
+        <Outline />
       </div>
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="scrollToTopStyle" @click="scrollToTop">TOP</div>
@@ -53,6 +53,7 @@ import { DOM_ATTR_NAME } from '@fe/support/constant'
 import { useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
 import type { RenderEnv } from '@fe/types'
+import type { AppState } from '@fe/support/store'
 
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
@@ -69,7 +70,7 @@ export default defineComponent({
   setup () {
     useI18n()
 
-    const store = useStore()
+    const store = useStore<AppState>()
 
     const pinOutline = ref(false)
     const { currentContent, currentFile, autoPreview, presentation, inComposition } = toRefs(store.state)
@@ -181,23 +182,13 @@ export default defineComponent({
       triggerHook('VIEW_SCROLL', { e })
     }
 
-    function syncScroll (line: number) {
-      if (store.state.showEditor) {
-        revealLineInCenter(line)
-      } else {
-        refViewWrapper.value
-          ?.querySelector<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
-          ?.scrollIntoView()
-      }
-    }
-
     function scrollTopTo (top: number) {
       refViewWrapper.value!.scrollTo(0, top)
     }
 
     function scrollToTop () {
       scrollTopTo(0)
-      syncScroll(1)
+      revealLineInCenter(1)
     }
 
     function handleDbClick (e: MouseEvent) {
@@ -347,7 +338,6 @@ export default defineComponent({
       handleClick,
       handleDbClick,
       handleContextMenu,
-      syncScroll,
     }
   },
 })

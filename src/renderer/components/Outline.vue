@@ -1,12 +1,12 @@
 <template>
-  <div class="outline-toc">
-    <div v-if="(headings || heads).length < 1" class="empty">Empty</div>
+  <div ref="container" class="outline-toc">
+    <div v-if="heads.length < 1" class="empty">Empty</div>
     <div
-      class="heading"
-      v-for="(head, index) in (headings || heads)"
+      v-for="(head, index) in heads"
       :key="index"
       :class="head.class"
       :style="{paddingLeft: `${head.level + 1}em`}"
+      :data-activated="head.activated"
       @click="handleClickItem(head)">
       {{ head.text }}
       <span class="tag-name">{{head.tag}}</span>
@@ -15,45 +15,66 @@
 </template>
 
 <script lang="ts">
+import { throttle } from 'lodash-es'
+import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { revealLineInCenter } from '@fe/services/editor'
-import { getHeadings, Heading } from '@fe/services/view'
-import { defineComponent, onBeforeUnmount, ref } from 'vue'
+import { DOM_ATTR_NAME } from '@fe/support/constant'
+import { AppState } from '@fe/support/store'
+import { getHeadings, getViewDom, Heading } from '@fe/services/view'
 
 export default defineComponent({
   name: 'outline',
-  props: {
-    headings: Array as () => Heading[],
-    autoScroll: {
-      type: Boolean,
-      default: true,
-    }
-  },
-  setup (props, { emit }) {
+  setup () {
+    const container = ref<HTMLElement>()
+    const heads = ref<Heading[]>([])
+    const store = useStore<AppState>()
+
     function handleClickItem (heading: Heading) {
-      emit('click-item', heading)
-      if (props.autoScroll) {
-        revealLineInCenter(heading.sourceLine)
+      const line = heading.sourceLine
+      if (store.state.showEditor && !store.state.presentation) {
+        revealLineInCenter(line)
+      } else {
+        getViewDom()
+          ?.querySelector<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
+          ?.scrollIntoView()
       }
     }
-
-    const heads = ref<Heading[]>([])
 
     function refresh () {
-      if (props.headings) {
-        heads.value = []
-      } else {
-        heads.value = getHeadings()
+      heads.value = getHeadings(true)
+
+      if (!container.value || container.value.clientWidth < 50) {
+        return
       }
+
+      nextTick(() => {
+        // skip on hover
+        if (container.value?.parentElement?.querySelector('.outline-toc:hover') !== container.value) {
+          const idx = heads.value.findIndex(head => head.activated)
+          const item: any = container.value?.children.item(idx)
+          if (item) {
+            item.scrollIntoViewIfNeeded(false)
+          }
+        }
+      })
     }
 
-    registerHook('VIEW_RENDERED', refresh)
+    const throttleRefresh = throttle(refresh, 150)
 
-    onBeforeUnmount(() => {
-      removeHook('VIEW_RENDERED', refresh)
+    onMounted(() => {
+      refresh()
+      registerHook('VIEW_RENDERED', throttleRefresh)
+      registerHook('VIEW_SCROLL', throttleRefresh)
     })
 
-    return { heads, handleClickItem }
+    onBeforeUnmount(() => {
+      removeHook('VIEW_RENDERED', throttleRefresh)
+      removeHook('VIEW_SCROLL', throttleRefresh)
+    })
+
+    return { container, heads, handleClickItem }
   },
 })
 </script>
@@ -82,6 +103,11 @@ export default defineComponent({
     display: flex;
     border-radius: var(--g-border-radius);
     cursor: pointer;
+    overflow-wrap: break-word;
+
+    &[data-activated="true"] {
+      background: rgba(0, 0, 0, 0.05);
+    }
 
     &:hover {
       background: rgba(0, 0, 0, 0.1);
@@ -100,8 +126,14 @@ export default defineComponent({
 }
 
 @include dark-theme {
-  .outline-toc > .heading:hover {
-    background: rgba(255, 255, 255, 0.14);
+  .outline-toc > .heading {
+    &[data-activated="true"] {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
   }
 }
 </style>
