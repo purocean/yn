@@ -11,6 +11,7 @@ export const initState = {
   showView: storage.get('showView', true),
   showEditor: storage.get('showEditor', true),
   showXterm: false,
+  showOutline: false,
   autoPreview: true,
   syncScroll: true,
   showSetting: false,
@@ -87,6 +88,9 @@ export default createStore({
     },
     setShowXterm (state, data) {
       state.showXterm = data
+    },
+    setShowOutline (state, data) {
+      state.showOutline = data
     },
     setInComposition (state, data) {
       state.inComposition = data

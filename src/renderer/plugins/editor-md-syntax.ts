@@ -1,6 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import type * as Monaco from 'monaco-editor'
 import type { Ctx, Plugin } from '@fe/context'
+import { language } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
 
 const surroundingPairs = [
   { open: '{', close: '}' },
@@ -141,6 +142,37 @@ export default {
           { beforeText: /^\s*\d+\) .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1) ' } },
         ]
       })
+
+      const md = ctx.lib.lodash.cloneDeep(language)
+      md.tokenizer.root.unshift(
+        [/^:{3,}.*$/, 'tag'],
+        [/==\S.*\S?==/, 'keyword'],
+        [/~\S[^~]*\S?~/, 'string'],
+        [/\^\S[^^]*\S?\^/, 'string'],
+        [/^@@startuml$/, { token: 'string', next: '@plantuml' }],
+        [/\[=/, { token: 'keyword', next: '@monacoEnd', nextEmbedded: 'text/javascript' }],
+        [/\$\$/, { token: 'tag', next: '@latexBlockEnd', nextEmbedded: 'latex' }],
+        [/\$(?=\S)/, { token: 'tag', next: '@latexInlineEnd', nextEmbedded: 'latex' }],
+      )
+
+      md.tokenizer.monacoEnd = [
+        [/=\]/, { token: 'keyword', next: '@pop', nextEmbedded: '@pop' }]
+      ]
+
+      md.tokenizer.plantuml = [
+        [/^@@enduml$/, { token: 'string', next: '@pop' }],
+        [/.*$/, 'variable.source']
+      ]
+
+      md.tokenizer.latexBlockEnd = [
+        [/\$\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
+      ]
+
+      md.tokenizer.latexInlineEnd = [
+        [/\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
+      ]
+
+      monaco.languages.setMonarchTokensProvider('markdown', md)
     })
   }
 } as Plugin

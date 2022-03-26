@@ -7,7 +7,9 @@
       <StatusBar />
     </template>
     <template v-slot:left>
-      <Tree />
+      <ActionBar />
+      <Outline v-if="showOutline" />
+      <Tree v-show="!showOutline" />
     </template>
     <template v-slot:terminal>
       <Xterm @hide="hideXterm" />
@@ -29,10 +31,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, toRef } from 'vue'
+import { useStore } from 'vuex'
 import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
+import type { AppState } from '@fe/support/store'
 import Layout from '@fe/components/Layout.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
 import StatusBar from '@fe/components/StatusBar.vue'
@@ -48,6 +52,8 @@ import Premium from '@fe/components/Premium.vue'
 import XFilter from '@fe/components/Filter.vue'
 import ControlCenter from '@fe/components/ControlCenter.vue'
 import DocHistory from '@fe/components/DocHistory.vue'
+import ActionBar from '@fe/components/ActionBar.vue'
+import Outline from '@fe/components/Outline.vue'
 
 export default defineComponent({
   name: 'x-main',
@@ -66,8 +72,12 @@ export default defineComponent({
     ExportPanel,
     ControlCenter,
     DocHistory,
+    ActionBar,
+    Outline,
   },
   setup () {
+    const store = useStore<AppState>()
+    const showOutline = toRef(store.state, 'showOutline')
     onMounted(startup)
 
     const classes = {
@@ -78,7 +88,7 @@ export default defineComponent({
       getActionHandler('layout.toggle-xterm')(false)
     }
 
-    return { classes, hideXterm }
+    return { classes, hideXterm, showOutline }
   }
 })
 </script>

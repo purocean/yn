@@ -1,5 +1,9 @@
 ---
 enableMacro: true
+define:
+    'Ctrl/Cmd': '[= $ctx.env.isMacOS ? "Cmd" : "Ctrl" =]'
+    'Alt/Option': '[= $ctx.env.isMacOS ? "Option" : "Alt" =]'
+    'TABS-CLOSE-CURRENT': '[= `${$ctx.env.isMacOS ? "Cmd" : "Ctrl"} +${$ctx.env.isElectron ? "" : ($ctx.env.isMacOS ? "Option" : "Alt") + " +"} W` =]'
 ---
 
 ## Shortcuts
@@ -43,11 +47,13 @@ Edit Table Cell | Double Click Cell
 Edit Table Cell (Popup) | Ctrl/Cmd + Click
 Copy Heading link | Ctrl/Cmd + Click Heading
 Switch Editor Tab | Ctrl/Cmd + Alt/Option + Left/Right
+Close Editor Current Tab | TABS-CLOSE-CURRENT
 Toggle Sidebar | Alt/Option + E
 Toggle Word Wrap | Alt/Option + W
 Toggle Preview | Alt/Option + V
 Toggle Terminal | Alt/Option + T
 Toggle Control Center | Alt/Option + C
+Show Copy Content Panel | Ctrl/Cmd + Shift + C
 Presentation | F5
 Zoom In | Ctrl/Cmd + =
 Zoom Out | Ctrl/Cmd + -
@@ -91,11 +97,13 @@ Zoom Reset | Ctrl/Cmd + 0
 编辑表格单元格(弹出框) | Ctrl/Cmd + 单击单元格
 复制文档标题链接 | Ctrl/Cmd + 单击标题
 切换编辑器 Tab | Ctrl/Cmd + Alt/Option + Left/Right
+关闭编辑器当前标签 Tab | TABS-CLOSE-CURRENT
 切换侧栏 | Alt/Option + E
 切换编辑器自动换行 | Alt/Option + W
 切换文档预览显示 | Alt/Option + V
 切换终端 | Alt/Option + T
 切换控制中心 | Alt/Option + C
+展示复制面板 | Ctrl/Cmd + Shift + C
 演示模式 | F5
 缩放放大 | Ctrl/Cmd + =
 缩放缩小 | Ctrl/Cmd + -

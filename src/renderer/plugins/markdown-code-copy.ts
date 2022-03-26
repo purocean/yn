@@ -58,7 +58,7 @@ export default {
     ctx.markdown.registerPlugin(md => {
       const codeInline = (fn: Function) => (tokens: any, idx: any, options: any, env: any, slf: any) => {
         if (tokens[idx].attrIndex('title') < 0) {
-          tokens[idx].attrJoin('class', 'copy-inner-text')
+          tokens[idx].attrJoin('class', ctx.constant.DOM_CLASS_NAME.COPY_INNER_TEXT)
           tokens[idx].attrPush(['title', ctx.command.getKeyLabel('CtrlCmd') + ' + ' + ctx.i18n.t('click-to-copy')])
         }
 

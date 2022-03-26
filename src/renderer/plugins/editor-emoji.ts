@@ -30,7 +30,7 @@ class EmojiCompletionProvider implements Monaco.languages.CompletionItemProvider
     const result: Monaco.languages.CompletionItem[] = []
     Object.keys(emoji).forEach((key, i) => {
       result.push({
-        label: { label: `:${key} ${(emoji as any)[key]}` },
+        label: { label: `:${key}:${(emoji as any)[key]}` },
         kind: this.monaco.languages.CompletionItemKind.EnumMember,
         insertText: (emoji as any)[key],
         range: new this.monaco.Range(

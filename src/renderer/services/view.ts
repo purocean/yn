@@ -12,6 +12,14 @@ import { switchDoc } from './document'
 
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
+export type Heading = {
+  tag: string;
+  class: string;
+  text: string;
+  level: number;
+  sourceLine: number;
+  activated?: boolean;
+}
 
 let tmpEnableSyncScroll = true
 let syncScrollTimer: any
@@ -71,14 +79,25 @@ export function scrollTopTo (top: number) {
 }
 
 export function getPreviewStyles () {
-  let styles = ''
+  let styles = 'article.markdown-body { max-width: 980px; margin: 20px auto; }'
   Array.prototype.forEach.call(document.styleSheets, item => {
+    // inject global styles, normalize.css
+    const flag = item.cssRules[0] &&
+      item.cssRules[0].selectorText === 'html' &&
+      item.cssRules[0].cssText === 'html { line-height: 1.15; text-size-adjust: 100%; }'
+
     Array.prototype.forEach.call(item.cssRules, (rule) => {
       if (rule.selectorText && (
+        flag ||
         rule.selectorText.includes('.markdown-body') ||
         rule.selectorText.startsWith('.katex')
       )) {
-        styles += rule.cssText.replace(/\.markdown-\S* /g, '') + '\n'
+        // skip contain rules
+        if (rule?.style?.getPropertyValue('--skip-contain')) {
+          return
+        }
+
+        styles += rule.cssText.replace(/\.markdown-view /g, '') + '\n'
       }
     })
   })
@@ -155,6 +174,69 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
  */
 export function getViewDom () {
   return getActionHandler('view.get-view-dom')()
+}
+
+/**
+ * Get Headings
+ */
+export function getHeadings (withActivated = false): Heading[] {
+  const dom = getViewDom()?.parentElement
+  if (!dom) {
+    return []
+  }
+
+  const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+
+  let viewRect: DOMRect
+  let breakCheck = false
+  const isActivated = (nodes: NodeListOf<HTMLHeadElement>, i: number) => {
+    if (!withActivated) {
+      return undefined
+    }
+
+    if (breakCheck) {
+      return false
+    }
+
+    if (!viewRect) {
+      viewRect = dom.getBoundingClientRect()
+    }
+
+    const node = nodes[i]
+    const nodeRect = node.getBoundingClientRect()
+
+    const bottom = viewRect.bottom / 3 * 2
+    // in view
+    if (nodeRect.top >= viewRect.top && nodeRect.top < bottom) {
+      breakCheck = true
+      return true
+    } else if (nodeRect.top < viewRect.top) { // before view
+      const nextNode = i < nodes.length - 1 ? nodes[i + 1] : undefined
+      const res = !nextNode || nextNode.getBoundingClientRect().top > bottom
+      if (res) {
+        breakCheck = true
+      }
+
+      return res
+    } else { // after view
+      breakCheck = true
+    }
+
+    return false
+  }
+
+  const nodes = dom.querySelectorAll<HTMLHeadElement>(tags.join(','))
+  return Array.from(nodes).map((node, i) => {
+    const tag = node.tagName.toLowerCase()
+    return {
+      tag,
+      class: `heading ${node.className} tag-${tag}`,
+      text: node.textContent || '',
+      level: tags.indexOf(tag),
+      sourceLine: parseInt(node.dataset.sourceLine || '0'),
+      activated: isActivated(nodes, i),
+    }
+  })
 }
 
 /**

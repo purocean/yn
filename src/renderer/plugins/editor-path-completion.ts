@@ -4,6 +4,7 @@ import type Markdown from 'markdown-it'
 import type * as Monaco from 'monaco-editor'
 import type { Ctx, Plugin } from '@fe/context'
 import type { Components } from '@fe/types'
+import type Token from 'markdown-it/lib/token'
 
 enum CompletionContextKind {
   Link, // [...](|)
@@ -59,7 +60,7 @@ interface CompletionContext {
 }
 
 class CompletionProvider implements Monaco.languages.CompletionItemProvider {
-  triggerCharacters = ['/', '#']
+  triggerCharacters = ['/', '#', '[']
 
   private readonly monaco: typeof Monaco
   private readonly ctx: Ctx
@@ -80,8 +81,11 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
 
     switch (context.kind) {
       case CompletionContextKind.ReferenceLink: {
-        // TODO
-        return { suggestions: [] }
+        return {
+          suggestions: Array.from(
+            this.provideReferenceSuggestions(this.ctx.view.getRenderEnv()?.source || model.getValue(), position, context)
+          )
+        }
       }
 
       case CompletionContextKind.LinkDefinition:
@@ -99,7 +103,9 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
             position.column
           )
 
-          for await (const item of this.provideHeaderSuggestions(this.ctx.store.state.currentContent, context, position, insertRange)) {
+          const tokens = this.ctx.view.getRenderEnv()?.tokens || []
+
+          for await (const item of this.provideHeaderSuggestions(tokens, context, position, insertRange)) {
             items.push(item)
           }
         }
@@ -145,11 +151,15 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
   /// [...](...|
   private readonly linkStartPattern = /\[([^\]]*?)\]\(\s*([^\s()]*)$/;
 
-  /// [...][...|
-  private readonly referenceLinkStartPattern = /\[([^\]]*?)\]\[\s*([^\s()]*)$/;
+  /// [...|
+  private readonly referenceLinkStartPattern = /\[\s*([^\s[\]]*)$/;
 
   /// [id]: |
   private readonly definitionPattern = /^\s*\[[\w-]+\]:\s*([^\s]*)$/m;
+
+  private readonly defPattern = /^([\t ]*\[(?!\^)((?:\\\]|[^\]])+)\]:\s*)([^<]\S*|<[^>]+>)/gm;
+
+  private readonly angleBracketLinkRe = /^<(.*)>$/;
 
   private getPathCompletionContext (model: Monaco.editor.IModel, position: Monaco.Position): CompletionContext | undefined {
     const line = model.getLineContent(position.lineNumber)
@@ -195,7 +205,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
 
     const referenceLinkPrefixMatch = linePrefixText.match(this.referenceLinkStartPattern)
     if (referenceLinkPrefixMatch) {
-      const prefix = referenceLinkPrefixMatch[2]
+      const prefix = referenceLinkPrefixMatch[1]
       const suffix = lineSuffixText.match(/^[^\]\s]*/)
       return {
         kind: CompletionContextKind.ReferenceLink,
@@ -298,8 +308,8 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
     return result
   }
 
-  private async * provideHeaderSuggestions (mdContent: string, context: CompletionContext, position: Monaco.Position, insertionRange: Monaco.Range): AsyncIterable<Monaco.languages.CompletionItem> {
-    const tokens = this.markdown.parse(mdContent, [])
+  private async * provideHeaderSuggestions (tokensOrContent: string | Token[], context: CompletionContext, position: Monaco.Position, insertionRange: Monaco.Range): AsyncIterable<Monaco.languages.CompletionItem> {
+    const tokens = typeof tokensOrContent === 'string' ? this.markdown.parse(tokensOrContent, []) : tokensOrContent
     const endPos = position.delta(0, context.linkSuffix.length)
     const replacementRange = new this.monaco.Range(
       insertionRange.startLineNumber,
@@ -327,6 +337,59 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
         }
       }
     }
+  }
+
+  private * provideReferenceSuggestions (text: string, position: Monaco.Position, context: CompletionContext): Iterable<Monaco.languages.CompletionItem> {
+    const insertionRange = new this.monaco.Range(
+      context.linkTextStartPosition.lineNumber,
+      context.linkTextStartPosition.column,
+      position.lineNumber,
+      position.column,
+    )
+
+    const replacementPos = position.delta(0, context.linkSuffix.length)
+
+    const replacementRange = new this.monaco.Range(
+      insertionRange.startLineNumber,
+      insertionRange.startColumn,
+      replacementPos.lineNumber,
+      replacementPos.column,
+    )
+
+    const definitions = this.getDefinitions(text)
+    let i = 0
+    for (const def of definitions) {
+      i++
+      yield {
+        kind: this.monaco.languages.CompletionItemKind.Reference,
+        label: def[0],
+        insertText: def[0],
+        range: {
+          insert: insertionRange,
+          replace: replacementRange,
+        },
+        sortText: i.toString().padStart(7)
+      }
+    }
+  }
+
+  private getDefinitions (text: string) {
+    const out = new Map<string, { link: string }>()
+    for (const match of text.matchAll(this.defPattern)) {
+      const reference = match[2]
+      const link = match[3].trim()
+
+      if (this.angleBracketLinkRe.test(link)) {
+        out.set(reference, {
+          link: link.substring(1, link.length - 1),
+        })
+      } else {
+        out.set(reference, {
+          link: link,
+        })
+      }
+    }
+    return out
   }
 }
 

@@ -23,17 +23,13 @@ function addCustomStyles (ctx: Ctx) {
     `
       .markdown-view .markdown-body table.${TABLE_NAME} {
         margin: 0;
+        border-collapse: separate;
       }
 
       .markdown-view .markdown-body table.${TABLE_NAME},
       .markdown-view .markdown-body table.${TABLE_NAME} tr,
       .markdown-view .markdown-body table.${TABLE_NAME} td {
         border: 0;
-      }
-
-      .markdown-view .markdown-body table.${TABLE_NAME} {
-        padding-bottom: 10px;
-        border-collapse: collaps;
       }
 
       .markdown-view .markdown-body table.${TABLE_NAME} td {
@@ -53,14 +49,24 @@ function addCustomStyles (ctx: Ctx) {
         -ms-user-select: none;
         user-select: none;
         text-align: center;
-        border-right: 1px solid #777;
         vertical-align: top;
-        padding-right: 5px;
-        max-width: 45px; width: 35px;
+        text-align: right;
+        min-width: 2em;
+        width: 2em;
+        position: sticky;
+        left: 0;
+        background-color: var(--g-color-96);
+        box-shadow: -20px 0px 0px var(--g-color-96);
+        border-right: 1px solid var(--g-color-86);
       }
 
       .markdown-view .markdown-body table.${TABLE_NAME} td.${CODE_BLOCK_NAME} {
         padding-left: 10px;
+      }
+
+      .markdown-view .markdown-body table.${TABLE_NAME} .${NUMBER_LINE_NAME}{
+        padding-right: 8px;
+        color: var(--g-color-40);
       }
 
       .markdown-view .markdown-body table.${TABLE_NAME} .${NUMBER_LINE_NAME}:before{
@@ -68,8 +74,13 @@ function addCustomStyles (ctx: Ctx) {
       }
 
       @media print {
+        .markdown-view .markdown-body table.${TABLE_NAME} tr {
+          background-color: inherit;
+        }
+
         .markdown-view .markdown-body table.${TABLE_NAME} td {
           white-space: pre-wrap;
+          box-shadow: none !important;
         }
       }
 
@@ -232,7 +243,7 @@ export default {
 
         if (code) {
           if (options.highlightCode) {
-            if (options.inlineStyle) {
+            if (options.inlineStyle || options.includeStyle) {
               if (!hljsStyles) {
                 hljsStyles = getHljsStyles()
               }

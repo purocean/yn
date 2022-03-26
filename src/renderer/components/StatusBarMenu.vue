@@ -2,7 +2,7 @@
   <div class="status-bar-menu-wrapper" @contextmenu.prevent>
     <div
       :class="{'status-bar-menu': true, hidden: menu.hidden}"
-      v-for="menu in list"
+      v-for="menu in list.sort((a, b) => ((a.order || 0) - (b.order || 0)))"
       :key="menu.id"
       @mousedown="menu.onMousedown && menu.onMousedown(menu)"
       @click="menu.onClick && menu.onClick(menu)">
@@ -11,7 +11,7 @@
         <div v-if="menu.title" class="title-text">{{menu.title}}</div>
       </div>
       <ul v-if="showList && menu.list && menu.list.length" :class="{list: true, 'has-checked': menu.list.some(x => x.type === 'normal' && x.checked)}">
-        <template v-for="item in menu.list" :key="item.id">
+        <template v-for="item in menu.list.sort((a, b) => ((a.order || 0) - (b.order || 0)))" :key="item.id">
           <li v-if="item.type === 'separator' && !item.hidden" :class="item.type"></li>
           <li
             v-else-if="item.type !== 'separator' && !item.hidden"

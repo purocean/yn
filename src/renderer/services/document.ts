@@ -252,6 +252,8 @@ export async function deleteDoc (doc: Doc) {
     throw new Error('Could\'t delete root dir.')
   }
 
+  await ensureCurrentFileSaved()
+
   const confirm = await useModal().confirm({
     title: t('document.delete-dialog.title'),
     content: t('document.delete-dialog.content', doc.path),
@@ -278,6 +280,8 @@ export async function moveDoc (doc: Doc, newPath?: string) {
   if (doc.path === '/') {
     throw new Error('Could\'t move/rename root dir.')
   }
+
+  await ensureCurrentFileSaved()
 
   newPath ??= await useModal().input({
     title: t('document.move-dialog.title'),

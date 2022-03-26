@@ -111,6 +111,7 @@ export default {
           icon: 'search-solid',
           flat: true,
           title: ctx.i18n.t('control-center.navigation.goto', ctx.command.getKeysLabel('filter.show-quick-open')),
+          showInActionBar: true,
           onClick: () => {
             ctx.action.getActionHandler('filter.show-quick-open')()
             ctx.controlCenter.toggle(false)

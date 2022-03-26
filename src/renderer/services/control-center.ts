@@ -12,6 +12,7 @@ export type Item = {
   icon: string,
   title: string,
   onClick?: () => void,
+  showInActionBar?: boolean,
 }
 
 export type SchemaItem = { items: Item[] }
@@ -26,6 +27,7 @@ export type SchemaTapper = (schema: Schema) => void
 
 const _refresh = debounce(() => {
   getActionHandler('control-center.refresh')()
+  getActionHandler('action-bar.refresh')()
 }, 10)
 
 /**

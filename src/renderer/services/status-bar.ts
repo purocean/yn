@@ -11,8 +11,9 @@ export type MenuItem = {
   disabled?: boolean;
   hidden?: boolean;
   checked?: boolean;
+  order?: number;
   onClick?: (item: MenuItem) => void;
-} | { type: 'separator', hidden?: boolean }
+} | { type: 'separator', order?: number, hidden?: boolean }
 
 export interface Menu {
   id: string;
@@ -21,9 +22,10 @@ export interface Menu {
   icon?: string;
   hidden?: boolean;
   position: 'left' | 'right';
+  order?: number;
+  list?: MenuItem[];
   onClick?: (menu: Menu) => void;
   onMousedown?: (menu: Menu) => void;
-  list?: MenuItem[];
 }
 
 export type Menus = { [id: string]: Menu }

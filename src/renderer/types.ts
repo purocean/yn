@@ -151,7 +151,7 @@ export type BuildInActions = {
   'filter.choose-document': () => Promise<Doc>,
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
-  'file-tabs.switch-next': () => void,
+  'file-tabs.close-current': () => void,
   'xterm.run-code': (language: string, code: string, exit: boolean) => void,
   'xterm.run': (code: string) => void,
   'xterm.init': () => void,
@@ -194,6 +194,7 @@ export type BuildInHookTypes = {
     node: HTMLElement,
     options: {
       inlineStyle?: boolean,
+      includeStyle?: boolean,
       inlineLocalImage?: boolean,
       uploadLocalImage?: boolean,
       highlightCode?: boolean,

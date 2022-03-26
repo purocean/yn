@@ -26,6 +26,8 @@ const data = {
   'close': 'Close',
   'discard': 'Discard',
   'edit': 'Edit',
+  'outline': 'Outline',
+  'files': 'Files',
   'premium': {
     'need-purchase': '[%s] Premium is required',
     'buy-license': 'Buy License',
@@ -488,6 +490,7 @@ const data = {
     'options': 'Options: ',
     'type': 'Copy Type: ',
     'inline-style': 'Inline Style',
+    'include-style': 'Include Style',
     'inline-image': 'Inline Local Image',
     'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',

@@ -15,4 +15,5 @@ export const DOM_CLASS_NAME = {
   INLINE: 'inline',
   BLOCK: 'block',
   BGW: 'bgw',
+  COPY_INNER_TEXT: 'copy-inner-text',
 }

@@ -62,10 +62,11 @@
               </div>
               <template v-if="localHtml">
                 <div style="margin: 10px 0">
-                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineLocalImage" type="checkbox" /> {{$t('copy-content.inline-image')}} </label>
-                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.uploadLocalImage" type="checkbox" /> {{$t('copy-content.upload-image')}} </label>
-                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineStyle" type="checkbox" /> {{$t('copy-content.inline-style')}} </label>
                   <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.highlightCode" type="checkbox" /> {{$t('copy-content.highlight-code')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.uploadLocalImage" type="checkbox" /> {{$t('copy-content.upload-image')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineLocalImage" type="checkbox" /> {{$t('copy-content.inline-image')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.includeStyle" type="checkbox" /> {{$t('copy-content.include-style')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineStyle" type="checkbox" /> {{$t('copy-content.inline-style')}} </label>
                 </div>
               </template>
             </template>
@@ -84,7 +85,7 @@
 import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, ref, toRefs, watch } from 'vue'
 import { getElectronRemote, isElectron, isWindows } from '@fe/support/env'
-import { getContentHtml } from '@fe/services/view'
+import { getContentHtml, getPreviewStyles } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
 import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
@@ -96,7 +97,7 @@ import { basename, dirname } from '@fe/utils/path'
 import type { ExportTypes } from '@fe/types'
 import XMask from './Mask.vue'
 
-const buildHtml = (title: string, body: string) => `
+const buildHtml = (title: string, body: string, options: { includeStyle: boolean }) => `
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
   <head>
@@ -104,6 +105,13 @@ const buildHtml = (title: string, body: string) => `
     <meta name="generator" content="Yank Note" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <title>${title}</title>
+    ${
+      options.includeStyle
+      ? `<style>
+          ${getPreviewStyles()}
+        </style>`
+      : ''
+    }
   </head>
   <body>
     ${body}
@@ -129,10 +137,11 @@ export default defineComponent({
       fromType: 'html',
       resourcePath: '.',
       localHtmlOptions: {
-        inlineLocalImage: false,
+        inlineLocalImage: true,
         uploadLocalImage: false,
         inlineStyle: false,
-        highlightCode: false,
+        includeStyle: true,
+        highlightCode: true,
       },
       pdfOptions: {
         landscape: '',
@@ -148,6 +157,14 @@ export default defineComponent({
           convert.localHtmlOptions.inlineLocalImage = false
         } else {
           convert.localHtmlOptions.uploadLocalImage = false
+        }
+      }
+
+      if (val.includeStyle && val.inlineStyle) {
+        if (!prev.includeStyle) {
+          convert.localHtmlOptions.inlineStyle = false
+        } else {
+          convert.localHtmlOptions.includeStyle = false
         }
       }
     })
@@ -203,7 +220,7 @@ export default defineComponent({
 
       if (localHtml.value) {
         const html = await getContentHtml(convert.localHtmlOptions)
-        downloadContent(fileName.value + '.html', buildHtml(fileName.value, html))
+        downloadContent(fileName.value + '.html', buildHtml(fileName.value, html, convert.localHtmlOptions))
         return
       }
 

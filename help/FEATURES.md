@@ -76,6 +76,7 @@ This feature is implemented using [markdown-it-attrs](https://github.com/arve0/m
 | `block` | The current element is displayed as a block element |
 | `reduce-brightness` | Reduce the brightness of this element when using dark theme |
 | `bgw` | Set current element background to white |
+| `copy-inner-text` | Mark "Ctrl/Cmd + left click" to copy element text |
 
 ### Image Enhancement
 

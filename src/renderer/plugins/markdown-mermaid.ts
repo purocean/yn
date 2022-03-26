@@ -7,6 +7,7 @@ import { debounce } from 'lodash-es'
 import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { getColorScheme } from '@fe/services/theme'
+import monacoMermaid from '@fe/others/monaco-mermaid'
 
 const logger = getLogger('mermaid')
 
@@ -40,6 +41,7 @@ const Mermaid = defineComponent({
     const imgRef = ref<HTMLElement>()
     const result = ref('')
     const img = ref('')
+    const errMsg = ref('')
 
     function getImageUrl (code?: string) {
       const svg = code || container.value?.innerHTML
@@ -55,9 +57,11 @@ const Mermaid = defineComponent({
       try {
         mermaid.render(`mermaid-${mid++}`, props.code, (svgCode: string) => {
           result.value = svgCode
+          errMsg.value = ''
           img.value = getImageUrl(svgCode)
         }, container.value)
       } catch (error) {
+        errMsg.value = '' + error
         logger.error('render', error)
       }
     }
@@ -108,7 +112,7 @@ const Mermaid = defineComponent({
     })
 
     return () => {
-      return h('div', { ...props.attrs, class: 'mermaid-wrapper' }, [
+      return h('div', { ...props.attrs, class: `mermaid-wrapper${errMsg.value ? ' error' : ''}` }, [
         h('div', { class: 'mermaid-action skip-print' }, [
           h('button', { class: 'small', onClick: exportSvg }, 'SVG'),
           h('button', { class: 'small', onClick: exportPng }, 'PNG'),
@@ -124,7 +128,8 @@ const Mermaid = defineComponent({
           ref: imgRef,
           alt: 'mermaid',
           class: 'mermaid-image',
-        })
+        }),
+        h('pre', { class: 'mermaid-error skip-export' }, errMsg.value)
       ])
     }
   }
@@ -153,10 +158,12 @@ export default {
   register: ctx => {
     ctx.theme.addStyles(`
       .markdown-view .markdown-body .mermaid-wrapper {
+        --skip-contain: 1;
         position: relative;
       }
 
       .markdown-view .markdown-body .mermaid-wrapper .mermaid-action {
+        --skip-contain: 1;
         position: absolute;
         right: 10px;
         top: 10px;
@@ -167,18 +174,22 @@ export default {
       }
 
       .markdown-view .markdown-body .mermaid-wrapper:hover .mermaid-action {
+        --skip-contain: 1;
         opacity: 1;
       }
 
       .markdown-view .markdown-body .mermaid-wrapper .mermaid-container {
+        --skip-contain: 1;
         visibility: hidden;
       }
 
       .markdown-view .markdown-body .mermaid-wrapper .mermaid-container > svg {
+        --skip-contain: 1;
         display: block;
       }
 
       .markdown-view .markdown-body .mermaid-wrapper .mermaid-image {
+        --skip-contain: 1;
         filter: none;
         position: absolute;
         width: 100%;
@@ -186,6 +197,25 @@ export default {
         top: 0;
         left: 0;
         display: block;
+      }
+
+      .markdown-view .markdown-body .mermaid-wrapper .mermaid-error {
+        --skip-contain: 1;
+        display: none;
+        white-space: pre-wrap;
+      }
+
+      .markdown-view .markdown-body .mermaid-wrapper.error .mermaid-action,
+      .markdown-view .markdown-body .mermaid-wrapper.error .mermaid-image {
+        --skip-contain: 1;
+        display: none;
+      }
+
+      .markdown-view .markdown-body .mermaid-wrapper.error .mermaid-error,
+      .markdown-view .markdown-body .mermaid-wrapper.error .mermaid-container {
+        --skip-contain: 1;
+        display: block;
+        visibility: visible;
       }
     `)
 
@@ -214,6 +244,10 @@ export default {
           console.error(error)
         }
       }
+    })
+
+    ctx.editor.whenEditorReady().then(({ monaco }) => {
+      monacoMermaid(monaco)
     })
   }
 } as Plugin

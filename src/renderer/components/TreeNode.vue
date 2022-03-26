@@ -191,7 +191,7 @@ summary.folder::marker {
 }
 
 .folder-selected {
-  background: var(--g-color-93)
+  background: var(--g-color-95)
 }
 
 .item {
@@ -267,7 +267,7 @@ summary > .item {
 
 .file-name.selected {
   background: var(--g-color-85);
-  border-left-color: var(--g-color-50);
+  border-left-color: var(--g-color-60);
 }
 
 .file-name:hover {

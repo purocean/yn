@@ -5,13 +5,14 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
-import { Alt, Ctrl } from '@fe/core/command'
+import { Alt, CtrlCmd } from '@fe/core/command'
 import type { Components, Doc } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
+import { isElectron } from '@fe/support/env'
 import Tabs from './Tabs.vue'
 
 const blankUri = toUri(null)
@@ -89,6 +90,14 @@ export default defineComponent({
       }
     }
 
+    function closeCurrent () {
+      const files = tabs.value.filter((x: Components.FileTabs.Item) => x.key === current.value)
+
+      if (files.length > 0) {
+        removeTabs(files)
+      }
+    }
+
     function handleSwitchFailed (payload?: { doc?: Doc | null, message: string }) {
       if (isEncrypted(payload?.doc) || payload?.message?.indexOf('NOENT')) {
         removeFile(payload?.doc)
@@ -122,7 +131,7 @@ export default defineComponent({
 
       registerAction({
         name: 'file-tabs.switch-left',
-        keys: [Ctrl, Alt, 'ArrowLeft'],
+        keys: [CtrlCmd, Alt, 'ArrowLeft'],
         handler () {
           const prev = findTab(-1)
           prev && switchTab(prev)
@@ -135,7 +144,13 @@ export default defineComponent({
           const next = findTab(1)
           next && switchTab(next)
         },
-        keys: [Ctrl, Alt, 'ArrowRight']
+        keys: [CtrlCmd, Alt, 'ArrowRight']
+      })
+
+      registerAction({
+        name: 'file-tabs.close-current',
+        handler: closeCurrent,
+        keys: isElectron ? [CtrlCmd, 'w'] : [CtrlCmd, Alt, 'w']
       })
     })
 
@@ -145,7 +160,8 @@ export default defineComponent({
       removeHook('DOC_DELETED', handleDocDeleted)
       removeHook('DOC_SWITCH_FAILED', handleSwitchFailed)
       removeAction('file-tabs.switch-left')
-      removeAction('file-tabs.switch-next')
+      removeAction('file-tabs.switch-right')
+      removeAction('file-tabs.close-current')
     })
 
     watch(currentFile, file => {

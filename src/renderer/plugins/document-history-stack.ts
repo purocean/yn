@@ -93,6 +93,7 @@ export default {
           flat: true,
           title: ctx.i18n.t('control-center.navigation.back', ctx.command.getKeysLabel(backId)),
           disabled: idx <= 0,
+          showInActionBar: true,
           onClick: () => ctx.action.getActionHandler(backId)()
         },
         {
@@ -101,6 +102,7 @@ export default {
           flat: true,
           title: ctx.i18n.t('control-center.navigation.forward', ctx.command.getKeysLabel(forwardId)),
           disabled: idx >= stack.length - 1,
+          showInActionBar: true,
           onClick: () => ctx.action.getActionHandler(forwardId)()
         },
       )

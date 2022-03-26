@@ -92,7 +92,6 @@ export default defineComponent({
   width: 100%;
   box-sizing: border-box;
   overflow: auto;
-  background: var(--g-color-97);
   padding-bottom: 20px;
 }
 

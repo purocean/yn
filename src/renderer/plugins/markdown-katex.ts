@@ -16,6 +16,7 @@ import katex from 'katex'
 import { h } from 'vue'
 import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
+import monacoLatex from '@fe/others/monaco-latex'
 
 // Test if potential opening or closing delimieter
 // Assumes that there is a "$" at state.src[pos]
@@ -210,6 +211,11 @@ export default {
         background: initial;
       }
     `)
+
     ctx.markdown.registerPlugin(math_plugin, { throwOnError: true })
+
+    ctx.editor.whenEditorReady().then(({ monaco }) => {
+      monacoLatex(monaco)
+    })
   }
 } as Plugin
