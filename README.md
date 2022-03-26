@@ -90,30 +90,25 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.26.0](https://github.com/purocean/yn/releases/tag/v3.26.0) 2022-03-12
+### [v3.27.0](https://github.com/purocean/yn/releases/tag/v3.27.0) 2022-03-26
 
-1. feat: added image/link auto-completion for local path
-2. feat: support to configure PlantUML endpoint, can configure the official online rendering endpoint of PlantUML
-3. feat: support to configure automatic save interval
-4. feat: Copy Content supports copying Markdown after processing images
-5. feat: export HTML support more options
-6. feat: Mermaid graphics support download PNG
-7. upd: upgrade KaTeX version, support more syntax
-8. fix: fix the problem of resetting the "sync rendering" state after switching files
-9. fix: export: fix "Inline Images" may lose pictures
-10. fix: export: fix the exported HTML KaTeX cannot be rendered correctly
-11. fix: export: fix the exported Docx Mermaid graphics cannot be rendered correctly
-12. fix: export: fix PlantUML cannot be exported
-13. fix: export: fix the mind map of the exported document may be cropped
-14. fix: fix the problem that some special character anchors cannot jump
-15. feat(plugin): `ctx.ui.useModal` method supports custom action buttons
-16. feat(plugin): `ctx.view.getRenderEnv` method adds `tokens` return field
-17. feat(plugin): `VIEW_ON_GET_HTML_FILTER_NODE` hook adds `options.preferPng` parameter
-18. feat(plugin): add `ctx.utils.removeQuery` method
-19. feat(plugin): add `ctx.lib.mime` module
-20. feat(plugin): add `ctx.lib.markdownit` module
-21. feat(plugin): add `ctx.lib.domtoimage` module
-22. feat(plugin): add `ctx.lib.pako` module
+1. feat: add outline display to the sidebar
+2. feat: add action buttons to the sidebar
+3. feat: add "include style" option to HTML export
+4. feat: the editor adds syntax highlighting for LaTex, Mermaid, and macro expressions
+5. feat: the editor adds reference link completion
+6. feat: show detailed error message when Mermaid syntax is wrong
+7. feat: add shortcut to close the current tab
+8. feat: add shortcut to display "Copy Content" panel
+9. upd: upgrade Electron to 15.4.1
+10. upd: optimize code block display
+11. upd: other interactive experience optimization
+12. fix: fix the default positioning of the custom group container
+13. fix: fix the problem that the bold anchor cannot jump
+14. fix: fix some HTML export issues
+15. feat(plugin): add `ctx.layout.toggleOutline` method
+16. feat(plugin): add `ctx.view.getHeadings` method
+17. feat(plugin): status bar menu supports custom order
 
 [More release notes](https://github.com/purocean/yn/releases)
 
