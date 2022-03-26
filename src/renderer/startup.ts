@@ -11,6 +11,7 @@ import { getLanguage, setLanguage } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
 import { getPurchased } from '@fe/others/premium'
 import { setTheme } from '@fe/services/theme'
+import { toggleOutline } from '@fe/services/layout'
 import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
@@ -108,6 +109,7 @@ whenEditorReady().then(({ editor }) => {
 })
 
 store.watch(() => store.state.currentRepo, (val) => {
+  toggleOutline(false)
   document.documentElement.setAttribute('repo-name', val?.name || '')
 }, { immediate: true })
 

@@ -5,10 +5,11 @@
       v-for="(head, index) in heads"
       :key="index"
       :class="head.class"
-      :style="{paddingLeft: `${head.level + 1}em`}"
-      :data-activated="head.activated"
+      :style="{paddingLeft: `${head.level}em`}"
+      :data-activated="activatedLine > -1 ? head.sourceLine === activatedLine : head.activated"
+      :title="head.text"
       @click="handleClickItem(head)">
-      {{ head.text }}
+      <span class="heading-title">{{ head.text }}</span>
       <span class="tag-name">{{head.tag}}</span>
     </div>
   </div>
@@ -30,8 +31,20 @@ export default defineComponent({
     const container = ref<HTMLElement>()
     const heads = ref<Heading[]>([])
     const store = useStore<AppState>()
+    const activatedLine = ref(-1)
+    let disableRefresh: any = null
 
     function handleClickItem (heading: Heading) {
+      activatedLine.value = heading.sourceLine
+
+      if (disableRefresh) {
+        clearTimeout(disableRefresh)
+      }
+
+      disableRefresh = setTimeout(() => {
+        disableRefresh = null
+      }, 1000)
+
       const line = heading.sourceLine
       if (store.state.showEditor && !store.state.presentation) {
         revealLineInCenter(line)
@@ -43,7 +56,12 @@ export default defineComponent({
     }
 
     function refresh () {
+      if (disableRefresh) {
+        return
+      }
+
       heads.value = getHeadings(true)
+      activatedLine.value = -1
 
       if (!container.value || container.value.clientWidth < 50) {
         return
@@ -74,7 +92,7 @@ export default defineComponent({
       removeHook('VIEW_SCROLL', throttleRefresh)
     })
 
-    return { container, heads, handleClickItem }
+    return { container, heads, activatedLine, handleClickItem }
   },
 })
 </script>
@@ -99,22 +117,30 @@ export default defineComponent({
   & > .heading {
     font-size: 14px;
     line-height: 18px;
-    padding: 7px .5em;
+    padding: 5px .5em;
     display: flex;
     border-radius: var(--g-border-radius);
     cursor: pointer;
     overflow-wrap: break-word;
+    color: var(--g-color-10);
 
-    &[data-activated="true"] {
-      background: rgba(0, 0, 0, 0.05);
-    }
-
+    &[data-activated="true"],
     &:hover {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--g-color-0);
     }
 
     &.tag-h1 {
       font-weight: bold;
+      padding-left: 1em !important;
+    }
+
+    .heading-title {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .tag-name {
@@ -127,12 +153,9 @@ export default defineComponent({
 
 @include dark-theme {
   .outline-toc > .heading {
-    &[data-activated="true"] {
-      background: rgba(255, 255, 255, 0.07);
-    }
-
+    &[data-activated="true"],
     &:hover {
-      background: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.07);
     }
   }
 }
