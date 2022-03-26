@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       npm_config_disturl: https://atom.io/download/electron
-      npm_config_target: 15.3.2
+      npm_config_target: 15.4.1
       npm_config_runtime: "electron"
 
     steps:

@@ -86,7 +86,7 @@
     "crypto-js": "^3.3.0",
     "dom-to-image": "^2.6.0",
     "echarts": "^5.2.2",
-    "electron": "15.3.2",
+    "electron": "15.4.1",
     "electron-builder": "^22.14.5",
     "electron-notarize": "^1.1.1",
     "eslint": "^7.11.0",
