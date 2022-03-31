@@ -11,7 +11,7 @@
           </div>
         </div>
         <div v-else></div>
-        <div class="action-btns">
+        <div v-if="filePath" class="action-btns">
           <button type="button" @click="print()">{{$t('view.print')}}</button>
           <button type="button" @click="showExport">{{$t('export')}}</button>
         </div>
@@ -316,6 +316,7 @@ export default defineComponent({
     })
 
     return {
+      filePath,
       pinOutline,
       refViewWrapper,
       refView,
