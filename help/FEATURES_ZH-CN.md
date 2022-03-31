@@ -78,7 +78,7 @@ define:
 | `reduce-brightness` | 使用暗色主题时候降低此元素亮度 |
 | `bgw` | 设置当前元素背景为白色 |
 | `copy-inner-text` | 标记 “Ctrl/Cmd + 单击左键” 拷贝元素文字 |
-| `wrap-code` | 标记 “Ctrl/Cmd + 单击左键” 拷贝元素文字 |
+| `wrap-code` | 应用于代码块，让其自动换行 |
 
 ### 图片增强
 
