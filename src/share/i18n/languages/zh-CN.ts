@@ -329,7 +329,7 @@ const data: BaseLanguage = {
       'language': '语言',
       'custom-css': '自定义 CSS',
       'assets-dir': '图片存放目录',
-      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, docName, date',
+      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, date',
       'shell': 'Shell',
       'auto-save': '自动保存',
       'plantuml-api': 'PlantUML 端点',

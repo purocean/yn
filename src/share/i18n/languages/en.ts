@@ -335,7 +335,7 @@ const data = {
       'language': 'Language',
       'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
-      'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, docName, date.',
+      'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, date.',
       'shell': 'Shell',
       'auto-save': 'Auto Save',
       'plantuml-api': 'PlantUML Endpoint',

@@ -32,9 +32,10 @@ export async function upload (file: File, belongDoc: Pick<Doc, 'repo' | 'path'>,
   const parentName = basename(belongDoc.path)
   const parentPath = dirname(belongDoc.path)
   const assetsDir = getSettings()['assets-dir']
-    .replace('{docSlug}', parentName.startsWith('.') ? 'upload' : slugify(parentName))
-    .replace('{docName}', parentName.startsWith('.') ? 'upload' : filenamify(parentName))
-    .replace('{date}', dayjs().format('YYYY-MM-DD'))
+    .replaceAll('{docSlug}', parentName.startsWith('.') ? 'upload' : slugify(parentName))
+    .replaceAll('{docName}', parentName.startsWith('.') ? 'upload' : filenamify(parentName))
+    .replaceAll('{docBasename}', parentName.startsWith('.') ? 'upload' : filenamify(parentName).replace(/\.md$/i, ''))
+    .replaceAll('{date}', dayjs().format('YYYY-MM-DD'))
 
   const path: string = resolve(parentPath, assetsDir, filename)
 
