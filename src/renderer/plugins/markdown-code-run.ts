@@ -200,6 +200,10 @@ export default {
         background: var(--g-color-80);
       }
 
+      .markdown-view .markdown-body .${ctx.constant.DOM_CLASS_NAME.WRAP_CODE} ~ .p-mcr-run-code-result {
+        white-space: pre-wrap;
+      }
+
       @media print {
         .markdown-view .markdown-body .p-mcr-run-code-result {
           white-space: pre-wrap;

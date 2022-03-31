@@ -30,6 +30,7 @@ import markdownMacro from '@fe/plugins/markdown-macro'
 import markdownFrontMatter from '@fe/plugins/markdown-front-matter'
 import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
+import markdownCodeWrap from '@fe/plugins/markdown-code-wrap'
 import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTable from '@fe/plugins/markdown-table'
@@ -86,6 +87,7 @@ export default [
   markdownFrontMatter,
   markdownImsize,
   markdownToc,
+  markdownCodeWrap,
   markdownCodeHighlight,
   markdownLink,
   markdownTable,

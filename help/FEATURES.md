@@ -77,6 +77,7 @@ This feature is implemented using [markdown-it-attrs](https://github.com/arve0/m
 | `reduce-brightness` | Reduce the brightness of this element when using dark theme |
 | `bgw` | Set current element background to white |
 | `copy-inner-text` | Mark "Ctrl/Cmd + left click" to copy element text |
+| `wrap-code` | Applied to a code block to make it wrap |
 
 ### Image Enhancement
 
@@ -486,6 +487,7 @@ Built-in variables
 variable name | type | description
 ---- | ----- | ---
 `headingNumber` | `boolean` | whether to enable the page title serial number
+`wrapCode` | `boolean` | whether to enable code wrapping
 `enableMacro` | `boolean` | whether to enable macro replacement
 `define` | `Record<string, string>` | Macro definition, string replacing
 `mdOptions` | `Record<string, boolean>` | Markdown-it parse options

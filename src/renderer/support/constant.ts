@@ -16,4 +16,5 @@ export const DOM_CLASS_NAME = {
   BLOCK: 'block',
   BGW: 'bgw',
   COPY_INNER_TEXT: 'copy-inner-text',
+  WRAP_CODE: 'wrap-code',
 }

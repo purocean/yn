@@ -230,5 +230,8 @@ export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
 
 export type FrontMatterAttrs = {
   headingNumber?: boolean,
+  wrapCode?: boolean,
   enableMacro?: boolean,
+  define?: Record<string, boolean>,
+  mdOptions?: Record<string, boolean>,
 }

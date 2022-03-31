@@ -78,6 +78,7 @@ define:
 | `reduce-brightness` | 使用暗色主题时候降低此元素亮度 |
 | `bgw` | 设置当前元素背景为白色 |
 | `copy-inner-text` | 标记 “Ctrl/Cmd + 单击左键” 拷贝元素文字 |
+| `wrap-code` | 标记 “Ctrl/Cmd + 单击左键” 拷贝元素文字 |
 
 ### 图片增强
 
@@ -485,6 +486,7 @@ test 3
 变量名 | 类型 | 描述
 ---- | ----- | ---
 `headingNumber` | `boolean` | 是否开启页面标题序号编号
+`wrapCode` | `boolean` | 是否开启代码换行
 `enableMacro` | `boolean` | 是否开启宏替换
 `define` | `Record<string, string>` | 宏定义，定义文本替换
 `mdOptions` | `Record<string, boolean>` | Markdown-it 解析参数
