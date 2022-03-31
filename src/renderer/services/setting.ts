@@ -130,7 +130,7 @@ const schema: Schema = {
       group: 'other',
     },
     'assets-dir': {
-      defaultValue: './FILES/{docSlug}',
+      defaultValue: './FILES/{docName}',
       title: 'T_setting-panel.schema.assets-dir',
       type: 'string',
       minLength: 1,
