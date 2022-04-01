@@ -232,7 +232,6 @@ export default {
           },
           render: function (tokens: Token[], idx: number) {
             const token = tokens[idx]
-            console.log('xxx', token)
             const info = token.info.trim()
             const match = info.match(reg)
 
