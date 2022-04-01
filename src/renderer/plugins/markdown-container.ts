@@ -190,7 +190,7 @@ export default {
 
                 return {
                   node: h(Fragment, [
-                    h('input', { key: id, class: 'group-item-radio', id, name: radioName, type: 'radio', checked }),
+                    h('input', { key: id, class: 'group-item-radio', id, name: radioName, type: 'radio', 'data-default-checked': checked, checked }),
                     h('label', { class: 'group-item-label', for: id }, title.replace('*', '').trim() || 'Group Item'),
                     parent
                   ]),
@@ -218,6 +218,12 @@ export default {
           }
         })
       })
+    })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
+      if (node.classList.contains('group-item-radio') && node.dataset.defaultChecked === 'true') {
+        node.setAttribute('checked', 'checked')
+      }
     })
   }
 } as Plugin
