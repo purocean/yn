@@ -50,6 +50,19 @@ export default {
         padding: 16px 20px;
       }
 
+      .markdown-view .markdown-body .custom-container.details > summary {
+        margin-top: 0;
+      }
+
+      .markdown-view .markdown-body .custom-container.details > summary + *,
+      .markdown-view .markdown-body .custom-container.details > :first-child:not(summary) {
+        margin-top: 16px;
+      }
+
+      .markdown-view .markdown-body .custom-container.details > :last-child:not(summary) {
+        margin-bottom: 0;
+      }
+
       .markdown-view .markdown-body .custom-container.group {
         position: relative;
         display: flex;
