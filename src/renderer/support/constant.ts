@@ -21,4 +21,5 @@ export const DOM_CLASS_NAME = {
   TEXT_LEFT: 'text-left',
   TEXT_CENTER: 'text-center',
   TEXT_RIGHT: 'text-right',
+  TASK_LIST_ITEM_CHECKBOX: 'task-list-item-checkbox',
 }

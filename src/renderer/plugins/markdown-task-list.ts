@@ -9,6 +9,7 @@
 
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context'
+import { DOM_CLASS_NAME } from '@fe/support/constant'
 
 let disableCheckboxes = true
 
@@ -69,9 +70,9 @@ function makeCheckbox (token: { content: string | string[] }, TokenConstructor: 
   const checkbox = new TokenConstructor('html_inline', '', 0)
   const disabledAttr = disableCheckboxes ? ' disabled="" ' : ' '
   if (token.content.indexOf('[ ] ') === 0) {
-    checkbox.content = '<input class="task-list-item-checkbox"' + disabledAttr + 'type="checkbox">'
+    checkbox.content = `<input class="${DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX}"` + disabledAttr + 'type="checkbox">'
   } else if (token.content.indexOf('[x] ') === 0 || token.content.indexOf('[X] ') === 0) {
-    checkbox.content = '<input class="task-list-item-checkbox" checked=""' + disabledAttr + 'type="checkbox">'
+    checkbox.content = `<input class="${DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX}" checked=""` + disabledAttr + 'type="checkbox">'
   }
   return checkbox
 }
