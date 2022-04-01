@@ -63,7 +63,7 @@ define:
 
 此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
 
-- 红色文字，白色背景{.bgw style="color:red"}
+- 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}
 
 **一些内置样式类：**
@@ -79,6 +79,10 @@ define:
 | `bgw` | 设置当前元素背景为白色 |
 | `copy-inner-text` | 标记 “Ctrl/Cmd + 单击左键” 拷贝元素文字 |
 | `wrap-code` | 应用于代码块，让其自动换行 |
+| `text-left` | 当前元素文字左对齐 |
+| `text-center` | 当前元素文字居中对齐 |
+| `text-right` | 当前元素文字右对齐 |
+| `with-border` | 给当前元素加上边框 |
 
 ### 图片增强
 

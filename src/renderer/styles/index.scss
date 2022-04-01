@@ -159,3 +159,20 @@ html {
 .block {
   display: block !important;
 }
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.with-border {
+  border: 1px solid var(--g-color-80);
+  border-radius: var(--g-border-radius);
+}

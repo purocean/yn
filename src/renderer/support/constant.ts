@@ -17,4 +17,8 @@ export const DOM_CLASS_NAME = {
   BGW: 'bgw',
   COPY_INNER_TEXT: 'copy-inner-text',
   WRAP_CODE: 'wrap-code',
+  WITH_BORDER: 'with-border',
+  TEXT_LEFT: 'text-left',
+  TEXT_CENTER: 'text-center',
+  TEXT_RIGHT: 'text-right',
 }

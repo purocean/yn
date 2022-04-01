@@ -78,6 +78,10 @@ This feature is implemented using [markdown-it-attrs](https://github.com/arve0/m
 | `bgw` | Set current element background to white |
 | `copy-inner-text` | Mark "Ctrl/Cmd + left click" to copy element text |
 | `wrap-code` | Applied to a code block to make it wrap |
+| `text-left` | Align text left for the current element |
+| `text-center` | Align text center for the current element |
+| `text-right` | Align text right for the current element |
+| `with-border` | Add borders to the current element |
 
 ### Image Enhancement
 
