@@ -11,11 +11,11 @@ export default {
       .markdown-view .markdown-body .custom-container.danger,
       .markdown-view .markdown-body .custom-container.warning,
       .markdown-view .markdown-body .custom-container.tip {
-        padding: 2px 24px;
+        padding: 2px 16px;
+        padding-top: 16px;
         margin: 16px 0;
         border-left-width: 8px;
         border-left-style: solid;
-        padding-top: 16px;
         border-radius: var(--g-border-radius);
       }
 
