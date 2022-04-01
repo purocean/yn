@@ -7,6 +7,62 @@ export default {
   name: 'markdown-container',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body .custom-container.row {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        margin-top: 16px;
+      }
+
+      .markdown-view .markdown-body .custom-container.row.has-title {
+        border-top: 24px solid transparent;
+      }
+
+      .markdown-view .markdown-body .custom-container.row > .custom-container-title {
+        background: var(--g-color-80);
+        position: absolute;
+        padding-left: 8px;
+        margin: 0;
+        font-size: 14px;
+        line-height: 2.2em;
+        left: 0;
+        top: -2.2em;
+        width: 100%;
+        border: 1px solid var(--g-color-80);
+        border-top-left-radius: var(--g-border-radius);
+        border-top-right-radius: var(--g-border-radius);
+      }
+
+      .markdown-view .markdown-body .custom-container.row > .custom-container.col > .custom-container-title {
+        font-size: 14px;
+        line-height: 1.2;
+      }
+
+      .markdown-view .markdown-body .custom-container.col {
+        width: 100%;
+        padding: 12px;
+        padding-bottom: 0;
+        border: 1px solid var(--g-color-80);
+        border-radius: var(--g-border-radius);
+        margin-right: 8px;
+        background: var(--g-color-100);
+      }
+
+      .markdown-view .markdown-body .custom-container.row.has-title > .custom-container.col {
+        margin-right: -1px;
+        border-radius: 0;
+      }
+
+      .markdown-view .markdown-body .custom-container.col:last-of-type,
+      .markdown-view .markdown-body .custom-container.row.has-title > .custom-container.col:last-of-type {
+        margin-right: 0;
+        border-bottom-right-radius: var(--g-border-radius);
+      }
+
+      .markdown-view .markdown-body .custom-container.row.has-title > .custom-container.col:first-of-type {
+        border-bottom-left-radius: var(--g-border-radius);
+      }
+
       .markdown-view .markdown-body .custom-container.details,
       .markdown-view .markdown-body .custom-container.danger,
       .markdown-view .markdown-body .custom-container.warning,
@@ -167,7 +223,7 @@ export default {
     })
 
     ctx.markdown.registerPlugin(md => {
-      ['tip', 'warning', 'danger', 'details', 'group-item', 'group'].forEach(name => {
+      ['tip', 'warning', 'danger', 'details', 'group-item', 'group', 'row', 'col'].forEach(name => {
         const reg = new RegExp(`^${name}\\s*(.*)$`)
 
         md.use(MarkdownItContainer, name, {
@@ -175,7 +231,9 @@ export default {
             return reg.test(params.trim())
           },
           render: function (tokens: Token[], idx: number) {
-            const info = tokens[idx].info.trim()
+            const token = tokens[idx]
+            console.log('xxx', token)
+            const info = token.info.trim()
             const match = info.match(reg)
 
             if (tokens[idx].nesting === 1) {
@@ -183,7 +241,8 @@ export default {
               const containerClass = `custom-container ${name}`
 
               if (name === 'group-item') {
-                const parent = h('div', { class: 'group-item-content' }, [])
+                token.attrJoin('class', 'group-item-content')
+                const parent = h('div', Object.fromEntries(token.attrs || []), [])
                 const radioName = `group-item-${groupItemName}`
                 const id = `group-item-${groupItemName}-${groupItemIdx++}`
                 const checked = groupItemIdx === 1 || title.startsWith('*')
@@ -207,7 +266,13 @@ export default {
               const titleClass = name === 'details' ? '' : 'custom-container-title'
 
               const children = (title || name === 'group') ? [h(titleTag, { class: titleClass }, title)] : []
-              const props: Record<string, any> = { class: containerClass }
+
+              token.attrJoin('class', containerClass)
+              if (title) {
+                token.attrJoin('class', 'has-title')
+              }
+
+              const props: Record<string, any> = Object.fromEntries(token.attrs || [])
 
               if (name === 'group') {
                 props.key = groupItemName

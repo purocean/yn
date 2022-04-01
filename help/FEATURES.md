@@ -466,7 +466,6 @@ This is a details label
 :::
 
 :::: group This is label group
-
 ::: group-item Tab 1
 test 1
 :::
@@ -479,7 +478,40 @@ Title starts with `*` mean that this tab is activated by default
 ::: group-item Tab 3
 test 3
 :::
+::::
 
+::::: row Columns
+:::: col TODO
+::: warning
+Item 1
+:::
+::: warning
+Item 2
+:::
+::: warning
+Item 3
+:::
+::::
+:::: col DONE
+::: tip
+Item 4
+:::
+::: tip
+Item 5
+:::
+::::
+:::::
+
+:::: row
+::: col Column 1
+test 1
+:::
+::: col Column 2
+test 2
+:::
+::: col Column 3
+test 3
+:::
 ::::
 
 ## Front Matter
