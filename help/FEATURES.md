@@ -62,7 +62,7 @@ Type '/' in the editor to get prompts
 
 This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
 
-- Red Text, White background {.bgw style="color:red"}
+- Red Text, white background, border, align text center {.bgw .text-center .with-border style="color:red"}
 - Display As **Block Element**{.block}
 
 **Some built-in style classes:**
