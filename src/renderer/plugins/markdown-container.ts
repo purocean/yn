@@ -114,14 +114,16 @@ export default {
         display: block;
       }
 
-      html[app-theme=dark] .markdown-view .markdown-body .custom-container.danger {
-        background-color: #503f3f;
-        color: #d9bebe;
-      }
+      @media screen {
+        html[app-theme=dark] .markdown-view .markdown-body .custom-container.danger {
+          background-color: #503f3f;
+          color: #d9bebe;
+        }
 
-      html[app-theme=dark] .markdown-view .markdown-body .custom-container.warning {
-        background-color: #4a4738;
-        color: #cbb759;
+        html[app-theme=dark] .markdown-view .markdown-body .custom-container.warning {
+          background-color: #4a4738;
+          color: #cbb759;
+        }
       }
 
       @media (prefers-color-scheme: dark) {
