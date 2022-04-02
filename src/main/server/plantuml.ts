@@ -39,6 +39,14 @@ export default async function (data: string) {
 
     return puml.out
   } else {
-    return request(api.replace('{data}', plantumlBase64(data)))
+    return new Promise<void>((resolve, reject) => {
+      request({ url: api.replace('{data}', plantumlBase64(data)), encoding: null }, function (err: any, res: any) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(res.body)
+        }
+      })
+    })
   }
 }
