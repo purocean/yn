@@ -286,6 +286,7 @@ export default defineComponent({
   min-width: 50%;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid var(--g-color-86);
 }
 
 .terminal {

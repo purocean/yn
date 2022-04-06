@@ -330,6 +330,7 @@ const data = {
         'font-size': 'Font Size',
         'tab-size': 'Tab Size',
         'ordered-list-completion': 'Ordered List',
+        'minimap': 'Minimap',
       },
       'theme': 'Theme',
       'language': 'Language',
