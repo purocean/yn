@@ -200,9 +200,6 @@ const data = {
       'side-bar': 'Show Side Bar',
       'word-wrap': 'Word Wrap',
       'typewriter-mode': 'Typewriter Mode',
-      'zoom-in': 'Zoom In',
-      'zoom-out': 'Zoom Out',
-      'zoom-reset': 'Actual Size',
     },
     'setting': 'Setting',
     'repo': {
@@ -501,6 +498,11 @@ const data = {
   'share-preview': {
     'expire': 'Expire',
     'tips': 'Please configure the listening host "0.0.0.0" in the settings first',
+  },
+  'electron-zoom': {
+    'zoom-in': 'Zoom In',
+    'zoom-out': 'Zoom Out',
+    'zoom-reset': 'Actual Size',
   },
 }
 

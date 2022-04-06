@@ -201,9 +201,6 @@ const data: BaseLanguage = {
       'side-bar': '显示侧栏',
       'word-wrap': '文本换行',
       'typewriter-mode': '打字机模式',
-      'zoom-in': '放大',
-      'zoom-out': '缩小',
-      'zoom-reset': '实际大小',
     },
     'setting': '设置',
     'repo': {
@@ -502,6 +499,11 @@ const data: BaseLanguage = {
   'share-preview': {
     'expire': '到期',
     'tips': '请先在设置中配置监听主机 “0.0.0.0”',
+  },
+  'electron-zoom': {
+    'zoom-in': '放大',
+    'zoom-out': '缩小',
+    'zoom-reset': '实际大小',
   },
 }
 
