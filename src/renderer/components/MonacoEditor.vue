@@ -99,4 +99,8 @@ export default defineComponent({
   background: unset;
   transition: none;
 }
+
+.monaco-editor .margin-view-overlays {
+  user-select: none;
+}
 </style>
