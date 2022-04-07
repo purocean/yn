@@ -11,13 +11,17 @@ export default {
     ctx.registerHook('STARTUP', () => {
       const webContents = ctx.env.getElectronRemote().getCurrentWebContents()
 
+      function setZoomFactor (factor: number) {
+        webContents.setZoomFactor(factor)
+        ctx.statusBar.refreshMenu()
+      }
+
       function changeZoomFactor (zoomIn: boolean) {
         const currentZoomFactor = webContents.getZoomFactor()
         const factor = currentZoomFactor + (zoomIn ? 0.1 : -0.1)
 
         if (factor > 0.2 && factor < 2) {
-          webContents.setZoomFactor(factor)
-          ctx.statusBar.refreshMenu()
+          setZoomFactor(factor)
         }
       }
 
@@ -40,7 +44,7 @@ export default {
       ctx.action.registerAction({
         name: zoomResetId,
         keys: [ctx.command.CtrlCmd, '0'],
-        handler: () => webContents.setZoomFactor(1)
+        handler: () => setZoomFactor(1)
       })
 
       ctx.statusBar.tapMenus(menus => {
