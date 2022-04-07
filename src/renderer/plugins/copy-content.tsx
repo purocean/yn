@@ -5,11 +5,11 @@ export default {
   name: 'copy-content',
   register: (ctx) => {
     const options = ctx.lib.vue.reactive({
-      inlineStyle: false,
+      type: 'rt' as 'html' | 'rt' | 'markdown',
       inlineLocalImage: false,
       uploadLocalImage: false,
-      highlightCode: false,
-      type: 'rt' as 'html' | 'rt' | 'markdown',
+      inlineStyle: true,
+      highlightCode: true,
     })
 
     const panel = ctx.lib.vue.defineComponent({

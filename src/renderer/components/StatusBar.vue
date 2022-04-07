@@ -54,6 +54,7 @@ export default defineComponent({
   height: 100%;
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
 }
 
 .document-info {

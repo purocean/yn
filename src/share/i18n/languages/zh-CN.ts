@@ -201,9 +201,6 @@ const data: BaseLanguage = {
       'side-bar': '显示侧栏',
       'word-wrap': '文本换行',
       'typewriter-mode': '打字机模式',
-      'zoom-in': '放大',
-      'zoom-out': '缩小',
-      'zoom-reset': '实际大小',
     },
     'setting': '设置',
     'repo': {
@@ -324,12 +321,13 @@ const data: BaseLanguage = {
         'font-size': '字体大小',
         'tab-size': 'Tab 宽度',
         'ordered-list-completion': '有序列表补全',
+        'minimap': '显示小地图',
       },
       'theme': '主题',
       'language': '语言',
       'custom-css': '自定义 CSS',
       'assets-dir': '图片存放目录',
-      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docSlug, docName, date',
+      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, date',
       'shell': 'Shell',
       'auto-save': '自动保存',
       'plantuml-api': 'PlantUML 端点',
@@ -501,6 +499,11 @@ const data: BaseLanguage = {
   'share-preview': {
     'expire': '到期',
     'tips': '请先在设置中配置监听主机 “0.0.0.0”',
+  },
+  'electron-zoom': {
+    'zoom-in': '放大',
+    'zoom-out': '缩小',
+    'zoom-reset': '实际大小',
   },
 }
 

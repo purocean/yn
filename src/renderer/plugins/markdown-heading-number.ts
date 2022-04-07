@@ -5,6 +5,10 @@ export default {
   name: 'markdown-heading-number',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body {
+        counter-reset: h2counter h3counter h4counter h5counter h6counter;
+      }
+
       .markdown-view .markdown-body h1.show-number { counter-reset: h2counter; }
       .markdown-view .markdown-body h2.show-number { counter-reset: h3counter; }
       .markdown-view .markdown-body h3.show-number { counter-reset: h4counter; }
@@ -44,6 +48,10 @@ export default {
                 counter(h4counter) "."
                 counter(h5counter) "."
                 counter(h6counter) ".\\0000a0\\0000a0";
+      }
+
+      .outline-toc {
+        counter-reset: outline-h2counter outline-h3counter outline-h4counter outline-h5counter outline-h6counter;
       }
 
       .outline-toc .tag-h1.show-number { counter-reset: outline-h2counter; }

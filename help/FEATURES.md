@@ -62,7 +62,7 @@ Type '/' in the editor to get prompts
 
 This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
 
-- Red Text, White background {.bgw style="color:red"}
+- Red Text, white background, border, align text center {.bgw .text-center .with-border style="color:red"}
 - Display As **Block Element**{.block}
 
 **Some built-in style classes:**
@@ -77,6 +77,11 @@ This feature is implemented using [markdown-it-attrs](https://github.com/arve0/m
 | `reduce-brightness` | Reduce the brightness of this element when using dark theme |
 | `bgw` | Set current element background to white |
 | `copy-inner-text` | Mark "Ctrl/Cmd + left click" to copy element text |
+| `wrap-code` | Applied to a code block to make it wrap |
+| `text-left` | Align text left for the current element |
+| `text-center` | Align text center for the current element |
+| `text-right` | Align text right for the current element |
+| `with-border` | Add borders to the current element |
 
 ### Image Enhancement
 
@@ -461,7 +466,6 @@ This is a details label
 :::
 
 :::: group This is label group
-
 ::: group-item Tab 1
 test 1
 :::
@@ -474,7 +478,40 @@ Title starts with `*` mean that this tab is activated by default
 ::: group-item Tab 3
 test 3
 :::
+::::
 
+::::: row Columns
+:::: col TODO
+::: warning
+Item 1
+:::
+::: warning
+Item 2
+:::
+::: warning
+Item 3
+:::
+::::
+:::: col DONE
+::: tip
+Item 4
+:::
+::: tip
+Item 5
+:::
+::::
+:::::
+
+:::: row
+::: col Column 1
+test 1
+:::
+::: col Column 2
+test 2
+:::
+::: col Column 3
+test 3
+:::
 ::::
 
 ## Front Matter
@@ -486,6 +523,7 @@ Built-in variables
 variable name | type | description
 ---- | ----- | ---
 `headingNumber` | `boolean` | whether to enable the page title serial number
+`wrapCode` | `boolean` | whether to enable code wrapping
 `enableMacro` | `boolean` | whether to enable macro replacement
 `define` | `Record<string, string>` | Macro definition, string replacing
 `mdOptions` | `Record<string, boolean>` | Markdown-it parse options

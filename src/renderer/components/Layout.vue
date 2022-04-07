@@ -9,12 +9,12 @@
         <div class="sash-right" @mousedown="e => initResize('right', 'aside', 100, 700, e)"></div>
       </div>
       <div class="right">
-        <div class="content">
+        <div class="content" ref="content">
           <div class="editor" ref="editor" v-show="showEditor">
             <slot name="editor"></slot>
-            <!-- <div class="sash-right" @mousedown="e => initResize('right', 'editor', 100, 99999999999, e)"></div> -->
           </div>
           <div class="preview" v-show="showView">
+            <div v-if="showView && showEditor" class="sash-left" @mousedown="initEditorResize"></div>
             <slot name="preview"></slot>
           </div>
         </div>
@@ -31,11 +31,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watchPostEffect } from 'vue'
 import { useStore } from 'vuex'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
-import { emitResize, toggleSide, toggleXterm } from '@fe/services/layout'
+import { emitResize, toggleEditor, toggleSide, toggleView, toggleXterm } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
+import type { AppState } from '@fe/support/store'
 
 let resizeOrigin: any = null
 
@@ -44,11 +45,12 @@ export default defineComponent({
   setup () {
     const store = useStore()
 
-    const { showView, showXterm, showSide, showEditor, presentation, isFullscreen } = toRefs(store.state)
+    const { showView, showXterm, showSide, showEditor, presentation, isFullscreen } = toRefs<AppState>(store.state)
 
-    const aside = ref(null)
-    const editor = ref(null)
-    const terminal = ref(null)
+    const aside = ref<HTMLElement | null>(null)
+    const editor = ref<HTMLElement | null>(null)
+    const terminal = ref<HTMLElement | null>(null)
+    const content = ref<HTMLElement | null>(null)
     const refs: any = { aside, editor, terminal }
 
     function resizeOutOfRange (ref: string, outOfRange: null | 'min' | 'max') {
@@ -62,13 +64,25 @@ export default defineComponent({
         return true
       }
 
+      if (ref === 'editor') {
+        if (outOfRange === 'min') {
+          toggleEditor(false)
+        } else if (outOfRange === 'max') {
+          toggleView(false)
+        }
+
+        return false
+      }
+
       return false
     }
 
     function clearResize () {
       if (resizeOrigin) {
         const ref = refs[resizeOrigin.ref].value
-        ref.style.filter = 'none'
+        ref.style.filter = ''
+        ref.style.pointerEvents = ''
+        ;(ref.nextElementSibling as HTMLElement).style.pointerEvents = ''
 
         resizeOrigin = null
       }
@@ -91,10 +105,15 @@ export default defineComponent({
           ref.style.filter = 'opacity(0.5)'
           resizeOrigin.outOfRange = value < resizeOrigin.min ? 'min' : 'max'
         } else {
-          ref.style.filter = 'none'
+          ref.style.filter = ''
           resizeOrigin.outOfRange = null
         }
       }
+
+      // prevent pointer events when mouse in container range
+      const nextContainer: HTMLElement = ref.nextElementSibling as HTMLElement
+      ref.style.pointerEvents = 'none'
+      nextContainer.style.pointerEvents = 'none'
 
       if (resizeOrigin.type === 'right') {
         const offsetX = e.clientX - resizeOrigin.mouseX
@@ -102,7 +121,10 @@ export default defineComponent({
 
         checkOutOfRange(width)
 
-        ref.style.width = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, width)) + 'px'
+        const fixedWidth = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, width)) + 'px'
+        ref.style.width = fixedWidth
+        ref.style.minWidth = fixedWidth
+        ref.style.maxWidth = fixedWidth
       } else if (resizeOrigin.type === 'top') {
         const offsetY = -(e.clientY - resizeOrigin.mouseY)
         const height = (resizeOrigin.targetHeight + offsetY)
@@ -115,19 +137,21 @@ export default defineComponent({
     }
 
     function resizeDone () {
-      if (!resizeOrigin || !resizeOrigin.outOfRange) {
+      if (!resizeOrigin) {
         return
       }
 
       const ref = refs[resizeOrigin.ref].value
 
-      if (resizeOutOfRange(resizeOrigin.ref, resizeOrigin.outOfRange)) {
-        if (resizeOrigin.type === 'right') {
-          ref.style.width = resizeOrigin.targetWidth + 'px'
-        }
+      if (resizeOrigin.outOfRange) {
+        if (resizeOutOfRange(resizeOrigin.ref, resizeOrigin.outOfRange)) {
+          if (resizeOrigin.type === 'right') {
+            ref.style.width = resizeOrigin.targetWidth + 'px'
+          }
 
-        if (resizeOrigin.type === 'top') {
-          ref.style.height = resizeOrigin.targetHeight + 'px'
+          if (resizeOrigin.type === 'top') {
+            ref.style.height = resizeOrigin.targetHeight + 'px'
+          }
         }
       }
 
@@ -153,6 +177,24 @@ export default defineComponent({
       }
     }
 
+    function initEditorResize (e: MouseEvent) {
+      if (content.value) {
+        const maxWidth = content.value.clientWidth - 270
+        initResize('right', 'editor', 200, maxWidth, e)
+      }
+    }
+
+    watchPostEffect(() => {
+      // clean width for editor when only one view
+      if (showEditor.value !== showView.value) {
+        if (editor.value) {
+          editor.value.style.width = ''
+          editor.value.style.minWidth = ''
+          editor.value.style.maxWidth = ''
+        }
+      }
+    })
+
     onMounted(() => {
       window.addEventListener('resize', emitResize)
       window.document.addEventListener('mousemove', resizeFrame)
@@ -169,6 +211,7 @@ export default defineComponent({
 
     return {
       initResize,
+      initEditorResize,
       showSide,
       showXterm: FLAG_DISABLE_XTERM ? false : showXterm,
       showFooter,
@@ -180,6 +223,7 @@ export default defineComponent({
       aside,
       editor,
       terminal,
+      content,
     }
   },
 })
@@ -245,14 +289,26 @@ export default defineComponent({
   }
 }
 
+.sash-left {
+  z-index: 11;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  cursor: ew-resize;
+  pointer-events: auto;
+}
+
 .sash-right {
-  z-index: 1;
+  z-index: 11;
   height: 100%;
   position: absolute;
   right: 0;
   top: 0;
   width: 4px;
   cursor: ew-resize;
+  pointer-events: auto;
 }
 
 .sash-top {
@@ -263,6 +319,7 @@ export default defineComponent({
   top: 0;
   height: 4px;
   cursor: ns-resize;
+  pointer-events: auto;
 }
 
 .right {
@@ -283,9 +340,10 @@ export default defineComponent({
   height: 100%;
   position: relative;
   flex: 1 1 50%;
-  min-width: 50%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid var(--g-color-86);
 }
 
 .terminal {
@@ -297,7 +355,7 @@ export default defineComponent({
 .preview {
   height: 100%;
   flex: 1 1 50%;
-  min-width: 50%;
+  min-width: 0;
   box-sizing: border-box;
   position: relative;
 }

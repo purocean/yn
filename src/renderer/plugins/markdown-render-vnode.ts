@@ -43,8 +43,12 @@ export function setSourceLine (token: Token, env?: Record<string, any>) {
         token.meta.attrs = {}
       }
 
+      // transform array to object
       token.attrs?.forEach(([name, val]) => {
-        token.meta.attrs[name] = val
+        // filter attrs
+        if (attrNameReg.test(name)) {
+          token.meta.attrs[name] = val
+        }
       })
     }
   }

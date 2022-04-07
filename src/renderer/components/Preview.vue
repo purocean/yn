@@ -11,7 +11,7 @@
           </div>
         </div>
         <div v-else></div>
-        <div class="action-btns">
+        <div v-if="filePath" class="action-btns">
           <button type="button" @click="print()">{{$t('view.print')}}</button>
           <button type="button" @click="showExport">{{$t('export')}}</button>
         </div>
@@ -316,6 +316,7 @@ export default defineComponent({
     })
 
     return {
+      filePath,
       pinOutline,
       refViewWrapper,
       refView,
@@ -622,25 +623,25 @@ export default defineComponent({
   }
 }
 
-@media screen {
-  @include dark-theme {
-    .markdown-body {
-      mark {
-        background: #998b10 !important;
-        color: inherit;
-      }
+@include dark-theme {
+  .markdown-body {
+    mark {
+      background: #998b10 !important;
+      color: inherit;
+    }
 
-      .reduce-brightness, img {
-        transition: all .1s ease-in-out;
-        filter: brightness(84%);
+    .reduce-brightness, img {
+      transition: all .1s ease-in-out;
+      filter: brightness(84%);
 
-        &:hover {
-          filter: none;
-        }
+      &:hover {
+        filter: none;
       }
     }
   }
+}
 
+@media screen {
   .markdown-view {
     position: absolute;
     width: 100%;

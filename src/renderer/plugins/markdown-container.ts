@@ -7,15 +7,71 @@ export default {
   name: 'markdown-container',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body .custom-container.row {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        margin-top: 16px;
+      }
+
+      .markdown-view .markdown-body .custom-container.row.has-title {
+        border-top: 24px solid transparent;
+      }
+
+      .markdown-view .markdown-body .custom-container.row > .custom-container-title {
+        background: var(--g-color-80);
+        position: absolute;
+        padding-left: 8px;
+        margin: 0;
+        font-size: 14px;
+        line-height: 2.2em;
+        left: 0;
+        top: -2.2em;
+        width: 100%;
+        border: 1px solid var(--g-color-80);
+        border-top-left-radius: var(--g-border-radius);
+        border-top-right-radius: var(--g-border-radius);
+      }
+
+      .markdown-view .markdown-body .custom-container.row > .custom-container.col > .custom-container-title {
+        font-size: 14px;
+        line-height: 1.2;
+      }
+
+      .markdown-view .markdown-body .custom-container.col {
+        width: 100%;
+        padding: 12px;
+        padding-bottom: 0;
+        border: 1px solid var(--g-color-80);
+        border-radius: var(--g-border-radius);
+        margin-right: 8px;
+        background: var(--g-color-100);
+      }
+
+      .markdown-view .markdown-body .custom-container.row.has-title > .custom-container.col {
+        margin-right: -1px;
+        border-radius: 0;
+      }
+
+      .markdown-view .markdown-body .custom-container.col:last-of-type,
+      .markdown-view .markdown-body .custom-container.row.has-title > .custom-container.col:last-of-type {
+        margin-right: 0;
+        border-bottom-right-radius: var(--g-border-radius);
+      }
+
+      .markdown-view .markdown-body .custom-container.row.has-title > .custom-container.col:first-of-type {
+        border-bottom-left-radius: var(--g-border-radius);
+      }
+
       .markdown-view .markdown-body .custom-container.details,
       .markdown-view .markdown-body .custom-container.danger,
       .markdown-view .markdown-body .custom-container.warning,
       .markdown-view .markdown-body .custom-container.tip {
-        padding: 2px 24px;
+        padding: 2px 16px;
+        padding-top: 16px;
         margin: 16px 0;
         border-left-width: 8px;
         border-left-style: solid;
-        padding-top: 16px;
         border-radius: var(--g-border-radius);
       }
 
@@ -48,6 +104,19 @@ export default {
         border: none;
         background-color: var(--g-color-90);
         padding: 16px 20px;
+      }
+
+      .markdown-view .markdown-body .custom-container.details > summary {
+        margin-top: 0;
+      }
+
+      .markdown-view .markdown-body .custom-container.details > summary + *,
+      .markdown-view .markdown-body .custom-container.details > :first-child:not(summary) {
+        margin-top: 16px;
+      }
+
+      .markdown-view .markdown-body .custom-container.details > :last-child:not(summary) {
+        margin-bottom: 0;
       }
 
       .markdown-view .markdown-body .custom-container.group {
@@ -114,14 +183,16 @@ export default {
         display: block;
       }
 
-      html[app-theme=dark] .markdown-view .markdown-body .custom-container.danger {
-        background-color: #503f3f;
-        color: #d9bebe;
-      }
+      @media screen {
+        html[app-theme=dark] .markdown-view .markdown-body .custom-container.danger {
+          background-color: #503f3f;
+          color: #d9bebe;
+        }
 
-      html[app-theme=dark] .markdown-view .markdown-body .custom-container.warning {
-        background-color: #4a4738;
-        color: #cbb759;
+        html[app-theme=dark] .markdown-view .markdown-body .custom-container.warning {
+          background-color: #4a4738;
+          color: #cbb759;
+        }
       }
 
       @media (prefers-color-scheme: dark) {
@@ -152,7 +223,7 @@ export default {
     })
 
     ctx.markdown.registerPlugin(md => {
-      ['tip', 'warning', 'danger', 'details', 'group-item', 'group'].forEach(name => {
+      ['tip', 'warning', 'danger', 'details', 'group-item', 'group', 'row', 'col'].forEach(name => {
         const reg = new RegExp(`^${name}\\s*(.*)$`)
 
         md.use(MarkdownItContainer, name, {
@@ -160,7 +231,8 @@ export default {
             return reg.test(params.trim())
           },
           render: function (tokens: Token[], idx: number) {
-            const info = tokens[idx].info.trim()
+            const token = tokens[idx]
+            const info = token.info.trim()
             const match = info.match(reg)
 
             if (tokens[idx].nesting === 1) {
@@ -168,14 +240,15 @@ export default {
               const containerClass = `custom-container ${name}`
 
               if (name === 'group-item') {
-                const parent = h('div', { class: 'group-item-content' }, [])
+                token.attrJoin('class', 'group-item-content')
+                const parent = h('div', Object.fromEntries(token.attrs || []), [])
                 const radioName = `group-item-${groupItemName}`
                 const id = `group-item-${groupItemName}-${groupItemIdx++}`
                 const checked = groupItemIdx === 1 || title.startsWith('*')
 
                 return {
                   node: h(Fragment, [
-                    h('input', { key: id, class: 'group-item-radio', id, name: radioName, type: 'radio', checked }),
+                    h('input', { key: id, class: 'group-item-radio', id, name: radioName, type: 'radio', 'data-default-checked': checked, checked }),
                     h('label', { class: 'group-item-label', for: id }, title.replace('*', '').trim() || 'Group Item'),
                     parent
                   ]),
@@ -192,7 +265,13 @@ export default {
               const titleClass = name === 'details' ? '' : 'custom-container-title'
 
               const children = (title || name === 'group') ? [h(titleTag, { class: titleClass }, title)] : []
-              const props: Record<string, any> = { class: containerClass }
+
+              token.attrJoin('class', containerClass)
+              if (title) {
+                token.attrJoin('class', 'has-title')
+              }
+
+              const props: Record<string, any> = Object.fromEntries(token.attrs || [])
 
               if (name === 'group') {
                 props.key = groupItemName
@@ -203,6 +282,12 @@ export default {
           }
         })
       })
+    })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
+      if (node.classList.contains('group-item-radio') && node.dataset.defaultChecked === 'true') {
+        node.setAttribute('checked', 'checked')
+      }
     })
   }
 } as Plugin

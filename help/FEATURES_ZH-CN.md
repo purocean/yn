@@ -63,7 +63,7 @@ define:
 
 此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
 
-- 红色文字，白色背景{.bgw style="color:red"}
+- 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}
 
 **一些内置样式类：**
@@ -78,6 +78,11 @@ define:
 | `reduce-brightness` | 使用暗色主题时候降低此元素亮度 |
 | `bgw` | 设置当前元素背景为白色 |
 | `copy-inner-text` | 标记 “Ctrl/Cmd + 单击左键” 拷贝元素文字 |
+| `wrap-code` | 应用于代码块，让其自动换行 |
+| `text-left` | 当前元素文字左对齐 |
+| `text-center` | 当前元素文字居中对齐 |
+| `text-right` | 当前元素文字右对齐 |
+| `with-border` | 给当前元素加上边框 |
 
 ### 图片增强
 
@@ -460,7 +465,6 @@ chart.setOption({
 :::
 
 :::: group 这是标签组
-
 ::: group-item Tab 1
 test 1
 :::
@@ -473,7 +477,40 @@ test 2
 ::: group-item Tab 3
 test 3
 :::
+::::
 
+::::: row 分列示例
+:::: col TODO
+::: warning
+Item 1
+:::
+::: warning
+Item 2
+:::
+::: warning
+Item 3
+:::
+::::
+:::: col DONE
+::: tip
+Item 4
+:::
+::: tip
+Item 5
+:::
+::::
+:::::
+
+:::: row
+::: col Column 1
+test 1
+:::
+::: col Column 2
+test 2
+:::
+::: col Column 3
+test 3
+:::
 ::::
 
 ## Front Matter
@@ -485,6 +522,7 @@ test 3
 变量名 | 类型 | 描述
 ---- | ----- | ---
 `headingNumber` | `boolean` | 是否开启页面标题序号编号
+`wrapCode` | `boolean` | 是否开启代码换行
 `enableMacro` | `boolean` | 是否开启宏替换
 `define` | `Record<string, string>` | 宏定义，定义文本替换
 `mdOptions` | `Record<string, boolean>` | Markdown-it 解析参数

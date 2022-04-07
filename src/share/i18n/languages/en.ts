@@ -200,9 +200,6 @@ const data = {
       'side-bar': 'Show Side Bar',
       'word-wrap': 'Word Wrap',
       'typewriter-mode': 'Typewriter Mode',
-      'zoom-in': 'Zoom In',
-      'zoom-out': 'Zoom Out',
-      'zoom-reset': 'Actual Size',
     },
     'setting': 'Setting',
     'repo': {
@@ -330,12 +327,13 @@ const data = {
         'font-size': 'Font Size',
         'tab-size': 'Tab Size',
         'ordered-list-completion': 'Ordered List',
+        'minimap': 'Minimap',
       },
       'theme': 'Theme',
       'language': 'Language',
       'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
-      'assets-desc': 'Relative or absolute path (in document repository). Variables: docSlug, docName, date.',
+      'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, date.',
       'shell': 'Shell',
       'auto-save': 'Auto Save',
       'plantuml-api': 'PlantUML Endpoint',
@@ -500,6 +498,11 @@ const data = {
   'share-preview': {
     'expire': 'Expire',
     'tips': 'Please configure the listening host "0.0.0.0" in the settings first',
+  },
+  'electron-zoom': {
+    'zoom-in': 'Zoom In',
+    'zoom-out': 'Zoom Out',
+    'zoom-reset': 'Actual Size',
   },
 }
 

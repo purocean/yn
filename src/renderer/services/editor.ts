@@ -29,10 +29,10 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
   wrappingIndent: 'same',
   smoothScrolling: true,
   cursorBlinking: 'smooth',
-  scrollbar: {
+  scrollbar: getSetting('editor.minimap', true) ? {
     vertical: 'hidden',
     verticalScrollbarSize: 0
-  },
+  } : undefined,
   readOnly: FLAG_READONLY,
   acceptSuggestionOnEnter: 'smart',
   unicodeHighlight: {
@@ -43,6 +43,9 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
   detectIndentation: false,
   insertSpaces: true,
   tabSize: getSetting('editor.tab-size', 4),
+  minimap: getSetting('editor.minimap', true) ? undefined : {
+    enabled: false
+  }
 })
 
 /**
@@ -357,13 +360,9 @@ whenEditorReady().then(({ editor }) => {
   })
 })
 
-registerHook('SETTING_FETCHED', ({ settings }) => {
+registerHook('SETTING_FETCHED', () => {
   whenEditorReady().then(({ editor }) => {
-    editor.updateOptions({
-      mouseWheelZoom: !!settings['editor.mouse-wheel-zoom'],
-      fontSize: settings['editor.font-size'],
-      tabSize: settings['editor.tab-size'],
-    })
+    editor.updateOptions(getDefaultOptions())
   })
 })
 

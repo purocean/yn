@@ -113,6 +113,7 @@ export type BuildInSettings = {
   'editor.font-size': number,
   'editor.tab-size': 2 | 4,
   'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
+  'editor.minimap': boolean,
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,
@@ -230,5 +231,8 @@ export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
 
 export type FrontMatterAttrs = {
   headingNumber?: boolean,
+  wrapCode?: boolean,
   enableMacro?: boolean,
+  define?: Record<string, boolean>,
+  mdOptions?: Record<string, boolean>,
 }

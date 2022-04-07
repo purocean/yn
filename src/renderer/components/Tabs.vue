@@ -8,6 +8,7 @@
       :title="item.description"
       :data-key="item.key"
       @contextmenu.exact.prevent.stop="showContextMenu(item)"
+      @mouseup="e => e.button === 1 ? removeTabs([item]) : null"
       @click="switchTab(item)">
       <div class="label">{{item.label}}</div>
       <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @click.prevent.stop="toggleFix(item)">

@@ -130,18 +130,25 @@ const schema: Schema = {
       group: 'other',
     },
     'assets-dir': {
-      defaultValue: './FILES/{docSlug}',
+      defaultValue: './FILES/{docName}',
       title: 'T_setting-panel.schema.assets-dir',
       type: 'string',
-      minLength: 1,
       description: 'T_setting-panel.schema.assets-desc',
       group: 'image',
+      required: true,
+      pattern: '^(?![./]+\\{docName\\})[^\\\\<>?:"|*]{1,}$',
+      options: {
+        patternmessage: '[\\<>?:"|*] are not allowed. Cannot starts with ./{docName}, /{docName} or {docName}.'
+      },
     },
-    'editor.tab-size': {
-      defaultValue: 4,
-      title: 'T_setting-panel.schema.editor.tab-size',
+    'auto-save': {
+      defaultValue: 2000,
+      title: 'T_setting-panel.schema.auto-save',
+      enum: [0, 2000, 4000, 8000, 30000, 60000],
+      options: {
+        enum_titles: ['Disable', '2s', '4s', '8s', '30s', '60s'],
+      },
       type: 'number',
-      enum: [2, 4],
       group: 'editor',
       required: true,
     },
@@ -165,6 +172,14 @@ const schema: Schema = {
       maximum: 40,
       group: 'editor',
     },
+    'editor.tab-size': {
+      defaultValue: 4,
+      title: 'T_setting-panel.schema.editor.tab-size',
+      type: 'number',
+      enum: [2, 4],
+      group: 'editor',
+      required: true,
+    },
     'editor.mouse-wheel-zoom': {
       defaultValue: true,
       title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',
@@ -173,14 +188,11 @@ const schema: Schema = {
       group: 'editor',
       required: true,
     },
-    'auto-save': {
-      defaultValue: 2000,
-      title: 'T_setting-panel.schema.auto-save',
-      enum: [0, 2000, 4000, 8000, 30000, 60000],
-      options: {
-        enum_titles: ['Disable', '2s', '4s', '8s', '30s', '60s'],
-      },
-      type: 'number',
+    'editor.minimap': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.minimap',
+      type: 'boolean',
+      format: 'checkbox',
       group: 'editor',
       required: true,
     },
