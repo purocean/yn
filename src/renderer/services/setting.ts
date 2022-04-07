@@ -133,9 +133,13 @@ const schema: Schema = {
       defaultValue: './FILES/{docName}',
       title: 'T_setting-panel.schema.assets-dir',
       type: 'string',
-      minLength: 1,
       description: 'T_setting-panel.schema.assets-desc',
       group: 'image',
+      required: true,
+      pattern: '^(?![./]+\\{docName\\})[^\\\\<>?:"|*]{1,}$',
+      options: {
+        patternmessage: '[\\<>?:"|*] are not allowed. Cannot starts with ./{docName}, /{docName} or {docName}.'
+      },
     },
     'auto-save': {
       defaultValue: 2000,
