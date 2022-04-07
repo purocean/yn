@@ -90,25 +90,21 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.27.0](https://github.com/purocean/yn/releases/tag/v3.27.0) 2022-03-26
+### [v3.28.0](https://github.com/purocean/yn/releases/tag/v3.28.0) 2022-04-07
 
-1. feat: add outline display to the sidebar
-2. feat: add action buttons to the sidebar
-3. feat: add "include style" option to HTML export
-4. feat: the editor adds syntax highlighting for LaTex, Mermaid, and macro expressions
-5. feat: the editor adds reference link completion
-6. feat: show detailed error message when Mermaid syntax is wrong
-7. feat: add shortcut to close the current tab
-8. feat: add shortcut to display "Copy Content" panel
-9. upd: upgrade Electron to 15.4.1
-10. upd: optimize code block display
-11. upd: other interactive experience optimization
-12. fix: fix the default positioning of the custom group container
-13. fix: fix the problem that the bold anchor cannot jump
-14. fix: fix some HTML export issues
-15. feat(plugin): add `ctx.layout.toggleOutline` method
-16. feat(plugin): add `ctx.view.getHeadings` method
-17. feat(plugin): status bar menu supports custom order
+1. feat: add a custom container for columns
+2. feat: add drag to resize editor/preview
+3. feat: Front Matter supports configuration code wrapping `wrapCode`
+4. feat: support middle mouse button to close tab
+5. feat: add editor minimap switch configuration
+6. feat: add zoom menu item
+7. feat: add style classes `wrap-code` `text-left` `text-center` `text-right` `with-border`
+8. feat: configure image storage directory to support `{docBasename}` file name (excluding extension name) placeholder`
+9. fix: fix PlantUML online endpoint may render stuck
+10. fix: fix the problem that the title preview area cannot be positioned after turning off synchronous scrolling
+11. fix: fix the problem that the title number may not be correctly numbered after opening the title number
+12. fix: fix some custom element attributes may cause rendering interruption
+13. upd: optimize HTML export
 
 [More release notes](https://github.com/purocean/yn/releases)
 

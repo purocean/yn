@@ -90,25 +90,21 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.27.0](https://github.com/purocean/yn/releases/tag/v3.27.0) 2022-03-26
+### [v3.28.0](https://github.com/purocean/yn/releases/tag/v3.28.0) 2022-04-07
 
-1. feat: 侧栏增加目录大纲展示
-2. feat: 侧栏增加操作按钮栏
-3. feat: HTML 导出增加“包含样式”选项
-4. feat: 编辑器增加 LaTex、Mermaid、宏表达式语法高亮
-5. feat: 编辑器增加参考式链接补全
-6. feat: Mermaid 语法错误时展示详细错误信息
-7. feat: 增加关闭当前编辑 Tab 快捷键
-8. feat: 增加展示“复制内容”面板快捷键
-9. upd: 升级 Electron 版本到 15.4.1
-10. upd: 优化代码块展示
-11. upd: 其他交互体验优化
-12. fix: 修复某些情况下自定义 Group 容器默认定位不正确
-13. fix: 修复加粗锚点不能跳转问题
-14. fix: 修复一些 HTML 导出问题
-15. feat(plugin): 增加 `ctx.layout.toggleOutline` 方法
-16. feat(plugin): 增加 `ctx.view.getHeadings` 方法
-17. feat(plugin): 状态栏菜单支持自定义顺序
+1. feat: 增加分列自定义容器
+2. feat: 增加拖动调整编辑器/预览大小
+3. feat: Front Matter 支持配置代码换行 `wrapCode`
+4. feat: 支持鼠标中键关闭标签页
+5. feat: 增加编辑器小地图开关配置
+6. feat: 增加缩放界面菜单项
+7. feat: 增加样式类 `wrap-code` `text-left` `text-center` `text-right` `with-border`
+8. feat: 配置图片存放目录支持 `{docBasename}` 文件名（不含拓展名）占位`
+9. fix: 修复 PlantUML 在线端点可能渲染卡住问题
+10. fix: 修复关闭同步滚动后点击标题预览区不能定位问题
+11. fix: 修复开启标题编号后可能不能正确编号问题
+12. fix: 修复某些自定义元素属性可能导致渲染中断问题
+13. upd: 持续优化 HTML 导出
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
