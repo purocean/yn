@@ -46,9 +46,14 @@ export default defineComponent({
       }, 1000)
 
       const line = heading.sourceLine
-      if (store.state.showEditor && !store.state.presentation) {
+      const scrollEditor = store.state.showEditor && !store.state.presentation
+      const scrollPreview = !scrollEditor || !store.state.syncScroll
+
+      if (scrollEditor) {
         revealLineInCenter(line)
-      } else {
+      }
+
+      if (scrollPreview) {
         getViewDom()
           ?.querySelector<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
           ?.scrollIntoView()
