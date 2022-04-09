@@ -116,6 +116,8 @@ export type BuildInSettings = {
   'editor.minimap': boolean,
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
+  'plugin.editor-openai.api-token': string,
+  'plugin.editor-openai.args-json': string,
   'license': string,
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',

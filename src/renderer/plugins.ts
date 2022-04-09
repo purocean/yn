@@ -20,6 +20,7 @@ import editorMarkdown from '@fe/plugins/editor-markdown'
 import editorMdSyntax from '@fe/plugins/editor-md-syntax'
 import editorWords from '@fe/plugins/editor-words'
 import editorEmoji from '@fe/plugins/editor-emoji'
+import editorOpenai from '@fe/plugins/editor-openai'
 import editorPathCompletion from '@fe/plugins/editor-path-completion'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
@@ -78,6 +79,7 @@ export default [
   editorEmoji,
   editorWords,
   editorPathCompletion,
+  editorOpenai,
   copyText,
   switchTodo,
   imageViewer,

@@ -505,6 +505,13 @@ const data: BaseLanguage = {
     'zoom-out': '缩小',
     'zoom-reset': '实际大小',
   },
+  'openai': {
+    'openai-complete': 'OpenAI 自动补全',
+    'api-token': 'OpenAI Api Token',
+    'api-token-desc': '从 https://openai.com/ 获取',
+    'args-json': 'OpenAI 参数',
+    'args-json-desc': 'JSON 字符串如 {"max_tokens": 256}',
+  },
 }
 
 export default data

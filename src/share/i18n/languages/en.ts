@@ -504,6 +504,13 @@ const data = {
     'zoom-out': 'Zoom Out',
     'zoom-reset': 'Actual Size',
   },
+  'openai': {
+    'openai-complete': 'OpenAI Complete',
+    'api-token': 'OpenAI Api Token',
+    'api-token-desc': 'You can get your api token from openai.com',
+    'args-json': 'OpenAI Args JSON',
+    'args-json-desc': 'JSON string like {"max_tokens": 256}',
+  },
 }
 
 export type BaseLanguage = typeof data
