@@ -244,7 +244,7 @@ const schema: Schema = {
       title: 'T_setting-panel.schema.proxy.server',
       type: 'string',
       group: 'proxy',
-      pattern: '^.+:\\d{2,5}$',
+      pattern: '^(|.+:\\d{2,5})$',
       options: {
         inputAttributes: { placeholder: 'T_setting-panel.schema.proxy.server-hint', }
       }
