@@ -506,9 +506,11 @@ const data = {
   },
   'openai': {
     'openai-complete': 'OpenAI Complete',
-    'api-token': 'OpenAI Api Token',
-    'api-token-desc': 'You can get your api token from openai.com',
-    'args-json': 'OpenAI Args JSON',
+    'api-token': 'Api Token',
+    'api-token-desc': 'You can get your api token from <a target="_blank" href="http://openai.com">openai.com</a>',
+    'engine-id': 'Engine Id',
+    'engine-id-desc': 'Please refer to <a target="_blank" href="https://beta.openai.com/docs/engines/overview/">Engine Overview</a>',
+    'args-json': 'Custom Arguments',
     'args-json-desc': 'JSON string like {"max_tokens": 256}',
   },
 }

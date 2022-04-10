@@ -4,7 +4,9 @@ import { getLogger } from '@fe/utils'
 
 const actionName = 'plugin.editor-openai.trigger'
 const settingKeyToken = 'plugin.editor-openai.api-token'
+const settingKeyEngine = 'plugin.editor-openai.engine-id'
 const settingKeyArgs = 'plugin.editor-openai.args-json'
+const defaultEngine = 'text-davinci-002'
 
 class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
   private readonly monaco: typeof Monaco
@@ -56,7 +58,6 @@ class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
       position.column,
     )
 
-    const url = 'https://api.openai.com/v1/engines/text-davinci-002/completions'
     const token = this.ctx.setting.getSetting(settingKeyToken, '')
 
     if (token.length < 40) {
@@ -77,24 +78,29 @@ class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
     }
 
     const body = {
-      prompt: text,
-      temperature: 0,
+      temperature: 0.4,
       max_tokens: 100,
       n: 1,
       top_p: 1,
       frequency_penalty: 0.0,
       presence_penalty: 0.0,
-      ...args
+      // stop: '\n',
+      ...args,
+      prompt: text,
     }
+
+    const engineId = this.ctx.setting.getSetting('plugin.editor-openai.engine-id', defaultEngine)
+
+    this.logger.debug('provideSuggestions', 'request', engineId, body)
 
     try {
       const res = await this.ctx.api.proxyRequest(
-        url,
+        `https://api.openai.com/v1/engines/${engineId}/completions`,
         { headers, body: JSON.stringify(body), method: 'post' },
         true
       ).then(x => x.json())
 
-      this.logger.debug('provideSuggestions', res)
+      this.logger.debug('provideSuggestions', 'result', res)
 
       if (!res.choices) {
         this.ctx.ui.useToast().show('warning', JSON.stringify(res), 5000)
@@ -107,7 +113,7 @@ class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
       }))
     } catch (error: any) {
       this.ctx.ui.useToast().show('warning', error.message || `${error}`, 5000)
-      this.logger.error('provideSuggestions', error)
+      this.logger.error('provideSuggestions', 'error', error)
       throw error
     }
   }
@@ -124,15 +130,32 @@ export default {
     })
 
     ctx.setting.changeSchema((schema) => {
+      schema.groups.push({ label: 'OpenAI' as any, value: 'openai' })
+
       schema.properties[settingKeyToken] = {
         title: 'T_openai.api-token',
         description: 'T_openai.api-token-desc',
         type: 'string',
         defaultValue: '',
-        group: 'editor',
+        group: 'openai',
         options: {
           inputAttributes: { placeholder: 'sk-' + 'x'.repeat(10) }
         },
+      }
+
+      schema.properties[settingKeyEngine] = {
+        title: 'T_openai.engine-id',
+        description: 'T_openai.engine-id-desc',
+        type: 'string',
+        defaultValue: defaultEngine,
+        group: 'openai',
+        enum: [
+          'text-davinci-002',
+          'text-curie-001',
+          'text-babbage-001',
+          'text-ada-001',
+        ],
+        required: true,
       }
 
       schema.properties[settingKeyArgs] = {
@@ -140,7 +163,7 @@ export default {
         description: 'T_openai.args-json-desc',
         type: 'string',
         defaultValue: '{"max_tokens": 256}',
-        group: 'editor',
+        group: 'openai',
         options: {
           inputAttributes: { placeholder: '{"max_tokens": 256}' }
         },
@@ -153,10 +176,15 @@ export default {
       handler: () => {
         ctx.editor.getEditor().getAction('editor.action.inlineSuggest.trigger').run()
         ctx.editor.getEditor().focus()
-      }
+      },
+      when: () => ctx.store.state.showEditor && !ctx.store.state.presentation,
     })
 
     ctx.statusBar.tapMenus((menus) => {
+      if (!ctx.store.state.showEditor || ctx.store.state.presentation) {
+        return
+      }
+
       menus['status-bar-tool']?.list?.push(
         {
           id: actionName,

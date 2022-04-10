@@ -118,6 +118,7 @@ export type BuildInSettings = {
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'plugin.editor-openai.api-token': string,
+  'plugin.editor-openai.engine-id': string,
   'plugin.editor-openai.args-json': string,
   'license': string,
   'mark': FileItem[],

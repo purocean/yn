@@ -507,9 +507,11 @@ const data: BaseLanguage = {
   },
   'openai': {
     'openai-complete': 'OpenAI 自动补全',
-    'api-token': 'OpenAI Api Token',
-    'api-token-desc': '从 https://openai.com/ 获取',
-    'args-json': 'OpenAI 参数',
+    'api-token': 'Api Token',
+    'api-token-desc': '你可以从 <a target="_blank" href="http://openai.com">openai.com</a> 获取',
+    'engine-id': 'Engine Id',
+    'engine-id-desc': '请参考 <a target="_blank" href="https://beta.openai.com/docs/engines/overview/">Engine Overview</a>',
+    'args-json': '自定义参数',
     'args-json-desc': 'JSON 字符串如 {"max_tokens": 256}',
   },
 }
