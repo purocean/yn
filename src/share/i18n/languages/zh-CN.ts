@@ -519,8 +519,12 @@ const data: BaseLanguage = {
     'api-token-desc': '你可以从 <a target="_blank" href="http://openai.com">openai.com</a> 获取',
     'engine-id': 'Engine Id',
     'engine-id-desc': '请参考 <a target="_blank" href="https://beta.openai.com/docs/engines/overview/">Engine Overview</a>',
+    'mode': '模式',
+    'range': '字符范围',
+    'range-desc': '上下文字符范围',
+    'max-tokens': 'Max Tokens',
     'args-json': '自定义参数',
-    'args-json-desc': 'JSON 字符串如 {"max_tokens": 256}',
+    'args-json-desc': '请求参数，JSON 字符串如 {"temperature": 0.3}',
   },
 }
 

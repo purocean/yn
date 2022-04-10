@@ -5,6 +5,9 @@ import { getLogger } from '@fe/utils'
 const actionName = 'plugin.editor-openai.trigger'
 const settingKeyToken = 'plugin.editor-openai.api-token'
 const settingKeyEngine = 'plugin.editor-openai.engine-id'
+const settingKeyMode = 'plugin.editor-openai.mode'
+const settingKeyMaxTokens = 'plugin.editor-openai.max-tokens'
+const settingKeyRange = 'plugin.editor-openai.range'
 const settingKeyArgs = 'plugin.editor-openai.args-json'
 const defaultEngine = 'text-davinci-002'
 
@@ -33,24 +36,34 @@ class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
 
     this.ctx.ui.useToast().show('info', 'OpenAI: Loading...', 10000)
 
-    const content = model.getValueInRange(new this.monaco.Range(
+    const contentPrefix = model.getValueInRange(new this.monaco.Range(
       1,
       1,
       position.lineNumber,
       position.column,
     ))
 
-    this.logger.debug('provideInlineCompletions', content.length)
+    const maxLine = model.getLineCount()
+    const maxColumn = model.getLineMaxColumn(maxLine)
 
-    // get end of 2048 characters of content
-    const text = content.substring(Math.max(0, content.length - 2048))
+    const contentSuffix = model.getValueInRange(new this.monaco.Range(
+      position.lineNumber,
+      position.column,
+      maxLine,
+      maxColumn,
+    ))
+
+    const range = this.ctx.setting.getSetting(settingKeyRange, 256)
+    const prefix = contentPrefix.substring(Math.max(0, contentPrefix.length - range))
+    const suffix = contentSuffix.substring(0, range)
+    this.logger.debug('provideInlineCompletions', range, prefix, suffix)
 
     return {
-      items: await this.provideSuggestions(text, position)
+      items: await this.provideSuggestions(prefix, suffix, position)
     }
   }
 
-  private async provideSuggestions (text: string, position: Monaco.Position): Promise<Monaco.languages.InlineCompletion[]> {
+  private async provideSuggestions (prompt: string, suffix: string, position: Monaco.Position): Promise<Monaco.languages.InlineCompletion[]> {
     const range = new this.monaco.Range(
       position.lineNumber,
       position.column,
@@ -77,16 +90,20 @@ class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
       this.logger.error(e)
     }
 
+    const mode = this.ctx.setting.getSetting(settingKeyMode, 'insert')
+    const maxTokens = this.ctx.setting.getSetting(settingKeyMaxTokens, 256)
+
     const body = {
-      temperature: 0.4,
-      max_tokens: 100,
+      temperature: 0.3,
       n: 1,
       top_p: 1,
       frequency_penalty: 0.0,
       presence_penalty: 0.0,
       // stop: '\n',
       ...args,
-      prompt: text,
+      prompt: prompt,
+      max_tokens: maxTokens,
+      suffix: mode === 'insert' ? suffix : undefined
     }
 
     const engineId = this.ctx.setting.getSetting('plugin.editor-openai.engine-id', defaultEngine)
@@ -132,15 +149,13 @@ export default {
     ctx.setting.changeSchema((schema) => {
       schema.groups.push({ label: 'OpenAI' as any, value: 'openai' })
 
-      schema.properties[settingKeyToken] = {
-        title: 'T_openai.api-token',
-        description: 'T_openai.api-token-desc',
+      schema.properties[settingKeyMode] = {
+        title: 'T_openai.mode',
         type: 'string',
-        defaultValue: '',
+        defaultValue: 'insert',
+        enum: ['insert', 'complete'],
         group: 'openai',
-        options: {
-          inputAttributes: { placeholder: 'sk-' + 'x'.repeat(10) }
-        },
+        required: true,
       }
 
       schema.properties[settingKeyEngine] = {
@@ -158,14 +173,51 @@ export default {
         required: true,
       }
 
+      schema.properties[settingKeyToken] = {
+        title: 'T_openai.api-token',
+        description: 'T_openai.api-token-desc',
+        type: 'string',
+        defaultValue: '',
+        group: 'openai',
+        options: {
+          inputAttributes: { placeholder: 'sk-' + 'x'.repeat(10) }
+        },
+      }
+
+      schema.properties[settingKeyMaxTokens] = {
+        title: 'T_openai.max-tokens',
+        type: 'number',
+        defaultValue: 256,
+        group: 'openai',
+        required: true,
+        minimum: 4,
+        maximum: 4096,
+        options: {
+          inputAttributes: { placeholder: 'T_openai.max-tokens' }
+        },
+      }
+
+      schema.properties[settingKeyRange] = {
+        title: 'T_openai.range',
+        type: 'number',
+        defaultValue: 256,
+        group: 'openai',
+        required: true,
+        minimum: 10,
+        maximum: 10240,
+        options: {
+          inputAttributes: { placeholder: 'T_openai.range-desc' }
+        },
+      }
+
       schema.properties[settingKeyArgs] = {
         title: 'T_openai.args-json',
         description: 'T_openai.args-json-desc',
         type: 'string',
-        defaultValue: '{"max_tokens": 256}',
+        defaultValue: '{"temperature": 0.3}',
         group: 'openai',
         options: {
-          inputAttributes: { placeholder: '{"max_tokens": 256}' }
+          inputAttributes: { placeholder: '{"temperature": 0.3}' }
         },
       }
     })
