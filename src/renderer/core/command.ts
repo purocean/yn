@@ -84,6 +84,7 @@ export function getKeyLabel (key: XKey | string | number) {
     Shift: isMacOS ? '⇧' : 'Shift',
     BracketLeft: '[',
     BracketRight: ']',
+    Period: '.',
   }[key]
 
   return str || upperFirst(key.toString())

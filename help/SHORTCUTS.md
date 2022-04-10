@@ -58,6 +58,7 @@ Presentation | F5
 Zoom In | Ctrl/Cmd + =
 Zoom Out | Ctrl/Cmd + -
 Zoom Reset | Ctrl/Cmd + 0
+OpenAI Auto Completion | Ctrl/Cmd + Alt/Option + .
 
 :::
 ::: group-item [= $ctx.i18n.getCurrentLanguage() === 'zh-CN' ? '*' : '' =]中文
@@ -108,5 +109,6 @@ Zoom Reset | Ctrl/Cmd + 0
 缩放放大 | Ctrl/Cmd + =
 缩放缩小 | Ctrl/Cmd + -
 缩放重置 | Ctrl/Cmd + 0
+OpenAI 自动补全 | Ctrl/Cmd + Alt/Option + .
 :::
 ::::

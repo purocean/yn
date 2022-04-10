@@ -172,7 +172,7 @@ export default {
 
     ctx.action.registerAction({
       name: actionName,
-      keys: [ctx.command.CtrlCmd, ctx.command.Shift, ctx.command.Alt, ctx.command.Space],
+      keys: [ctx.command.CtrlCmd, ctx.command.Alt, 'Period'],
       handler: () => {
         ctx.editor.getEditor().getAction('editor.action.inlineSuggest.trigger').run()
         ctx.editor.getEditor().focus()
