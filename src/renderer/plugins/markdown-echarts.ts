@@ -6,7 +6,7 @@ import { getColorScheme } from '@fe/services/theme'
 import { debounce } from 'lodash-es'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { downloadDataURL, getLogger, sleep } from '@fe/utils'
-import type { ExportTypes } from '@fe/types'
+import type { ExportType } from '@fe/types'
 
 const logger = getLogger('echarts')
 
@@ -79,7 +79,7 @@ const Echarts = defineComponent({
       chart?.resize()
     }
 
-    async function beforeExport ({ type }: { type: ExportTypes }) {
+    async function beforeExport ({ type }: { type: ExportType }) {
       render('light', false, type !== 'pdf') // convert to image and set light theme.
       await sleep(0)
       setTimeout(async () => {

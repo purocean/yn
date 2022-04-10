@@ -91,7 +91,7 @@ export namespace Components {
 
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
-export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
+export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 
 export type RenderEnv = {
   source: string,
@@ -218,7 +218,7 @@ export type BuildInHookTypes = {
   DOC_SWITCHED: { doc: Doc | null },
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
-  DOC_BEFORE_EXPORT: { type: ExportTypes },
+  DOC_BEFORE_EXPORT: { type: ExportType },
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
   SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }

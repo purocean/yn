@@ -94,7 +94,7 @@ import { useI18n } from '@fe/services/i18n'
 import { getRepo } from '@fe/services/base'
 import { downloadContent, sleep } from '@fe/utils'
 import { basename, dirname } from '@fe/utils/path'
-import type { ExportTypes } from '@fe/types'
+import type { ExportType } from '@fe/types'
 import XMask from './Mask.vue'
 
 const buildHtml = (title: string, body: string, options: { includeStyle: boolean }) => `
@@ -133,7 +133,7 @@ export default defineComponent({
     const convert = reactive({
       fileName: '',
       source: '',
-      toType: 'pdf' as ExportTypes,
+      toType: 'pdf' as ExportType,
       fromType: 'html',
       resourcePath: '.',
       localHtmlOptions: {
