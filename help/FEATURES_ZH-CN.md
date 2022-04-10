@@ -513,6 +513,14 @@ test 3
 :::
 ::::
 
+## OpenAI 自动补全
+
+Yank Note 接入了 [OpenAI](https://openai.com)，按下 `[= $ctx.command.getKeysLabel('plugin.editor-openai.trigger') =]` 即可实现智能补全。
+
+注：OpenAI API token 需要你自行获取。
+
+<video src="./openai.mp4" height="200" controls></video>
+
 ## Front Matter
 
 页面支持类似 [Jekyll Front Matter](https://jekyllrb.com/docs/front-matter/) 配置信息

@@ -514,6 +514,14 @@ test 3
 :::
 ::::
 
+## OpenAI Auto Completion
+
+Yank Note integrates with [OpenAI](https://openai.com), press `[= $ctx.command.getKeysLabel('plugin.editor-openai.trigger') =]` to trigger intelligent completion.
+
+Note: OpenAI API token needs to be obtained by yourself.
+
+<video src="./openai.mp4" height="200" controls></video>
+
 ## Front Matter
 
 The page supports configuration information similar to [Jekyll Front Matter](https://jekyllrb.com/docs/front-matter/)

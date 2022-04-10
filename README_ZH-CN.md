@@ -13,7 +13,7 @@
 ## 特色
 
 - **使用方便**：使用 Monaco 内核，专为 Markdown 优化，拥有和 VSCode 一样的编辑体验。
-- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等。
+- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等；支持接入 [OpenAI](https://openai.com) 自动补全。
 - **兼容性强**：数据保存为本地 Markdown 文件；拓展功能尽量用 Markdown 原有的语法实现。
 - **插件拓展**：支持用户编写自己的插件来拓展编辑器的功能。
 - **支持加密**：用来保存账号等隐私文件，文件可单独设置密码。
@@ -78,6 +78,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 - **容器块:** 支持类似 VuePress 默认主题的自定义容器
 - **宏替换:** 支持内嵌 JavaScript 表达式动态替换文档内容
 - **图床:** 支持 [PicGo](https://picgo.github.io/PicGo-Doc/) 图床
+- **OpenAI: ** 支持接入 [OpenAI](https://openai.com) 自动补全
 - **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN_ZH-CN.md)
 
 ## 截图
