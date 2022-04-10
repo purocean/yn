@@ -14,6 +14,9 @@ import { registerShortcut } from './shortcut'
 import { $t } from './i18n'
 import { getProxyAgent } from './proxy-agent'
 import config from './config'
+import { initProxy } from './proxy'
+
+initProxy()
 
 const electronContextMenu = require('electron-context-menu')
 const electronRemote = require('@electron/remote/main')

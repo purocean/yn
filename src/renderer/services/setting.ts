@@ -231,7 +231,42 @@ const schema: Schema = {
       group: 'other',
       format: 'checkbox',
       required: true,
-    }
+    },
+    'proxy.enabled': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.proxy.enabled',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'proxy',
+    },
+    'proxy.server': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.proxy.server',
+      type: 'string',
+      group: 'proxy',
+      pattern: '^.+:\\d{2,5}$',
+      options: {
+        inputAttributes: { placeholder: 'T_setting-panel.schema.proxy.server-hint', }
+      }
+    },
+    'proxy.bypass-list': {
+      defaultValue: '<local>',
+      title: 'T_setting-panel.schema.proxy.bypass-list',
+      type: 'string',
+      group: 'proxy',
+      options: {
+        inputAttributes: { placeholder: '<local>;*.google.com;*foo.com;1.2.3.4:5678', }
+      }
+    },
+    'proxy.pac-url': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.proxy.pac-url',
+      type: 'string',
+      group: 'proxy',
+      options: {
+        inputAttributes: { placeholder: 'http://', }
+      }
+    },
   } as Partial<Schema['properties']> as any,
   required: [],
   groups: [
@@ -239,6 +274,7 @@ const schema: Schema = {
     { label: 'T_setting-panel.tabs.appearance', value: 'appearance' },
     { label: 'T_setting-panel.tabs.editor', value: 'editor' },
     { label: 'T_setting-panel.tabs.image', value: 'image' },
+    { label: 'T_setting-panel.tabs.proxy', value: 'proxy' },
   ]
 }
 

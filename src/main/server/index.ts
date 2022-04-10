@@ -360,6 +360,8 @@ const setting = async (ctx: any, next: any) => {
         getAction('updater.change-source')(data['updater.source'])
       }
 
+      getAction('proxy.reload')(data)
+
       ctx.body = result('ok', 'success')
     }
   } else {

@@ -92,7 +92,7 @@ export namespace Components {
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
-export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'other' | 'openai'
+export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'openai'
 
 export type RenderEnv = {
   source: string,
@@ -126,6 +126,10 @@ export type BuildInSettings = {
   'doc-history.number-limit': number,
   'server.host': string,
   'server.port': number,
+  'proxy.enabled': boolean,
+  'proxy.server': string,
+  'proxy.pac-url': string,
+  'proxy.bypass-list': string,
   'keep-running-after-closing-window': boolean,
   'plantuml-api': string,
 }
