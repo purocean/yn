@@ -67,6 +67,8 @@ export default defineComponent({
 
       const schema: any = getSchema()
 
+      // begin: hack to use DOMPurify, support html
+      ;(window as any).DOMPurify = { sanitize: (val: string) => val }
       editor = new JSONEditor(refEditor.value, {
         theme: 'html',
         disable_collapse: true,
@@ -77,6 +79,8 @@ export default defineComponent({
         remove_button_labels: true,
         schema,
       })
+      // end: hack to use DOMPurify
+      delete (window as any).DOMPurify
 
       editor.watch('root.theme', () => {
         const theme = editor.getEditor('root.theme').getValue()
@@ -307,6 +311,10 @@ export default defineComponent({
     vertical-align: bottom;
     margin-right: 10px;
     float: left;
+  }
+
+  ::v-deep(a) {
+    color: #4c93e2;
   }
 }
 
