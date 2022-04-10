@@ -5,7 +5,7 @@ import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import store from '@fe/support/store'
 import { basename } from '@fe/utils/path'
-import type{ BuildInSettings, FileItem, PathItem } from '@fe/types'
+import type{ BuildInSettings, FileItem, PathItem, SettingGroup } from '@fe/types'
 import { getThemeName } from './theme'
 import { t } from './i18n'
 
@@ -21,7 +21,7 @@ export type Schema = {
     required?: boolean,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
     enum?: string[] | number [],
-    group: 'repos' | 'appearance' | 'editor' | 'image' | 'other',
+    group: SettingGroup,
     items?: {
       type: string,
       title: TTitle,
@@ -39,6 +39,10 @@ export type Schema = {
     [key: string]: any,
   }},
   required: (keyof BuildInSettings)[],
+  groups: {
+    label: TTitle,
+    value: SettingGroup,
+  }[],
 }
 
 const schema: Schema = {
@@ -230,6 +234,12 @@ const schema: Schema = {
     }
   } as Partial<Schema['properties']> as any,
   required: [],
+  groups: [
+    { label: 'T_setting-panel.tabs.repos', value: 'repos' },
+    { label: 'T_setting-panel.tabs.appearance', value: 'appearance' },
+    { label: 'T_setting-panel.tabs.editor', value: 'editor' },
+    { label: 'T_setting-panel.tabs.image', value: 'image' },
+  ]
 }
 
 const settings = {
@@ -255,11 +265,15 @@ if (FLAG_MAS) {
 export function getSchema (): Schema {
   schema.required = (Object.keys(schema.properties) as any[])
     .filter((key: keyof Schema['properties']) => schema.properties[key].required)
-  return cloneDeepWith(schema, val => {
+  const result: Schema = cloneDeepWith(schema, val => {
     if (typeof val === 'string' && val.startsWith('T_')) {
       return t(val.substring(2) as any)
     }
   })
+
+  result.groups = [...result.groups, { label: t('setting-panel.tabs.other') as any, value: 'other' }]
+
+  return result
 }
 
 /**

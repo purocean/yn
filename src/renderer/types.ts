@@ -92,6 +92,7 @@ export namespace Components {
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
+export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'other' | 'openai'
 
 export type RenderEnv = {
   source: string,
