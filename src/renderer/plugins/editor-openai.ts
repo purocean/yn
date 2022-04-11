@@ -103,7 +103,7 @@ class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
       ...args,
       prompt: prompt,
       max_tokens: maxTokens,
-      suffix: mode === 'insert' ? suffix : undefined
+      suffix: mode === 'insert' && suffix.trim() ? suffix : undefined
     }
 
     const engineId = this.ctx.setting.getSetting('plugin.editor-openai.engine-id', defaultEngine)
