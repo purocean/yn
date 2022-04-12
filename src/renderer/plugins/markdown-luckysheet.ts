@@ -12,8 +12,7 @@ import * as api from '@fe/support/api'
 import { refreshTree } from '@fe/services/tree'
 import { buildSrc, IFrame } from '@fe/support/embed'
 import { getCurrentLanguage, t, useI18n } from '@fe/services/i18n'
-import { FLAG_DEMO } from '@fe/support/args'
-import { DOM_ATTR_NAME } from '@fe/support/constant'
+import { DOM_ATTR_NAME, FLAG_DEMO } from '@fe/support/args'
 import Mask from '@fe/components/Mask.vue'
 
 const logger = getLogger('plugin-markdown-luckysheet')

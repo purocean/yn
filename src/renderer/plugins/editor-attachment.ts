@@ -11,7 +11,7 @@ import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
 import { isSameRepo } from '@fe/services/document'
 import { useToast } from '@fe/support/ui/toast'
-import { DOM_CLASS_NAME } from '@fe/support/constant'
+import { DOM_CLASS_NAME } from '@fe/support/args'
 import { t } from '@fe/services/i18n'
 
 async function uploadFile (file: any, asImage: boolean) {

@@ -39,7 +39,7 @@ export default {
         return true
       }
 
-      if (target.tagName === 'INPUT' && target.classList.contains(ctx.constant.DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX) && target.parentElement!.dataset.sourceLine) {
+      if (target.tagName === 'INPUT' && target.classList.contains(ctx.args.DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX) && target.parentElement!.dataset.sourceLine) {
         const line = parseInt(target.parentElement!.dataset.sourceLine || '0')
         const checked = (target as HTMLInputElement).checked
         ctx.action.getActionHandler(actionName)(line, checked)

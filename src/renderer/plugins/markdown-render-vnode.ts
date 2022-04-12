@@ -2,7 +2,7 @@ import { createVNode, Fragment, Comment, Text, VNode } from 'vue'
 import type Token from 'markdown-it/lib/token'
 import type Renderer from 'markdown-it/lib/renderer'
 import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
-import { DOM_ATTR_NAME } from '@fe/support/constant'
+import { DOM_ATTR_NAME } from '@fe/support/args'
 import type { Plugin } from '@fe/context'
 
 const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/

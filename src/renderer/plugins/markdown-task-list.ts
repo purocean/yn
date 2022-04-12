@@ -9,7 +9,7 @@
 
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context'
-import { DOM_CLASS_NAME } from '@fe/support/constant'
+import { DOM_CLASS_NAME } from '@fe/support/args'
 
 let disableCheckboxes = true
 
