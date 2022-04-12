@@ -20,7 +20,7 @@ import { throttle } from 'lodash-es'
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { getEditor, getMonaco, revealLineInCenter } from '@fe/services/editor'
+import { getEditor, getMonaco } from '@fe/services/editor'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import { AppState } from '@fe/support/store'
 import { getHeadings, getViewDom, Heading } from '@fe/services/view'
@@ -51,7 +51,7 @@ export default defineComponent({
       const scrollPreview = !scrollEditor || !store.state.syncScroll
 
       if (scrollEditor) {
-        revealLineInCenter(line)
+        getEditor().revealLineNearTop(line)
       }
 
       if (scrollPreview) {

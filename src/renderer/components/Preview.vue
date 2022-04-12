@@ -45,7 +45,7 @@ import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
-import { revealLineInCenter } from '@fe/services/editor'
+import { getEditor } from '@fe/services/editor'
 import { showExport, toUri } from '@fe/services/document'
 import { getContextMenuItems, getHeadings, Heading } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
@@ -188,7 +188,7 @@ export default defineComponent({
 
     function scrollToTop () {
       scrollTopTo(0)
-      revealLineInCenter(1)
+      getEditor().revealLineInCenter(1)
     }
 
     function handleDbClick (e: MouseEvent) {

@@ -178,30 +178,6 @@ export function deleteLine (line: number) {
 }
 
 /**
- * Reveal line to screen center.
- * @param line
- */
-export function revealLineInCenter (line: number) {
-  getEditor().revealLineInCenter(line)
-}
-
-/**
- * Reveal line.
- * @param line
- */
-export function revealLine (line: number) {
-  getEditor().revealLine(line)
-}
-
-/**
- * Set scroll bar position.
- * @param top
- */
-export function setScrollToTop (top: number) {
-  getEditor().setScrollTop(top)
-}
-
-/**
  * Get content of line.
  * @param line
  * @returns
