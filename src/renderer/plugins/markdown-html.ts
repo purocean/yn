@@ -127,6 +127,9 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
 
       if (lineText.endsWith('-->')) {
         nextLine++
+        const token = state.push('comment', '', 0)
+        token.hidden = true
+        token.map = [startLine, nextLine]
         break
       }
     }
