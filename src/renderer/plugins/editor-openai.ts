@@ -36,26 +36,40 @@ class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
 
     this.ctx.ui.useToast().show('info', 'OpenAI: Loading...', 10000)
 
-    const contentPrefix = model.getValueInRange(new this.monaco.Range(
-      1,
-      1,
-      position.lineNumber,
-      position.column,
-    ))
-
-    const maxLine = model.getLineCount()
-    const maxColumn = model.getLineMaxColumn(maxLine)
-
-    const contentSuffix = model.getValueInRange(new this.monaco.Range(
-      position.lineNumber,
-      position.column,
-      maxLine,
-      maxColumn,
-    ))
-
     const range = this.ctx.setting.getSetting(settingKeyRange, 256)
-    const prefix = contentPrefix.substring(Math.max(0, contentPrefix.length - range))
-    const suffix = contentSuffix.substring(0, range)
+
+    let prefix = ''
+    let suffix = ''
+
+    // get selection of editor model
+    const selection = this.ctx.editor.getEditor().getSelection()
+    const selectionText = selection && model.getValueInRange(selection)
+
+    if (selectionText) {
+      prefix = selectionText
+      position = selection!.getEndPosition()
+    } else {
+      const contentPrefix = model.getValueInRange(new this.monaco.Range(
+        1,
+        1,
+        position.lineNumber,
+        position.column,
+      ))
+
+      const maxLine = model.getLineCount()
+      const maxColumn = model.getLineMaxColumn(maxLine)
+
+      const contentSuffix = model.getValueInRange(new this.monaco.Range(
+        position.lineNumber,
+        position.column,
+        maxLine,
+        maxColumn,
+      ))
+
+      prefix = contentPrefix.substring(Math.max(0, contentPrefix.length - range))
+      suffix = contentSuffix.substring(0, range)
+    }
+
     this.logger.debug('provideInlineCompletions', range, prefix, suffix)
 
     return {
@@ -86,8 +100,9 @@ class CompletionProvider implements Monaco.languages.InlineCompletionsProvider {
     let args = {}
     try {
       args = JSON.parse(this.ctx.setting.getSetting(settingKeyArgs, '{}'))
-    } catch (e) {
-      this.logger.error(e)
+    } catch (e: any) {
+      this.ctx.ui.useToast().show('warning', `OpenAI: Custom Arguments Error "${e.message}"`, 5000)
+      throw e
     }
 
     const mode = this.ctx.setting.getSetting(settingKeyMode, 'insert')
