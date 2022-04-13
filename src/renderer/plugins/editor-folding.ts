@@ -1,46 +1,15 @@
 import * as Monaco from 'monaco-editor'
+import { IndentRangeProvider } from 'monaco-editor/esm/vs/editor/contrib/folding/indentRangeProvider.js'
 import type { Ctx, Plugin } from '@fe/context'
-
 import type Token from 'markdown-it/lib/token'
-const rangeLimit = 5000
+import { DOM_ATTR_NAME } from '@fe/support/args'
 
-interface MarkdownItTokenWithMap extends Token {
-  map: [number, number];
-}
+const rangeLimit = 5000
 
 type TocEntry = {
   level: number,
   start: number,
   end: number,
-}
-
-const isStartRegion = (t: string) => /^\s*<!--\s*#?region\b.*-->/.test(t)
-const isEndRegion = (t: string) => /^\s*<!--\s*#?endregion\b.*-->/.test(t)
-
-const isRegionMarker = (token: Token): token is MarkdownItTokenWithMap =>
-  !!token.map && token.type === 'html_block' && (isStartRegion(token.content) || isEndRegion(token.content))
-
-const isFoldableToken = (token: Token): token is MarkdownItTokenWithMap => {
-  if (!token.map) {
-    return false
-  }
-
-  switch (token.type) {
-    case 'fence':
-    case 'comment':
-    case 'paragraph_open':
-    case 'list_item_open':
-      return token.map[1] > token.map[0]
-
-    case 'html_block':
-      if (isRegionMarker(token)) {
-        return false
-      }
-      return token.map[1] > token.map[0] + 1
-
-    default:
-      return false
-  }
 }
 
 export class MdFoldingProvider implements Monaco.languages.FoldingRangeProvider {
@@ -52,33 +21,24 @@ export class MdFoldingProvider implements Monaco.languages.FoldingRangeProvider 
     this.ctx = ctx
   }
 
-  public async provideFoldingRanges (model: Monaco.editor.ITextModel) {
+  public async provideFoldingRanges (model: Monaco.editor.ITextModel, _context: Monaco.languages.FoldingContext, cancellationToken: Monaco.CancellationToken) {
     const foldables = await Promise.all([
-      this.getRegions(),
       this.getHeaderFoldingRanges(model),
-      this.getBlockFoldingRanges(model)
+      this.getBlockFoldingRanges(model),
+      new IndentRangeProvider(model).compute(cancellationToken).then((ranges: any) => {
+        const length = ranges.length
+        const result: Monaco.languages.FoldingRange[] = []
+        for (let i = 0; i < length; i++) {
+          result.push({
+            start: ranges.getStartLineNumber(i),
+            end: ranges.getEndLineNumber(i),
+          })
+        }
+
+        return result
+      })
     ])
     return foldables.flat().slice(0, rangeLimit)
-  }
-
-  private async getRegions (): Promise<Monaco.languages.FoldingRange[]> {
-    const tokens = this.ctx.view.getRenderEnv()?.tokens || []
-    const regionMarkers = tokens.filter(isRegionMarker)
-      .map(token => ({ line: token.map[0], isStart: isStartRegion(token.content) }))
-
-    const nestingStack: { line: number; isStart: boolean }[] = []
-    return regionMarkers
-      .map(marker => {
-        if (marker.isStart) {
-          nestingStack.push(marker)
-        } else if (nestingStack.length && nestingStack[nestingStack.length - 1].isStart) {
-          return { start: nestingStack.pop()!.line + 1, end: marker.line + 1, kind: this.monaco.languages.FoldingRangeKind.Region }
-        } else {
-          // noop: invalid nesting (i.e. [end, start] or [start, end, end])
-        }
-        return null
-      })
-      .filter((region) => !!region) as Monaco.languages.FoldingRange[]
   }
 
   private async getHeaderFoldingRanges (model: Monaco.editor.ITextModel): Promise<Monaco.languages.FoldingRange[]> {
@@ -90,15 +50,32 @@ export class MdFoldingProvider implements Monaco.languages.FoldingRangeProvider 
     })
   }
 
+  private getRealLine (token: Token) {
+    if (token.meta.attrs && token.meta.attrs[DOM_ATTR_NAME.SOURCE_LINE_START] && token.meta.attrs[DOM_ATTR_NAME.SOURCE_LINE_END]) {
+      return [
+        parseInt(token.meta.attrs[DOM_ATTR_NAME.SOURCE_LINE_START]) - 1,
+        parseInt(token.meta.attrs[DOM_ATTR_NAME.SOURCE_LINE_END]) - 1,
+      ]
+    }
+
+    return token.map!
+  }
+
   private async getBlockFoldingRanges (model: Monaco.editor.ITextModel): Promise<Monaco.languages.FoldingRange[]> {
     const tokens = this.ctx.view.getRenderEnv()?.tokens || []
-    const multiLineListItems = tokens.filter(isFoldableToken)
+    const multiLineListItems = tokens.filter(this.isFoldableToken.bind(this))
     return multiLineListItems.map(listItem => {
-      const start = listItem.map[0] + 1
-      let end = listItem.map[1]
+      const [startLine, endLine] = this.getRealLine(listItem)
+      const start = startLine + 1
+      let end = endLine
       if (model.getLineContent(end).trim().length === 0 && end >= start + 1) {
         end = end - 1
       }
+
+      if (listItem.type.startsWith('container') || listItem.type === 'uml_diagram') {
+        end++
+      }
+
       return { start, end, kind: this.getFoldingRangeKind(listItem) }
     })
   }
@@ -118,11 +95,9 @@ export class MdFoldingProvider implements Monaco.languages.FoldingRangeProvider 
         continue
       }
 
-      toc.push({
-        level: parseInt(heading.tag.replace('h', '')),
-        start: heading.map[0],
-        end: heading.map[1],
-      })
+      const [start, end] = this.getRealLine(heading)
+
+      toc.push({ level: parseInt(heading.tag.replace('h', '')), start, end })
     }
 
     // Get full range of section
@@ -137,6 +112,35 @@ export class MdFoldingProvider implements Monaco.languages.FoldingRangeProvider 
       entry.end = end ?? model.getLineCount() - 1
       return entry
     })
+  }
+
+  private isFoldableToken (token: Token) {
+    if (!token.map || !token.meta) {
+      return false
+    }
+
+    const [lineStart, lineEnd] = this.getRealLine(token)
+
+    switch (token.type) {
+      case 'fence':
+      case 'comment':
+      case 'paragraph_open':
+      case 'list_item_open':
+      case 'table_open':
+      case 'uml_diagram':
+      case 'math_block':
+        return lineEnd > lineStart
+
+      case 'html_block':
+        return lineEnd > lineStart + 1
+
+      default:
+        if (token.type.startsWith('container')) {
+          return lineEnd > lineStart
+        }
+
+        return false
+    }
   }
 }
 
