@@ -25,6 +25,9 @@ Directory description
     ::: tip
     If you accidentally lost your document content, you can check this folder and try to recovery it.
     :::
+    ::: danger
+    For performance reasons, documents with more than *102400* characters will not store history. Therefore, please be careful when embedding Base64 images in documents.
+    :::
 1. plug-ins `<home>/yank-note/plugins`
 1. themes `<home>/yank-note/themes`
 
