@@ -75,6 +75,12 @@ export default {
         border-radius: var(--g-border-radius);
       }
 
+      .markdown-view .markdown-body .custom-container.danger,
+      .markdown-view .markdown-body .custom-container.warning,
+      .markdown-view .markdown-body .custom-container.tip {
+        page-break-inside: avoid;
+      }
+
       .markdown-view .markdown-body .custom-container-title {
         font-weight: 600;
         margin-bottom: 10px;

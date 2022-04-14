@@ -73,6 +73,7 @@ define:
 
 | 类名 | 说明 |
 | -- | -- |
+| `avoid-page-break` | 打印/导出PDF时避免页面在此元素中断 |
 | `new-page` | 打印/导出PDF时在此元素前分页 |
 | `skip-print` | 打印/导出PDF时跳过此元素 |
 | `skip-export` | 导出/复制HTML时跳过此元素 |
