@@ -77,7 +77,8 @@ export const IFrame = defineComponent({
     const onLoad = function () {
       const frame = iframe.value!
       const resize = () => {
-        frame.height = frame.contentDocument!.documentElement.scrollHeight + 'px'
+        const height = frame.contentDocument!.documentElement.scrollHeight
+        frame.height = (height + 1) + 'px'
         emitResize()
       }
 
