@@ -115,6 +115,7 @@ export type BuildInSettings = {
   'editor.tab-size': 2 | 4,
   'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
   'editor.minimap': boolean,
+  'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'plugin.editor-openai.api-token': string,

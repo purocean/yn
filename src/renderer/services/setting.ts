@@ -145,6 +145,17 @@ const schema: Schema = {
         patternmessage: '[\\<>?:"|*] are not allowed. Cannot starts with ./{docName}, /{docName} or {docName}.'
       },
     },
+    'editor.line-numbers': {
+      defaultValue: 'on',
+      title: 'T_setting-panel.schema.editor.line-numbers',
+      enum: ['on', 'off', 'relative', 'interval'],
+      options: {
+        enum_titles: ['On', 'Off', 'Relative', 'Interval'],
+      },
+      type: 'string',
+      group: 'editor',
+      required: true,
+    },
     'auto-save': {
       defaultValue: 2000,
       title: 'T_setting-panel.schema.auto-save',

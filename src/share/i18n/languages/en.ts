@@ -329,6 +329,7 @@ const data = {
         'tab-size': 'Tab Size',
         'ordered-list-completion': 'Ordered List',
         'minimap': 'Minimap',
+        'line-numbers': 'Line Numbers',
       },
       'theme': 'Theme',
       'language': 'Language',

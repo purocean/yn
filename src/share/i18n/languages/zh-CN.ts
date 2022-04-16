@@ -322,6 +322,7 @@ const data: BaseLanguage = {
         'tab-size': 'Tab 宽度',
         'ordered-list-completion': '有序列表补全',
         'minimap': '显示小地图',
+        'line-numbers': '行号',
       },
       'theme': '主题',
       'language': '语言',
