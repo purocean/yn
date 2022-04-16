@@ -414,17 +414,13 @@ chart.setOption({
 
 链接属性 `link-type` 值需要是 `drawio` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
-```markdown
 [drawio](./test.drawio){link-type="drawio"}
-```
 
 ## Luckysheet 表格
 
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
-```markdown
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
-```
 
 ## 容器块
 

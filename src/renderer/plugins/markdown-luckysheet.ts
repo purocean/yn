@@ -150,7 +150,7 @@ function buildSrcdoc (repo: string, path: string, full: boolean) {
         try {
           return await embedCtx.api.writeFile({ repo, path, contentHash: window.hash }, content)
         } catch (error) {
-          alert(error.message)
+          repo !== '__help__' &&  alert(error.message)
           throw error
         }
       }
