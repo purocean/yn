@@ -4,6 +4,7 @@ import type { Ctx, Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 
+const lengthLimit = 50000
 const rangeLimit = 5000
 
 type TocEntry = {
@@ -22,6 +23,10 @@ export class MdFoldingProvider implements Monaco.languages.FoldingRangeProvider 
   }
 
   public async provideFoldingRanges (model: Monaco.editor.ITextModel, _context: Monaco.languages.FoldingContext, cancellationToken: Monaco.CancellationToken) {
+    if (model.getValueLength() > lengthLimit) {
+      return []
+    }
+
     const foldables = await Promise.all([
       this.getHeaderFoldingRanges(model),
       this.getBlockFoldingRanges(model),
