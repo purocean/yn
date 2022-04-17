@@ -172,11 +172,12 @@ defaultRules.html_inline = function (tokens: Token[], idx: number) {
 }
 
 function createHtmlVNode (html: string) {
-  const div = document.createElement('div')
+  const div = document.createElement('template')
   div.innerHTML = html
+  const elements = div.content.children
   const children = []
-  for (let i = 0; i < div.children.length; i++) {
-    const element = div.children[i]
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i]
     const tagName = element.tagName.toLowerCase()
     const attrs: Record<string, any> = {
       key: element.outerHTML

@@ -27,10 +27,10 @@ function isLetter (ch: number) {
 }
 
 function setAttrs (token: Token, content: string) {
-  const div = document.createElement('div')
+  const div = document.createElement('template')
   div.innerHTML = content
 
-  const element = div.children[0]
+  const element = div.content.firstElementChild
   if (!element) {
     return
   }
