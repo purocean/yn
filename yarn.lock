@@ -6855,10 +6855,10 @@ markdown-it-abbr@^1.0.4:
   resolved "https://registry.yarnpkg.com/markdown-it-abbr/-/markdown-it-abbr-1.0.4.tgz#d66b5364521cbb3dd8aa59dadfba2fb6865c8fd8"
   integrity sha1-1mtTZFIcuz3Yqlna37ovtoZcj9g=
 
-markdown-it-attributes@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/markdown-it-attributes/-/markdown-it-attributes-0.0.4.tgz#4105ab99516def3d61cf236b22a8f5753f7f7f1f"
-  integrity sha512-snwGCdWR4T/ijLYICCUK47brfR8ILU+5RiWf5bafV65q7Mj6S/eZM8Paup36zKMQ7jsMzN+WHsfYu95zLHvICw==
+markdown-it-attributes@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/markdown-it-attributes/-/markdown-it-attributes-0.0.5.tgz#efccb225468f7d740f4645738a76cb030a6ae1bb"
+  integrity sha512-VXZnwsgUXJJwsz6iiGnpszYj9VSQDvpdwGGO2l2BbXtGvTetNAWVv7to3lt2XtTBuS3OvUj+YhLDzLThEbm7uQ==
 
 markdown-it-container@^3.0.0:
   version "3.0.0"
