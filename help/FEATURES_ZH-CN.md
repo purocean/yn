@@ -64,7 +64,7 @@ define:
 
 ### 元素属性书写
 
-此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
+此功能使用 [markdown-it-attrs][markdown-it-attributes](https://github.com/purocean/markdown-it-attributes) 实现
 
 - 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}

@@ -63,7 +63,7 @@ Type '/' in the editor to get prompts
 
 ### Element Attribute
 
-This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
+This feature is implemented using [markdown-it-attributes](https://github.com/purocean/markdown-it-attributes).
 
 - Red Text, white background, border, align text center {.bgw .text-center .with-border style="color:red"}
 - Display As **Block Element**{.block}
