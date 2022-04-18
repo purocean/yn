@@ -102,7 +102,7 @@ const Mermaid = defineComponent({
 
     watch(() => props.code, renderDebounce)
 
-    onMounted(() => setTimeout(render, 0))
+    onMounted(() => render())
 
     registerHook('THEME_CHANGE', renderDebounce)
     registerHook('DOC_BEFORE_EXPORT', beforeDocExport)
@@ -121,7 +121,6 @@ const Mermaid = defineComponent({
           ref: container,
           key: props.code,
           class: 'mermaid-container skip-export',
-          innerHTML: result.value,
         }),
         h('img', {
           src: img.value,
@@ -185,17 +184,6 @@ export default {
 
       .markdown-view .markdown-body .mermaid-wrapper .mermaid-container > svg {
         --skip-contain: 1;
-        display: block;
-      }
-
-      .markdown-view .markdown-body .mermaid-wrapper .mermaid-image {
-        --skip-contain: 1;
-        filter: none;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
         display: block;
       }
 
