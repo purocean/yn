@@ -231,6 +231,30 @@ async function buildSrcdoc ({ repo, path, content }: F): Promise<{ html: string,
   })
 
   const html = `
+    <script>
+      window._requestAnimationFrameCount = 0
+      window._requestAnimationFrame = window.requestAnimationFrame
+      window._requestAnimationFrameTask = null
+
+      window.addEventListener('mousemove', () => {
+        window._requestAnimationFrameCount = 0
+        if (window._requestAnimationFrameTask) {
+          window._requestAnimationFrameTask()
+          window._requestAnimationFrameTask = null
+        }
+      })
+
+      window.requestAnimationFrame = function (fn) {
+        if (window._requestAnimationFrameCount < 200) {
+          window._requestAnimationFrameCount++
+          window._requestAnimationFrameTask = null
+          return window._requestAnimationFrame(fn)
+        } else {
+          window._requestAnimationFrameTask = fn
+        }
+      }
+    </script>
+
     <style>
       ::selection {
         background: #d3d3d3;
