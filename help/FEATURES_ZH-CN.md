@@ -420,6 +420,10 @@ chart.setOption({
 
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
+::: warning
+现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。 
+:::
+
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
 
 ## 容器块

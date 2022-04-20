@@ -415,17 +415,17 @@ chart.setOption({
 
 The value of the link attribute `link-type` needs to be a `drawio` string. The use of the link format will not affect other Markdown resolver resolving.
 
-```markdown
 [drawio](./test.drawio){link-type="drawio"}
-```
 
 ## Luckysheet Table
 
 The value of the link attribute `link-type` needs to be a `luckysheet` string. The use of the link format will not affect other Markdown resolver resolving.
 
-```markdown
+::: warning
+[Luckysheet](https://github.com/mengshukeji/Luckysheet) has many bugs and should be used with caution.
+:::
+
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
-```
 
 ## Container Block
 
