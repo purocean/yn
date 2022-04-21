@@ -164,11 +164,21 @@ defaultRules.text = function (tokens: Token[], idx: number) {
 }
 
 defaultRules.html_block = function (tokens: Token[], idx: number) {
-  return createHtmlVNode(tokens[idx].content)
+  const token = tokens[idx] as any
+  if (token.contentVNode) {
+    return token.contentVNode
+  }
+
+  return createHtmlVNode(token.content)
 }
 
 defaultRules.html_inline = function (tokens: Token[], idx: number) {
-  return createHtmlVNode(tokens[idx].content)
+  const token = tokens[idx] as any
+  if (token.contentVNode) {
+    return token.contentVNode
+  }
+
+  return createHtmlVNode(token.content)
 }
 
 function createHtmlVNode (html: string) {

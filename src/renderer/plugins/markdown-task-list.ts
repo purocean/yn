@@ -7,6 +7,7 @@
 // https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments
 // https://github.com/blog/1825-task-lists-in-all-markdown-documents
 
+import { h } from 'vue'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context'
 import { DOM_CLASS_NAME } from '@fe/support/args'
@@ -68,12 +69,13 @@ function todoify (token: { children: any[]; content: string | any[] }, TokenCons
 
 function makeCheckbox (token: { content: string | string[] }, TokenConstructor: new (arg0: string, arg1: string, arg2: number) => any) {
   const checkbox = new TokenConstructor('html_inline', '', 0)
-  const disabledAttr = disableCheckboxes ? ' disabled="" ' : ' '
   if (token.content.indexOf('[ ] ') === 0) {
-    checkbox.content = `<input class="${DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX}"` + disabledAttr + 'type="checkbox">'
+    checkbox.contentVNode = h('input', { class: DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX, type: 'checkbox', disabled: disableCheckboxes, checked: false })
   } else if (token.content.indexOf('[x] ') === 0 || token.content.indexOf('[X] ') === 0) {
-    checkbox.content = `<input class="${DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX}" checked=""` + disabledAttr + 'type="checkbox">'
+    checkbox.contentVNode = h('input', { class: DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX, type: 'checkbox', disabled: disableCheckboxes, checked: true })
   }
+
+  checkbox.content = token.content
   return checkbox
 }
 
