@@ -79,7 +79,7 @@ export function scrollTopTo (top: number) {
 }
 
 export function getPreviewStyles () {
-  let styles = 'article.markdown-body { max-width: 980px; margin: 20px auto; }'
+  let styles = 'article.markdown-body { max-width: 1024px; margin: 20px auto; }'
   Array.prototype.forEach.call(document.styleSheets, item => {
     // inject global styles, normalize.css
     const flag = item.cssRules[0] &&

@@ -360,7 +360,6 @@ export default defineComponent({
   width: 27vw;
   padding: 0;
   right: 20px;
-  max-width: 980px;
   box-sizing: border-box;
   z-index: 1000;
   margin-top: -1.8em;
@@ -649,7 +648,7 @@ export default defineComponent({
   }
 
   .markdown-view .markdown-body {
-    max-width: 800px;
+    max-width: 1024px;
     margin: 0 auto;
     color: var(--g-color-0);
     margin-top: 1em;
