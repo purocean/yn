@@ -22,7 +22,16 @@ export class MdFoldingProvider implements Monaco.languages.FoldingRangeProvider 
     this.ctx = ctx
   }
 
-  public async provideFoldingRanges (model: Monaco.editor.ITextModel, _context: Monaco.languages.FoldingContext, cancellationToken: Monaco.CancellationToken) {
+  public async provideFoldingRanges (model: Monaco.editor.ITextModel, _context: Monaco.languages.FoldingContext, cancellationToken: Monaco.CancellationToken, retry = true): Promise<Monaco.languages.FoldingRange[]> {
+    if (model.uri.toString() !== this.ctx.doc.toUri(this.ctx.view.getRenderEnv()?.file)) {
+      if (retry) {
+        await this.ctx.utils.sleep(1000)
+        return await this.provideFoldingRanges(model, _context, cancellationToken, false)
+      }
+
+      return []
+    }
+
     if (model.getValueLength() > lengthLimit) {
       return []
     }
