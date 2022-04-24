@@ -137,8 +137,12 @@ export function write (repo: string, p: string, content: any): Promise<string> {
     await fs.ensureFile(filePath)
     await fs.writeFile(filePath, content)
 
-    if (filePath.endsWith('.md')) {
-      setTimeout(() => writeHistory(filePath, content), 0)
+    if (filePath.endsWith('.md') && typeof content === 'string') {
+      if (content.length > 100 * 1024) {
+        console.log('skip write history for large file', filePath, content.length)
+      } else {
+        setTimeout(() => writeHistory(filePath, content), 0)
+      }
     }
 
     return crypto.createHash('md5').update(content).digest('hex')

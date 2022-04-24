@@ -29,7 +29,7 @@ export default {
         await ctx.editor.whenEditorReady()
 
         ctx.view.disableSyncScrollAwhile(async () => {
-          ctx.editor.setScrollToTop(position.editor || 0)
+          ctx.editor.getEditor().setScrollTop(position.editor || 0)
           if (typeof position.view === 'number') {
             await ctx.utils.sleep(0)
             ctx.view.scrollTopTo(position.view)
@@ -70,7 +70,7 @@ export default {
         window.getSelection()!.toString().length < 1
       ) {
         ctx.view.disableSyncScrollAwhile(() => {
-          ctx.editor.revealLineInCenter(parseInt(target.dataset.sourceLine || '0'))
+          ctx.editor.getEditor().revealLineNearTop(parseInt(target.dataset.sourceLine || '0'))
         })
       }
 

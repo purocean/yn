@@ -14,7 +14,6 @@ import * as base from '@fe/services/base'
 import * as api from '@fe/support/api'
 import * as embed from '@fe/support/embed'
 import * as args from '@fe/support/args'
-import * as constant from '@fe/support/constant'
 import * as doc from '@fe/services/document'
 import * as view from '@fe/services/view'
 import * as tree from '@fe/services/tree'
@@ -33,7 +32,6 @@ const ctx = {
   base,
   api,
   args,
-  constant,
   store,
   action,
   doc,

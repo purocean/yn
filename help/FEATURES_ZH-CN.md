@@ -25,6 +25,9 @@ define:
     ::: tip
     如果您不小心丢失了您的文档数据，您可以到此文件夹尝试找回。
     :::
+    ::: danger
+    出于性能的考虑，超过 *102400* 个字符的文档将不会储存历史记录。因此请谨慎在文档中嵌入 Base64 图片。
+    :::
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
 
@@ -61,7 +64,7 @@ define:
 
 ### 元素属性书写
 
-此功能使用 [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs) 实现
+此功能使用 [markdown-it-attrs][markdown-it-attributes](https://github.com/purocean/markdown-it-attributes) 实现
 
 - 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}
@@ -70,6 +73,7 @@ define:
 
 | 类名 | 说明 |
 | -- | -- |
+| `avoid-page-break` | 打印/导出PDF时避免页面在此元素中断 |
 | `new-page` | 打印/导出PDF时在此元素前分页 |
 | `skip-print` | 打印/导出PDF时跳过此元素 |
 | `skip-export` | 导出/复制HTML时跳过此元素 |
@@ -410,17 +414,17 @@ chart.setOption({
 
 链接属性 `link-type` 值需要是 `drawio` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
-```markdown
 [drawio](./test.drawio){link-type="drawio"}
-```
 
 ## Luckysheet 表格
 
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
-```markdown
+::: warning
+现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。 
+:::
+
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
-```
 
 ## 容器块
 
@@ -512,6 +516,14 @@ test 2
 test 3
 :::
 ::::
+
+## OpenAI 自动补全
+
+Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command.getKeysLabel('plugin.editor-openai.trigger') =]` 即可实现智能补全（如果选中了文字，则只将选中的文字提交给 AI 计算）。
+
+注：OpenAI API token 需要你自行获取。
+
+<video src="./openai.mp4" height="200" controls></video>
 
 ## Front Matter
 

@@ -45,7 +45,8 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
   tabSize: getSetting('editor.tab-size', 4),
   minimap: getSetting('editor.minimap', true) ? undefined : {
     enabled: false
-  }
+  },
+  lineNumbers: getSetting('editor.line-numbers', 'on'),
 })
 
 /**
@@ -175,30 +176,6 @@ export function deleteLine (line: number) {
   ])
   editor.setPosition(new (getMonaco().Position)(line, 1))
   editor.focus()
-}
-
-/**
- * Reveal line to screen center.
- * @param line
- */
-export function revealLineInCenter (line: number) {
-  getEditor().revealLineInCenter(line)
-}
-
-/**
- * Reveal line.
- * @param line
- */
-export function revealLine (line: number) {
-  getEditor().revealLine(line)
-}
-
-/**
- * Set scroll bar position.
- * @param top
- */
-export function setScrollToTop (top: number) {
-  getEditor().setScrollTop(top)
 }
 
 /**

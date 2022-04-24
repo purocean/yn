@@ -73,7 +73,7 @@ function addCustomStyles (ctx: Ctx) {
         content: attr(${DATA_ATTR_NAME})
       }
 
-      .markdown-view .markdown-body .${ctx.constant.DOM_CLASS_NAME.WRAP_CODE} table.${TABLE_NAME} td {
+      .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE} table.${TABLE_NAME} td {
         white-space: pre-wrap;
         box-shadow: none !important;
       }

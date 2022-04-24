@@ -5,7 +5,7 @@ import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import store from '@fe/support/store'
 import { basename } from '@fe/utils/path'
-import type{ BuildInSettings, FileItem, PathItem } from '@fe/types'
+import type{ BuildInSettings, FileItem, PathItem, SettingGroup } from '@fe/types'
 import { getThemeName } from './theme'
 import { t } from './i18n'
 
@@ -21,7 +21,7 @@ export type Schema = {
     required?: boolean,
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
     enum?: string[] | number [],
-    group: 'repos' | 'appearance' | 'editor' | 'image' | 'other',
+    group: SettingGroup,
     items?: {
       type: string,
       title: TTitle,
@@ -39,6 +39,10 @@ export type Schema = {
     [key: string]: any,
   }},
   required: (keyof BuildInSettings)[],
+  groups: {
+    label: TTitle,
+    value: SettingGroup,
+  }[],
 }
 
 const schema: Schema = {
@@ -141,6 +145,17 @@ const schema: Schema = {
         patternmessage: '[\\<>?:"|*] are not allowed. Cannot starts with ./{docName}, /{docName} or {docName}.'
       },
     },
+    'editor.line-numbers': {
+      defaultValue: 'on',
+      title: 'T_setting-panel.schema.editor.line-numbers',
+      enum: ['on', 'off', 'relative', 'interval'],
+      options: {
+        enum_titles: ['On', 'Off', 'Relative', 'Interval'],
+      },
+      type: 'string',
+      group: 'editor',
+      required: true,
+    },
     'auto-save': {
       defaultValue: 2000,
       title: 'T_setting-panel.schema.auto-save',
@@ -153,7 +168,7 @@ const schema: Schema = {
       required: true,
     },
     'editor.ordered-list-completion': {
-      defaultValue: 'auto',
+      defaultValue: 'increase',
       title: 'T_setting-panel.schema.editor.ordered-list-completion',
       type: 'string',
       enum: ['auto', 'increase', 'one'],
@@ -227,9 +242,51 @@ const schema: Schema = {
       group: 'other',
       format: 'checkbox',
       required: true,
-    }
+    },
+    'proxy.enabled': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.proxy.enabled',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'proxy',
+    },
+    'proxy.server': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.proxy.server',
+      type: 'string',
+      group: 'proxy',
+      pattern: '^(|.+:\\d{2,5})$',
+      options: {
+        inputAttributes: { placeholder: 'T_setting-panel.schema.proxy.server-hint', }
+      }
+    },
+    'proxy.bypass-list': {
+      defaultValue: '<local>',
+      title: 'T_setting-panel.schema.proxy.bypass-list',
+      type: 'string',
+      group: 'proxy',
+      options: {
+        inputAttributes: { placeholder: '<local>;*.google.com;*foo.com;1.2.3.4:5678', }
+      }
+    },
+    'proxy.pac-url': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.proxy.pac-url',
+      type: 'string',
+      group: 'proxy',
+      options: {
+        inputAttributes: { placeholder: 'http://', }
+      }
+    },
   } as Partial<Schema['properties']> as any,
   required: [],
+  groups: [
+    { label: 'T_setting-panel.tabs.repos', value: 'repos' },
+    { label: 'T_setting-panel.tabs.appearance', value: 'appearance' },
+    { label: 'T_setting-panel.tabs.editor', value: 'editor' },
+    { label: 'T_setting-panel.tabs.image', value: 'image' },
+    { label: 'T_setting-panel.tabs.proxy', value: 'proxy' },
+  ]
 }
 
 const settings = {
@@ -255,11 +312,15 @@ if (FLAG_MAS) {
 export function getSchema (): Schema {
   schema.required = (Object.keys(schema.properties) as any[])
     .filter((key: keyof Schema['properties']) => schema.properties[key].required)
-  return cloneDeepWith(schema, val => {
+  const result: Schema = cloneDeepWith(schema, val => {
     if (typeof val === 'string' && val.startsWith('T_')) {
       return t(val.substring(2) as any)
     }
   })
+
+  result.groups = [...result.groups, { label: t('setting-panel.tabs.other') as any, value: 'other' }]
+
+  return result
 }
 
 /**

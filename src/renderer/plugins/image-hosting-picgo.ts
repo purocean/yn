@@ -1,6 +1,5 @@
 import { Plugin, Ctx } from '@fe/context'
-import { FLAG_DEMO } from '@fe/support/args'
-import { DOM_ATTR_NAME } from '@fe/support/constant'
+import { DOM_ATTR_NAME, FLAG_DEMO } from '@fe/support/args'
 
 export default {
   name: 'image-hosting-picgo',

@@ -11,6 +11,7 @@ export const Ctrl = 'Ctrl'
 export const Meta = 'Meta'
 export const CtrlCmd = 'CtrlCmd'
 export const Alt = 'Alt'
+export const Space = 'Space'
 export const Shift = 'Shift'
 export const BracketLeft = 'BracketLeft'
 export const BracketRight = 'BracketRight'
@@ -83,6 +84,7 @@ export function getKeyLabel (key: XKey | string | number) {
     Shift: isMacOS ? '⇧' : 'Shift',
     BracketLeft: '[',
     BracketRight: ']',
+    Period: '.',
   }[key]
 
   return str || upperFirst(key.toString())

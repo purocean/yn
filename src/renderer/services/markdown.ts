@@ -3,7 +3,7 @@ import MarkdownItSub from 'markdown-it-sub'
 import MarkdownItSup from 'markdown-it-sup'
 import MarkdownItMark from 'markdown-it-mark'
 import MarkdownItAbbr from 'markdown-it-abbr'
-import MarkdownItAttrs from 'markdown-it-attrs'
+import MarkdownItAttributes from 'markdown-it-attributes'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 import { triggerHook } from '@fe/core/hook'
 
@@ -31,7 +31,7 @@ markdown.use(MarkdownItSub)
 markdown.use(MarkdownItSup)
 markdown.use(MarkdownItMark)
 markdown.use(MarkdownItAbbr)
-markdown.use(MarkdownItAttrs)
+markdown.use(MarkdownItAttributes)
 markdown.use(MarkdownItMultimdTable, { multiline: true })
 
 const tokenize = markdown.block.tokenize

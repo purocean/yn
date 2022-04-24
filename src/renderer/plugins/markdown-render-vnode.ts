@@ -2,7 +2,7 @@ import { createVNode, Fragment, Comment, Text, VNode } from 'vue'
 import type Token from 'markdown-it/lib/token'
 import type Renderer from 'markdown-it/lib/renderer'
 import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
-import { DOM_ATTR_NAME } from '@fe/support/constant'
+import { DOM_ATTR_NAME } from '@fe/support/args'
 import type { Plugin } from '@fe/context'
 
 const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
@@ -164,19 +164,30 @@ defaultRules.text = function (tokens: Token[], idx: number) {
 }
 
 defaultRules.html_block = function (tokens: Token[], idx: number) {
-  return createHtmlVNode(tokens[idx].content)
+  const token = tokens[idx] as any
+  if (token.contentVNode) {
+    return token.contentVNode
+  }
+
+  return createHtmlVNode(token.content)
 }
 
 defaultRules.html_inline = function (tokens: Token[], idx: number) {
-  return createHtmlVNode(tokens[idx].content)
+  const token = tokens[idx] as any
+  if (token.contentVNode) {
+    return token.contentVNode
+  }
+
+  return createHtmlVNode(token.content)
 }
 
 function createHtmlVNode (html: string) {
-  const div = document.createElement('div')
+  const div = document.createElement('template')
   div.innerHTML = html
+  const elements = div.content.children
   const children = []
-  for (let i = 0; i < div.children.length; i++) {
-    const element = div.children[i]
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i]
     const tagName = element.tagName.toLowerCase()
     const attrs: Record<string, any> = {
       key: element.outerHTML

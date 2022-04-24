@@ -20,8 +20,8 @@ import { throttle } from 'lodash-es'
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { revealLineInCenter } from '@fe/services/editor'
-import { DOM_ATTR_NAME } from '@fe/support/constant'
+import { getEditor, getMonaco } from '@fe/services/editor'
+import { DOM_ATTR_NAME } from '@fe/support/args'
 import { AppState } from '@fe/support/store'
 import { getHeadings, getViewDom, Heading } from '@fe/services/view'
 
@@ -46,17 +46,38 @@ export default defineComponent({
       }, 1000)
 
       const line = heading.sourceLine
+      const el = getViewDom()?.querySelector<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
       const scrollEditor = store.state.showEditor && !store.state.presentation
       const scrollPreview = !scrollEditor || !store.state.syncScroll
 
       if (scrollEditor) {
-        revealLineInCenter(line)
+        getEditor().revealLineNearTop(line)
       }
 
       if (scrollPreview) {
-        getViewDom()
-          ?.querySelector<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
-          ?.scrollIntoView()
+        el?.scrollIntoView()
+      }
+
+      // highlight heading
+      if (el) {
+        const decorations = getEditor().deltaDecorations([], [
+          {
+            range: new (getMonaco().Range)(line, 0, line, 999),
+            options: {
+              isWholeLine: true,
+              inlineClassName: 'mtkcontrol'
+            }
+          }
+        ])
+
+        el.style.backgroundColor = 'rgba(255, 183, 0, 0.6)'
+        setTimeout(() => {
+          getEditor().deltaDecorations(decorations, [])
+          el.style.backgroundColor = ''
+          if (el.getAttribute('style') === '') {
+            el.removeAttribute('style')
+          }
+        }, 1000)
       }
     }
 

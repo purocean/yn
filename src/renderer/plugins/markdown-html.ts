@@ -27,10 +27,10 @@ function isLetter (ch: number) {
 }
 
 function setAttrs (token: Token, content: string) {
-  const div = document.createElement('div')
+  const div = document.createElement('template')
   div.innerHTML = content
 
-  const element = div.children[0]
+  const element = div.content.firstElementChild
   if (!element) {
     return
   }
@@ -127,6 +127,9 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
 
       if (lineText.endsWith('-->')) {
         nextLine++
+        const token = state.push('comment', '', 0)
+        token.hidden = true
+        token.map = [startLine, nextLine]
         break
       }
     }

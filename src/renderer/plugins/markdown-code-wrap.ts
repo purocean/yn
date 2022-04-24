@@ -5,7 +5,7 @@ export default {
   name: 'markdown-code-wrap',
   register: ctx => {
     ctx.theme.addStyles(`
-      .markdown-view .markdown-body .${ctx.constant.DOM_CLASS_NAME.WRAP_CODE} {
+      .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE} {
         white-space: pre-wrap;
       }
 
@@ -23,7 +23,7 @@ export default {
         const attrs: FrontMatterAttrs = env.attributes!
         if (attrs.wrapCode) {
           const token = tokens[idx]
-          token.attrJoin('class', ctx.constant.DOM_CLASS_NAME.WRAP_CODE)
+          token.attrJoin('class', ctx.args.DOM_CLASS_NAME.WRAP_CODE)
         }
 
         return temp(tokens, idx, options, env, slf)

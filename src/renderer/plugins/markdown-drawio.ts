@@ -2,6 +2,7 @@ import Markdown from 'markdown-it'
 import { defineComponent, h, onBeforeUnmount, ref, watch } from 'vue'
 import { Plugin } from '@fe/context'
 import { buildSrc, IFrame } from '@fe/support/embed'
+import store from '@fe/support/store'
 import * as api from '@fe/support/api'
 import { isElectron, openWindow } from '@fe/support/env'
 import { useModal } from '@fe/support/ui/modal'
@@ -161,7 +162,7 @@ const MarkdownItPlugin = (md: Markdown) => {
   const render = ({ url, content }: any) => {
     if (url) {
       const params = new URLSearchParams(url.replace(/^.*\?/, ''))
-      const repo = params.get('repo') || (FLAG_DEMO ? 'help' : '')
+      const repo = FLAG_DEMO ? 'help' : (params.get('repo') || store.state.currentFile?.repo || '')
       const path = params.get('path') || ''
       return h(Drawio, { repo, path, name: basename(path), content })
     }
@@ -230,6 +231,30 @@ async function buildSrcdoc ({ repo, path, content }: F): Promise<{ html: string,
   })
 
   const html = `
+    <script>
+      window._requestAnimationFrameCount = 0
+      window._requestAnimationFrame = window.requestAnimationFrame
+      window._requestAnimationFrameTask = null
+
+      window.addEventListener('mousemove', () => {
+        window._requestAnimationFrameCount = 0
+        if (window._requestAnimationFrameTask) {
+          window._requestAnimationFrameTask()
+          window._requestAnimationFrameTask = null
+        }
+      })
+
+      window.requestAnimationFrame = function (fn) {
+        if (window._requestAnimationFrameCount < 200) {
+          window._requestAnimationFrameCount++
+          window._requestAnimationFrameTask = null
+          return window._requestAnimationFrame(fn)
+        } else {
+          window._requestAnimationFrameTask = fn
+        }
+      }
+    </script>
+
     <style>
       ::selection {
         background: #d3d3d3;
@@ -360,7 +385,7 @@ function buildEditorSrcdoc (file: Doc) {
               window.close()
             }
           } catch (error) {
-            alert(error.message)
+            doc.repo !== '__help__' && alert(error.message)
             throw error
           }
         }

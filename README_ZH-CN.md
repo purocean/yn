@@ -13,7 +13,7 @@
 ## 特色
 
 - **使用方便**：使用 Monaco 内核，专为 Markdown 优化，拥有和 VSCode 一样的编辑体验。
-- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等。
+- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等；支持接入 [OpenAI](https://openai.com) 自动补全。
 - **兼容性强**：数据保存为本地 Markdown 文件；拓展功能尽量用 Markdown 原有的语法实现。
 - **插件拓展**：支持用户编写自己的插件来拓展编辑器的功能。
 - **支持加密**：用来保存账号等隐私文件，文件可单独设置密码。
@@ -78,6 +78,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 - **容器块:** 支持类似 VuePress 默认主题的自定义容器
 - **宏替换:** 支持内嵌 JavaScript 表达式动态替换文档内容
 - **图床:** 支持 [PicGo](https://picgo.github.io/PicGo-Doc/) 图床
+- **OpenAI: ** 支持接入 [OpenAI](https://openai.com) 自动补全
 - **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN_ZH-CN.md)
 
 ## 截图
@@ -90,21 +91,22 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.28.0](https://github.com/purocean/yn/releases/tag/v3.28.0) 2022-04-07
+### [v3.29.0](https://github.com/purocean/yn/releases/tag/v3.29.0) 2022-04-24
 
-1. feat: 增加分列自定义容器
-2. feat: 增加拖动调整编辑器/预览大小
-3. feat: Front Matter 支持配置代码换行 `wrapCode`
-4. feat: 支持鼠标中键关闭标签页
-5. feat: 增加编辑器小地图开关配置
-6. feat: 增加缩放界面菜单项
-7. feat: 增加样式类 `wrap-code` `text-left` `text-center` `text-right` `with-border`
-8. feat: 配置图片存放目录支持 `{docBasename}` 文件名（不含拓展名）占位`
-9. fix: 修复 PlantUML 在线端点可能渲染卡住问题
-10. fix: 修复关闭同步滚动后点击标题预览区不能定位问题
-11. fix: 修复开启标题编号后可能不能正确编号问题
-12. fix: 修复某些自定义元素属性可能导致渲染中断问题
-13. upd: 持续优化 HTML 导出
+1. feat: 增加 OpenAI 集成
+2. feat: 编辑器支持折叠内容
+3. feat: 点击大纲目录标题时候高亮对应标题
+4. feat: 增加代理配置项
+5. feat: 增加编辑器行号配置项
+6. feat: 增加样式类 `avoid-page-break`
+7. upd: 优化 Markdown 渲染性能
+8. upd: 增大预览最大宽度
+9. fix: 修复嵌入 HTML 表格不能合并单元格问题
+10. fix: 修复 Mermaid 图形可能有空白问题
+11. fix: 修复自定义容器中脑图不能展示问题
+12. feat(plugin): 支持添加配置分组
+13. upd(plugin): 移除 `ctx.constant` 模块，使用 `ctx.args` 代替
+14. upd(plugin): 移除 `ctx.editor.revealLineInCenter`, `ctx.editor.revealLine`, `ctx.editor.setScrollToTop` 方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

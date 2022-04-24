@@ -13,7 +13,7 @@ English | [中文说明](./README_ZH-CN.md)
 ## Highlights
 
 - **Easy to use:** Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
-- **Powerful:** Support version control; Applets, runnable code blocks, tables, PlantUML, Drawio, macro replacements, etc., can be embedded in the document.
+- **Powerful:** Support version control; Applets, runnable code blocks, tables, PlantUML, Drawio, macro replacements, etc., can be embedded in the document; support for [OpenAI](https://openai.com) auto completion.
 - **High compatibility:** Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
 - **Plug-in extension:** Support users to write their own plug-ins to expand the functionality of the editor.
 - **Encryption supported:** Use encryption to save private files such as account number, and the password can be set separately for each file.
@@ -78,6 +78,7 @@ For more information on how to use the following functions, please see [characte
 - **Custom container:** support custom containers similar to VuePress default themes
 - **Macro replacement:** support for embedded JavaScript expressions to dynamically replace document content
 - **Image hosting service:** support [PicGo](https://picgo.github.io/PicGo-Doc/) image hosting service
+- **OpenAI: ** support for [OpenAI](https://openai.com) auto completion
 - **Custom plug-ins:** support writing JavaScript plug-ins to expand editor functionality. The plug-in is placed in the `home directory/plugins`. Refer to [plug-in Development Guide](./help/PLUGIN.md)
 
 ## Screenshots
@@ -90,21 +91,22 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.28.0](https://github.com/purocean/yn/releases/tag/v3.28.0) 2022-04-07
+### [v3.29.0](https://github.com/purocean/yn/releases/tag/v3.29.0) 2022-04-24
 
-1. feat: add a custom container for columns
-2. feat: add drag to resize editor/preview
-3. feat: Front Matter supports configuration code wrapping `wrapCode`
-4. feat: support middle mouse button to close tab
-5. feat: add editor minimap switch configuration
-6. feat: add zoom menu item
-7. feat: add style classes `wrap-code` `text-left` `text-center` `text-right` `with-border`
-8. feat: configure image storage directory to support `{docBasename}` file name (excluding extension name) placeholder`
-9. fix: fix PlantUML online endpoint may render stuck
-10. fix: fix the problem that the title preview area cannot be positioned after turning off synchronous scrolling
-11. fix: fix the problem that the title number may not be correctly numbered after opening the title number
-12. fix: fix some custom element attributes may cause rendering interruption
-13. upd: optimize HTML export
+1. feat: add OpenAI integration
+2. feat: the editor supports collapsing content
+3. feat: when clicking on the title of the outline, the corresponding title will be highlighted
+4. feat: add proxy configuration
+5. feat: add editor line number configuration
+6. feat: add style class `avoid-page-break`
+7. upd: optimize Markdown rendering performance
+8. upd: increase the maximum width of the preview
+9. fix: fix the problem that cells cannot be merged in embedded HTML tables
+10. fix: fix Mermaid graphics may have blank issue
+11. fix: fix the problem that the brain map cannot be displayed in the custom container
+12. feat(plugin): support adding configuration groups
+13. upd(plugin): remove `ctx.constant` module, use `ctx.args` instead
+14. upd(plugin): remove `ctx.editor.revealLineInCenter`, `ctx.editor.revealLine`, `ctx.editor.setScrollToTop` methods
 
 [More release notes](https://github.com/purocean/yn/releases)
 

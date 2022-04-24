@@ -144,6 +144,10 @@ html {
   }
 }
 
+.avoid-page-break {
+  page-break-inside: avoid;
+}
+
 .new-page {
   page-break-before: always;
 }

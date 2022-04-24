@@ -1,4 +1,4 @@
-import type { Components, Doc, ExportTypes, FileItem, PathItem } from '@fe/types'
+import type { Components, Doc, ExportType, FileItem, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
 import { JWT_TOKEN } from './args'
 
@@ -306,7 +306,7 @@ export async function deleteTmpFile (name: string): Promise<ApiResult<any>> {
 export async function convertFile (
   source: string,
   fromType: 'html' | 'markdown',
-  toType: Exclude<ExportTypes, 'pdf'>,
+  toType: Exclude<ExportType, 'pdf'>,
   resourcePath: string,
 ): Promise<Response> {
   return fetchHttp(`/api/convert/export.${toType}`, {

@@ -25,6 +25,9 @@ Directory description
     ::: tip
     If you accidentally lost your document content, you can check this folder and try to recovery it.
     :::
+    ::: danger
+    For performance reasons, documents with more than *102400* characters will not store history. Therefore, please be careful when embedding Base64 images in documents.
+    :::
 1. plug-ins `<home>/yank-note/plugins`
 1. themes `<home>/yank-note/themes`
 
@@ -60,7 +63,7 @@ Type '/' in the editor to get prompts
 
 ### Element Attribute
 
-This feature is implemented using [markdown-it-attrs](https://github.com/arve0/markdown-it-attrs).
+This feature is implemented using [markdown-it-attributes](https://github.com/purocean/markdown-it-attributes).
 
 - Red Text, white background, border, align text center {.bgw .text-center .with-border style="color:red"}
 - Display As **Block Element**{.block}
@@ -69,12 +72,13 @@ This feature is implemented using [markdown-it-attrs](https://github.com/arve0/m
 
 | Class Name | Description |
 | -- | -- |
-| `new-page` | Page break before this element when printing/exporting PDF |
-| `skip-print` | Skip this element when printing/exporting PDF |
-| `skip-export` | Skip this element when exporting/copying HTML |
+| `avoid-page-break` | Avoid page breaks inside the element when printing/exporting PDF |
+| `new-page` | Page break before the element when printing/exporting PDF |
+| `skip-print` | Skip the element when printing/exporting PDF |
+| `skip-export` | Skip the element when exporting/copying HTML |
 | `inline` | The current element is displayed as an inline element |
 | `block` | The current element is displayed as a block element |
-| `reduce-brightness` | Reduce the brightness of this element when using dark theme |
+| `reduce-brightness` | Reduce the brightness of the element when using dark theme |
 | `bgw` | Set current element background to white |
 | `copy-inner-text` | Mark "Ctrl/Cmd + left click" to copy element text |
 | `wrap-code` | Applied to a code block to make it wrap |
@@ -411,17 +415,17 @@ chart.setOption({
 
 The value of the link attribute `link-type` needs to be a `drawio` string. The use of the link format will not affect other Markdown resolver resolving.
 
-```markdown
 [drawio](./test.drawio){link-type="drawio"}
-```
 
 ## Luckysheet Table
 
 The value of the link attribute `link-type` needs to be a `luckysheet` string. The use of the link format will not affect other Markdown resolver resolving.
 
-```markdown
+::: warning
+[Luckysheet](https://github.com/mengshukeji/Luckysheet) has many bugs and should be used with caution.
+:::
+
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
-```
 
 ## Container Block
 
@@ -513,6 +517,14 @@ test 2
 test 3
 :::
 ::::
+
+## OpenAI Auto Completion
+
+Yank Note integrates with [OpenAI](https://openai.com), press `[= $ctx.command.getKeysLabel('plugin.editor-openai.trigger') =]` to trigger intelligent completion (If text is selected, only the selected text is submitted to AI for calculation).
+
+Note: OpenAI API token needs to be obtained by yourself.
+
+<video src="./openai.mp4" height="200" controls></video>
 
 ## Front Matter
 

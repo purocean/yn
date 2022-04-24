@@ -18,19 +18,14 @@ import * as api from '@fe/support/api'
 import { useToast } from '@fe/support/ui/toast'
 import { getThemeName, setTheme } from '@fe/services/theme'
 import { useI18n } from '@fe/services/i18n'
-import { fetchSettings, getSchema, Schema, writeSettings } from '@fe/services/setting'
+import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
 import GroupTabs from '@fe/components/GroupTabs.vue'
-import { BuildInSettings } from '@fe/types'
+import { BuildInSettings, SettingGroup } from '@fe/types'
 
 JSONEditor.defaults.language = 'en'
-
-type Tab = {
-  label: Schema['properties']['repos']['group'],
-  value: string,
-}
 
 export default defineComponent({
   name: 'x-filter',
@@ -40,15 +35,9 @@ export default defineComponent({
     const { t } = useI18n()
     const toast = useToast()
     const refEditor = ref<HTMLElement>()
-    const tab = ref<Tab['label']>('repos')
+    const tab = ref<SettingGroup>('repos')
     const isReady = ref(false)
-    const tabs: Tab[] = [
-      { label: t('setting-panel.tabs.repos') as any, value: 'repos' },
-      { label: t('setting-panel.tabs.appearance') as any, value: 'appearance' },
-      { label: t('setting-panel.tabs.editor') as any, value: 'editor' },
-      { label: t('setting-panel.tabs.image') as any, value: 'image' },
-      { label: t('setting-panel.tabs.other') as any, value: 'other' },
-    ]
+    const tabs = ref<{label: string, value: SettingGroup}[]>([])
 
     const show = computed(() => store.state.showSetting)
 
@@ -66,7 +55,10 @@ export default defineComponent({
       await triggerHook('SETTING_PANEL_BEFORE_SHOW', {}, { breakable: true })
 
       const schema: any = getSchema()
+      tabs.value = schema.groups
 
+      // begin: hack to use DOMPurify, support html
+      ;(window as any).DOMPurify = { sanitize: (val: string) => val }
       editor = new JSONEditor(refEditor.value, {
         theme: 'html',
         disable_collapse: true,
@@ -77,6 +69,8 @@ export default defineComponent({
         remove_button_labels: true,
         schema,
       })
+      // end: hack to use DOMPurify
+      delete (window as any).DOMPurify
 
       editor.watch('root.theme', () => {
         const theme = editor.getEditor('root.theme').getValue()
@@ -168,7 +162,7 @@ export default defineComponent({
     function updateTab () {
       const schema = getSchema()
 
-      const getPaths = (group: Tab['label']) => Object.keys(schema.properties as any)
+      const getPaths = (group: SettingGroup) => Object.keys(schema.properties as any)
         .filter(key => {
           const item = schema.properties[key as keyof BuildInSettings]
 
@@ -177,18 +171,12 @@ export default defineComponent({
             : (item.group === group)
         }) as (keyof BuildInSettings)[]
 
-      const group: Record<Tab['label'], (keyof BuildInSettings)[]> = {
-        repos: getPaths('repos'),
-        editor: getPaths('editor'),
-        appearance: getPaths('appearance'),
-        image: getPaths('image'),
-        other: getPaths('other'),
-      }
+      const groups = Object.fromEntries(schema.groups.map(group => [group.value, getPaths(group.value)]))
 
       refEditor.value?.querySelectorAll<HTMLElement>('.row').forEach(row => {
         const schemaPath = (row.firstElementChild?.getAttribute('data-schemapath') || '').replace('root.', '')
 
-        if (group[tab.value].includes(schemaPath as any)) {
+        if (groups[tab.value].includes(schemaPath as any)) {
           row.hidden = false
         } else {
           row.hidden = true
@@ -307,6 +295,10 @@ export default defineComponent({
     vertical-align: bottom;
     margin-right: 10px;
     float: left;
+  }
+
+  ::v-deep(a) {
+    color: #4c93e2;
   }
 }
 

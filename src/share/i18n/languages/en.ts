@@ -40,8 +40,8 @@ const data = {
       'desc': 'Yank Note is open-source, I\'ve been constantly updating it since 2018. It consumes my energy and money (such as the annual Apple developer account subscription). Now a paid premium version is available. If you need advanced features or want to support my development, you can buy a license.',
       'free-desc': 'For most users',
       'premium-desc': 'More features',
-      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nIntegrated Terminal\nDocument History',
-      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nIntegrated Terminal\nDocument History(Advanced)\nMacro Replacement\nDark Mode',
+      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History',
+      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History(Advanced)\nMacro Replacement\nDark Mode',
     },
     'buy': {
       'buy': 'Buy',
@@ -311,6 +311,7 @@ const data = {
       'appearance': 'Appearance',
       'editor': 'Editor',
       'image': 'Image',
+      'proxy': 'Proxy',
       'other': 'Other',
     },
     'schema': {
@@ -328,6 +329,7 @@ const data = {
         'tab-size': 'Tab Size',
         'ordered-list-completion': 'Ordered List',
         'minimap': 'Minimap',
+        'line-numbers': 'Line Numbers',
       },
       'theme': 'Theme',
       'language': 'Language',
@@ -347,6 +349,13 @@ const data = {
         'host': 'Listen Host',
         'port': 'Listen Port',
         'port-desc': 'Need to restart the application.'
+      },
+      'proxy': {
+        'enabled': 'Enabled',
+        'server': 'Proxy Server',
+        'server-hint': '127.0.0.1:8080',
+        'bypass-list': 'Bypass List',
+        'pac-url': 'PAC URL',
       },
     }
   },
@@ -503,6 +512,19 @@ const data = {
     'zoom-in': 'Zoom In',
     'zoom-out': 'Zoom Out',
     'zoom-reset': 'Actual Size',
+  },
+  'openai': {
+    'openai-complete': 'OpenAI Complete',
+    'api-token': 'Api Token',
+    'api-token-desc': 'You can get your api token from <a target="_blank" href="http://openai.com">openai.com</a>',
+    'engine-id': 'Engine Id',
+    'engine-id-desc': 'Please refer to <a target="_blank" href="https://beta.openai.com/docs/engines/overview/">Engine Overview</a>',
+    'mode': 'Mode',
+    'range': 'Characters Range',
+    'range-desc': 'Context characters range',
+    'max-tokens': 'Max Tokens',
+    'args-json': 'Custom Arguments',
+    'args-json-desc': 'Query parameters, JSON string like {"temperature": 0.3}',
   },
 }
 

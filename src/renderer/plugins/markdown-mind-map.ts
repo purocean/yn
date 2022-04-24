@@ -435,7 +435,7 @@ const MindMap = defineComponent({
 const renderRule: Renderer.RenderRule = (tokens, idx, options, { bMarks, source }, slf) => {
   const token = tokens[idx]
   const nextToken = tokens[idx + 1]
-  if (token.level === 0 && token.map && nextToken && nextToken.attrGet('class')?.includes('mindmap')) {
+  if (token.map && nextToken && nextToken.attrGet('class')?.includes('mindmap')) {
     const content = source
       .substring(bMarks[token.map[0]], bMarks[token.map[1]])
       .replace(/\{.mindmap[^}]*\}/gm, '')

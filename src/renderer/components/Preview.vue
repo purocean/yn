@@ -45,11 +45,11 @@ import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
-import { revealLineInCenter } from '@fe/services/editor'
+import { getEditor } from '@fe/services/editor'
 import { showExport, toUri } from '@fe/services/document'
 import { getContextMenuItems, getHeadings, Heading } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
-import { DOM_ATTR_NAME } from '@fe/support/constant'
+import { DOM_ATTR_NAME } from '@fe/support/args'
 import { useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
 import type { RenderEnv } from '@fe/types'
@@ -188,7 +188,7 @@ export default defineComponent({
 
     function scrollToTop () {
       scrollTopTo(0)
-      revealLineInCenter(1)
+      getEditor().revealLineInCenter(1)
     }
 
     function handleDbClick (e: MouseEvent) {
@@ -360,7 +360,6 @@ export default defineComponent({
   width: 27vw;
   padding: 0;
   right: 20px;
-  max-width: 980px;
   box-sizing: border-box;
   z-index: 1000;
   margin-top: -1.8em;
@@ -649,7 +648,7 @@ export default defineComponent({
   }
 
   .markdown-view .markdown-body {
-    max-width: 800px;
+    max-width: 1024px;
     margin: 0 auto;
     color: var(--g-color-0);
     margin-top: 1em;

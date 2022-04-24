@@ -91,7 +91,8 @@ export namespace Components {
 
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
-export type ExportTypes = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
+export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
+export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'openai'
 
 export type RenderEnv = {
   source: string,
@@ -114,14 +115,25 @@ export type BuildInSettings = {
   'editor.tab-size': 2 | 4,
   'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
   'editor.minimap': boolean,
+  'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
+  'plugin.editor-openai.api-token': string,
+  'plugin.editor-openai.engine-id': string,
+  'plugin.editor-openai.mode': 'insert' | 'completion',
+  'plugin.editor-openai.max-tokens': number,
+  'plugin.editor-openai.range': number,
+  'plugin.editor-openai.args-json': string,
   'license': string,
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
   'doc-history.number-limit': number,
   'server.host': string,
   'server.port': number,
+  'proxy.enabled': boolean,
+  'proxy.server': string,
+  'proxy.pac-url': string,
+  'proxy.bypass-list': string,
   'keep-running-after-closing-window': boolean,
   'plantuml-api': string,
 }
@@ -216,7 +228,7 @@ export type BuildInHookTypes = {
   DOC_SWITCHED: { doc: Doc | null },
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
-  DOC_BEFORE_EXPORT: { type: ExportTypes },
+  DOC_BEFORE_EXPORT: { type: ExportType },
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
   SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
