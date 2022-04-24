@@ -91,21 +91,22 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.28.0](https://github.com/purocean/yn/releases/tag/v3.28.0) 2022-04-07
+### [v3.29.0](https://github.com/purocean/yn/releases/tag/v3.29.0) 2022-04-24
 
-1. feat: add a custom container for columns
-2. feat: add drag to resize editor/preview
-3. feat: Front Matter supports configuration code wrapping `wrapCode`
-4. feat: support middle mouse button to close tab
-5. feat: add editor minimap switch configuration
-6. feat: add zoom menu item
-7. feat: add style classes `wrap-code` `text-left` `text-center` `text-right` `with-border`
-8. feat: configure image storage directory to support `{docBasename}` file name (excluding extension name) placeholder`
-9. fix: fix PlantUML online endpoint may render stuck
-10. fix: fix the problem that the title preview area cannot be positioned after turning off synchronous scrolling
-11. fix: fix the problem that the title number may not be correctly numbered after opening the title number
-12. fix: fix some custom element attributes may cause rendering interruption
-13. upd: optimize HTML export
+1. feat: add OpenAI integration
+2. feat: the editor supports collapsing content
+3. feat: when clicking on the title of the outline, the corresponding title will be highlighted
+4. feat: add proxy configuration
+5. feat: add editor line number configuration
+6. feat: add style class `avoid-page-break`
+7. upd: optimize Markdown rendering performance
+8. upd: increase the maximum width of the preview
+9. fix: fix the problem that cells cannot be merged in embedded HTML tables
+10. fix: fix Mermaid graphics may have blank issue
+11. fix: fix the problem that the brain map cannot be displayed in the custom container
+12. feat(plugin): support adding configuration groups
+13. upd(plugin): remove `ctx.constant` module, use `ctx.args` instead
+14. upd(plugin): remove `ctx.editor.revealLineInCenter`, `ctx.editor.revealLine`, `ctx.editor.setScrollToTop` methods
 
 [More release notes](https://github.com/purocean/yn/releases)
 
