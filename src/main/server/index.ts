@@ -207,7 +207,7 @@ const convertFile = async (ctx: any, next: any) => {
 
 const tmpFile = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/tmp-file')) {
-    const absPath = path.join(os.tmpdir(), APP_NAME + '_' + ctx.query.name.replace(/\//g, '_'))
+    const absPath = path.join(os.tmpdir(), APP_NAME + '-' + ctx.query.name.replace(/\//g, '_'))
     if (ctx.method === 'GET') {
       ctx.body = await fs.readFile(absPath)
     } else if (ctx.method === 'POST') {

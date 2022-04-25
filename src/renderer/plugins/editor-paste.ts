@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import TurndownService from 'turndown'
 import { getEditor, insert } from '@fe/services/editor'
 import { Plugin } from '@fe/context'
@@ -5,7 +6,7 @@ import { triggerHook } from '@fe/core/hook'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
 import store from '@fe/support/store'
-import { encodeMarkdownLink, fileToBase64URL } from '@fe/utils'
+import { encodeMarkdownLink, fileToBase64URL, path } from '@fe/utils'
 import { isKeydown } from '@fe/core/command'
 
 const IMAGE_REG = /^image\/(png|jpg|jpeg|gif)$/i
@@ -25,8 +26,13 @@ async function pasteImage (file: File, asBase64: boolean) {
       throw new Error('No file opened.')
     }
 
+    const ext = path.extname(file.name)
+    const filename = `img-${dayjs().format('YYYYMMDDHHmmss')}${ext}`
+
+    file = new File([file], filename, { type: file.type })
+
     if (!(await triggerHook('EDITOR_PASTE_IMAGE', { file }, { breakable: true }))) {
-      const assetPath = await upload(file, store.state.currentFile)
+      const assetPath = await upload(file, store.state.currentFile, file.name)
       insert(`![Img](${encodeMarkdownLink(assetPath)})\n`)
     }
 
