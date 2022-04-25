@@ -233,6 +233,11 @@ export default defineComponent({
             if (node.tagName === 'PRE' && node.dataset.lang) {
               node.classList.add('sourceCode', node.dataset.lang)
             }
+
+            // remove katex-html
+            if (node.classList.contains('katex-html')) {
+              node.remove()
+            }
           }
         })
 
