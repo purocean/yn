@@ -218,6 +218,12 @@ Test | Test
 [小尺寸表格]
 {.small}
 
+| h1 | h2 | h3 |
+| -- | -- | -- |
+| x1 | x2 | x3 {rowspan=2 style="color:red"} |
+| x4 {colspan=2} |
+[合并单元格]
+
 ## Katex 公式
 
 此功能由 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) 插件提供

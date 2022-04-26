@@ -217,6 +217,12 @@ Test | Test
 [Small Table]
 {.small}
 
+| h1 | h2 | h3 |
+| -- | -- | -- |
+| x1 | x2 | x3 {rowspan=2 style="color:red"} |
+| x4 {colspan=2} |
+[Merge Cells]
+
 ## Katex
 
 This feature is provided by the [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) plugin.
