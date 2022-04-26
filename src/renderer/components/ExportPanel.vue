@@ -115,6 +115,7 @@ const buildHtml = (title: string, body: string, options: { includeStyle: boolean
   </head>
   <body>
     ${body}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.css" rel="stylesheet" />
   </body>
 </html>
 `
