@@ -59,6 +59,7 @@ Zoom In | Ctrl/Cmd + =
 Zoom Out | Ctrl/Cmd + -
 Zoom Reset | Ctrl/Cmd + 0
 OpenAI Auto Completion | Ctrl/Cmd + Alt/Option + .
+Switch Repository | Ctrl + Alt/Option + 0-9
 
 :::
 ::: group-item [= $ctx.i18n.getCurrentLanguage() === 'zh-CN' ? '*' : '' =]中文
@@ -110,5 +111,6 @@ OpenAI Auto Completion | Ctrl/Cmd + Alt/Option + .
 缩放缩小 | Ctrl/Cmd + -
 缩放重置 | Ctrl/Cmd + 0
 OpenAI 自动补全 | Ctrl/Cmd + Alt/Option + .
+切换仓库 | Ctrl + Alt/Option + 0-9
 :::
 ::::

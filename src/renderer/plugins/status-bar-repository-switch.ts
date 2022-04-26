@@ -49,14 +49,21 @@ export default {
         title: currentRepo
           ? ctx.i18n.t('status-bar.repo.repo', currentRepo.name.substring(0, 10))
           : ctx.i18n.t('status-bar.repo.no-data'),
-        list: ctx.setting.getSetting('repos', []).map(({ name, path }) => {
+        list: ctx.setting.getSetting('repos', []).map(({ name, path }, i, arr) => {
           return {
             id: name,
             type: 'normal',
             title: name,
             tips: path,
             checked: currentRepo && currentRepo.name === name && currentRepo.path === path,
-            onClick: () => choose({ name, path })
+            onClick: () => choose({ name, path }),
+            subTitle: i === arr.length - 1
+              ? ctx.command.getKeysLabel([ctx.command.Ctrl, ctx.command.Alt]) + ' 0'
+              : (
+                  i < 9
+                    ? ctx.command.getKeysLabel([ctx.command.Ctrl, ctx.command.Alt]) + ' ' + (i + 1)
+                    : undefined
+                ),
           }
         })
       }
@@ -80,5 +87,20 @@ export default {
         ctx.statusBar.refreshMenu()
       }
     })
+
+    window.addEventListener('keydown', e => {
+      if (e.altKey && e.ctrlKey && e.code.startsWith('Digit')) {
+        const repoIndex = Number(e.code.substring(5)) - 1
+        const repos = ctx.setting.getSetting('repos', [])
+
+        const repo = repos[repoIndex === -1 ? repos.length - 1 : repoIndex]
+        if (repo) {
+          choose({ name: repo.name, path: repo.path })
+        }
+
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }, true)
   }
 } as Plugin
