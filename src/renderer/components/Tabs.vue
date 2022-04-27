@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Sortable from 'sortablejs'
-import { computed, defineComponent, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { useI18n } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
@@ -131,8 +131,28 @@ export default defineComponent({
       ])
     }
 
+    function handleKeydown (e: KeyboardEvent) {
+      if (e.ctrlKey && !e.altKey && !e.metaKey && e.code.startsWith('Digit')) {
+        const tabIndex = Number(e.code.substring(5)) - 1
+
+        const tab = props.list[tabIndex === -1 ? props.list.length - 1 : tabIndex]
+        if (tab) {
+          switchTab(tab)
+        }
+
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
     onMounted(() => {
       initSortable()
+      window.addEventListener('keydown', handleKeydown, true)
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('keydown', handleKeydown, true)
+      sortable?.destroy()
     })
 
     const tabList = computed(() => sortTabs(props.list))

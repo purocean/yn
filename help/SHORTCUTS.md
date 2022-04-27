@@ -48,6 +48,7 @@ Edit Table Cell (Popup) | Ctrl/Cmd + Click
 Copy Heading link | Ctrl/Cmd + Click Heading
 Switch Editor Tab | Ctrl/Cmd + Alt/Option + Left/Right
 Close Editor Current Tab | TABS-CLOSE-CURRENT
+Switch Editor Current Tab | Ctrl + 0-9
 Toggle Sidebar | Alt/Option + E
 Toggle Word Wrap | Alt/Option + W
 Toggle Preview | Alt/Option + V
@@ -100,6 +101,7 @@ Switch Repository | Alt/Option + 0-9
 复制文档标题链接 | Ctrl/Cmd + 单击标题
 切换编辑器 Tab | Ctrl/Cmd + Alt/Option + Left/Right
 关闭编辑器当前标签 Tab | TABS-CLOSE-CURRENT
+切换编辑器当前标签 | Ctrl + 0-9
 切换侧栏 | Alt/Option + E
 切换编辑器自动换行 | Alt/Option + W
 切换文档预览显示 | Alt/Option + V
