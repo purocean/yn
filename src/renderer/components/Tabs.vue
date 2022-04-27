@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Sortable from 'sortablejs'
-import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { useI18n } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
