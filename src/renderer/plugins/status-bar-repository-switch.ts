@@ -58,10 +58,10 @@ export default {
             checked: currentRepo && currentRepo.name === name && currentRepo.path === path,
             onClick: () => choose({ name, path }),
             subTitle: i === arr.length - 1
-              ? ctx.command.getKeysLabel([ctx.command.Ctrl, ctx.command.Alt]) + ' 0'
+              ? ctx.command.getKeysLabel([ctx.command.Alt, '0'])
               : (
                   i < 9
-                    ? ctx.command.getKeysLabel([ctx.command.Ctrl, ctx.command.Alt]) + ' ' + (i + 1)
+                    ? ctx.command.getKeysLabel([ctx.command.Alt, (i + 1).toString()])
                     : undefined
                 ),
           }
@@ -89,7 +89,7 @@ export default {
     })
 
     window.addEventListener('keydown', e => {
-      if (e.altKey && e.ctrlKey && e.code.startsWith('Digit')) {
+      if (e.altKey && !e.ctrlKey && !e.metaKey && e.code.startsWith('Digit')) {
         const repoIndex = Number(e.code.substring(5)) - 1
         const repos = ctx.setting.getSetting('repos', [])
 
