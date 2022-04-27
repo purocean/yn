@@ -302,7 +302,7 @@ export default defineComponent({
       removeAction('view.get-view-dom')
       removeAction('view.get-render-env')
       removeHook('GLOBAL_RESIZE', resizeHandler)
-      window.removeEventListener('keydown', keydownHandler)
+      window.removeEventListener('keydown', keydownHandler, true)
     })
 
     watch([currentContent, fileUri, inComposition], () => {
