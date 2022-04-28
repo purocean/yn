@@ -625,8 +625,8 @@ export default defineComponent({
 @include dark-theme {
   .markdown-body {
     mark {
-      background: #998b10 !important;
-      color: inherit;
+      background: #746900 !important;
+      color: #ebebeb;
     }
 
     .reduce-brightness, img {
