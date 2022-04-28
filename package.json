@@ -3,7 +3,7 @@
   "version": "3.29.0",
   "description": "Yank Note: A hackable markdown note application for programmers",
   "main": "dist/main/app.js",
-  "license": "GPL-3.0",
+  "license": "AGPL-3.0",
   "author": {
     "name": "purocean",
     "email": "purocean@outlook.com"
