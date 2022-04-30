@@ -663,7 +663,7 @@ export default defineComponent({
 
     *:not(button) {
       border-color: var(--g-color-80);
-      background: inherit;
+      background-color: inherit;
     }
 
     code {
