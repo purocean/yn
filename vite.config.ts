@@ -64,6 +64,9 @@ export default defineConfig({
       '/static': {
         target: 'http://localhost:3044'
       },
+      '/custom-css': {
+        target: 'http://localhost:3044'
+      },
       '/api': {
         target: 'http://localhost:3044'
       },

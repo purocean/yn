@@ -298,7 +298,7 @@ const customCss = async (ctx: any, next: any) => {
     }
 
     ctx.body = result('ok', 'success', Array.from(new Set(files)))
-  } else if (ctx.path.startsWith('/api/custom-css')) {
+  } else if (ctx.path.startsWith('/custom-css')) {
     const configKey = 'custom-css'
     const defaultCss = BUILD_IN_STYLES[0]
 

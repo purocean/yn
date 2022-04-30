@@ -9,7 +9,7 @@ export default {
       cssLink.id = 'custom-css'
       cssLink.rel = 'stylesheet'
       cssLink.type = 'text/css'
-      cssLink.href = ctx.args.FLAG_DEMO ? '/github.css' : '/api/custom-css'
+      cssLink.href = ctx.args.FLAG_DEMO ? '/github.css' : '/custom-css'
 
       head.appendChild(cssLink)
     })
