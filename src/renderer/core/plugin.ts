@@ -14,7 +14,7 @@ const plugins: {[name: string]: Plugin} = {}
  * @param plugin
  * @param ctx
  */
-export function register <Ctx> (plugin: Plugin, ctx: Ctx) {
+export function register <Ctx> (plugin: Plugin<Ctx>, ctx: Ctx) {
   logger.debug('register', plugin)
   plugins[plugin.name] = plugin
   plugin.register && plugin.register(ctx)

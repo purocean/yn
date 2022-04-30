@@ -55,7 +55,6 @@ const ctx = {
   registerHook: hook.registerHook,
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,
-  registerPlugin: plugin.register,
   showPremium: showPremium,
   version: __APP_VERSION__,
 }
