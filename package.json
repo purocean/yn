@@ -119,6 +119,7 @@
     "normalize.css": "^8.0.1",
     "path-browserify": "^1.0.1",
     "sass": "^1.35.1",
+    "semver": "^7.3.7",
     "socket.io-client": "^2.4.0",
     "sortablejs": "^1.13.0",
     "ts-jest": "^27.1.2",

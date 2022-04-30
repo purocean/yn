@@ -5,6 +5,7 @@ import 'dayjs/locale/en'
 import { registerHook } from '@fe/core/hook'
 import { getCurrentLanguage } from '@fe/services/i18n'
 
+export * as semver from 'semver'
 export * as lodash from 'lodash-es'
 export * as vue from 'vue'
 export { default as dayjs } from 'dayjs'
