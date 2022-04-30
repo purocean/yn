@@ -13,4 +13,13 @@ test('ioc usage', () => {
   expect(ioc.get('ACTION_AFTER_RUN')).toEqual(['test1'])
   ioc.removeAll('ACTION_AFTER_RUN')
   expect(ioc.container.ACTION_AFTER_RUN).toEqual([])
+
+  ioc.register('ACTION_AFTER_RUN', 'test')
+  ioc.register('ACTION_AFTER_RUN', 'test1')
+  ioc.register('ACTION_AFTER_RUN', 'test2')
+  ioc.register('ACTION_AFTER_RUN', 'test3')
+  ioc.register('ACTION_AFTER_RUN', 'test4')
+
+  ioc.removeWhen('ACTION_AFTER_RUN', item => item === 'test' || item === 'test3')
+  expect(ioc.get('ACTION_AFTER_RUN')).toEqual(['test1', 'test2', 'test4'])
 })

@@ -23,6 +23,17 @@ export function remove<T extends keyof BuildInIOCTypes> (type: T, item: BuildInI
   }
 }
 
+export function removeWhen <T extends keyof BuildInIOCTypes> (type: T, when: (item: BuildInIOCTypes[T]) => boolean) {
+  if (container[type]) {
+    const items = container[type]
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (when(items[i])) {
+        items.splice(i, 1)
+      }
+    }
+  }
+}
+
 export function removeAll<T extends keyof BuildInIOCTypes> (type: T) {
   container[type] = []
 }
