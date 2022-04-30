@@ -7,7 +7,7 @@ import bodyParser from 'koa-body'
 import * as mime from 'mime'
 import request from 'request'
 import { promisify } from 'util'
-import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES } from '../constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES, USER_EXTENSION_DIR } from '../constant'
 import * as file from './file'
 import run from './run'
 import convert from './convert'
@@ -406,6 +406,56 @@ const rpc = async (ctx: any, next: any) => {
   }
 }
 
+const sendFile = async (ctx: any, next: any, filePath: string, fullback = true) => {
+  if (!fs.existsSync(filePath)) {
+    if (fullback) {
+      await sendFile(ctx, next, path.resolve(STATIC_DIR, 'index.html'), false)
+    } else {
+      next()
+    }
+
+    return false
+  }
+
+  const fileStat = fs.statSync(filePath)
+  if (fileStat.isDirectory()) {
+    await sendFile(ctx, next, path.resolve(filePath, 'index.html'))
+    return true
+  }
+
+  ctx.body = await promisify(fs.readFile)(filePath)
+  ctx.set('Content-Length', fileStat.size)
+  ctx.set('Last-Modified', fileStat.mtime.toUTCString())
+  ctx.set('Cache-Control', 'max-age=0')
+  ctx.set('X-XSS-Protection', '0')
+  ctx.type = path.extname(filePath)
+
+  return true
+}
+
+const userExtension = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/extensions') && ctx.method === 'GET') {
+    const list = await fs.readdir(USER_EXTENSION_DIR)
+
+    const extensionsSettings = config.get('extensions', {})
+    const extensions = list.map(x => {
+      const ext = extensionsSettings[x]
+      return { id: x, enabled: !!(ext && ext.enabled) }
+    })
+
+    ctx.body = result('ok', 'success', extensions)
+  } else if (ctx.path.startsWith('/extensions/') && ctx.method === 'GET') {
+    const filePath = path.join(USER_EXTENSION_DIR, ctx.path.replace('/extensions', ''))
+    if (await sendFile(ctx, next, filePath)) {
+      return
+    }
+
+    await next()
+  } else {
+    await next()
+  }
+}
+
 const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
@@ -441,6 +491,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, customCss))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userExtension))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
@@ -449,35 +500,9 @@ const server = (port = 3000) => {
   // static file
   app.use(async (ctx: any, next: any) => {
     const urlPath = decodeURIComponent(ctx.path).replace(/^(\/static\/|\/)/, '')
-    const sendFile = async (filePath: string, fullback = true) => {
-      if (!fs.existsSync(filePath)) {
-        if (fullback) {
-          await sendFile(path.resolve(STATIC_DIR, 'index.html'), false)
-        } else {
-          next()
-        }
 
-        return false
-      }
-
-      const fileStat = fs.statSync(filePath)
-      if (fileStat.isDirectory()) {
-        await sendFile(path.resolve(filePath, 'index.html'))
-        return true
-      }
-
-      ctx.body = await promisify(fs.readFile)(filePath)
-      ctx.set('Content-Length', fileStat.size)
-      ctx.set('Last-Modified', fileStat.mtime.toUTCString())
-      ctx.set('Cache-Control', 'max-age=0')
-      ctx.set('X-XSS-Protection', '0')
-      ctx.type = path.extname(filePath)
-
-      return true
-    }
-
-    if (!(await sendFile(path.resolve(STATIC_DIR, urlPath), false))) {
-      await sendFile(path.resolve(USER_THEME_DIR, urlPath), true)
+    if (!(await sendFile(ctx, next, path.resolve(STATIC_DIR, urlPath), false))) {
+      await sendFile(ctx, next, path.resolve(USER_THEME_DIR, urlPath), true)
     }
   })
 
