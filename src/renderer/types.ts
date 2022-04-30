@@ -239,6 +239,7 @@ export type BuildInHookTypes = {
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
+  THEME_STYLES: any;
 }
 
 export type FrontMatterAttrs = {

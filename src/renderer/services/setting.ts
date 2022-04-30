@@ -100,6 +100,9 @@ const schema: Schema = {
       title: 'T_setting-panel.schema.custom-css',
       type: 'string',
       enum: ['github.css'],
+      options: {
+        enum_titles: ['github.css'],
+      },
       group: 'appearance',
       required: true,
     },

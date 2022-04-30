@@ -19,11 +19,17 @@ export default {
     }
 
     ctx.registerHook('SETTING_PANEL_BEFORE_SHOW', async () => {
-      const customStyles = await ctx.api.fetchCustomStyles()
+      const customStyles = await ctx.api.fetchCustomStyles().catch(() => [])
+      ctx.theme.removeThemeStyle(item => item.from === 'custom')
+      customStyles.forEach(css => {
+        ctx.theme.registerThemeStyle({ from: 'custom', name: css, css })
+      })
+
+      const styles = ctx.theme.getThemeStyles()
+
       ctx.setting.changeSchema((schema) => {
-        if (customStyles) {
-          schema.properties['custom-css'].enum = customStyles
-        }
+        schema.properties['custom-css'].enum = styles.map(x => x.css)
+        schema.properties['custom-css'].options.enum_titles = styles.map(x => x.name)
       })
     })
 

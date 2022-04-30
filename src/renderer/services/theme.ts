@@ -2,6 +2,13 @@ import { triggerHook } from '@fe/core/hook'
 import { getPurchased } from '@fe/others/premium'
 import type { ThemeName } from '@fe/types'
 import * as storage from '@fe/utils/storage'
+import * as ioc from '@fe/core/ioc'
+
+export interface ThemeStyle {
+  from: 'custom' | 'extension'
+  name: string,
+  css: string,
+}
 
 /**
  * Get current theme name.
@@ -66,6 +73,22 @@ export function removeStyles (id: string) {
   const css = document.getElementById(id)
   if (css) {
     css.remove()
+  }
+}
+
+export function registerThemeStyle (style: ThemeStyle) {
+  ioc.register('THEME_STYLES', style)
+}
+
+export function getThemeStyles (): ThemeStyle[] {
+  return ioc.get('THEME_STYLES')
+}
+
+export function removeThemeStyle (style: ThemeStyle | ((item: ThemeStyle) => boolean)) {
+  if (typeof style === 'function') {
+    ioc.removeWhen('THEME_STYLES', style)
+  } else {
+    ioc.remove('THEME_STYLES', (item: any) => item.from === style.from && item.name === style.name && item.css === style.css)
   }
 }
 
