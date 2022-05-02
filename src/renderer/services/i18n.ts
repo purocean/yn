@@ -1,4 +1,4 @@
-import { getCurrentInstance, onBeforeUnmount } from 'vue'
+import { getCurrentInstance, onBeforeUnmount, ref, triggerRef } from 'vue'
 import { Language, MsgPath, mergeLanguage as _mergeLanguage, translate } from '@share/i18n'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import * as storage from '@fe/utils/storage'
@@ -57,16 +57,21 @@ export function mergeLanguage (lang: Language, nls: Record<string, any>) {
  * @returns
  */
 export function useI18n () {
+  const $t = ref(t.bind(null))
   const vm = getCurrentInstance()?.proxy
 
   if (!vm) {
     throw new Error('VM Error')
   }
 
-  (vm as any).$t = t
+  Object.defineProperty((vm as any), '$t', {
+    get () {
+      return $t.value
+    },
+  })
 
   const update = () => {
-    vm?.$forceUpdate()
+    triggerRef($t)
   }
 
   registerHook('I18N_CHANGE_LANGUAGE', update)
@@ -74,7 +79,7 @@ export function useI18n () {
     removeHook('I18N_CHANGE_LANGUAGE', update)
   })
 
-  return { t, setLanguage, getLanguage }
+  return { t, $t, setLanguage, getLanguage }
 }
 
 declare module '@vue/runtime-core' {
