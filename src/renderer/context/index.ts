@@ -1,6 +1,7 @@
 import * as storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
 import { showPremium } from '@fe/others/premium'
+import * as extension from '@fe/others/extension'
 import * as ioc from '@fe/core/ioc'
 import * as plugin from '@fe/core/plugin'
 import * as hook from '@fe/core/hook'
@@ -56,6 +57,8 @@ const ctx = {
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,
   showPremium: showPremium,
+  showExtensionManager: extension.showManager,
+  getExtensionLoadStatus: extension.getLoadStatus,
   version: __APP_VERSION__,
 }
 

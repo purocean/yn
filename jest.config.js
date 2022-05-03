@@ -11,5 +11,6 @@ module.exports = {
     '@share/(.*)': '<rootDir>/src/share/$1',
     '@main/(.*)': '<rootDir>/src/main/$1',
     '@fe/(.*)': '<rootDir>/src/renderer/$1',
+    "^lodash-es$": "lodash"
   }
 };

@@ -93,6 +93,7 @@ export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'openai'
+export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 
 export type RenderEnv = {
   source: string,
@@ -134,6 +135,7 @@ export type BuildInSettings = {
   'proxy.server': string,
   'proxy.pac-url': string,
   'proxy.bypass-list': string,
+  'extension.registry': RegistryHostname,
   'keep-running-after-closing-window': boolean,
   'plantuml-api': string,
 }
@@ -151,6 +153,7 @@ export type BuildInActions = {
   'view.exit-presentation': () => void,
   'doc.show-history': (doc?: Doc) => void
   'doc.hide-history': () => void,
+  'extension.show-manager': (id?: string) => void,
   'layout.toggle-view': (visible?: boolean) => void,
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,

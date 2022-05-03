@@ -16,6 +16,7 @@ import shell from '../shell'
 import config from '../config'
 import * as jwt from '../jwt'
 import { getAction } from '../action'
+import * as extension from '../extension'
 
 const isLocalhost = (address: string) => {
   return ip.isEqual(address, '127.0.0.1') || ip.isEqual(address, '::1')
@@ -307,7 +308,18 @@ const customCss = async (ctx: any, next: any) => {
 
     try {
       const filename = config.get(configKey, defaultCss)
-      ctx.body = await fs.readFile(path.join(USER_THEME_DIR, filename))
+
+      if (filename.startsWith('extension:')) {
+        const extensions = await extension.list()
+        const extensionName = filename.substring('extension:'.length, filename.indexOf('/'))
+        if (extensions.some(x => x.enabled && x.id === extensionName)) {
+          ctx.redirect(`/extensions/${filename.replace('extension:', '')}`)
+        } else {
+          throw new Error(`extension not found [${extensionName}]`)
+        }
+      } else {
+        ctx.body = await fs.readFile(path.join(USER_THEME_DIR, filename))
+      }
     } catch (error) {
       console.error(error)
 
@@ -336,6 +348,7 @@ const setting = async (ctx: any, next: any) => {
           data.mark = []
           delete data['server.jwt-secret']
           delete data.license
+          delete data.extensions
           return data
         }
       }
@@ -434,25 +447,32 @@ const sendFile = async (ctx: any, next: any, filePath: string, fullback = true) 
 }
 
 const userExtension = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/extensions') && ctx.method === 'GET') {
-    const list = await fs.readdir(USER_EXTENSION_DIR)
+  if (ctx.method === 'GET') {
+    if (ctx.path.startsWith('/api/extensions')) {
+      ctx.body = result('ok', 'success', await extension.list())
+    } else if (ctx.path.startsWith('/extensions/') && ctx.method === 'GET') {
+      const filePath = path.join(USER_EXTENSION_DIR, ctx.path.replace('/extensions', ''))
+      if (await sendFile(ctx, next, filePath)) {
+        return
+      }
 
-    const extensionsSettings = config.get('extensions', {})
-    const extensions = list.map(x => {
-      const ext = extensionsSettings[x]
-      return { id: x, enabled: !!(ext && ext.enabled) }
-    })
-
-    ctx.body = result('ok', 'success', extensions)
-  } else if (ctx.path.startsWith('/extensions/') && ctx.method === 'GET') {
-    const filePath = path.join(USER_EXTENSION_DIR, ctx.path.replace('/extensions', ''))
-    if (await sendFile(ctx, next, filePath)) {
-      return
+      await next()
+    } else {
+      await next()
     }
-
-    await next()
   } else {
-    await next()
+    const id = ctx.query.id
+    if (ctx.path.startsWith('/api/extensions/install')) {
+      ctx.body = result('ok', 'success', await extension.install(id, ctx.query.url))
+    } else if (ctx.path.startsWith('/api/extensions/uninstall')) {
+      ctx.body = result('ok', 'success', await extension.uninstall(id))
+    } else if (ctx.path.startsWith('/api/extensions/enable')) {
+      ctx.body = result('ok', 'success', await extension.enable(id))
+    } else if (ctx.path.startsWith('/api/extensions/disable')) {
+      ctx.body = result('ok', 'success', await extension.disable(id))
+    } else {
+      await next()
+    }
   }
 }
 

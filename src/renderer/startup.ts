@@ -10,6 +10,7 @@ import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
 import { getPurchased } from '@fe/others/premium'
+import * as extension from '@fe/others/extension'
 import { setTheme } from '@fe/services/theme'
 import { toggleOutline } from '@fe/services/layout'
 import * as view from '@fe/services/view'
@@ -120,3 +121,7 @@ store.watch(() => store.state.currentFile, (val) => {
 }, { immediate: true })
 
 fetchSettings()
+
+registerHook('STARTUP', () => {
+  setTimeout(extension.init, 500)
+}, true)

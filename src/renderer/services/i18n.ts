@@ -49,7 +49,6 @@ export function setLanguage (language: LanguageName) {
  */
 export function mergeLanguage (lang: Language, nls: Record<string, any>) {
   _mergeLanguage(lang, nls)
-  triggerHook('I18N_CHANGE_LANGUAGE', { lang: getLanguage(), currentLang: getCurrentLanguage() })
 }
 
 /**

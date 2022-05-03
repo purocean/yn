@@ -28,6 +28,7 @@
   <Premium />
   <ControlCenter />
   <DocHistory />
+  <ExtensionManager />
 </template>
 
 <script lang="ts">
@@ -54,6 +55,7 @@ import ControlCenter from '@fe/components/ControlCenter.vue'
 import DocHistory from '@fe/components/DocHistory.vue'
 import ActionBar from '@fe/components/ActionBar.vue'
 import Outline from '@fe/components/Outline.vue'
+import ExtensionManager from '@fe/components/ExtensionManager.vue'
 
 export default defineComponent({
   name: 'x-main',
@@ -74,6 +76,7 @@ export default defineComponent({
     DocHistory,
     ActionBar,
     Outline,
+    ExtensionManager,
   },
   setup () {
     const store = useStore<AppState>()

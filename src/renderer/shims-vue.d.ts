@@ -21,6 +21,8 @@ declare module 'filenamify/browser'
 declare module 'katex'
 declare module 'luckyexcel'
 declare module 'xterm-theme'
+declare module 'parse-author'
+declare module 'js-untar'
 declare module 'path-browserify' {
   import path from 'path'
   export default path

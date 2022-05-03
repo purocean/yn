@@ -76,14 +76,26 @@ export function removeStyles (id: string) {
   }
 }
 
+/**
+ * register theme style
+ * @param style
+ */
 export function registerThemeStyle (style: ThemeStyle) {
   ioc.register('THEME_STYLES', style)
 }
 
+/**
+ * get theme styles
+ * @returns
+ */
 export function getThemeStyles (): ThemeStyle[] {
   return ioc.get('THEME_STYLES')
 }
 
+/**
+ * remove theme styles
+ * @param style
+ */
 export function removeThemeStyle (style: ThemeStyle | ((item: ThemeStyle) => boolean)) {
   if (typeof style === 'function') {
     ioc.removeWhen('THEME_STYLES', style)

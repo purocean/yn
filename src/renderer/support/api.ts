@@ -392,3 +392,24 @@ export async function rpc (code: string) {
 
   return data
 }
+
+export async function fetchInstalledExtensions (): Promise<{id: string, enabled: boolean}[]> {
+  const { data } = await fetchHttp('/api/extensions')
+  return data
+}
+
+export async function installExtension (id: string, url: string): Promise<any> {
+  return fetchHttp(`/api/extensions/install?id=${encodeURIComponent(id)}&url=${encodeURIComponent(url)}`, { method: 'POST' })
+}
+
+export async function uninstallExtension (id: string): Promise<any> {
+  return fetchHttp(`/api/extensions/uninstall?id=${encodeURIComponent(id)}`, { method: 'POST' })
+}
+
+export async function enableExtension (id: string): Promise<any> {
+  return fetchHttp(`/api/extensions/enable?id=${encodeURIComponent(id)}`, { method: 'POST' })
+}
+
+export async function disableExtension (id: string): Promise<any> {
+  return fetchHttp(`/api/extensions/disable?id=${encodeURIComponent(id)}`, { method: 'POST' })
+}

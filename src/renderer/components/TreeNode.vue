@@ -42,7 +42,7 @@
 import { computed, defineComponent, nextTick, PropType, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
-import extensions from '@fe/others/extensions'
+import extensions from '@fe/others/file-extensions'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems } from '@fe/services/tree'
 import type { Components } from '@fe/types'
