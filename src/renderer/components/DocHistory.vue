@@ -3,7 +3,7 @@
     <div class="history-wrapper" v-if="currentDoc" @click.stop>
       <div class="history">
         <div class="versions-wrapper" v-if="versions && versions.length">
-          <div v-if="listType === 'all'" class="clear" @click="clearVersions">清空</div>
+          <div v-if="listType === 'all'" class="clear" @click="clearVersions">{{$t('doc-history.clear')}}</div>
           <GroupTabs class="tabs" :tabs="getListTypes()" v-model="listType" />
           <div class="versions" v-if="xVersions && xVersions.length">
             <div

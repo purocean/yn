@@ -469,6 +469,7 @@ const data: BaseLanguage = {
     }
   },
   'doc-history': {
+    'clear': '清空',
     'apply-version': '应用选中版本',
     'no-history': '无历史版本',
     'content': '内容',

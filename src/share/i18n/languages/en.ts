@@ -468,6 +468,7 @@ const data = {
     }
   },
   'doc-history': {
+    'clear': 'Clear',
     'apply-version': 'Apply Selected Version',
     'no-history': 'No History',
     'content': 'Content',
