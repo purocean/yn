@@ -1,5 +1,5 @@
 <template>
-  <XMask :mask-closeable="false" :style="{paddingTop: '20px'}" :show="!!showManager" @close="hide">
+  <XMask :mask-closeable="false" :style="{paddingTop: '7vh'}" :show="!!showManager" @close="hide">
     <div class="wrapper">
       <div class="body">
         <div class="side">
@@ -415,7 +415,8 @@ onUnmounted(() => {
 
 .body {
   display: flex;
-  height: calc(100vh - 20px - 50px);
+  height: calc(100vh - 7vh - 50px);
+  max-height: 900px;
 }
 
 .side {
