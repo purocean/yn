@@ -247,7 +247,7 @@ async function travels (
   const sort = (items: TreeItem[]) => orderBy(items, x => {
     const number = parseFloat(x.name)
     if (!isNaN(number) && isFinite(number)) {
-      return number.toString().padStart(20) + x.name
+      return number.toFixed(12).padStart(20) + x.name
     }
 
     return x.name
