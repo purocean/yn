@@ -33,6 +33,7 @@ export interface Extension {
   installed: boolean;
   origin: 'official' | 'registry' | 'unknown';
   dist: { tarball: string, unpackedSize: number };
+  isDev?: boolean;
 }
 
 const logger = getLogger('extension')
@@ -131,6 +132,7 @@ export async function getInstalledExtensions () {
         ...info,
         enabled: item.enabled && info.compatible.value,
         icon: path.join('/extensions/', item.id, info.icon),
+        isDev: item.isDev,
       })
     }
   }

@@ -19,6 +19,12 @@ function getExtensionPath (id: string) {
   return path.join(USER_EXTENSION_DIR, id)
 }
 
+async function checkDirectory (path: string) {
+  if (!(await fs.lstat(path)).isDirectory()) {
+    throw new Error('Extension path is not a directory')
+  }
+}
+
 function changeExtensionConfig (id: string, val: { enabled: boolean }) {
   const extensions = config.get(configKey, {}) || {}
   extensions[id] = { ...extensions[id], ...val }
@@ -41,7 +47,7 @@ export async function list () {
 
   return list.map(x => {
     const ext = extensionsSettings[x.name]
-    return { id: x.name, enabled: (ext && ext.enabled) }
+    return { id: x.name, enabled: (ext && ext.enabled), isDev: x.isSymbolicLink() }
   })
 }
 
@@ -50,6 +56,7 @@ export async function install (id: string, url: string) {
   const extensionPath = getExtensionPath(id)
   if (await fs.pathExists(extensionPath)) {
     console.log('[extension] already installed. upgrade:', id)
+    await checkDirectory(extensionPath)
 
     if (!(await fs.lstat(extensionPath)).isDirectory()) {
       throw new Error('Extension path is not a directory')
@@ -99,6 +106,7 @@ export async function install (id: string, url: string) {
 export async function uninstall (id: string) {
   const extensionPath = getExtensionPath(id)
   if (await fs.pathExists(extensionPath)) {
+    await checkDirectory(extensionPath)
     await fs.remove(extensionPath)
   }
 }

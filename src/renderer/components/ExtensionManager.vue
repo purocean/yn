@@ -16,7 +16,8 @@
               </div>
               <div class="right">
                 <div class="title">
-                  <div class="name">{{ item.displayName }}</div>
+                  <div v-if="item.isDev" class="name" style="color: #f44336">DEV-{{ item.displayName }}</div>
+                  <div v-else class="name">{{ item.displayName }}</div>
                   <div class="version">
                     <span>{{ item.version }}</span>
                     <span class="upgradable" v-if="item.upgradable">&nbsp; {{ $t('extension.upgradable') }}</span>
@@ -50,7 +51,8 @@
               </div>
               <div class="right">
                 <div class="title">
-                  <div class="name">{{ currentExtension.displayName }}</div>
+                  <div v-if="currentExtension.isDev" class="name" style="color: #f44336">DEV-{{ currentExtension.displayName }}</div>
+                  <div v-else class="name">{{ currentExtension.displayName }}</div>
                   <div class="version" v-if="currentExtension.version">
                     <span>{{ currentExtension.id }}@{{ currentExtension.version }}</span>
                     <span class="upgradable" v-if="currentExtension.upgradable">&nbsp; {{ $t('extension.upgradable') }} {{ currentExtension.latestVersion }}</span>

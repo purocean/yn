@@ -393,7 +393,7 @@ export async function rpc (code: string) {
   return data
 }
 
-export async function fetchInstalledExtensions (): Promise<{id: string, enabled: boolean}[]> {
+export async function fetchInstalledExtensions (): Promise<{id: string, enabled: boolean, isDev?: boolean}[]> {
   const { data } = await fetchHttp('/api/extensions')
   return data
 }
