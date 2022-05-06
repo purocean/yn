@@ -31,8 +31,8 @@
                     <div v-if="!item.compatible.value" class="status">{{ $t('extension.incompatible') }}</div>
                     <div v-if="!item.installed" class="status">{{ $t('extension.not-installed') }}</div>
                     <div v-if="item.installed && item.enabled" class="status">{{ $t('extension.enabled') }}</div>
-                    <div v-if="item.installed && !item.enabled" class="status">{{ $t('extension.disabled') }}</div>
-                    <div v-if="item.dirty" class="status">{{ $t('extension.reload-required') }}</div>
+                    <div v-if="item.installed && !item.enabled" class="status warning">{{ $t('extension.disabled') }}</div>
+                    <div v-if="item.dirty" class="status warning">{{ $t('extension.reload-required') }}</div>
                   </div>
                 </div>
               </div>
@@ -712,5 +712,9 @@ iframe {
 
 .upgradable {
   color: #4caf50;
+}
+
+.warning {
+  color: #f44336 !important;
 }
 </style>
