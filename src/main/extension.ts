@@ -8,7 +8,7 @@ import { getAction } from './action'
 import { Readable } from 'stream'
 import config from './config'
 
-const RE_EXTENSION_ID = /[A-Za-z0-9-_]+/
+const RE_EXTENSION_ID = /^[A-Za-z0-9-_]+$/
 
 const configKey = 'extensions'
 function getExtensionPath (id: string) {
@@ -50,6 +50,10 @@ export async function install (id: string, url: string) {
   const extensionPath = getExtensionPath(id)
   if (await fs.pathExists(extensionPath)) {
     console.log('[extension] already installed. upgrade:', id)
+
+    if (!(await fs.lstat(extensionPath)).isDirectory()) {
+      throw new Error('Extension path is not a directory')
+    }
   }
 
   const agent = await getAction('get-proxy-agent')(url)

@@ -122,6 +122,11 @@ export async function getInstalledExtensions () {
   for (const item of await api.fetchInstalledExtensions()) {
     const info = await getInstalledExtension(item.id)
     if (info) {
+      if (info.id !== item.id) {
+        logger.warn(`Extension ${item.id} has been installed but package.json is not valid.`)
+        continue
+      }
+
       extensions.push({
         ...info,
         enabled: item.enabled && info.compatible.value,
