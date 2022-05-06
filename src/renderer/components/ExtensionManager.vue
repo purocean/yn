@@ -52,7 +52,7 @@
                 <div class="title">
                   <div class="name">{{ currentExtension.displayName }}</div>
                   <div class="version" v-if="currentExtension.version">
-                    <span>{{ currentExtension.version }}</span>
+                    <span>{{ currentExtension.id }}@{{ currentExtension.version }}</span>
                     <span class="upgradable" v-if="currentExtension.upgradable">&nbsp; {{ $t('extension.upgradable') }} {{ currentExtension.latestVersion }}</span>
                   </div>
                 </div>
@@ -270,6 +270,7 @@ async function fetchExtensions () {
     registryExtensions.value = null
     registryExtensions.value = await extensionManager.getRegistryExtensions(currentRegistry.value)
   } finally {
+    registryExtensions.value = []
     refreshInstalledExtensions()
   }
 }
@@ -575,6 +576,11 @@ onUnmounted(() => {
           font-weight: bold;
           font-size: 20px;
           margin-right: 8px;
+        }
+
+        .version {
+          white-space: nowrap;
+          font-size: 14px;
         }
       }
 
