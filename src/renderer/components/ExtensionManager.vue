@@ -57,6 +57,10 @@
                   </div>
                 </div>
                 <div class="tags">
+                  <div v-if="currentExtension.origin === 'unknown'" class="tag">
+                    <span>{{ $t('extension.origin') }}</span>
+                    <span style="background-color: #ff9800">{{ $t('extension.unknown') }}</span>
+                  </div>
                   <div class="tag">
                     <span>{{ $t('extension.author') }}</span>
                     <span v-if="currentExtension.origin === 'official'"><i>Yank Note</i></span>
@@ -269,8 +273,11 @@ async function fetchExtensions () {
   try {
     registryExtensions.value = null
     registryExtensions.value = await extensionManager.getRegistryExtensions(currentRegistry.value)
-  } finally {
+  } catch (error) {
+    logger.error('fetchExtensions', error)
     registryExtensions.value = []
+    throw error
+  } finally {
     refreshInstalledExtensions()
   }
 }
