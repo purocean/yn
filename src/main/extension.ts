@@ -8,9 +8,11 @@ import { getAction } from './action'
 import { Readable } from 'stream'
 import config from './config'
 
+const RE_EXTENSION_ID = /[A-Za-z0-9-_]+/
+
 const configKey = 'extensions'
 function getExtensionPath (id: string) {
-  if (!/[A-Za-z0-9-_]+/.test(id)) {
+  if (!RE_EXTENSION_ID.test(id)) {
     throw new Error('Invalid extension id')
   }
 
@@ -25,7 +27,7 @@ function changeExtensionConfig (id: string, val: { enabled: boolean }) {
 
 export async function list () {
   const list = (await fs.readdir(USER_EXTENSION_DIR, { withFileTypes: true }))
-    .filter(x => (x.isDirectory() || x.isSymbolicLink()) && !x.name.startsWith('.'))
+    .filter(x => (x.isDirectory() || x.isSymbolicLink()) && RE_EXTENSION_ID.test(x.name))
 
   const extensionsSettings = config.get(configKey, {})
 

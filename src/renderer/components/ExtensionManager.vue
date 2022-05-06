@@ -229,7 +229,7 @@ const extensions = computed(() => {
 
       return {
         ...item,
-        dirty: (loadStatus.themes || loadStatus.plugin) &&
+        dirty: (loadStatus.themes || loadStatus.plugin || loadStatus.style) &&
           (!item.installed || !item.enabled || item.version !== loadStatus.version),
       }
     })

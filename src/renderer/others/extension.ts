@@ -10,7 +10,7 @@ import * as i18n from '@fe/services/i18n'
 import * as theme from '@fe/services/theme'
 
 export type Compatible = { value: boolean, reason: string }
-export type LoadStatus = { version?: string, themes: boolean, plugin: boolean }
+export type LoadStatus = { version?: string, themes: boolean, plugin: boolean, style: boolean }
 
 export interface Extension {
   id: string;
@@ -28,6 +28,7 @@ export interface Extension {
   themes: { name: string; css: string }[];
   compatible: Compatible;
   main: string;
+  style: string;
   enabled?: boolean;
   installed: boolean;
   origin: 'official' | 'registry' | 'unknown';
@@ -50,7 +51,7 @@ function changeRegistryOrigin (hostname: RegistryHostname, url: string) {
 }
 
 export function getLoadStatus (id: string): LoadStatus {
-  return loaded.get(id) || { version: undefined, themes: false, plugin: false }
+  return loaded.get(id) || { version: undefined, themes: false, plugin: false, style: false }
 }
 
 export function getCompatible (engines?: { 'yank-note': string }): Compatible {
@@ -83,7 +84,8 @@ export function readInfoFromJson (json: any): Omit<Extension, 'installed'> | nul
       ? parseAuthor(json.author) || { name: '' }
       : json.author || { name: '' },
     themes: json.themes || [],
-    main: json.main,
+    main: json.main || '',
+    style: json.style || '',
     icon: json.icon || '',
     displayName: json[`displayName_${language}`] || json.displayName || json.name,
     description: json[`description_${language}`] || json.description || '',
@@ -182,7 +184,7 @@ export async function install (extension: Extension, registry: RegistryHostname 
 function load (extension: Extension) {
   if (extension.enabled && extension.compatible) {
     logger.debug('load', extension.id)
-    const loadStatus: LoadStatus = loaded.get(extension.id) || { themes: false, plugin: false }
+    const loadStatus: LoadStatus = loaded.get(extension.id) || { themes: false, plugin: false, style: false }
 
     loadStatus.version = extension.version
 
@@ -204,6 +206,15 @@ function load (extension: Extension) {
       script.async = true
       window.document.body.appendChild(script)
       loadStatus.plugin = true
+    }
+
+    const style = extension?.style
+    if (!loadStatus.style && style && style.endsWith('.css')) {
+      const link = window.document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = path.resolve('/extensions', extension.id, style)
+      window.document.head.appendChild(link)
+      loadStatus.style = true
     }
 
     loaded.set(extension.id, loadStatus)
