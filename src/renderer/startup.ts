@@ -122,6 +122,6 @@ store.watch(() => store.state.currentFile, (val) => {
 
 fetchSettings()
 
-registerHook('STARTUP', () => {
-  setTimeout(extension.init, 500)
-}, true)
+whenEditorReady().then(() => {
+  setTimeout(extension.init, 0)
+})

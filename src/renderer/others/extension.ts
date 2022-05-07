@@ -10,7 +10,7 @@ import * as i18n from '@fe/services/i18n'
 import * as theme from '@fe/services/theme'
 
 export type Compatible = { value: boolean, reason: string }
-export type LoadStatus = { version?: string, themes: boolean, plugin: boolean, style: boolean }
+export type LoadStatus = { version?: string, themes: boolean, plugin: boolean, style: boolean, activationTime: number }
 
 export interface Extension {
   id: string;
@@ -52,7 +52,7 @@ function changeRegistryOrigin (hostname: RegistryHostname, url: string) {
 }
 
 export function getLoadStatus (id: string): LoadStatus {
-  return loaded.get(id) || { version: undefined, themes: false, plugin: false, style: false }
+  return loaded.get(id) || { version: undefined, themes: false, plugin: false, style: false, activationTime: 0 }
 }
 
 export function getCompatible (engines?: { 'yank-note': string }): Compatible {
@@ -188,12 +188,50 @@ export async function install (extension: Extension, registry: RegistryHostname 
   await enable(extension)
 }
 
-function load (extension: Extension) {
+async function load (extension: Extension) {
   if (extension.enabled && extension.compatible) {
     logger.debug('load', extension.id)
-    const loadStatus: LoadStatus = loaded.get(extension.id) || { themes: false, plugin: false, style: false }
+    const loadStatus: LoadStatus = loaded.get(extension.id) || { themes: false, plugin: false, style: false, activationTime: 0 }
 
     loadStatus.version = extension.version
+
+    let scriptStartTime = performance.now()
+    let scriptEndTime = scriptStartTime
+    let pluginPromise: Promise<void> | undefined
+
+    const main = extension?.main
+    if (!loadStatus.plugin && main && main.endsWith('.js')) {
+      pluginPromise = new Promise((resolve, reject) => {
+        const script = window.document.createElement('script')
+        script.src = path.resolve('/extensions', extension.id, main)
+        script.defer = true
+        script.onload = () => {
+          resolve()
+          scriptEndTime = performance.now()
+          script.onload = null
+        }
+
+        script.onerror = (error) => {
+          reject(error)
+          scriptEndTime = performance.now()
+          script.onerror = null
+        }
+
+        window.document.body.appendChild(script)
+        setTimeout(() => {
+          scriptStartTime = performance.now()
+        }, 0)
+      })
+    }
+
+    const style = extension?.style
+    if (!loadStatus.style && style && style.endsWith('.css')) {
+      const link = window.document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = path.resolve('/extensions', extension.id, style)
+      window.document.head.appendChild(link)
+      loadStatus.style = true
+    }
 
     if (!loadStatus.themes && extension?.themes && extension.themes.length) {
       extension.themes.forEach(style => {
@@ -206,22 +244,15 @@ function load (extension: Extension) {
       loadStatus.themes = true
     }
 
-    const main = extension?.main
-    if (!loadStatus.plugin && main && main.endsWith('.js')) {
-      const script = window.document.createElement('script')
-      script.src = path.resolve('/extensions', extension.id, main)
-      script.async = true
-      window.document.body.appendChild(script)
-      loadStatus.plugin = true
-    }
-
-    const style = extension?.style
-    if (!loadStatus.style && style && style.endsWith('.css')) {
-      const link = window.document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = path.resolve('/extensions', extension.id, style)
-      window.document.head.appendChild(link)
-      loadStatus.style = true
+    if (pluginPromise) {
+      try {
+        await pluginPromise
+      } catch (error) {
+        console.warn(`Load extension error [${extension.id}]`, error)
+      } finally {
+        loadStatus.plugin = true
+        loadStatus.activationTime = scriptEndTime - scriptStartTime
+      }
     }
 
     loaded.set(extension.id, loadStatus)
@@ -235,6 +266,6 @@ export async function init () {
   logger.debug('init')
 
   for (const extension of await getInstalledExtensions()) {
-    load(extension)
+    await load(extension)
   }
 }

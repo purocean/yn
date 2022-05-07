@@ -30,7 +30,9 @@
                   <div class="status-list">
                     <div v-if="!item.compatible.value" class="status">{{ $t('extension.incompatible') }}</div>
                     <div v-if="!item.installed" class="status">{{ $t('extension.not-installed') }}</div>
-                    <div v-if="item.installed && item.enabled" class="status">{{ $t('extension.enabled') }}</div>
+                    <div v-if="item.installed && item.enabled" class="status">
+                      {{ item.activationTime ? `${item.activationTime.toFixed(2)}ms` : $t('extension.enabled') }}
+                    </div>
                     <div v-if="item.installed && !item.enabled" class="status warning">{{ $t('extension.disabled') }}</div>
                     <div v-if="item.dirty" class="status warning">{{ $t('extension.reload-required') }}</div>
                   </div>
@@ -196,6 +198,7 @@ const extensions = computed(() => {
     upgradable?: boolean,
     latestVersion?: string,
     newVersionCompatible?: Compatible,
+    activationTime?: number,
   })[] = []
 
   if (registryExtensions.value) {
@@ -208,6 +211,7 @@ const extensions = computed(() => {
           enabled: installedInfo.enabled,
           version: installedInfo.version,
           compatible: installedInfo.compatible,
+          isDev: installedInfo.isDev,
           newVersionCompatible: item.compatible,
           latestVersion: item.version,
           upgradable: installedInfo.version !== item.version,
@@ -231,6 +235,7 @@ const extensions = computed(() => {
 
       return {
         ...item,
+        activationTime: loadStatus.activationTime,
         dirty: (loadStatus.themes || loadStatus.plugin || loadStatus.style) &&
           (!item.installed || !item.enabled || item.version !== loadStatus.version),
       }
