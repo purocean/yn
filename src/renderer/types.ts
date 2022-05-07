@@ -103,6 +103,33 @@ export type RenderEnv = {
   tokens: Token[]
 }
 
+export type ExtensionCompatible = { value: boolean, reason: string }
+export type ExtensionLoadStatus = { version?: string, themes: boolean, plugin: boolean, style: boolean, activationTime: number }
+
+export interface Extension {
+  id: string;
+  displayName: string;
+  description: string;
+  icon: string;
+  homepage: string;
+  license: string;
+  author: {
+    name: string;
+    email?: string;
+    url?: string;
+  };
+  version: string;
+  themes: { name: string; css: string }[];
+  compatible: ExtensionCompatible;
+  main: string;
+  style: string;
+  enabled?: boolean;
+  installed: boolean;
+  origin: 'official' | 'registry' | 'unknown';
+  dist: { tarball: string, unpackedSize: number };
+  isDev?: boolean;
+}
+
 export type BuildInSettings = {
   'repos': Repo[],
   'theme': ThemeName,
@@ -237,6 +264,7 @@ export type BuildInHookTypes = {
   SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },
+  EXTENSION_READY: { extensions: Extension[] },
 }
 
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {

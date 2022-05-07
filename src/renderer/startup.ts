@@ -92,6 +92,10 @@ registerHook('SETTING_FETCHED', () => {
   }
 })
 
+registerHook('EXTENSION_READY', () => {
+  view.render()
+})
+
 whenEditorReady().then(({ editor }) => {
   editor.onDidChangeCursorSelection(() => {
     store.commit('setSelectionInfo', getSelectionInfo())

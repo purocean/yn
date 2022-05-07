@@ -5,45 +5,23 @@ import untar from 'js-untar'
 import { getLogger, path } from '@fe/utils'
 import * as api from '@fe/support/api'
 import { getActionHandler } from '@fe/core/action'
-import type { RegistryHostname } from '@fe/types'
+import type { Extension, ExtensionCompatible, ExtensionLoadStatus, RegistryHostname } from '@fe/types'
 import * as i18n from '@fe/services/i18n'
 import * as theme from '@fe/services/theme'
-
-export type Compatible = { value: boolean, reason: string }
-export type LoadStatus = { version?: string, themes: boolean, plugin: boolean, style: boolean, activationTime: number }
-
-export interface Extension {
-  id: string;
-  displayName: string;
-  description: string;
-  icon: string;
-  homepage: string;
-  license: string;
-  author: {
-    name: string;
-    email?: string;
-    url?: string;
-  };
-  version: string;
-  themes: { name: string; css: string }[];
-  compatible: Compatible;
-  main: string;
-  style: string;
-  enabled?: boolean;
-  installed: boolean;
-  origin: 'official' | 'registry' | 'unknown';
-  dist: { tarball: string, unpackedSize: number };
-  isDev?: boolean;
-}
+import { triggerHook } from '@fe/core/hook'
 
 const logger = getLogger('extension')
 
-const loaded = new Map<string, LoadStatus>()
+const loaded = new Map<string, ExtensionLoadStatus>()
 
 export const registries: RegistryHostname[] = [
   'registry.npmjs.org',
   'registry.npmmirror.com',
 ]
+
+function shouldLoad (extension: Extension) {
+  return extension.enabled && extension.compatible
+}
 
 function changeRegistryOrigin (hostname: RegistryHostname, url: string) {
   const _url = new URL(url)
@@ -51,11 +29,11 @@ function changeRegistryOrigin (hostname: RegistryHostname, url: string) {
   return _url.toString()
 }
 
-export function getLoadStatus (id: string): LoadStatus {
+export function getLoadStatus (id: string): ExtensionLoadStatus {
   return loaded.get(id) || { version: undefined, themes: false, plugin: false, style: false, activationTime: 0 }
 }
 
-export function getCompatible (engines?: { 'yank-note': string }): Compatible {
+export function getCompatible (engines?: { 'yank-note': string }): ExtensionCompatible {
   if (!engines || !engines['yank-note']) {
     return { value: false, reason: 'Not yank note extension.' }
   }
@@ -167,7 +145,8 @@ export function showManager (id?: string) {
 export async function enable (extension: Extension) {
   await api.enableExtension(extension.id)
   extension.enabled = true
-  load(extension)
+  await load(extension)
+  triggerHook('EXTENSION_READY', { extensions: [extension] })
 }
 
 export async function disable (extension: Pick<Extension, 'id'>) {
@@ -189,9 +168,9 @@ export async function install (extension: Extension, registry: RegistryHostname 
 }
 
 async function load (extension: Extension) {
-  if (extension.enabled && extension.compatible) {
+  if (shouldLoad(extension)) {
     logger.debug('load', extension.id)
-    const loadStatus: LoadStatus = loaded.get(extension.id) || { themes: false, plugin: false, style: false, activationTime: 0 }
+    const loadStatus: ExtensionLoadStatus = loaded.get(extension.id) || { themes: false, plugin: false, style: false, activationTime: 0 }
 
     loadStatus.version = extension.version
 
@@ -265,7 +244,11 @@ async function load (extension: Extension) {
 export async function init () {
   logger.debug('init')
 
-  for (const extension of await getInstalledExtensions()) {
+  const extensions = (await getInstalledExtensions()).filter(shouldLoad)
+
+  for (const extension of extensions) {
     await load(extension)
   }
+
+  triggerHook('EXTENSION_READY', { extensions })
 }
