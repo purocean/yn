@@ -85,7 +85,7 @@ export function whenEditorReady (): Promise<{ editor: typeof editor, monaco: typ
   }
 
   return new Promise(resolve => {
-    registerHook('EDITOR_READY', resolve)
+    registerHook('EDITOR_READY', resolve, true)
   })
 }
 
