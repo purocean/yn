@@ -3,7 +3,7 @@ import type { BuildInIOCTypes } from '@fe/types'
 export const container: Record<string, any[]> = {}
 
 export function get<T extends keyof BuildInIOCTypes> (type: T): BuildInIOCTypes[T][] {
-  return container[type] || []
+  return [...(container[type] || [])]
 }
 
 export function register<T extends keyof BuildInIOCTypes> (type: T, item: BuildInIOCTypes[T]) {
