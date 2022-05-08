@@ -30,6 +30,7 @@ define:
     :::
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
+1. 扩展 `<home>/yank-note/extensions`
 
 ## TOC 生成
 

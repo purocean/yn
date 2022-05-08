@@ -30,6 +30,7 @@ Directory description
     :::
 1. plug-ins `<home>/yank-note/plugins`
 1. themes `<home>/yank-note/themes`
+1. extensions `<home>/yank-note/extensions`
 
 ## TOC Generation
 

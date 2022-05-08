@@ -30,6 +30,10 @@ function changeRegistryOrigin (hostname: RegistryHostname, url: string) {
 }
 
 export function getInstalledExtensionFilePath (id: string, filename: string) {
+  if (/https?:\/\//.test(filename)) {
+    return filename
+  }
+
   return path.join('/extensions', id, filename)
 }
 

@@ -40,7 +40,7 @@ if (FLAG_DEMO) {
   const fakeFetch = (uri: any, init: any) => Promise.resolve({
     headers: { get: () => 'application/json' },
     json: () => {
-      console.log('mock api >', uri, init)
+      console.log('mock api json >', uri, init)
 
       const url = new URL(location.origin + uri)
       const method = (init && init.method) || 'GET'
@@ -181,11 +181,36 @@ if (FLAG_DEMO) {
         }
       }
 
+      if (uri.startsWith('/api/extensions')) {
+        if (method === 'GET') {
+          return xFetch('/extensions.json').then(res => res.json()).then(json => {
+            return Promise.resolve({ status: 'ok', message: 'success', data: json })
+          })
+        }
+      }
+
+      if (uri.startsWith('/extensions/')) {
+        if (method === 'GET') {
+          return xFetch(uri).then(x => x.json())
+        }
+      }
+
       const message = t('demo-tips')
       useToast().show('warning', message)
 
       return Promise.resolve({ status: 'error', message })
-    }
+    },
+    text: () => {
+      console.log('mock api text >', uri, init)
+
+      const method = (init && init.method) || 'GET'
+
+      if (uri.startsWith('/extensions/')) {
+        if (method === 'GET') {
+          return xFetch(uri).then(r => r.text())
+        }
+      }
+    },
   } as any)
 
   window.fetch = (uri: any, init: any) => {

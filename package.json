@@ -12,7 +12,7 @@
     "dev": "vite",
     "start": "npm run build:main && electron ./dist/main/app.js",
     "build:fe": "vue-tsc --noEmit --esModuleInterop true && vite build",
-    "build:fe-demo": "yarn run build:fe --mode=demo && node scripts/copy-assets.js && cp help/* dist/renderer/ && cp src/main/resources/github.css dist/renderer/",
+    "build:fe-demo": "node scripts/install-demo-extensions.js && yarn run build:fe --mode=demo && node scripts/copy-assets.js && cp help/* dist/renderer/ && cp src/main/resources/github.css dist/renderer/",
     "serve:fe": "vite preview",
     "build:main": "tsc --esModuleInterop true src/main/app.ts --outDir ./dist && node ./scripts/copy-assets.js",
     "build": "npm run build:fe && npm run build:main",

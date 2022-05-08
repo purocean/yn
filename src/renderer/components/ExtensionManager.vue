@@ -138,7 +138,7 @@
                 <div v-if="!iframeLoaded" class="placeholder">{{ $t('loading') }}</div>
               </template>
               <template v-else>
-                <div class="content">
+                <div v-show="iframeLoaded" class="content">
                   <iframe
                     v-if="contentMap[contentType][currentExtension.id]"
                     @load="iframeOnload"
@@ -766,6 +766,7 @@ onUnmounted(() => {
     height: 100%;
     border-top: 3px solid var(--g-color-86);
     overflow: hidden;
+    background: #fff;
   }
 }
 
