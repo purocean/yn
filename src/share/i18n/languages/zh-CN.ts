@@ -29,6 +29,7 @@ const data: BaseLanguage = {
   'discard': '放弃',
   'outline': '目录',
   'files': '文件',
+  'install-extension-tips': '请先安装并启用 “%s” 扩展',
   'premium': {
     'need-purchase': '[%s] 需要高级版',
     'buy-license': '立即购买',
@@ -397,11 +398,6 @@ const data: BaseLanguage = {
     'run-in-xterm': '终端中运行',
     'running': '运行中……',
     'clear': '清空',
-  },
-  'drawio': {
-    'edit-diagram': '编辑图形 - %s',
-    'fit-height': '适应高度',
-    'create-drawio-file': '创建 Drawio 文件 %s',
   },
   'mind-map': {
     'zoom-in': '放大',

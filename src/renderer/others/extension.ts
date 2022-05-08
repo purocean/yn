@@ -246,6 +246,12 @@ async function load (extension: Extension) {
   }
 }
 
+let initialized = false
+
+export function getInitialized () {
+  return initialized
+}
+
 /**
  * Initialization extension system
  */
@@ -258,5 +264,6 @@ export async function init () {
     await load(extension)
   }
 
+  initialized = true
   triggerHook('EXTENSION_READY', { extensions })
 }

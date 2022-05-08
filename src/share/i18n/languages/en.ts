@@ -28,6 +28,7 @@ const data = {
   'edit': 'Edit',
   'outline': 'Outline',
   'files': 'Files',
+  'install-extension-tips': 'Please install and enable the "%s" extension first',
   'premium': {
     'need-purchase': '[%s] Premium is required',
     'buy-license': 'Buy License',
@@ -396,11 +397,6 @@ const data = {
     'run-in-xterm': 'Run in terminal',
     'running': 'Running...',
     'clear': 'Clear',
-  },
-  'drawio': {
-    'edit-diagram': 'Edit Diagram - %s',
-    'fit-height': 'Fit Height',
-    'create-drawio-file': 'Create Drawio File %s',
   },
   'mind-map': {
     'zoom-in': 'Zoom In',

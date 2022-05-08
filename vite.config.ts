@@ -33,24 +33,6 @@ if (!fs.existsSync(path.join(luckySheetDist, 'luckysheet.umd.js'))) {
   )
 }
 
-// copy drawio
-const drawioDist = path.resolve(__dirname, 'src/renderer/public/drawio')
-if (!fs.existsSync(drawioDist)) {
-  fs.copySync(
-    path.resolve(__dirname, 'drawio/src/main/webapp'),
-    drawioDist,
-    {
-      filter: src => {
-        if (src.includes('WEB-INF') || src.includes('META-INF')) {
-          return false
-        }
-
-        return true
-      }
-    }
-  )
-}
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), vueJsx()],

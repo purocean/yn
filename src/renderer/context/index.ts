@@ -61,6 +61,7 @@ const ctx = {
   showPremium: showPremium,
   showExtensionManager: extension.showManager,
   getExtensionLoadStatus: extension.getLoadStatus,
+  getExtensionInitialized: extension.getInitialized,
   version: __APP_VERSION__,
 }
 
