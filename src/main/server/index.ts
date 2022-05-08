@@ -452,11 +452,7 @@ const userExtension = async (ctx: any, next: any) => {
       ctx.body = result('ok', 'success', await extension.list())
     } else if (ctx.path.startsWith('/extensions/') && ctx.method === 'GET') {
       const filePath = path.join(USER_EXTENSION_DIR, ctx.path.replace('/extensions', ''))
-      if (await sendFile(ctx, next, filePath)) {
-        return
-      }
-
-      await next()
+      await sendFile(ctx, next, filePath, false)
     } else {
       await next()
     }

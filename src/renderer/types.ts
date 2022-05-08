@@ -111,6 +111,8 @@ export interface Extension {
   displayName: string;
   description: string;
   icon: string;
+  readmeUrl: string;
+  changelogUrl: string;
   homepage: string;
   license: string;
   author: {

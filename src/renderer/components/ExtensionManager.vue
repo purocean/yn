@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="body">
         <div class="side">
-          <GroupTabs class="tabs" :tabs="listTypes" v-model="listType" />
+          <group-tabs class="tabs" :tabs="listTypes" v-model="listType" />
           <div v-if="extensions.length > 0" class="list">
             <div
               v-for="item in extensions"
@@ -124,12 +124,32 @@
                 </div>
               </div>
             </div>
-            <template v-if="currentExtension.dist.unpackedSize">
-              <div v-show="iframeLoaded" class="content">
-                <iframe @load="iframeOnload" sandbox="allow-scripts allow-popups allow-same-origin" referrerpolicy="no-referrer" :src="`/api/proxy?url=https://www.npmjs.com/package/${currentExtension.id}`" />
-              </div>
-              <div v-if="!iframeLoaded" class="placeholder">{{ $t('loading') }}</div>
-            </template>
+            <div class="content-wrapper">
+              <group-tabs class="tabs" :tabs="contentTypes" v-model="contentType" />
+              <template v-if="useNpmjsReadmePage">
+                <div v-show="iframeLoaded" class="content">
+                  <iframe
+                    @load="iframeOnload"
+                    sandbox="allow-scripts allow-popups allow-same-origin"
+                    referrerpolicy="no-referrer"
+                    :src="`/api/proxy?url=https://www.npmjs.com/package/${currentExtension.id}`"
+                  />
+                </div>
+                <div v-if="!iframeLoaded" class="placeholder">{{ $t('loading') }}</div>
+              </template>
+              <template v-else>
+                <div class="content">
+                  <iframe
+                    v-if="contentMap[contentType][currentExtension.id]"
+                    @load="iframeOnload"
+                    sandbox="allow-scripts allow-popups allow-same-origin"
+                    referrerpolicy="no-referrer"
+                    :srcdoc="contentMap[contentType][currentExtension.id] || ''"
+                  />
+                </div>
+                <div v-if="!iframeLoaded" class="placeholder">{{ $t('loading') }}</div>
+              </template>
+            </div>
           </template>
           <div v-else class="placeholder">{{ $t('extension.extension-manager') }}</div>
           <div class="dialog-actions">
@@ -159,9 +179,11 @@
 </template>
 
 <script lang="ts" setup>
+import Markdown from 'markdown-it'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
+import * as api from '@fe/support/api'
 import { registerAction, removeAction } from '@fe/core/action'
 import XMask from '@fe/components/Mask.vue'
 import GroupTabs from '@fe/components/GroupTabs.vue'
@@ -170,6 +192,8 @@ import type { Extension, ExtensionCompatible } from '@fe/types'
 import * as setting from '@fe/services/setting'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
+
+const markdownIt = Markdown({ linkify: true, breaks: true, html: false })
 
 const logger = getLogger('extension-manager-component')
 
@@ -182,14 +206,25 @@ const currentId = ref('')
 const iframeLoaded = ref(false)
 const installing = ref(false)
 const uninstalling = ref(false)
+const dirty = ref(false)
 const registryExtensions = ref<Extension[] | null>(null)
 const installedExtensions = ref<Extension[]>([])
 const listType = ref<'all' | 'installed'>('all')
+const contentType = ref<'readme' | 'changelog'>('readme')
 const currentRegistry = ref(setting.getSetting('extension.registry', 'registry.npmjs.org'))
+const contentMap = ref<{
+  readme: Record<string, string | null>;
+  changelog: Record<string, string>;
+}>({ readme: {}, changelog: {} })
 
 const listTypes = computed(() => [
   { label: $t.value('extension.all'), value: 'all' },
   { label: $t.value('extension.installed'), value: 'installed' },
+])
+
+const contentTypes = computed(() => [
+  { label: 'README', value: 'readme' },
+  { label: 'CHANGELOG', value: 'changelog' },
 ])
 
 const extensions = computed(() => {
@@ -208,6 +243,9 @@ const extensions = computed(() => {
         return {
           ...item,
           installed: true,
+          icon: installedInfo.icon,
+          readmeUrl: installedInfo.readmeUrl,
+          changelogUrl: installedInfo.changelogUrl,
           enabled: installedInfo.enabled,
           version: installedInfo.version,
           compatible: installedInfo.compatible,
@@ -247,7 +285,14 @@ const currentExtension = computed(() => {
 })
 
 const reloadRequired = computed(() => {
-  return extensions.value.some(item => item.dirty)
+  return dirty.value || extensions.value.some(item => item.dirty)
+})
+
+const useNpmjsReadmePage = computed(() => {
+  return !!(currentExtension.value &&
+    currentExtension.value.dist.unpackedSize &&
+    contentType.value === 'readme' &&
+    contentMap.value.readme[currentExtension.value.id] === null)
 })
 
 function choose (id: string) {
@@ -258,6 +303,7 @@ function choose (id: string) {
 
   currentId.value = id
   iframeLoaded.value = false
+  contentType.value = 'readme'
 }
 
 function show (id?: string) {
@@ -286,6 +332,36 @@ async function fetchExtensions () {
     throw error
   } finally {
     refreshInstalledExtensions()
+  }
+}
+
+async function fetchContent (type: 'readme' | 'changelog', extension: Extension) {
+  if (contentMap.value[type][extension.id]) {
+    return
+  }
+
+  try {
+    const url = type === 'readme' ? extension.readmeUrl : extension.changelogUrl
+    const xfetch = /https?:\/\//.test(url) ? api.proxyRequest : window.fetch
+    const markdown = await xfetch(url).then(r => {
+      if (r.ok === false) {
+        logger.warn('fetchContent', r.statusText)
+        return '*No Content*'
+      }
+
+      return r.text()
+    })
+
+    contentMap.value[type][extension.id] = markdownIt.render(markdown)
+  } catch (error: any) {
+    logger.error('fetchContent', error)
+    if (type === 'readme') {
+      // null means empty, load npmjs page instead
+      contentMap.value[type][extension.id] = null
+    } else {
+      contentMap.value[type][extension.id] = error.message
+    }
+    throw error
   }
 }
 
@@ -323,6 +399,11 @@ async function uninstall (extension?: Extension) {
       uninstalling.value = true
       await extensionManager.uninstall(extension)
       await refreshInstalledExtensions()
+
+      if (extension.enabled) {
+        dirty.value = true
+        useToast().show('warning', $t.value('extension.reload-required'))
+      }
     } catch (error: any) {
       logger.error('uninstall', error)
       useToast().show('warning', error.message)
@@ -373,9 +454,13 @@ function iframeOnload (e: any) {
   }, true)
 
   const article = win.document.querySelector('article')
-  win.document.body.innerHTML = ''
-  win.document.body.appendChild(article)
-  win.document.body.style.padding = '12px'
+  if (article) {
+    win.document.body.innerHTML = ''
+    win.document.body.appendChild(article)
+    win.document.body.style.padding = '12px'
+    win.document.documentElement.style.background = 'transparent'
+  }
+
   iframeLoaded.value = true
 }
 
@@ -394,12 +479,25 @@ watch(extensions, () => {
 watch(showManager, (val) => {
   if (val) {
     fetchExtensions()
+  } else {
+    setTimeout(() => {
+      installedExtensions.value = []
+      registryExtensions.value = null
+      contentMap.value = { readme: {}, changelog: {} }
+    }, 400)
   }
 })
 
 watch(currentRegistry, (val) => {
   fetchExtensions()
   setting.setSetting('extension.registry', val)
+})
+
+watch(currentExtension, (val) => {
+  if (val) {
+    fetchContent('readme', val)
+    fetchContent('changelog', val)
+  }
 })
 
 onMounted(() => {
@@ -648,9 +746,18 @@ onUnmounted(() => {
     }
   }
 
+  .content-wrapper {
+    position: relative;
+    height: 100%;
+    .tabs {
+      position: absolute;
+      right: 0;
+      top: -26px;
+    }
+  }
+
   .content {
     height: 100%;
-    margin-top: 10px;
     border-top: 3px solid var(--g-color-86);
     overflow: hidden;
   }

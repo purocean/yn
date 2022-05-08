@@ -29,6 +29,10 @@ function changeRegistryOrigin (hostname: RegistryHostname, url: string) {
   return _url.toString()
 }
 
+export function getInstalledExtensionFilePath (id: string, filename: string) {
+  return path.join('/extensions', id, filename)
+}
+
 export function getLoadStatus (id: string): ExtensionLoadStatus {
   return loaded.get(id) || { version: undefined, themes: false, plugin: false, style: false, activationTime: 0 }
 }
@@ -66,6 +70,8 @@ export function readInfoFromJson (json: any): Omit<Extension, 'installed'> | nul
     main: json.main || '',
     style: json.style || '',
     icon: json.icon || '',
+    readmeUrl: json.readmeUrl || '',
+    changelogUrl: json.changelogUrl || '',
     displayName: json[`displayName_${language}`] || json.displayName || json.name,
     description: json[`description_${language}`] || json.description || '',
     compatible: getCompatible(json.engines),
@@ -79,7 +85,7 @@ export async function getInstalledExtension (id: string): Promise<Extension | nu
   let json
 
   try {
-    json = await api.fetchHttp(`/extensions/${id}/package.json`)
+    json = await api.fetchHttp(getInstalledExtensionFilePath(id, 'package.json'))
     if (!json.name || !json.version) {
       throw new Error('Invalid extension package.json')
     }
@@ -109,7 +115,9 @@ export async function getInstalledExtensions () {
       extensions.push({
         ...info,
         enabled: item.enabled && info.compatible.value,
-        icon: path.join('/extensions/', item.id, info.icon),
+        icon: getInstalledExtensionFilePath(info.id, info.icon),
+        readmeUrl: getInstalledExtensionFilePath(info.id, 'README.md'),
+        changelogUrl: getInstalledExtensionFilePath(info.id, 'CHANGELOG.md'),
         isDev: item.isDev,
       })
     }

@@ -37,6 +37,8 @@ test('readInfoFromJson', () => {
     icon: '',
     homepage: '',
     license: '',
+    readmeUrl: '',
+    changelogUrl: '',
     compatible: {
       reason: 'Not yank note extension.',
       value: false,
@@ -68,6 +70,8 @@ test('readInfoFromJson', () => {
       reason: 'Compatible',
       value: true,
     },
+    readmeUrl: '',
+    changelogUrl: '',
   })
 
   expect(extension.readInfoFromJson({
@@ -94,6 +98,8 @@ test('readInfoFromJson', () => {
       reason: 'Need Yank Note [>=3.30.0].',
       value: false,
     },
+    readmeUrl: '',
+    changelogUrl: '',
   })
 
   expect(extension.readInfoFromJson({
@@ -120,6 +126,8 @@ test('readInfoFromJson', () => {
       reason: 'Not yank note extension.',
       value: false,
     },
+    readmeUrl: '',
+    changelogUrl: '',
   })
 
   expect(extension.readInfoFromJson({
@@ -136,6 +144,8 @@ test('readInfoFromJson', () => {
       { name: 'a', css: './a.css' },
       { name: 'b', css: './b.css' },
     ],
+    readmeUrl: 'readmeUrl',
+    changelogUrl: 'changelogUrl',
   })).toStrictEqual({
     id: 'test',
     author: { name: 'hello', email: 'xxx@email.com' },
@@ -157,5 +167,7 @@ test('readInfoFromJson', () => {
       reason: 'Not yank note extension.',
       value: false,
     },
+    readmeUrl: 'readmeUrl',
+    changelogUrl: 'changelogUrl',
   })
 })
