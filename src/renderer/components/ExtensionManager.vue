@@ -352,7 +352,12 @@ async function fetchContent (type: 'readme' | 'changelog', extension: Extension)
       return r.text()
     })
 
-    contentMap.value[type][extension.id] = markdownIt.render(markdown)
+    contentMap.value[type][extension.id] = `
+      <link rel="stylesheet" href="${location.origin}/github.css">
+      <div style="padding: 12px" class="markdown-body">
+        ${markdownIt.render(markdown)}
+      </div>
+    `
   } catch (error: any) {
     logger.error('fetchContent', error)
     if (type === 'readme') {
@@ -458,7 +463,6 @@ function iframeOnload (e: any) {
     win.document.body.innerHTML = ''
     win.document.body.appendChild(article)
     win.document.body.style.padding = '12px'
-    win.document.documentElement.style.background = 'transparent'
   }
 
   iframeLoaded.value = true
@@ -749,6 +753,8 @@ onUnmounted(() => {
   .content-wrapper {
     position: relative;
     height: 100%;
+    background: #fff;
+
     .tabs {
       position: absolute;
       right: 0;

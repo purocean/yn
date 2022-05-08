@@ -52,6 +52,9 @@ export default defineConfig({
       '/extension': {
         target: 'http://localhost:3044'
       },
+      '/github.css': {
+        target: 'http://localhost:3044'
+      },
       '/api': {
         target: 'http://localhost:3044'
       },
