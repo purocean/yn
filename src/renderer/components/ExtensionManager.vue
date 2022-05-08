@@ -76,7 +76,8 @@
                   </div>
                   <div v-if="currentExtension.dist.unpackedSize" class="tag">
                     <span>{{ $t('extension.unpacked-size') }}</span>
-                    <span>{{ (currentExtension.dist.unpackedSize / 1024).toFixed(2) }}KiB</span>
+                    <span v-if="currentExtension.dist.unpackedSize >= 1048576">{{ (currentExtension.dist.unpackedSize / 1048576).toFixed(2) }}MiB</span>
+                    <span v-else>{{ (currentExtension.dist.unpackedSize / 1024).toFixed(2) }}KiB</span>
                   </div>
                   <div
                     v-if="currentExtension.homepage && currentExtension.homepage.split('/')[2]"
@@ -208,7 +209,7 @@ const installing = ref(false)
 const uninstalling = ref(false)
 const dirty = ref(false)
 const registryExtensions = ref<Extension[] | null>(null)
-const installedExtensions = ref<Extension[]>([])
+const installedExtensions = ref<Extension[] | null>(null)
 const listType = ref<'all' | 'installed'>('all')
 const contentType = ref<'readme' | 'changelog'>('readme')
 const currentRegistry = ref(setting.getSetting('extension.registry', 'registry.npmjs.org'))
@@ -238,21 +239,22 @@ const extensions = computed(() => {
 
   if (registryExtensions.value) {
     list = registryExtensions.value.map(item => {
-      const installedInfo = installedExtensions.value.find(installed => installed.id === item.id)
+      const installedInfo = installedExtensions.value?.find(installed => installed.id === item.id)
       if (installedInfo) {
+        const upgradable = installedInfo.version !== item.version
         return {
           ...item,
           installed: true,
-          icon: installedInfo.icon,
-          readmeUrl: installedInfo.readmeUrl,
-          changelogUrl: installedInfo.changelogUrl,
+          icon: upgradable ? item.icon : installedInfo.icon,
+          readmeUrl: upgradable ? item.readmeUrl : installedInfo.readmeUrl,
+          changelogUrl: upgradable ? item.changelogUrl : installedInfo.changelogUrl,
           enabled: installedInfo.enabled,
           version: installedInfo.version,
           compatible: installedInfo.compatible,
           isDev: installedInfo.isDev,
           newVersionCompatible: item.compatible,
           latestVersion: item.version,
-          upgradable: installedInfo.version !== item.version,
+          upgradable,
         }
       }
 
@@ -260,7 +262,7 @@ const extensions = computed(() => {
     })
   }
 
-  installedExtensions.value.forEach(item => {
+  installedExtensions.value?.forEach(item => {
     if (!registryExtensions.value?.some(registry => registry.id === item.id)) {
       list.push(item)
     }
@@ -324,6 +326,7 @@ async function refreshInstalledExtensions () {
 
 async function fetchExtensions () {
   try {
+    installedExtensions.value = null
     registryExtensions.value = null
     registryExtensions.value = await extensionManager.getRegistryExtensions(currentRegistry.value)
   } catch (error) {
@@ -485,7 +488,7 @@ watch(showManager, (val) => {
     fetchExtensions()
   } else {
     setTimeout(() => {
-      installedExtensions.value = []
+      installedExtensions.value = null
       registryExtensions.value = null
       contentMap.value = { readme: {}, changelog: {} }
     }, 400)
@@ -498,7 +501,7 @@ watch(currentRegistry, (val) => {
 })
 
 watch(currentExtension, (val) => {
-  if (val) {
+  if (val && installedExtensions.value) {
     fetchContent('readme', val)
     fetchContent('changelog', val)
   }
@@ -755,6 +758,7 @@ onUnmounted(() => {
     position: relative;
     height: 100%;
     background: #fff;
+    min-height: 0;
 
     .tabs {
       position: absolute;
