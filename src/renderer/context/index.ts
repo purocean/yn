@@ -27,8 +27,11 @@ import * as setting from '@fe/services/setting'
 import * as i18n from '@fe/services/i18n'
 import * as controlCenter from '@fe/services/control-center'
 import * as lib from './lib'
+import * as components from './components'
 
 const ctx = {
+  lib,
+  components,
   ioc,
   base,
   api,
@@ -49,7 +52,6 @@ const ctx = {
   embed,
   setting,
   i18n,
-  lib,
   env,
   utils,
   ui: { useToast, useModal },
