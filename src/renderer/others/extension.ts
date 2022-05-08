@@ -9,6 +9,7 @@ import type { Extension, ExtensionCompatible, ExtensionLoadStatus, RegistryHostn
 import * as i18n from '@fe/services/i18n'
 import * as theme from '@fe/services/theme'
 import { triggerHook } from '@fe/core/hook'
+import { FLAG_DEMO } from '@fe/support/args'
 
 const logger = getLogger('extension')
 
@@ -100,7 +101,7 @@ export async function getInstalledExtension (id: string): Promise<Extension | nu
 
   const info = readInfoFromJson(json)
   if (info) {
-    return { ...info, installed: true }
+    return { ...info, installed: true, origin: FLAG_DEMO ? 'registry' : 'unknown' }
   }
 
   return null
