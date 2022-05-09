@@ -339,6 +339,7 @@ const data = {
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, date.',
       'shell': 'Shell',
+      'envs': 'Environments',
       'auto-save': 'Auto Save',
       'plantuml-api': 'PlantUML Endpoint',
       'updater': {

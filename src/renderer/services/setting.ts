@@ -246,6 +246,16 @@ const schema: Schema = {
       format: 'checkbox',
       required: true,
     },
+    envs: {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.envs',
+      type: 'string',
+      group: 'other',
+      format: 'textarea',
+      options: {
+        inputAttributes: { placeholder: 'PATH: /opt/homebrew/bin:/use/local/bin\nGRAPHVIZ_DOT: /opt/homebrew/bin/dot', style: 'height: 4em' }
+      }
+    },
     'proxy.enabled': {
       defaultValue: false,
       title: 'T_setting-panel.schema.proxy.enabled',
@@ -299,6 +309,7 @@ const settings = {
 
 if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
+  delete (schema.properties as any).envs
   delete (schema.properties as any)['server.host']
   delete (schema.properties as any)['server.port']
   delete (schema.properties as any)['updater.source']

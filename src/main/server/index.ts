@@ -374,6 +374,7 @@ const setting = async (ctx: any, next: any) => {
       }
 
       getAction('proxy.reload')(data)
+      getAction('envs.reload')(data)
 
       ctx.body = result('ok', 'success')
     }
