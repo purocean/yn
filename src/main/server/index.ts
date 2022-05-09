@@ -312,7 +312,7 @@ const customCss = async (ctx: any, next: any) => {
       if (filename.startsWith('extension:')) {
         const extensions = await extension.list()
         const extensionName = filename.substring('extension:'.length, filename.indexOf('/'))
-        if (extensions.some(x => x.enabled && x.id === extensionName)) {
+        if (extensions.some(x => x.enabled && x.id === extension.dirnameToId(extensionName))) {
           ctx.redirect(`/extensions/${filename.replace('extension:', '')}`)
         } else {
           throw new Error(`extension not found [${extensionName}]`)

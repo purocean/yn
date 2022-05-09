@@ -5,7 +5,7 @@ import { t } from '@fe/services/i18n'
 import { getInitialized, getLoadStatus } from '@fe/others/extension'
 
 const MarkdownItPlugin = (md: Markdown) => {
-  const extensionId = 'yank-note-extension-drawio'
+  const extensionId = '@yank-note/extension-drawio'
 
   const checkExtenstionLoaded = () => !!getLoadStatus(extensionId).version
 

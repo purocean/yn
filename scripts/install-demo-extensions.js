@@ -8,7 +8,12 @@ const tar = require('tar-stream')
 const stream = require('stream')
 
 function installExtension (extension) {
-  const extensionPath = path.join(__dirname, '../src/renderer/public/extensions', extension.name)
+  const extensionPath = path.join(
+    __dirname,
+    '../src/renderer/public/extensions',
+    extension.name.replace(/\//g, '$')
+  )
+
   fs.ensureDirSync(extensionPath)
 
   return new Promise((resolve, reject) => {

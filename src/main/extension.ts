@@ -8,15 +8,21 @@ import { getAction } from './action'
 import { Readable } from 'stream'
 import config from './config'
 
-const RE_EXTENSION_ID = /^[A-Za-z0-9-_]+$/
+const RE_EXTENSION_ID = /^[@$a-z0-9-_]+$/
 
 const configKey = 'extensions'
 function getExtensionPath (id: string) {
-  if (!RE_EXTENSION_ID.test(id)) {
+  const dir = id.replace(/\//g, '$')
+
+  if (!RE_EXTENSION_ID.test(dir)) {
     throw new Error('Invalid extension id')
   }
 
-  return path.join(USER_EXTENSION_DIR, id)
+  return path.join(USER_EXTENSION_DIR, dir)
+}
+
+export function dirnameToId (dirname: string) {
+  return dirname.replace(/\$/g, '/')
 }
 
 async function checkDirectory (path: string) {
@@ -38,7 +44,7 @@ export async function list () {
   const extensionsSettings = config.get(configKey, {})
 
   Object.keys(extensionsSettings).forEach(key => {
-    if (!list.some(x => x.name === key)) {
+    if (!list.some(x => dirnameToId(x.name) === key)) {
       delete extensionsSettings[key]
     }
   })
@@ -46,8 +52,9 @@ export async function list () {
   config.set(configKey, extensionsSettings)
 
   return list.map(x => {
-    const ext = extensionsSettings[x.name]
-    return { id: x.name, enabled: (ext && ext.enabled), isDev: x.isSymbolicLink() }
+    const id = dirnameToId(x.name)
+    const ext = extensionsSettings[id]
+    return { id, enabled: (ext && ext.enabled), isDev: x.isSymbolicLink() }
   })
 }
 
