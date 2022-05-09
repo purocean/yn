@@ -20,7 +20,7 @@ import { throttle } from 'lodash-es'
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { getEditor, getMonaco } from '@fe/services/editor'
+import { getEditor, highlightLine } from '@fe/services/editor'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import { AppState } from '@fe/support/store'
 import { getHeadings, getViewDom, Heading } from '@fe/services/view'
@@ -60,19 +60,11 @@ export default defineComponent({
 
       // highlight heading
       if (el) {
-        const decorations = getEditor().deltaDecorations([], [
-          {
-            range: new (getMonaco().Range)(line, 0, line, 999),
-            options: {
-              isWholeLine: true,
-              inlineClassName: 'mtkcontrol'
-            }
-          }
-        ])
+        const disposeHighlight = highlightLine(line)
 
         el.style.backgroundColor = 'rgba(255, 183, 0, 0.6)'
         setTimeout(() => {
-          getEditor().deltaDecorations(decorations, [])
+          disposeHighlight()
           el.style.backgroundColor = ''
           if (el.getAttribute('style') === '') {
             el.removeAttribute('style')
