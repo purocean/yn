@@ -70,7 +70,9 @@ export default {
         window.getSelection()!.toString().length < 1
       ) {
         ctx.view.disableSyncScrollAwhile(() => {
-          ctx.editor.getEditor().revealLineNearTop(parseInt(target.dataset.sourceLine || '0'))
+          const line = parseInt(target.dataset.sourceLine || '0')
+          ctx.editor.getEditor().revealLineNearTop(line)
+          setTimeout(ctx.editor.highlightLine(line), 1000)
         })
       }
 
