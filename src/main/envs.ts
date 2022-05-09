@@ -8,6 +8,11 @@ const isWin = os.platform() === 'win32'
 const OLD_ENVS = { ...process.env }
 
 export function initEnvs () {
+  if (isWin) {
+    console.log('envs: disable on windows')
+    return
+  }
+
   process.env = OLD_ENVS
   const envsStr = config.get(keyEnvs, '')
   console.log('envs:', envsStr)

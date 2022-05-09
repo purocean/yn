@@ -4,6 +4,7 @@ import { MsgPath } from '@share/i18n'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import store from '@fe/support/store'
+import { isWindows } from '@fe/support/env'
 import { basename } from '@fe/utils/path'
 import type{ BuildInSettings, FileItem, PathItem, SettingGroup } from '@fe/types'
 import { getThemeName } from './theme'
@@ -307,9 +308,12 @@ const settings = {
   ...transformSettings(window._INIT_SETTINGS)
 }
 
+if (isWindows || FLAG_DISABLE_XTERM) {
+  delete (schema.properties as any).envs
+}
+
 if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
-  delete (schema.properties as any).envs
   delete (schema.properties as any)['server.host']
   delete (schema.properties as any)['server.port']
   delete (schema.properties as any)['updater.source']
