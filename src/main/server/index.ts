@@ -53,6 +53,7 @@ const checkPermission = (ctx: any, next: any) => {
       '/api/attachment',
       '/api/plantuml',
       '/api/settings/js',
+      '/api/extensions',
     ],
     guest: [
       '/api/file',
