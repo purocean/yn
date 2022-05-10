@@ -227,7 +227,7 @@ Test | Test
 
 ## Katex 公式
 
-此功能由 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) 插件提供
+此功能由 [KaTeX](https://github.com/KaTeX/KaTeX) 提供。
 
 $$\begin{array}{c}
 \nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &

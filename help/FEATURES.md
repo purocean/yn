@@ -226,7 +226,7 @@ Test | Test
 
 ## Katex
 
-This feature is provided by the [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) plugin.
+This feature is provided by [KaTeX](https://github.com/KaTeX/KaTeX).
 
 $$\begin{array}{c}
 \nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
