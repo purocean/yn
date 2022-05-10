@@ -38,7 +38,7 @@ const Mermaid = defineComponent({
   },
   setup (props) {
     const container = ref<HTMLElement>()
-    const imgRef = ref<HTMLElement>()
+    const imgRef = ref<HTMLImageElement>()
     const result = ref('')
     const img = ref('')
     const errMsg = ref('')
@@ -67,7 +67,7 @@ const Mermaid = defineComponent({
     }
 
     function exportSvg () {
-      const url = getImageUrl()
+      const url = imgRef.value?.src
       if (!url) {
         return
       }
