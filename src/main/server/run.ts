@@ -59,6 +59,10 @@ const runCode = async (language: string, code: string): Promise<string> => {
     }
 
     const env = { ...process.env }
+    const extPath = '/usr/local/bin'
+    if (!isWin && env.PATH && env.PATH.indexOf(extPath) < 0) {
+      env.PATH = `${extPath}:${env.PATH}`
+    }
 
     return execFile(
       runParams.cmd,
