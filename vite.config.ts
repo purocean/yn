@@ -13,26 +13,6 @@ if (!fs.existsSync(vsDist)) {
   )
 }
 
-// copy lucky-sheet
-// must use embed dir
-const luckySheetDist = path.resolve(__dirname, 'src/renderer/public/embed')
-if (!fs.existsSync(path.join(luckySheetDist, 'luckysheet.umd.js'))) {
-  fs.copySync(
-    path.resolve(__dirname, 'node_modules/luckysheet/dist'),
-    luckySheetDist,
-    {
-      filter: src => {
-        if (src.includes('demoData') || src.includes('esm.js') || src.includes('index.html')) {
-          return false
-        }
-
-        return true
-      }
-    }
-
-  )
-}
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), vueJsx()],

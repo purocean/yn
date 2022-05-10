@@ -434,11 +434,6 @@ const data: BaseLanguage = {
       'delete-col': '删除列',
     },
   },
-  'lucky-sheet': {
-    'saved-at': '保存于',
-    'edit-sheet': '编辑表格',
-    'create-dialog-title': '创建 Luckysheet 文件',
-  },
   'markdown-link': {
     'convert-to-titled-link': '转换为带标题的链接',
   },

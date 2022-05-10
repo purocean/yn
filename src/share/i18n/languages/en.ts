@@ -433,11 +433,6 @@ const data = {
       'delete-col': 'Delete Column',
     },
   },
-  'lucky-sheet': {
-    'saved-at': 'Saved at',
-    'edit-sheet': 'Edit Sheet',
-    'create-dialog-title': 'Create Luckysheet File',
-  },
   'markdown-link': {
     'convert-to-titled-link': 'Convert to Titled Link',
   },
