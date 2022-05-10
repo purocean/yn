@@ -7,7 +7,7 @@ import { getInitialized, getLoadStatus } from '@fe/others/extension'
 const MarkdownItPlugin = (md: Markdown) => {
   const extensionId = '@yank-note/extension-drawio'
 
-  const checkExtenstionLoaded = () => !!getLoadStatus(extensionId).version
+  const checkExtensionLoaded = () => !!getLoadStatus(extensionId).version
 
   const render = () => {
     if (!getInitialized()) {
@@ -23,7 +23,7 @@ const MarkdownItPlugin = (md: Markdown) => {
 
   const linkTemp = md.renderer.rules.link_open!.bind(md.renderer.rules)
   md.renderer.rules.link_open = (tokens, idx, options, env, slf) => {
-    if (checkExtenstionLoaded()) {
+    if (checkExtensionLoaded()) {
       return linkTemp(tokens, idx, options, env, slf)
     }
 
@@ -43,7 +43,7 @@ const MarkdownItPlugin = (md: Markdown) => {
 
   const fenceTemp = md.renderer.rules.fence!.bind(md.renderer.rules)
   md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
-    if (checkExtenstionLoaded()) {
+    if (checkExtensionLoaded()) {
       return fenceTemp(tokens, idx, options, env, slf)
     }
 
