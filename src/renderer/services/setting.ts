@@ -476,9 +476,18 @@ export async function setSetting<T extends keyof BuildInSettings> (key: T, val: 
 
 /**
  * Show setting panel.
+ * @param group
  */
-export function showSettingPanel () {
+export function showSettingPanel (group?: string) {
   store.commit('setShowSetting', true)
+
+  // temporary solution
+  if (group) {
+    setTimeout(() => {
+      const tab: HTMLElement | null = document.querySelector(`.editor-wrapper div[data-key="${group}"]`)
+      tab?.click()
+    }, 200)
+  }
 }
 
 /**
