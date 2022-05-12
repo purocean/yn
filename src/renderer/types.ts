@@ -27,13 +27,25 @@ export interface Repo {
 
 export namespace Components {
   export namespace Modal {
-    export type ConfirmModalParams = { title?: string; content?: string; component?: any; action?: any }
-    export type AlertModalParams = { title?: string; content?: string; component?: any; action?: any }
-
-    export type InputModalParams = {
-      type?: string;
+    interface BaseParams {
       title?: string;
       content?: string;
+      okText?: string;
+      cancelText?: string;
+    }
+
+    export interface ConfirmModalParams extends BaseParams {
+      component?: any;
+      action?: any;
+    }
+
+    export interface AlertModalParams extends BaseParams {
+      component?: any;
+      action?: any;
+    }
+
+    export interface InputModalParams extends BaseParams {
+      type?: string;
       value?: string;
       hint?: string;
       modalWidth?: string;
