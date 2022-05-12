@@ -553,6 +553,7 @@ const data: BaseLanguage = {
     'enable': '启用',
     'uninstall-confirm': '你确定要卸载扩展 [%s] 吗？',
     'registry': '仓库源',
+    'activation-time': '激活时间',
   },
 }
 

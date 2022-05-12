@@ -31,7 +31,10 @@
                     <div v-if="!item.compatible.value" class="status">{{ $t('extension.incompatible') }}</div>
                     <div v-if="!item.installed" class="status">{{ $t('extension.not-installed') }}</div>
                     <div v-if="item.installed && item.enabled" class="status">
-                      {{ item.activationTime ? `${item.activationTime.toFixed(2)}ms` : $t('extension.enabled') }}
+                      <span v-if="item.activationTime" :title="$t('extension.activation-time')">
+                        {{ `${item.activationTime.toFixed(2)}ms` }}
+                      </span>
+                      <span v-else>{{ $t('extension.enabled') }}</span>
                     </div>
                     <div v-if="item.installed && !item.enabled" class="status warning">{{ $t('extension.disabled') }}</div>
                     <div v-if="item.dirty" class="status warning">{{ $t('extension.reload-required') }}</div>
@@ -102,7 +105,7 @@
                   </div>
                 </div>
                 <div class="description">{{ currentExtension.description }}</div>
-                <div v-if="installing" class="actions"><i>{{ $t('extension.installing') }}</i></div>
+                <div v-if="installing" class="actions"><i>{{ $t('extension.installing') }} <b>{{installing}}</b></i></div>
                 <div v-else-if="uninstalling" class="actions"><i>{{ $t('extension.uninstalling') }}</i></div>
                 <div v-else class="actions">
                   <template v-if="currentExtension.dirty">
@@ -182,7 +185,7 @@
 <script lang="ts" setup>
 import Markdown from 'markdown-it'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useI18n } from '@fe/services/i18n'
+import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
 import * as api from '@fe/support/api'
 import { registerAction, removeAction } from '@fe/core/action'
@@ -205,14 +208,17 @@ const registries = extensionManager.registries
 const showManager = ref(false)
 const currentId = ref('')
 const iframeLoaded = ref(false)
-const installing = ref(false)
+const installing = ref('')
 const uninstalling = ref(false)
 const dirty = ref(false)
 const registryExtensions = ref<Extension[] | null>(null)
 const installedExtensions = ref<Extension[] | null>(null)
 const listType = ref<'all' | 'installed'>('all')
 const contentType = ref<'readme' | 'changelog'>('readme')
-const currentRegistry = ref(setting.getSetting('extension.registry', 'registry.npmjs.org'))
+const currentRegistry = ref(setting.getSetting(
+  'extension.registry',
+  getCurrentLanguage() === 'zh-CN' ? 'registry.npmmirror.com' : 'registry.npmjs.org'
+))
 const contentMap = ref<{
   readme: Record<string, string | null>;
   changelog: Record<string, string>;
@@ -379,7 +385,7 @@ async function install (extension?: Extension) {
   }
 
   try {
-    installing.value = true
+    installing.value = extension.id
     await extensionManager.install(extension, currentRegistry.value)
     await refreshInstalledExtensions()
   } catch (error: any) {
@@ -387,7 +393,7 @@ async function install (extension?: Extension) {
     useToast().show('warning', error.message)
     throw error
   } finally {
-    installing.value = false
+    installing.value = ''
   }
 
   useToast().show('info', $t.value('extension.toast-loaded'))

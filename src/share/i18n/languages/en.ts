@@ -552,6 +552,7 @@ const data = {
     'enable': 'Enable',
     'uninstall-confirm': 'Are you sure want to uninstall [%s]?',
     'registry': 'Registry',
+    'activation-time': 'Activation Time',
   },
 }
 
