@@ -400,6 +400,17 @@ async function fetchContent (type: 'readme' | 'changelog', extension: Extension)
   }
 }
 
+async function checkOrigin (extension: Extension) {
+  if (extension.origin === 'unknown') {
+    if (!(await useModal().confirm({
+      content: t('extension.unknown-origin-tips'),
+      okText: t('extension.enable'),
+    }))) {
+      throw new Error('canceled')
+    }
+  }
+}
+
 async function checkRequirements (extension: Extension) {
   if (extension.requirements.premium && !getPurchased()) {
     useToast().show('info', t('premium.need-purchase', extension.displayName))
@@ -483,6 +494,7 @@ async function enable (extension?: Extension) {
     return
   }
 
+  await checkOrigin(extension)
   await checkRequirements(extension)
 
   logger.debug('enable', extension.id)

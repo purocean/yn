@@ -556,6 +556,7 @@ const data = {
     'registry': 'Registry',
     'activation-time': 'Activation Time',
     'requirement': 'Requirement',
+    'unknown-origin-tips': 'Using extensions from unknown sources can be risky, still want to enable?',
   },
 }
 
