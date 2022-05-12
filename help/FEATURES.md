@@ -531,6 +531,8 @@ Yank Note integrates with [OpenAI](https://openai.com), press `[= $ctx.command.g
 
 Note: OpenAI API token needs to be obtained by yourself.
 
+> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-openai')">Requires OpenAI extension installed and enabled</a>*
+
 <video src="./openai.mp4" height="200" controls></video>
 
 ## Front Matter
@@ -553,7 +555,7 @@ variable name | type | description
 
 ## Macro Replacement
 
-> <a href="javascript: ctx.showPremium()">available in premium version</a>
+> *<a href="javascript: ctx.showPremium()">available in premium version</a>*
 
 Yank Note allows you to embed macros in the page to dynamically replace the document.
 

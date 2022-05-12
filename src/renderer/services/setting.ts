@@ -379,7 +379,7 @@ function transformSettings (data: any) {
 export function getDefaultSetting () {
   return Object.fromEntries(
     Object.entries(schema.properties).map(([key, val]) => [key, val.defaultValue])
-  ) as BuildInSettings
+  ) as unknown as BuildInSettings
 }
 
 /**

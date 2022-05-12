@@ -104,7 +104,7 @@ export namespace Components {
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
-export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'openai'
+export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 
 export type RenderEnv = {
@@ -145,7 +145,7 @@ export interface Extension {
   isDev?: boolean;
 }
 
-export type BuildInSettings = {
+export interface BuildInSettings {
   'repos': Repo[],
   'theme': ThemeName,
   'language': LanguageName,
