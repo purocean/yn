@@ -59,7 +59,6 @@ Presentation | F5
 Zoom In | Ctrl/Cmd + =
 Zoom Out | Ctrl/Cmd + -
 Zoom Reset | Ctrl/Cmd + 0
-OpenAI Auto Completion | Ctrl/Cmd + Alt/Option + .
 Switch Repository | Alt/Option + 0-9
 
 :::
@@ -112,7 +111,6 @@ Switch Repository | Alt/Option + 0-9
 缩放放大 | Ctrl/Cmd + =
 缩放缩小 | Ctrl/Cmd + -
 缩放重置 | Ctrl/Cmd + 0
-OpenAI 自动补全 | Ctrl/Cmd + Alt/Option + .
 切换仓库 | Alt/Option + 0-9
 :::
 ::::
