@@ -30,6 +30,8 @@ const data: BaseLanguage = {
   'outline': '目录',
   'files': '文件',
   'install-extension-tips': '请先安装并启用 “%s” 扩展',
+  'not-support-mas': '从 Mac Apple Store 中下载的应用不支持此拓展。',
+  'learn-more': '了解更多',
   'premium': {
     'need-purchase': '[%s] 需要高级版',
     'buy-license': '立即购买',
@@ -42,8 +44,8 @@ const data: BaseLanguage = {
       'desc': 'Yank Note 是一款面向程序员的开源笔记应用，从 2018 年开始，一直在不断更新。 因为软件的开发和维护需要精力和资金（如每年的苹果开发者账号订阅），现推出付费高级版。如果您需要高级版功能，或想支持我的开发，可以选择购买高级版。',
       'free-desc': '满足大部分用户需求',
       'premium-desc': '更多高级功能',
-      'free-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端\nOpenAI 集成\n文档历史',
-      'premium-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端\nOpenAI 集成\n文档历史 (增强)\n宏替换\n暗色主题',
+      'free-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端\nOpenAI 集成\n文档历史\n插件扩展',
+      'premium-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端\nOpenAI 集成\n文档历史 (增强)\n插件扩展 (更多)\n宏替换\n暗色主题',
     },
     'buy': {
       'buy': '购买',
@@ -554,6 +556,7 @@ const data: BaseLanguage = {
     'uninstall-confirm': '你确定要卸载扩展 [%s] 吗？',
     'registry': '仓库源',
     'activation-time': '激活时间',
+    'requirement': '需要',
   },
 }
 

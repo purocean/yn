@@ -66,7 +66,7 @@
                 <div class="tags">
                   <div v-if="currentExtension.origin === 'unknown'" class="tag">
                     <span>{{ $t('extension.origin') }}</span>
-                    <span style="background-color: #ff9800">{{ $t('extension.unknown') }}</span>
+                    <span class="warning-tag">{{ $t('extension.unknown') }}</span>
                   </div>
                   <div class="tag">
                     <span>{{ $t('extension.author') }}</span>
@@ -102,6 +102,24 @@
                     @click="openUrl(`https://www.npmjs.com/package/${currentExtension?.id}`)"
                   >
                     <img alt="npm" :src="`https://img.shields.io/npm/dy/${currentExtension.id}?color=%234180bd&label=Download&style=flat-square`">
+                  </div>
+                  <div
+                    v-if="currentExtension.requirements.premium"
+                    class="tag"
+                    style="cursor: pointer;"
+                    @click="showPremium()"
+                  >
+                    <span>{{ $t('extension.requirement') }}</span>
+                    <span class="warning-tag">{{ $t('premium.premium') }}</span>
+                  </div>
+                  <div
+                    v-if="currentExtension.requirements.terminal"
+                    class="tag"
+                    style="cursor: pointer;"
+                    @click="openUrl(URL_MAS_LIMITATION)"
+                  >
+                    <span>{{ $t('extension.requirement') }}</span>
+                    <span class="warning-tag">Terminal</span>
                   </div>
                 </div>
                 <div class="description">{{ currentExtension.description }}</div>
@@ -196,12 +214,14 @@ import type { Extension, ExtensionCompatible } from '@fe/types'
 import * as setting from '@fe/services/setting'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
+import { getPurchased, showPremium } from '@fe/others/premium'
+import { FLAG_DISABLE_XTERM, FLAG_MAS, URL_MAS_LIMITATION } from '@fe/support/args'
 
 const markdownIt = Markdown({ linkify: true, breaks: true, html: false })
 
 const logger = getLogger('extension-manager-component')
 
-const { $t } = useI18n()
+const { $t, t } = useI18n()
 
 const registries = extensionManager.registries
 
@@ -254,6 +274,7 @@ const extensions = computed(() => {
           icon: upgradable ? item.icon : installedInfo.icon,
           readmeUrl: upgradable ? item.readmeUrl : installedInfo.readmeUrl,
           changelogUrl: upgradable ? item.changelogUrl : installedInfo.changelogUrl,
+          requirements: upgradable ? item.requirements : installedInfo.requirements,
           enabled: installedInfo.enabled,
           version: installedInfo.version,
           compatible: installedInfo.compatible,
@@ -379,10 +400,31 @@ async function fetchContent (type: 'readme' | 'changelog', extension: Extension)
   }
 }
 
+async function checkRequirements (extension: Extension) {
+  if (extension.requirements.premium && !getPurchased()) {
+    useToast().show('info', t('premium.need-purchase', extension.displayName))
+    showPremium()
+    throw new Error('Extension requires premium')
+  }
+
+  if (extension.requirements.terminal && (FLAG_DISABLE_XTERM || FLAG_MAS)) {
+    if (await useModal().confirm({
+      content: t('not-support-mas'),
+      okText: t('learn-more'),
+    })) {
+      window.open(URL_MAS_LIMITATION)
+    }
+
+    throw new Error('Extension requires xterm')
+  }
+}
+
 async function install (extension?: Extension) {
   if (!extension) {
     return
   }
+
+  await checkRequirements(extension)
 
   try {
     installing.value = extension.id
@@ -440,6 +482,8 @@ async function enable (extension?: Extension) {
   if (!extension) {
     return
   }
+
+  await checkRequirements(extension)
 
   logger.debug('enable', extension.id)
   await extensionManager.enable(extension)
@@ -846,5 +890,9 @@ iframe {
 
 .warning {
   color: #f44336 !important;
+}
+
+.warning-tag {
+  background-color: #ff9800 !important;
 }
 </style>

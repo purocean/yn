@@ -76,6 +76,7 @@ export function readInfoFromJson (json: any): Omit<Extension, 'installed'> | nul
       ? parseAuthor(json.author) || { name: '' }
       : json.author || { name: '' },
     themes: json.themes || [],
+    requirements: json.requirements || {},
     main: json.main || '',
     style: json.style || '',
     icon: json.icon || '',

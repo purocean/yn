@@ -134,6 +134,7 @@ export interface Extension {
   };
   version: string;
   themes: { name: string; css: string }[];
+  requirements: { premium?: boolean, terminal?: boolean };
   compatible: ExtensionCompatible;
   main: string;
   style: string;

@@ -46,6 +46,7 @@ test('readInfoFromJson', () => {
       reason: 'Not yank note extension.',
       value: false,
     },
+    requirements: {},
   })
 
   expect(extension.readInfoFromJson({
@@ -75,6 +76,7 @@ test('readInfoFromJson', () => {
     },
     readmeUrl: '',
     changelogUrl: '',
+    requirements: {},
   })
 
   expect(extension.readInfoFromJson({
@@ -83,6 +85,7 @@ test('readInfoFromJson', () => {
     engines: {
       'yank-note': '>=3.30.0',
     },
+    requirements: { premium: true, terminal: false }
   })).toStrictEqual({
     id: 'test',
     author: { name: '' },
@@ -97,6 +100,7 @@ test('readInfoFromJson', () => {
     icon: '',
     homepage: '',
     license: '',
+    requirements: { premium: true, terminal: false },
     compatible: {
       reason: 'Need Yank Note [>=3.30.0].',
       value: false,
@@ -131,6 +135,7 @@ test('readInfoFromJson', () => {
     },
     readmeUrl: '',
     changelogUrl: '',
+    requirements: {},
   })
 
   expect(extension.readInfoFromJson({
@@ -173,5 +178,6 @@ test('readInfoFromJson', () => {
     },
     readmeUrl: 'readmeUrl',
     changelogUrl: 'changelogUrl',
+    requirements: {},
   })
 })
