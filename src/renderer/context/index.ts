@@ -1,6 +1,6 @@
 import * as storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
-import { showPremium } from '@fe/others/premium'
+import { getPurchased, showPremium } from '@fe/others/premium'
 import * as extension from '@fe/others/extension'
 import * as ioc from '@fe/core/ioc'
 import * as plugin from '@fe/core/plugin'
@@ -29,7 +29,7 @@ import * as controlCenter from '@fe/services/control-center'
 import * as lib from './lib'
 import * as components from './components'
 
-const ctx = {
+const ctx = Object.freeze({
   lib,
   components,
   ioc,
@@ -59,13 +59,18 @@ const ctx = {
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,
   showPremium: showPremium,
+  getPremium: () => getPurchased(),
   showExtensionManager: extension.showManager,
   getExtensionLoadStatus: extension.getLoadStatus,
   getExtensionInitialized: extension.getInitialized,
   version: __APP_VERSION__,
-}
+})
 
-window.ctx = ctx
+Object.defineProperty(window, 'ctx', {
+  configurable: false,
+  writable: false,
+  value: ctx,
+})
 
 export type Ctx = typeof ctx
 export type Plugin = plugin.Plugin<Ctx>
