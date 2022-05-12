@@ -193,7 +193,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .editor-wrapper {
-  width: 600px;
+  width: fit-content;
+  min-width: 600px;
   background: var(--g-color-95);
   margin: auto;
   padding: 10px;
