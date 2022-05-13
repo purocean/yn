@@ -76,7 +76,7 @@
 
 ## 更新日志
 
-### [v3.30.0](https://github.com/purocean/yn/releases/tag/v3.30.0) 2022-05-13
+### [v3.30.1](https://github.com/purocean/yn/releases/tag/v3.30.1) 2022-05-13
 
 1. feat: 增加扩展管理面板
 2. feat: macOs 和 Linux 上增加环境变量配置

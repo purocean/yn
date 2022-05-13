@@ -76,7 +76,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.30.0](https://github.com/purocean/yn/releases/tag/v3.30.0) 2022-05-13
+### [v3.30.1](https://github.com/purocean/yn/releases/tag/v3.30.1) 2022-05-13
 
 1. feat: add extension management panel
 2. feat: add environment variable configuration on macOs and Linux
