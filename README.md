@@ -93,6 +93,8 @@ For more information on how to use the following functions, please see [characte
 13. fix: fix HTML export formula font is not correct
 14. fix: fix file name sorting problem
 15. fix: fix the problem that the name of the image uploaded in the image bed is repeated
+16. fix: fix the problem that the folding function does not work in some files
+17. fix: fix the problem that the terminal size cannot be changed
 
 [More release notes](https://github.com/purocean/yn/releases)
 
