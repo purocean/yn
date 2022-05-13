@@ -99,6 +99,10 @@ console.log(Object.keys(ctx).join('\n'))
 
 参考 [Api 文档](https://yn-api-doc.vercel.app/modules/renderer_context.html) 获得更多使用说明。
 
+## 分发插件
+
+如果你想将自己编写的插件/主题分发给别人使用，请参考 https://github.com/purocean/yank-note-extension#readme
+
 ## 更多
 
 总体来说，Yank Note 鼓励用户打造自己的工作学习工具，只需要几行代码，即可给自己的工作学习助力。
