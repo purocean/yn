@@ -1,5 +1,6 @@
 import { Fragment, h } from 'vue'
 import { Optional } from 'utility-types'
+import { URI } from 'monaco-editor/esm/vs/base/common/uri.js'
 import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
@@ -89,9 +90,9 @@ export function isSubOrSameFile (docA?: Doc | null, docB?: Doc | null) {
  * @param doc
  * @returns
  */
-export function toUri (doc?: Doc | null) {
+export function toUri (doc?: Doc | null): string {
   if (doc && doc.repo && doc.path) {
-    return encodeURI(`yank-note://${doc.repo}/${doc.path.replace(/^\//, '')}`)
+    return URI.parse(`yank-note://${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
   } else {
     return 'yank-note://system/blank.md'
   }
