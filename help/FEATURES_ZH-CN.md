@@ -30,6 +30,7 @@ define:
     :::
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
+1. 扩展 `<home>/yank-note/extensions`
 
 ## TOC 生成
 
@@ -64,7 +65,7 @@ define:
 
 ### 元素属性书写
 
-此功能使用 [markdown-it-attrs][markdown-it-attributes](https://github.com/purocean/markdown-it-attributes) 实现
+此功能使用 [markdown-it-attributes](https://github.com/purocean/markdown-it-attributes) 实现
 
 - 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}
@@ -218,9 +219,15 @@ Test | Test
 [小尺寸表格]
 {.small}
 
+| h1 | h2 | h3 |
+| -- | -- | -- |
+| x1 | x2 | x3 {rowspan=2 style="color:red"} |
+| x4 {colspan=2} |
+[合并单元格]
+
 ## Katex 公式
 
-此功能由 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) 插件提供
+此功能由 [KaTeX](https://github.com/KaTeX/KaTeX) 提供。
 
 $$\begin{array}{c}
 \nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
@@ -421,7 +428,7 @@ chart.setOption({
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
 ::: warning
-现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。 
+现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。
 :::
 
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
@@ -523,6 +530,8 @@ Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command
 
 注：OpenAI API token 需要你自行获取。
 
+> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-openai')">需要安装并启用 OpenAI 扩展</a>*
+
 <video src="./openai.mp4" height="200" controls></video>
 
 ## Front Matter
@@ -545,7 +554,7 @@ Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command
 
 ## 宏替换
 
-> <a href="javascript: ctx.showPremium()">高级版可用</a>
+> *<a href="javascript: ctx.showPremium()">高级版可用</a>*
 
 Yank Note 允许你在页面中嵌入宏，用以动态地替换文档。
 

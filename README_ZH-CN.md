@@ -23,22 +23,6 @@
 - 为了更高的拓展性和方便性，Yank Note 牺牲了安全防护（命令执行，任意文件读写）。如果要用它打开外来 Markdown 文件，⚠️**请务必仔细甄别文件内容是值得信任的**⚠️。
 - 加密文件的加密解密操作均在前端完成，请**务必牢记自己的密码**。一旦密码丢失，就只能暴力破解了。
 
-## Yank-Note V3 开发计划
-
-V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown 渲染性能
-
-[V3 项目看板](https://github.com/purocean/yn/projects/5)
-
-- [x] 使用 Vite 构建
-- [x] 优化 Markdown 渲染性能，支持 Vue 组件方式拓展功能
-- [x] 重构 Electron 代码
-- [x] 重构业务逻辑，和组件解耦
-- [x] 完善自定义插件文档
-- [ ] 增强文档检索，引用体验
-- [ ] 重构快捷键处理层，支持自定义快捷键
-- [ ] 其他 V2 未完成的功能
-- [ ] 增加移动端
-
 ## 特色功能
 
 以下功能具体使用可参考[特色功能说明](./help/FEATURES_ZH-CN.md)
@@ -84,6 +68,7 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 ## 截图
 
 ![截图](./help/6_ZH-CN.png)
+![截图](./help/7_ZH-CN.png)
 ![截图](./help/2_ZH-CN.png)
 ![截图](./help/3_ZH-CN.png)
 ![截图](./help/4_ZH-CN.png)
@@ -91,22 +76,23 @@ V3 核心目标是重构代码，提升应用健壮性、可拓展性、Markdown
 
 ## 更新日志
 
-### [v3.29.0](https://github.com/purocean/yn/releases/tag/v3.29.0) 2022-04-24
+### [v3.30.0](https://github.com/purocean/yn/releases/tag/v3.30.0) 2022-05-13
 
-1. feat: 增加 OpenAI 集成
-2. feat: 编辑器支持折叠内容
-3. feat: 点击大纲目录标题时候高亮对应标题
-4. feat: 增加代理配置项
-5. feat: 增加编辑器行号配置项
-6. feat: 增加样式类 `avoid-page-break`
-7. upd: 优化 Markdown 渲染性能
-8. upd: 增大预览最大宽度
-9. fix: 修复嵌入 HTML 表格不能合并单元格问题
-10. fix: 修复 Mermaid 图形可能有空白问题
-11. fix: 修复自定义容器中脑图不能展示问题
-12. feat(plugin): 支持添加配置分组
-13. upd(plugin): 移除 `ctx.constant` 模块，使用 `ctx.args` 代替
-14. upd(plugin): 移除 `ctx.editor.revealLineInCenter`, `ctx.editor.revealLine`, `ctx.editor.setScrollToTop` 方法
+1. feat: 增加扩展管理面板
+2. feat: macOs 和 Linux 上增加环境变量配置
+3. feat: 增加切换编辑器选项卡快捷键
+4. feat: 增加切换仓库快捷键
+5. feat: 增加使用快捷键批量切换选中的待办
+6. feat: 增加点击正文后，编辑器高亮对应行
+7. upd: 调整暗色主题下 mark 标签颜色，增强可读性
+8. upd: 从应用主体中移除 Draw.io 集成，使用扩展代替
+9. upd: 从应用主体中移除 Mermaid 集成，使用扩展代替
+10. upd: 从应用主体中移除 OpenAI 集成，使用扩展代替
+11. upd: 从应用主体中移除 Echarts 集成，使用扩展代替
+12. upd: 从应用主体中移除 Luckysheet 集成，使用扩展代替
+13. fix: 修复 HTML 导出公式字体不正确问题
+14. fix: 修复文件名排序问题
+15. fix: 修复图床上传图片名字重复问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

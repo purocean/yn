@@ -62,8 +62,8 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
-      window.removeEventListener('keypress', keypressHandler)
-      window.removeEventListener('keydown', keydownHandler)
+      window.removeEventListener('keypress', keypressHandler, true)
+      window.removeEventListener('keydown', keydownHandler, true)
     })
 
     return { maskStyle }

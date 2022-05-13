@@ -115,6 +115,7 @@ const buildHtml = (title: string, body: string, options: { includeStyle: boolean
   </head>
   <body>
     ${body}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.css" rel="stylesheet" />
   </body>
 </html>
 `
@@ -232,6 +233,11 @@ export default defineComponent({
             // for pandoc highlight code
             if (node.tagName === 'PRE' && node.dataset.lang) {
               node.classList.add('sourceCode', node.dataset.lang)
+            }
+
+            // remove katex-html
+            if (node.classList.contains('katex-html')) {
+              node.remove()
             }
           }
         })

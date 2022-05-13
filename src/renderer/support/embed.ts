@@ -64,13 +64,23 @@ export const IFrame = defineComponent({
       url.value = ''
     }
 
+    const refresh = () => {
+      if (url.value) {
+        const _url = url.value
+        clean()
+        setTimeout(() => {
+          url.value = _url
+        }, 0)
+      }
+    }
+
     registerHook('THEME_CHANGE', changeTheme)
-    registerHook('VIEW_AFTER_REFRESH', clean)
+    registerHook('VIEW_AFTER_REFRESH', refresh)
     registerHook('VIEW_FILE_CHANGE', clean)
 
     onBeforeUnmount(() => {
       removeHook('THEME_CHANGE', changeTheme)
-      removeHook('VIEW_AFTER_REFRESH', clean)
+      removeHook('VIEW_AFTER_REFRESH', refresh)
       removeHook('VIEW_FILE_CHANGE', clean)
     })
 

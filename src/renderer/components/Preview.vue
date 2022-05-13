@@ -302,7 +302,7 @@ export default defineComponent({
       removeAction('view.get-view-dom')
       removeAction('view.get-render-env')
       removeHook('GLOBAL_RESIZE', resizeHandler)
-      window.removeEventListener('keydown', keydownHandler)
+      window.removeEventListener('keydown', keydownHandler, true)
     })
 
     watch([currentContent, fileUri, inComposition], () => {
@@ -539,6 +539,7 @@ export default defineComponent({
 
     fieldset {
       border-style: solid;
+      border-width: 1px;
       border-radius: var(--g-border-radius);
       margin: 20px 0;
 
@@ -625,8 +626,8 @@ export default defineComponent({
 @include dark-theme {
   .markdown-body {
     mark {
-      background: #998b10 !important;
-      color: inherit;
+      background: #746900 !important;
+      color: #ebebeb;
     }
 
     .reduce-brightness, img {
@@ -661,9 +662,13 @@ export default defineComponent({
       background: inherit;
     }
 
-    *:not(button) {
+    hr, h1, h2, td, th,
+    fieldset, blockquote {
       border-color: var(--g-color-80);
-      background: inherit;
+    }
+
+    hr {
+      background-color: inherit;
     }
 
     code {

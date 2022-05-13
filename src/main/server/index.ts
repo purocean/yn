@@ -7,7 +7,7 @@ import bodyParser from 'koa-body'
 import * as mime from 'mime'
 import request from 'request'
 import { promisify } from 'util'
-import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES } from '../constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES, USER_EXTENSION_DIR } from '../constant'
 import * as file from './file'
 import run from './run'
 import convert from './convert'
@@ -16,6 +16,7 @@ import shell from '../shell'
 import config from '../config'
 import * as jwt from '../jwt'
 import { getAction } from '../action'
+import * as extension from '../extension'
 
 const isLocalhost = (address: string) => {
   return ip.isEqual(address, '127.0.0.1') || ip.isEqual(address, '::1')
@@ -52,6 +53,7 @@ const checkPermission = (ctx: any, next: any) => {
       '/api/attachment',
       '/api/plantuml',
       '/api/settings/js',
+      '/api/extensions',
     ],
     guest: [
       '/api/file',
@@ -207,7 +209,7 @@ const convertFile = async (ctx: any, next: any) => {
 
 const tmpFile = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/tmp-file')) {
-    const absPath = path.join(os.tmpdir(), APP_NAME + '_' + ctx.query.name.replace(/\//g, '_'))
+    const absPath = path.join(os.tmpdir(), APP_NAME + '-' + ctx.query.name.replace(/\//g, '_'))
     if (ctx.method === 'GET') {
       ctx.body = await fs.readFile(absPath)
     } else if (ctx.method === 'POST') {
@@ -298,7 +300,7 @@ const customCss = async (ctx: any, next: any) => {
     }
 
     ctx.body = result('ok', 'success', Array.from(new Set(files)))
-  } else if (ctx.path.startsWith('/api/custom-css')) {
+  } else if (ctx.path.startsWith('/custom-css')) {
     const configKey = 'custom-css'
     const defaultCss = BUILD_IN_STYLES[0]
 
@@ -307,7 +309,18 @@ const customCss = async (ctx: any, next: any) => {
 
     try {
       const filename = config.get(configKey, defaultCss)
-      ctx.body = await fs.readFile(path.join(USER_THEME_DIR, filename))
+
+      if (filename.startsWith('extension:')) {
+        const extensions = await extension.list()
+        const extensionName = filename.substring('extension:'.length, filename.indexOf('/'))
+        if (extensions.some(x => x.enabled && x.id === extension.dirnameToId(extensionName))) {
+          ctx.redirect(`/extensions/${filename.replace('extension:', '')}`)
+        } else {
+          throw new Error(`extension not found [${extensionName}]`)
+        }
+      } else {
+        ctx.body = await fs.readFile(path.join(USER_THEME_DIR, filename))
+      }
     } catch (error) {
       console.error(error)
 
@@ -336,6 +349,7 @@ const setting = async (ctx: any, next: any) => {
           data.mark = []
           delete data['server.jwt-secret']
           delete data.license
+          delete data.extensions
           return data
         }
       }
@@ -361,6 +375,7 @@ const setting = async (ctx: any, next: any) => {
       }
 
       getAction('proxy.reload')(data)
+      getAction('envs.reload')(data)
 
       ctx.body = result('ok', 'success')
     }
@@ -406,6 +421,59 @@ const rpc = async (ctx: any, next: any) => {
   }
 }
 
+const sendFile = async (ctx: any, next: any, filePath: string, fullback = true) => {
+  if (!fs.existsSync(filePath)) {
+    if (fullback) {
+      await sendFile(ctx, next, path.resolve(STATIC_DIR, 'index.html'), false)
+    } else {
+      next()
+    }
+
+    return false
+  }
+
+  const fileStat = fs.statSync(filePath)
+  if (fileStat.isDirectory()) {
+    await sendFile(ctx, next, path.resolve(filePath, 'index.html'))
+    return true
+  }
+
+  ctx.body = await promisify(fs.readFile)(filePath)
+  ctx.set('Content-Length', fileStat.size)
+  ctx.set('Last-Modified', fileStat.mtime.toUTCString())
+  ctx.set('Cache-Control', 'max-age=0')
+  ctx.set('X-XSS-Protection', '0')
+  ctx.type = path.extname(filePath)
+
+  return true
+}
+
+const userExtension = async (ctx: any, next: any) => {
+  if (ctx.method === 'GET') {
+    if (ctx.path.startsWith('/api/extensions')) {
+      ctx.body = result('ok', 'success', await extension.list())
+    } else if (ctx.path.startsWith('/extensions/') && ctx.method === 'GET') {
+      const filePath = path.join(USER_EXTENSION_DIR, ctx.path.replace('/extensions', ''))
+      await sendFile(ctx, next, filePath, false)
+    } else {
+      await next()
+    }
+  } else {
+    const id = ctx.query.id
+    if (ctx.path.startsWith('/api/extensions/install')) {
+      ctx.body = result('ok', 'success', await extension.install(id, ctx.query.url))
+    } else if (ctx.path.startsWith('/api/extensions/uninstall')) {
+      ctx.body = result('ok', 'success', await extension.uninstall(id))
+    } else if (ctx.path.startsWith('/api/extensions/enable')) {
+      ctx.body = result('ok', 'success', await extension.enable(id))
+    } else if (ctx.path.startsWith('/api/extensions/disable')) {
+      ctx.body = result('ok', 'success', await extension.disable(id))
+    } else {
+      await next()
+    }
+  }
+}
+
 const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
@@ -441,6 +509,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, customCss))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userExtension))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
@@ -449,35 +518,9 @@ const server = (port = 3000) => {
   // static file
   app.use(async (ctx: any, next: any) => {
     const urlPath = decodeURIComponent(ctx.path).replace(/^(\/static\/|\/)/, '')
-    const sendFile = async (filePath: string, fullback = true) => {
-      if (!fs.existsSync(filePath)) {
-        if (fullback) {
-          await sendFile(path.resolve(STATIC_DIR, 'index.html'), false)
-        } else {
-          next()
-        }
 
-        return false
-      }
-
-      const fileStat = fs.statSync(filePath)
-      if (fileStat.isDirectory()) {
-        await sendFile(path.resolve(filePath, 'index.html'))
-        return true
-      }
-
-      ctx.body = await promisify(fs.readFile)(filePath)
-      ctx.set('Content-Length', fileStat.size)
-      ctx.set('Last-Modified', fileStat.mtime.toUTCString())
-      ctx.set('Cache-Control', 'max-age=0')
-      ctx.set('X-XSS-Protection', '0')
-      ctx.type = path.extname(filePath)
-
-      return true
-    }
-
-    if (!(await sendFile(path.resolve(STATIC_DIR, urlPath), false))) {
-      await sendFile(path.resolve(USER_THEME_DIR, urlPath), true)
+    if (!(await sendFile(ctx, next, path.resolve(STATIC_DIR, urlPath), false))) {
+      await sendFile(ctx, next, path.resolve(USER_THEME_DIR, urlPath), true)
     }
   })
 

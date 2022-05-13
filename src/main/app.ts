@@ -15,8 +15,10 @@ import { $t } from './i18n'
 import { getProxyAgent } from './proxy-agent'
 import config from './config'
 import { initProxy } from './proxy'
+import { initEnvs } from './envs'
 
 initProxy()
+initEnvs()
 
 const electronContextMenu = require('electron-context-menu')
 const electronRemote = require('@electron/remote/main')

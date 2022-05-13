@@ -10,6 +10,7 @@ import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
 import { getPurchased } from '@fe/others/premium'
+import * as extension from '@fe/others/extension'
 import { setTheme } from '@fe/services/theme'
 import { toggleOutline } from '@fe/services/layout'
 import * as view from '@fe/services/view'
@@ -91,6 +92,10 @@ registerHook('SETTING_FETCHED', () => {
   }
 })
 
+registerHook('EXTENSION_READY', () => {
+  view.render()
+})
+
 whenEditorReady().then(({ editor }) => {
   editor.onDidChangeCursorSelection(() => {
     store.commit('setSelectionInfo', getSelectionInfo())
@@ -120,3 +125,7 @@ store.watch(() => store.state.currentFile, (val) => {
 }, { immediate: true })
 
 fetchSettings()
+
+whenEditorReady().then(() => {
+  setTimeout(extension.init, 0)
+})

@@ -14,8 +14,14 @@ const plugins: {[name: string]: Plugin} = {}
  * @param plugin
  * @param ctx
  */
-export function register <Ctx> (plugin: Plugin, ctx: Ctx) {
+export function register <Ctx> (plugin: Plugin<Ctx>, ctx: Ctx) {
   logger.debug('register', plugin)
+
+  if (plugins[plugin.name]) {
+    logger.error(`Plugin [${plugin.name}] already registered.`)
+    return
+  }
+
   plugins[plugin.name] = plugin
   plugin.register && plugin.register(ctx)
 }

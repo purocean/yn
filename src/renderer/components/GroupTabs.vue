@@ -3,6 +3,7 @@
     <div
       v-for="tab of tabs"
       :key="tab.value"
+      :data-key="tab.value"
       :class="{tab: true, selected: modelValue === tab.value}"
       @click="$emit('update:modelValue', tab.value)"
     >{{tab.label}}</div>

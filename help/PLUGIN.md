@@ -100,6 +100,10 @@ console.log(Object.keys(ctx).join('\n'))
 
 Refer to [Api Document](https://yn-api-doc.vercel.app/modules/renderer_context.html) to get more instructions.
 
+## Distribute Plugins
+
+If you want to distribute your own plugins/themes to others, please refer to https://github.com/purocean/yank-note-extension#readme
+
 ## More
 
 In general, Yank Note encourages users to create their own work-learning tools that only need a few lines of code to help their work and study.

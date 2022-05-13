@@ -4,6 +4,7 @@ import { MsgPath } from '@share/i18n'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import store from '@fe/support/store'
+import { isWindows } from '@fe/support/env'
 import { basename } from '@fe/utils/path'
 import type{ BuildInSettings, FileItem, PathItem, SettingGroup } from '@fe/types'
 import { getThemeName } from './theme'
@@ -100,6 +101,9 @@ const schema: Schema = {
       title: 'T_setting-panel.schema.custom-css',
       type: 'string',
       enum: ['github.css'],
+      options: {
+        enum_titles: ['github.css'],
+      },
       group: 'appearance',
       required: true,
     },
@@ -243,6 +247,16 @@ const schema: Schema = {
       format: 'checkbox',
       required: true,
     },
+    envs: {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.envs',
+      type: 'string',
+      group: 'other',
+      format: 'textarea',
+      options: {
+        inputAttributes: { placeholder: 'PATH: /opt/homebrew/bin:/use/local/bin\nGRAPHVIZ_DOT: /opt/homebrew/bin/dot', style: 'height: 4em' }
+      }
+    },
     'proxy.enabled': {
       defaultValue: false,
       title: 'T_setting-panel.schema.proxy.enabled',
@@ -292,6 +306,10 @@ const schema: Schema = {
 const settings = {
   ...getDefaultSetting(),
   ...transformSettings(window._INIT_SETTINGS)
+}
+
+if (isWindows || FLAG_DISABLE_XTERM) {
+  delete (schema.properties as any).envs
 }
 
 if (FLAG_DISABLE_XTERM) {
@@ -361,7 +379,7 @@ function transformSettings (data: any) {
 export function getDefaultSetting () {
   return Object.fromEntries(
     Object.entries(schema.properties).map(([key, val]) => [key, val.defaultValue])
-  ) as BuildInSettings
+  ) as unknown as BuildInSettings
 }
 
 /**
@@ -458,9 +476,18 @@ export async function setSetting<T extends keyof BuildInSettings> (key: T, val: 
 
 /**
  * Show setting panel.
+ * @param group
  */
-export function showSettingPanel () {
+export function showSettingPanel (group?: string) {
   store.commit('setShowSetting', true)
+
+  // temporary solution
+  if (group) {
+    setTimeout(() => {
+      const tab: HTMLElement | null = document.querySelector(`.editor-wrapper div[data-key="${group}"]`)
+      tab?.click()
+    }, 200)
+  }
 }
 
 /**

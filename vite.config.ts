@@ -13,44 +13,6 @@ if (!fs.existsSync(vsDist)) {
   )
 }
 
-// copy lucky-sheet
-// must use embed dir
-const luckySheetDist = path.resolve(__dirname, 'src/renderer/public/embed')
-if (!fs.existsSync(path.join(luckySheetDist, 'luckysheet.umd.js'))) {
-  fs.copySync(
-    path.resolve(__dirname, 'node_modules/luckysheet/dist'),
-    luckySheetDist,
-    {
-      filter: src => {
-        if (src.includes('demoData') || src.includes('esm.js') || src.includes('index.html')) {
-          return false
-        }
-
-        return true
-      }
-    }
-
-  )
-}
-
-// copy drawio
-const drawioDist = path.resolve(__dirname, 'src/renderer/public/drawio')
-if (!fs.existsSync(drawioDist)) {
-  fs.copySync(
-    path.resolve(__dirname, 'drawio/src/main/webapp'),
-    drawioDist,
-    {
-      filter: src => {
-        if (src.includes('WEB-INF') || src.includes('META-INF')) {
-          return false
-        }
-
-        return true
-      }
-    }
-  )
-}
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), vueJsx()],
@@ -64,6 +26,15 @@ export default defineConfig({
       '/static': {
         target: 'http://localhost:3044'
       },
+      '/custom-css': {
+        target: 'http://localhost:3044'
+      },
+      '/extension': {
+        target: 'http://localhost:3044'
+      },
+      '/github.css': {
+        target: 'http://localhost:3044'
+      },
       '/api': {
         target: 'http://localhost:3044'
       },
@@ -75,6 +46,7 @@ export default defineConfig({
   },
   resolve: {
     alias: [
+      { find: /^semver$/, replacement: path.resolve(__dirname, 'src/renderer/others/semver.js') },
       { find: /^socket.io-client$/, replacement: 'socket.io-client/dist/socket.io.js' },
       { find: /^vue$/, replacement: 'vue/dist/vue.esm-bundler.js' },
       { find: /^@\//, replacement: path.resolve(__dirname, 'src') + '/' },

@@ -66,6 +66,25 @@ export function getEditor () {
 }
 
 /**
+ * Highlight given line.
+ * @param line
+ * @returns dispose function
+ */
+export function highlightLine (line: number) {
+  const decorations = getEditor().deltaDecorations([], [
+    {
+      range: new (getMonaco().Range)(line, 0, line, 999),
+      options: {
+        isWholeLine: true,
+        inlineClassName: 'mtkcontrol'
+      }
+    }
+  ])
+
+  return () => getEditor().deltaDecorations(decorations, [])
+}
+
+/**
  * Get one indent
  * getOneIndent removed https://github.com/microsoft/monaco-editor/issues/1565
  * @returns
@@ -85,7 +104,7 @@ export function whenEditorReady (): Promise<{ editor: typeof editor, monaco: typ
   }
 
   return new Promise(resolve => {
-    registerHook('EDITOR_READY', resolve)
+    registerHook('EDITOR_READY', resolve, true)
   })
 }
 

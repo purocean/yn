@@ -11,7 +11,7 @@
     </template>
   </aside>
   <aside v-else class="side">
-    <div class="add-repo-btn" @click="showSettingPanel">
+    <div class="add-repo-btn" @click="showSettingPanel()">
       {{$t('tree.add-repo')}}
       <div class="add-repo-desc">{{$t('tree.add-repo-hint')}}</div>
     </div>

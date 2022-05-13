@@ -8,7 +8,14 @@ export default {
         id: 'status-bar-tool',
         position: 'left',
         title: ctx.i18n.t('status-bar.tool.tool'),
-        list: []
+        list: [
+          {
+            id: 'extension-manager',
+            type: 'normal',
+            title: ctx.i18n.t('status-bar.tool.extension-manager'),
+            onClick: () => ctx.showExtensionManager(),
+          }
+        ]
       }
     })
   }

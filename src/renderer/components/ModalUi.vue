@@ -11,8 +11,8 @@
       <div class="action">
         <component v-if="action" :is="action" />
         <template v-else>
-          <button v-if="type !== 'alert'" class="btn" @click="cancel">{{$t('cancel')}}</button>
-          <button class="btn primary" @click="ok">{{$t('ok')}}</button>
+          <button v-if="type !== 'alert'" class="btn" @click="cancel">{{ cancelText }}</button>
+          <button class="btn primary" @click="ok">{{ okText }}</button>
         </template>
       </div>
     </div>
@@ -39,6 +39,8 @@ export default defineComponent({
     const show = ref(false)
     const title = ref('')
     const content = ref('')
+    const okText = ref('')
+    const cancelText = ref('')
     const component = shallowRef()
     const action = shallowRef()
     const inputType = ref('')
@@ -74,6 +76,8 @@ export default defineComponent({
       type.value = 'alert'
       title.value = params.title || t('modal.info')
       content.value = params.content || ''
+      okText.value = params.okText || t('ok')
+      cancelText.value = params.cancelText || t('cancel')
       component.value = params.component
       action.value = params.action
       show.value = true
@@ -88,6 +92,8 @@ export default defineComponent({
       type.value = 'confirm'
       title.value = params.title || t('modal.info')
       content.value = params.content || ''
+      okText.value = params.okText || t('ok')
+      cancelText.value = params.cancelText || t('cancel')
       component.value = params.component
       action.value = params.action
       show.value = true
@@ -102,6 +108,8 @@ export default defineComponent({
       type.value = 'input'
       title.value = params.title || t('modal.input-placeholder')
       content.value = params.content || ''
+      okText.value = params.okText || t('ok')
+      cancelText.value = params.cancelText || t('cancel')
       inputType.value = params.type || 'text'
       inputValue.value = params.value || ''
       inputHint.value = params.hint || ''
@@ -139,6 +147,8 @@ export default defineComponent({
       show,
       title,
       content,
+      okText,
+      cancelText,
       component,
       action,
       inputType,

@@ -9,7 +9,7 @@ export default {
         position: 'left',
         tips: ctx.i18n.t('status-bar.setting'),
         icon: 'cog',
-        onClick: ctx.setting.showSettingPanel,
+        onClick: () => ctx.setting.showSettingPanel(),
         order: -9999999999,
       }
     })

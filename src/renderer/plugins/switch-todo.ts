@@ -6,26 +6,35 @@ export default {
   register: (ctx) => {
     const actionName: BuildInActionName = 'plugin.switch-todo.switch'
 
+    function switchTodo (line: number, checked?: boolean) {
+      const lineText = ctx.editor.getLineContent(line)
+
+      if (typeof checked !== 'boolean') {
+        checked = !lineText.includes(' [x] ')
+      }
+
+      const value = checked
+        ? lineText.replace('[ ]', `[x] ~~${ctx.lib.dayjs().format('YYYY-MM-DD HH:mm')}~~`)
+        : lineText.replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
+
+      if (value !== lineText) {
+        ctx.editor.replaceLine(line, value)
+      }
+    }
+
     ctx.action.registerAction({
       name: actionName,
       keys: [ctx.command.Alt, 'o'],
       handler: (line?: number, checked?: boolean) => {
-        if (!line) {
-          line = ctx.editor.getSelectionInfo().line
-        }
-
-        const lineText = ctx.editor.getLineContent(line)
-
-        if (typeof checked !== 'boolean') {
-          checked = !lineText.includes(' [x] ')
-        }
-
-        const value = checked
-          ? lineText.replace('[ ]', `[x] ~~${ctx.lib.dayjs().format('YYYY-MM-DD HH:mm')}~~`)
-          : lineText.replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
-
-        if (value !== lineText) {
-          ctx.editor.replaceLine(line, value)
+        if (line) {
+          switchTodo(line, checked)
+        } else {
+          const selection = ctx.editor.getEditor().getSelection()
+          if (selection) {
+            for (let i = selection.startLineNumber; i <= selection.endLineNumber; i++) {
+              switchTodo(i, checked)
+            }
+          }
         }
       }
     })

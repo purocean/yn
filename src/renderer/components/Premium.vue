@@ -219,7 +219,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .premium-wrapper {
-  width: 472px;
+  width: 480px;
   background: var(--g-color-95);
   margin: auto;
   padding: 20px;

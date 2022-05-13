@@ -1,7 +1,7 @@
 import { Plugin } from '@fe/context'
 
 export default {
-  name: 'status-bar-tool',
+  name: 'status-bar-insert',
   register: ctx => {
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-insert'] = {
