@@ -23,22 +23,6 @@ English | [中文说明](./README_ZH-CN.md)
 - For more extendable, Yank Note sacrifices security protection (command execution, arbitrary file reading and writing). If you want to use it to open a foreign Markdown file, ⚠️**be sure to carefully identify whether the content of the file is trustworthy**⚠️.
 - The encryption and decryption of encrypted files are both completed at the front end. Please **be sure to remember your password**. Once the password is lost, it can only be cracked violently.
 
-## Yank-Note V3 Plan
-
-The core goal of V3 is to refactor the code to improve application robustness, expansibility, and Markdown rendering performance.
-
-[V3 Project Board](https://github.com/purocean/yn/projects/5)
-
-- [x] Build with Vite
-- [x] Optimize the performance of Markdown rendering, and support the extension of Vue component mode
-- [x] Refactor Electron code
-- [x] Refactor business logic, and decouple components
-- [x] Improve the documentation of custom plug-in
-- [ ] Enhance document retrieval and citation experience
-- [ ] Refactor the shortcut key processing layer, and support custom shortcut keys
-- [ ] Other unfinished functions of V2
-- [ ] Add mobile application
-
 ## Characteristic functions
 
 For more information on how to use the following functions, please see [characteristic functions description](./help/FEATURES.md)
