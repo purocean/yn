@@ -2,7 +2,7 @@ import { Plugin, Ctx } from '@fe/context'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 
 export default {
-  name: 'markdown-link',
+  name: 'file-tree-context-menu',
   register: (ctx: Ctx) => {
     ctx.tree.tapContextMenus((items, node, vueCtx) => {
       function revealInXterminal () {

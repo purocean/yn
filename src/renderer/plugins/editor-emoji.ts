@@ -48,7 +48,7 @@ class EmojiCompletionProvider implements Monaco.languages.CompletionItemProvider
 }
 
 export default {
-  name: 'editor-markdown',
+  name: 'editor-emoji',
   register: (ctx) => {
     ctx.editor.whenEditorReady().then(({ monaco }) => {
       monaco.languages.registerCompletionItemProvider(

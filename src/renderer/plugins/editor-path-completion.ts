@@ -394,7 +394,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
 }
 
 export default {
-  name: 'editor-md-syntax',
+  name: 'editor-md-completion',
   register: (ctx) => {
     ctx.editor.whenEditorReady().then(({ monaco }) => {
       monaco.languages.registerCompletionItemProvider(
