@@ -76,22 +76,23 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.29.0](https://github.com/purocean/yn/releases/tag/v3.29.0) 2022-04-24
+### [v3.30.0](https://github.com/purocean/yn/releases/tag/v3.30.0) 2022-05-13
 
-1. feat: add OpenAI integration
-2. feat: the editor supports collapsing content
-3. feat: when clicking on the title of the outline, the corresponding title will be highlighted
-4. feat: add proxy configuration
-5. feat: add editor line number configuration
-6. feat: add style class `avoid-page-break`
-7. upd: optimize Markdown rendering performance
-8. upd: increase the maximum width of the preview
-9. fix: fix the problem that cells cannot be merged in embedded HTML tables
-10. fix: fix Mermaid graphics may have blank issue
-11. fix: fix the problem that the brain map cannot be displayed in the custom container
-12. feat(plugin): support adding configuration groups
-13. upd(plugin): remove `ctx.constant` module, use `ctx.args` instead
-14. upd(plugin): remove `ctx.editor.revealLineInCenter`, `ctx.editor.revealLine`, `ctx.editor.setScrollToTop` methods
+1. feat: add extension management panel
+2. feat: add environment variable configuration on macOs and Linux
+3. feat: add shortcut keys for switching editor tabs
+4. feat: add a shortcut key for switching warehouses
+5. feat: add switching selected to-dos in batches using shortcut keys
+6. feat: after clicking the text, the editor will highlight the corresponding line
+7. upd: adjust the mark label color under dark theme to enhance readability
+8. upd: remove the Draw.io integration, use an extension instead
+9. upd: remove Mermaid integration, use extension instead
+10. upd: remove the OpenAI integration, use an extension instead
+11. upd: remove Echarts integration, use extension instead
+12. upd: remove Luckysheet integration, use extension instead
+13. fix: fix HTML export formula font is not correct
+14. fix: fix file name sorting problem
+15. fix: fix the problem that the name of the image uploaded in the image bed is repeated
 
 [More release notes](https://github.com/purocean/yn/releases)
 
