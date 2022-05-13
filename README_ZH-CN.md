@@ -93,6 +93,8 @@
 13. fix: 修复 HTML 导出公式字体不正确问题
 14. fix: 修复文件名排序问题
 15. fix: 修复图床上传图片名字重复问题
+16. fix: 修复折叠功能在某些文件中失效问题
+17. fix: 修复不能更改终端尺寸问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

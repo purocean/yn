@@ -4,10 +4,6 @@ import { FLAG_MAS } from '@fe/support/args'
 export default {
   name: 'share-preview',
   register: (ctx) => {
-    if (FLAG_MAS) {
-      return
-    }
-
     ctx.registerHook('STARTUP', () => {
       if (ctx.args.MODE === 'share-preview') {
         ctx.store.watch(state => state.presentation, val => {
@@ -17,6 +13,10 @@ export default {
         }, { immediate: true })
       }
     })
+
+    if (FLAG_MAS) {
+      return
+    }
 
     const link = ctx.lib.vue.ref('')
     const ip = ctx.lib.vue.ref('')

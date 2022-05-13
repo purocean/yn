@@ -1,5 +1,5 @@
-import * as Monaco from 'monaco-editor'
-import { IndentRangeProvider } from 'monaco-editor/esm/vs/editor/contrib/folding/indentRangeProvider.js'
+import type * as Monaco from 'monaco-editor'
+import { IndentRangeProvider } from '@fe/others/monaco-indent-range-provider.js'
 import type { Ctx, Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
 import { DOM_ATTR_NAME } from '@fe/support/args'
@@ -96,7 +96,7 @@ export class MdFoldingProvider implements Monaco.languages.FoldingRangeProvider 
 
   private getFoldingRangeKind (listItem: Token): Monaco.languages.FoldingRangeKind | undefined {
     return (listItem.type === 'comment' || (listItem.type === 'html_block' && listItem.content.startsWith('<!--')))
-      ? Monaco.languages.FoldingRangeKind.Comment
+      ? { value: 'comment' }
       : undefined
   }
 
