@@ -82,7 +82,10 @@ export default defineComponent({
         const ref = refs[resizeOrigin.ref].value
         ref.style.filter = ''
         ref.style.pointerEvents = ''
-        ;(ref.nextElementSibling as HTMLElement).style.pointerEvents = ''
+        const nextContainer = ref.nextElementSibling as HTMLElement
+        if (nextContainer) {
+          nextContainer.style.pointerEvents = ''
+        }
 
         resizeOrigin = null
       }
@@ -112,8 +115,10 @@ export default defineComponent({
 
       // prevent pointer events when mouse in container range
       const nextContainer: HTMLElement = ref.nextElementSibling as HTMLElement
-      ref.style.pointerEvents = 'none'
-      nextContainer.style.pointerEvents = 'none'
+      if (nextContainer) {
+        ref.style.pointerEvents = 'none'
+        nextContainer.style.pointerEvents = 'none'
+      }
 
       if (resizeOrigin.type === 'right') {
         const offsetX = e.clientX - resizeOrigin.mouseX
@@ -327,6 +332,7 @@ export default defineComponent({
   width: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .content {
