@@ -8,7 +8,7 @@ const languages = {
   'zh-CN': zhCN
 }
 
-type Flat<T extends Record<string, any>, P extends string = ''> =(
+export type Flat<T extends Record<string, any>, P extends string = ''> =(
   {
     [K in keyof T as (
       T[K] extends string
@@ -21,10 +21,8 @@ type Flat<T extends Record<string, any>, P extends string = ''> =(
 export type Language = keyof typeof languages
 export type MsgPath = keyof Flat<BaseLanguage>
 
-export function translate (lang: Language, path: MsgPath, ...args: string[]) {
-  const language = languages[lang] || en
-
-  const text: string = get(language, path, get(en, path, ''))
+export function getText (data: Record<string, any>, path: MsgPath, ...args: string[]): string {
+  const text: string = get(data, path, get(en, path, ''))
   if (args.length < 1) {
     return text
   }
@@ -34,6 +32,12 @@ export function translate (lang: Language, path: MsgPath, ...args: string[]) {
     idx++
     return args[idx] || ''
   })
+}
+
+export function translate (lang: Language, path: MsgPath, ...args: string[]) {
+  const language = languages[lang] || en
+
+  return getText(language, path, ...args)
 }
 
 export function mergeLanguage (lang: Language, nls: Record<string, any>) {

@@ -1,5 +1,5 @@
 import { getCurrentInstance, onBeforeUnmount, ref, triggerRef } from 'vue'
-import { Language, MsgPath, mergeLanguage as _mergeLanguage, translate } from '@share/i18n'
+import { Flat, Language, MsgPath, mergeLanguage as _mergeLanguage, translate, getText } from '@share/i18n'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import * as storage from '@fe/utils/storage'
 import { LanguageName } from '@fe/types'
@@ -79,6 +79,50 @@ export function useI18n () {
   })
 
   return { t, $t, setLanguage, getLanguage }
+}
+
+/**
+ * create i18n
+ * @param data - language data
+ * @param defaultLanguage - default language
+ * @returns
+ */
+export function createI18n <T extends Record<string, any>> (data: { [lang in Language]: T }, defaultLanguage: Language = 'en') {
+  type _MsgPath = keyof Flat<T>
+
+  const _t = (path: _MsgPath, ...args: string[]) => {
+    const language = data[getCurrentLanguage()] || data[defaultLanguage]
+    return getText(language, path as any, ...args)
+  }
+
+  const $t = ref(_t.bind(null))
+
+  function $$t (path: _MsgPath, ...args: string[]): string {
+    return Object.freeze({
+      toString: () => _t(path, ...args),
+      toJson: () => JSON.stringify(_t(path, ...args))
+    }) as any
+  }
+
+  const vm = getCurrentInstance()?.proxy
+  if (vm) {
+    Object.defineProperty((vm as any), '$t', {
+      get () {
+        return $t.value
+      },
+    })
+
+    const update = () => {
+      triggerRef($t)
+    }
+
+    registerHook('I18N_CHANGE_LANGUAGE', update)
+    onBeforeUnmount(() => {
+      removeHook('I18N_CHANGE_LANGUAGE', update)
+    })
+  }
+
+  return { t: _t, $t, $$t }
 }
 
 declare module '@vue/runtime-core' {
