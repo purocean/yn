@@ -134,7 +134,7 @@
     "vue-router": "^4.0.0-0",
     "vue-tsc": "^0.29.8",
     "vuex": "^4.0.0-0",
-    "xterm": "^4.13.0",
+    "xterm": "^4.18.0",
     "xterm-addon-fit": "^0.5.0",
     "xterm-theme": "^1.1.0"
   }
