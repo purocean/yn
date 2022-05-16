@@ -210,6 +210,10 @@ export default defineComponent({
   border-right: 0;
 }
 
+.xterm ::v-deep(textarea) {
+  transition: none;
+}
+
 .hide {
   position: absolute;
   top: -6px;
