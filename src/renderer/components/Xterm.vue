@@ -149,7 +149,7 @@ export default defineComponent({
         }
 
         if (!language || language === '_') {
-          run(code, '\n')
+          run(code, eol)
         } else if (map[language]) {
           if (map[language].start) {
             input(map[language].start)
