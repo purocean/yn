@@ -62,7 +62,7 @@ For more information on how to use the following functions, please see [characte
 - **Custom container:** support custom containers similar to VuePress default themes
 - **Macro replacement:** support for embedded JavaScript expressions to dynamically replace document content
 - **Image hosting service:** support [PicGo](https://picgo.github.io/PicGo-Doc/) image hosting service
-- **OpenAI: ** support for [OpenAI](https://openai.com) auto completion
+- **OpenAI:** support for [OpenAI](https://openai.com) auto completion
 - **Custom plug-ins:** support writing JavaScript plug-ins to expand editor functionality. The plug-in is placed in the `home directory/plugins`. Refer to [plug-in Development Guide](./help/PLUGIN.md)
 
 ## Screenshots
