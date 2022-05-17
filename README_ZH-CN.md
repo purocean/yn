@@ -62,7 +62,7 @@
 - **容器块:** 支持类似 VuePress 默认主题的自定义容器
 - **宏替换:** 支持内嵌 JavaScript 表达式动态替换文档内容
 - **图床:** 支持 [PicGo](https://picgo.github.io/PicGo-Doc/) 图床
-- **OpenAI: ** 支持接入 [OpenAI](https://openai.com) 自动补全
+- **OpenAI:** 支持接入 [OpenAI](https://openai.com) 自动补全
 - **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN_ZH-CN.md)
 
 ## 截图
