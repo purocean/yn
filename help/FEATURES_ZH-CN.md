@@ -245,38 +245,38 @@ $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\p
 ## 运行代码
 
 支持运行 `JavaScript` `PHP` `nodejs` `Python` `bash` `bat` 代码。
-此功能执行外部命令实现，所以需要安装相应环境。
 
-代码块第一行需要包含以 `--run--` 字符串，示例如下
-```js
-// --run--
+属性 `run` 的可能值如下
+| 值 | 含义 |
+|:---|:----|
+| no | 代码块不可运行 |
+| yes| 代码块可运行 |
+|auto| 代码块自动运行 |
+
+此功能执行外部命令实现，所以需要安装相应环境。示例如下
+```js{run=auto}
 await new Promise(r => setTimeout(r, 500))
 ctx.ui.useToast().show("info", "HELLOWORLD!")
+console.log(new Date() + ' HELLOWORD')
+```
+
+```node{run=yes}
 console.log('HELLOWORD')
 ```
 
-```node
-// --run--
-console.log('HELLOWORD')
-```
-
-```php
-// --run--
+```php{run=yes}
 echo 'HELLOWORD!';
 ```
 
-```python
-# --run--
+```python{run=yes}
 print('HELLOWORD')
 ```
 
-```shell
-# --run--
+```shell{run=yes}
 date
 ```
 
-```bat
-REM --run--
+```bat{run=yes}
 @echo HELLOWORD
 ```
 

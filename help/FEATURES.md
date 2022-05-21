@@ -244,38 +244,38 @@ $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\p
 ## Code Running
 
 Support to run `JavaScript` `PHP` `nodejs` `Python` `bash` `bat` code.
-This function is implemented by executing external commands, so the corresponding environment needs to be installed.
 
-The first line of the code block needs to contain the string `--run--`, an example is as follows
-```js
-// --run--
+The attribute `run` has following possible values
+| Value | Comment |
+|:------|:--------|
+|  no   | code block is not runnable |
+|  yes  | code block is runnable |
+| auto  | automatically run code block |
+
+This function is implemented by executing external commands, so the corresponding environment needs to be installed. Examples are as follows
+```js{run=auto}
 await new Promise(r => setTimeout(r, 500))
 ctx.ui.useToast().show("info", "HELLOWORLD!")
+console.log(new Date() + ' HELLOWORD')
+```
+
+```node{run=yes}
 console.log('HELLOWORD')
 ```
 
-```node
-// --run--
-console.log('HELLOWORD')
-```
-
-```php
-// --run--
+```php{run=yes}
 echo 'HELLOWORD!';
 ```
 
-```python
-# --run--
+```python{run=yes}
 print('HELLOWORD')
 ```
 
-```shell
-# --run--
+```shell{run=yes}
 date
 ```
 
-```bat
-REM --run--
+```bat{run=yes}
 @echo HELLOWORD
 ```
 
