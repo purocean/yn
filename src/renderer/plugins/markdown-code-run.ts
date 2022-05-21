@@ -1,4 +1,4 @@
-import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref, VNode, watch } from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, onMounted, ref, VNode, watch } from 'vue'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context'
 import { getActionHandler } from '@fe/core/action'
@@ -19,6 +19,7 @@ const RunCode = defineComponent({
       default: ''
     },
     language: String,
+    autorun: Boolean,
   },
   setup (props) {
     const { t } = useI18n()
@@ -72,7 +73,17 @@ const RunCode = defineComponent({
     }
 
     watch(() => props.code, () => {
-      result.value = ''
+      if (props.autorun) {
+        run()
+      } else {
+        result.value = ''
+      }
+    })
+
+    onMounted(() => {
+      if (props.autorun) {
+        run()
+      }
     })
 
     onBeforeUnmount(() => {
@@ -114,9 +125,8 @@ const RunPlugin = (md: Markdown) => {
   md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
     const token = tokens[idx]
 
-    const code = token.content.trim()
-    const firstLine = code.split(/\n/)[0].trim()
-    if (!firstLine.includes('--run--')) {
+    const autorun = token.meta.attrs.run
+    if (autorun !== 'yes' && autorun !== 'auto') {
       return temp(tokens, idx, options, env, slf)
     }
 
@@ -124,8 +134,9 @@ const RunPlugin = (md: Markdown) => {
 
     if (codeNode && Array.isArray(codeNode.children)) {
       codeNode.children.push(h(RunCode, {
-        code,
-        language: token.info
+        code: token.content.trim(),
+        language: token.info,
+        autorun: autorun === 'auto',
       }))
     }
 
