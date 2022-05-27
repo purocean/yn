@@ -684,6 +684,19 @@ export default defineComponent({
     pre > code {
       background: var(--g-color-96);
     }
+
+    h1, h2, h3, h4, h5, h6 {
+      &:hover {
+        &::after {
+          content: "\0000a0\0000a0" attr(data-tag);
+          color: var(--g-color-40);
+          font-size: 12px;
+          width: 0;
+          display: inline-block;
+          white-space: nowrap;
+        }
+      }
+    }
   }
 }
 
