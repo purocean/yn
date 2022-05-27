@@ -5,6 +5,7 @@ import * as path from 'path'
 import * as os from 'os'
 import * as yargs from 'yargs'
 import server from './server'
+import store from './storage'
 import { APP_NAME } from './constant'
 import { getTrayMenus, getMainMenus } from './menus'
 import { transformProtocolRequest } from './protocol'
@@ -82,6 +83,23 @@ const hideWindow = () => {
   }
 }
 
+const restoreWindowBounds = () => {
+  const bounds = store.get('window.bounds', null)
+  if (bounds) {
+    win!.setBounds(bounds)
+  }
+}
+
+const saveWindowBounds = () => {
+  if (win) {
+    const bounds = win.getBounds()
+    const fullscreen = win.isFullScreen()
+    if (!fullscreen) {
+      store.set('window.bounds', bounds)
+    }
+  }
+}
+
 const createWindow = () => {
   win = new BrowserWindow({
     maximizable: true,
@@ -103,11 +121,13 @@ const createWindow = () => {
 
   win.setMenu(null)
   win && win.loadURL(getUrl())
+  restoreWindowBounds()
   win.on('ready-to-show', () => {
     win!.show()
   })
 
   win.on('close', e => {
+    saveWindowBounds()
     if (trayEnabled && config.get('keep-running-after-closing-window', !process.mas)) {
       hideWindow()
       e.preventDefault()
@@ -163,6 +183,8 @@ const reload = () => {
 }
 
 const quit = () => {
+  saveWindowBounds()
+
   if (!win) {
     app.exit(0)
     return
