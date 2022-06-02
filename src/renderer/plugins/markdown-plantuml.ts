@@ -113,7 +113,7 @@ const MarkdownItPlugin = function umlPlugin (md: Markdown, options: any) {
 
     const contents = state.src
       .split('\n')
-      .slice(startLine + 1, nextLine)
+      .slice(startLine, nextLine + 1)
       .join('\n')
 
     // We generate a token list for the alt property, to mimic what the image parser does.
@@ -221,7 +221,31 @@ function render (tokens: Token[], idx: number) {
 export default {
   name: 'markdown-plantuml',
   register: ctx => {
-    ctx.markdown.registerPlugin(MarkdownItPlugin, { render })
+    const markers = [{
+      openMarker: '@startuml',
+      closeMarker: '@enduml',
+    }, {
+      openMarker: '@startsalt',
+      closeMarker: '@endsalt',
+    }, {
+      openMarker: '@startmindmap',
+      closeMarker: '@endmindmap',
+    }, {
+      openMarker: '@startgantt',
+      closeMarker: '@endgantt',
+    }, {
+      openMarker: '@startwbs',
+      closeMarker: '@endwbs',
+    }, {
+      openMarker: '@startjson',
+      closeMarker: '@endjson',
+    }, {
+      openMarker: '@startyaml',
+      closeMarker: '@endyaml',
+    }]
+    markers.forEach((marker) => {
+      ctx.markdown.registerPlugin(MarkdownItPlugin, { render, ...marker })
+    })
 
     ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
       const srcAttr = node.getAttribute('src')
