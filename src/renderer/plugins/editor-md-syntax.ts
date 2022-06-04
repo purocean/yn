@@ -64,6 +64,12 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     { name: '/ ``` Applet', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">TEST</button>\n```\n' },
     { name: '/ ``` Mermaid', insertText: '```mermaid\ngraph LR\n${1:A[Hard] --> |Text| B(Round)}\n```\n' },
     { name: '/ @startuml PlantUML', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
+    { name: '/ @startsalt PlantUML Salt', insertText: '@startsalt\n{\n  Just plain text\n  [This is my button]\n  ()  Unchecked radio\n  (X) Checked radio\n  []  Unchecked box\n  [X] Checked box\n  "Enter text here   "\n  ^This is a droplist^\n}\n@endsalt\n' },
+    { name: '/ @startmindmap PlantUML Mindmap', insertText: '@startmindmap\n* Debian\n** Ubuntu\n*** Linux Mint\n*** Kubuntu\n*** Lubuntu\n*** KDE Neon\n** LMDE\n** SolydXK\n** SteamOS\n** Raspbian with a very long name\n*** <s>Raspmbc</s> => OSMC\n*** <s>Raspyfi</s> => Volumio\n@endmindmap\n' },
+    { name: '/ @startgantt PlantUML Gantt', insertText: '@startgantt\nProject starts 2020-07-01\n[Test prototype] lasts 10 days\n[Prototype completed] happens 2020-07-10\n[Setup assembly line] lasts 12 days\n[Setup assembly line] starts at [Test prototype]\'s end\n@endgantt\n' },
+    { name: '/ @startwbs PlantUML Wbs', insertText: '@startwbs\n* Business Process Modelling WBS\n** Launch the project\n*** Complete Stakeholder Research\n*** Initial Implementation Plan\n** Design phase\n*** Model of AsIs Processes Completed\n****< Model of AsIs Processes Completed1\n****> Model of AsIs Processes Completed2\n***< Measure AsIs performance metrics\n***< Identify Quick Wins\n@endwbs\n' },
+    { name: '/ @startjson PlantUML Json', insertText: '@startjson\n{\n   "fruit":"Apple",\n   "size":"Large",\n   "color": ["Red", "Green"]\n}\n@endjson\n' },
+    { name: '/ @startyaml PlantUML Yaml', insertText: '@startyaml\nfruit: Apple\nsize: Large\ncolor: \n  - Red\n  - Green\n@endyaml\n' },
     { name: '/ []() Drawio Link', insertText: '[${2:Drawio}]($1){link-type="drawio"}' },
     { name: '/ []() Luckysheet Link', insertText: '[${2:Luckysheet}]($1){link-type="luckysheet"}' },
     { name: '/ ||| Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |' },
@@ -151,7 +157,7 @@ export default {
         [/==\S.*\S?==/, 'keyword'],
         [/~\S[^~]*\S?~/, 'string'],
         [/\^\S[^^]*\S?\^/, 'string'],
-        [/^@@startuml$/, { token: 'string', next: '@plantuml' }],
+        [/^@@start(uml|salt|mindmap|gantt|wbs|json|yaml)$/, { token: 'string', next: '@plantuml' }],
         [/\[=/, { token: 'keyword', next: '@monacoEnd', nextEmbedded: 'text/javascript' }],
         [/\$\$/, { token: 'tag', next: '@latexBlockEnd', nextEmbedded: 'latex' }],
         [/\$(?=\S)/, { token: 'tag', next: '@latexInlineEnd', nextEmbedded: 'latex' }],
@@ -162,7 +168,7 @@ export default {
       ]
 
       md.tokenizer.plantuml = [
-        [/^@@enduml$/, { token: 'string', next: '@pop' }],
+        [/^@@end(uml|salt|mindmap|gantt|wbs|json|yaml)$/, { token: 'string', next: '@pop' }],
         [/.*$/, 'variable.source']
       ]
 
