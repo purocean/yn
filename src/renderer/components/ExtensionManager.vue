@@ -202,6 +202,7 @@
 
 <script lang="ts" setup>
 import Markdown from 'markdown-it'
+import semver from 'semver'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
@@ -267,7 +268,7 @@ const extensions = computed(() => {
     list = registryExtensions.value.map(item => {
       const installedInfo = installedExtensions.value?.find(installed => installed.id === item.id)
       if (installedInfo) {
-        const upgradable = installedInfo.version !== item.version
+        const upgradable = installedInfo.version !== item.version && semver.gt(item.version, installedInfo.version)
         return {
           ...item,
           installed: true,

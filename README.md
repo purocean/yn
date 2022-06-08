@@ -62,7 +62,7 @@ For more information on how to use the following functions, please see [characte
 - **Custom container:** support custom containers similar to VuePress default themes
 - **Macro replacement:** support for embedded JavaScript expressions to dynamically replace document content
 - **Image hosting service:** support [PicGo](https://picgo.github.io/PicGo-Doc/) image hosting service
-- **OpenAI: ** support for [OpenAI](https://openai.com) auto completion
+- **OpenAI:** support for [OpenAI](https://openai.com) auto completion
 - **Custom plug-ins:** support writing JavaScript plug-ins to expand editor functionality. The plug-in is placed in the `home directory/plugins`. Refer to [plug-in Development Guide](./help/PLUGIN.md)
 
 ## Screenshots
@@ -76,25 +76,15 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.30.0](https://github.com/purocean/yn/releases/tag/v3.30.0) 2022-05-13
+### [v3.31.0](https://github.com/purocean/yn/releases/tag/v3.31.0) 2022-06-08
 
-1. feat: add extension management panel
-2. feat: add environment variable configuration on macOs and Linux
-3. feat: add shortcut keys for switching editor tabs
-4. feat: add a shortcut key for switching warehouses
-5. feat: add switching selected to-dos in batches using shortcut keys
-6. feat: after clicking the text, the editor will highlight the corresponding line
-7. upd: adjust the mark label color under dark theme to enhance readability
-8. upd: remove the Draw.io integration, use an extension instead
-9. upd: remove Mermaid integration, use extension instead
-10. upd: remove the OpenAI integration, use an extension instead
-11. upd: remove Echarts integration, use extension instead
-12. upd: remove Luckysheet integration, use extension instead
-13. fix: fix HTML export formula font is not correct
-14. fix: fix file name sorting problem
-15. fix: fix the problem that the name of the image uploaded in the image bed is repeated
-16. fix: fix the problem that the folding function does not work in some files
-17. fix: fix the problem that the terminal size cannot be changed
+1. feat: save and restore window state
+2. feat: add heading level display
+3. feat: support more PlantUML graphics
+4. feat: add custom attachment/image path type setting
+5. fix: fix the problem that the plugin installation may fail
+6. fix: fix the problem that the terminal text cannot be copied
+7. fix: fix Windows platform may not be able to run code in terminal
 
 [More release notes](https://github.com/purocean/yn/releases)
 

@@ -89,13 +89,17 @@ export async function install (id: string, url: string) {
 
         extract.on('entry', (header, stream, next) => {
           const filePath = path.join(extensionPath, header.name.replace(/^package/, ''))
-          console.log('[extension] write file', filePath)
+          console.log('[extension] write', header.type, filePath)
 
-          fs.ensureFile(filePath).then(() => {
-            const fileStream = fs.createWriteStream(filePath)
-            stream.pipe(fileStream)
-            stream.on('end', next)
-          }).catch(reject)
+          if (header.type === 'file') {
+            fs.ensureFile(filePath).then(() => {
+              const fileStream = fs.createWriteStream(filePath)
+              stream.pipe(fileStream)
+              stream.on('end', next)
+            }).catch(reject)
+          } else {
+            next()
+          }
         })
 
         extract.on('finish', () => {

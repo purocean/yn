@@ -160,6 +160,7 @@ export interface BuildInSettings {
   'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
   'editor.minimap': boolean,
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
+  'assets.path-type': 'relative' | 'absolute' | 'auto',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,

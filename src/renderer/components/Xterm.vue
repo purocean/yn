@@ -149,7 +149,7 @@ export default defineComponent({
         }
 
         if (!language || language === '_') {
-          run(code, '\n')
+          run(code, eol)
         } else if (map[language]) {
           if (map[language].start) {
             input(map[language].start)
@@ -208,6 +208,10 @@ export default defineComponent({
   padding-right: 0;
   padding-top: 0;
   border-right: 0;
+}
+
+.xterm ::v-deep(textarea) {
+  transition: none;
 }
 
 .hide {

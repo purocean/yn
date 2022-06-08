@@ -62,7 +62,7 @@
 - **容器块:** 支持类似 VuePress 默认主题的自定义容器
 - **宏替换:** 支持内嵌 JavaScript 表达式动态替换文档内容
 - **图床:** 支持 [PicGo](https://picgo.github.io/PicGo-Doc/) 图床
-- **OpenAI: ** 支持接入 [OpenAI](https://openai.com) 自动补全
+- **OpenAI:** 支持接入 [OpenAI](https://openai.com) 自动补全
 - **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN_ZH-CN.md)
 
 ## 截图
@@ -76,25 +76,15 @@
 
 ## 更新日志
 
-### [v3.30.0](https://github.com/purocean/yn/releases/tag/v3.30.0) 2022-05-13
+### [v3.31.0](https://github.com/purocean/yn/releases/tag/v3.31.0) 2022-06-08
 
-1. feat: 增加扩展管理面板
-2. feat: macOs 和 Linux 上增加环境变量配置
-3. feat: 增加切换编辑器选项卡快捷键
-4. feat: 增加切换仓库快捷键
-5. feat: 增加使用快捷键批量切换选中的待办
-6. feat: 增加点击正文后，编辑器高亮对应行
-7. upd: 调整暗色主题下 mark 标签颜色，增强可读性
-8. upd: 从应用主体中移除 Draw.io 集成，使用扩展代替
-9. upd: 从应用主体中移除 Mermaid 集成，使用扩展代替
-10. upd: 从应用主体中移除 OpenAI 集成，使用扩展代替
-11. upd: 从应用主体中移除 Echarts 集成，使用扩展代替
-12. upd: 从应用主体中移除 Luckysheet 集成，使用扩展代替
-13. fix: 修复 HTML 导出公式字体不正确问题
-14. fix: 修复文件名排序问题
-15. fix: 修复图床上传图片名字重复问题
-16. fix: 修复折叠功能在某些文件中失效问题
-17. fix: 修复不能更改终端尺寸问题
+1. feat: 增加窗口尺寸位置记忆
+2. feat: 增加标题级别显示
+3. feat: 支持更多 PlantUML 图形
+4. feat: 增加自定义附件/图片路径类型设置
+5. fix: 修复安装插件可能失败问题
+6. fix: 修复终端文字不能复制问题
+7. fix: 修复 Windows 平台可能不能在终端中运行代码问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

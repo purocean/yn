@@ -5,7 +5,7 @@ import * as api from '@fe/support/api'
 import { getSetting, getSettings } from './setting'
 import { FLAG_DEMO } from '@fe/support/args'
 import { binMd5, quote, fileToBase64URL, getLogger } from '@fe/utils'
-import { basename, resolve, extname, dirname, relative } from '@fe/utils/path'
+import { basename, resolve, extname, dirname, relative, isBelongTo } from '@fe/utils/path'
 import { dayjs } from '@fe/context/lib'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
@@ -31,7 +31,8 @@ export async function upload (file: File, belongDoc: Pick<Doc, 'repo' | 'path'>,
   const filename = name || binMd5(fileBase64Url).substr(0, 8) + extname(file.name)
   const parentName = basename(belongDoc.path)
   const parentPath = dirname(belongDoc.path)
-  const assetsDir = getSettings()['assets-dir']
+  const assetsPathType = getSetting('assets.path-type', 'auto')
+  const assetsDir = getSetting('assets-dir', './FILES/{docName}')
     .replaceAll('{docSlug}', parentName.startsWith('.') ? 'upload' : slugify(parentName))
     .replaceAll('{docName}', parentName.startsWith('.') ? 'upload' : filenamify(parentName))
     .replaceAll('{docBasename}', parentName.startsWith('.') ? 'upload' : filenamify(parentName).replace(/\.md$/i, ''))
@@ -43,7 +44,10 @@ export async function upload (file: File, belongDoc: Pick<Doc, 'repo' | 'path'>,
 
   await api.upload(belongDoc.repo, fileBase64Url, path)
 
-  if (!assetsDir.startsWith('/')) {
+  if (
+    assetsPathType === 'relative' ||
+    (assetsPathType === 'auto' && isBelongTo(parentPath, path))
+  ) {
     return './' + relative(parentPath, path)
   }
 

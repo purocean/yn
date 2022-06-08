@@ -181,6 +181,8 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
       header.attrSet('title', headTitle)
     }
 
+    header.attrSet('data-tag', header.tag)
+
     return slf.renderToken(tokens, idx, opt)
   }
 
