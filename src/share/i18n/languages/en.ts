@@ -340,6 +340,9 @@ const data = {
       'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, date.',
+      'assets': {
+        'path-type': 'Path Type',
+      },
       'shell': 'Shell',
       'envs': 'Environments',
       'auto-save': 'Auto Save',

@@ -149,6 +149,17 @@ const schema: Schema = {
         patternmessage: '[\\<>?:"|*] are not allowed. Cannot starts with ./{docName}, /{docName} or {docName}.'
       },
     },
+    'assets.path-type': {
+      defaultValue: 'auto',
+      title: 'T_setting-panel.schema.assets.path-type',
+      type: 'string',
+      group: 'image',
+      required: true,
+      enum: ['auto', 'relative', 'absolute'],
+      options: {
+        enum_titles: ['Auto', 'Relative', 'Absolute'],
+      },
+    },
     'editor.line-numbers': {
       defaultValue: 'on',
       title: 'T_setting-panel.schema.editor.line-numbers',
