@@ -14,7 +14,28 @@ export default {
             type: 'normal',
             title: ctx.i18n.t('status-bar.tool.extension-manager'),
             onClick: () => ctx.showExtensionManager(),
-          }
+          },
+          {
+            id: 'print',
+            type: 'normal',
+            title: ctx.i18n.t('status-bar.tool.print'),
+            hidden: !ctx.store.state.currentFile,
+            onClick: () => {
+              setTimeout(() => {
+                ctx.doc.print()
+              }, 0)
+            },
+          },
+          {
+            id: 'export',
+            type: 'normal',
+            hidden: !ctx.store.state.currentFile,
+            title: ctx.i18n.t('status-bar.tool.export'),
+            onClick: () => ctx.doc.showExport(),
+          },
+          {
+            type: 'separator'
+          },
         ]
       }
     })

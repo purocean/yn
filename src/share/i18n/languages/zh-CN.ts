@@ -229,6 +229,8 @@ const data: BaseLanguage = {
       'doc-history': '文档历史版本',
       'share-preview': '分享预览',
       'extension-manager': '扩展管理',
+      'print': '打印文档',
+      'export': '导出文档',
     },
     'document-info': {
       'selected': '已选择',
