@@ -277,8 +277,8 @@ const data: BaseLanguage = {
   },
   'tabs': {
     'close-others': '关闭其他',
-    'close-right': '关闭到右侧',
-    'close-left': '关闭到左侧',
+    'close-right': '关闭右侧所有',
+    'close-left': '关闭左侧所有',
     'close-all': '全部关闭',
     'pin': '固定',
     'unpin': '取消固定',
