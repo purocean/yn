@@ -4,7 +4,7 @@ import { MsgPath } from '@share/i18n'
 import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import store from '@fe/support/store'
-import { isWindows } from '@fe/support/env'
+import { isMacOS, isWindows } from '@fe/support/env'
 import { basename } from '@fe/utils/path'
 import type{ BuildInSettings, FileItem, PathItem, SettingGroup } from '@fe/types'
 import { getThemeName } from './theme'
@@ -251,7 +251,7 @@ const schema: Schema = {
       maximum: 65535,
     },
     'keep-running-after-closing-window': {
-      defaultValue: !FLAG_MAS,
+      defaultValue: !isMacOS,
       title: 'T_setting-panel.keep-running-after-closing-window',
       type: 'boolean',
       group: 'other',
