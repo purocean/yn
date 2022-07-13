@@ -8,6 +8,14 @@ export default {
   name: 'markdown-container',
   register: ctx => {
     ctx.theme.addStyles(`
+      .markdown-view .markdown-body .custom-container.section {
+        padding: 12px;
+        border: 1px solid var(--g-color-80);
+        border-radius: var(--g-border-radius);
+        margin-top: 16px;
+        position: relative;
+      }
+
       .markdown-view .markdown-body .custom-container.row {
         display: flex;
         justify-content: space-between;
@@ -230,7 +238,7 @@ export default {
     })
 
     ctx.markdown.registerPlugin(md => {
-      ['tip', 'warning', 'danger', 'details', 'group-item', 'group', 'row', 'col'].forEach(name => {
+      ['tip', 'warning', 'danger', 'details', 'group-item', 'group', 'row', 'col', 'section'].forEach(name => {
         const reg = new RegExp(`^${name}\\s*(.*)$`)
 
         md.use(MarkdownItContainer, name, {
@@ -277,7 +285,7 @@ export default {
                 groupItemName = groupItemBase + groupItemSeq
               }
 
-              const containerTag = name === 'details' ? 'details' : 'div'
+              const containerTag = { details: 'details', section: 'section' }[name] || 'div'
               const titleTag = name === 'details' ? 'summary' : 'p'
               const titleClass = name === 'details' ? '' : 'custom-container-title'
 
