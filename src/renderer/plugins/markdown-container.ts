@@ -1,4 +1,5 @@
 import MarkdownItContainer from 'markdown-it-container'
+import { applyAttrs, getAttrs, parseInfo } from 'markdown-it-attributes'
 import { Fragment, h } from 'vue'
 import type Token from 'markdown-it/lib/token'
 import { Plugin } from '@fe/context'
@@ -238,10 +239,20 @@ export default {
           },
           render: function (tokens: Token[], idx: number) {
             const token = tokens[idx]
-            const info = token.info.trim()
-            const match = info.match(reg)
 
-            if (tokens[idx].nesting === 1) {
+            if (token.nesting === 1) {
+              // TODO: get options
+              const attrsOpts = { leftDelimiter: '{', rightDelimiter: '}', allowedAttributes: undefined }
+
+              // apply attributes
+              const attrInfo = parseInfo(attrsOpts, token.info)
+              if (attrInfo) {
+                const attrs = getAttrs(attrInfo.exp)
+                token.info = attrInfo.text
+                applyAttrs(attrsOpts, token, attrs)
+              }
+
+              const match = token.info.trim().match(reg)
               const title = md.utils.escapeHtml(match![1])
               const containerClass = `custom-container ${name}`
 
