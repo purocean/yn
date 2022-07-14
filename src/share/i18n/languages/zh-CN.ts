@@ -229,6 +229,8 @@ const data: BaseLanguage = {
       'doc-history': '文档历史版本',
       'share-preview': '分享预览',
       'extension-manager': '扩展管理',
+      'print': '打印文档',
+      'export': '导出文档',
     },
     'document-info': {
       'selected': '已选择',
@@ -277,8 +279,8 @@ const data: BaseLanguage = {
   },
   'tabs': {
     'close-others': '关闭其他',
-    'close-right': '关闭到右侧',
-    'close-left': '关闭到左侧',
+    'close-right': '关闭右侧所有',
+    'close-left': '关闭左侧所有',
     'close-all': '全部关闭',
     'pin': '固定',
     'unpin': '取消固定',

@@ -128,7 +128,7 @@ const createWindow = () => {
 
   win.on('close', e => {
     saveWindowBounds()
-    if (trayEnabled && config.get('keep-running-after-closing-window', !process.mas)) {
+    if (trayEnabled && config.get('keep-running-after-closing-window', !isMacos)) {
       hideWindow()
       e.preventDefault()
     }

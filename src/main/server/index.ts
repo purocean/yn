@@ -547,7 +547,7 @@ const server = (port = 3000) => {
       name: 'xterm-color',
       cols: 80,
       rows: 24,
-      cwd: HOME_DIR,
+      cwd: socket.handshake.query.cwd || HOME_DIR,
       env: process.env
     })
     ptyProcess.onData((data: any) => socket.emit('output', data))

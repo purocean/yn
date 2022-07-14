@@ -76,15 +76,12 @@
 
 ## 更新日志
 
-### [v3.31.0](https://github.com/purocean/yn/releases/tag/v3.31.0) 2022-06-08
+### [v3.32.0](https://github.com/purocean/yn/releases/tag/v3.32.0) 2022-07-14
 
-1. feat: 增加窗口尺寸位置记忆
-2. feat: 增加标题级别显示
-3. feat: 支持更多 PlantUML 图形
-4. feat: 增加自定义附件/图片路径类型设置
-5. fix: 修复安装插件可能失败问题
-6. fix: 修复终端文字不能复制问题
-7. fix: 修复 Windows 平台可能不能在终端中运行代码问题
+1. feat: 状态栏菜单增加“导出”、“打印”菜单项
+2. feat: 打开终端默认切换到当前仓库目录
+3. feat: 增加“section”容器块
+4. upd: macOS 上默认禁用“保持后台运行”设置
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

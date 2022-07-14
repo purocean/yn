@@ -76,15 +76,12 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.31.0](https://github.com/purocean/yn/releases/tag/v3.31.0) 2022-06-08
+### [v3.32.0](https://github.com/purocean/yn/releases/tag/v3.32.0) 2022-07-14
 
-1. feat: save and restore window state
-2. feat: add heading level display
-3. feat: support more PlantUML graphics
-4. feat: add custom attachment/image path type setting
-5. fix: fix the problem that the plugin installation may fail
-6. fix: fix the problem that the terminal text cannot be copied
-7. fix: fix Windows platform may not be able to run code in terminal
+1. feat: added "Export" and "Print" menu items to the status bar menu
+2. feat: open the terminal and switch to the current warehouse directory by default
+3. feat: add "section" container block
+4. upd: the "Keep running in background" setting is disabled by default on macOS
 
 [More release notes](https://github.com/purocean/yn/releases)
 
