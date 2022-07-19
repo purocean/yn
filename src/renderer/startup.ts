@@ -63,6 +63,10 @@ function changeLanguage ({ settings }: { settings: BuildInSettings }) {
   }
 }
 
+function updateSelectionInfo () {
+  store.commit('setSelectionInfo', getSelectionInfo())
+}
+
 registerHook('I18N_CHANGE_LANGUAGE', view.refresh)
 registerHook('SETTING_FETCHED', changeLanguage)
 registerHook('SETTING_BEFORE_WRITE', changeLanguage)
@@ -97,9 +101,8 @@ registerHook('EXTENSION_READY', () => {
 })
 
 whenEditorReady().then(({ editor }) => {
-  editor.onDidChangeCursorSelection(() => {
-    store.commit('setSelectionInfo', getSelectionInfo())
-  })
+  editor.onDidChangeCursorSelection(updateSelectionInfo)
+  editor.onDidChangeModel(updateSelectionInfo)
 
   const { currentFile } = store.state
 
