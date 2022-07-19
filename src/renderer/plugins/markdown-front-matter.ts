@@ -1,4 +1,5 @@
 import frontMatter from 'front-matter'
+import type { Options } from 'markdown-it'
 import type { Plugin } from '@fe/context'
 
 export default {
@@ -36,6 +37,11 @@ export default {
         if (!originOptions) {
           originOptions = { ...md.options }
         }
+
+        // clear md.options
+        Object.keys(md.options).forEach(key => {
+          delete md.options[key as keyof Options]
+        })
 
         Object.assign(md.options, originOptions)
         if (attributes.mdOptions && typeof attributes.mdOptions === 'object') {
