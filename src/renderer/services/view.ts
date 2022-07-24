@@ -139,12 +139,6 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
         node.removeAttribute('title')
       }
 
-      if (node.dataset) {
-        Object.keys(node.dataset).forEach(key => {
-          delete node.dataset[key]
-        })
-      }
-
       const len = node.children.length
       for (let i = len - 1; i >= 0; i--) {
         const ele = node.children[i]
