@@ -285,13 +285,16 @@ export function tapContextMenus (fun: BuildContextMenu) {
  * @param name Previewer name
  */
 export function switchPreviewer (name: string) {
+  const oldPreviewer = store.state.previewer
   if (ioc.get('VIEW_PREVIEWER').some((item) => item.name === name)) {
     store.commit('setPreviewer', name)
   } else {
     store.commit('setPreviewer', 'default')
   }
 
-  triggerHook('VIEW_PREVIEWER_CHANGE')
+  if (oldPreviewer !== store.state.previewer) {
+    triggerHook('VIEW_PREVIEWER_CHANGE', { type: 'switch' })
+  }
 }
 
 /**
@@ -300,7 +303,7 @@ export function switchPreviewer (name: string) {
  */
 export function registerPreviewer (previewer: Previewer) {
   ioc.register('VIEW_PREVIEWER', previewer)
-  triggerHook('VIEW_PREVIEWER_CHANGE')
+  triggerHook('VIEW_PREVIEWER_CHANGE', { type: 'register' })
 }
 
 /**
@@ -309,6 +312,7 @@ export function registerPreviewer (previewer: Previewer) {
  */
 export function removePreviewer (name: string) {
   ioc.removeWhen('VIEW_PREVIEWER', item => item.name === name)
+  triggerHook('VIEW_PREVIEWER_CHANGE', { type: 'remove' })
   switchPreviewer('default')
 }
 

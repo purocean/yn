@@ -244,7 +244,7 @@ export type BuildInHookTypes = {
   VIEW_FILE_CHANGE: never,
   VIEW_BEFORE_REFRESH: never,
   VIEW_AFTER_REFRESH: never,
-  VIEW_PREVIEWER_CHANGE: never,
+  VIEW_PREVIEWER_CHANGE: { type: 'register' | 'remove' | 'switch' },
   VIEW_ON_GET_HTML_FILTER_NODE: {
     node: HTMLElement,
     options: {
