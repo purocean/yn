@@ -19,7 +19,7 @@
       <Editor />
     </template>
     <template v-slot:preview>
-      <Preview />
+      <Previewer />
     </template>
   </Layout>
   <XFilter />
@@ -45,7 +45,7 @@ import Tree from '@fe/components/Tree.vue'
 import Xterm from '@fe/components/Xterm.vue'
 import FileTabs from '@fe/components/FileTabs.vue'
 import Editor from '@fe/components/Editor.vue'
-import Preview from '@fe/components/Preview.vue'
+import Previewer from '@fe/components/Previewer.vue'
 
 import SettingPanel from '@fe/components/SettingPanel.vue'
 import ExportPanel from '@fe/components/ExportPanel.vue'
@@ -67,7 +67,7 @@ export default defineComponent({
     Xterm,
     FileTabs,
     Editor,
-    Preview,
+    Previewer,
     XFilter,
     Premium,
     SettingPanel,

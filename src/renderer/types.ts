@@ -244,6 +244,7 @@ export type BuildInHookTypes = {
   VIEW_FILE_CHANGE: never,
   VIEW_BEFORE_REFRESH: never,
   VIEW_AFTER_REFRESH: never,
+  VIEW_PREVIEWER_CHANGE: never,
   VIEW_ON_GET_HTML_FILTER_NODE: {
     node: HTMLElement,
     options: {
@@ -278,10 +279,16 @@ export type BuildInHookTypes = {
   EXTENSION_READY: { extensions: Extension[] },
 }
 
+export type Previewer = {
+  name: string,
+  component: any,
+}
+
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
   THEME_STYLES: any;
+  VIEW_PREVIEWER: Previewer;
 }
 
 export type FrontMatterAttrs = {
@@ -290,4 +297,5 @@ export type FrontMatterAttrs = {
   enableMacro?: boolean,
   define?: Record<string, boolean>,
   mdOptions?: Record<string, boolean>,
+  defaultPreviewer?: string,
 }

@@ -2,10 +2,11 @@ import juice from 'juice'
 import { CtrlCmd, Escape, registerCommand } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
+import * as ioc from '@fe/core/ioc'
 import { DOM_CLASS_NAME } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import type { BuildInHookTypes, Components } from '@fe/types'
+import type { BuildInHookTypes, Components, Previewer } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
 import { switchDoc } from './document'
@@ -277,6 +278,46 @@ export function toggleSyncScroll (flag?: boolean) {
  */
 export function tapContextMenus (fun: BuildContextMenu) {
   contextMenuFunList.push(fun)
+}
+
+/**
+ * Switch current previewer
+ * @param name Previewer name
+ */
+export function switchPreviewer (name: string) {
+  if (ioc.get('VIEW_PREVIEWER').some((item) => item.name === name)) {
+    store.commit('setPreviewer', name)
+  } else {
+    store.commit('setPreviewer', 'default')
+  }
+
+  triggerHook('VIEW_PREVIEWER_CHANGE')
+}
+
+/**
+ * Register a previewer.
+ * @param previewer Previewer
+ */
+export function registerPreviewer (previewer: Previewer) {
+  ioc.register('VIEW_PREVIEWER', previewer)
+  triggerHook('VIEW_PREVIEWER_CHANGE')
+}
+
+/**
+ * Remove a previewer.
+ * @param name Previewer name
+ */
+export function removePreviewer (name: string) {
+  ioc.removeWhen('VIEW_PREVIEWER', item => item.name === name)
+  switchPreviewer('default')
+}
+
+/**
+ * Get all previewers.
+ * @returns Previewers
+ */
+export function getAllPreviewers () {
+  return ioc.get('VIEW_PREVIEWER')
 }
 
 /**

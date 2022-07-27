@@ -31,6 +31,8 @@ const data = {
   'install-extension-tips': 'Please install and enable the "%s" extension first',
   'not-support-mas': 'Yank Note downloaded from the Mac Apple Store does not support this extension.',
   'learn-more': 'Learn More',
+  'previewer': 'Previewer',
+  'default': 'Default',
   'premium': {
     'need-purchase': '[%s] Premium is required',
     'buy-license': 'Buy License',

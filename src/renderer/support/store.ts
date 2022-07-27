@@ -32,6 +32,7 @@ export const initState = {
     line: 0,
     column: 0
   },
+  previewer: 'default',
 }
 
 export type AppState = typeof initState
@@ -88,6 +89,9 @@ export default createStore({
     },
     setShowXterm (state, data) {
       state.showXterm = data
+    },
+    setPreviewer (state, data: string) {
+      state.previewer = data
     },
     setShowOutline (state, data) {
       state.showOutline = data
