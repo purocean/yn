@@ -76,12 +76,13 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.32.0](https://github.com/purocean/yn/releases/tag/v3.32.0) 2022-07-14
+### [v3.33.0](https://github.com/purocean/yn/releases/tag/v3.33.0) 2022-07-28
 
-1. feat: added "Export" and "Print" menu items to the status bar menu
-2. feat: open the terminal and switch to the current warehouse directory by default
-3. feat: add "section" container block
-4. upd: the "Keep running in background" setting is disabled by default on macOS
+1. fix: fix the problem that the word count statistics of open documents are not updated
+2. fix: fix the problem that front matter is not refreshed when switching files
+3. upd: export HTML preserves `data-*` attributes
+4. upd: optimize `section` container style
+5. feat(plugin): Added previewer registration, plugins can customize the document preview interface. Related APIs: `ctx.view.switchPreviewer` `ctx.view.registerPreviewer` `ctx.view.removePreviewer` `ctx.view.getAllPreviewers`
 
 [More release notes](https://github.com/purocean/yn/releases)
 
