@@ -32,6 +32,9 @@ const data: BaseLanguage = {
   'install-extension-tips': '请先安装并启用 “%s” 扩展',
   'not-support-mas': '从 Mac Apple Store 中下载的应用不支持此拓展。',
   'learn-more': '了解更多',
+  'previewer': '预览器',
+  'default': '默认',
+  'print': '打印',
   'premium': {
     'need-purchase': '[%s] 需要高级版',
     'buy-license': '立即购买',

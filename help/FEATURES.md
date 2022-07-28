@@ -547,6 +547,7 @@ variable name | type | description
 `wrapCode` | `boolean` | whether to enable code wrapping
 `enableMacro` | `boolean` | whether to enable macro replacement
 `define` | `Record<string, string>` | Macro definition, string replacing
+`defaultPreviewer` | `string` | The default previewer for the document, some extensions may provide a special preview interface. Such as *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-reveal-js')">Reveal.js extension</a>*
 `mdOptions` | `Record<string, boolean>` | Markdown-it parse options
 `mdOptions.html` | `boolean` | Enable HTML tags in source
 `mdOptions.breaks` | `boolean` | Convert `\n` in paragraphs into `<br>`

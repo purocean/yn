@@ -16,6 +16,10 @@ export default {
         position: relative;
       }
 
+      .markdown-view .markdown-body .custom-container.section > :first-child {
+        margin-top: 0;
+      }
+
       .markdown-view .markdown-body .custom-container.row {
         display: flex;
         justify-content: space-between;

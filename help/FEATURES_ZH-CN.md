@@ -546,6 +546,7 @@ Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command
 `wrapCode` | `boolean` | 是否开启代码换行
 `enableMacro` | `boolean` | 是否开启宏替换
 `define` | `Record<string, string>` | 宏定义，定义文本替换
+`defaultPreviewer` | `string` | 文档默认的预览器，某些扩展可能提供特殊的预览界面。如 *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-reveal-js')">Reveal.js 扩展</a>*
 `mdOptions` | `Record<string, boolean>` | Markdown-it 解析参数
 `mdOptions.html` | `boolean` | 开启 HTML 解析
 `mdOptions.breaks` | `boolean` | 转换 `\n` 成 `<br>`

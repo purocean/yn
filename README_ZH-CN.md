@@ -76,12 +76,13 @@
 
 ## 更新日志
 
-### [v3.32.0](https://github.com/purocean/yn/releases/tag/v3.32.0) 2022-07-14
+### [v3.33.0](https://github.com/purocean/yn/releases/tag/v3.33.0) 2022-07-28
 
-1. feat: 状态栏菜单增加“导出”、“打印”菜单项
-2. feat: 打开终端默认切换到当前仓库目录
-3. feat: 增加“section”容器块
-4. upd: macOS 上默认禁用“保持后台运行”设置
+1. fix: 修复打开文档字数统计信息不更新问题
+2. fix: 修复切换文件时候 front matter 没刷新问题
+3. upd: 导出 HTML 保留 `data-*` 属性
+4. upd: 优化 `section` 容器样式
+5. feat(plugin): 增加预览器注册，插件可以自定义文档预览界面。相关 Api: `ctx.view.switchPreviewer` `ctx.view.registerPreviewer` `ctx.view.removePreviewer` `ctx.view.getAllPreviewers`
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

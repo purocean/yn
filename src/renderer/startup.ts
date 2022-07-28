@@ -3,7 +3,7 @@ import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
-import type { BuildInSettings, Doc, Repo } from '@fe/types'
+import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
 import { isMarked, markDoc, showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
 import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
@@ -63,6 +63,19 @@ function changeLanguage ({ settings }: { settings: BuildInSettings }) {
   }
 }
 
+function updateSelectionInfo () {
+  store.commit('setSelectionInfo', getSelectionInfo())
+}
+
+function switchDefaultPreviewer () {
+  const attributes: FrontMatterAttrs | undefined = view.getRenderEnv()?.attributes
+  if (attributes?.defaultPreviewer && typeof attributes.defaultPreviewer === 'string') {
+    view.switchPreviewer(attributes.defaultPreviewer)
+  } else {
+    view.switchPreviewer('default')
+  }
+}
+
 registerHook('I18N_CHANGE_LANGUAGE', view.refresh)
 registerHook('SETTING_FETCHED', changeLanguage)
 registerHook('SETTING_BEFORE_WRITE', changeLanguage)
@@ -96,10 +109,21 @@ registerHook('EXTENSION_READY', () => {
   view.render()
 })
 
+registerHook('VIEW_PREVIEWER_CHANGE', ({ type }) => {
+  if (type !== 'switch') {
+    setTimeout(() => {
+      switchDefaultPreviewer()
+    }, 500)
+  }
+})
+
+registerHook('VIEW_FILE_CHANGE', () => {
+  registerHook('VIEW_RENDER', switchDefaultPreviewer, true)
+})
+
 whenEditorReady().then(({ editor }) => {
-  editor.onDidChangeCursorSelection(() => {
-    store.commit('setSelectionInfo', getSelectionInfo())
-  })
+  editor.onDidChangeCursorSelection(updateSelectionInfo)
+  editor.onDidChangeModel(updateSelectionInfo)
 
   const { currentFile } = store.state
 
