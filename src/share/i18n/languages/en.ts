@@ -33,6 +33,7 @@ const data = {
   'learn-more': 'Learn More',
   'previewer': 'Previewer',
   'default': 'Default',
+  'print': 'Print',
   'premium': {
     'need-purchase': '[%s] Premium is required',
     'buy-license': 'Buy License',

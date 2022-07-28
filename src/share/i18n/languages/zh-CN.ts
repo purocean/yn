@@ -34,6 +34,7 @@ const data: BaseLanguage = {
   'learn-more': '了解更多',
   'previewer': '预览器',
   'default': '默认',
+  'print': '打印',
   'premium': {
     'need-purchase': '[%s] 需要高级版',
     'buy-license': '立即购买',
