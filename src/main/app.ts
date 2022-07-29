@@ -92,9 +92,12 @@ const restoreWindowBounds = () => {
 
 const saveWindowBounds = () => {
   if (win) {
-    const bounds = win.getBounds()
     const fullscreen = win.isFullScreen()
-    if (!fullscreen) {
+    const maximized = win.isMaximized()
+
+    // save bounds only when not fullscreen and not maximized
+    if (!fullscreen && !maximized) {
+      const bounds = win.getBounds()
       store.set('window.bounds', bounds)
     }
   }
