@@ -9,7 +9,7 @@ export default {
         id: 'status-bar-previewer',
         position: 'right',
         title: ctx.i18n.t('previewer'),
-        hidden: previewers.length < 1,
+        hidden: previewers.length < 1 || ctx.store.state.currentFile?.repo === '__help__',
         list: previewers.map(item => ({
           id: item.name,
           type: 'normal' as any,
