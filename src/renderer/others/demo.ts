@@ -12,6 +12,117 @@ let settings = {
   ]
 }
 
+const treeData = {
+  status: 'ok',
+  message: 'success',
+  data: [
+    {
+      name: '/',
+      type: 'dir',
+      path: '/',
+      repo: 'test',
+      level: 1,
+      children: [
+        { name: 'Work', path: '/Work', type: 'dir', repo: 'test', level: 2, children: [{ name: '1.md', path: '/Work/1.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635402958.447, mtime: 1623635402958.447 }, { name: '2.md', path: '/Work/2.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635406528.4639, mtime: 1623635406528.4639 }, { name: '3.md', path: '/Work/3.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635410176.051, mtime: 1623635410177.0498 }] },
+        { name: 'Learn', path: '/Learn', type: 'dir', repo: 'test', level: 2, children: [{ name: 'a.md', path: '/Learn/a.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635423871.2678, mtime: 1623635423871.2678 }, { name: 'b.md', path: '/Learn/b.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635427472.3079, mtime: 1623635427472.3079 }, { name: 'c.md', path: '/Learn/c.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635431935.041, mtime: 1623635431935.041 }] },
+        { name: 'TEST.md', path: '/TEST.md', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635389096.3315, mtime: 1623635389097.3403 },
+        { name: 'TODO.md', path: '/TODO.md', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635437968.1262, mtime: 1623635437969.1235 },
+        { name: 'Secret.c.md', path: '/Secret.c.md', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 },
+        { name: 'Project.luckysheet', path: '/Project.luckysheet', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 },
+        { name: 'Drawio.drawio', path: '/Drawio.drawio', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 },
+        { name: 'Reveal-js.md', path: '/Reveal-js.md', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 },
+        { name: 'Markmap.md', path: '/Markmap.md', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 },
+      ]
+    }]
+}
+
+const markupContent = `---
+defaultPreviewer: 'Markmap'
+---
+
+# markmap
+
+## Links
+
+- <https://markmap.js.org/>
+- [GitHub](https://github.com/gera2ld/markmap)
+
+## Related Projects
+
+- [coc-markmap](https://github.com/gera2ld/coc-markmap)
+- [gatsby-remark-markmap](https://github.com/gera2ld/gatsby-remark-markmap)
+
+## Features
+
+- links
+- **strong** ~~del~~ *italic* ==highlight==
+- multiline
+  text
+- \`inline code\`
+-
+    \`\`\`js
+    console.log('code block');
+    \`\`\`
+- Katex
+  - $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
+  - [More Katex Examples](#?d=gist:gera2ld/af76a4c245b302206b16aec503dbe07b:katex.md)
+`
+
+const revealJsContent = `---
+defaultPreviewer: 'Reveal.js'
+---
+
+::: section
+## Slide 1 {style="color:red"}
+
+\`\`\`js
+await new Promise(r => setTimeout(r, 500))
+ctx.ui.useToast().show("info", "HELLOWORLD!")
+console.log("hello world!")
+\`\`\`
+:::
+
+::: section
+## Horizontal Slide
+
+$$
+\\nabla \\cdot \\vec{\\mathbf{B}}  = 0
+$$
+:::
+
+::::: section
+### Vertical Slide
+
+::: section
+### Vertical Slide 1
+
++ Subject{.mindmap}
+    + Topic 1
+    + Topic 2
+    + Topic 3
+    + Topic 4
+
+:::
+::: section
+### Vertical Slide 2
+
+\`\`\`mermaid
+graph LR
+A[Hard] --> |Text| B(Round)
+\`\`\`
+
+:::
+::: section
+### Vertical Slide 3
+
+@startuml
+a -> b
+@enduml
+
+:::
+:::::
+`
+
 if (FLAG_DEMO) {
   storage.clear()
   setTheme('dark')
@@ -66,7 +177,7 @@ if (FLAG_DEMO) {
       }
 
       if (uri.startsWith('/api/tree')) {
-        return Promise.resolve({ status: 'ok', message: 'success', data: [{ name: '/', type: 'dir', path: '/', repo: 'test', level: 1, children: [{ name: 'Work', path: '/Work', type: 'dir', repo: 'test', level: 2, children: [{ name: '1.md', path: '/Work/1.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635402958.447, mtime: 1623635402958.447 }, { name: '2.md', path: '/Work/2.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635406528.4639, mtime: 1623635406528.4639 }, { name: '3.md', path: '/Work/3.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635410176.051, mtime: 1623635410177.0498 }] }, { name: 'Learn', path: '/Learn', type: 'dir', repo: 'test', level: 2, children: [{ name: 'a.md', path: '/Learn/a.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635423871.2678, mtime: 1623635423871.2678 }, { name: 'b.md', path: '/Learn/b.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635427472.3079, mtime: 1623635427472.3079 }, { name: 'c.md', path: '/Learn/c.md', type: 'file', repo: 'test', level: 3, marked: false, birthtime: 1623635431935.041, mtime: 1623635431935.041 }] }, { name: 'TEST.md', path: '/TEST.md', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635389096.3315, mtime: 1623635389097.3403 }, { name: 'TODO.md', path: '/TODO.md', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635437968.1262, mtime: 1623635437969.1235 }, { name: 'Secret.c.md', path: '/Secret.c.md', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 }, { name: 'Project.luckysheet', path: '/Project.luckysheet', type: 'file', repo: 'test', level: 2, marked: false, birthtime: 1623635542753.2976, mtime: 1623635542753.2976 }] }] })
+        return Promise.resolve(treeData)
       }
 
       if (uri.startsWith('/api/history/list')) {
@@ -81,6 +192,24 @@ if (FLAG_DEMO) {
         if (method === 'POST') {
           return Promise.resolve({ status: 'ok', message: 'success' })
         } else if (method === 'GET') {
+          if ((url.searchParams.get('path') || '').includes('Reveal-js.md')) {
+            const content = revealJsContent
+            return Promise.resolve({
+              status: 'ok',
+              message: 'success',
+              data: { content, hash: 'test' }
+            })
+          }
+
+          if ((url.searchParams.get('path') || '').includes('Markmap.md')) {
+            const content = markupContent
+            return Promise.resolve({
+              status: 'ok',
+              message: 'success',
+              data: { content, hash: 'test' }
+            })
+          }
+
           if ((url.searchParams.get('path') || '').includes('_FRAGMENT.md')) {
             const content = "---\ncustomVarFromOtherDoc: Hello, It's Me.\ndefine:\n    --TEST_DEFINE--: definition from a fragment.\n---\n*Content from a fragment.*"
             return Promise.resolve({
