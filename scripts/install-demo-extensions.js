@@ -57,8 +57,12 @@ function installExtension (extension) {
 
 async function install (extensions) {
   for (const extension of extensions) {
-    console.log('[extension] install', extension.name)
-    await installExtension(extension)
+    if (extension.name.startsWith('@yank-note/extension-')) {
+      console.log('[extension] install', extension.name)
+      await installExtension(extension)
+    } else {
+      console.log('[extension] skip', extension.name)
+    }
   }
 }
 
