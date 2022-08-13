@@ -186,7 +186,7 @@ const plantumlGen = async (ctx: any, next: any) => {
 
 const runCode = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/run')) {
-    ctx.body = await run.runCode(ctx.request.body.language, ctx.request.body.code)
+    ctx.body = await run.runCode(ctx.request.body.cmd, ctx.request.body.code)
   } else {
     await next()
   }

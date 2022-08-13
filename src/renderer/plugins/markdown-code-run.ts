@@ -1,15 +1,20 @@
-import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref, VNode, watch } from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref, VNode, watch, watchEffect } from 'vue'
 import Markdown from 'markdown-it'
+import { escape } from 'lodash-es'
 import { Plugin } from '@fe/context'
 import { getActionHandler } from '@fe/core/action'
-import * as api from '@fe/support/api'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/core/command'
 import { useI18n } from '@fe/services/i18n'
-import { md5 } from '@fe/utils'
+import { getLogger, md5 } from '@fe/utils'
 import SvgIcon from '@fe/components/SvgIcon.vue'
+import { getAllRunners } from '@fe/services/runner'
+import { registerHook, removeHook } from '@fe/core/hook'
+import type { CodeRunner } from '@fe/types'
 
 const cache: Record<string, string> = {}
+
+const logger = getLogger('markdown-code-run')
 
 const RunCode = defineComponent({
   name: 'run-code',
@@ -19,19 +24,25 @@ const RunCode = defineComponent({
       default: ''
     },
     language: String,
+    firstLine: String,
   },
   setup (props) {
     const { t } = useI18n()
     const instance = getCurrentInstance()
     const result = ref('')
     const hash = computed(() => md5(props.language + props.code))
-    const isJs = computed(() => ['js', 'javascript'].includes((props.language || '').toLowerCase()))
-    const id = Date.now()
+    const runner = ref<CodeRunner>()
+    const getTerminalCmd = computed(() => runner.value?.getTerminalCmd(props.language!, props.firstLine!))
+
     let hasResult = false
 
-    let appendLog: any = (res: string) => {
+    let appendLog: ((type: 'html' | 'plain', res: string) => void) | undefined = (type, res) => {
+      if (type === 'plain') {
+        res = escape(res)
+      }
+
       if (hasResult) {
-        result.value += '\n' + res
+        result.value += res
       } else {
         result.value = res
         hasResult = true
@@ -44,24 +55,65 @@ const RunCode = defineComponent({
       const { code, language } = props
 
       hasResult = false
-      result.value = isJs.value ? '' : t('code-run.running')
+
+      if (!runner.value) {
+        result.value = "No runner found for language '" + language + "'"
+        return
+      }
+
+      result.value = t('code-run.running')
 
       try {
-        await api.runCode(language!, code, {
-          name: `_l_${id}_${hash.value}`,
-          handler: res => appendLog && appendLog(res)
-        })
+        const { type, value: val } = await runner.value.run(language!, code)
+
+        if (typeof val === 'string') {
+          appendLog?.(type, val)
+          return
+        }
+
+        // read stream
+        while (true) {
+          const { done, value } = await val.read()
+          if (done) {
+            logger.debug('run code done >', value)
+            break
+          }
+
+          logger.debug('run code result >', value)
+
+          if (!appendLog) {
+            break
+          }
+
+          let valStr = value
+
+          if (typeof value !== 'string') {
+            try {
+              valStr = new TextDecoder().decode(value)
+            } catch {
+              valStr = String(value)
+            }
+          }
+
+          appendLog(type, valStr)
+        }
       } catch (error: any) {
         result.value = error.message
       }
     }
 
     const runInXterm = (e: MouseEvent) => {
-      getActionHandler('xterm.run-code')(
-        props.language || '',
-        props.code,
-        !matchKeys(e, [CtrlCmd]),
-      )
+      const cmd = runner.value?.getTerminalCmd(props.language!, props.firstLine!)
+
+      if (!cmd) {
+        return
+      }
+
+      getActionHandler('xterm.run')({
+        code: props.code,
+        start: cmd.start,
+        exit: matchKeys(e, [CtrlCmd]) ? undefined : cmd.exit,
+      })
     }
 
     const clearResult = () => {
@@ -75,8 +127,16 @@ const RunCode = defineComponent({
       result.value = ''
     })
 
+    const refreshRunner = () => {
+      runner.value = getAllRunners().find((runner) => runner.match(props.language!, props.firstLine!))
+    }
+
+    watchEffect(refreshRunner)
+    registerHook('CODE_RUNNER_CHANGE', refreshRunner)
+
     onBeforeUnmount(() => {
       appendLog = undefined
+      removeHook('CODE_RUNNER_CHANGE', refreshRunner)
     })
 
     return () => {
@@ -92,7 +152,7 @@ const RunCode = defineComponent({
           h('div', {
             title: t('code-run.run-in-xterm-tips', getKeyLabel(CtrlCmd)),
             class: 'p-mcr-run-xterm-btn skip-print',
-            hidden: isJs.value,
+            hidden: !getTerminalCmd.value,
             onClick: runInXterm
           }),
         ]),
@@ -125,7 +185,8 @@ const RunPlugin = (md: Markdown) => {
     if (codeNode && Array.isArray(codeNode.children)) {
       codeNode.children.push(h(RunCode, {
         code,
-        language: token.info
+        firstLine,
+        language: token.info,
       }))
     }
 

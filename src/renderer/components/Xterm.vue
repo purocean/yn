@@ -14,7 +14,7 @@ import { useStore } from 'vuex'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { OneHalfLight, OneHalfDark } from 'xterm-theme'
-import { getLogger } from '@fe/utils'
+import { getLogger, sleep } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '@fe/support/args'
@@ -125,72 +125,48 @@ export default defineComponent({
       focus()
     }
 
-    function runInXterm (language: string, code: string, exit = true) {
+    async function runInXterm (cmd: { code: string, start?: string, exit?: string } | string) {
       if (FLAG_DISABLE_XTERM) {
         logger.warn('xterm disabled')
         return
       }
 
       toggleXterm(true)
-      nextTick(() => {
-        init()
 
-        const eol = isWindows ? '\r\n' : '\n'
+      await nextTick()
 
-        const map: {[key: string]: {start: string; exit: string; eol: string}} = {
-          bat: { start: 'cmd.exe', exit: 'exit', eol: '\r\n' },
-          shell: { start: '', exit: 'exit', eol },
-          sh: { start: 'sh', exit: 'exit', eol },
-          bash: { start: 'bash', exit: 'exit', eol },
-          php: { start: 'php -a', exit: 'exit', eol },
-          python: { start: 'python', exit: 'exit()', eol },
-          py: { start: 'python', exit: 'exit()', eol },
-          js: { start: 'node', exit: '.exit', eol },
-          node: { start: 'node', exit: '.exit', eol },
-        }
+      init()
 
-        const run = (code: string, eol: string) => {
-          code.split('\n').forEach(x => {
-            input(x.trim())
-            input(eol)
-          })
-        }
+      const eol = isWindows ? '\r\n' : '\n'
 
-        if (!language || language === '_') {
-          run(code, eol)
-        } else if (map[language]) {
-          if (map[language].start) {
-            input(map[language].start)
-            input(map[language].eol)
-          }
+      if (typeof cmd === 'string') {
+        cmd = { code: cmd }
+      }
 
-          // wait for child process ready.
-          setTimeout(() => {
-            run(code, map[language].eol)
+      if (cmd.start) {
+        input(cmd.start)
+        input(eol)
+        // wait for child process ready.
+        await sleep(400)
+      }
 
-            if (exit) {
-              input(map[language].exit)
-              input(map[language].eol)
-            }
-          }, 400)
-        } else {
-          xterm!.write(`Not support  ${language}\n`)
-        }
+      cmd.code.split('\n').forEach(x => {
+        input(x.trim())
+        input(eol)
       })
-    }
 
-    function handleRunInXterm (code?: string) {
-      runInXterm('_', code || '', false)
+      if (cmd.exit) {
+        input(cmd.exit)
+        input(eol)
+      }
     }
 
     onBeforeMount(() => {
-      registerAction({ name: 'xterm.run-code', handler: runInXterm })
-      registerAction({ name: 'xterm.run', handler: handleRunInXterm })
+      registerAction({ name: 'xterm.run', handler: runInXterm })
       registerAction({ name: 'xterm.init', handler: init })
     })
 
     onBeforeUnmount(() => {
-      removeAction('xterm.run-code')
       removeAction('xterm.run')
       removeAction('xterm.init')
       removeHook('THEME_CHANGE', changeTheme)

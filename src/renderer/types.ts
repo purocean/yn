@@ -206,8 +206,7 @@ export type BuildInActions = {
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
   'file-tabs.close-current': () => void,
-  'xterm.run-code': (language: string, code: string, exit: boolean) => void,
-  'xterm.run': (code: string) => void,
+  'xterm.run': (cmd: { code: string, start: string, exit?: string } | string) => void,
   'xterm.init': (opts?: { cwd?: string }) => void,
   'plugin.document-history-stack.back': () => void,
   'plugin.document-history-stack.forward': () => void,
@@ -277,6 +276,7 @@ export type BuildInHookTypes = {
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },
   EXTENSION_READY: { extensions: Extension[] },
+  CODE_RUNNER_CHANGE: { type: 'register' | 'remove' },
 }
 
 export type Previewer = {
@@ -284,11 +284,26 @@ export type Previewer = {
   component: any,
 }
 
+export interface CodeRunner {
+  name: string;
+  order?: number;
+  match: (language: string, magicComment: string) => boolean;
+  getTerminalCmd: (language: string, magicComment: string) => {
+    start: string,
+    exit: string,
+  } | null;
+  run: (language: string, code: string) => Promise<{
+    type: 'html' | 'plain',
+    value: ReadableStreamDefaultReader | string,
+  }>;
+}
+
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
   THEME_STYLES: any;
   VIEW_PREVIEWER: Previewer;
+  CODE_RUNNER: CodeRunner;
 }
 
 export type FrontMatterAttrs = {
