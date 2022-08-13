@@ -76,7 +76,7 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.34.0](https://github.com/purocean/yn/releases/tag/v3.34.0) 2022-08-13
+### [v3.34.1](https://github.com/purocean/yn/releases/tag/v3.34.1) 2022-08-13
 
 1. feat: refactoring the code running function, adding *Code Runner* extension, running the code to support real-time display of running results
 2. fix: fix the problem of incomplete window display after restoring the maximized window state on Windows
