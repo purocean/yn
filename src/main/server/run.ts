@@ -27,10 +27,13 @@ const runCode = async (cmd: { cmd: string, args: string[] } | string, code: stri
     if (typeof cmd === 'string') {
       const useTplFile = cmd.includes('$tmpFile')
       if (useTplFile) {
-        const tmpFile = path.join(os.tmpdir(), `${Math.random().toString(36).substring(2, 5)}.tmp`)
+        const extMatch = cmd.match(/\$tmpFile(\.[a-zA-Z0-9]+)/)
+        const ext = extMatch ? extMatch[1] : ''
+        const tmpFileWithoutExt = path.join(os.tmpdir(), `${Math.random().toString(36).substring(2, 5)}`)
+        const tmpFile = tmpFileWithoutExt + ext
         await fs.writeFile(tmpFile, code)
         try {
-          return execCmd(cmd.replace('$tmpFile', tmpFile), { env })
+          return execCmd(cmd.replaceAll('$tmpFile', tmpFileWithoutExt), { env })
         } catch (error) {
           await fs.remove(tmpFile)
           throw error
