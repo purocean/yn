@@ -318,60 +318,25 @@ export async function convertFile (
 
 /**
  * Run code.
- * @param language
+ * @param cmd
  * @param code
- * @param callback
- * @returns result (javascript no result)
+ * @param outputStream
+ * @returns result
  */
-export async function runCode (language: string, code: string, callback?: { name: string, handler: (res: string) => void }): Promise<string> {
-  if (['js', 'javascript'].includes(language.toLowerCase())) {
-    const loggerName = callback ? `${callback.name}_${Date.now()}` : ''
-    if (loggerName) {
-      Object.keys(window).forEach(key => {
-        if (key.startsWith(callback!.name)) {
-          delete (window as any)[key]
-        }
-      })
-
-      ;(window as any)[loggerName] = (...args: any[]) => {
-        callback?.handler(args.map((arg) => {
-          if (['boolean', 'number', 'bigint', 'string', 'symbol', 'function'].includes(typeof arg)) {
-            return arg.toString()
-          } else {
-            return JSON.stringify(arg)
-          }
-        }).join(' '))
-      }
-    }
-
-    // eslint-disable-next-line no-eval
-    await eval(`(async () => {
-      const console = new Proxy(window.console, {
-        get: (obj, prop) => ['error', 'warn', 'info', 'log', 'debug'].includes(prop)
-          ? (...args) => {
-            obj[prop](...args);
-            const loggerName = '${loggerName}';
-            if (loggerName && window[loggerName]) {
-              window[loggerName](...args)
-            }
-          }
-          : obj[prop]
-      });
-      ${code}
-    })()`)
-
-    return ''
-  }
-
-  const { data } = await fetchHttp('/api/run', {
+export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, outputStream: true): Promise<ReadableStreamDefaultReader>
+export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, outputStream?: false): Promise<string>
+export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, outputStream = false): Promise<ReadableStreamDefaultReader | string> {
+  const response = await fetchHttp('/api/run', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ language, code })
+    body: JSON.stringify({ cmd, code })
   })
 
-  callback && callback.handler(data)
-
-  return data
+  if (outputStream) {
+    return response.body.getReader()
+  } else {
+    return response.text()
+  }
 }
 
 /**

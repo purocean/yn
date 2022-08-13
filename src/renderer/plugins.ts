@@ -55,6 +55,7 @@ import imageLocalization from '@fe/plugins/image-localization'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 import copyContent from '@fe/plugins/copy-content'
 import sharePreview from '@fe/plugins/share-preview'
+import codeRunners from '@fe/plugins/code-runners'
 
 export default [
   customStyles,
@@ -114,4 +115,5 @@ export default [
   imageHostingPicgo,
   copyContent,
   sharePreview,
+  codeRunners,
 ]
