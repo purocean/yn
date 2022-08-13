@@ -4,24 +4,18 @@ import * as path from 'path'
 import * as cp from 'child_process'
 import * as wsl from '../wsl'
 import config from '../config'
+import { mergeStreams } from '../helper'
 
 const isWsl = wsl.isWsl
 const isWin = os.platform() === 'win32'
 
-async function execFile (file: string, args: string[], options?: cp.ExecFileOptions) {
-  return new Promise<string>((resolve) => {
-    let result = ''
-    // default 300 seconds timeout.
-    const process = cp.execFile(file, args, { timeout: 300 * 1000, ...options })
-    process.stdout?.on('data', data => { result += data })
-    process.stderr?.on('data', data => { result += data })
-    process.on('close', () => {
-      resolve(result)
-    })
-  })
+function execFile (file: string, args: string[], options?: cp.ExecFileOptions) {
+  const process = cp.execFile(file, args, { timeout: 300 * 1000, ...options })
+  const output = [process.stdout, process.stderr].filter(Boolean) as NodeJS.ReadableStream[]
+  return mergeStreams(output)
 }
 
-const runCode = async (language: string, code: string): Promise<string> => {
+const runCode = async (language: string, code: string): Promise<string | NodeJS.ReadableStream> => {
   try {
     const languageMap = {
       sh: { cmd: 'sh', args: ['-c'] },

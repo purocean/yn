@@ -363,13 +363,28 @@ export async function runCode (language: string, code: string, callback?: { name
     return ''
   }
 
-  const { data } = await fetchHttp('/api/run', {
+  const response = await fetchHttp('/api/run', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ language, code })
   })
 
-  callback && callback.handler(data)
+  const reader = response.body.getReader()
+
+  let data = ''
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) {
+      break
+    }
+
+    if (callback) {
+      const str = new TextDecoder('utf-8').decode(value)
+      data += str
+      callback.handler(str.replace(/\n$/, ''))
+    }
+  }
 
   return data
 }
