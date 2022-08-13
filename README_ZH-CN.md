@@ -76,13 +76,14 @@
 
 ## 更新日志
 
-### [v3.33.0](https://github.com/purocean/yn/releases/tag/v3.33.0) 2022-07-28
+### [v3.34.0](https://github.com/purocean/yn/releases/tag/v3.34.0) 2022-08-13
 
-1. fix: 修复打开文档字数统计信息不更新问题
-2. fix: 修复切换文件时候 front matter 没刷新问题
-3. upd: 导出 HTML 保留 `data-*` 属性
-4. upd: 优化 `section` 容器样式
-5. feat(plugin): 增加预览器注册，插件可以自定义文档预览界面。相关 Api: `ctx.view.switchPreviewer` `ctx.view.registerPreviewer` `ctx.view.removePreviewer` `ctx.view.getAllPreviewers`
+1. feat: 重构代码运行功能，增加 *Code Runner* 扩展，运行代码支持实时显示运行结果
+2. fix: 修复 Windows 上恢复最大化窗口状态后窗口显示不全问题。
+3. feat(plugin): 增加代码运行器注册，插件可以拓展代码功能了。相关 Api: `ctx.runner.registerRunner` `ctx.runner.removeRunner` `ctx.runner.getAllRunners`
+4. upd(plugin): 调整 `ctx.api.runCode` 方法。调整参数，不再支持运行本地 Javascript 代码，支持流式获取运行结果
+5. upd(plugin): 移除 `xterm.run-code` Action
+6. upd(plugin): 调整 `xterm.run` Action 参数类型
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
