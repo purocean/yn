@@ -76,7 +76,7 @@
 
 ## 更新日志
 
-### [v3.34.1](https://github.com/purocean/yn/releases/tag/v3.34.1) 2022-08-13
+### [v3.34.2](https://github.com/purocean/yn/releases/tag/v3.34.2) 2022-08-13
 
 1. feat: 重构代码运行功能，增加 *Code Runner* 扩展，运行代码支持实时显示运行结果
 2. fix: 修复 Windows 上恢复最大化窗口状态后窗口显示不全问题。

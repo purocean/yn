@@ -8,9 +8,18 @@ import { mergeStreams } from '../helper'
 const isWin = os.platform() === 'win32'
 
 function execFile (file: string, args: string[], options?: cp.ExecFileOptions) {
-  const process = cp.execFile(file, args, { timeout: 300 * 1000, ...options })
-  const output = [process.stdout, process.stderr].filter(Boolean) as NodeJS.ReadableStream[]
-  return mergeStreams(output)
+  return new Promise<string | NodeJS.ReadableStream>((resolve) => {
+    const process = cp.execFile(file, args, { timeout: 300 * 1000, ...options })
+
+    process.on('error', error => {
+      resolve(error.message)
+    })
+
+    process.on('spawn', () => {
+      const output = [process.stdout, process.stderr].filter(Boolean) as NodeJS.ReadableStream[]
+      resolve(mergeStreams(output))
+    })
+  })
 }
 
 function execCmd (cmd: string, options?: cp.ExecOptions) {
