@@ -76,13 +76,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.33.0](https://github.com/purocean/yn/releases/tag/v3.33.0) 2022-07-28
+### [v3.34.0](https://github.com/purocean/yn/releases/tag/v3.34.0) 2022-08-13
 
-1. fix: fix the problem that the word count statistics of open documents are not updated
-2. fix: fix the problem that front matter is not refreshed when switching files
-3. upd: export HTML preserves `data-*` attributes
-4. upd: optimize `section` container style
-5. feat(plugin): Added previewer registration, plugins can customize the document preview interface. Related APIs: `ctx.view.switchPreviewer` `ctx.view.registerPreviewer` `ctx.view.removePreviewer` `ctx.view.getAllPreviewers`
+1. feat: refactoring the code running function, adding *Code Runner* extension, running the code to support real-time display of running results
+2. fix: fix the problem of incomplete window display after restoring the maximized window state on Windows
+3. feat(plugin): added code runner registration, plugins can expand code functions. Related APIs: `ctx.runner.registerRunner` `ctx.runner.removeRunner` `ctx.runner.getAllRunners`
+4. upd(plugin): adjust the `ctx.api.runCode` method, no longer support running local Javascript code, and support streaming access to running results
+5. upd(plugin): remove `xterm.run-code` action
+6. upd(plugin): adjust `xterm.run` action parameter type
 
 [More release notes](https://github.com/purocean/yn/releases)
 
