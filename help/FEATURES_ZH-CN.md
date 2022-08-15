@@ -252,22 +252,22 @@ $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\p
 // --run--
 await new Promise(r => setTimeout(r, 500))
 ctx.ui.useToast().show("info", "HELLOWORLD!")
-console.log('HELLOWORD')
+console.log('HELLOWORLD')
 ```
 
 ```node
 // --run--
-console.log('HELLOWORD')
+console.log('HELLOWORLD')
 ```
 
 ```php
 // --run--
-echo 'HELLOWORD!';
+echo 'HELLOWORLD!';
 ```
 
 ```python
 # --run--
-print('HELLOWORD')
+print('HELLOWORLD')
 ```
 
 ```shell
@@ -277,7 +277,7 @@ date
 
 ```bat
 REM --run--
-@echo HELLOWORD
+@echo HELLOWORLD
 ```
 
 ## 集成终端
