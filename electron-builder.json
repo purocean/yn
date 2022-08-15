@@ -33,7 +33,8 @@
     "maintainer": "purocean <purocean@outlook.com>",
     "icon": "./build/icon.icns",
     "target": [
-      "deb"
+      "deb",
+      "AppImage"
     ]
   },
   "mac": {
