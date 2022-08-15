@@ -2,6 +2,7 @@ import * as fs from 'fs-extra'
 import * as os from 'os'
 import * as path from 'path'
 import * as cp from 'child_process'
+import glob from 'glob'
 import config from '../config'
 import { mergeStreams } from '../helper'
 
@@ -22,8 +23,9 @@ function execFile (file: string, args: string[], options?: cp.ExecFileOptions) {
   })
 }
 
-function execCmd (cmd: string, options?: cp.ExecOptions) {
+function execCmd (cmd: string, options?: cp.ExecOptions, onComplete?: () => void) {
   const process = cp.exec(cmd, { timeout: 300 * 1000, ...options })
+  onComplete && process.on('close', onComplete)
   const output = [process.stdout, process.stderr].filter(Boolean) as NodeJS.ReadableStream[]
   return mergeStreams(output)
 }
@@ -38,13 +40,24 @@ const runCode = async (cmd: { cmd: string, args: string[] } | string, code: stri
       if (useTplFile) {
         const extMatch = cmd.match(/\$tmpFile(\.[a-zA-Z0-9]+)/)
         const ext = extMatch ? extMatch[1] : ''
-        const tmpFileWithoutExt = path.join(os.tmpdir(), `${Math.random().toString(36).substring(2, 5)}`)
+        const tmpFileWithoutExt = path.join(os.tmpdir(), `yn-run-${Math.random().toString(36).substring(2)}`)
         const tmpFile = tmpFileWithoutExt + ext
         await fs.writeFile(tmpFile, code)
+
+        const removeTmpFiles = () => {
+          glob(tmpFileWithoutExt + '*', {}, (err, files) => {
+            if (!err) {
+              files.forEach(file => {
+                fs.remove(file)
+              })
+            }
+          })
+        }
+
         try {
-          return execCmd(cmd.replaceAll('$tmpFile', tmpFileWithoutExt), { env })
+          return execCmd(cmd.replaceAll('$tmpFile', tmpFileWithoutExt), { env }, removeTmpFiles)
         } catch (error) {
-          await fs.remove(tmpFile)
+          removeTmpFiles()
           throw error
         }
       } else {

@@ -251,22 +251,22 @@ The first line of the code block needs to contain the string `--run--`, an examp
 // --run--
 await new Promise(r => setTimeout(r, 500))
 ctx.ui.useToast().show("info", "HELLOWORLD!")
-console.log('HELLOWORD')
+console.log('HELLOWORLD')
 ```
 
 ```node
 // --run--
-console.log('HELLOWORD')
+console.log('HELLOWORLD')
 ```
 
 ```php
 // --run--
-echo 'HELLOWORD!';
+echo 'HELLOWORLD!';
 ```
 
 ```python
 # --run--
-print('HELLOWORD')
+print('HELLOWORLD')
 ```
 
 ```shell
@@ -276,7 +276,28 @@ date
 
 ```bat
 REM --run--
-@echo HELLOWORD
+@echo HELLOWORLD
+```
+
+```c
+// --run-- gcc $tmpFile.c -o $tmpFile.out && $tmpFile.out
+
+#include <stdio.h>
+
+int main () {
+    printf("Hello, World!");
+    return 0;
+}
+```
+
+```java
+// --run-- java $tmpFile.java
+
+class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
 ```
 
 ## Integrated Terminal
