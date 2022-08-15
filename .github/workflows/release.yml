@@ -83,6 +83,7 @@ jobs:
         if: matrix.os == 'ubuntu-18.04'
         run: |
           mv out/*.deb out/`basename -s .deb out/*.deb`-ubuntu-18.04.deb
+          rm out/*.AppImage
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5
