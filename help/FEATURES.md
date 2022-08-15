@@ -279,6 +279,27 @@ REM --run--
 @echo HELLOWORLD
 ```
 
+```c
+// --run-- gcc $tmpFile.c -o $tmpFile.out && $tmpFile.out
+
+#include <stdio.h>
+
+int main () {
+    printf("Hello, World!");
+    return 0;
+}
+```
+
+```java
+// --run-- java $tmpFile.java
+
+class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
 ## Integrated Terminal
 
 1. Use `Alt/Option + T` or click the status bar **Switch terminal** menu to call up the integrated terminal

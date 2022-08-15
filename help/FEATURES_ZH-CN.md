@@ -280,6 +280,27 @@ REM --run--
 @echo HELLOWORLD
 ```
 
+```c
+// --run-- gcc $tmpFile.c -o $tmpFile.out && $tmpFile.out
+
+#include <stdio.h>
+
+int main () {
+    printf("Hello, World!");
+    return 0;
+}
+```
+
+```java
+// --run-- java $tmpFile.java
+
+class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
 ## 集成终端
 
 1. 使用 `Alt/Option + T` 或者点击状态栏 **切换终端** 菜单唤起集成终端
