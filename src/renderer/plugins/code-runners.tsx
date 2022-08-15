@@ -37,6 +37,7 @@ class JavascriptExecutor implements ReadableStreamDefaultReader<string> {
 
     // eslint-disable-next-line no-eval
     await eval(`(async () => {
+      await new Promise(r => setTimeout(r, 0));
       const console = new Proxy(window.console, {
         get: (obj, prop) => ['error', 'warn', 'info', 'log', 'debug'].includes(prop)
           ? (...args) => {
