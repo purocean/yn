@@ -76,6 +76,7 @@ const RunCode = defineComponent({
           const { done, value } = await val.read()
           if (done) {
             logger.debug('run code done >', value)
+            appendLog?.(type, value || '')
             break
           }
 
