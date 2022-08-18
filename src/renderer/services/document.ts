@@ -336,6 +336,14 @@ export async function moveDoc (doc: Doc, newPath?: string) {
  */
 export async function saveDoc (doc: Doc, content: string) {
   logger.debug('saveDoc', doc)
+
+  const payload = { doc, content }
+
+  await triggerHook('DOC_BEFORE_SAVE', payload, { breakable: true })
+
+  doc = payload.doc
+  content = payload.content
+
   try {
     let sendContent = content
     let passwordHash = ''
