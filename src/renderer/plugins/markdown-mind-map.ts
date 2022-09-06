@@ -353,9 +353,16 @@ const init = (ele: HTMLElement) => {
 }
 
 const render = async (km: any, content: string) => {
-  const code = (content || '').trim()
+  let code = (content || '').trim()
 
   try {
+    // replace 2 spaces to 4 spaces
+    if (code.match(/^ {2}[^ ]/gm)) {
+      code = code.replace(/^ {2,}[^ ]/gm, (match) => {
+        return match.replace(/ {2}/g, '    ')
+      })
+    }
+
     await km.importData('text', code)
   } catch (error) {
     await km.importData('text', t('mind-map.convert-error'))
