@@ -45,7 +45,7 @@ export default defineComponent({
     const { t } = useI18n()
 
     const { currentFile } = toRefs(store.state)
-    const { isSaved } = toRefs(store.getters)
+    const isSaved = computed(() => store.getters.isSaved)
 
     let win: any = null
 
