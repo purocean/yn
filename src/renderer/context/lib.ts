@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+import _dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
 import 'dayjs/locale/en'
@@ -20,11 +20,11 @@ export { default as markdownit } from 'markdown-it'
 export { default as domtoimage } from 'dom-to-image'
 export { default as pako } from 'pako'
 
-dayjs.extend(relativeTime)
-dayjs.locale('zh-cn')
+_dayjs.extend(relativeTime)
+_dayjs.locale('zh-cn')
 
 function setDayjsLang () {
-  dayjs.locale(getCurrentLanguage() === 'zh-CN' ? 'zh-cn' : 'en')
+  _dayjs.locale(getCurrentLanguage() === 'zh-CN' ? 'zh-cn' : 'en')
 }
 
 setDayjsLang()
