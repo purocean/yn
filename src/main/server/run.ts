@@ -65,7 +65,12 @@ const runCode = async (cmd: { cmd: string, args: string[] } | string, code: stri
       }
     } else {
       if (useWsl) {
-        return execFile('wsl.exe', ['--', cmd.cmd].concat(cmd.args).concat([code]))
+        const args = []
+        if (typeof useWsl === 'string') {
+          args.push('--distribution', useWsl)
+        }
+
+        return execFile('wsl.exe', [...args, '--', cmd.cmd].concat(cmd.args).concat([code]))
       }
 
       if (!isWin) {
