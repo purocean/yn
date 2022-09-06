@@ -173,6 +173,8 @@ export default defineComponent({
       } else if (type === 'top') {
         refEl.style.height = ''
       }
+
+      emitResize()
     }
 
     function initResize (type: any, ref: any, min: any, max: any, e: any) {
