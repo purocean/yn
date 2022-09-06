@@ -111,12 +111,17 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
     if (baseDoc) {
       const currentPath = baseDoc.type === 'dir' ? baseDoc.path : dirname(baseDoc.path)
 
+      const newFilename = 'new.md'
       let filename = await useModal().input({
         title: t('document.create-dialog.title'),
         hint: t('document.create-dialog.hint'),
         content: t('document.current-path', currentPath),
-        value: 'new.md',
-        select: true
+        value: newFilename,
+        select: [
+          0,
+          newFilename.lastIndexOf('.') > -1 ? newFilename.lastIndexOf('.') : newFilename.length,
+          'forward'
+        ],
       })
 
       if (!filename) {
