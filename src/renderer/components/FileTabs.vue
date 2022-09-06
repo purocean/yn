@@ -25,7 +25,8 @@ export default defineComponent({
     const store = useStore()
 
     const { currentFile, tabs } = toRefs<AppState>(store.state)
-    const { isSaved } = toRefs(store.getters)
+    const isSaved = computed(() => store.getters.isSaved)
+
     const list = ref<Components.FileTabs.Item[]>([])
     const current = ref(blankUri)
 

@@ -6,7 +6,7 @@
     <div class="main">
       <div class="left" ref="aside" v-show="showSide">
         <slot name="left"></slot>
-        <div class="sash-right" @mousedown="e => initResize('right', 'aside', 100, 700, e)"></div>
+        <div class="sash-right" @dblclick="resetSize('right', 'aside')" @mousedown="e => initResize('right', 'aside', 100, 700, e)"></div>
       </div>
       <div class="right">
         <div class="content" ref="content">
@@ -14,13 +14,13 @@
             <slot name="editor"></slot>
           </div>
           <div class="preview" v-show="showView">
-            <div v-if="showView && showEditor" class="sash-left" @mousedown="initEditorResize"></div>
+            <div v-if="showView && showEditor" class="sash-left" @dblclick="resetSize('right', 'editor')" @mousedown="initEditorResize"></div>
             <slot name="preview"></slot>
           </div>
         </div>
         <div class="terminal" ref="terminal" v-show="showXterm">
           <slot name="terminal"></slot>
-          <div class="sash-top" @mousedown="e => initResize('top', 'terminal', 70, 500, e)"></div>
+          <div class="sash-top" @dblclick="resetSize('top', 'terminal')" @mousedown="e => initResize('top', 'terminal', 70, 500, e)"></div>
         </div>
       </div>
     </div>
@@ -163,6 +163,20 @@ export default defineComponent({
       clearResize()
     }
 
+    function resetSize (type: any, ref: any) {
+      const refEl = refs[ref].value
+
+      if (type === 'right') {
+        refEl.style.width = ''
+        refEl.style.minWidth = ''
+        refEl.style.maxWidth = ''
+      } else if (type === 'top') {
+        refEl.style.height = ''
+      }
+
+      emitResize()
+    }
+
     function initResize (type: any, ref: any, min: any, max: any, e: any) {
       const refEl = refs[ref].value
       if (!resizeOrigin && type) {
@@ -215,6 +229,7 @@ export default defineComponent({
     const showFooter = $args().get('show-status-bar') !== 'false'
 
     return {
+      resetSize,
       initResize,
       initEditorResize,
       showSide,

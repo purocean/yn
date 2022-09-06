@@ -6,7 +6,7 @@ import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
 import { isMarked, markDoc, showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
-import { getSelectionInfo, whenEditorReady } from '@fe/services/editor'
+import { whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
 import { getPurchased } from '@fe/others/premium'
@@ -63,10 +63,6 @@ function changeLanguage ({ settings }: { settings: BuildInSettings }) {
   }
 }
 
-function updateSelectionInfo () {
-  store.commit('setSelectionInfo', getSelectionInfo())
-}
-
 function switchDefaultPreviewer () {
   const attributes: FrontMatterAttrs | undefined = view.getRenderEnv()?.attributes
   if (attributes?.defaultPreviewer && typeof attributes.defaultPreviewer === 'string') {
@@ -121,10 +117,7 @@ registerHook('VIEW_FILE_CHANGE', () => {
   registerHook('VIEW_RENDER', switchDefaultPreviewer, true)
 })
 
-whenEditorReady().then(({ editor }) => {
-  editor.onDidChangeCursorSelection(updateSelectionInfo)
-  editor.onDidChangeModel(updateSelectionInfo)
-
+whenEditorReady().then(() => {
   const { currentFile } = store.state
 
   if (!currentFile && MODE === 'normal') {

@@ -76,14 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.34.4](https://github.com/purocean/yn/releases/tag/v3.34.4) 2022-08-15
+### [v3.35.0](https://github.com/purocean/yn/releases/tag/v3.35.0) 2022-09-06
 
-1. feat: refactoring the code running function, adding *Code Runner* extension, running the code to support real-time display of running results
-2. fix: fix the problem of incomplete window display after restoring the maximized window state on Windows
-3. feat(plugin): added code runner registration, plugins can expand code functions. Related APIs: `ctx.runner.registerRunner` `ctx.runner.removeRunner` `ctx.runner.getAllRunners`
-4. upd(plugin): adjust the `ctx.api.runCode` method, no longer support running local Javascript code, and support streaming access to running results
-5. upd(plugin): remove `xterm.run-code` action
-6. upd(plugin): adjust `xterm.run` action parameter type
+1. feat: add more information to the document row and column information display
+2. feat: add double-clicking to change the size of the ruler to restore the default size
+3. feat: the main part of the name is selected by default in the file name of the file creation dialog
+4. fix: fix Reveal.js cannot display mindmap
+5. feat(plugin): status bar menu title supports custom Vue components
+6. feat(plugin): add `DOC_BEFORE_SAVE` hook
+7. feat(plugin): add the number of selected rows and the number of selections of return value of `ctx.editor.getSelectionInfo`
+8. upd(plugin): remove `ctx.store.state.selectionInfo`
 
 [More release notes](https://github.com/purocean/yn/releases)
 

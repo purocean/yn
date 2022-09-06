@@ -162,8 +162,7 @@ export default {
       }
 
       .markdown-view .markdown-body .custom-container.group .group-item-radio {
-        position: fixed;
-        right: -99999999px;
+        display: none;
       }
 
       .markdown-view .markdown-body .custom-container.group .group-item-label {

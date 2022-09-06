@@ -1,6 +1,6 @@
 <template>
   <component v-if="previewer" :is="previewer.component" />
-  <Preview v-show="!previewer" />
+  <Preview :class="previewer ? 'preview-hidden' : undefined" />
 </template>
 
 <script lang="ts" setup>
@@ -17,3 +17,12 @@ const previewer = computed(() => {
   return getAllPreviewers().find(item => item.name === previewer)
 })
 </script>
+
+<style scoped>
+.preview-hidden {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+</style>

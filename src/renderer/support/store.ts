@@ -25,13 +25,6 @@ export const initState = {
   currentFile: null as Doc | null,
   recentOpenTime: storage.get<Record<string, number>>('recentOpenTime', {}),
   tabs: storage.get<Components.FileTabs.Item[]>('tabs', []),
-  selectionInfo: {
-    textLength: 0,
-    selectedLength: 0,
-    lineCount: 0,
-    line: 0,
-    column: 0
-  },
   previewer: 'default',
 }
 
@@ -98,9 +91,6 @@ export default createStore({
     },
     setInComposition (state, data) {
       state.inComposition = data
-    },
-    setSelectionInfo (state, data) {
-      state.selectionInfo = data
     },
     setCurrentContent (state, data) {
       state.currentContent = data

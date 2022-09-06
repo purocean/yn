@@ -111,12 +111,17 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
     if (baseDoc) {
       const currentPath = baseDoc.type === 'dir' ? baseDoc.path : dirname(baseDoc.path)
 
+      const newFilename = 'new.md'
       let filename = await useModal().input({
         title: t('document.create-dialog.title'),
         hint: t('document.create-dialog.hint'),
         content: t('document.current-path', currentPath),
-        value: 'new.md',
-        select: true
+        value: newFilename,
+        select: [
+          0,
+          newFilename.lastIndexOf('.') > -1 ? newFilename.lastIndexOf('.') : newFilename.length,
+          'forward'
+        ],
       })
 
       if (!filename) {
@@ -336,6 +341,14 @@ export async function moveDoc (doc: Doc, newPath?: string) {
  */
 export async function saveDoc (doc: Doc, content: string) {
   logger.debug('saveDoc', doc)
+
+  const payload = { doc, content }
+
+  await triggerHook('DOC_BEFORE_SAVE', payload, { breakable: true })
+
+  doc = payload.doc
+  content = payload.content
+
   try {
     let sendContent = content
     let passwordHash = ''

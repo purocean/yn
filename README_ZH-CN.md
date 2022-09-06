@@ -76,14 +76,16 @@
 
 ## 更新日志
 
-### [v3.34.4](https://github.com/purocean/yn/releases/tag/v3.34.4) 2022-08-15
+### [v3.35.0](https://github.com/purocean/yn/releases/tag/v3.35.0) 2022-09-06
 
-1. feat: 重构代码运行功能，增加 *Code Runner* 扩展，运行代码支持实时显示运行结果
-2. fix: 修复 Windows 上恢复最大化窗口状态后窗口显示不全问题。
-3. feat(plugin): 增加代码运行器注册，插件可以拓展代码功能了。相关 Api: `ctx.runner.registerRunner` `ctx.runner.removeRunner` `ctx.runner.getAllRunners`
-4. upd(plugin): 调整 `ctx.api.runCode` 方法。调整参数，不再支持运行本地 Javascript 代码，支持流式获取运行结果
-5. upd(plugin): 移除 `xterm.run-code` Action
-6. upd(plugin): 调整 `xterm.run` Action 参数类型
+1. feat: 文档行列信息展示增加更多信息
+2. feat: 增加双击更改尺寸表尺恢复默认尺寸功能
+3. feat: 创建文件对话框文件名默认选中名字主体部分
+4. fix: 修复 Reveal.js 不能显示脑图问题
+5. feat(plugin): 状态栏菜单标题支持自定义 Vue 组件
+6. feat(plugin): 增加 `DOC_BEFORE_SAVE` 钩子
+7. feat(plugin): `ctx.editor.getSelectionInfo` 返回值增加选中行数、选区数量信息
+8. upd(plugin): 移除 `ctx.store.state.selectionInfo`
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
