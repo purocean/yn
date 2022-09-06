@@ -1,4 +1,5 @@
 import { debounce } from 'lodash-es'
+import type { Component } from 'vue'
 import * as ioc from '@fe/core/ioc'
 import { getActionHandler } from '@fe/core/action'
 
@@ -17,9 +18,9 @@ export type MenuItem = {
 
 export interface Menu {
   id: string;
-  title?: string;
-  tips?: string;
-  icon?: string;
+  title?: string | Component;
+  tips?: string; // not available for vue component title
+  icon?: string; // not available for vue component title
   hidden?: boolean;
   position: 'left' | 'right';
   order?: number;

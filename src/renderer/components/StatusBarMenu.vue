@@ -1,12 +1,15 @@
 <template>
   <div class="status-bar-menu-wrapper" @contextmenu.prevent>
     <div
-      :class="{'status-bar-menu': true, hidden: menu.hidden}"
+      :class="{'status-bar-menu': true, hidden: menu.hidden, 'custom-title': menu._customTitle}"
       v-for="menu in list.sort((a, b) => ((a.order || 0) - (b.order || 0)))"
       :key="menu.id"
       @mousedown="menu.onMousedown && menu.onMousedown(menu)"
       @click="menu.onClick && menu.onClick(menu)">
-      <div class="title" :title="menu.tips">
+      <div v-if="menu._customTitle" class="custom-title">
+        <component :is="menu.title" />
+      </div>
+      <div v-else class="title" :title="menu.tips">
         <svg-icon v-if="menu.icon" :name="menu.icon" class="title-icon" />
         <div v-if="menu.title" class="title-text">{{menu.title}}</div>
       </div>
@@ -29,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, ref } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, ref, shallowRef } from 'vue'
 import { getMenus, MenuItem } from '@fe/services/status-bar'
 import { registerHook, removeHook } from '@fe/core/hook'
 import type { BuildInActionName } from '@fe/types'
@@ -45,7 +48,14 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const list = ref(getMenus(props.position))
+    const _list = shallowRef(getMenus(props.position))
+    const list: any = computed(() => _list.value.map((menu: any) => ({
+      ...menu,
+      _customTitle: menu.title &&
+        typeof menu.title !== 'string' &&
+        !Object.prototype.hasOwnProperty.call(menu.title, 'toString')
+    })))
+
     const showList = ref(true)
 
     const handleItemClick = (item: MenuItem & { type: 'normal' }) => {
@@ -62,7 +72,7 @@ export default defineComponent({
 
     const updateMenu = ({ name }: { name: BuildInActionName }) => {
       if (!name || name === 'status-bar.refresh-menu') {
-        list.value = getMenus(props.position)
+        _list.value = getMenus(props.position)
       }
       return false
     }
@@ -94,6 +104,13 @@ export default defineComponent({
 
 .status-bar-menu.hidden {
   display: none;
+}
+
+.custom-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: initial;
 }
 
 .title {
