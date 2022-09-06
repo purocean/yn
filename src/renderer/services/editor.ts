@@ -273,7 +273,9 @@ export function getSelectionInfo () {
     column: selection.positionColumn,
     lineCount: getEditor().getModel()!.getLineCount(),
     textLength: getValue().length,
-    selectedLength: getEditor().getModel()!.getValueInRange(selection).length
+    selectedLength: getEditor().getModel()!.getValueInRange(selection).length,
+    selectedLines: selection.endLineNumber - selection.startLineNumber + 1,
+    selectionCount: getEditor().getSelections()?.length || 1
   }
 }
 

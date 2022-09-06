@@ -9,6 +9,7 @@ import statusBarNavigation from '@fe/plugins/status-bar-navigation'
 import statusBarInsert from '@fe/plugins/status-bar-insert'
 import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
+import statusBarDocumentInfo from '@fe/plugins/status-bar-document-info'
 import statusBarPreviewer from '@fe/plugins/status-bar-previewer'
 import statusBarHistory from './plugins/status-bar-history'
 import statusBarPresentation from '@fe/plugins/status-bar-presentation'
@@ -68,6 +69,7 @@ export default [
   statusBarNavigation,
   statusBarInsert,
   statusBarTool,
+  statusBarDocumentInfo,
   statusBarHelp,
   statusBarPreviewer,
   statusBarHistory,

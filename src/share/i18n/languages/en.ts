@@ -238,6 +238,7 @@ const data = {
       'selected': 'Selected',
       'lines': 'Lines',
       'chars': 'Chars',
+      'selections': 'Selections',
     },
     'help': {
       'help': 'Help',
