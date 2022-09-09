@@ -1,11 +1,19 @@
 <template>
-  <Tabs :list="fileTabs" :value="current" @remove="removeTabs" @switch="switchTab" @change-list="setTabs"></Tabs>
+  <Tabs
+    ref="refTabs"
+    :list="fileTabs"
+    :value="current"
+    :filter-btn-title="filterBtnTitle"
+    @remove="removeTabs"
+    @switch="switchTab"
+    @change-list="setTabs"
+  />
 </template>
 
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
-import { Alt, CtrlCmd } from '@fe/core/command'
+import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/command'
 import type { Components, Doc } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
@@ -21,7 +29,7 @@ export default defineComponent({
   name: 'file-tabs',
   components: { Tabs },
   setup () {
-    const { t } = useI18n()
+    const { t, $t } = useI18n()
     const store = useStore()
 
     const { currentFile, tabs } = toRefs<AppState>(store.state)
@@ -29,6 +37,9 @@ export default defineComponent({
 
     const list = ref<Components.FileTabs.Item[]>([])
     const current = ref(blankUri)
+    const refTabs = ref<InstanceType<typeof Tabs> | null>(null)
+    const showFilterBtnShortcuts = [Shift, Alt, 'p']
+    const filterBtnTitle = computed(() => $t.value('tabs.search-tabs') + ' ' + getKeysLabel(showFilterBtnShortcuts))
 
     function setTabs (list: Components.FileTabs.Item[]) {
       store.commit('setTabs', list)
@@ -153,6 +164,14 @@ export default defineComponent({
         handler: closeCurrent,
         keys: isElectron ? [CtrlCmd, 'w'] : [CtrlCmd, Alt, 'w']
       })
+
+      registerAction({
+        name: 'file-tabs.search-tabs',
+        handler () {
+          refTabs.value?.showQuickFilter()
+        },
+        keys: showFilterBtnShortcuts
+      })
     })
 
     onBeforeUnmount(() => {
@@ -163,6 +182,7 @@ export default defineComponent({
       removeAction('file-tabs.switch-left')
       removeAction('file-tabs.switch-right')
       removeAction('file-tabs.close-current')
+      removeAction('file-tabs.search-tabs')
     })
 
     watch(currentFile, file => {
@@ -228,6 +248,8 @@ export default defineComponent({
       removeTabs,
       switchTab,
       setTabs,
+      refTabs,
+      filterBtnTitle,
     }
   },
 })

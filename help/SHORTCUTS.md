@@ -47,6 +47,7 @@ Edit Table Cell | Double Click Cell
 Edit Table Cell (Popup) | Ctrl/Cmd + Click
 Copy Heading link | Ctrl/Cmd + Click Heading
 Switch Editor Tab | Ctrl/Cmd + Alt/Option + Left/Right
+Search Editor Tabs | Shift + Alt + P
 Close Editor Current Tab | TABS-CLOSE-CURRENT
 Switch Editor Current Tab | Ctrl + 0-9
 Toggle Sidebar | Alt/Option + E
@@ -99,6 +100,7 @@ Switch Repository | Alt/Option + 0-9
 编辑表格单元格(弹出框) | Ctrl/Cmd + 单击单元格
 复制文档标题链接 | Ctrl/Cmd + 单击标题
 切换编辑器 Tab | Ctrl/Cmd + Alt/Option + Left/Right
+搜索编辑器 Tab | Shift + Alt + P
 关闭编辑器当前标签 Tab | TABS-CLOSE-CURRENT
 切换编辑器当前标签 | Ctrl + 0-9
 切换侧栏 | Alt/Option + E

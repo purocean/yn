@@ -16,6 +16,7 @@ export const Shift = 'Shift'
 export const BracketLeft = 'BracketLeft'
 export const BracketRight = 'BracketRight'
 export const LeftClick = 0
+export const Tab = 'Tab'
 
 type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 
@@ -85,6 +86,7 @@ export function getKeyLabel (key: XKey | string | number) {
     BracketLeft: '[',
     BracketRight: ']',
     Period: '.',
+    Tab: 'Tab',
   }[key]
 
   return str || upperFirst(key.toString())

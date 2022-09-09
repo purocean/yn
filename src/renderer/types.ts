@@ -206,6 +206,7 @@ export type BuildInActions = {
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
   'file-tabs.close-current': () => void,
+  'file-tabs.search-tabs': () => void,
   'xterm.run': (cmd: { code: string, start: string, exit?: string } | string) => void,
   'xterm.init': (opts?: { cwd?: string }) => void,
   'plugin.document-history-stack.back': () => void,

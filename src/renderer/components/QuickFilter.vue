@@ -174,14 +174,16 @@ watch(() => keyword.value, () => {
     max-height: 70vh;
     overflow-y: auto;
     user-select: none;
+    padding-left: 1px;
 
     .item {
       padding: 0 16px;
-      line-height: 2;
+      line-height: 1.9;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
       color: var(--g-color-20);
+      border-radius: var(--g-border-radius);
 
       &.current {
         font-weight: bold;

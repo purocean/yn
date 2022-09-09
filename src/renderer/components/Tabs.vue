@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <div class="filter-btn" @click="showQuickFilter">
+    <div ref="refFilterBtn" class="filter-btn" @click="showQuickFilter" :title="filterBtnTitle">
       <svg-icon name="chevron-down" width="10px" />
     </div>
   </div>
@@ -60,12 +60,14 @@ export default defineComponent({
       type: Array as () => Components.Tabs.Item[],
       required: true,
     },
+    filterBtnTitle: String,
   },
   emits: ['input', 'remove', 'switch', 'change-list'],
   setup (props, { emit }) {
     const { t } = useI18n()
 
     const refTabs = ref<HTMLElement | null>(null)
+    const refFilterBtn = ref<HTMLElement | null>(null)
     const contextMenu = useContextMenu()
     const quickFilterParams = shallowRef<{ top: string, right: string } | null>(null)
 
@@ -155,8 +157,8 @@ export default defineComponent({
       ])
     }
 
-    function showQuickFilter (e: MouseEvent) {
-      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    function showQuickFilter () {
+      const rect = refFilterBtn.value!.getBoundingClientRect()
       quickFilterParams.value = {
         top: `${rect.bottom + 10}px`,
         right: `${document.body.clientWidth - rect.right}px`,
@@ -245,6 +247,7 @@ export default defineComponent({
       toggleFix,
       handleShadow,
       onMouseWheel,
+      refFilterBtn,
       showQuickFilter,
       quickFilterParams,
     }
