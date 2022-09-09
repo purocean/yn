@@ -171,7 +171,7 @@ watch(() => keyword.value, () => {
 
   .list {
     width: 100%;
-    max-height: 400px;
+    max-height: 70vh;
     overflow-y: auto;
     user-select: none;
 
@@ -181,17 +181,21 @@ watch(() => keyword.value, () => {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      color: var(--g-color-20);
 
       &.current {
         font-weight: bold;
+        color: var(--g-color-5);
       }
 
       &.selected {
         background: var(--g-color-75);
+        color: var(--g-color-5);
       }
 
       &:hover {
         background: var(--g-color-70);
+        color: var(--g-color-0);
       }
     }
   }

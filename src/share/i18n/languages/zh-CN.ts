@@ -288,6 +288,7 @@ const data: BaseLanguage = {
     'close-all': '全部关闭',
     'pin': '固定',
     'unpin': '取消固定',
+    'search-tabs': '搜索标签',
   },
   'export-panel': {
     'export': '导出',
