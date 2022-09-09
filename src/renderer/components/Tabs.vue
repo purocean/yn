@@ -329,6 +329,10 @@ export default defineComponent({
     width: 4px !important;
     height: 4px !important;
   }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--g-color-72) !important;
+  }
 }
 
 .tab {
