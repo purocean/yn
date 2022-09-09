@@ -180,10 +180,8 @@ export default defineComponent({
     }
 
     function onMouseWheel (e: WheelEvent) {
-      if (!e.shiftKey) {
-        if (e.deltaY !== 0) {
-          refTabs.value!.scrollLeft += e.deltaY
-        }
+      if (e.deltaX === 0 && e.deltaY !== 0) {
+        refTabs.value!.scrollLeft += e.deltaY
 
         e.preventDefault()
         e.stopPropagation()
