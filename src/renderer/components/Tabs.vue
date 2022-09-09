@@ -1,6 +1,11 @@
 <template>
   <div class="tabs-wrapper">
-    <div ref="refTabs" @scroll="handleShadow" @mouseenter="handleShadow" class="tabs">
+    <div
+      ref="refTabs"
+      @mousewheel="onMouseWheel"
+      @scroll="handleShadow"
+      @mouseenter="handleShadow"
+      class="tabs">
       <div
         v-for="item in tabList"
         :key="item.key"
@@ -172,6 +177,17 @@ export default defineComponent({
       }
     }
 
+    function onMouseWheel (e: WheelEvent) {
+      if (!e.shiftKey) {
+        if (e.deltaY !== 0) {
+          refTabs.value!.scrollLeft += e.deltaY
+        }
+
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
     const handleShadow = throttle(() => {
       if (!refTabs.value) {
         return
@@ -228,6 +244,7 @@ export default defineComponent({
       tabList,
       toggleFix,
       handleShadow,
+      onMouseWheel,
       showQuickFilter,
       quickFilterParams,
     }
