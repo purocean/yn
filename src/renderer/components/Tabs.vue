@@ -29,15 +29,6 @@
       <svg-icon name="chevron-down" width="10px" />
     </div>
   </div>
-  <quick-filter
-    v-if="quickFilterParams"
-    :placeholder="$t('tabs.search-tabs')"
-    :top="quickFilterParams.top"
-    :right="quickFilterParams.right"
-    :list="tabList || []"
-    :current="value"
-    @choose="switchTab"
-    @close="quickFilterParams = null" />
 </template>
 
 <script lang="ts">
@@ -45,15 +36,15 @@ import Sortable from 'sortablejs'
 import { throttle } from 'lodash-es'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useContextMenu } from '@fe/support/ui/context-menu'
+import { useQuickFilter } from '@fe/support/ui/quick-filter'
 import { useI18n } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
 import { registerHook } from '@fe/core/hook'
 import SvgIcon from './SvgIcon.vue'
-import QuickFilter from './QuickFilter.vue'
 
 export default defineComponent({
   name: 'tabs',
-  components: { SvgIcon, QuickFilter },
+  components: { SvgIcon },
   props: {
     value: String,
     list: {
@@ -69,7 +60,7 @@ export default defineComponent({
     const refTabs = ref<HTMLElement | null>(null)
     const refFilterBtn = ref<HTMLElement | null>(null)
     const contextMenu = useContextMenu()
-    const quickFilterParams = shallowRef<{ top: string, right: string } | null>(null)
+    const quickFilter = useQuickFilter()
 
     function sortTabs (tabs?: Components.Tabs.Item[]) {
       return tabs?.sort((a, b) => Number(b.fixed || 0) - Number(a.fixed || 0))
@@ -159,10 +150,14 @@ export default defineComponent({
 
     function showQuickFilter () {
       const rect = refFilterBtn.value!.getBoundingClientRect()
-      quickFilterParams.value = {
+      quickFilter.show({
+        placeholder: t('tabs.search-tabs'),
         top: `${rect.bottom + 10}px`,
         right: `${document.body.clientWidth - rect.right}px`,
-      }
+        list: tabList.value || [],
+        current: props.value,
+        onChoose: switchTab as any,
+      })
     }
 
     function handleKeydown (e: KeyboardEvent) {
@@ -247,7 +242,6 @@ export default defineComponent({
       onMouseWheel,
       refFilterBtn,
       showQuickFilter,
-      quickFilterParams,
     }
   }
 })

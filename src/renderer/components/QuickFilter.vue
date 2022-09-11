@@ -3,7 +3,8 @@
     <div class="quick-filter-wrapper" @click="close">
       <div
         class="quick-filter"
-          @click.stop :style="{
+        @click.stop
+        :style="{
           top: props.top,
           right: props.right,
           bottom: props.bottom,
@@ -45,14 +46,13 @@
 </template>
 
 <script lang="ts" setup>
+import { Components } from '@fe/types'
 import { computed, defineEmits, defineProps, nextTick, onMounted, ref, watch } from 'vue'
 
-interface Item {
-  label: string,
-  key: string,
-}
+type Item = Components.QuickFilter.Item
+type Props = Components.QuickFilter.Props
 
-const props = defineProps({
+const props: Props = defineProps({
   top: String,
   right: String,
   bottom: String,
@@ -67,7 +67,7 @@ const props = defineProps({
 
 const input = ref<HTMLInputElement | null>(null)
 const refList = ref<HTMLElement | null>(null)
-const emit = defineEmits(['close', 'choose'])
+const emit = defineEmits(['close', 'choose', 'input'])
 const keyword = ref('')
 const selected = ref<Item | null>(null)
 const list = computed(() => props.list.filter(
@@ -126,7 +126,8 @@ function chooseItem (item: Item | null = null) {
   close()
 }
 
-watch(() => keyword.value, () => {
+watch(() => keyword.value, (val) => {
+  emit('input', val)
   updateSelected()
 })
 

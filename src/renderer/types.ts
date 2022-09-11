@@ -99,6 +99,23 @@ export namespace Components {
       level: number;
     }
   }
+
+  export namespace QuickFilter {
+    export interface Item {
+      label: string,
+      key: string,
+    }
+
+    export interface Props {
+      top?: string | undefined;
+      right?: string | undefined;
+      bottom?: string | undefined;
+      left?: string | undefined;
+      placeholder?: string | undefined;
+      current?: string | undefined;
+      list: Item[];
+    }
+  }
 }
 
 export type ThemeName = 'system' | 'dark' | 'light'
