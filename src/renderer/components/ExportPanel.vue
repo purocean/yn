@@ -291,7 +291,7 @@ export default defineComponent({
   margin: auto;
   padding: 10px;
   color: var(--g-color-5);
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
 
   h3 {

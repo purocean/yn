@@ -61,7 +61,7 @@ export default defineComponent({
   border-radius: 50px;
   text-align: center;
   overflow-wrap: break-word;
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
 }
 
 .toast-warning {

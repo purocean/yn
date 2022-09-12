@@ -73,7 +73,7 @@ watch(() => store.state.showControlCenter, (val) => {
   color: var(--g-color-10);
   overflow: hidden;
   border-radius: var(--g-border-radius);
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
 
   .row {
     display: flex;

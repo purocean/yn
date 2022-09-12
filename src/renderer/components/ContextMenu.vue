@@ -125,7 +125,7 @@ export default defineComponent({
   color: var(--g-foreground-color);
   min-width: 9em;
   cursor: default;
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
   user-select: none;
 }

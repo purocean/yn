@@ -1,6 +1,10 @@
 @import 'normalize.css';
 @import './mixins.scss';
 
+@function hex2rgb($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
 @font-face {
   font-family: 'MacEmoji';
   src: local('Apple Color Emoji');
@@ -9,9 +13,12 @@
 
 @mixin root-vars($background, $foreground) {
   --g-background-color: #{$background};
+  --g-background-color-rgb: #{hex2rgb($background)};
   --g-foreground-color: #{$foreground};
+  --g-foreground-color-rgb: #{hex2rgb($foreground)};
   @for $i from 0 through 100 {
     --g-color-#{$i}: #{mix($background, $foreground, $i * 1%)};
+    --g-color-#{$i}-rgb: #{hex2rgb(mix($background, $foreground, $i * 1%))};
   }
 
   --selection-color: rgba(86, 155, 214, 0.38);
@@ -22,6 +29,7 @@
   --scrollbar-thumb-hover-background-color: #{rgba($foreground, 0.3)};
 
   --g-border-radius: 4px;
+  --g-backdrop-filter: blur(13px);
 }
 
 html[app-theme=light]:root, :root {

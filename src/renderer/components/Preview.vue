@@ -458,7 +458,7 @@ export default defineComponent({
   &.pined, &:hover {
     max-height: 75vh;
     max-width: 28em;
-    box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+    box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
 
     .outline-pin {
       left: 3px;
