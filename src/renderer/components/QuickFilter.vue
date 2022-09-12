@@ -148,7 +148,7 @@ watch(() => keyword.value, (val) => {
   position: absolute;
   padding: 1px;
   margin: 0;
-  background: var(--g-color-82);
+  background: rgba(var(--g-color-82-rgb), 0.5);
   border: 1px var(--g-color-84) solid;
   border-left: 0;
   border-top: 0;
@@ -156,17 +156,20 @@ watch(() => keyword.value, (val) => {
   min-width: 9em;
   max-width: 20em;
   cursor: default;
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
   overflow: hidden;
+  backdrop-filter: var(--g-backdrop-filter);
 
   input[type="text"] {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     font-size: 16px;
+    padding: 6px 10px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 2px;
 
     &:focus {
-      background: var(--g-color-92);
+      background: rgba(var(--g-color-82-rgb), 0.5);
     }
   }
 
@@ -192,12 +195,12 @@ watch(() => keyword.value, (val) => {
       }
 
       &.selected {
-        background: var(--g-color-75);
+        background: rgba(var(--g-color-75-rgb), 0.6);
         color: var(--g-color-5);
       }
 
       &:hover {
-        background: var(--g-color-70);
+        background: rgba(var(--g-color-70-rgb), 0.6);
         color: var(--g-color-0);
       }
     }

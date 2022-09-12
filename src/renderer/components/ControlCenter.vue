@@ -69,7 +69,8 @@ watch(() => store.state.showControlCenter, (val) => {
   bottom: 40px;
   z-index: 1000;
   outline: none;
-  background: var(--g-color-85);
+  background: rgba(var(--g-color-85-rgb), 0.8);
+  backdrop-filter: var(--g-backdrop-filter);
   color: var(--g-color-10);
   overflow: hidden;
   border-radius: var(--g-border-radius);
@@ -131,11 +132,11 @@ watch(() => store.state.showControlCenter, (val) => {
     .row {
       .btn {
         &.checked {
-          background: var(--g-color-70);
+          background: var(--g-color-60);
         }
 
         &:not(.disabled):not(.checked):hover {
-          background: var(--g-color-80);
+          background: var(--g-color-65);
         }
       }
     }
