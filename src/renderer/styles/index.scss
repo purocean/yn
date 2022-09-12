@@ -124,6 +124,10 @@ html {
   select {
     display: initial;
     width: initial;
+
+    option {
+      background-color: var(--g-color-88);
+    }
   }
 
   button {
