@@ -150,8 +150,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@fe/styles/mixins.scss';
-
 input.search-input[type="text"] {
   border-radius: 0;
   background: rgba(var(--g-color-95-rgb), 0.75);
@@ -194,7 +192,7 @@ input.search-input[type="text"] {
 
     &[data-activated="true"],
     &:hover {
-      background: rgba(0, 0, 0, 0.05);
+      background: var(--g-color-active-b);
       color: var(--g-color-0);
     }
 
@@ -215,15 +213,6 @@ input.search-input[type="text"] {
       color: var(--g-color-60);
       font-size: 12px;
       padding-left: 0.5em;
-    }
-  }
-}
-
-@include dark-theme {
-  .outline-toc > .heading {
-    &[data-activated="true"],
-    &:hover {
-      background: rgba(255, 255, 255, 0.07);
     }
   }
 }

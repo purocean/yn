@@ -78,7 +78,7 @@
       </div>
     </div>
     <div class="action">
-      <button class="btn" @click="close">{{$t('close')}}</button>
+      <button class="btn primary" @click="close">{{$t('close')}}</button>
       <button v-if="tab === 'activation' && license.trim()" class="btn" @click="activate">{{$t('ok')}}</button>
     </div>
   </div>
@@ -220,7 +220,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .premium-wrapper {
   width: 480px;
-  background: var(--g-color-95);
+  background: var(--g-color-backdrop);
+  backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
   padding: 20px;
   padding-top: 10px;

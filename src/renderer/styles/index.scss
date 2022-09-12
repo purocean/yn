@@ -30,6 +30,12 @@
 
   --g-border-radius: 4px;
   --g-backdrop-filter: blur(18px);
+  --g-color-backdrop: #{rgba(var(--g-color-100-rgb), 0.65)};
+
+  --g-color-active-a: #{rgba(var(--g-color-0-rgb), 0.1)};
+  --g-color-active-b: #{rgba(var(--g-color-0-rgb), 0.15)};
+  --g-color-active-c: #{rgba(var(--g-color-0-rgb), 0.2)};
+  --g-color-active-d: #{rgba(var(--g-color-0-rgb), 0.25)};
 }
 
 html[app-theme=light]:root, :root {
@@ -40,6 +46,8 @@ html[app-theme=light]:root, :root {
 @include dark-theme {
   @import './dark.scss';
   @include root-vars($g-background-color, $g-foreground-color);
+
+  --g-color-backdrop: #{rgba(var(--g-color-84-rgb), 0.7)};
 }
 
 html {
@@ -102,14 +110,14 @@ html {
     line-height: 1.4em;
     padding: 6px;
     box-sizing: border-box;
-    background: var(--g-color-88);
+    background: rgba(var(--g-color-0-rgb), 0.1);
     color: var(--g-color-0);
     transition: all .1s ease-in-out;
     outline: none;
     border-radius: var(--g-border-radius);
 
     &:focus {
-      background: var(--g-color-85);
+      background: rgba(var(--g-color-0-rgb), 0.15);
     }
   }
 
@@ -119,7 +127,7 @@ html {
   }
 
   button {
-    background: var(--g-color-80);
+    background: var(--g-color-active-a);
     border: none;
     padding: 5px 10px;
     color: var(--g-color-0);
@@ -132,11 +140,11 @@ html {
     user-select: none;
 
     &.primary {
-      background: var(--g-color-70);
+      background: var(--g-color-active-d);
     }
 
     &:hover {
-      background: var(--g-color-65);
+      background: var(--g-color-active-c);
     }
 
     &.small {

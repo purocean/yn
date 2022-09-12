@@ -352,7 +352,8 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .history-wrapper {
   width: 90vw;
-  background: var(--g-color-95);
+  background: var(--g-color-backdrop);
+  backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
   padding: 10px;
   color: var(--g-color-5);

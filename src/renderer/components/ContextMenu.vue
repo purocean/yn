@@ -151,7 +151,6 @@ export default defineComponent({
 }
 
 .menu > li.normal:hover {
-  background: rgba(var(--g-color-75-rgb), 0.8);
+  background: var(--g-color-active-b);
 }
-
 </style>

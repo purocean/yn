@@ -582,7 +582,8 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .wrapper {
   width: 90vw;
-  background: var(--g-color-95);
+  background: var(--g-color-backdrop);
+  backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
   padding: 10px;
   color: var(--g-color-5);
@@ -616,16 +617,13 @@ onUnmounted(() => {
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  // font-family: monospace;
   font-size: 16px;
-  background-color: var(--g-color-92);
-  // padding: 6px;
+  background-color: rgba(var(--g-color-0-rgb), 0.06);
 
   .item {
     cursor: pointer;
     position: relative;
-    // background-color: var(--g-color-92);
-    border-bottom: 1px var(--g-color-80) solid;
+    border-bottom: 1px var(--g-color-70) solid;
     color: var(--g-color-20);
     display: flex;
     height: 77px;
@@ -687,12 +685,12 @@ onUnmounted(() => {
     }
 
     &:hover {
-      background-color: var(--g-color-86);
+      background-color: var(--g-color-active-a);
       border-radius: var(--g-border-radius);
     }
 
     &.selected {
-      background-color: var(--g-color-86);
+      background-color: var(--g-color-active-a);
       border-radius: var(--g-border-radius);
       color: var(--g-color-0);
     }

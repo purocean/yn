@@ -195,12 +195,12 @@ watch(() => keyword.value, (val) => {
       }
 
       &.selected {
-        background: rgba(var(--g-color-75-rgb), 0.6);
+        background: var(--g-color-active-a);
         color: var(--g-color-5);
       }
 
       &:hover {
-        background: rgba(var(--g-color-70-rgb), 0.6);
+        background: var(--g-color-active-b);
         color: var(--g-color-0);
       }
     }

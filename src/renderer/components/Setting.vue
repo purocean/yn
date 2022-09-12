@@ -194,7 +194,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .editor-wrapper {
   width: 700px;
-  background: var(--g-color-95);
+  background: var(--g-color-backdrop);
+  backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
   padding: 10px;
   color: var(--g-color-5);
