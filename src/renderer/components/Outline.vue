@@ -154,7 +154,7 @@ export default defineComponent({
 
 input.search-input[type="text"] {
   border-radius: 0;
-  background: rgba(var(--g-color-85-rgb), 0.5);
+  background: rgba(var(--g-color-95-rgb), 0.75);
   font-size: 14px;
   padding: 6px 14px;
   position: sticky;
@@ -163,7 +163,7 @@ input.search-input[type="text"] {
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 2px;
 
   &:focus {
-    background: rgba(var(--g-color-85-rgb), 0.5);
+    background: rgba(var(--g-color-90-rgb), 0.75);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 4px;
   }
 }
