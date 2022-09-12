@@ -127,15 +127,21 @@ export default defineComponent({
       return _heads.value
     })
 
+    const clearKeyword = () => {
+      keyword.value = ''
+    }
+
     onMounted(() => {
       refresh()
       registerHook('VIEW_RENDERED', throttleRefresh)
       registerHook('VIEW_SCROLL', throttleRefresh)
+      registerHook('DOC_SWITCHED', clearKeyword)
     })
 
     onBeforeUnmount(() => {
       removeHook('VIEW_RENDERED', throttleRefresh)
       removeHook('VIEW_SCROLL', throttleRefresh)
+      removeHook('DOC_SWITCHED', clearKeyword)
     })
 
     return { keyword, container, heads, activatedLine, handleClickItem }
