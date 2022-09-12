@@ -34,7 +34,7 @@
 <script lang="ts">
 import Sortable from 'sortablejs'
 import { throttle } from 'lodash-es'
-import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
 import { useI18n } from '@fe/services/i18n'
