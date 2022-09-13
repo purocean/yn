@@ -16,8 +16,11 @@
       window.process = undefined
       window.module = undefined
 
-      // 设置初始主题
+      // initial theme
       window.document.documentElement.setAttribute('app-theme', JSON.parse(localStorage['app.theme'] || '"system"'))
+
+      // os
+      window.document.documentElement.setAttribute('platform', navigator.platform)
 
       function _$args () {
         const win = window.opener || window.parent || window

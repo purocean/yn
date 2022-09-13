@@ -341,10 +341,11 @@ export default defineComponent({
 <style scoped>
 .filter {
   width: 600px;
-  background: var(--g-color-95);
+  background: var(--g-color-backdrop);
+  backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
   padding: 10px;
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
 }
 
@@ -369,7 +370,7 @@ export default defineComponent({
 .result li.selected,
 .result li:hover {
   padding: 2px 6px;
-  background: var(--g-color-80);
+  background: var(--g-color-active-a);
   color: var(--g-color-10);
 }
 
@@ -408,7 +409,7 @@ export default defineComponent({
   line-height: 1.5em;
   font-size: 12px;
   padding: 4px 0;
-  background: var(--g-color-74);;
+  background: var(--g-color-active-c);;
   cursor: pointer;
   transition: all .1s ease-in-out;
   color: var(--g-color-10);
@@ -420,11 +421,11 @@ export default defineComponent({
 }
 
 .tab > div:hover {
-  background: var(--g-color-70);
+  background: var(--g-color-active-b);
 }
 
 .tab > div.selected {
-  background: var(--g-color-88);
+  background: var(--g-color-active-a);
 }
 
 .input {

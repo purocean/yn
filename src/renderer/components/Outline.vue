@@ -1,5 +1,12 @@
 <template>
   <div ref="container" class="outline-toc">
+    <input
+      v-if="showFilter"
+      class="search-input"
+      type="text"
+      v-model="keyword"
+      :placeholder="$t('quick-open.input-placeholder')"
+    />
     <div v-if="heads.length < 1" class="empty">Empty</div>
     <div
       v-for="(head, index) in heads"
@@ -17,21 +24,32 @@
 
 <script lang="ts">
 import { throttle } from 'lodash-es'
-import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { getEditor, highlightLine } from '@fe/services/editor'
+import { useI18n } from '@fe/services/i18n'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import { AppState } from '@fe/support/store'
 import { getHeadings, getViewDom, Heading } from '@fe/services/view'
 
 export default defineComponent({
   name: 'outline',
+  props: {
+    showFilter: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup () {
     const container = ref<HTMLElement>()
-    const heads = ref<Heading[]>([])
+    const _heads = ref<Heading[]>([])
     const store = useStore<AppState>()
+    const keyword = ref('')
     const activatedLine = ref(-1)
+
+    useI18n()
+
     let disableRefresh: any = null
 
     function handleClickItem (heading: Heading) {
@@ -78,7 +96,7 @@ export default defineComponent({
         return
       }
 
-      heads.value = getHeadings(true)
+      _heads.value = getHeadings(true)
       activatedLine.value = -1
 
       if (!container.value || container.value.clientWidth < 50) {
@@ -88,7 +106,7 @@ export default defineComponent({
       nextTick(() => {
         // skip on hover
         if (container.value?.parentElement?.querySelector('.outline-toc:hover') !== container.value) {
-          const idx = heads.value.findIndex(head => head.activated)
+          const idx = _heads.value.findIndex(head => head.activated)
           const item: any = container.value?.children.item(idx)
           if (item) {
             item.scrollIntoViewIfNeeded(false)
@@ -99,24 +117,54 @@ export default defineComponent({
 
     const throttleRefresh = throttle(refresh, 150)
 
+    const heads = computed(() => {
+      if (keyword.value) {
+        return _heads.value.filter(
+          head => (head.tag + '\t' + head.text).toLowerCase().includes(keyword.value.toLowerCase())
+        )
+      }
+
+      return _heads.value
+    })
+
+    const clearKeyword = () => {
+      keyword.value = ''
+    }
+
     onMounted(() => {
       refresh()
       registerHook('VIEW_RENDERED', throttleRefresh)
       registerHook('VIEW_SCROLL', throttleRefresh)
+      registerHook('DOC_SWITCHED', clearKeyword)
     })
 
     onBeforeUnmount(() => {
       removeHook('VIEW_RENDERED', throttleRefresh)
       removeHook('VIEW_SCROLL', throttleRefresh)
+      removeHook('DOC_SWITCHED', clearKeyword)
     })
 
-    return { container, heads, activatedLine, handleClickItem }
+    return { keyword, container, heads, activatedLine, handleClickItem }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-@import '@fe/styles/mixins.scss';
+input.search-input[type="text"] {
+  border-radius: 0;
+  background: rgba(var(--g-color-95-rgb), 0.75);
+  font-size: 14px;
+  padding: 6px 14px;
+  position: sticky;
+  top: 0;
+  backdrop-filter: var(--g-backdrop-filter);
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 2px;
+
+  &:focus {
+    background: rgba(var(--g-color-90-rgb), 0.75);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 4px;
+  }
+}
 
 .outline-toc {
   overflow-y: auto;
@@ -144,7 +192,7 @@ export default defineComponent({
 
     &[data-activated="true"],
     &:hover {
-      background: rgba(0, 0, 0, 0.05);
+      background: var(--g-color-active-b);
       color: var(--g-color-0);
     }
 
@@ -165,15 +213,6 @@ export default defineComponent({
       color: var(--g-color-60);
       font-size: 12px;
       padding-left: 0.5em;
-    }
-  }
-}
-
-@include dark-theme {
-  .outline-toc > .heading {
-    &[data-activated="true"],
-    &:hover {
-      background: rgba(255, 255, 255, 0.07);
     }
   }
 }

@@ -32,7 +32,7 @@ export default defineComponent({
 
 .tabs {
   display: flex;
-  background: var(--g-color-80);
+  background: var(--g-color-active-a);
   border-radius: var(--g-border-radius);
   border: 1px solid var(--g-color-70);
   margin-bottom: 16px;
@@ -46,13 +46,13 @@ export default defineComponent({
     border-radius: var(--g-border-radius);
 
     &:hover {
-      background: var(--g-color-85);
+      background: var(--g-color-83);
     }
 
     &.selected {
       color: var(--g-color-0);
       font-weight: 500;
-      background: var(--g-color-97);
+      background: var(--g-color-90);
     }
   }
 }

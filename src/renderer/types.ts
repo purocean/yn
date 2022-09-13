@@ -99,6 +99,23 @@ export namespace Components {
       level: number;
     }
   }
+
+  export namespace QuickFilter {
+    export interface Item {
+      label: string,
+      key: string,
+    }
+
+    export interface Props {
+      top?: string | undefined;
+      right?: string | undefined;
+      bottom?: string | undefined;
+      left?: string | undefined;
+      placeholder?: string | undefined;
+      current?: string | undefined;
+      list: Item[];
+    }
+  }
 }
 
 export type ThemeName = 'system' | 'dark' | 'light'
@@ -206,6 +223,7 @@ export type BuildInActions = {
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
   'file-tabs.close-current': () => void,
+  'file-tabs.search-tabs': () => void,
   'xterm.run': (cmd: { code: string, start: string, exit?: string } | string) => void,
   'xterm.init': (opts?: { cwd?: string }) => void,
   'plugin.document-history-stack.back': () => void,

@@ -61,19 +61,18 @@ watch(() => store.state.showControlCenter, (val) => {
 </script>
 
 <style lang="scss">
-@import '@fe/styles/mixins.scss';
-
 .control-center {
   position: fixed;
   right: 25px;
   bottom: 40px;
   z-index: 1000;
   outline: none;
-  background: var(--g-color-85);
+  background: rgba(var(--g-color-85-rgb), 0.8);
+  backdrop-filter: var(--g-backdrop-filter);
   color: var(--g-color-10);
   overflow: hidden;
   border-radius: var(--g-border-radius);
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
 
   .row {
     display: flex;
@@ -106,7 +105,7 @@ watch(() => store.state.showControlCenter, (val) => {
       }
 
       &.checked {
-        background: var(--g-color-96);
+        background: var(--g-color-active-b);
       }
 
       .svg-icon {
@@ -115,28 +114,12 @@ watch(() => store.state.showControlCenter, (val) => {
       }
 
       &:not(.disabled):not(.checked):hover {
-        background: var(--g-color-90);
+        background: var(--g-color-active-a);
       }
 
       &.disabled {
         color: var(--g-color-50);
         cursor: default;
-      }
-    }
-  }
-}
-
-@include dark-theme {
-  .control-center {
-    .row {
-      .btn {
-        &.checked {
-          background: var(--g-color-70);
-        }
-
-        &:not(.disabled):not(.checked):hover {
-          background: var(--g-color-80);
-        }
       }
     }
   }

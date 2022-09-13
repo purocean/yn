@@ -1,7 +1,7 @@
 <template>
   <div ref="refViewWrapper" :class="{'markdown-view': true, presentation}" @scroll="handleScroll">
     <div class="action-bar" :style="{width: (width - 50) + 'px'}">
-      <div :style="{background: todoCount ? 'var(--g-color-87)' : 'transparent'}">
+      <div :class="{ todo: !!todoCount }">
         <div v-if="todoCount" class="todo-progress">
           <div :style="{
             backgroundColor: `rgb(${220 - 220 * todoDoneCount / todoCount}, ${200 * todoDoneCount / todoCount}, 0)`,
@@ -362,6 +362,11 @@ export default defineComponent({
 }
 
 .action-bar > div {
+  &.todo {
+    background-color: rgba(var(--g-color-80-rgb), 0.6);
+    backdrop-filter: var(--g-backdrop-filter);
+  }
+
   padding: .3em;
   border-radius: var(--g-border-radius);
   height: 26px;
@@ -376,6 +381,7 @@ export default defineComponent({
   flex-grow: 1;
   margin-right: 1em;
   background: var(--g-color-98);
+  opacity: 0.8;
   z-index: 999;
 }
 
@@ -392,7 +398,8 @@ export default defineComponent({
 .outline {
   position: fixed;
   right: 2em;
-  background: var(--g-color-85);
+  background: rgba(var(--g-color-85-rgb), 0.8);
+  backdrop-filter: var(--g-backdrop-filter);
   color: var(--g-color-10);
   font-size: 14px;
   max-height: 34px;
@@ -458,7 +465,7 @@ export default defineComponent({
   &.pined, &:hover {
     max-height: 75vh;
     max-width: 28em;
-    box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+    box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
 
     .outline-pin {
       left: 3px;
@@ -484,7 +491,8 @@ export default defineComponent({
   position: fixed;
   right: 2em;
   /* bottom: 40px; */
-  background: var(--g-color-85);
+  background: rgba(var(--g-color-85-rgb), 0.7);
+  backdrop-filter: blur(10px);
   color: var(--g-color-10);
   font-size: 14px;
   overflow: hidden;

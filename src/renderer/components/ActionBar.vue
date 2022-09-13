@@ -53,8 +53,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@fe/styles/mixins.scss';
-
 .action-bar {
   height: 30px;
   flex: none;
@@ -105,7 +103,7 @@ onBeforeUnmount(() => {
     }
 
     &.checked {
-      background: var(--g-color-96);
+      background: var(--g-color-active-c);
     }
 
     .svg-icon {
@@ -115,26 +113,12 @@ onBeforeUnmount(() => {
     }
 
     &:not(.disabled):not(.checked):hover {
-      background: var(--g-color-92);
+      background: var(--g-color-active-b);
     }
 
     &.disabled {
       color: var(--g-color-50);
       cursor: default;
-    }
-  }
-}
-
-@include dark-theme {
-  .action-bar {
-    .btn {
-      &.checked {
-        background: var(--g-color-60);
-      }
-
-      &:not(.disabled):not(.checked):hover {
-        background: var(--g-color-76);
-      }
     }
   }
 }

@@ -287,6 +287,7 @@ const data = {
     'close-all': 'Close All',
     'pin': 'Pin',
     'unpin': 'Unpin',
+    'search-tabs': 'Search tabs',
   },
   'export-panel': {
     'export': 'Export',

@@ -76,16 +76,18 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.35.0](https://github.com/purocean/yn/releases/tag/v3.35.0) 2022-09-06
+### [v3.36.0](https://github.com/purocean/yn/releases/tag/v3.36.0) 2022-09-13
 
-1. feat: add more information to the document row and column information display
-2. feat: add double-clicking to change the size of the ruler to restore the default size
-3. feat: the main part of the name is selected by default in the file name of the file creation dialog
-4. fix: fix Reveal.js cannot display mindmap
-5. feat(plugin): status bar menu title supports custom Vue components
-6. feat(plugin): add `DOC_BEFORE_SAVE` hook
-7. feat(plugin): add the number of selected rows and the number of selections of return value of `ctx.editor.getSelectionInfo`
-8. upd(plugin): remove `ctx.store.state.selectionInfo`
+1. feat: optimize editor tab display, add quick search tab function
+2. feat: add filtering function to the directory outline
+3. upd: adjust the UI of dialogs, directories, context menus, control centers, etc.
+4. upd: an error is reported when the repository path does not exist
+5. fix: fix the issue that the document outline on Windows cannot display the underline at a certain zoom level of the window
+6. fix: fix the problem that the brain map cannot be indented with two spaces
+7. feat(plugin): add `ctx.components.QuickFilter` component
+8. feat(plugin): add `ctx.command.Tab` constant
+9. feat(plugin): add `ctx.ui.useQuickFilter` method
+10. feat(plugin): add `file-tabs.search-tabs` action
 
 [More release notes](https://github.com/purocean/yn/releases)
 

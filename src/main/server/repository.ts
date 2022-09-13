@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as fs from 'fs-extra'
 import config from '../config'
 import { isWsl, toWslPath } from '../wsl'
 
@@ -22,7 +23,13 @@ const getPath = (name: string) => {
     p = /^[a-zA-Z]:/.test(p) ? toWslPath(p) : p
   }
 
-  return path.isAbsolute(p) ? p : path.resolve(p)
+  p = path.isAbsolute(p) ? p : path.resolve(p)
+
+  if (!fs.pathExistsSync(p)) {
+    return null
+  }
+
+  return p
 }
 
 export default {

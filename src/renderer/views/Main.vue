@@ -8,7 +8,7 @@
     </template>
     <template v-slot:left>
       <ActionBar />
-      <Outline v-if="showOutline" />
+      <Outline show-filter v-if="showOutline" />
       <Tree v-show="!showOutline" />
     </template>
     <template v-slot:terminal>

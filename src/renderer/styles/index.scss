@@ -1,6 +1,10 @@
 @import 'normalize.css';
 @import './mixins.scss';
 
+@function hex2rgb($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
 @font-face {
   font-family: 'MacEmoji';
   src: local('Apple Color Emoji');
@@ -9,9 +13,12 @@
 
 @mixin root-vars($background, $foreground) {
   --g-background-color: #{$background};
+  --g-background-color-rgb: #{hex2rgb($background)};
   --g-foreground-color: #{$foreground};
+  --g-foreground-color-rgb: #{hex2rgb($foreground)};
   @for $i from 0 through 100 {
     --g-color-#{$i}: #{mix($background, $foreground, $i * 1%)};
+    --g-color-#{$i}-rgb: #{hex2rgb(mix($background, $foreground, $i * 1%))};
   }
 
   --selection-color: rgba(86, 155, 214, 0.38);
@@ -22,6 +29,13 @@
   --scrollbar-thumb-hover-background-color: #{rgba($foreground, 0.3)};
 
   --g-border-radius: 4px;
+  --g-backdrop-filter: blur(18px);
+  --g-color-backdrop: #{rgba(var(--g-color-100-rgb), 0.65)};
+
+  --g-color-active-a: #{rgba(var(--g-color-0-rgb), 0.1)};
+  --g-color-active-b: #{rgba(var(--g-color-0-rgb), 0.15)};
+  --g-color-active-c: #{rgba(var(--g-color-0-rgb), 0.2)};
+  --g-color-active-d: #{rgba(var(--g-color-0-rgb), 0.25)};
 }
 
 html[app-theme=light]:root, :root {
@@ -32,12 +46,18 @@ html[app-theme=light]:root, :root {
 @include dark-theme {
   @import './dark.scss';
   @include root-vars($g-background-color, $g-foreground-color);
+
+  --g-color-backdrop: #{rgba(var(--g-color-84-rgb), 0.7)};
 }
 
 html {
   outline: none;
   font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
   accent-color: rgb(20, 112, 251);
+
+  &[platform^=Win] {
+    font-family: arial,system-ui,Segoe UI,Helvetica,sans-serif;
+  }
 }
 
 ::selection {
@@ -94,24 +114,28 @@ html {
     line-height: 1.4em;
     padding: 6px;
     box-sizing: border-box;
-    background: var(--g-color-88);
+    background: rgba(var(--g-color-0-rgb), 0.1);
     color: var(--g-color-0);
     transition: all .1s ease-in-out;
     outline: none;
     border-radius: var(--g-border-radius);
 
     &:focus {
-      background: var(--g-color-85);
+      background: rgba(var(--g-color-0-rgb), 0.15);
     }
   }
 
   select {
     display: initial;
     width: initial;
+
+    option {
+      background-color: var(--g-color-88);
+    }
   }
 
   button {
-    background: var(--g-color-80);
+    background: var(--g-color-active-a);
     border: none;
     padding: 5px 10px;
     color: var(--g-color-0);
@@ -124,11 +148,11 @@ html {
     user-select: none;
 
     &.primary {
-      background: var(--g-color-70);
+      background: var(--g-color-active-d);
     }
 
     &:hover {
-      background: var(--g-color-65);
+      background: var(--g-color-active-c);
     }
 
     &.small {

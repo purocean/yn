@@ -117,7 +117,8 @@ export default defineComponent({
   top: -99999px;
   visibility: hidden;
   overflow-y: auto;
-  background: var(--g-color-82);
+  background: rgba(var(--g-color-82-rgb), 0.5);
+  backdrop-filter: var(--g-backdrop-filter);
   border: 1px var(--g-color-84) solid;
   border-left: 0;
   border-top: 0;
@@ -125,14 +126,14 @@ export default defineComponent({
   color: var(--g-foreground-color);
   min-width: 9em;
   cursor: default;
-  box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
   user-select: none;
 }
 
 .menu > li.separator {
-  border-top: 1px var(--g-color-80) solid;
-  border-bottom: 1px var(--g-color-70) solid;
+  border-top: 1px rgba(var(--g-color-90-rgb), 0.5) solid;
+  border-bottom: 1px rgba(var(--g-color-70-rgb), 0.5) solid;
   margin: 3px 0;
 
   &:first-child,
@@ -150,7 +151,6 @@ export default defineComponent({
 }
 
 .menu > li.normal:hover {
-  background: var(--g-color-70);
+  background: var(--g-color-active-b);
 }
-
 </style>

@@ -1,9 +1,11 @@
 <template>
   <teleport to="body">
     <transition name="fade">
-      <div v-if="show" class="mask" :style="maskStyle" @click="() => maskCloseable && $emit('close')">
-        <div class="close-btn"></div>
-        <slot></slot>
+      <div v-if="show" class="mask-wrapper" :style="wrapperStyle">
+        <div class="mask" @click="() => maskCloseable && $emit('close')" />
+        <div class="content">
+          <slot></slot>
+        </div>
       </div>
     </transition>
   </teleport>
@@ -54,7 +56,7 @@ export default defineComponent({
       }
     })
 
-    const maskStyle = computed(() => (typeof props.style === 'string' ? props.style : { zIndex: zIndexRef.value, ...props.style }))
+    const wrapperStyle = computed(() => (typeof props.style === 'string' ? props.style : { zIndex: zIndexRef.value, ...props.style }))
 
     onMounted(() => {
       window.addEventListener('keypress', keypressHandler, true)
@@ -66,21 +68,30 @@ export default defineComponent({
       window.removeEventListener('keydown', keydownHandler, true)
     })
 
-    return { maskStyle }
+    return { wrapperStyle }
   },
 })
 </script>
 
 <style scoped>
-.mask {
+.mask-wrapper {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
   z-index: 199998;
   padding-top: 6em;
+}
+
+.mask {
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(0.5px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .fade-enter-active, .fade-leave-active {
