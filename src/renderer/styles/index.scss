@@ -54,6 +54,10 @@ html {
   outline: none;
   font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
   accent-color: rgb(20, 112, 251);
+
+  &[platform^=Win] {
+    font-family: arial,system-ui,Segoe UI,Helvetica,sans-serif;
+  }
 }
 
 ::selection {

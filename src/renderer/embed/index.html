@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="../styles/index.scss">
     <title>Yank Note</title>
     <script>
-      // 设置初始主题
+      // initial theme
       window.document.documentElement.setAttribute('app-theme', JSON.parse(localStorage['app.theme'] || '"system"'))
+
+      // os
+      window.document.documentElement.setAttribute('platform', navigator.platform)
     </script>
     <script type="module" src="./index.ts"></script>
   </head>
