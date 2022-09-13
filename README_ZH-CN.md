@@ -76,16 +76,18 @@
 
 ## 更新日志
 
-### [v3.35.0](https://github.com/purocean/yn/releases/tag/v3.35.0) 2022-09-06
+### [v3.36.0](https://github.com/purocean/yn/releases/tag/v3.36.0) 2022-09-13
 
-1. feat: 文档行列信息展示增加更多信息
-2. feat: 增加双击更改尺寸表尺恢复默认尺寸功能
-3. feat: 创建文件对话框文件名默认选中名字主体部分
-4. fix: 修复 Reveal.js 不能显示脑图问题
-5. feat(plugin): 状态栏菜单标题支持自定义 Vue 组件
-6. feat(plugin): 增加 `DOC_BEFORE_SAVE` 钩子
-7. feat(plugin): `ctx.editor.getSelectionInfo` 返回值增加选中行数、选区数量信息
-8. upd(plugin): 移除 `ctx.store.state.selectionInfo`
+1. feat: 优化编辑器选项卡展示，增加快速搜索选项卡功能
+2. feat: 目录大纲增加过滤功能
+3. upd: 调整 对话框，目录，上下文菜单、控制中心等元素的 UI
+4. upd: 仓库路径不存在时候报错
+5. fix: 修复 Windows 上文档大纲在窗口某个缩放级别时候不能展示下划线问题
+6. fix: 修复脑图不能使用两个空格缩进问题
+7. feat(plugin): 增加 `ctx.components.QuickFilter` 组件
+8. feat(plugin): 增加 `ctx.command.Tab` 常量
+9. feat(plugin): 增加 `ctx.ui.useQuickFilter` 方法
+10. feat(plugin): 增加 `file-tabs.search-tabs` Action
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
