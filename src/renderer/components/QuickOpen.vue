@@ -409,7 +409,7 @@ export default defineComponent({
   line-height: 1.5em;
   font-size: 12px;
   padding: 4px 0;
-  background: var(--g-color-active-c);;
+  background: var(--g-color-active-d);;
   cursor: pointer;
   transition: all .1s ease-in-out;
   color: var(--g-color-10);
@@ -421,11 +421,11 @@ export default defineComponent({
 }
 
 .tab > div:hover {
-  background: var(--g-color-active-b);
+  background: var(--g-color-active-c);
 }
 
 .tab > div.selected {
-  background: var(--g-color-active-a);
+  background: var(--g-color-active-b);
 }
 
 .input {
