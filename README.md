@@ -76,18 +76,11 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.36.0](https://github.com/purocean/yn/releases/tag/v3.36.0) 2022-09-13
+### [v3.36.1](https://github.com/purocean/yn/releases/tag/v3.36.1) 2022-09-16
 
-1. feat: optimize editor tab display, add quick search tab function
-2. feat: add filtering function to the directory outline
-3. upd: adjust the UI of dialogs, directories, context menus, control centers, etc.
-4. upd: an error is reported when the repository path does not exist
-5. fix: fix the issue that the document outline on Windows cannot display the underline at a certain zoom level of the window
-6. fix: fix the problem that the brain map cannot be indented with two spaces
-7. feat(plugin): add `ctx.components.QuickFilter` component
-8. feat(plugin): add `ctx.command.Tab` constant
-9. feat(plugin): add `ctx.ui.useQuickFilter` method
-10. feat(plugin): add `file-tabs.search-tabs` action
+1. feat: support opening links containing `__allow-open-window__` inside the app
+2. fix: fix dark theme style
+3. fix: fix outline title focus problem
 
 [More release notes](https://github.com/purocean/yn/releases)
 

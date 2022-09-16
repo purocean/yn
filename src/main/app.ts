@@ -342,6 +342,10 @@ if (!gotTheLock) {
     electronRemote.enable(webContents)
 
     webContents.setWindowOpenHandler(({ url }) => {
+      if (url.includes('__allow-open-window__')) {
+        return { action: 'allow' }
+      }
+
       const allowList = [
         `${APP_NAME}://`,
         `http://localhost:${backendPort}`,

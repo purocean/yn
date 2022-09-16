@@ -107,7 +107,12 @@ export default defineComponent({
         // skip on hover
         if (container.value?.parentElement?.querySelector('.outline-toc:hover') !== container.value) {
           const idx = _heads.value.findIndex(head => head.activated)
-          const item: any = container.value?.children.item(idx)
+          if (idx === 0) {
+            // for outline of sidebar
+            container.value!.scrollTop = 0
+          }
+
+          const item: any = container.value?.querySelectorAll('div.heading').item(idx)
           if (item) {
             item.scrollIntoViewIfNeeded(false)
           }
@@ -115,7 +120,7 @@ export default defineComponent({
       })
     }
 
-    const throttleRefresh = throttle(refresh, 150)
+    const throttleRefresh = throttle(refresh, 150, { trailing: true })
 
     const heads = computed(() => {
       if (keyword.value) {

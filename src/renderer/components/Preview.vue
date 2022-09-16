@@ -12,8 +12,8 @@
         </div>
         <div v-else></div>
         <div v-if="filePath" class="action-btns">
-          <button type="button" @click="print()">{{$t('view.print')}}</button>
-          <button type="button" @click="showExport">{{$t('export')}}</button>
+          <button type="button" class="tr" @click="print()">{{$t('view.print')}}</button>
+          <button type="button" class="tr" @click="showExport">{{$t('export')}}</button>
         </div>
       </div>
     </div>
