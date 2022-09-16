@@ -76,18 +76,11 @@
 
 ## 更新日志
 
-### [v3.36.0](https://github.com/purocean/yn/releases/tag/v3.36.0) 2022-09-13
+### [v3.36.1](https://github.com/purocean/yn/releases/tag/v3.36.1) 2022-09-16
 
-1. feat: 优化编辑器选项卡展示，增加快速搜索选项卡功能
-2. feat: 目录大纲增加过滤功能
-3. upd: 调整 对话框，目录，上下文菜单、控制中心等元素的 UI
-4. upd: 仓库路径不存在时候报错
-5. fix: 修复 Windows 上文档大纲在窗口某个缩放级别时候不能展示下划线问题
-6. fix: 修复脑图不能使用两个空格缩进问题
-7. feat(plugin): 增加 `ctx.components.QuickFilter` 组件
-8. feat(plugin): 增加 `ctx.command.Tab` 常量
-9. feat(plugin): 增加 `ctx.ui.useQuickFilter` 方法
-10. feat(plugin): 增加 `file-tabs.search-tabs` Action
+1. feat: 支持在应用内部打开包含 `__allow-open-window__` 的链接
+2. fix: 修复暗色主题样式
+3. fix: 修复大纲标题聚焦问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
