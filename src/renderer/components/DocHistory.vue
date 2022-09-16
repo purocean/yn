@@ -45,8 +45,8 @@
       <div class="doc-name">{{currentVersion?.label}} {{currentVersion?.title}} {{currentDoc.name}}</div>
 
       <div class="action">
-        <button class="btn" @click="hide">{{$t('close')}}</button>
-        <button v-if="content" class="btn primary" @click="apply">{{$t('doc-history.apply-version')}}</button>
+        <button class="btn tr" @click="hide">{{$t('close')}}</button>
+        <button v-if="content" class="btn primary tr" @click="apply">{{$t('doc-history.apply-version')}}</button>
       </div>
     </div>
   </XMask>

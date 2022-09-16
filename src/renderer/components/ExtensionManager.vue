@@ -127,18 +127,18 @@
                 <div v-else-if="uninstalling" class="actions"><i>{{ $t('extension.uninstalling') }}</i></div>
                 <div v-else class="actions">
                   <template v-if="currentExtension.dirty">
-                    <button class="small" @click="reload">{{$t('extension.reload')}}</button>
+                    <button class="small tr" @click="reload">{{$t('extension.reload')}}</button>
                     <i>{{ $t('extension.reload-required') }}</i>
                   </template>
                   <template v-else>
                     <template v-if="!currentExtension.installed">
-                      <button class="small" :disabled="!currentExtension.compatible.value" @click="install(currentExtension)">{{ $t('extension.install') }}</button>
+                      <button class="small tr" :disabled="!currentExtension.compatible.value" @click="install(currentExtension)">{{ $t('extension.install') }}</button>
                     </template>
                     <template v-else>
-                      <button class="small" @click="uninstall(currentExtension)">{{ $t('extension.uninstall') }}</button>
-                      <button v-if="currentExtension.enabled" class="small" @click="disable(currentExtension)">{{ $t('extension.disable') }}</button>
-                      <button v-else-if="currentExtension.compatible.value" class="small" @click="enable(currentExtension)">{{ $t('extension.enable') }}</button>
-                      <button v-if="currentExtension.upgradable" :disabled="!currentExtension.newVersionCompatible?.value" class="small" @click="upgrade(currentExtension)">{{ $t('extension.upgrade') }}</button>
+                      <button class="small tr" @click="uninstall(currentExtension)">{{ $t('extension.uninstall') }}</button>
+                      <button v-if="currentExtension.enabled" class="small tr" @click="disable(currentExtension)">{{ $t('extension.disable') }}</button>
+                      <button v-else-if="currentExtension.compatible.value" class="small tr" @click="enable(currentExtension)">{{ $t('extension.enable') }}</button>
+                      <button v-if="currentExtension.upgradable" :disabled="!currentExtension.newVersionCompatible?.value" class="small tr" @click="upgrade(currentExtension)">{{ $t('extension.upgrade') }}</button>
                     </template>
                     <i v-if="!currentExtension.compatible.value">{{currentExtension.compatible.reason}}</i>
                     <i v-if="currentExtension.upgradable && !currentExtension.newVersionCompatible?.value">{{currentExtension.newVersionCompatible?.reason}}</i>

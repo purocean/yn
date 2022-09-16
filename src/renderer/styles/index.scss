@@ -135,7 +135,7 @@ html {
   }
 
   button {
-    background: var(--g-color-active-a);
+    background-color: var(--g-color-80);
     border: none;
     padding: 5px 10px;
     color: var(--g-color-0);
@@ -147,12 +147,24 @@ html {
     outline: none;
     user-select: none;
 
+    &.tr {
+      background-color: var(--g-color-active-a);
+    }
+
     &.primary {
-      background: var(--g-color-active-d);
+      background-color: var(--g-color-70);
+
+      &.tr {
+        background-color: var(--g-color-active-d);
+      }
     }
 
     &:hover {
-      background: var(--g-color-active-c);
+      background-color: var(--g-color-65);
+
+      &.tr {
+        background-color: var(--g-color-active-c);
+      }
     }
 
     &.small {
@@ -162,7 +174,7 @@ html {
     }
 
     &[disabled] {
-      background: var(--g-color-90);
+      background-color: var(--g-color-90);
       cursor: not-allowed;
     }
   }

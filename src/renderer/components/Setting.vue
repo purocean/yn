@@ -4,8 +4,8 @@
     <group-tabs :tabs="tabs" v-model="tab" />
     <div v-show="isReady" ref="refEditor" class="editor" @click="onClick" />
     <div class="action">
-      <button class="btn" @click="cancel">{{$t('cancel')}}</button>
-      <button class="btn primary" @click="ok">{{$t('ok')}}</button>
+      <button class="btn tr" @click="cancel">{{$t('cancel')}}</button>
+      <button class="btn primary tr" @click="ok">{{$t('ok')}}</button>
     </div>
   </div>
 </template>

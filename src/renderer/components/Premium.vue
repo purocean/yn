@@ -11,8 +11,8 @@
             <h3>{{$t('premium.free')}}</h3>
             <div class="plan-desc">{{$t('premium.intro.free-desc')}}</div>
           </div>
-          <button v-if="purchased" class="buy-btn" disabled>{{$t('premium.intro.included')}}</button>
-          <button v-else class="buy-btn" disabled>{{$t('premium.intro.current-plan')}}</button>
+          <button v-if="purchased" class="buy-btn tr" disabled>{{$t('premium.intro.included')}}</button>
+          <button v-else class="buy-btn tr" disabled>{{$t('premium.intro.current-plan')}}</button>
           <ul>
             <li v-for="item in $t('premium.intro.free-list').split('\n')" :key="item">{{item}}</li>
           </ul>
@@ -22,8 +22,8 @@
             <h3>{{$t('premium.premium')}}</h3>
             <div class="plan-desc">{{$t('premium.intro.premium-desc')}}</div>
           </div>
-          <button v-if="purchased" class="buy-btn" disabled>{{$t('premium.intro.current-plan')}}</button>
-          <button v-else class="primary buy-btn" @click="buy">{{$t('premium.buy.buy')}}</button>
+          <button v-if="purchased" class="buy-btn tr" disabled>{{$t('premium.intro.current-plan')}}</button>
+          <button v-else class="primary buy-btn tr" @click="buy">{{$t('premium.buy.buy')}}</button>
           <ul>
             <li v-for="item in $t('premium.intro.premium-list').split('\n')" :key="item">{{item}}</li>
           </ul>
@@ -34,17 +34,17 @@
       <div class="step">
         <h4>{{$t('premium.buy.step-1', num.toString())}}</h4>
         <div class="pay-actions">
-          <button><svg-icon class="pay-icon" name="wechat" /> {{$t('premium.buy.wechat')}}</button>
+          <button class="tr"><svg-icon class="pay-icon" name="wechat" /> {{$t('premium.buy.wechat')}}</button>
           <img class="qrcode" src="~@fe/assets/purchase-wechat.jpg" >
-          <button><svg-icon class="pay-icon" name="alipay" /> {{$t('premium.buy.alipay')}}</button>
+          <button class="tr"><svg-icon class="pay-icon" name="alipay" /> {{$t('premium.buy.alipay')}}</button>
           <img class="qrcode" src="~@fe/assets/purchase-alipay.jpg" >
-          <button @click="paypal"><svg-icon class="pay-icon" name="paypal" /> PayPal</button>
+          <button class="tr" @click="paypal"><svg-icon class="pay-icon" name="paypal" /> PayPal</button>
         </div>
       </div>
       <div class="step">
         <h4>{{$t('premium.buy.step-2')}}</h4>
         <div class="pay-actions">
-          <button @click="sendEmail">{{$t('premium.buy.send-email')}}</button>
+          <button class="tr" @click="sendEmail">{{$t('premium.buy.send-email')}}</button>
           <span class="email-tips">
             {{$t('premium.buy.email-tips')}}
             <a href="javascript:void(0)" @click="showEmailDialog">{{$t('premium.buy.email-failed')}}</a>
@@ -54,7 +54,7 @@
       <div class="step">
         <h4>{{$t('premium.buy.step-3')}}</h4>
         <div class="pay-actions">
-          <button @click="switchTab('activation')">{{$t('premium.activation.activation')}}</button>
+          <button class="tr" @click="switchTab('activation')">{{$t('premium.activation.activation')}}</button>
         </div>
       </div>
     </div>
@@ -78,8 +78,8 @@
       </div>
     </div>
     <div class="action">
-      <button class="btn primary" @click="close">{{$t('close')}}</button>
-      <button v-if="tab === 'activation' && license.trim()" class="btn" @click="activate">{{$t('ok')}}</button>
+      <button class="btn primary tr" @click="close">{{$t('close')}}</button>
+      <button v-if="tab === 'activation' && license.trim()" class="btn tr" @click="activate">{{$t('ok')}}</button>
     </div>
   </div>
 </XMask>

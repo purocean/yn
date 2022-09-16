@@ -36,6 +36,7 @@ export default defineComponent({
   border-radius: var(--g-border-radius);
   border: 1px solid var(--g-color-70);
   margin-bottom: 16px;
+  user-select: none;
 
   .tab {
     cursor: pointer;

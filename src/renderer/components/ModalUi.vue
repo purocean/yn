@@ -11,8 +11,8 @@
       <div class="action">
         <component v-if="action" :is="action" />
         <template v-else>
-          <button v-if="type !== 'alert'" class="btn" @click="cancel">{{ cancelText }}</button>
-          <button class="btn primary" @click="ok">{{ okText }}</button>
+          <button v-if="type !== 'alert'" class="btn tr" @click="cancel">{{ cancelText }}</button>
+          <button class="btn primary tr" @click="ok">{{ okText }}</button>
         </template>
       </div>
     </div>

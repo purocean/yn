@@ -73,8 +73,8 @@
           </div>
         </div>
         <div class="action">
-          <button class="btn" @click.stop.prevent="close">{{$t('cancel')}}</button>
-          <button class="btn primary" @click.stop.prevent="ok">{{$t('ok')}}</button>
+          <button class="btn tr" @click.stop.prevent="close">{{$t('cancel')}}</button>
+          <button class="btn primary tr" @click.stop.prevent="ok">{{$t('ok')}}</button>
         </div>
       </form>
     </div>
