@@ -16,7 +16,8 @@ import { toggleOutline } from '@fe/services/layout'
 import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
-import { MODE } from './support/args'
+import { MODE } from '@fe/support/args'
+import ga from '@fe/support/ga'
 
 init(plugins, ctx)
 
@@ -145,4 +146,16 @@ fetchSettings()
 
 whenEditorReady().then(() => {
   setTimeout(extension.init, 0)
+})
+
+// google analytics
+
+registerHook('DOC_SWITCHED', () => {
+  ga.logEvent('yn_doc_switched')
+})
+
+ga.logEvent('page_view', {
+  page_title: '--YN-INIT--',
+  page_location: window.location.href,
+  page_path: window.location.pathname,
 })
