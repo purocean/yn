@@ -151,11 +151,13 @@ whenEditorReady().then(() => {
 // google analytics
 
 registerHook('DOC_SWITCHED', () => {
-  ga.logEvent('yn_doc_switched')
+  setTimeout(() => {
+    ga.logEvent('yn_doc_switched')
+  }, 0)
 })
 
 ga.logEvent('page_view', {
-  page_title: '--YN-INIT--',
+  page_title: '--STARTUP--',
   page_location: window.location.href,
   page_path: window.location.pathname,
 })
