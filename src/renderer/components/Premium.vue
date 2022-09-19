@@ -284,8 +284,8 @@ export default defineComponent({
   }
 
   .buy-btn {
-      width: 80%;
-      margin: 16px 0;
+    width: 80%;
+    margin: 16px 0;
   }
 }
 
