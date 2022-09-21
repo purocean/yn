@@ -6,6 +6,7 @@ import { registerAction } from '@fe/core/action'
 import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
+import { sleep } from '@fe/utils'
 import { getColorScheme } from './theme'
 import { getSetting } from './setting'
 
@@ -68,12 +69,18 @@ export function getEditor () {
 /**
  * Highlight given line.
  * @param line
+ * @param reveal
+ * @param duration
  * @returns dispose function
  */
-export function highlightLine (line: number) {
+export function highlightLine (line: number | [number, number], reveal: boolean, duration: number): Promise<void>
+export function highlightLine (line: number | [number, number], reveal?: boolean, duration?: number): (() => string[]) | Promise<void>
+export function highlightLine (line: number | [number, number], reveal?: boolean, duration?: number): (() => string[]) | Promise<void> {
+  const lines = Array.isArray(line) ? line : [line, line]
+
   const decorations = getEditor().deltaDecorations([], [
     {
-      range: new (getMonaco().Range)(line, 0, line, 999),
+      range: new (getMonaco().Range)(lines[0], 0, lines[1], 999),
       options: {
         isWholeLine: true,
         inlineClassName: 'mtkcontrol'
@@ -81,7 +88,19 @@ export function highlightLine (line: number) {
     }
   ])
 
-  return () => getEditor().deltaDecorations(decorations, [])
+  if (reveal) {
+    getEditor().revealLineNearTop(lines[0])
+  }
+
+  const dispose = () => getEditor().deltaDecorations(decorations, [])
+
+  if (duration) {
+    return sleep(duration).then(() => {
+      dispose()
+    })
+  }
+
+  return dispose
 }
 
 /**
