@@ -254,3 +254,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+::v-deep(.tabs div[data-key="yank-note://system/blank.md"] > .icon) {
+  display: none;
+}
+</style>

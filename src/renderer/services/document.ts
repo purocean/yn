@@ -393,6 +393,29 @@ export async function saveDoc (doc: Doc, content: string) {
  */
 export async function ensureCurrentFileSaved () {
   const { currentFile, currentContent } = store.state
+
+  // check blank file.
+  if (!currentFile && currentContent.trim()) {
+    const confirm = await useModal().confirm({
+      title: t('save-check-dialog.title'),
+      content: t('save-check-dialog.desc'),
+      action: h(Fragment, [
+        h('button', {
+          onClick: () => useModal().ok()
+        }, t('discard')),
+        h('button', {
+          onClick: () => useModal().cancel()
+        }, t('cancel')),
+      ])
+    })
+
+    if (confirm) {
+      return
+    } else {
+      throw new Error('Discard saving [blank] file')
+    }
+  }
+
   if (!currentFile || !currentFile.status) {
     return
   }
