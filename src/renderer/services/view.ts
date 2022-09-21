@@ -68,7 +68,7 @@ export async function refresh () {
  * @param startLine
  */
 export function revealLine (startLine: number) {
-  getActionHandler('view.reveal-line')(startLine)
+  return getActionHandler('view.reveal-line')(startLine)
 }
 
 /**
