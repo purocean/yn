@@ -27,11 +27,10 @@ import { throttle } from 'lodash-es'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { getEditor, highlightLine } from '@fe/services/editor'
+import { highlightLine as editorHighlightLine } from '@fe/services/editor'
 import { useI18n } from '@fe/services/i18n'
-import { DOM_ATTR_NAME } from '@fe/support/args'
 import { AppState } from '@fe/support/store'
-import { getHeadings, getViewDom, Heading } from '@fe/services/view'
+import { getHeadings, Heading, highlightLine as viewHighlightLine } from '@fe/services/view'
 
 export default defineComponent({
   name: 'outline',
@@ -64,31 +63,12 @@ export default defineComponent({
       }, 1000)
 
       const line = heading.sourceLine
-      const el = getViewDom()?.querySelector<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
       const scrollEditor = store.state.showEditor && !store.state.presentation
       const scrollPreview = !scrollEditor || !store.state.syncScroll
 
-      if (scrollEditor) {
-        getEditor().revealLineNearTop(line)
-      }
-
-      if (scrollPreview) {
-        el?.scrollIntoView()
-      }
-
       // highlight heading
-      if (el) {
-        const disposeHighlight = highlightLine(line)
-
-        el.style.backgroundColor = 'rgba(255, 183, 0, 0.6)'
-        setTimeout(() => {
-          disposeHighlight()
-          el.style.backgroundColor = ''
-          if (el.getAttribute('style') === '') {
-            el.removeAttribute('style')
-          }
-        }, 1000)
-      }
+      editorHighlightLine(line, scrollEditor, 1000)
+      viewHighlightLine(line, scrollPreview, 1000)
     }
 
     function refresh () {
