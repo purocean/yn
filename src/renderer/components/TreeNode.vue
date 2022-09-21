@@ -5,6 +5,8 @@
       class="name"
       :title="itemNode.path"
       :open="open"
+      :data-count="itemNode.children?.length"
+      :data-level="itemNode.level"
       @toggle="(e: any) => open = e.target.open"
       @keydown.enter.prevent>
       <summary
