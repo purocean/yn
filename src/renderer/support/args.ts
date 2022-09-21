@@ -31,6 +31,8 @@ export const DOM_ATTR_NAME = {
 }
 
 export const DOM_CLASS_NAME = {
+  PREVIEW_HIGHLIGHT: 'preview-highlight',
+  PREVIEW_MARKDOWN_BODY: 'markdown-body',
   MARK_OPEN: 'open',
   SKIP_EXPORT: 'skip-export',
   SKIP_PRINT: 'skip-print',

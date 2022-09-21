@@ -3,7 +3,7 @@ import { CtrlCmd, Escape, registerCommand } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
 import * as ioc from '@fe/core/ioc'
-import { DOM_CLASS_NAME } from '@fe/support/args'
+import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { BuildInHookTypes, Components, Previewer } from '@fe/types'
@@ -80,7 +80,7 @@ export function scrollTopTo (top: number) {
 }
 
 export function getPreviewStyles () {
-  let styles = 'article.markdown-body { max-width: 1024px; margin: 20px auto; }'
+  let styles = `article.${DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY} { max-width: 1024px; margin: 20px auto; }`
   Array.prototype.forEach.call(document.styleSheets, item => {
     // inject global styles, normalize.css
     const flag = item.cssRules[0] &&
@@ -90,7 +90,7 @@ export function getPreviewStyles () {
     Array.prototype.forEach.call(item.cssRules, (rule) => {
       if (rule.selectorText && (
         flag ||
-        rule.selectorText.includes('.markdown-body') ||
+        rule.selectorText.includes('.' + DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY) ||
         rule.selectorText.startsWith('.katex')
       )) {
         // skip contain rules
