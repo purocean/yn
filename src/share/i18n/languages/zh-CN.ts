@@ -393,6 +393,7 @@ const data: BaseLanguage = {
       'link-file': '链接文件',
       'insert-date': '插入当前日期',
       'insert-time': '插入当前时间',
+      'reveal-line-in-preview': '在预览中聚焦',
     }
   },
   'picgo': {

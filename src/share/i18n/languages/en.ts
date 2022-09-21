@@ -392,6 +392,7 @@ const data = {
       'link-file': 'Link File',
       'insert-date': 'Insert Today\'s Date',
       'insert-time': 'Insert Current Time',
+      'reveal-line-in-preview': 'Reveal Line in Preview',
     }
   },
   'picgo': {

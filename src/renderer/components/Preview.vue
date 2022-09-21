@@ -702,6 +702,11 @@ export default defineComponent({
         }
       }
     }
+
+    .preview-highlight {
+      background-color: rgba(255, 183, 0, 0.6) !important;
+      outline: 1px solid rgba(255, 183, 0, 0.8) !important;
+    }
   }
 }
 
