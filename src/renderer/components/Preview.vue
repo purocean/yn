@@ -675,7 +675,7 @@ export default defineComponent({
     }
 
     code {
-      background: var(--g-color-80);
+      background: rgba(var(--g-color-80-rgb), 0.9);
     }
 
     pre {
