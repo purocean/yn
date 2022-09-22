@@ -261,16 +261,6 @@ export default {
       .markdown-view .markdown-body .p-mcr-clear-btn:hover {
         background: var(--g-color-80);
       }
-
-      .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE} ~ .p-mcr-run-code-result {
-        white-space: pre-wrap;
-      }
-
-      @media print {
-        .markdown-view .markdown-body .p-mcr-run-code-result {
-          white-space: pre-wrap;
-        }
-      }
     `)
 
     ctx.markdown.registerPlugin(RunPlugin)

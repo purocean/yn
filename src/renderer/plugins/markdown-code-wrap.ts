@@ -5,14 +5,17 @@ export default {
   name: 'markdown-code-wrap',
   register: ctx => {
     ctx.theme.addStyles(`
-      .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE} {
+      .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE},
+      .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE} ~ .p-mcr-run-code-result {
         white-space: pre-wrap;
+        overflow-wrap: anywhere;
       }
 
       @media print {
         .markdown-view .markdown-body pre > code,
         .markdown-view .markdown-body .p-mcr-run-code-result {
           white-space: pre-wrap;
+          overflow-wrap: anywhere;
         }
       }
     `)
