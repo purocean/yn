@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.36.1",
+  "version": "3.37.0",
   "description": "Yank Note: A hackable markdown note application for programmers",
   "main": "dist/main/app.js",
   "license": "AGPL-3.0",
@@ -52,6 +52,7 @@
     "socks-proxy-agent": "^6.1.1",
     "tar-stream": "^2.2.0",
     "transliteration": "^2.2.0",
+    "uuid": "^9.0.0",
     "yaml": "^2.0.1",
     "yargs": "^15.3.1"
   },
@@ -78,6 +79,7 @@
     "@types/sortablejs": "^1.10.6",
     "@types/tar-stream": "^2.2.2",
     "@types/turndown": "^5.0.0",
+    "@types/uuid": "^8.3.4",
     "@types/yargs": "^15.0.0",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",

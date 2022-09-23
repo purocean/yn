@@ -71,8 +71,8 @@ export default {
       ) {
         ctx.view.disableSyncScrollAwhile(() => {
           const line = parseInt(target.dataset.sourceLine || '0')
-          ctx.editor.getEditor().revealLineNearTop(line)
-          setTimeout(ctx.editor.highlightLine(line), 1000)
+          const lineEnd = parseInt(target.dataset.sourceLineEnd || '0')
+          ctx.editor.highlightLine(lineEnd ? [line, lineEnd - 1] : line, true, 1000)
         })
       }
 

@@ -3,6 +3,7 @@ import type { BaseLanguage } from './en'
 
 const data: BaseLanguage = {
   'app-name': 'Yank Note',
+  'about': '关于',
   'slogan': '一款面向程序员的 Markdown 编辑器',
   'cancel': '取消',
   'ok': '确定',
@@ -334,6 +335,7 @@ const data: BaseLanguage = {
         'ordered-list-completion': '有序列表补全',
         'minimap': '显示小地图',
         'line-numbers': '行号',
+        'enable-preview': '开启预览 - 打开新文件使用临时标签，双击标签以更改',
       },
       'theme': '主题',
       'language': '语言',
@@ -392,6 +394,7 @@ const data: BaseLanguage = {
       'link-file': '链接文件',
       'insert-date': '插入当前日期',
       'insert-time': '插入当前时间',
+      'reveal-line-in-preview': '在预览中聚焦',
     }
   },
   'picgo': {

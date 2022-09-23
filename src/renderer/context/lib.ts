@@ -7,6 +7,7 @@ import { getCurrentLanguage } from '@fe/services/i18n'
 
 export * as lodash from 'lodash-es'
 export * as vue from 'vue'
+export * as uuid from 'uuid'
 export { default as yaml } from 'yaml'
 export { default as semver } from 'semver'
 export { default as dayjs } from 'dayjs'

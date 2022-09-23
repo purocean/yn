@@ -85,7 +85,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .side {
   color: var(--g-foreground-color);
   height: 100%;
@@ -115,5 +115,23 @@ export default defineComponent({
   text-align: center;
   color: var(--g-color-20);
   margin-top: 20vh;
+}
+
+aside > ::v-deep(.tree-node) {
+  & > details[data-count="0"] > summary .item-action,
+  & > details[data-count="1"] > summary .item-action {
+    display: flex;
+  }
+
+  details[data-count="0"][open] > summary::after {
+    content: '(Empty)';
+    font-style: italic;
+    padding-left: 1em;
+    line-height: 20px;
+    display: block;
+    height: 20px;
+    color: var(--g-color-40);
+    font-size: 14px;
+  }
 }
 </style>

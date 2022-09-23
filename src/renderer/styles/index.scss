@@ -60,6 +60,10 @@ html {
   }
 }
 
+a {
+  color: #4c93e2;
+}
+
 ::selection {
   background: var(--selection-color);
 }
@@ -176,6 +180,9 @@ html {
     &[disabled] {
       background-color: var(--g-color-90);
       cursor: not-allowed;
+      &.tr {
+        background-color: rgba(var(--g-color-40-rgb), 0.2);
+      }
     }
   }
 }

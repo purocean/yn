@@ -5,6 +5,8 @@
       class="name"
       :title="itemNode.path"
       :open="open"
+      :data-count="itemNode.children?.length"
+      :data-level="itemNode.level"
       @toggle="(e: any) => open = e.target.open"
       @keydown.enter.prevent>
       <summary
@@ -32,6 +34,7 @@
       :style="`padding-left: ${itemNode.level}em`"
       :title="itemNode.path + '\n\n' + fileTitle"
       @click.exact.prevent="select(item)"
+      @dblclick.prevent="onTreeNodeDblClick(item)"
       @contextmenu.exact.prevent.stop="showContextMenu(itemNode)">
       <div :class="{'item-label': true, marked, 'type-md': itemNode.name.endsWith('.md')}"> {{ itemNode.name }} </div>
     </div>
@@ -82,6 +85,12 @@ export default defineComponent({
 
     async function createFolder () {
       await createDir({ repo: props.item.repo }, props.item)
+    }
+
+    function onTreeNodeDblClick (node: Components.Tree.Node) {
+      if (node.type === 'file') {
+        triggerHook('TREE_NODE_DBLCLICK', { node })
+      }
     }
 
     async function select (node: Components.Tree.Node) {
@@ -148,6 +157,7 @@ export default defineComponent({
       fileTitle,
       currentRepoName,
       selected,
+      onTreeNodeDblClick,
       marked,
       showContextMenu,
       select,

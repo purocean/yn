@@ -92,6 +92,13 @@ export default {
       insert(dayjs().format('HH:mm:ss'))
     }
 
+    function revealLineInPreview () {
+      const line = getEditor().getPosition()?.lineNumber
+      if (line) {
+        ctx.view.highlightLine(line, true, 1000)
+      }
+    }
+
     whenEditorReady().then(({ editor, monaco }) => {
       const KM = monaco.KeyMod
       const KC = monaco.KeyCode
@@ -114,6 +121,14 @@ export default {
           KM.Shift | KM.Alt | KC.KeyT
         ],
         run: insertTime
+      })
+
+      editor.addAction({
+        id: 'plugin.editor.reveal-line-in-preview',
+        label: t('editor.context-menu.reveal-line-in-preview'),
+        contextMenuGroupId: 'other',
+        keybindings: [KM.Alt | KC.KeyL],
+        run: revealLineInPreview
       })
 
       editor.addCommand(KM.Alt | KC.Enter, () => {

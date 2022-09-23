@@ -5,6 +5,7 @@ import { decrypt } from '@fe/utils/crypto'
 import { getSetting, setSetting } from '@fe/services/setting'
 import { refresh } from '@fe/services/view'
 import { FLAG_DEMO, MODE } from '@fe/support/args'
+import ga from '@fe/support/ga'
 
 interface License {
   name: string,
@@ -63,12 +64,24 @@ export function getPurchased (force = false) {
 
 export function showPremium () {
   getActionHandler('premium.show')()
+  ga.logEvent('yn_premium_show', { purchased: getPurchased() })
 }
 
 export function getLicenseInfo () {
   try {
     const licenseStr = getSetting('license')
-    return parseLicense(licenseStr!)
+    const info = parseLicense(licenseStr!)
+
+    if (info) {
+      ga.setUserId(info.email)
+      ga.setUserProperties({
+        name: info.name,
+        expires: dayjs(info.expires).format('YYYY-MM-DD'),
+        hash: info.hash,
+      })
+    }
+
+    return info
   } catch (error) {
     console.error(error)
   }

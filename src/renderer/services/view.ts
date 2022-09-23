@@ -3,9 +3,10 @@ import { CtrlCmd, Escape, registerCommand } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
 import * as ioc from '@fe/core/ioc'
-import { DOM_CLASS_NAME } from '@fe/support/args'
+import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
+import { sleep } from '@fe/utils'
 import type { BuildInHookTypes, Components, Previewer } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
@@ -68,7 +69,35 @@ export async function refresh () {
  * @param startLine
  */
 export function revealLine (startLine: number) {
-  getActionHandler('view.reveal-line')(startLine)
+  return getActionHandler('view.reveal-line')(startLine)
+}
+
+/**
+ * Highlight line.
+ * @param line
+ * @@param reveal
+ * @param duration
+ */
+export async function highlightLine (line: number, reveal: boolean, duration = 1000) {
+  const viewDom = getViewDom()
+
+  let el: HTMLElement | null | undefined = null
+
+  if (reveal) {
+    el = revealLine(line)
+    const wrap = viewDom!.parentElement
+    if (wrap && wrap.scrollHeight !== wrap.scrollTop + wrap.clientHeight) {
+      wrap.scrollTop -= 120
+    }
+  } else {
+    el = viewDom?.querySelector<HTMLElement>(`[${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
+  }
+
+  if (el) {
+    el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+    await sleep(duration)
+    el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+  }
 }
 
 /**
@@ -80,7 +109,7 @@ export function scrollTopTo (top: number) {
 }
 
 export function getPreviewStyles () {
-  let styles = 'article.markdown-body { max-width: 1024px; margin: 20px auto; }'
+  let styles = `article.${DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY} { max-width: 1024px; margin: 20px auto; }`
   Array.prototype.forEach.call(document.styleSheets, item => {
     // inject global styles, normalize.css
     const flag = item.cssRules[0] &&
@@ -90,7 +119,7 @@ export function getPreviewStyles () {
     Array.prototype.forEach.call(item.cssRules, (rule) => {
       if (rule.selectorText && (
         flag ||
-        rule.selectorText.includes('.markdown-body') ||
+        rule.selectorText.includes('.' + DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY) ||
         rule.selectorText.startsWith('.katex')
       )) {
         // skip contain rules

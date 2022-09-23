@@ -53,7 +53,7 @@ export default defineComponent({
     &.selected {
       color: var(--g-color-0);
       font-weight: 500;
-      background: var(--g-color-90);
+      background: var(--g-color-94);
     }
   }
 }

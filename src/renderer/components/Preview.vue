@@ -212,13 +212,13 @@ export default defineComponent({
       }
     }
 
-    function revealLine (startLine: number) {
+    function revealLine (startLine: number): HTMLElement | null {
       if (startLine <= 1) {
         scrollTopTo(0)
-        return
+        return null
       }
 
-      const nodes = refViewWrapper.value!.querySelectorAll<HTMLElement>(`.markdown-body [${DOM_ATTR_NAME.SOURCE_LINE_START}]`)
+      const nodes = refView.value!.querySelectorAll<HTMLElement>(`[${DOM_ATTR_NAME.SOURCE_LINE_START}]`)
       let prevEl: HTMLElement | undefined
       for (let i = 0; i < nodes.length; i++) {
         const el = nodes[i]
@@ -236,7 +236,7 @@ export default defineComponent({
         if (lineNumber < startLine) {
           if (i === nodes.length - 1) {
             refViewWrapper.value!.scrollTop = refViewWrapper.value!.scrollHeight - refViewWrapper.value!.clientHeight
-            break
+            return el
           }
 
           prevEl = el
@@ -245,7 +245,7 @@ export default defineComponent({
 
         if (lineNumber === startLine) {
           el.scrollIntoView()
-          break
+          return el
         }
 
         if (prevEl) {
@@ -255,9 +255,11 @@ export default defineComponent({
           const prevLine = parseInt(prevEl.dataset.sourceLine || '0')
           const top = Math.round((elOffset * (startLine - prevLine) + prevOffset * (lineNumber - startLine)) / (lineNumber - prevLine))
           refViewWrapper.value!.scrollTop = top
-          break
+          return prevEl
         }
       }
+
+      return null
     }
 
     function getContentHtml () {
@@ -675,7 +677,7 @@ export default defineComponent({
     }
 
     code {
-      background: var(--g-color-80);
+      background: rgba(var(--g-color-80-rgb), 0.9);
     }
 
     pre {
@@ -699,6 +701,11 @@ export default defineComponent({
           white-space: nowrap;
         }
       }
+    }
+
+    .preview-highlight {
+      background-color: rgba(255, 183, 0, 0.6) !important;
+      outline: 1px solid rgba(255, 183, 0, 0.8) !important;
     }
   }
 }

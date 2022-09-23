@@ -2,6 +2,7 @@
 
 const data = {
   'app-name': 'Yank Note',
+  'about': 'About',
   'slogan': 'A Hackable Markdown editor for developers',
   'cancel': 'Cancel',
   'ok': 'OK',
@@ -341,6 +342,7 @@ const data = {
         'ordered-list-completion': 'Ordered List',
         'minimap': 'Minimap',
         'line-numbers': 'Line Numbers',
+        'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
       },
       'theme': 'Theme',
       'language': 'Language',
@@ -391,6 +393,7 @@ const data = {
       'link-file': 'Link File',
       'insert-date': 'Insert Today\'s Date',
       'insert-time': 'Insert Current Time',
+      'reveal-line-in-preview': 'Reveal Line in Preview',
     }
   },
   'picgo': {
