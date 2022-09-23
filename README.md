@@ -76,11 +76,19 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.36.1](https://github.com/purocean/yn/releases/tag/v3.36.1) 2022-09-16
+### [v3.37.0](https://github.com/purocean/yn/releases/tag/v3.37.0) 2022-09-23
 
-1. feat: support opening links containing `__allow-open-window__` inside the app
-2. fix: fix dark theme style
-3. fix: fix outline title focus problem
+1. feat: open the file tab to support preview mode, double-click the tab or edit the content to change to edit mode
+2. feat: add "Reveal Line in Preview" function to editor, shortcut key `Alt/Option + L`
+3. feat: add about dialog
+4. upd: always show the create file button when opening an empty repository
+5. upd: fine-tuned UI
+6. upd: add content saving prompt when closing blank page
+7. fix: fix the problem that the code may overflow when printing
+8. feat(plugin): add `TREE_NODE_DBLCLICK` Hook
+9. feat(plugin): add `ctx.lib.uuid` module
+10. feat(plugin): add `ctx.view.highlightLine` method
+11. upd(plugin): change `ctx.editor.highlightLine` method parameters
 
 [More release notes](https://github.com/purocean/yn/releases)
 

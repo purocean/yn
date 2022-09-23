@@ -76,11 +76,19 @@
 
 ## 更新日志
 
-### [v3.36.1](https://github.com/purocean/yn/releases/tag/v3.36.1) 2022-09-16
+### [v3.37.0](https://github.com/purocean/yn/releases/tag/v3.37.0) 2022-09-23
 
-1. feat: 支持在应用内部打开包含 `__allow-open-window__` 的链接
-2. fix: 修复暗色主题样式
-3. fix: 修复大纲标题聚焦问题
+1. feat: 打开文件标签支持预览模式，双击标签或编辑内容可变更为编辑模式
+2. feat: 编辑器增加“在预览中聚焦“功能，快捷键 `Alt/Option + L`
+3. feat: 增加关于对话框
+4. upd: 打开空仓库时候总是展示创建文件按钮
+5. upd: 微调界面 UI
+6. upd: 关闭空白页时候增加内容保存提示
+7. fix: 修复打印时代码可能溢出问题
+8. feat(plugin): 增加 `TREE_NODE_DBLCLICK` Hook
+9. feat(plugin): 增加 `ctx.lib.uuid` 模块
+10. feat(plugin): 增加 `ctx.view.highlightLine` 方法
+11. upd(plugin): 调整 `ctx.editor.highlightLine` 方法参数
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
