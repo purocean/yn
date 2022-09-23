@@ -275,6 +275,7 @@ export type BuildInHookTypes = {
     }
   },
   TREE_NODE_SELECT: { node: Components.Tree.Node },
+  TREE_NODE_DBLCLICK: { node: Components.Tree.Node },
   MONACO_CHANGE_VALUE : { uri: string, value: string },
   MONACO_BEFORE_INIT: { monaco: typeof Monaco },
   MONACO_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
