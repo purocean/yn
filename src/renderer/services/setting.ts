@@ -226,6 +226,14 @@ const schema: Schema = {
       group: 'editor',
       required: true,
     },
+    'editor.enable-preview': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.enable-preview',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
     shell: {
       defaultValue: '',
       title: 'T_setting-panel.schema.shell',

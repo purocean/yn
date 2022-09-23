@@ -342,6 +342,7 @@ const data = {
         'ordered-list-completion': 'Ordered List',
         'minimap': 'Minimap',
         'line-numbers': 'Line Numbers',
+        'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
       },
       'theme': 'Theme',
       'language': 'Language',

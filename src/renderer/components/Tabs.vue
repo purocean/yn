@@ -10,12 +10,13 @@
         v-for="item in tabList"
         :key="item.key"
         :data-id="item.key"
-        :class="{tab: true, current: item.key === value, fixed: item.fixed}"
+        :class="{tab: true, current: item.key === value, fixed: item.fixed, temporary: item.temporary}"
         :title="item.description"
         :data-key="item.key"
         @contextmenu.exact.prevent.stop="showContextMenu(item)"
         @mouseup="e => e.button === 1 ? removeTabs([item]) : null"
-        @click="switchTab(item)">
+        @click="switchTab(item)"
+        @dblclick="onDblClick(item)">
         <div class="label">{{item.label}}</div>
         <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @click.prevent.stop="toggleFix(item)">
           <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
@@ -53,7 +54,7 @@ export default defineComponent({
     },
     filterBtnTitle: String,
   },
-  emits: ['input', 'remove', 'switch', 'change-list'],
+  emits: ['input', 'remove', 'switch', 'change-list', 'dblclick-item'],
   setup (props, { emit }) {
     const { t } = useI18n()
 
@@ -75,6 +76,10 @@ export default defineComponent({
 
     function removeTabs (items: Components.Tabs.Item[]) {
       emit('remove', items)
+    }
+
+    function onDblClick (item: Components.Tabs.Item) {
+      emit('dblclick-item', item)
     }
 
     function removeOther (item: Components.Tabs.Item) {
@@ -236,6 +241,7 @@ export default defineComponent({
       switchTab,
       showContextMenu,
       removeTabs,
+      onDblClick,
       tabList,
       toggleFix,
       handleShadow,
@@ -384,5 +390,9 @@ export default defineComponent({
 .tab.fixed {
   font-weight: bold;
   border-left: 2px var(--g-color-70) solid;
+}
+
+.tab.temporary {
+  font-style: italic;
 }
 </style>

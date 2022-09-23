@@ -7,6 +7,7 @@
     @remove="removeTabs"
     @switch="switchTab"
     @change-list="setTabs"
+    @dblclick-item="makeTabPermanent"
   />
 </template>
 
@@ -20,6 +21,7 @@ import { registerAction, removeAction } from '@fe/core/action'
 import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
+import { getSetting } from '@fe/services/setting'
 import { isElectron } from '@fe/support/env'
 import Tabs from './Tabs.vue'
 
@@ -67,7 +69,8 @@ export default defineComponent({
 
       // no this tab, add new one.
       if (!tab) {
-        setTabs(tabs.value.concat([item]))
+        // remove temporary tab and add new one.
+        setTabs(tabs.value.filter(x => !x.temporary).concat([item]))
       }
 
       current.value = item.key
@@ -135,11 +138,28 @@ export default defineComponent({
       removeFile(doc)
     }
 
+    function makeTabPermanent (item: Pick<Components.FileTabs.Item, 'key'>) {
+      const tab = tabs.value.find(x => item.key === x.key)
+
+      if (tab && tab.temporary) {
+        tab.temporary = false
+        setTabs(tabs.value)
+      }
+    }
+
+    function handleTreeNodeDblClick (payload: { node: Doc | null }) {
+      const doc = payload.node
+      if (doc) {
+        makeTabPermanent({ key: toUri(doc) })
+      }
+    }
+
     onBeforeMount(() => {
       registerHook('DOC_MOVED', handleMoved)
       registerHook('DOC_CREATED', handleDocCreated)
       registerHook('DOC_DELETED', handleDocDeleted)
       registerHook('DOC_SWITCH_FAILED', handleSwitchFailed)
+      registerHook('TREE_NODE_DBLCLICK', handleTreeNodeDblClick)
 
       registerAction({
         name: 'file-tabs.switch-left',
@@ -179,6 +199,7 @@ export default defineComponent({
       removeHook('DOC_CREATED', handleDocCreated)
       removeHook('DOC_DELETED', handleDocDeleted)
       removeHook('DOC_SWITCH_FAILED', handleSwitchFailed)
+      removeHook('TREE_NODE_DBLCLICK', handleTreeNodeDblClick)
       removeAction('file-tabs.switch-left')
       removeAction('file-tabs.switch-right')
       removeAction('file-tabs.close-current')
@@ -191,6 +212,7 @@ export default defineComponent({
         key: uri,
         label: file ? file.name : t('blank-page'),
         description: file ? `[${file.repo}] ${file.path}` : t('blank-page'),
+        temporary: getSetting('editor.enable-preview', true),
         payload: { file },
       }
 
@@ -235,6 +257,11 @@ export default defineComponent({
           mark = '…'
         }
 
+        // not saved tab should be marked as permanent
+        if (tab.temporary && status === 'loaded' && !isSaved.value) {
+          tab.temporary = false
+        }
+
         tab.label = mark + currentFile.value.name
       }
 
@@ -250,6 +277,7 @@ export default defineComponent({
       setTabs,
       refTabs,
       filterBtnTitle,
+      makeTabPermanent,
     }
   },
 })

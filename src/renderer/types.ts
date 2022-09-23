@@ -79,6 +79,7 @@ export namespace Components {
       description?: string;
       payload: any;
       fixed?: boolean;
+      temporary?: boolean;
     }
   }
 
@@ -177,6 +178,7 @@ export interface BuildInSettings {
   'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
   'editor.minimap': boolean,
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
+  'editor.enable-preview': boolean,
   'assets.path-type': 'relative' | 'absolute' | 'auto',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
