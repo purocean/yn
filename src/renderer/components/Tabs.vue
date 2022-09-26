@@ -137,7 +137,8 @@ export default defineComponent({
     function toggleFix (item: Components.Tabs.Item) {
       emit('change-list', props.list.map(x => ({
         ...x,
-        fixed: x.key === item.key ? !item.fixed : x.fixed
+        fixed: x.key === item.key ? !item.fixed : x.fixed,
+        temporary: x.key === item.key ? false : x.temporary,
       })))
     }
 
