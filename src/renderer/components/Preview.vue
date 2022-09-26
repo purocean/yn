@@ -570,6 +570,7 @@ export default defineComponent({
       display: block;
       margin-left: auto;
       margin-right: auto;
+      background-color: #fff;
     }
 
     img {
@@ -577,13 +578,13 @@ export default defineComponent({
       &[src*=".inline"],
       &[origin-src*=".inline"] {
         display: inline !important;
-        background: unset;
+        background-color: unset !important;
       }
 
       &.bgw,
       &[src*=".bgw"],
       &[origin-src*=".bgw"] {
-        background-color: #fff;
+        background-color: #fff !important;
       }
     }
 
