@@ -27,6 +27,7 @@ export const DOM_ATTR_NAME = {
   ORIGIN_SRC: 'origin-src',
   ORIGIN_HREF: 'origin-href',
   LOCAL_IMAGE: 'local-image',
+  ONLY_CHILD: 'only-child',
   TOKEN_IDX: 'data-token-idx',
 }
 

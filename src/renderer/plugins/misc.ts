@@ -12,7 +12,7 @@ export default {
           tokens[idx + 1]?.children?.length === 1 &&
           tokens[idx + 1]?.children?.[0]?.type === 'image'
         ) {
-          tokens[idx + 1]?.children?.[0].attrSet('only-child', 'true')
+          tokens[idx + 1]?.children?.[0].attrSet(ctx.args.DOM_ATTR_NAME.ONLY_CHILD, 'true')
         }
 
         return self.renderToken(tokens, idx, options)

@@ -566,7 +566,7 @@ export default defineComponent({
       cursor: zoom-in;
     }
 
-    p > img[only-child="true"] {
+    p > img[only-child] {
       display: block;
       margin-left: auto;
       margin-right: auto;

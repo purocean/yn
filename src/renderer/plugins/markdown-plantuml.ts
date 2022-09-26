@@ -5,6 +5,7 @@ import { defineComponent, h, nextTick, onMounted, reactive, ref, watch } from 'v
 import Markdown from 'markdown-it'
 import Token from 'markdown-it/lib/token'
 import { Plugin } from '@fe/context'
+import { DOM_ATTR_NAME } from '@fe/support/args'
 
 const emptySrc = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
 
@@ -156,7 +157,8 @@ const Plantuml = defineComponent({
   name: 'plantuml-image',
   props: {
     attrs: Object,
-    src: String
+    src: String,
+    idx: Number,
   },
   setup (props) {
     const style = reactive({
@@ -200,22 +202,33 @@ const Plantuml = defineComponent({
         style.height = img.value.clientHeight + 'px'
       }
 
-      return h('img', {
+      return h('p', {
         ...props.attrs,
-        ref: img,
-        alt: 'plantuml',
-        class: 'plantuml-img',
-        style,
-        src: src.value,
-        onLoad
-      })
+        src: undefined,
+        alt: undefined,
+        [DOM_ATTR_NAME.TOKEN_IDX]: props.idx,
+      }, [
+        h('img', {
+          ref: img,
+          alt: 'plantuml',
+          class: 'plantuml-img',
+          [DOM_ATTR_NAME.ONLY_CHILD]: true,
+          style,
+          src: src.value,
+          onLoad
+        })
+      ])
     }
   }
 })
 
 function render (tokens: Token[], idx: number) {
   const token = tokens[idx]
-  return h(Plantuml, { attrs: token.meta?.attrs, src: token.attrGet('src') || emptySrc })
+  return h(Plantuml, {
+    attrs: token.meta?.attrs,
+    src: token.attrGet('src') || emptySrc,
+    idx,
+  })
 }
 
 export default {
