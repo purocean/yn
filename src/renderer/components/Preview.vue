@@ -566,15 +566,17 @@ export default defineComponent({
       cursor: zoom-in;
     }
 
-    img {
+    p > img[only-child="true"] {
       display: block;
       margin-left: auto;
       margin-right: auto;
+    }
 
+    img {
       &.inline,
       &[src*=".inline"],
       &[origin-src*=".inline"] {
-        display: inline;
+        display: inline !important;
         background: unset;
       }
 
@@ -583,10 +585,6 @@ export default defineComponent({
       &[origin-src*=".bgw"] {
         background-color: #fff;
       }
-    }
-
-    li > img {
-      display: initial;
     }
 
     a:not([href^="#fn"])[href^="#"]:after {

@@ -51,6 +51,7 @@ import markdownEcharts from '@fe/plugins/markdown-echarts'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
 import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
+import markdownMisc from '@fe/plugins/misc'
 import syncScroll from '@fe/plugins/sync-scroll'
 import imageLocalization from '@fe/plugins/image-localization'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
@@ -112,6 +113,7 @@ export default [
   markdownLuckysheet,
   markdownContainer,
   markdownHeadingNumber,
+  markdownMisc,
   syncScroll,
   imageLocalization,
   imageHostingPicgo,
