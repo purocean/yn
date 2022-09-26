@@ -512,6 +512,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 
   &>.diff-tips {
     width: 100%;
