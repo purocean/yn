@@ -84,6 +84,7 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, ref, toRefs, watch } from 'vue'
+import { MARKDOWN_FILE_EXT } from '@share/misc'
 import { getElectronRemote, isElectron, isWindows } from '@fe/support/env'
 import { getContentHtml, getPreviewStyles } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
@@ -130,7 +131,7 @@ export default defineComponent({
     const toast = useToast()
     const refExportForm = ref<HTMLFormElement | null>(null)
     const { showExport, currentFile } = toRefs(store.state)
-    const fileName = computed(() => basename(currentFile.value?.name || 'export.md', '.md'))
+    const fileName = computed(() => basename(currentFile.value?.name || 'export.md', MARKDOWN_FILE_EXT))
     const convert = reactive({
       fileName: '',
       source: '',

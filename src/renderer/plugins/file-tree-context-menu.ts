@@ -25,7 +25,7 @@ export default {
         node.marked = vueCtx.localMarked.value
       }
 
-      const isMarkdown = node.type === 'file' && node.path.toLowerCase().endsWith('.md')
+      const isMarkdown = ctx.doc.isMarkdownFile(node)
 
       const disableItems = ctx.args.FLAG_READONLY
         ? ['duplicate', 'duplicate', 'create-dir', 'create-doc', 'create-in-cd', 'rename', 'delete', 'open-in-terminal']

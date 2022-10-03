@@ -44,7 +44,7 @@
       <div
         draggable="true"
         @dragstart="onDragStart"
-        :class="{'item-label': true, marked, 'type-md': itemNode.name.endsWith('.md')}">
+        :class="{'item-label': true, marked, 'type-md': isMarkdownFile(itemNode)}">
         {{ itemNode.name }}
       </div>
     </div>
@@ -59,12 +59,11 @@ import extensions from '@fe/others/file-extensions'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems } from '@fe/services/tree'
 import type { Components } from '@fe/types'
-import { createDir, createDoc, deleteDoc, duplicateDoc, isMarked, moveDoc, openInOS, switchDoc } from '@fe/services/document'
+import { createDir, createDoc, deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, openInOS, switchDoc } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
 import { useToast } from '@fe/support/ui/toast'
 import SvgIcon from './SvgIcon.vue'
-import ctx from '@fe/context'
 
 export default defineComponent({
   name: 'tree-node',
@@ -153,7 +152,7 @@ export default defineComponent({
         if (item.type === 'file') {
           if (item.path === newPath) {
             // markdown file need input new name
-            if (item.path.endsWith('.md')) {
+            if (isMarkdownFile(item)) {
               newPath = undefined
             } else {
               // other file can be copied with same name
@@ -352,6 +351,7 @@ export default defineComponent({
       onDragExit,
       onDrop,
       onDragStart,
+      isMarkdownFile,
     }
   },
 })
