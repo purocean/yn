@@ -253,15 +253,16 @@ export async function duplicateDoc (originDoc: Doc, newPath?: string) {
 /**
  * Delete a document.
  * @param doc
+ * @param skipConfirm
  */
-export async function deleteDoc (doc: Doc) {
+export async function deleteDoc (doc: Doc, skipConfirm = false) {
   if (doc.path === '/') {
     throw new Error('Could\'t delete root dir.')
   }
 
   await ensureCurrentFileSaved()
 
-  const confirm = await useModal().confirm({
+  const confirm = skipConfirm ? true : await useModal().confirm({
     title: t('document.delete-dialog.title'),
     content: t('document.delete-dialog.content', doc.path),
   })
