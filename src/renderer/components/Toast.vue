@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { Component, defineComponent, shallowRef } from 'vue'
+import { Component, defineComponent, nextTick, shallowRef } from 'vue'
 import type { Components } from '@fe/types'
 
 interface ToastData {
@@ -34,14 +34,15 @@ export default defineComponent({
       toast.value = null
     }
 
-    function show (type: Components.Toast.ToastType, content: string | Component, timeout = 2000) {
-      clearTimer()
+    async function show (type: Components.Toast.ToastType, content: string | Component, timeout = 2000) {
+      hide()
+
+      await nextTick()
+
       toast.value = { type, content }
 
       if (timeout) {
-        timer = setTimeout(() => {
-          toast.value = null
-        }, timeout)
+        timer = setTimeout(hide, timeout)
       }
     }
 
