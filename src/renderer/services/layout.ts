@@ -3,7 +3,7 @@ import { throttle } from 'lodash-es'
 import store from '@fe/support/store'
 import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
-import { Alt } from '@fe/core/command'
+import { Alt, Shift } from '@fe/core/command'
 import * as view from './view'
 
 const emitResizeDebounce = throttle(() => {
@@ -79,3 +79,4 @@ registerAction({ name: 'layout.toggle-side', handler: toggleSide, keys: [Alt, 'e
 registerAction({ name: 'layout.toggle-editor', handler: toggleEditor, keys: [Alt, 'x'] })
 registerAction({ name: 'layout.toggle-view', handler: toggleView, keys: [Alt, 'v'] })
 registerAction({ name: 'layout.toggle-xterm', handler: toggleXterm, keys: [Alt, 't'] })
+registerAction({ name: 'layout.toggle-outline', handler: toggleOutline, keys: [Shift, Alt, 'o'] })

@@ -2,7 +2,7 @@
   <div class="action-bar">
     <div class="btns">
       <div>
-        <div class="btn flat" @click="toggleOutline()" :title="$t(showOutline ? 'files' : 'outline')">
+        <div class="btn flat" @click="toggleOutline()" :title="$t(showOutline ? 'files' : 'outline') + ' ' + getKeysLabel('layout.toggle-outline')">
           <svg-icon v-if="showOutline" name="folder-tree-solid" />
           <svg-icon v-else name="list" />
         </div>
@@ -33,6 +33,7 @@ import type { AppState } from '@fe/support/store'
 import SvgIcon from './SvgIcon.vue'
 import { useI18n } from '@fe/services/i18n'
 import { toggleOutline } from '@fe/services/layout'
+import { getKeysLabel } from '@fe/core/command'
 
 const store = useStore<AppState>()
 const navigation = ref<Schema['navigation']>()

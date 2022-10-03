@@ -216,6 +216,7 @@ export type BuildInActions = {
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
   'layout.toggle-editor': (visible?: boolean) => void,
+  'layout.toggle-outline': (visible?: boolean) => void,
   'control-center.toggle': (visible?: boolean) => void,
   'status-bar.refresh-menu': () => void,
   'control-center.refresh': () => void,
