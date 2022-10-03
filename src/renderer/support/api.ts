@@ -121,7 +121,7 @@ export async function writeFile (file: Doc, content = '', asBase64 = false) {
 }
 
 /**
- * Move / Remove a file or dir.
+ * Move / Rename a file or dir.
  * @param file
  * @param newPath
  * @returns
