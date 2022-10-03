@@ -172,6 +172,14 @@ export async function mv (repo: string, oldPath: string, newPath: string) {
   }, oldPath, newPath)
 }
 
+export async function cp (repo: string, oldPath: string, newPath: string) {
+  if (readonly) throw new Error('Readonly')
+
+  await withRepo(repo, async (_, oldP, newP) => {
+    await fs.copy(oldP, newP)
+  }, oldPath, newPath)
+}
+
 export function exists (repo: string, p: string) {
   return withRepo(repo, async (_, targetPath) => fs.existsSync(targetPath), p)
 }
