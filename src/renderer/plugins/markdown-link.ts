@@ -11,12 +11,15 @@ import { getRepo, openExternal, openPath } from '@fe/services/base'
 
 function getElement (id: string) {
   id = id.replaceAll('%28', '(').replaceAll('%29', ')')
-  return document.getElementById(id) ||
+
+  const _find = (id: string) => document.getElementById(id) ||
     document.getElementById(decodeURIComponent(id)) ||
     document.getElementById(encodeURIComponent(id)) ||
     document.getElementById(id.replace(/^h-/, '')) ||
     document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
     document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
+
+  return _find(id) || _find(id.toLowerCase())
 }
 
 function getAnchorElement (target: HTMLElement) {
