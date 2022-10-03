@@ -68,6 +68,7 @@ This feature is implemented using [markdown-it-attributes](https://github.com/pu
 
 - Red Text, white background, border, align text center {.bgw .text-center .with-border style="color:red"}
 - Display As **Block Element**{.block}
+- Escape\{style="color:red"}
 
 **Some built-in style classes:**
 

@@ -69,6 +69,7 @@ define:
 
 - 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}
+- 转义语法\{style="color:red"}
 
 **一些内置样式类：**
 
