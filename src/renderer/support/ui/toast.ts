@@ -1,9 +1,9 @@
-import { App, ComponentPublicInstance, createApp } from 'vue'
+import { App, Component, ComponentPublicInstance, createApp } from 'vue'
 import Toast from '@fe/components/Toast.vue'
 import { Components } from '@fe/types'
 
 export interface Instance extends ComponentPublicInstance {
-  show: (type: Components.Toast.ToastType, content: string, timeout?: number) => void;
+  show: (type: Components.Toast.ToastType, content: string | Component, timeout?: number) => void;
   hide: () => void;
 }
 
