@@ -222,10 +222,11 @@ export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
 /**
  * Duplicate a document.
  * @param originDoc
+ * @param newPath
  * @returns
  */
-export async function duplicateDoc (originDoc: Doc) {
-  let newPath = await useModal().input({
+export async function duplicateDoc (originDoc: Doc, newPath?: string) {
+  newPath ??= await useModal().input({
     title: t('document.duplicate-dialog.title'),
     hint: t('document.duplicate-dialog.hint'),
     content: t('document.current-path', originDoc.path),
@@ -236,7 +237,7 @@ export async function duplicateDoc (originDoc: Doc) {
       originDoc.name.lastIndexOf('.') > -1 ? originDoc.path.lastIndexOf('.') : originDoc.path.length,
       'forward'
     ]
-  })
+  }) || ''
 
   if (!newPath) {
     return
