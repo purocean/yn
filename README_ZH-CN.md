@@ -76,19 +76,25 @@
 
 ## 更新日志
 
-### [v3.37.0](https://github.com/purocean/yn/releases/tag/v3.37.0) 2022-09-23
+### [v3.38.0](https://github.com/purocean/yn/releases/tag/v3.38.0) 2022-10-03
 
-1. feat: 打开文件标签支持预览模式，双击标签或编辑内容可变更为编辑模式
-2. feat: 编辑器增加“在预览中聚焦“功能，快捷键 `Alt/Option + L`
-3. feat: 增加关于对话框
-4. upd: 打开空仓库时候总是展示创建文件按钮
-5. upd: 微调界面 UI
-6. upd: 关闭空白页时候增加内容保存提示
-7. fix: 修复打印时代码可能溢出问题
-8. feat(plugin): 增加 `TREE_NODE_DBLCLICK` Hook
-9. feat(plugin): 增加 `ctx.lib.uuid` 模块
-10. feat(plugin): 增加 `ctx.view.highlightLine` 方法
-11. upd(plugin): 调整 `ctx.editor.highlightLine` 方法参数
+1. feat: 文件侧栏支持拖拽移动/拷贝（按住 Alt/Option 键）文档
+2. feat: 增加切换侧栏“文件”/”大纲“视图的快捷键 `Shift + Alt/Option + O`
+3. feat: 打开大纲面板时候自动聚焦筛选输入框
+4. feat: 升级 `markdown-it` 到 `13.0.1`，元素属性书写支持转义
+5. feat: 图片不再全部作为块元素渲染，现在仅在段落只有一张图片时才渲染为块元素
+6. feat: 增加 Emoji 解析
+7. feat: 点击锚点跳转时高亮标题
+8. feat: 增加编辑器字体配置项
+9. fix: 修复锚点链接大写时无法跳转的问题
+10. fix: 修复文档历史面板中的编辑器可能尺寸不正确问题
+11. fix: 修复编辑器补全菜单会被遮挡的问题
+12. fix: 修复临时标签被固定时候字体还是斜体的问题
+13. fix: 删除/移动文件如果和当前打开的文件无关，不再校验当前文件是否保存
+14. feat(plugin): 增加 `ctx.api.copyFile` 方法
+15. feat(plugin): 增加 `ctx.doc.isMarkdownFile` 方法
+16. feat(plugin): toast 支持传入 Vue 组件或 VNode 对象自定义渲染内容
+17. feat(plugin): 增加 `layout.toggle-outline` Action
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
