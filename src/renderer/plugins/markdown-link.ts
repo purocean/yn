@@ -61,13 +61,18 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
     return true
   } else { // relative link
     // better scrollIntoView
-    const scrollIntoView = (el: HTMLElement) => {
+    const scrollIntoView = async (el: HTMLElement) => {
       el.scrollIntoView()
       const wrap = view.parentElement
       // retain 60 px for better view.
       if (wrap && wrap.scrollHeight !== wrap.scrollTop + wrap.clientHeight) {
         wrap.scrollTop -= 60
       }
+
+      // highlight element
+      el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+      await sleep(1000)
+      el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
     }
 
     if (/(\.md$|\.md#)/.test(href)) { // markdown file
