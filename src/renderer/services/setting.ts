@@ -210,6 +210,15 @@ const schema: Schema = {
       group: 'editor',
       required: true,
     },
+    'editor.font-family': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.editor.font-family',
+      type: 'string',
+      group: 'editor',
+      options: {
+        inputAttributes: { placeholder: 'e.g., \'Courier New\', monospace' }
+      },
+    },
     'editor.mouse-wheel-zoom': {
       defaultValue: true,
       title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',

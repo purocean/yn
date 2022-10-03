@@ -343,6 +343,7 @@ const data = {
         'minimap': 'Minimap',
         'line-numbers': 'Line Numbers',
         'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
+        'font-family': 'Font Family',
       },
       'theme': 'Theme',
       'language': 'Language',

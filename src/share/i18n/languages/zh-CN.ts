@@ -336,6 +336,7 @@ const data: BaseLanguage = {
         'minimap': '显示小地图',
         'line-numbers': '行号',
         'enable-preview': '开启预览 - 打开新文件使用临时标签，双击标签以更改',
+        'font-family': '字体',
       },
       'theme': '主题',
       'language': '语言',

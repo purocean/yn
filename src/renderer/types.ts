@@ -179,6 +179,7 @@ export interface BuildInSettings {
   'editor.minimap': boolean,
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'editor.enable-preview': boolean,
+  'editor.font-family': string,
   'assets.path-type': 'relative' | 'absolute' | 'auto',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
