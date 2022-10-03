@@ -55,6 +55,7 @@ Toggle Word Wrap | Alt/Option + W
 Toggle Preview | Alt/Option + V
 Toggle Terminal | Alt/Option + T
 Toggle Control Center | Alt/Option + C
+Toggle Outline/Folder | Shift + Alt/Option + O
 Show Copy Content Panel | Ctrl/Cmd + Shift + C
 Presentation | F5
 Zoom In | Ctrl/Cmd + =
@@ -108,6 +109,7 @@ Switch Repository | Alt/Option + 0-9
 切换文档预览显示 | Alt/Option + V
 切换终端 | Alt/Option + T
 切换控制中心 | Alt/Option + C
+切换 大纲/文件夹 | Shift + Alt/Option + O
 展示复制面板 | Ctrl/Cmd + Shift + C
 演示模式 | F5
 缩放放大 | Ctrl/Cmd + =
