@@ -1,6 +1,7 @@
 import { Fragment, h } from 'vue'
 import { Optional } from 'utility-types'
 import { URI } from 'monaco-editor/esm/vs/base/common/uri.js'
+import * as misc from '@share/misc'
 import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
@@ -42,13 +43,17 @@ export function getAbsolutePath (doc: Doc) {
   return join(getRepo(doc.repo)?.path || '/', doc.path)
 }
 
+export function isMarkdownFile (doc: Doc) {
+  return !!(doc && doc.type === 'file' && misc.isMarkdownFile(doc.path))
+}
+
 /**
  * Determine if the document is encrypted.
  * @param doc
  * @returns
  */
-export function isEncrypted (doc?: Pick<Doc, 'path'> | null): boolean {
-  return !!(doc && doc.path.toLowerCase().endsWith('.c.md'))
+export function isEncrypted (doc?: Pick<Doc, 'path' | 'type'> | null): boolean {
+  return !!(doc && doc.type === 'file' && misc.isEncryptedMarkdownFile(doc.path))
 }
 
 /**
@@ -128,8 +133,8 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
         return
       }
 
-      if (!filename.endsWith('.md')) {
-        filename = filename.replace(/\/$/, '') + '.md'
+      if (!misc.isMarkdownFile(filename)) {
+        filename = filename.replace(/\/$/, '') + misc.MARKDOWN_FILE_EXT
       }
 
       doc.path = join(currentPath, normalizeSep(filename))
@@ -259,7 +264,7 @@ export async function duplicateDoc (originDoc: Doc, newPath?: string) {
   }
 
   // duplicate markdown file
-  if (newPath.endsWith('.md')) {
+  if (misc.isMarkdownFile(newPath)) {
     const { content } = await api.readFile(originDoc)
     await createDoc({ repo: originDoc.repo, path: newPath, content })
   } else {
