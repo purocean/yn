@@ -2,6 +2,7 @@
   <div ref="container" class="outline-toc">
     <input
       v-if="showFilter"
+      ref="refInput"
       class="search-input"
       type="text"
       v-model="keyword"
@@ -46,6 +47,7 @@ export default defineComponent({
     const store = useStore<AppState>()
     const keyword = ref('')
     const activatedLine = ref(-1)
+    const refInput = ref<HTMLInputElement>()
 
     useI18n()
 
@@ -118,6 +120,7 @@ export default defineComponent({
 
     onMounted(() => {
       refresh()
+      refInput.value?.focus()
       registerHook('VIEW_RENDERED', throttleRefresh)
       registerHook('VIEW_SCROLL', throttleRefresh)
       registerHook('DOC_SWITCHED', clearKeyword)
@@ -129,7 +132,7 @@ export default defineComponent({
       removeHook('DOC_SWITCHED', clearKeyword)
     })
 
-    return { keyword, container, heads, activatedLine, handleClickItem }
+    return { refInput, keyword, container, heads, activatedLine, handleClickItem }
   },
 })
 </script>

@@ -57,6 +57,7 @@ Type '/' in the editor to get prompts
 + Sup: 29^th^
 + Sub: H~2~0
 + Footnote: footnote[^1] syntax[^2]
++ Emoji: :) :joy:
 + Abbr：
     *[HTML]: Hyper Text Markup Language
     *[W3C]:  World Wide Web Consortium
@@ -68,6 +69,7 @@ This feature is implemented using [markdown-it-attributes](https://github.com/pu
 
 - Red Text, white background, border, align text center {.bgw .text-center .with-border style="color:red"}
 - Display As **Block Element**{.block}
+- Escape\{style="color:red"}
 
 **Some built-in style classes:**
 
@@ -90,10 +92,10 @@ This feature is implemented using [markdown-it-attributes](https://github.com/pu
 
 ### Image Enhancement
 
-1. The picture will be rendered as a block element and centered by default, with a transparent background color.
-    + If you want to display the image as an inline element, you can add `.inline` after the image link parameter, such as: ![](mas_en.svg?.inline)
-    + If you want to add a white background to the image to optimize the display effect (for some transparent images), you can add `.bgw` after the image link parameter, such as: ![](mas_en.svg?.inline.bgw)
+![](mas_en.svg?.inline)
 
+1. If the paragraph has one image element only, the picture will be rendered as a block element and centered by default. If you want to display the image as an inline element, you can add `.inline` after the image link parameter, example is above.
+1. If you want to add a white background to the image to optimize the display effect (for some transparent images), you can add `.bgw` after the image link parameter, such as: ![](mas_en.svg?.bgw)
 1. You can use [markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize) to set the image size. For example, this is an image with a width of 16px: ![](logo-small.png?.inline =16x)
 
 ## Mind Map

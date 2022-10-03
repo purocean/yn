@@ -2,19 +2,24 @@
   <div class="tree-node">
     <details
       v-if="itemNode.type === 'dir'"
-      class="name"
+      :class="{name: true, 'drag-over': dragOver}"
       :title="itemNode.path"
       :open="open"
       :data-count="itemNode.children?.length"
       :data-level="itemNode.level"
       @toggle="(e: any) => open = e.target.open"
+      @dragenter="onDragEnter"
+      @dragover="onDragOver"
+      @dragleave="onDragLeave"
+      @dragexit="onDragExit"
+      @drop="onDrop"
       @keydown.enter.prevent>
       <summary
         :class="{folder: true, 'folder-selected': selected}"
         :style="`padding-left: ${itemNode.level}em`"
         @contextmenu.exact.prevent.stop="showContextMenu(itemNode)">
         <div class="item">
-          <div class="item-label">
+          <div class="item-label" draggable="true" @dragstart="onDragStart">
             {{ itemNode.name === '/' ? currentRepoName : itemNode.name }} <span class="count">({{itemNode.children ? itemNode.children.length : 0}})</span>
           </div>
           <div class="item-action">
@@ -36,22 +41,29 @@
       @click.exact.prevent="select(item)"
       @dblclick.prevent="onTreeNodeDblClick(item)"
       @contextmenu.exact.prevent.stop="showContextMenu(itemNode)">
-      <div :class="{'item-label': true, marked, 'type-md': itemNode.name.endsWith('.md')}"> {{ itemNode.name }} </div>
+      <div
+        draggable="true"
+        @dragstart="onDragStart"
+        :class="{'item-label': true, marked, 'type-md': isMarkdownFile(itemNode)}">
+        {{ itemNode.name }}
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, PropType, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, h, nextTick, PropType, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import extensions from '@fe/others/file-extensions'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems } from '@fe/services/tree'
 import type { Components } from '@fe/types'
-import { createDir, createDoc, isMarked, openInOS, switchDoc } from '@fe/services/document'
-import SvgIcon from './SvgIcon.vue'
+import { createDir, createDoc, deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, openInOS, switchDoc } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
+import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
+import { useToast } from '@fe/support/ui/toast'
+import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
   name: 'tree-node',
@@ -66,9 +78,11 @@ export default defineComponent({
     const { t } = useI18n()
 
     const store = useStore()
+    const toast = useToast()
 
     const refFile = ref<any>(null)
     const localMarked = ref<boolean | null>(null)
+    const dragOver = ref<boolean>(false)
 
     const itemNode = computed(() => ({ ...props.item, marked: props.item.type === 'file' && isMarked(props.item) }))
     const open = ref(itemNode.value.path === '/')
@@ -107,6 +121,173 @@ export default defineComponent({
 
     function showContextMenu (item: any) {
       useContextMenu().show([...getContextMenuItems(item, { localMarked })])
+    }
+
+    async function handleFileDrop (item: Components.Tree.Node, copy: boolean) {
+      function showToast (type: 'moved' | 'copied', newPath: string) {
+        const undo = () => {
+          if (type === 'moved') {
+            moveDoc({ ...item, path: newPath }, item.path)
+          } else {
+            deleteDoc({ ...item, path: newPath }, true)
+          }
+
+          toast.hide()
+        }
+
+        toast.show('info', h('div', {}, [
+          h('span', {}, t(`tree.toast.${type}`, item.name, newPath)),
+          h('a', {
+            style: { color: '#fcfcfc', marginLeft: '10px' },
+            href: 'javascript:;',
+            onClick: undo
+          }, t('undo'))
+        ]), 4000)
+      }
+
+      let newPath: string | undefined = join(itemNode.value.path, item.name)
+
+      if (copy) {
+        // copy file only
+        if (item.type === 'file') {
+          if (item.path === newPath) {
+            // markdown file need input new name
+            if (isMarkdownFile(item)) {
+              newPath = undefined
+            } else {
+              // other file can be copied with same name
+              const dir = dirname(newPath)
+              const ext = extname(newPath)
+              const name = item.name.replace(ext, '')
+              newPath = join(dir, `${name}-copy${ext}`)
+            }
+          }
+
+          await duplicateDoc(item, newPath)
+
+          if (newPath) {
+            showToast('copied', newPath)
+          }
+        } else {
+          toast.show('warning', 'Cannot copy folder')
+        }
+      } else {
+        if (item.path === newPath) {
+          return
+        }
+
+        // move file or folder
+        if (isBelongTo(item.path, newPath)) {
+          toast.show('warning', 'Cannot move to self or its children')
+        } else {
+          await moveDoc(item, newPath)
+          showToast('moved', newPath)
+        }
+      }
+    }
+
+    let dragOverTimer: number
+    let dragEnterElement: HTMLElement | null = null
+
+    const changeDragOver = (isOver: boolean) => {
+      dragOver.value = isOver
+      clearTimeout(dragOverTimer)
+
+      if (isOver) {
+        dragOverTimer = window.setTimeout(() => {
+          open.value = true
+        }, 800)
+      } else {
+        dragEnterElement = null
+      }
+    }
+
+    function onDragEnter (e: DragEvent) {
+      e.preventDefault()
+      e.stopPropagation()
+      dragEnterElement = e.target as HTMLElement
+
+      function getTreeNodeSibling (): [any, any] {
+        const currentTreeNode = (e.target as HTMLElement).closest('.tree-node')
+        if (!currentTreeNode) {
+          return [null, null]
+        }
+
+        // get all tree nodes
+        const nodes = Array.from(document.querySelectorAll('aside.side .tree-node'))
+
+        const idx = nodes.indexOf(currentTreeNode)
+        if (idx === -1) {
+          return [null, null]
+        }
+
+        // get around 4 nodes
+        const aroundNodes = nodes.slice(Math.max(0, idx - 3), Math.min(nodes.length, idx + 4))
+
+        return [
+          aroundNodes[0].querySelector('.item-label'),
+          aroundNodes[aroundNodes.length - 1].querySelector('.item-label')
+        ]
+      }
+
+      setTimeout(() => {
+        const [first, last] = getTreeNodeSibling()
+
+        const container = document.querySelector('aside.side') as HTMLElement
+        const scrollTop = container.scrollTop || 0
+
+        first?.scrollIntoViewIfNeeded(false)
+
+        if (scrollTop === container.scrollTop) {
+          last?.scrollIntoViewIfNeeded(false)
+        }
+      }, 60)
+
+      changeDragOver(true)
+    }
+
+    function onDragLeave (e: DragEvent) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      if (dragEnterElement === e.target) {
+        changeDragOver(false)
+      }
+    }
+
+    function onDragExit (e: DragEvent) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      changeDragOver(false)
+    }
+
+    function onDragOver (e: DragEvent) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      if (e.altKey) {
+        e.dataTransfer!.dropEffect = 'copy'
+      } else {
+        e.dataTransfer!.dropEffect = 'move'
+      }
+    }
+
+    function onDragStart (e: DragEvent) {
+      e.stopPropagation()
+      e.dataTransfer!.setData('text/plain', 'tree-node-' + JSON.stringify(itemNode.value))
+    }
+
+    function onDrop (e: DragEvent) {
+      e.preventDefault()
+      e.stopPropagation()
+      changeDragOver(false)
+
+      const data = e.dataTransfer?.getData('text')
+      if (data && data.startsWith('tree-node-')) {
+        const item = JSON.parse(data.replace('tree-node-', '')) as Components.Tree.Node
+        handleFileDrop(item, e.altKey)
+      }
     }
 
     const currentRepoName = computed(() => currentRepo.value?.name ?? '/')
@@ -163,6 +344,14 @@ export default defineComponent({
       select,
       createFile,
       createFolder,
+      dragOver,
+      onDragEnter,
+      onDragOver,
+      onDragLeave,
+      onDragExit,
+      onDrop,
+      onDragStart,
+      isMarkdownFile,
     }
   },
 })
@@ -267,6 +456,13 @@ summary > .item {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.name.drag-over {
+  opacity: 0.5;
+  outline: 2px #4790fe dashed;
+  outline-offset: -4px;
+  transition-delay: 0s;
 }
 
 .file-name {

@@ -52,6 +52,7 @@ import * as api from '@fe/support/api'
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
+import { isMarkdownFile } from '@fe/services/document'
 import { PathItem } from '@fe/types'
 
 type TabKey = 'marked' | 'search' | 'file'
@@ -105,7 +106,7 @@ export default defineComponent({
         let tmp: any[] = []
 
         tree.forEach((node: any) => {
-          if (node.type === 'file' && node.path.endsWith('.md')) {
+          if (isMarkdownFile(node)) {
             tmp.push(node)
           }
 

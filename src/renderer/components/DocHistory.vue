@@ -131,7 +131,7 @@ async function fetchVersions () {
     versions.value = (currentDoc.value ? await fetchHistoryList(currentDoc.value) : []).map(({ name: value, comment }) => {
       const arr = value.split('.')
       const name = arr[0]
-      const encrypted = isEncrypted({ path: value })
+      const encrypted = isEncrypted({ type: 'file', path: value })
       const tmp = name.split(' ')
       tmp[1] = tmp[1].replaceAll('-', ':')
       const time = tmp.join(' ')
@@ -512,6 +512,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 
   &>.diff-tips {
     width: 100%;

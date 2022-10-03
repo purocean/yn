@@ -58,6 +58,7 @@ define:
 + 上标：29^th^
 + 下标：H~2~0
 + 脚注：脚注[^1]语法[^2]
++ Emoji: :) :joy:
 + 缩写：
     *[HTML]: Hyper Text Markup Language
     *[W3C]:  World Wide Web Consortium
@@ -69,6 +70,7 @@ define:
 
 - 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}
+- 转义语法\{style="color:red"}
 
 **一些内置样式类：**
 
@@ -91,12 +93,12 @@ define:
 
 ### 图片增强
 
-1. 图片默认会渲染成块元素并居中，背景色透明
-    + 如果要显示为行内元素，可以在图片链接参数后面追加 `.inline` 如：![](mas_en.svg?.inline)
-    + 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.inline.bgw)
+![](mas_en.svg?.inline)
 
+1. 一个段落下如果只有一个图片元素，默认会渲染成块元素并居中。如果要强制显示为行内元素，可以在图片链接参数后面追加 `.inline` 如上图所示。
+1. 如果要给图片添加白色背景优化展示效果（针对某些透明图片）,可以在图片链接参数后面追加 `.bgw` 如：![](mas_en.svg?.bgw)
 1. 可以使用[markdown-it-imsize](https://github.com/tatsy/markdown-it-imsize)的方式来设置图片尺寸
-    例如这是一个宽度为 16px 的图片: ![](logo-small.png?.inline =16x)
+    例如这是一个宽度为 16px 的图片: ![](logo-small.png =16x)
 
 ## 思维导图
 

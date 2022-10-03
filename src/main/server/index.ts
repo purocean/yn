@@ -102,7 +102,7 @@ const fileContent = async (ctx: any, next: any) => {
       if (!oldHash) {
         throw new Error('No hash.')
       } else if (oldHash === 'new' && (await file.exists(repo, path))) {
-        throw new Error('File already exists.')
+        throw new Error('File or directory already exists.')
       } else if (oldHash !== 'new' && !(await file.checkHash(repo, path, oldHash))) {
         throw new Error('File is stale. Please refresh.')
       }
@@ -121,7 +121,20 @@ const fileContent = async (ctx: any, next: any) => {
       await file.rm(ctx.query.repo, ctx.query.path)
       ctx.body = result()
     } else if (ctx.method === 'PATCH') {
-      await file.mv(ctx.request.body.repo, ctx.request.body.oldPath, ctx.request.body.newPath)
+      const { repo, oldPath, newPath } = ctx.request.body
+      if ((await file.exists(repo, newPath))) {
+        throw new Error('File or directory already exists.')
+      }
+
+      await file.mv(repo, oldPath, newPath)
+      ctx.body = result()
+    } else if (ctx.method === 'PUT') {
+      const { repo, oldPath, newPath } = ctx.request.body
+      if ((await file.exists(repo, newPath))) {
+        throw new Error('File or directory already exists.')
+      }
+
+      await file.cp(repo, oldPath, newPath)
       ctx.body = result()
     }
   } else if (ctx.path === '/api/tree') {

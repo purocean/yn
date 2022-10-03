@@ -1,12 +1,13 @@
 import { Fragment, h } from 'vue'
 import { Optional } from 'utility-types'
 import { URI } from 'monaco-editor/esm/vs/base/common/uri.js'
+import * as misc from '@share/misc'
 import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { Doc, PathItem } from '@fe/types'
-import { basename, dirname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
+import { basename, dirname, extname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
@@ -42,13 +43,17 @@ export function getAbsolutePath (doc: Doc) {
   return join(getRepo(doc.repo)?.path || '/', doc.path)
 }
 
+export function isMarkdownFile (doc: Doc) {
+  return !!(doc && doc.type === 'file' && misc.isMarkdownFile(doc.path))
+}
+
 /**
  * Determine if the document is encrypted.
  * @param doc
  * @returns
  */
-export function isEncrypted (doc?: Pick<Doc, 'path'> | null): boolean {
-  return !!(doc && doc.path.toLowerCase().endsWith('.c.md'))
+export function isEncrypted (doc?: Pick<Doc, 'path' | 'type'> | null): boolean {
+  return !!(doc && doc.type === 'file' && misc.isEncryptedMarkdownFile(doc.path))
 }
 
 /**
@@ -128,8 +133,8 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
         return
       }
 
-      if (!filename.endsWith('.md')) {
-        filename = filename.replace(/\/$/, '') + '.md'
+      if (!misc.isMarkdownFile(filename)) {
+        filename = filename.replace(/\/$/, '') + misc.MARKDOWN_FILE_EXT
       }
 
       doc.path = join(currentPath, normalizeSep(filename))
@@ -222,10 +227,11 @@ export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
 /**
  * Duplicate a document.
  * @param originDoc
+ * @param newPath
  * @returns
  */
-export async function duplicateDoc (originDoc: Doc) {
-  let newPath = await useModal().input({
+export async function duplicateDoc (originDoc: Doc, newPath?: string) {
+  newPath ??= await useModal().input({
     title: t('document.duplicate-dialog.title'),
     hint: t('document.duplicate-dialog.hint'),
     content: t('document.current-path', originDoc.path),
@@ -236,31 +242,58 @@ export async function duplicateDoc (originDoc: Doc) {
       originDoc.name.lastIndexOf('.') > -1 ? originDoc.path.lastIndexOf('.') : originDoc.path.length,
       'forward'
     ]
-  })
+  }) || ''
 
   if (!newPath) {
-    return
+    throw new Error('Need supply new path')
   }
 
   newPath = newPath.replace(/\/$/, '')
+  const originExt = extname(originDoc.path)
+  const newExt = extname(newPath)
 
-  const { content } = await api.readFile(originDoc)
+  // check extension name
+  if (originExt.toLowerCase() !== newExt.toLowerCase()) {
+    newPath += extname(originDoc.path)
+  }
 
-  await createDoc({ repo: originDoc.repo, path: newPath, content })
+  // check if file path is same
+  if (newPath === originDoc.path) {
+    const ext = extname(newPath)
+    newPath = join(dirname(newPath), `${basename(newPath, ext)}-copy${ext}`)
+  }
+
+  // duplicate markdown file
+  if (misc.isMarkdownFile(newPath)) {
+    const { content } = await api.readFile(originDoc)
+    await createDoc({ repo: originDoc.repo, path: newPath, content })
+  } else {
+    try {
+      await api.copyFile(originDoc, newPath)
+      triggerHook('DOC_CREATED', { doc: { ...originDoc, path: newPath } })
+    } catch (error: any) {
+      useToast().show('warning', error.message)
+      console.error(error)
+    }
+  }
 }
 
 /**
  * Delete a document.
  * @param doc
+ * @param skipConfirm
  */
-export async function deleteDoc (doc: Doc) {
+export async function deleteDoc (doc: Doc, skipConfirm = false) {
   if (doc.path === '/') {
     throw new Error('Could\'t delete root dir.')
   }
 
-  await ensureCurrentFileSaved()
+  // delete current file or parent folder need save first
+  if (isSubOrSameFile(doc, store.state.currentFile)) {
+    await ensureCurrentFileSaved()
+  }
 
-  const confirm = await useModal().confirm({
+  const confirm = skipConfirm ? true : await useModal().confirm({
     title: t('document.delete-dialog.title'),
     content: t('document.delete-dialog.content', doc.path),
   })
@@ -287,7 +320,10 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     throw new Error('Could\'t move/rename root dir.')
   }
 
-  await ensureCurrentFileSaved()
+  // move current file or parent folder need save first
+  if (isSubOrSameFile(doc, store.state.currentFile)) {
+    await ensureCurrentFileSaved()
+  }
 
   newPath ??= await useModal().input({
     title: t('document.move-dialog.title'),
@@ -320,7 +356,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     type: doc.type
   }
 
-  if (isEncrypted(doc) !== isEncrypted({ path: newPath })) {
+  if (isEncrypted(doc) !== isEncrypted(newDoc)) {
     useToast().show('warning', t('document.file-transform-error'))
     return
   }

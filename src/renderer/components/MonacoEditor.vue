@@ -52,7 +52,11 @@ export default defineComponent({
     function initMonaco () {
       triggerHook('MONACO_BEFORE_INIT', { monaco: getMonaco() })
 
-      editor = getMonaco().editor.create(refEditor.value, getDefaultOptions())
+      editor = getMonaco().editor.create(refEditor.value, {
+        ...getDefaultOptions(),
+        fixedOverflowWidgets: true,
+      })
+
       setModel(toUri(null), '')
 
       setTimeout(() => {

@@ -11,12 +11,15 @@ import { getRepo, openExternal, openPath } from '@fe/services/base'
 
 function getElement (id: string) {
   id = id.replaceAll('%28', '(').replaceAll('%29', ')')
-  return document.getElementById(id) ||
+
+  const _find = (id: string) => document.getElementById(id) ||
     document.getElementById(decodeURIComponent(id)) ||
     document.getElementById(encodeURIComponent(id)) ||
     document.getElementById(id.replace(/^h-/, '')) ||
     document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
     document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
+
+  return _find(id) || _find(id.toLowerCase())
 }
 
 function getAnchorElement (target: HTMLElement) {
@@ -58,13 +61,18 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
     return true
   } else { // relative link
     // better scrollIntoView
-    const scrollIntoView = (el: HTMLElement) => {
+    const scrollIntoView = async (el: HTMLElement) => {
       el.scrollIntoView()
       const wrap = view.parentElement
       // retain 60 px for better view.
       if (wrap && wrap.scrollHeight !== wrap.scrollTop + wrap.clientHeight) {
         wrap.scrollTop -= 60
       }
+
+      // highlight element
+      el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+      await sleep(1000)
+      el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
     }
 
     if (/(\.md$|\.md#)/.test(href)) { // markdown file

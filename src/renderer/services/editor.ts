@@ -15,6 +15,22 @@ let editor: Monaco.editor.IStandaloneCodeEditor
 
 const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monospace'
 
+function getFontFamily () {
+  const customFontFamily = getSetting('editor.font-family')?.trim()
+
+  if (isMacOS) {
+    if (customFontFamily) {
+      // add emoji font for macOS
+      return `MacEmoji, ${customFontFamily}`
+    }
+
+    return DEFAULT_MAC_FONT_FAMILY
+  }
+
+  // use monaco default font for other platforms
+  return undefined
+}
+
 /**
  * Get default editor options.
  */
@@ -40,7 +56,7 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
     ambiguousCharacters: false,
     invisibleCharacters: false,
   },
-  fontFamily: isMacOS ? DEFAULT_MAC_FONT_FAMILY : undefined,
+  fontFamily: getFontFamily(),
   detectIndentation: false,
   insertSpaces: true,
   tabSize: getSetting('editor.tab-size', 4),

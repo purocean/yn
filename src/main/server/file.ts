@@ -6,6 +6,7 @@ import * as crypto from 'crypto'
 import * as yargs from 'yargs'
 import AdmZip from 'adm-zip'
 import dayjs from 'dayjs'
+import { ENCRYPTED_MARKDOWN_FILE_EXT, isEncryptedMarkdownFile, isMarkdownFile, MARKDOWN_FILE_EXT } from '../../share/misc'
 import { HISTORY_DIR } from '../constant'
 import config from '../config'
 import repository from './repository'
@@ -88,7 +89,7 @@ async function writeHistory (filePath: string, content: any) {
     zip = new AdmZip()
   }
 
-  const ext = filePath.endsWith('.c.md') ? '.c.md' : '.md'
+  const ext = isEncryptedMarkdownFile(filePath) ? ENCRYPTED_MARKDOWN_FILE_EXT : MARKDOWN_FILE_EXT
 
   zip.addFile(dayjs().format('YYYY-MM-DD HH-mm-ss') + ext, content)
 
@@ -102,7 +103,7 @@ async function writeHistory (filePath: string, content: any) {
 }
 
 async function moveHistory (oldPath: string, newPath: string) {
-  if (!oldPath.endsWith('.md')) {
+  if (!isMarkdownFile(oldPath)) {
     return
   }
 
@@ -137,7 +138,7 @@ export function write (repo: string, p: string, content: any): Promise<string> {
     await fs.ensureFile(filePath)
     await fs.writeFile(filePath, content)
 
-    if (filePath.endsWith('.md') && typeof content === 'string') {
+    if (isMarkdownFile(filePath) && typeof content === 'string') {
       if (content.length > 100 * 1024) {
         console.log('skip write history for large file', filePath, content.length)
       } else {
@@ -169,6 +170,14 @@ export async function mv (repo: string, oldPath: string, newPath: string) {
         await moveHistory(oldP, newP)
       }, 0)
     }
+  }, oldPath, newPath)
+}
+
+export async function cp (repo: string, oldPath: string, newPath: string) {
+  if (readonly) throw new Error('Readonly')
+
+  await withRepo(repo, async (_, oldP, newP) => {
+    await fs.copy(oldP, newP)
   }, oldPath, newPath)
 }
 
@@ -281,7 +290,7 @@ export async function search (repo: string, str: string) {
   const files: TreeItem[] = []
 
   const match = async (p: string, str: string) => {
-    return p.endsWith('.md') &&
+    return isMarkdownFile(p) &&
       !p.endsWith('.c.md') &&
       new RegExp(str, 'i')
         .test(await fs.readFile(p, 'utf-8'))

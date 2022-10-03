@@ -121,7 +121,7 @@ export async function writeFile (file: Doc, content = '', asBase64 = false) {
 }
 
 /**
- * Move / Remove a file or dir.
+ * Move / Rename a file or dir.
  * @param file
  * @param newPath
  * @returns
@@ -130,6 +130,21 @@ export async function moveFile (file: FileItem, newPath: string): Promise<ApiRes
   const { path, repo } = file
   return fetchHttp('/api/file', {
     method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo: repo, oldPath: path, newPath })
+  })
+}
+
+/**
+ * Copy a file
+ * @param file
+ * @param newPath
+ * @returns
+ */
+export async function copyFile (file: FileItem, newPath: string): Promise<ApiResult<any>> {
+  const { path, repo } = file
+  return fetchHttp('/api/file', {
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ repo: repo, oldPath: path, newPath })
   })

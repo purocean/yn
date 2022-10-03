@@ -18,7 +18,7 @@ import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/command'
 import type { Components, Doc } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
-import { ensureCurrentFileSaved, isEncrypted, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
+import { ensureCurrentFileSaved, isEncrypted, isMarkdownFile, isSameFile, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
@@ -121,7 +121,10 @@ export default defineComponent({
 
     async function handleMoved (payload?: { oldDoc: Doc, newDoc: Doc }) {
       if (payload) {
-        if (payload.newDoc.type === 'file' && payload.newDoc.path.endsWith('.md')) {
+        if (
+          isMarkdownFile(payload.newDoc) &&
+          isSameFile(payload.oldDoc, currentFile.value)
+        ) {
           await switchFile(payload.newDoc)
         }
         removeFile(payload.oldDoc)
@@ -129,7 +132,7 @@ export default defineComponent({
     }
 
     function handleDocCreated ({ doc }: { doc: Doc | null }) {
-      if (!doc || doc.type === 'file') {
+      if (!doc || isMarkdownFile(doc)) {
         switchFile(doc)
       }
     }
