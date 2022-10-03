@@ -356,7 +356,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     type: doc.type
   }
 
-  if (isEncrypted(doc) !== isEncrypted({ path: newPath })) {
+  if (isEncrypted(doc) !== isEncrypted(newDoc)) {
     useToast().show('warning', t('document.file-transform-error'))
     return
   }
