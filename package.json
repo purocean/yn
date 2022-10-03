@@ -114,6 +114,7 @@
     "markdown-it-abbr": "^1.0.4",
     "markdown-it-attributes": "^1.0.0",
     "markdown-it-container": "^3.0.0",
+    "markdown-it-emoji": "^2.0.2",
     "markdown-it-mark": "^3.0.1",
     "markdown-it-multimd-table": "^4.1.2",
     "markdown-it-sub": "^1.0.0",

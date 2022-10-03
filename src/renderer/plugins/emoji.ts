@@ -1,6 +1,7 @@
 import type * as Monaco from 'monaco-editor'
+import MarkdownItEmoji from 'markdown-it-emoji'
+import emoji from 'markdown-it-emoji/lib/data/full.json'
 import type { Ctx, Plugin } from '@fe/context'
-import emoji from '@fe/others/emoji.json'
 
 const triggerCharacter = ':'
 
@@ -50,6 +51,14 @@ class EmojiCompletionProvider implements Monaco.languages.CompletionItemProvider
 export default {
   name: 'editor-emoji',
   register: (ctx) => {
+    ctx.markdown.registerPlugin(md => {
+      md.use(MarkdownItEmoji)
+
+      md.renderer.rules.emoji = (token, idx) => {
+        return ctx.lib.vue.createVNode(ctx.lib.vue.Text, null, token[idx].content) as any
+      }
+    })
+
     ctx.editor.whenEditorReady().then(({ monaco }) => {
       monaco.languages.registerCompletionItemProvider(
         'markdown',

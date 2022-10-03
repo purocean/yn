@@ -21,12 +21,12 @@ import editorAttachment from '@fe/plugins/editor-attachment'
 import editorMarkdown from '@fe/plugins/editor-markdown'
 import editorMdSyntax from '@fe/plugins/editor-md-syntax'
 import editorWords from '@fe/plugins/editor-words'
-import editorEmoji from '@fe/plugins/editor-emoji'
 import editorPathCompletion from '@fe/plugins/editor-path-completion'
 import editorFolding from '@fe/plugins/editor-folding'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
+import emoji from '@fe/plugins/emoji'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownMacro from '@fe/plugins/markdown-macro'
@@ -82,13 +82,13 @@ export default [
   editorAttachment,
   editorMarkdown,
   editorMdSyntax,
-  editorEmoji,
   editorWords,
   editorPathCompletion,
   editorFolding,
   copyText,
   switchTodo,
   imageViewer,
+  emoji,
   markdownHtml,
   markdownRenderVnode,
   markdownMacro,
