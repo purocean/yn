@@ -57,6 +57,7 @@ Type '/' in the editor to get prompts
 + Sup: 29^th^
 + Sub: H~2~0
 + Footnote: footnote[^1] syntax[^2]
++ Emoji: :) :joy:
 + Abbr：
     *[HTML]: Hyper Text Markup Language
     *[W3C]:  World Wide Web Consortium

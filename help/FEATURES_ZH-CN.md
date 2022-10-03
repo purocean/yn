@@ -58,6 +58,7 @@ define:
 + 上标：29^th^
 + 下标：H~2~0
 + 脚注：脚注[^1]语法[^2]
++ Emoji: :) :joy:
 + 缩写：
     *[HTML]: Hyper Text Markup Language
     *[W3C]:  World Wide Web Consortium
