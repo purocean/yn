@@ -260,7 +260,10 @@ export async function deleteDoc (doc: Doc, skipConfirm = false) {
     throw new Error('Could\'t delete root dir.')
   }
 
-  await ensureCurrentFileSaved()
+  // delete current file or parent folder need save first
+  if (isSubOrSameFile(doc, store.state.currentFile)) {
+    await ensureCurrentFileSaved()
+  }
 
   const confirm = skipConfirm ? true : await useModal().confirm({
     title: t('document.delete-dialog.title'),
@@ -289,7 +292,10 @@ export async function moveDoc (doc: Doc, newPath?: string) {
     throw new Error('Could\'t move/rename root dir.')
   }
 
-  await ensureCurrentFileSaved()
+  // move current file or parent folder need save first
+  if (isSubOrSameFile(doc, store.state.currentFile)) {
+    await ensureCurrentFileSaved()
+  }
 
   newPath ??= await useModal().input({
     title: t('document.move-dialog.title'),
