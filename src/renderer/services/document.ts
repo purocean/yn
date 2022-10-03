@@ -6,7 +6,7 @@ import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { Doc, PathItem } from '@fe/types'
-import { basename, dirname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
+import { basename, dirname, extname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
@@ -240,14 +240,37 @@ export async function duplicateDoc (originDoc: Doc, newPath?: string) {
   }) || ''
 
   if (!newPath) {
-    return
+    throw new Error('Need supply new path')
   }
 
   newPath = newPath.replace(/\/$/, '')
+  const originExt = extname(originDoc.path)
+  const newExt = extname(newPath)
 
-  const { content } = await api.readFile(originDoc)
+  // check extension name
+  if (originExt.toLowerCase() !== newExt.toLowerCase()) {
+    newPath += extname(originDoc.path)
+  }
 
-  await createDoc({ repo: originDoc.repo, path: newPath, content })
+  // check if file path is same
+  if (newPath === originDoc.path) {
+    const ext = extname(newPath)
+    newPath = join(dirname(newPath), `${basename(newPath, ext)}-copy${ext}`)
+  }
+
+  // duplicate markdown file
+  if (newPath.endsWith('.md')) {
+    const { content } = await api.readFile(originDoc)
+    await createDoc({ repo: originDoc.repo, path: newPath, content })
+  } else {
+    try {
+      await api.copyFile(originDoc, newPath)
+      triggerHook('DOC_CREATED', { doc: { ...originDoc, path: newPath } })
+    } catch (error: any) {
+      useToast().show('warning', error.message)
+      console.error(error)
+    }
+  }
 }
 
 /**

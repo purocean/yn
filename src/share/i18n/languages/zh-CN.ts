@@ -6,6 +6,7 @@ const data: BaseLanguage = {
   'about': '关于',
   'slogan': '一款面向程序员的 Markdown 编辑器',
   'cancel': '取消',
+  'undo': '撤销',
   'ok': '确定',
   'demo-tips': 'DEMO 模式下一些功能不可用',
   'blank-page': '空白页',
@@ -280,7 +281,11 @@ const data: BaseLanguage = {
       'create-in-cd': '当前目录创建新文件',
       'copy-name': '复制名称',
       'copy-path': '复制路径',
-    }
+    },
+    toast: {
+      'moved': '[%s] 已移动到 [%s]',
+      'copied': '[%s] 已复制到 [%s]',
+    },
   },
   'tabs': {
     'close-others': '关闭其他',

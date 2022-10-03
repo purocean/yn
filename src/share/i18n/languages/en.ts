@@ -5,6 +5,7 @@ const data = {
   'about': 'About',
   'slogan': 'A Hackable Markdown editor for developers',
   'cancel': 'Cancel',
+  'undo': 'Undo',
   'ok': 'OK',
   'demo-tips': 'Some features are not available in DEMO mode.',
   'blank-page': 'Blank',
@@ -279,7 +280,11 @@ const data = {
       'create-in-cd': 'New File',
       'copy-name': 'Copy Name',
       'copy-path': 'Copy Path',
-    }
+    },
+    'toast': {
+      'moved': '[%s] Moved to [%s]',
+      'copied': '[%s] Copied to [%s]',
+    },
   },
   'tabs': {
     'close-others': 'Close Others',
