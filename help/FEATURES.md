@@ -583,7 +583,13 @@ variable name | type | description
 
 Yank Note allows you to embed macros in the page to dynamically replace the document.
 
-Before using, you need to enable macro replacement in Front Matter and define `enableMacro: true`
+::: tip
+Before using, you need to enable macro replacement in Front Matter and define `enableMacro: true`.
+:::
+
+::: warning
+Using macro replacement may lead to inaccurate correspondence between source code and preview line numbers. Yank Note has dealt with it as much as possible, but some cases may still cause synchronous scrolling exceptions.
+:::
 
 ### Definition
 
@@ -611,6 +617,7 @@ If the expression needs to contain [\= or =\], please enter `[\=` or `=\]` to es
 - use variable:  [= customVar =]
 - custom variable:  [= $export('testVar', 'Test') =][= testVar =]
 - custom function:  [= $export('format', (a, b) => `${a}, ${b}!`) =][= format('HELLO', 'WORLD') =]
+- further processing: XXXXXXXXXXXXXX [= $afterMacro(src => src.replace(/X{4,}/g, 'YYYYY')) =]
 - application version: [= $ctx.version =]
 - current document name: [= $doc.basename =]
 - current time:  [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]
@@ -650,6 +657,7 @@ variable name | type | description
 `$ctx` | `object` | Editor `ctx`，refer to [Plug-In Development GUide](PLUGIN.md) and [Api Document](https://yn-api-doc.vercel.app/modules/renderer_context.html)
 `$include` | `(path: string, trim = false) => Result` | Introduce other document fragment methods
 `$export` | `(key: string, val: any) => Result` | Define a variable that can be used in this document
+`$afterMacro` | `(fn: (src: string) => string) => Result` | Define a macro-replaced callback function that can be used for further processing of the replaced text.
 `$noop` | `() => Result` | no operation, Used for holding text space
 `$doc` | `object` | Current document information
 `$doc.basename` | `string` | File name of current document (no suffix)

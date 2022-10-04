@@ -582,7 +582,14 @@ Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command
 
 Yank Note 允许你在页面中嵌入宏，用以动态地替换文档。
 
-使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`
+::: tip
+使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`。
+:::
+
+::: warning
+使用宏替换可能会导致源码和预览行号对应不准确，Yank Note 已经尽可能处理，但某些情况可能仍然会出现同步滚动异常。
+:::
+
 
 ### 文本替换
 
@@ -610,6 +617,7 @@ Front Matter 中的 `define` 字段可以定义一些文本替换映射。支持
 - 使用变量: [= customVar =]
 - 定义变量: [= $export('testVar', 'Test') =][= testVar =]
 - 定义函数:  [= $export('format', (a, b) => `${a}, ${b}!`) =][= format('HELLO', 'WORLD') =]
+- 进一步处理: XXXXXXXXXXXXXX [= $afterMacro(src => src.replace(/X{4,}/g, 'YYYYY')) =]
 - 应用版本：[= $ctx.version =]
 - 当前文档名: [= $doc.basename =]
 - 当前时间: [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]
@@ -650,6 +658,7 @@ Front Matter 中的 `define` 字段可以定义一些文本替换映射。支持
 `$include` | `(path: string, trim = false) => Result` | 引入其他文档片段方法
 `$export` | `(key: string, val: any) => Result` | 定义一个本文档可以使用的变量
 `$noop` | `() => Result` | 无操作函数，可用于文本占位使用
+`$afterMacro` | `(fn: (src: string) => string) => Result` | 定义一个宏替换后的回调函数，可用于对替换后的文本进行进一步处理。
 `$doc` | `object` | 当前文档信息
 `$doc.basename` | `string` | 当前文档文件名（无后缀）
 `$doc.name` | `string` | 当前文档文件名
