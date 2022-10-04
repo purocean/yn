@@ -28,7 +28,7 @@ function getFontFamily () {
   }
 
   // use monaco default font for other platforms
-  return undefined
+  return customFontFamily || undefined
 }
 
 /**

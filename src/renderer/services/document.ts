@@ -169,7 +169,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
     triggerHook('DOC_CREATED', { doc: file })
   } catch (error: any) {
     useToast().show('warning', error.message)
-    console.error(error)
+    throw error
   }
 
   return file
@@ -218,7 +218,7 @@ export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
     triggerHook('DOC_CREATED', { doc: dir })
   } catch (error: any) {
     useToast().show('warning', error.message)
-    console.error(error)
+    throw error
   }
 
   return dir
@@ -273,7 +273,7 @@ export async function duplicateDoc (originDoc: Doc, newPath?: string) {
       triggerHook('DOC_CREATED', { doc: { ...originDoc, path: newPath } })
     } catch (error: any) {
       useToast().show('warning', error.message)
-      console.error(error)
+      throw error
     }
   }
 }
