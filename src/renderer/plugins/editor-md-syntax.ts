@@ -82,35 +82,62 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     { name: '/ ::: Column Container', insertText: ':::: row ${1:Title}\n::: col\ntest 1\n:::\n::: col\ntest 2\n:::\n::::\n' },
   ]
 
-  private readonly pairsMap = new Map(surroundingPairs.map(x => [x.open, x.close]))
-
   constructor (monaco: typeof Monaco, ctx: Ctx) {
     this.monaco = monaco
     this.ctx = ctx
+  }
+
+  private getRangeColumnOffset (type: 'suffix' | 'prefix', line: string, insertText: string) {
+    if (!line || !insertText) {
+      return 0
+    }
+
+    if (insertText.includes('\n')) {
+      return 0
+    }
+
+    insertText = insertText.replace(/\$\{[0-9]+:([^}]+)?\}/g, '$1')
+      .replace(/\$\[0-9]/g, '')
+
+    const len = Math.min(line.length, insertText.length)
+
+    if (type === 'suffix') {
+      for (let i = len; i >= 0; i--) {
+        if (line.startsWith(insertText.slice(insertText.length - i))) {
+          return i
+        }
+      }
+    } else {
+      for (let i = len; i >= 0; i--) {
+        if (line.endsWith(insertText.slice(0, i))) {
+          return i
+        }
+      }
+    }
+
+    return 0
   }
 
   public async provideCompletionItems (model: Monaco.editor.IModel, position: Monaco.Position): Promise<Monaco.languages.CompletionList | undefined> {
     const line = model.getLineContent(position.lineNumber)
     const cursor = position.column - 1
     const linePrefixText = line.slice(0, cursor)
+    const lineSuffixText = line.slice(cursor)
 
-    let startColumn = linePrefixText.lastIndexOf(' ') + 1
+    let startColumn = linePrefixText.lastIndexOf(' ') + 2
     if (startColumn === position.column) {
       startColumn = 0
     }
 
-    const range = new this.monaco.Range(
-      position.lineNumber,
-      startColumn,
-      position.lineNumber,
-      // remove auto surrounding pairs
-      this.pairsMap.get(line.charAt(cursor - 1)) === line.charAt(cursor)
-        ? position.column + 1
-        : position.column,
-    )
+    const result: Monaco.languages.CompletionItem[] = this.list.map((item, i) => {
+      const range = new this.monaco.Range(
+        position.lineNumber,
+        startColumn,
+        position.lineNumber,
+        position.column + this.getRangeColumnOffset('suffix', lineSuffixText, item.insertText)
+      )
 
-    const result: Monaco.languages.CompletionItem[] = this.list.map((item, i) => (
-      {
+      return {
         label: { label: item.name },
         kind: this.monaco.languages.CompletionItemKind.Keyword,
         insertText: item.insertText,
@@ -118,7 +145,7 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
         range,
         sortText: i.toString().padStart(7),
       }
-    ))
+    })
 
     return { suggestions: result }
   }
