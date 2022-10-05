@@ -366,6 +366,9 @@ const data: BaseLanguage = {
         'port': '监听端口',
         'port-desc': '需要重启应用',
       },
+      'tree': {
+        'exclude': '排除文件',
+      },
       'proxy': {
         'enabled': '启用代理',
         'server': '代理服务器',

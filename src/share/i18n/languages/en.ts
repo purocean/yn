@@ -373,6 +373,9 @@ const data = {
         'port': 'Listen Port',
         'port-desc': 'Need to restart the application.'
       },
+      'tree': {
+        'exclude': 'Exclude Files',
+      },
       'proxy': {
         'enabled': 'Enabled',
         'server': 'Proxy Server',

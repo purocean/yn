@@ -6,13 +6,12 @@ import * as crypto from 'crypto'
 import * as yargs from 'yargs'
 import AdmZip from 'adm-zip'
 import dayjs from 'dayjs'
-import { ENCRYPTED_MARKDOWN_FILE_EXT, isEncryptedMarkdownFile, isMarkdownFile, MARKDOWN_FILE_EXT } from '../../share/misc'
+import { DEFAULT_EXCLUDE_REGEX, ENCRYPTED_MARKDOWN_FILE_EXT, isEncryptedMarkdownFile, isMarkdownFile, MARKDOWN_FILE_EXT } from '../../share/misc'
 import { HISTORY_DIR } from '../constant'
 import config from '../config'
 import repository from './repository'
 
 const readonly = !!(yargs.argv.readonly)
-const ignorePath = /node_modules/
 
 interface XFile {
   name: string;
@@ -26,6 +25,15 @@ interface TreeItem extends XFile {
   birthtime?: number;
   children?: XFile[];
   level: number;
+}
+
+function getExcludeRegex () {
+  try {
+    const regex = config.get('tree.exclude', DEFAULT_EXCLUDE_REGEX) || '^$'
+    return new RegExp(regex)
+  } catch (error) {
+    return new RegExp(DEFAULT_EXCLUDE_REGEX)
+  }
 }
 
 function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath: string[]) => Promise<T>, ...target: string[]): Promise<T> {
@@ -208,39 +216,40 @@ async function travels (
   repo: string,
   basePath: string,
   data: TreeItem,
+  excludeRegex: RegExp,
 ): Promise<void> {
-  if (!(await fs.stat(location)).isDirectory()) {
-    return
-  }
-
-  const list = await fs.readdir(location)
+  const list = await fs.readdir(location, { withFileTypes: true })
 
   const dirs: TreeItem[] = []
   const files: TreeItem[] = []
 
   await Promise.all(list.map(async x => {
-    if (x.startsWith('.') || ignorePath.test(x)) {
-      return
-    }
+    if (x.isFile()) {
+      if (excludeRegex.test(x.name)) {
+        return
+      }
 
-    const p = path.join(location, x)
-    const stat = await fs.stat(p)
-
-    if (stat.isFile()) {
-      const xpath = getRelativePath(basePath, p)
+      const p = path.join(location, x.name)
+      const stat = await fs.stat(p)
 
       files.push({
-        name: x,
-        path: xpath,
+        name: x.name,
+        path: getRelativePath(basePath, p),
         type: 'file',
         repo: repo,
         birthtime: stat.birthtimeMs,
         mtime: stat.mtimeMs,
         level: data.level + 1,
       })
-    } else if (stat.isDirectory()) {
+    } else if (x.isDirectory()) {
+      if (excludeRegex.test(x.name + '/')) {
+        return
+      }
+
+      const p = path.join(location, x.name)
+
       const dir: TreeItem = {
-        name: x,
+        name: x.name,
         path: getRelativePath(basePath, p),
         type: 'dir',
         repo: repo,
@@ -249,7 +258,7 @@ async function travels (
       }
 
       dirs.push(dir)
-      await travels(p, repo, basePath, dir)
+      await travels(p, repo, basePath, dir, excludeRegex)
     }
   }))
 
@@ -276,7 +285,7 @@ export async function tree (repo: string): Promise<TreeItem[]> {
     level: 1,
   }]
 
-  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0]))
+  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0], getExcludeRegex()))
 
   return data
 }
@@ -288,10 +297,11 @@ export async function search (repo: string, str: string) {
   }
 
   const files: TreeItem[] = []
+  const excludeRegex = getExcludeRegex()
 
   const match = async (p: string, str: string) => {
     return isMarkdownFile(p) &&
-      !p.endsWith('.c.md') &&
+      !isEncryptedMarkdownFile(p) &&
       new RegExp(str, 'i')
         .test(await fs.readFile(p, 'utf-8'))
   }
@@ -309,15 +319,19 @@ export async function search (repo: string, str: string) {
     const list = await fs.readdir(location, { withFileTypes: true })
 
     await Promise.all(list.map(async x => {
-      if (x.name.startsWith('.') || ignorePath.test(x.name)) {
-        return
-      }
-
-      const p = path.join(location, x.name)
-
       if (x.isDirectory()) {
+        if (excludeRegex.test(x.name + '/')) {
+          return
+        }
+
+        const p = path.join(location, x.name)
         await travelFiles(p, basePath, level + 1)
       } else if (x.isFile()) {
+        if (excludeRegex.test(x.name)) {
+          return
+        }
+
+        const p = path.join(location, x.name)
         if (await match(p, str)) {
           files.push({
             repo,

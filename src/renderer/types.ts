@@ -189,6 +189,7 @@ export interface BuildInSettings {
   'doc-history.number-limit': number,
   'server.host': string,
   'server.port': number,
+  'tree.exclude': string,
   'proxy.enabled': boolean,
   'proxy.server': string,
   'proxy.pac-url': string,
