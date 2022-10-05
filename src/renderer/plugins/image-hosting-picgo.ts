@@ -18,7 +18,6 @@ export default {
         pattern: '^(http://|https://|$)',
         options: {
           patternmessage: 'T_picgo.setting.api-msg',
-          inputAttributes: { placeholder: 'http://127.0.0.1:36677/upload' }
         },
         group: 'image',
       }
