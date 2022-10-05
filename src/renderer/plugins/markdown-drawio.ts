@@ -63,5 +63,13 @@ export default {
   name: 'markdown-drawio',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ []() Drawio Link', insertText: '[${2:Drawio}]($1){link-type="drawio"}' },
+      )
+    })
   }
 } as Plugin

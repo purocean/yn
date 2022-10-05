@@ -3,12 +3,21 @@ import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron, isMacOS } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import { registerAction } from '@fe/core/action'
+import * as ioc from '@fe/core/ioc'
 import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { sleep } from '@fe/utils'
 import { getColorScheme } from './theme'
 import { getSetting } from './setting'
+
+export type SimpleCompletionItem = {
+  label: string,
+  kind?: Monaco.languages.CompletionItemKind,
+  insertText: string,
+}
+
+export type SimpleCompletionItemTappers = (items: SimpleCompletionItem[]) => void
 
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
@@ -328,8 +337,30 @@ export function toggleWrap () {
   store.commit('setWordWrap', (isWrapping ? 'off' : 'on'))
 }
 
+/**
+ * Toggle typewriter mode.
+ */
 export function toggleTypewriterMode () {
   store.commit('setTypewriterMode', !store.state.typewriterMode)
+}
+
+/**
+ * Register a simple completion item processor.
+ * @param tapper
+ */
+export function tapSimpleCompletionItems (tapper: (items: SimpleCompletionItem[]) => void) {
+  ioc.register('EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS', tapper)
+}
+
+/**
+ * Get simple completion items.
+ * @returns
+ */
+export function getSimpleCompletionItems () {
+  const items: SimpleCompletionItem[] = []
+  const tappers: SimpleCompletionItemTappers[] = ioc.get('EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS')
+  tappers.forEach(tap => tap(items))
+  return items
 }
 
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })

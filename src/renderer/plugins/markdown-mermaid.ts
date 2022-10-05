@@ -40,5 +40,13 @@ export default {
   name: 'markdown-mermaid',
   register: ctx => {
     ctx.markdown.registerPlugin(MermaidPlugin)
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ ``` Mermaid', insertText: '```mermaid\ngraph LR\n${1:A[Hard] --> |Text| B(Round)}\n```\n' },
+      )
+    })
   }
 } as Plugin

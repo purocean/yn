@@ -412,5 +412,15 @@ export default {
     ctx.registerHook('VIEW_RENDERED', () => {
       ctx.statusBar.refreshMenu()
     })
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
+        { label: '/ [= Macro $include', insertText: '[= \\$include(\'$1\') =]' },
+        { label: '/ [= Macro $afterMacro', insertText: '[= \\$afterMacro(src => { \n return src.toUpperCase(); \n}) =]' },
+      )
+    })
   }
 } as Plugin
