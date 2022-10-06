@@ -274,7 +274,7 @@ export default defineComponent({
     function chooseItem (item: any = null) {
       const file = item || selected.value
       if (file) {
-        emit('choose-file', file)
+        emit('choose-file', { type: 'file', ...file })
       }
     }
 
