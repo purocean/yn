@@ -86,6 +86,7 @@ For more information on how to use the following functions, please see [characte
 6. feat(plugin): configuration item supports custom validator `validator` field
 7. feat(plugin): support simple completion of items in configuration editor, related Api: `ctx.editor.tapSimpleCompletionItems`, `ctx.editor.getSimpleCompletionItems`
 8. feat(plugin): add `ctx.doc.createCurrentDocChecker` method
+
 [More release notes](https://github.com/purocean/yn/releases)
 
 ## Supports
