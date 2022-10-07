@@ -414,7 +414,8 @@ const data = {
     },
     'uploading': 'Uploading',
     'upload-failed': 'Upload Failed',
-    'need-api': 'Please configure PicGo Api first.'
+    'need-api': 'Please configure PicGo Api first.',
+    'upload-all-images': 'Upload All Images',
   },
   'code-run': {
     'run': 'Run',

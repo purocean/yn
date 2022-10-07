@@ -416,6 +416,7 @@ const data: BaseLanguage = {
     'uploading': '上传中……',
     'upload-failed': '上传失败',
     'need-api': '请先配置 PicGo 图床接口地址',
+    'upload-all-images': '上传所有图片',
   },
   'code-run': {
     'run': '运行',
