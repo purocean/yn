@@ -225,6 +225,15 @@ export default {
         content: counter(ol-number) ". ";
       }
     `)
+
     ctx.markdown.registerPlugin(MarkdownItPlugin)
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ [toc] Table of content', insertText: '[toc]{type: "${1|ul,ol|}", level: [2,3]}' },
+      )
+    })
   }
 } as Plugin

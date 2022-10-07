@@ -217,5 +217,15 @@ export default {
     ctx.editor.whenEditorReady().then(({ monaco }) => {
       monacoLatex(monaco)
     })
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ \\begin KaTeX Environment', insertText: '\\begin{$1}\n\\end{$1}' },
+        { label: '/ $ Inline KaTeX', insertText: '$$1$' },
+        { label: '/ $$ Block KaTeX', insertText: '$$$1$$\n' },
+      )
+    })
   }
 } as Plugin

@@ -123,5 +123,13 @@ export default {
         }
       },
     })
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ ``` Run Code', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n' },
+      )
+    })
   }
 } as Plugin

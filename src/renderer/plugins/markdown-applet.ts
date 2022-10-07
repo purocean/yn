@@ -63,5 +63,13 @@ export default {
   name: 'applet',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ ``` Applet', insertText: '```html\n<!-- --applet-- ${1:DEMO} -->\n<button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">TEST</button>\n```\n' },
+      )
+    })
   }
 } as Plugin

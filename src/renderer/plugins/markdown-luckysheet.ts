@@ -58,5 +58,13 @@ export default {
   name: 'markdown-luckysheet',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin)
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ []() Luckysheet Link', insertText: '[${2:Luckysheet}]($1){link-type="luckysheet"}' },
+      )
+    })
   }
 } as Plugin

@@ -521,5 +521,13 @@ export default {
         }
       }
     })
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ + MindMap', insertText: '+ ${1:Subject}{.mindmap}\n    + ${2:Topic}' },
+      )
+    })
   }
 } as Plugin

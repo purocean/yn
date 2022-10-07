@@ -189,6 +189,7 @@ export interface BuildInSettings {
   'doc-history.number-limit': number,
   'server.host': string,
   'server.port': number,
+  'tree.exclude': string,
   'proxy.enabled': boolean,
   'proxy.server': string,
   'proxy.pac-url': string,
@@ -325,6 +326,7 @@ export interface CodeRunner {
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
+  EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS: any;
   THEME_STYLES: any;
   VIEW_PREVIEWER: Previewer;
   CODE_RUNNER: CodeRunner;

@@ -19,6 +19,7 @@ type CacheItem = {
 type MacroCache = Record<string, CacheItem>
 
 const logger = getLogger('plugin-macro')
+const debounceToast = ctx.lib.lodash.debounce((...args: [any, any]) => ctx.ui.useToast().show(...args), 300)
 const magicNewline = '--yn-macro-new-line--'
 
 const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
@@ -27,6 +28,7 @@ let macroOuterVars = {}
 
 const globalVars = {
   $export: exportVar,
+  $afterMacro: afterMacro,
   $ctx: ctx,
   $noop: noop,
 }
@@ -126,6 +128,10 @@ function transform (
       if (options.purchased) {
         if (options.cache[id]) {
           result = options.cache[id]
+          if (!(result instanceof Promise) && result.vars) {
+            // update vars to newer
+            Object.assign(result.vars, vars)
+          }
         } else {
           macroOuterVars = vars
           result = macro(exp, vars)
@@ -165,6 +171,10 @@ function transform (
 
 function exportVar (key: string, val: any): Result {
   return { __macroResult: true, vars: { [key]: val }, value: '' }
+}
+
+function afterMacro (fn: (src: string) => string): Result {
+  return { __macroResult: true, vars: { $__hook_after_macro: fn }, value: '' }
 }
 
 // do nothing, text placeholder
@@ -221,7 +231,8 @@ async function include (
     }
 
     if (fm.attributes && typeof fm.attributes === 'object') {
-      Object.assign(vars, fm.attributes)
+      // only add new attributes
+      Object.assign(vars, fm.attributes, { ...vars })
       if (vars.define && typeof vars.define === 'object') {
         Object.assign(cache.$define, vars.define)
       }
@@ -269,6 +280,19 @@ async function include (
   } catch (error: any) {
     return error.message
   }
+}
+
+function hookAfter (body: string, vars: Record<string, any>) {
+  if (vars.$__hook_after_macro && typeof vars.$__hook_after_macro === 'function') {
+    try {
+      return vars.$__hook_after_macro(body)
+    } catch (error) {
+      debounceToast('warning', `[$afterMacro]: ${error}`)
+      return body
+    }
+  }
+
+  return body
 }
 
 export default {
@@ -321,7 +345,7 @@ export default {
         const head = state.src.substring(0, bodyBeginPos)
         const body = state.src.substring(bodyBeginPos)
 
-        state.src = head + transform(body, vars, {
+        const srcBody = transform(body, vars, {
           ...options,
           callback: (result, match, matchPos) => {
             if (result instanceof Promise) {
@@ -352,6 +376,7 @@ export default {
           }
         })
 
+        state.src = head + hookAfter(srcBody, vars)
         state.env.originSource = state.env.source
         state.env.source = state.src
 
@@ -386,6 +411,16 @@ export default {
 
     ctx.registerHook('VIEW_RENDERED', () => {
       ctx.statusBar.refreshMenu()
+    })
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      /* eslint-disable no-template-curly-in-string */
+
+      items.push(
+        { label: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
+        { label: '/ [= Macro $include', insertText: '[= \\$include(\'$1\') =]' },
+        { label: '/ [= Macro $afterMacro', insertText: '[= \\$afterMacro(src => { \n return src.toUpperCase(); \n}) =]' },
+      )
     })
   }
 } as Plugin

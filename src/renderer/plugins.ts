@@ -43,11 +43,11 @@ import markdownKatex from '@fe/plugins/markdown-katex'
 import markdownCodeCopy from '@fe/plugins/markdown-code-copy'
 import markdownCodeRun from '@fe/plugins/markdown-code-run'
 import markdownPlantuml from '@fe/plugins/markdown-plantuml'
-import markdownDrawio from '@fe/plugins/markdown-drawio'
 import markdownMindMap from '@fe/plugins/markdown-mind-map'
 import markdownMermaid from '@fe/plugins/markdown-mermaid'
 import markdownApplet from '@fe/plugins/markdown-applet'
 import markdownEcharts from '@fe/plugins/markdown-echarts'
+import markdownDrawio from '@fe/plugins/markdown-drawio'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
 import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
@@ -105,11 +105,11 @@ export default [
   markdownCodeCopy,
   markdownCodeRun,
   markdownPlantuml,
-  markdownDrawio,
   markdownMindMap,
   markdownMermaid,
   markdownApplet,
   markdownEcharts,
+  markdownDrawio,
   markdownLuckysheet,
   markdownContainer,
   markdownHeadingNumber,

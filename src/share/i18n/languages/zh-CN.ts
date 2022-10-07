@@ -366,6 +366,9 @@ const data: BaseLanguage = {
         'port': '监听端口',
         'port-desc': '需要重启应用',
       },
+      'tree': {
+        'exclude': '排除文件',
+      },
       'proxy': {
         'enabled': '启用代理',
         'server': '代理服务器',
@@ -413,6 +416,7 @@ const data: BaseLanguage = {
     'uploading': '上传中……',
     'upload-failed': '上传失败',
     'need-api': '请先配置 PicGo 图床接口地址',
+    'upload-all-images': '上传所有图片',
   },
   'code-run': {
     'run': '运行',

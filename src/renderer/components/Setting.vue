@@ -68,6 +68,13 @@ export default defineComponent({
         disable_array_delete_all_rows: true,
         remove_button_labels: true,
         schema,
+        custom_validators: [(schema: any, value: any, path: any) => {
+          if (schema.validator && typeof schema.validator === 'function') {
+            return schema.validator(schema, value, path)
+          }
+
+          return []
+        }],
       })
       // end: hack to use DOMPurify
       delete (window as any).DOMPurify

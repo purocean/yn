@@ -6,6 +6,7 @@ import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import store from '@fe/support/store'
 import { isMacOS, isWindows } from '@fe/support/env'
 import { basename } from '@fe/utils/path'
+import { DEFAULT_EXCLUDE_REGEX } from '@share/misc'
 import type{ BuildInSettings, FileItem, PathItem, SettingGroup } from '@fe/types'
 import { getThemeName } from './theme'
 import { t } from './i18n'
@@ -23,6 +24,8 @@ export type Schema = {
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
     enum?: string[] | number [],
     group: SettingGroup,
+    validator?: (schema: Schema['properties'][K], value: BuildInSettings[K], path: string) =>
+      {path: string, property: K, message: string}[]
     items?: {
       type: string,
       title: TTitle,
@@ -266,6 +269,23 @@ const schema: Schema = {
       required: true,
       minimum: 10,
       maximum: 65535,
+    },
+    'tree.exclude': {
+      defaultValue: DEFAULT_EXCLUDE_REGEX,
+      title: 'T_setting-panel.schema.tree.exclude',
+      type: 'string',
+      group: 'other',
+      description: 'e.g., ' + DEFAULT_EXCLUDE_REGEX,
+      validator: (_schema, value, path) => {
+        if (value === '') return []
+        try {
+          // eslint-disable-next-line no-new
+          new RegExp(value)
+          return []
+        } catch (e: any) {
+          return [{ property: 'tree.exclude', path, message: e.message }]
+        }
+      }
     },
     'keep-running-after-closing-window': {
       defaultValue: !isMacOS,
