@@ -76,26 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.38.0](https://github.com/purocean/yn/releases/tag/v3.38.0) 2022-10-03
+### [v3.39.0](https://github.com/purocean/yn/releases/tag/v3.39.0) 2022-10-07
 
-1. feat: document sidebar supports drag and drop to move/copy (hold Alt/Option key) documents
-2. feat: add shortcut key for switching sidebar "File"/"Outline" view `Shift + Alt/Option + O`
-3. feat: auto-focus filter input box when opening outline panel
-4. feat: upgrade `markdown-it` to `13.0.1`, element attribute writing supports escaping
-5. feat: images are no longer rendered as block elements at all, they are now rendered as block elements only when a paragraph has only one image
-6. feat: add Emoji parsing
-7. feat: highlight title when clicking anchor to jump
-8. feat: add editor font configuration item
-9. fix: fix the problem that the anchor cannot jump when capitalized
-10. fix: fix the issue that the editor in the document history panel may be incorrectly sized
-11. fix: fix the issue that the editor completion menu will be overflow
-12. fix: fix the problem that the font is still italic when the temporary label is fixed
-13. fix: If deleting/moving a file has nothing to do with the currently opened file, it no longer checks whether the current file is saved or not
-14. feat(plugin): add `ctx.api.copyFile` method
-15. feat(plugin): add `ctx.doc.isMarkdownFile` method
-16. feat(plugin): toast supports custom rendering content by passing in Vue component or VNode objects
-17. feat(plugin): add `layout.toggle-outline` Action
-
+1. feat: add the function of uploading all pictures
+2. feat: added `$afterMacro` method for macro replacement, which supports processing the content of the document after macro replacement
+3. feat: add regular expression settings for excluded files
+4. fix: fix the problem that encrypted files cannot be opened correctly using the quick open panel
+5. fix: fixed the problem that the editor's completion content was inserted incorrectly in some cases
+6. feat(plugin): configuration item supports custom validator `validator` field
+7. feat(plugin): support simple completion of items in configuration editor, related Api: `ctx.editor.tapSimpleCompletionItems`, `ctx.editor.getSimpleCompletionItems`
+8. feat(plugin): add `ctx.doc.createCurrentDocChecker` method
 [More release notes](https://github.com/purocean/yn/releases)
 
 ## Supports
