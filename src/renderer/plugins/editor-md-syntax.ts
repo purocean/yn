@@ -31,6 +31,8 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
   private readonly monaco: typeof Monaco
   private readonly ctx: Ctx
 
+  private readonly pairsMap = new Map(surroundingPairs.map(x => [x.open, x.close]))
+
   constructor (monaco: typeof Monaco, ctx: Ctx) {
     this.monaco = monaco
     this.ctx = ctx
@@ -77,11 +79,17 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     const items = this.ctx.editor.getSimpleCompletionItems()
 
     const result: Monaco.languages.CompletionItem[] = items.map((item, i) => {
+      let columnOffset = this.getRangeColumnOffset('suffix', lineSuffixText, item.insertText)
+      if (columnOffset === 0) {
+        // remove auto surrounding pairs
+        columnOffset = this.pairsMap.get(line.charAt(cursor - 1)) === line.charAt(cursor) ? 1 : 0
+      }
+
       const range = new this.monaco.Range(
         position.lineNumber,
         startColumn,
         position.lineNumber,
-        position.column + this.getRangeColumnOffset('suffix', lineSuffixText, item.insertText)
+        position.column + columnOffset,
       )
 
       return {
