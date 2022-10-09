@@ -47,11 +47,12 @@
 
 <script lang="ts" setup>
 import { Components } from '@fe/types'
-import { computed, defineEmits, defineProps, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 type Item = Components.QuickFilter.Item
 type Props = Components.QuickFilter.Props
 
+// eslint-disable-next-line no-undef
 const props: Props = defineProps({
   top: String,
   right: String,
@@ -67,6 +68,7 @@ const props: Props = defineProps({
 
 const input = ref<HTMLInputElement | null>(null)
 const refList = ref<HTMLElement | null>(null)
+// eslint-disable-next-line no-undef
 const emit = defineEmits(['close', 'choose', 'input'])
 const keyword = ref('')
 const selected = ref<Item | null>(null)
