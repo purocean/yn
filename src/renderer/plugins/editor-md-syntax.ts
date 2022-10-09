@@ -131,9 +131,6 @@ export default {
           { beforeText: /^\s*\d+\) .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1) ' } },
         ]
       })
-
-      const mdLanguage = ctx.editor.getMarkdownMonarchLanguage()
-      monaco.languages.setMonarchTokensProvider('markdown', mdLanguage)
     })
 
     ctx.editor.tapSimpleCompletionItems(items => {

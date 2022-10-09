@@ -1,5 +1,5 @@
 import type * as Monaco from 'monaco-editor'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, debounce } from 'lodash-es'
 import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron, isMacOS } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
@@ -25,6 +25,12 @@ let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
 
 const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monospace'
+
+const refreshMarkdownMonarchLanguageDebounce = debounce(() => {
+  whenEditorReady().then(({ monaco }) => {
+    monaco.languages.setMonarchTokensProvider('markdown', getMarkdownMonarchLanguage())
+  })
+}, 100)
 
 function getFontFamily () {
   const customFontFamily = getSetting('editor.font-family')?.trim()
@@ -371,6 +377,7 @@ export function getSimpleCompletionItems () {
  */
 export function tapMarkdownMonarchLanguage (tapper: (mdLanguage: any) => void) {
   ioc.register('EDITOR_MARKDOWN_MONARCH_LANGUAGE_TAPPERS', tapper)
+  refreshMarkdownMonarchLanguageDebounce()
 }
 
 /**
