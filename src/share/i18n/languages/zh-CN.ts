@@ -209,6 +209,7 @@ const data: BaseLanguage = {
       'side-bar': '显示侧栏',
       'word-wrap': '文本换行',
       'typewriter-mode': '打字机模式',
+      'editor-preview-exclusive': '编辑器/预览互斥',
     },
     'setting': '设置',
     'repo': {

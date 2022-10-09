@@ -10,6 +10,7 @@ export const initState = {
   showSide: storage.get('showSide', true),
   showView: storage.get('showView', true),
   showEditor: storage.get('showEditor', true),
+  editorPreviewExclusive: storage.get('editorPreviewExclusive', false),
   showXterm: false,
   showOutline: false,
   autoPreview: true,
@@ -50,6 +51,10 @@ export default createStore({
     setShowEditor (state, data) {
       state.showEditor = data
       storage.set('showEditor', data)
+    },
+    setEditorPreviewExclusive (state, data) {
+      state.editorPreviewExclusive = data
+      storage.set('editorPreviewExclusive', data)
     },
     setShowSide (state, data) {
       state.showSide = data
