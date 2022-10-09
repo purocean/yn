@@ -227,5 +227,20 @@ export default {
         { label: '/ $$ Block KaTeX', insertText: '$$$1$$\n' },
       )
     })
+
+    ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
+      mdLanguage.tokenizer.root.unshift(
+        [/\$\$/, { token: 'tag', next: '@latexBlockEnd', nextEmbedded: 'latex' }],
+        [/\$(?=\S)/, { token: 'tag', next: '@latexInlineEnd', nextEmbedded: 'latex' }],
+      )
+
+      mdLanguage.tokenizer.latexBlockEnd = [
+        [/\$\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
+      ]
+
+      mdLanguage.tokenizer.latexInlineEnd = [
+        [/\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
+      ]
+    })
   }
 } as Plugin

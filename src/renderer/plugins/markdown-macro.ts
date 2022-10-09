@@ -422,5 +422,15 @@ export default {
         { label: '/ [= Macro $afterMacro', insertText: '[= \\$afterMacro(src => { \n return src.toUpperCase(); \n}) =]' },
       )
     })
+
+    ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
+      mdLanguage.tokenizer.root.unshift(
+        [/\[=/, { token: 'keyword', next: '@monacoEnd', nextEmbedded: 'text/javascript' }],
+      )
+
+      mdLanguage.tokenizer.monacoEnd = [
+        [/=\]/, { token: 'keyword', next: '@pop', nextEmbedded: '@pop' }]
+      ]
+    })
   }
 } as Plugin

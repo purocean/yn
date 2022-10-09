@@ -327,6 +327,7 @@ export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
   EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS: any;
+  EDITOR_MARKDOWN_MONARCH_LANGUAGE_TAPPERS: any;
   THEME_STYLES: any;
   VIEW_PREVIEWER: Previewer;
   CODE_RUNNER: CodeRunner;

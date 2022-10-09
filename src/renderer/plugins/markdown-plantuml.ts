@@ -290,5 +290,16 @@ export default {
         { label: '/ @startyaml PlantUML Yaml', insertText: '@startyaml\nfruit: Apple\nsize: Large\ncolor: \n  - Red\n  - Green\n@endyaml\n' },
       )
     })
+
+    ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
+      mdLanguage.tokenizer.root.unshift(
+        [/^@@start(uml|salt|mindmap|gantt|wbs|json|yaml)$/, { token: 'string', next: '@plantuml' }],
+      )
+
+      mdLanguage.tokenizer.plantuml = [
+        [/^@@end(uml|salt|mindmap|gantt|wbs|json|yaml)$/, { token: 'string', next: '@pop' }],
+        [/.*$/, 'variable.source']
+      ]
+    })
   }
 } as Plugin

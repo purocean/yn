@@ -327,5 +327,11 @@ export default {
         { label: '/ ::: Column Container', insertText: ':::: row ${1:Title}\n::: col\ntest 1\n:::\n::: col\ntest 2\n:::\n::::\n' },
       )
     })
+
+    ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
+      mdLanguage.tokenizer.root.unshift(
+        [/^:{3,}.*$/, 'tag']
+      )
+    })
   }
 } as Plugin
