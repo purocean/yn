@@ -1,4 +1,4 @@
-import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context'
@@ -6,6 +6,7 @@ import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
 import { openWindow } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/support/embed'
+import store from '@fe/support/store'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { t } from '@fe/services/i18n'
 
@@ -408,19 +409,25 @@ const MindMap = defineComponent({
       instances.delete(id)
     }
 
-    function onLanguageChange () {
+    function reload () {
       clean()
       renderMindMap()
     }
 
     watch(() => props.content, renderMindMap)
 
+    watch(() => store.state.showView, (visible) => {
+      if (visible) {
+        nextTick(reload)
+      }
+    })
+
     onMounted(() => setTimeout(renderMindMap, 0))
 
-    registerHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
+    registerHook('I18N_CHANGE_LANGUAGE', reload)
     onBeforeUnmount(() => {
       clean()
-      removeHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
+      removeHook('I18N_CHANGE_LANGUAGE', reload)
     })
 
     let focused = false
