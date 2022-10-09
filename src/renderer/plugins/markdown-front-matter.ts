@@ -9,8 +9,6 @@ export default {
     ctx.markdown.registerPlugin(md => {
       const render = md.render
 
-      let originOptions: typeof md.options
-
       md.render = (src: string, env?: any) => {
         let bodyBegin = 0
         let attributes: Record<string, any> = {}
@@ -34,22 +32,26 @@ export default {
           bodyBeginPos = src.indexOf('\n', bodyBeginPos + 1)
         }
 
-        if (!originOptions) {
-          originOptions = { ...md.options }
+        // save origin options
+        const originOptions = { ...md.options }
+
+        // set options
+        if (attributes.mdOptions && typeof attributes.mdOptions === 'object') {
+          Object.assign(md.options, attributes.mdOptions)
         }
+
+        Object.assign(env, { bodyBegin, bodyBeginPos, attributes, _front_matter_exec_flag: false })
+        const result = render.call(md, src, env)
 
         // clear md.options
         Object.keys(md.options).forEach(key => {
           delete md.options[key as keyof Options]
         })
 
+        // restore origin options
         Object.assign(md.options, originOptions)
-        if (attributes.mdOptions && typeof attributes.mdOptions === 'object') {
-          Object.assign(md.options, attributes.mdOptions)
-        }
 
-        Object.assign(env, { bodyBegin, bodyBeginPos, attributes, _front_matter_exec_flag: false })
-        return render.call(md, src, env)
+        return result
       }
 
       const firstRule = (md.block.ruler as any).__rules__[0]
