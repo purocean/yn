@@ -32,7 +32,7 @@ export function toggleSide (visible?: boolean) {
  */
 export function toggleView (visible?: boolean) {
   const val = typeof visible === 'boolean' ? visible : !store.state.showView
-  val && nextTick(view.refresh)
+  val && nextTick(view.render)
 
   store.commit('setShowView', val)
 
