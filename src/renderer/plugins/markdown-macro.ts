@@ -16,14 +16,12 @@ type CacheItem = {
   $define: Record<string, any>
   $include?: Record<string, CacheItem>
 } & Record<string, Result | Promise<Result>>
-type MacroCache = Record<string, CacheItem>
 
 const logger = getLogger('plugin-macro')
 const debounceToast = ctx.lib.lodash.debounce((...args: [any, any]) => ctx.ui.useToast().show(...args), 300)
 const magicNewline = '--yn-macro-new-line--'
 
 const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
-let macroCache: MacroCache = {}
 let macroOuterVars = {}
 
 const globalVars = {
@@ -298,25 +296,16 @@ function hookAfter (body: string, vars: Record<string, any>) {
 export default {
   name: 'markdown-macro',
   register: ctx => {
-    // clear cache after view refresh
-    ctx.registerHook('VIEW_BEFORE_REFRESH', () => {
-      macroCache = {}
-    })
-
     ctx.markdown.registerPlugin(md => {
       md.core.ruler.after('normalize', 'after_normalize', (state) => {
         const env = state.env || {}
         const file = env.file || {}
 
-        const cacheKey = '' + file.repo + file.path
-        // remove other file cache.
-        macroCache = { [cacheKey]: macroCache[cacheKey] || { $define: {} } }
-
         if (!env.attributes || !env.attributes.enableMacro) {
           return false
         }
 
-        const cache = macroCache[cacheKey]
+        const cache = ctx.markdown.getRenderCache('plugin-macro', 'cache', { $define: {} } as CacheItem)
 
         const options = {
           purchased: getPurchased() || file.repo === '__help__',
