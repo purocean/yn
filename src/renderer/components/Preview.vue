@@ -308,6 +308,12 @@ export default defineComponent({
 
     watch(fileUri, () => {
       renderCount = 0
+
+      if (autoPreview.value) {
+        // clear render content
+        renderContent.value = ''
+      }
+
       updateRender = debounce(render, 25)
       triggerHook('VIEW_FILE_CHANGE')
     })
@@ -652,6 +658,7 @@ export default defineComponent({
     position: absolute;
     width: 100%;
     height: 100%;
+    contain: paint;
   }
 
   .markdown-view .markdown-body {
