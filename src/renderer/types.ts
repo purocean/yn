@@ -251,6 +251,8 @@ export type BuildInActionName = keyof BuildInActions
 export type BuildInHookTypes = {
   STARTUP: never,
   GLOBAL_RESIZE: never,
+  GLOBAL_KEYDOWN: KeyboardEvent,
+  GLOBAL_KEYUP: KeyboardEvent,
   ACTION_BEFORE_RUN: { name: string },
   ACTION_AFTER_RUN: { name: string }
   THEME_CHANGE: { name: ThemeName },

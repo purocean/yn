@@ -1,8 +1,9 @@
 import { upperFirst } from 'lodash-es'
 import { getLogger } from '@fe/utils'
 import { isMacOS } from '@fe/support/env'
-import { getActionHandler } from './action'
 import { FLAG_DISABLE_SHORTCUTS } from '@fe/support/args'
+import { getActionHandler } from './action'
+import { triggerHook } from './hook'
 
 const logger = getLogger('command')
 
@@ -128,7 +129,9 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
         if (!e.shiftKey) return false
         break
       default:
-        if (e instanceof KeyboardEvent) {
+        // if the event from iframe, it not instance of KeyboardEvent.
+        if (e instanceof KeyboardEvent || '' + e === '[object KeyboardEvent]') {
+          e = e as KeyboardEvent
           if (
             key !== e.key &&
             key.toString().toUpperCase() !== e.code.toUpperCase() &&
@@ -223,13 +226,15 @@ export function removeCommand (id: string) {
   delete commands[id]
 }
 
-function keydownHandler (e: KeyboardEvent) {
+export function keydownHandler (e: KeyboardEvent) {
   recordKeys(e)
 
   if (FLAG_DISABLE_SHORTCUTS) {
     logger.warn('shortcut disabled')
     return
   }
+
+  triggerHook('GLOBAL_KEYDOWN', e)
 
   for (const command of Object.values(commands)) {
     if (isCommand(e, command.id)) {
@@ -245,5 +250,10 @@ function keydownHandler (e: KeyboardEvent) {
   }
 }
 
+export function keyupHandler (e: KeyboardEvent) {
+  recordKeys(e)
+  triggerHook('GLOBAL_KEYUP', e)
+}
+
 window.addEventListener('keydown', keydownHandler, true)
-window.addEventListener('keyup', recordKeys, true)
+window.addEventListener('keyup', keyupHandler, true)
