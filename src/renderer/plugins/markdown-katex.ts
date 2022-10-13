@@ -17,6 +17,7 @@ import { h } from 'vue'
 import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
 import monacoLatex from '@fe/others/monaco-latex'
+import { getRenderCache } from '@fe/services/markdown'
 
 // Test if potential opening or closing delimieter
 // Assumes that there is a "$" at state.src[pos]
@@ -172,9 +173,12 @@ function math_plugin (md: any, options: any) {
 
     options.displayMode = false
     try {
-      const html = katex.renderToString(latex, options)
-      const innerHTML = html.replace(/^<span class="katex">/, '')
-        .replace(/<\/span>$/, '')
+      const innerHTML = getRenderCache('plugin-katex', JSON.stringify(options) + latex, () => {
+        const html = katex.renderToString(latex, options)
+        return html.replace(/^<span class="katex">/, '')
+          .replace(/<\/span>$/, '')
+      })
+
       return h('span', { class: 'katex', key: idx + innerHTML, innerHTML })
     } catch (error: any) {
       if (options.throwOnError) { console.warn(error) }
@@ -187,8 +191,11 @@ function math_plugin (md: any, options: any) {
     const latex = token.content
     options.displayMode = true
     try {
-      const html = katex.renderToString(latex, options)
-      return h('p', { ...token.meta?.attrs, key: idx + html, innerHTML: html }, '')
+      const innerHTML = getRenderCache('plugin-katex', JSON.stringify(options) + latex, () => {
+        return katex.renderToString(latex, options)
+      })
+
+      return h('p', { ...token.meta?.attrs, key: idx + innerHTML, innerHTML }, '')
     } catch (error: any) {
       if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
