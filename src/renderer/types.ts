@@ -203,8 +203,7 @@ export type BuildInActions = {
   'view.render-immediately': () => void,
   'view.render': () => void,
   'view.refresh': () => void,
-  'view.reveal-line': (startLine: number) => HTMLElement | null,
-  'view.scroll-top-to': (top: number) => void,
+  'view.reveal-line': (startLine: number) => Promise<HTMLElement | null>,
   'view.get-content-html': () => string,
   'view.get-view-dom': () => HTMLElement | null,
   'view.get-render-env': () => RenderEnv | null,
@@ -261,7 +260,7 @@ export type BuildInHookTypes = {
   VIEW_ELEMENT_CLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },
-  VIEW_SCROLL: { e: WheelEvent },
+  VIEW_SCROLL: { e: Event },
   VIEW_RENDER: never,
   VIEW_RENDERED: never,
   VIEW_MOUNTED: never,
@@ -269,6 +268,7 @@ export type BuildInHookTypes = {
   VIEW_BEFORE_REFRESH: never,
   VIEW_AFTER_REFRESH: never,
   VIEW_PREVIEWER_CHANGE: { type: 'register' | 'remove' | 'switch' },
+  VIEW_RENDER_IFRAME_READY: { iframe: HTMLIFrameElement },
   VIEW_ON_GET_HTML_FILTER_NODE: {
     node: HTMLElement,
     options: {

@@ -1,6 +1,6 @@
 <template>
   <component v-if="previewer" :is="previewer.component" />
-  <Preview :class="previewer ? 'preview-hidden' : undefined" />
+  <default-previewer :class="previewer ? 'preview-hidden' : undefined" />
 </template>
 
 <script lang="ts" setup>
@@ -8,7 +8,7 @@ import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { getAllPreviewers } from '@fe/services/view'
 import type { AppState } from '@fe/support/store'
-import Preview from './Preview.vue'
+import DefaultPreviewer from './DefaultPreviewer.vue'
 
 const store = useStore<AppState>()
 

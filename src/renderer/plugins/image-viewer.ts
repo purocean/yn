@@ -10,6 +10,7 @@ export default {
       setTimeout(() => {
         const viewer = new Viewer(ctx.view.getViewDom()!, {
           zIndex: 299999,
+          container: document.body,
           toolbar: {
             zoomIn: 4,
             zoomOut: 4,

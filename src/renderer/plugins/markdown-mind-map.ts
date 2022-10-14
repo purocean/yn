@@ -9,6 +9,7 @@ import { buildSrc } from '@fe/support/embed'
 import store from '@fe/support/store'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { t } from '@fe/services/i18n'
+import { getRenderIframe } from '@fe/services/view'
 
 const logger = getLogger('markdown-mind-map')
 
@@ -17,27 +18,34 @@ let links = ''
 
 let mindMapId = 0
 const instances = new Map()
+let window: any // render iframe content window
 
-// kityminder has memory leak at CustomEvent, make CustomEvent readonly
-const CustomEvent = window.CustomEvent
-Object.defineProperty(window, 'CustomEvent', {
-  get: () => CustomEvent,
-  set: () => undefined
-})
+async function processRenderWindow () {
+  window = (await getRenderIframe()).contentWindow!
 
-Object.defineProperty(window, 'kity', {
-  get: () => {
-    logger.debug('new kity')
-    return window.kityM()
-  },
-})
+  // kityminder has memory leak at CustomEvent, make CustomEvent readonly
+  const CustomEvent = window.CustomEvent
+  Object.defineProperty(window, 'CustomEvent', {
+    get: () => CustomEvent,
+    set: () => undefined
+  })
 
-Object.defineProperty(window, 'kityminder', {
-  get: () => {
-    logger.debug('new kityminder')
-    return window.kityminderM()
-  },
-})
+  Object.defineProperty(window, 'kity', {
+    get: () => {
+      logger.debug('new kity')
+      return window.kityM()
+    },
+  })
+
+  Object.defineProperty(window, 'kityminder', {
+    get: () => {
+      logger.debug('new kityminder')
+      return window.kityminderM()
+    },
+  })
+}
+
+processRenderWindow()
 
 function newMinder () {
   // hack addEventListener, fix memory leak.
@@ -464,7 +472,7 @@ const renderRule: Renderer.RenderRule = (tokens, idx, options, { bMarks, source 
 export default {
   name: 'markdown-mind-map',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .mind-map {
         overflow: hidden;
       }
@@ -489,23 +497,12 @@ export default {
       }
     `)
 
-    ctx.markdown.registerPlugin(md => {
+    ctx.markdown.registerPlugin(async md => {
       md.renderer.rules.bullet_list_open = renderRule
 
-      const style = document.createElement('link')
-      style.rel = 'stylesheet'
-      style.href = '/kity/kityminder.core.css'
-      document.getElementsByTagName('head')[0].appendChild(style)
-
-      const script1 = document.createElement('script')
-      script1.src = '/kity/kity.min.js'
-      script1.async = false
-      document.body.appendChild(script1)
-
-      const script2 = document.createElement('script')
-      script2.src = '/kity/kityminder.core.min.js'
-      script2.async = false
-      document.body.appendChild(script2)
+      const style = await ctx.view.addStyleLink('/kity/kityminder.core.css')
+      const script1 = await ctx.view.addScript('/kity/kity.min.js')
+      const script2 = await ctx.view.addScript('/kity/kityminder.core.min.js')
 
       links = [style.outerHTML, script1.outerHTML, script2.outerHTML].join('\n')
     })

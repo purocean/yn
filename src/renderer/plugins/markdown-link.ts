@@ -9,9 +9,12 @@ import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { getRepo, openExternal, openPath } from '@fe/services/base'
+import { getRenderIframe } from '@fe/services/view'
 
-function getElement (id: string) {
+async function getElement (id: string) {
   id = id.replaceAll('%28', '(').replaceAll('%29', ')')
+
+  const document = (await getRenderIframe()).contentDocument!
 
   const _find = (id: string) => document.getElementById(id) ||
     document.getElementById(decodeURIComponent(id)) ||
@@ -32,7 +35,7 @@ function getAnchorElement (target: HTMLElement) {
   return cur?.tagName === 'A' ? <HTMLAnchorElement>cur : null
 }
 
-const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
+async function handleLink (link: HTMLAnchorElement) {
   const { currentFile } = store.state
   if (!currentFile) {
     return
@@ -67,11 +70,9 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
     // better scrollIntoView
     const scrollIntoView = async (el: HTMLElement) => {
       el.scrollIntoView()
-      const wrap = view.parentElement
       // retain 60 px for better view.
-      if (wrap && wrap.scrollHeight !== wrap.scrollTop + wrap.clientHeight) {
-        wrap.scrollTop -= 60
-      }
+      const contentWindow = (await getRenderIframe()).contentWindow!
+      contentWindow.scrollBy(0, -60)
 
       // highlight element
       el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
@@ -87,33 +88,33 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
         path = join(dirname(filePath || ''), path)
       }
 
-      switchDoc({
+      await switchDoc({
         path,
         name: basename(path),
         repo: fileRepo,
         type: 'file'
-      }).then(async () => {
-        const hash = tmp.slice(1).join('#')
-        // jump anchor
-        if (hash) {
-          await sleep(50)
-          const el = getElement(hash)
+      })
 
-          if (el) {
-            await sleep(0)
-            scrollIntoView(el)
+      const hash = tmp.slice(1).join('#')
+      // jump anchor
+      if (hash) {
+        await sleep(50)
+        const el = await getElement(hash)
 
-            // reveal editor lint when click heading
-            if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
-              el.click()
-            }
+        if (el) {
+          await sleep(0)
+          scrollIntoView(el)
+
+          // reveal editor lint when click heading
+          if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
+            el.click()
           }
         }
-      })
+      }
 
       return true
     } else if (href && href.startsWith('#')) { // for anchor
-      const el = getElement(href.replace(/^#/, ''))
+      const el = await getElement(href.replace(/^#/, ''))
       el && scrollIntoView(el)
       return true
     }
@@ -168,12 +169,12 @@ function convertLink (state: StateCore) {
     const originPath = removeQuery(attrVal)
 
     if (repo === '__help__') {
-      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(originPath)}`)
+      token.attrSet(attrName, `/api/help/file?path=${encodeURIComponent(originPath)}`)
       return
     }
 
     const filePath = resolve(basePath, originPath)
-    token.attrSet(attrName, `api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
+    token.attrSet(attrName, `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
   }
 
   const convert = (tokens: Token[]) => {
@@ -244,11 +245,11 @@ export default {
       }
     })
 
-    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e, view }) => {
+    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
       const anchorTarget = getAnchorElement(<HTMLElement>e.target)
 
       if (anchorTarget) {
-        if (handleLink(anchorTarget, view)) {
+        if (await handleLink(anchorTarget)) {
           e.preventDefault()
           e.stopPropagation()
           return true

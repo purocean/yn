@@ -7,7 +7,7 @@ import { Plugin } from '@fe/context'
 export default {
   name: 'markdown-container',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .custom-container.section {
         padding: 12px;
         border: 1px solid var(--g-color-80);

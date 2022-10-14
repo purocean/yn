@@ -379,7 +379,7 @@ function footnote_plugin (md) {
 export default {
   name: 'markdown-footnote',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .footnote-backref {
         padding: 0 4px;
         font-family: system-ui;

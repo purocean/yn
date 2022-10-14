@@ -16,6 +16,7 @@ import katex from 'katex'
 import { h } from 'vue'
 import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
+import styles from 'katex/dist/katex.min.css'
 import monacoLatex from '@fe/others/monaco-latex'
 import { getRenderCache } from '@fe/services/markdown'
 
@@ -213,7 +214,8 @@ function math_plugin (md: any, options: any) {
 export default {
   name: 'markdown-katex',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(styles)
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .katex {
         background: initial;
       }
