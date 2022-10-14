@@ -4,6 +4,7 @@ import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { removeQuery, sleep } from '@fe/utils'
 import { isElectron } from '@fe/support/env'
+import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
@@ -42,7 +43,10 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   // open attachment in os
   const href = link.getAttribute('href') || ''
 
-  if (/^(http:|https:|ftp:)\/\//i.test(href)) { // external link
+  if (!href.trim()) {
+    useToast().show('warning', 'Link is empty.')
+    return true
+  } else if (/^(http:|https:|ftp:)\/\//i.test(href)) { // external link
     if (isElectron) {
       openExternal(link.href)
       return true
