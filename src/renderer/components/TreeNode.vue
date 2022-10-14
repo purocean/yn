@@ -371,6 +371,9 @@ export default defineComponent({
 
 summary {
   outline: none;
+  height: 26px;
+  overflow: hidden;
+  contain: strict;
 }
 
 summary.folder::-webkit-details-marker,

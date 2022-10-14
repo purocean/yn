@@ -88,6 +88,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .side {
   color: var(--g-foreground-color);
+  contain: strict;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
