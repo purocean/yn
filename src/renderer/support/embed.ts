@@ -90,7 +90,7 @@ export const IFrame = defineComponent({
       url.value = ''
     }
 
-    const refresh = () => {
+    const forceRefresh = () => {
       if (url.value) {
         const _url = url.value
         clean()
@@ -123,6 +123,7 @@ export const IFrame = defineComponent({
     }
 
     expose({
+      forceRefresh,
       getIframe: () => iframe.value,
       reload: () => {
         iframe.value?.contentWindow?.location.reload()
