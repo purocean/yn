@@ -31,13 +31,14 @@
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" @click="scrollToTop">TOP</div>
     <XIFrame
+      v-if="iframeVisible"
       global-style
       trigger-parent-key-board-event
       :iframe-props="iframeProps"
       :html="initHTML"
       :on-load="onLoad"
     />
-    <Teleport v-if="container" :to="container">
+    <Teleport v-if="iframeVisible && container" :to="container">
       <default-previewer-render />
     </Teleport>
   </div>
@@ -53,6 +54,7 @@ import { disableSyncScrollAwhile, getHeadings, getViewDom, Heading, print, scrol
 import { showExport } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import type { AppState } from '@fe/support/store'
+import { useToast } from '@fe/support/ui/toast'
 import { getEditor } from '@fe/services/editor'
 
 import DefaultPreviewerRender from './DefaultPreviewerRender.ce.vue'
@@ -83,6 +85,7 @@ const todoCount = ref(0)
 const todoDoneCount = ref(0)
 const scrollTop = ref(0)
 const pinOutline = ref(false)
+const iframeVisible = ref(true)
 const heads = ref<Heading[]>([])
 const refPreviewer = ref<HTMLDivElement | null>(null)
 
@@ -93,6 +96,14 @@ function onLoad (iframe: HTMLIFrameElement) {
   const contentWindow = iframe.contentWindow!
 
   contentWindow.addEventListener('scroll', handleScroll)
+  contentWindow.addEventListener('beforeunload', () => {
+    logger.warn('iframe beforeunload')
+    iframeVisible.value = false
+    useToast().show('warning', 'IFrame Error!')
+    setTimeout(() => {
+      iframeVisible.value = true
+    }, 3000)
+  })
 
   container.value = contentDocument.getElementById('app')! as HTMLIFrameElement
 
