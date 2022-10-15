@@ -471,7 +471,7 @@ registerAction({
   handler: () => present(false),
   keys: [Escape],
   when: () => {
-    const el = window.document.activeElement
+    const el = (renderIframe?.contentDocument || window.document).activeElement
     return store.state.presentation &&
       el?.tagName !== 'INPUT' &&
       el?.tagName !== 'TEXTAREA' &&
