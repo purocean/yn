@@ -270,6 +270,7 @@ export type BuildInHookTypes = {
   VIEW_AFTER_REFRESH: never,
   VIEW_PREVIEWER_CHANGE: { type: 'register' | 'remove' | 'switch' },
   VIEW_RENDER_IFRAME_READY: { iframe: HTMLIFrameElement },
+  VIEW_BEFORE_EXPORT: { type: ExportType },
   VIEW_ON_GET_HTML_FILTER_NODE: {
     node: HTMLElement,
     options: {
@@ -297,7 +298,6 @@ export type BuildInHookTypes = {
   DOC_SWITCHED: { doc: Doc | null },
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
-  DOC_BEFORE_EXPORT: { type: ExportType },
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
   SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }

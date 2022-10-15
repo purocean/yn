@@ -49,8 +49,8 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 
 import { IFrame as XIFrame } from '@fe/support/embed'
 import { getLogger } from '@fe/utils'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
-import { disableSyncScrollAwhile, getHeadings, getViewDom, Heading, scrollTopTo } from '@fe/services/view'
-import { print, showExport } from '@fe/services/document'
+import { disableSyncScrollAwhile, getHeadings, getViewDom, Heading, print, scrollTopTo } from '@fe/services/view'
+import { showExport } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import type { AppState } from '@fe/support/store'
 import { getEditor } from '@fe/services/editor'
@@ -66,7 +66,7 @@ const logger = getLogger('preview')
 const iframeProps = {
   width: '100%',
   height: '100%',
-  sandbox: 'allow-scripts allow-same-origin allow-popups',
+  sandbox: 'allow-scripts allow-same-origin allow-popups allow-modals',
 }
 
 const initHTML = '<div id="app">Loading……</div>'

@@ -456,6 +456,15 @@ export async function addScript (src: string) {
   return script
 }
 
+/**
+ * print
+ */
+export async function print () {
+  await triggerHook('VIEW_BEFORE_EXPORT', { type: 'pdf' }, { breakable: true })
+  const iframe = await getRenderIframe()
+  iframe.contentWindow!.print()
+}
+
 registerHook('VIEW_RENDER_IFRAME_READY', ({ iframe }) => {
   renderIframe = iframe
 })
