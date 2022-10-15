@@ -136,9 +136,19 @@ function handleContextMenu (e: MouseEvent) {
   if (isElectron || e.altKey || allowTags.includes(tagName)) {
     const contextMenuItems = getContextMenuItems(e)
     if (contextMenuItems.length > 0) {
-      useContextMenu().show(contextMenuItems)
       e.stopPropagation()
       e.preventDefault()
+
+      const clientX = e.clientX
+      const clientY = e.clientY
+
+      getRenderIframe().then((iframe) => {
+        const iframeRect = iframe.getBoundingClientRect()
+        useContextMenu().show(contextMenuItems, {
+          mouseX: iframeRect.left + clientX,
+          mouseY: iframeRect.top + clientY,
+        })
+      })
     }
   }
 }
