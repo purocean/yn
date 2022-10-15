@@ -67,6 +67,21 @@ export async function addStyles (style: string) {
 }
 
 /**
+ * Add style link to default preview.
+ * @param href
+ * @returns link dom
+ */
+export async function addStyleLink (href: string) {
+  const link = document.createElement('link')
+  link.id = 'link-' + Math.random().toString(36).slice(2, 9) + '-' + Date.now()
+  link.rel = 'stylesheet'
+  link.href = href
+  document.head.appendChild(link)
+
+  return link
+}
+
+/**
  * register theme style
  * @param style
  */
