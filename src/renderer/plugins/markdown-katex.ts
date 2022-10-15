@@ -174,13 +174,14 @@ function math_plugin (md: any, options: any) {
 
     options.displayMode = false
     try {
-      const innerHTML = getRenderCache('plugin-katex', JSON.stringify(options) + latex, () => {
+      const cacheKey = JSON.stringify(options) + latex
+      const innerHTML = getRenderCache('plugin-katex', cacheKey, () => {
         const html = katex.renderToString(latex, options)
         return html.replace(/^<span class="katex">/, '')
           .replace(/<\/span>$/, '')
       })
 
-      return h('span', { class: 'katex', key: idx + innerHTML, innerHTML })
+      return h('span', { class: 'katex', key: idx + cacheKey, innerHTML })
     } catch (error: any) {
       if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
@@ -192,11 +193,12 @@ function math_plugin (md: any, options: any) {
     const latex = token.content
     options.displayMode = true
     try {
-      const innerHTML = getRenderCache('plugin-katex', JSON.stringify(options) + latex, () => {
+      const cacheKey = JSON.stringify(options) + latex
+      const innerHTML = getRenderCache('plugin-katex', cacheKey, () => {
         return katex.renderToString(latex, options)
       })
 
-      return h('p', { ...token.meta?.attrs, key: idx + innerHTML, innerHTML }, '')
+      return h('p', { ...token.meta?.attrs, key: idx + cacheKey, innerHTML }, '')
     } catch (error: any) {
       if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
