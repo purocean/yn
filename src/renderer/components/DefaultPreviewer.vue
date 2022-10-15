@@ -155,8 +155,17 @@ function handleScroll (e: Event) {
 }
 
 function handleRendered () {
-  updateOutline()
-  updateTodoCount()
+  if ((window as any).requestIdleCallback) {
+    (window as any).requestIdleCallback(() => {
+      updateOutline()
+      updateTodoCount()
+    }, { timeout: 80 })
+  } else {
+    setTimeout(() => {
+      updateOutline()
+      updateTodoCount()
+    }, 80)
+  }
 }
 
 onMounted(() => {

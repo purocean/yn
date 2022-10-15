@@ -19,7 +19,7 @@ import { toUri, isMarkdownFile } from '@fe/services/document'
 import { getContextMenuItems, getRenderIframe, scrollTopTo } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { DOM_ATTR_NAME } from '@fe/support/args'
-import { getLogger } from '@fe/utils'
+import { getLogger, sleep } from '@fe/utils'
 import type { RenderEnv } from '@fe/types'
 import type { AppState } from '@fe/support/store'
 
@@ -68,13 +68,19 @@ function getViewDom () {
   return refView.value
 }
 
-function render (checkInComposition = false) {
+async function render (checkInComposition = false) {
   if (checkInComposition && inComposition.value) {
     logger.debug('render in composition, skip')
     return
   }
 
   logger.debug('render')
+
+  renderCount++
+  // first render, reset debounce time
+  if (renderCount === 1) {
+    updateRender = debounce(render, 25)
+  }
 
   let content = currentContent.value
 
@@ -84,7 +90,7 @@ function render (checkInComposition = false) {
   }
 
   const startTime = performance.now()
-  renderEnv = { tokens: [], source: content, file: currentFile.value, renderCount: renderCount++ }
+  renderEnv = { tokens: [], source: content, file: currentFile.value, renderCount: renderCount }
   try {
     renderContent.value = markdown.render(content, renderEnv)
   } catch (error: any) {
@@ -94,14 +100,22 @@ function render (checkInComposition = false) {
       h('pre', error.stack || error.toString())
     ])
   }
-  const renderTime = performance.now() - startTime
 
-  logger.debug('rendered', 'cost', renderTime)
-
-  updateRender = debounce(render.bind(null, true), Math.max(25, renderTime * (renderTime < 100 ? 1.2 : 1.8)))
+  const parseTime = performance.now() - startTime
 
   triggerHook('VIEW_RENDER')
   nextTick(() => triggerHook('VIEW_RENDERED'))
+
+  await sleep(0) // wait for paint
+
+  const renderTime = performance.now() - startTime
+
+  logger.debug('rendered', renderCount, 'cost', parseTime, renderTime)
+
+  if (renderCount > 2) {
+    // dynamic debounce
+    updateRender = debounce(render.bind(null, true), Math.max(25, renderTime * 1.2))
+  }
 }
 
 async function keydownHandler (e: KeyboardEvent) {
@@ -219,7 +233,7 @@ onBeforeUnmount(() => {
 
 watch([currentContent, fileUri, inComposition], () => {
   autoPreview.value && updateRender()
-})
+}, { flush: 'post' })
 
 watch(fileUri, () => {
   renderCount = 0
@@ -229,7 +243,6 @@ watch(fileUri, () => {
     renderContent.value = ''
   }
 
-  updateRender = debounce(render, 25)
   triggerHook('VIEW_FILE_CHANGE')
 })
 </script>
