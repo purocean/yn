@@ -110,7 +110,7 @@ export async function scrollTopTo (top: number) {
 
 export function getPreviewStyles () {
   let styles = `article.${DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY} { max-width: 1024px; margin: 20px auto; }`
-  Array.prototype.forEach.call(document.styleSheets, item => {
+  Array.prototype.forEach.call(renderIframe.contentDocument!.styleSheets, item => {
     // inject global styles, normalize.css
     const flag = item.cssRules[0] &&
       item.cssRules[0].selectorText === 'html' &&
