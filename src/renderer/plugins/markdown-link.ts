@@ -35,10 +35,10 @@ function getAnchorElement (target: HTMLElement) {
   return cur?.tagName === 'A' ? <HTMLAnchorElement>cur : null
 }
 
-async function handleLink (link: HTMLAnchorElement) {
+function handleLink (link: HTMLAnchorElement): boolean {
   const { currentFile } = store.state
   if (!currentFile) {
-    return
+    return false
   }
 
   const { repo: fileRepo, path: filePath } = currentFile
@@ -53,6 +53,8 @@ async function handleLink (link: HTMLAnchorElement) {
     if (isElectron) {
       openExternal(link.href)
       return true
+    } else {
+      return false
     }
   } else if (/^file:\/\//i.test(href)) {
     openPath(decodeURI(href.replace(/^file:\/\//i, '')))
@@ -88,38 +90,39 @@ async function handleLink (link: HTMLAnchorElement) {
         path = join(dirname(filePath || ''), path)
       }
 
-      await switchDoc({
+      switchDoc({
         path,
         name: basename(path),
         repo: fileRepo,
         type: 'file'
-      })
+      }).then(async () => {
+        const hash = tmp.slice(1).join('#')
+        // jump anchor
+        if (hash) {
+          await sleep(50)
+          const el = await getElement(hash)
 
-      const hash = tmp.slice(1).join('#')
-      // jump anchor
-      if (hash) {
-        await sleep(50)
-        const el = await getElement(hash)
+          if (el) {
+            await sleep(0)
+            scrollIntoView(el)
 
-        if (el) {
-          await sleep(0)
-          scrollIntoView(el)
-
-          // reveal editor lint when click heading
-          if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
-            el.click()
+            // reveal editor lint when click heading
+            if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
+              el.click()
+            }
           }
         }
-      }
+      })
 
       return true
     } else if (href && href.startsWith('#')) { // for anchor
-      const el = await getElement(href.replace(/^#/, ''))
-      el && scrollIntoView(el)
+      getElement(href.replace(/^#/, '')).then(el => {
+        el && scrollIntoView(el)
+      })
       return true
+    } else {
+      return false
     }
-
-    return false
   }
 }
 
@@ -249,7 +252,7 @@ export default {
       const anchorTarget = getAnchorElement(<HTMLElement>e.target)
 
       if (anchorTarget) {
-        if (await handleLink(anchorTarget)) {
+        if (handleLink(anchorTarget)) {
           e.preventDefault()
           e.stopPropagation()
           return true
