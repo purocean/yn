@@ -43,10 +43,13 @@ export default defineComponent({
       mouseY = e.clientY
     }
 
-    function showMenu () {
+    function showMenu (opts?: Components.ContextMenu.ShowOpts) {
       if (!refMenu.value) {
         return
       }
+
+      const _mouseX = opts?.mouseX ?? mouseX
+      const _mouseY = opts?.mouseY ?? mouseY
 
       const windowWidth = window.innerWidth
       const windowHeight = window.innerHeight
@@ -54,8 +57,8 @@ export default defineComponent({
       const menuWidth = refMenu.value.offsetWidth
       const menuHeight = refMenu.value.offsetHeight
 
-      const x = mouseX + menuWidth > windowWidth ? mouseX - menuWidth : mouseX
-      const y = mouseY + menuHeight > windowHeight ? mouseY - menuHeight : mouseY
+      const x = _mouseX + menuWidth > windowWidth ? _mouseX - menuWidth : _mouseX
+      const y = _mouseY + menuHeight > windowHeight ? _mouseY - menuHeight : _mouseY
 
       refMenu.value.style.left = x + 'px'
       refMenu.value.style.height = y < 0 ? `${menuHeight + y}px` : 'unset'
@@ -64,7 +67,7 @@ export default defineComponent({
       isShow.value = true
     }
 
-    function show (menuItems: Components.ContextMenu.Item[]) {
+    function show (menuItems: Components.ContextMenu.Item[], opts?: Components.ContextMenu.ShowOpts) {
       items.value = menuItems
 
       if (refMenu.value) {
@@ -72,7 +75,7 @@ export default defineComponent({
       }
 
       nextTick(() => {
-        showMenu()
+        showMenu(opts)
       })
     }
 

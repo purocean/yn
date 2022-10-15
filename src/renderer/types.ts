@@ -59,6 +59,7 @@ export namespace Components {
   }
 
   export namespace ContextMenu {
+    export type ShowOpts = { mouseX?: number, mouseY?: number }
     export type SeparatorItem = { type: 'separator', hidden?: boolean; }
 
     export type NormalItem = {
