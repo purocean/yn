@@ -45,5 +45,12 @@ export default {
         background: rgba(0, 0, 0, .57)
       }
     `)
+
+    // https://github.com/fengyuanchen/viewerjs/issues/197
+    ctx.view.addStyles(`
+      body.viewer-open {
+        padding-right: 0 !important;
+      }
+    `)
   }
 } as Plugin

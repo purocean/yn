@@ -132,7 +132,7 @@
     "typedoc": "^0.22.7",
     "typescript": "^4.3.2",
     "utility-types": "^3.10.0",
-    "viewerjs": "^1.10.2",
+    "viewerjs": "^1.10.5",
     "vite": "^2.9.13",
     "vue": "^3.2.23",
     "vue-router": "^4.0.0-0",
