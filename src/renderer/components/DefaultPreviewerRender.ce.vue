@@ -237,12 +237,6 @@ watch([currentContent, fileUri, inComposition], () => {
 
 watch(fileUri, () => {
   renderCount = 0
-
-  if (autoPreview.value) {
-    // clear render content
-    renderContent.value = ''
-  }
-
   triggerHook('VIEW_FILE_CHANGE')
 })
 </script>
