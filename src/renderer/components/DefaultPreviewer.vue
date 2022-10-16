@@ -108,7 +108,9 @@ function onLoad (iframe: HTMLIFrameElement) {
     iframeVisible.value = false
     setTimeout(() => {
       useToast().show('warning', 'IFrame Error!')
-      iframeVisible.value = true
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500)
     }, 3000)
   })
 
