@@ -204,14 +204,14 @@ export function getViewDom () {
  * Get Headings
  */
 export function getHeadings (withActivated = false): Heading[] {
-  const dom = getViewDom()?.parentElement
-  if (!dom) {
+  const document = renderIframe.contentDocument
+  const dom = getViewDom()
+  if (!dom || !document) {
     return []
   }
 
   const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 
-  let viewRect: DOMRect
   let breakCheck = false
   const isActivated = (nodes: NodeListOf<HTMLHeadElement>, i: number) => {
     if (!withActivated) {
@@ -222,19 +222,16 @@ export function getHeadings (withActivated = false): Heading[] {
       return false
     }
 
-    if (!viewRect) {
-      viewRect = dom.getBoundingClientRect()
-    }
-
     const node = nodes[i]
     const nodeRect = node.getBoundingClientRect()
 
-    const bottom = viewRect.bottom / 3 * 2
+    const bottom = document.documentElement.clientHeight / 3 * 2
+
     // in view
-    if (nodeRect.top >= viewRect.top && nodeRect.top < bottom) {
+    if (nodeRect.top >= 0 && nodeRect.top < bottom) {
       breakCheck = true
       return true
-    } else if (nodeRect.top < viewRect.top) { // before view
+    } else if (nodeRect.top < 0) { // before view
       const nextNode = i < nodes.length - 1 ? nodes[i + 1] : undefined
       const res = !nextNode || nextNode.getBoundingClientRect().top > bottom
       if (res) {
