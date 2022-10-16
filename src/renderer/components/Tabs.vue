@@ -40,7 +40,7 @@ import { useContextMenu } from '@fe/support/ui/context-menu'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
 import { useI18n } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
-import { registerHook } from '@fe/core/hook'
+import { registerHook, removeHook } from '@fe/core/hook'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -210,12 +210,13 @@ export default defineComponent({
 
     onMounted(() => {
       initSortable()
-      window.addEventListener('keydown', handleKeydown, true)
+      registerHook('GLOBAL_KEYDOWN', handleKeydown)
       registerHook('GLOBAL_RESIZE', handleShadow)
     })
 
     onBeforeUnmount(() => {
-      window.removeEventListener('keydown', handleKeydown, true)
+      removeHook('GLOBAL_KEYDOWN', handleKeydown)
+      removeHook('GLOBAL_RESIZE', handleShadow)
       sortable?.destroy()
     })
 

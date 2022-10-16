@@ -88,7 +88,7 @@ export default {
       }
     })
 
-    window.addEventListener('keydown', e => {
+    ctx.registerHook('GLOBAL_KEYDOWN', e => {
       if (e.altKey && !e.ctrlKey && !e.metaKey && e.code.startsWith('Digit')) {
         const repoIndex = Number(e.code.substring(5)) - 1
         const repos = ctx.setting.getSetting('repos', [])
@@ -101,6 +101,6 @@ export default {
         e.preventDefault()
         e.stopPropagation()
       }
-    }, true)
+    })
   }
 } as Plugin
