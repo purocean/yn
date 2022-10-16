@@ -76,16 +76,28 @@
 
 ## 更新日志
 
-### [v3.39.0](https://github.com/purocean/yn/releases/tag/v3.39.0) 2022-10-07
+### [v3.40.1](https://github.com/purocean/yn/releases/tag/v3.40.1) 2022-10-16
 
-1. feat: 增加上传所有图片功能
-2. feat: 宏替换增加 `$afterMacro` 方法，支持处理宏替换后的文档内容
-3. feat: 增加排除文件正则表达式设置
-4. fix: 修复使用快速打开面板不能正确打开加密文件问题
+1. feat: 优化渲染包含公式的大文档性能
+2. feat: 支持使用 frontmatter 定义 Katex 公式渲染参数
+3. feat: macOS 上窗口红绿灯指示文档是否已保存
+4. feat: “视图”菜单增加“编辑器/预览互斥”功能
 5. fix: 修复某些情况下编辑器补全内容插入不正确问题
-6. feat(plugin): 配置项支持自定义校验器 `validator` 字段
-7. feat(plugin): 支持配置编辑器简单补全条目，相关 Api：`ctx.editor.tapSimpleCompletionItems`, `ctx.editor.getSimpleCompletionItems`
-8. feat(plugin): 增加 `ctx.doc.createCurrentDocChecker` 方法
+6. fix: 修复点击空链接时打开新窗口问题
+7. fix: 修复某些情况下脑图显示异常问题
+8. refactor(plugin): 更改 `DOC_BEFORE_EXPORT` Hook 为 `VIEW_BEFORE_EXPORT`
+9. refactor(plugin): 更改 `ctx.doc.print ` 方法为 `ctx.view.print`
+10. refactor(plugin): 移除 `ctx.theme.removeStyles` 方法
+11. refactor(plugin): 移除 `view.scroll-top-to` Action
+12. feat(plugin): 增加 `ctx.theme.addStyleLink` 方法
+13. feat(plugin): 增加 `ctx.ui.useContextMenu` 方法，用于显示右键菜单
+14. feat(plugin): 增加 `ctx.markdown.getRenderCache` 方法，用于使用渲染缓存
+15. feat(plugin): 增加 `ctx.layout.toggleEditorPreviewExclusive` 方法，用于切换编辑器/预览互斥模式
+16. feat(plugin): 增加 `ctx.editor.tapMarkdownMonarchLanguage` 方法，用于更改编辑器 markdown 语言定义
+17. feat(plugin): 增加 `PLUGIN_HOOK` Hook，支持拦截更改 Katex 渲染参数
+18. feat(plugin): 增加 `VIEW_RENDER_IFRAME_READY`, `GLOBAL_KEYDOWN`, `GLOBAL_KEYUP` Hooks
+19. feat(plugin): 预览渲染使用 iframe，相关方法：`ctx.view.getRenderIframe`, `ctx.view.addStyles`, `ctx.view.addStyleLink`, `ctx.view.addScript`
+20. fix(plugin): 修复插件更改 markdown 渲染参数无效的问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
