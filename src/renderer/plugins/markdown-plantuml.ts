@@ -215,7 +215,7 @@ const Plantuml = defineComponent({
           [DOM_ATTR_NAME.ONLY_CHILD]: true,
           style,
           src: src.value,
-          onLoad
+          onload: onLoad
         })
       ])
     }
