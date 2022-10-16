@@ -10,6 +10,7 @@ import * as command from '@fe/core/command'
 import { useToast } from '@fe/support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
+import { useContextMenu } from '@fe/support/ui/context-menu'
 import * as env from '@fe/support/env'
 import store from '@fe/support/store'
 import * as base from '@fe/services/base'
@@ -57,7 +58,7 @@ const ctx = Object.freeze({
   i18n,
   env,
   utils,
-  ui: { useToast, useModal, useQuickFilter },
+  ui: { useToast, useModal, useQuickFilter, useContextMenu },
   registerHook: hook.registerHook,
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,
