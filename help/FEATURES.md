@@ -576,6 +576,7 @@ variable name | type | description
 `mdOptions.breaks` | `boolean` | Convert `\n` in paragraphs into `<br>`
 `mdOptions.linkify` | `boolean` | Autoconvert URL-like text to links
 `mdOptions.typographer` | `boolean` | Enable some language-neutral replacement + quotes beautification
+`katex` | `Record<string, any>` | [Katex Options](https://katex.org/docs/options.html)
 
 ## Macro Replacement
 

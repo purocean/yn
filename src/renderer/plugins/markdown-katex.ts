@@ -191,23 +191,29 @@ function renderToString (latex: string, options: any) {
 
 function math_plugin (md: any) {
   // set KaTeX as the renderer for markdown-it-simplemath
-  const inlineRenderer = function (tokens: Token[], idx: number) {
+  const inlineRenderer = function (tokens: Token[], idx: number, _: any, env: any) {
     const latex = tokens[idx].content
 
+    const { katex = {} } = env.attributes || {}
+    const options = Object.assign({ displayMode: false }, katex)
+
     try {
-      const { innerHTML, cacheKey } = renderToString(latex, { displayMode: false })
+      const { innerHTML, cacheKey } = renderToString(latex, options)
       return h('span', { class: 'katex', key: idx + cacheKey, innerHTML })
     } catch (error: any) {
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
 
-  const blockRenderer = function (tokens: Token[], idx: number) {
+  const blockRenderer = function (tokens: Token[], idx: number, _: any, env: any) {
     const token = tokens[idx]
     const latex = token.content
 
+    const { katex = {} } = env.attributes || {}
+    const options = Object.assign({ displayMode: true }, katex)
+
     try {
-      const { innerHTML, cacheKey } = renderToString(latex, { displayMode: true })
+      const { innerHTML, cacheKey } = renderToString(latex, options)
       return h('p', { ...token.meta?.attrs, key: idx + cacheKey, innerHTML }, '')
     } catch (error: any) {
       return h('code', {}, `${error.message} [${latex}]`)
