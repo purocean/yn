@@ -53,9 +53,10 @@ import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { disableSyncScrollAwhile, getHeadings, getViewDom, Heading, print, scrollTopTo } from '@fe/services/view'
 import { showExport } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
+import { getEditor } from '@fe/services/editor'
 import type { AppState } from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
-import { getEditor } from '@fe/services/editor'
+import { isElectron } from '@fe/support/env'
 
 import DefaultPreviewerRender from './DefaultPreviewerRender.ce.vue'
 import SvgIcon from './SvgIcon.vue'
@@ -96,11 +97,17 @@ function onLoad (iframe: HTMLIFrameElement) {
   const contentWindow = iframe.contentWindow!
 
   contentWindow.addEventListener('scroll', handleScroll)
-  contentWindow.addEventListener('beforeunload', () => {
+  contentWindow.addEventListener('beforeunload', (e) => {
+    if (isElectron) {
+      e.preventDefault()
+      e.returnValue = ''
+      return ''
+    }
+
     logger.warn('iframe beforeunload')
     iframeVisible.value = false
-    useToast().show('warning', 'IFrame Error!')
     setTimeout(() => {
+      useToast().show('warning', 'IFrame Error!')
       iframeVisible.value = true
     }, 3000)
   })
