@@ -198,7 +198,7 @@ const RunPlugin = (md: Markdown) => {
 export default {
   name: 'markdown-code-run',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .p-mcr-run-code-action {
         position: sticky;
         left: 0;

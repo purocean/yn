@@ -6,16 +6,35 @@ import { emitResize } from '@fe/services/layout'
 import type { ThemeName } from '@fe/types'
 import { FLAG_DEBUG } from './args'
 
+type BuildSrcOpts = {
+  globalStyle?: boolean,
+  triggerParentKeyBoardEvent?: boolean
+}
+
 /**
  * Build embedded page uri.
  * @param html
  * @param title
- * @param globalStyle
+ * @param globalStyle/opts
  * @returns src
  */
-export function buildSrc (html: string, title = '', globalStyle = false) {
-  const debug = FLAG_DEBUG
-  return `/embed/?_=${md5(html)}#title=${encodeURIComponent(title)}&with-global-style=${globalStyle}&debug=${debug}&html=${encodeURIComponent(html)}`
+export function buildSrc (html: string, title?: string, opts?: boolean): string
+export function buildSrc (html: string, title?: string, opts?: BuildSrcOpts): string
+export function buildSrc (html: string, title?: string, opts?: boolean | BuildSrcOpts) {
+  const globalStyle = typeof opts === 'object' ? opts.globalStyle : !!opts
+
+  opts = (typeof opts === 'object' ? opts : { globalStyle }) as BuildSrcOpts
+
+  const query = new URLSearchParams({
+    title: title || '',
+    globalStyle: String(globalStyle),
+    debug: String(FLAG_DEBUG),
+    'with-global-style': String(!!opts.globalStyle),
+    'trigger-parent-keyboard-event': String(!!opts?.triggerParentKeyBoardEvent),
+    html,
+  })
+
+  return `/embed/?_=${md5(html)}#${query.toString()}`
 }
 
 export const IFrame = defineComponent({
@@ -29,6 +48,10 @@ export const IFrame = defineComponent({
       type: Boolean,
       default: false
     },
+    triggerParentKeyBoardEvent: {
+      type: Boolean,
+      default: false,
+    },
     html: String,
     iframeProps: Object as PropType<IframeHTMLAttributes>,
     onLoad: Function as PropType<(iframe: HTMLIFrameElement) => void>
@@ -39,7 +62,10 @@ export const IFrame = defineComponent({
 
     const update = () => {
       if (props.html) {
-        url.value = buildSrc(props.html, 'Embedded Page', props.globalStyle)
+        url.value = buildSrc(props.html, 'Embedded Page', {
+          globalStyle: props.globalStyle,
+          triggerParentKeyBoardEvent: props.triggerParentKeyBoardEvent
+        })
       }
     }
 
@@ -64,7 +90,7 @@ export const IFrame = defineComponent({
       url.value = ''
     }
 
-    const refresh = () => {
+    const forceRefresh = () => {
       if (url.value) {
         const _url = url.value
         clean()
@@ -75,13 +101,9 @@ export const IFrame = defineComponent({
     }
 
     registerHook('THEME_CHANGE', changeTheme)
-    registerHook('VIEW_AFTER_REFRESH', refresh)
-    registerHook('VIEW_FILE_CHANGE', clean)
 
     onBeforeUnmount(() => {
       removeHook('THEME_CHANGE', changeTheme)
-      removeHook('VIEW_AFTER_REFRESH', refresh)
-      removeHook('VIEW_FILE_CHANGE', clean)
     })
 
     const onLoad = function () {
@@ -101,6 +123,7 @@ export const IFrame = defineComponent({
     }
 
     expose({
+      forceRefresh,
       getIframe: () => iframe.value,
       reload: () => {
         iframe.value?.contentWindow?.location.reload()
@@ -120,7 +143,7 @@ export const IFrame = defineComponent({
       frameBorder: '0',
       width: '100%',
       height: '100px',
-      onLoad,
+      onload: onLoad,
       ...props.iframeProps,
     }) : null
   }

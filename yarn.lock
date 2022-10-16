@@ -8701,10 +8701,10 @@ verror@1.10.0, verror@^1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-viewerjs@^1.10.2:
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/viewerjs/-/viewerjs-1.10.2.tgz#de16fa10668e4da6325969836a3264a046e3ef9a"
-  integrity sha512-v/4+OUF/71JthlvYuqfse+WGkMJO0LxvWiOLsAoxWw+RWjMdEBWn0ZQ5Mc+OhNIFd9uLhG62GzfFIplvix8odg==
+viewerjs@^1.10.5:
+  version "1.10.5"
+  resolved "https://registry.yarnpkg.com/viewerjs/-/viewerjs-1.10.5.tgz#a0f52fe7c15fa27003099af8e7552378ed5fc94d"
+  integrity sha512-QwKrmXlSfKg5x4y74F/jicpHIRqBMMfHXyboOxHDi5n4XAaejjpalphPq4/HW6venQAoMiD57HpVwBk0JvqpSA==
 
 vite@^2.9.13:
   version "2.9.13"

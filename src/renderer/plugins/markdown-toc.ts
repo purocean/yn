@@ -204,7 +204,7 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
 export default {
   name: 'markdown-toc',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .table-of-contents ol {
         counter-reset: ol-number;
         list-style-type: none;

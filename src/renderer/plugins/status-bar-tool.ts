@@ -22,7 +22,7 @@ export default {
             hidden: !ctx.store.state.currentFile,
             onClick: () => {
               setTimeout(() => {
-                ctx.doc.print()
+                ctx.view.print()
               }, 0)
             },
           },

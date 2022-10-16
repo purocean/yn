@@ -4,13 +4,17 @@ import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { removeQuery, sleep } from '@fe/utils'
 import { isElectron } from '@fe/support/env'
+import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { getRepo, openExternal, openPath } from '@fe/services/base'
+import { getRenderIframe } from '@fe/services/view'
 
-function getElement (id: string) {
+async function getElement (id: string) {
   id = id.replaceAll('%28', '(').replaceAll('%29', ')')
+
+  const document = (await getRenderIframe()).contentDocument!
 
   const _find = (id: string) => document.getElementById(id) ||
     document.getElementById(decodeURIComponent(id)) ||
@@ -31,10 +35,10 @@ function getAnchorElement (target: HTMLElement) {
   return cur?.tagName === 'A' ? <HTMLAnchorElement>cur : null
 }
 
-const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
+function handleLink (link: HTMLAnchorElement): boolean {
   const { currentFile } = store.state
   if (!currentFile) {
-    return
+    return false
   }
 
   const { repo: fileRepo, path: filePath } = currentFile
@@ -42,10 +46,15 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
   // open attachment in os
   const href = link.getAttribute('href') || ''
 
-  if (/^(http:|https:|ftp:)\/\//i.test(href)) { // external link
+  if (!href.trim()) {
+    useToast().show('warning', 'Link is empty.')
+    return true
+  } else if (/^(http:|https:|ftp:)\/\//i.test(href)) { // external link
     if (isElectron) {
       openExternal(link.href)
       return true
+    } else {
+      return false
     }
   } else if (/^file:\/\//i.test(href)) {
     openPath(decodeURI(href.replace(/^file:\/\//i, '')))
@@ -63,11 +72,9 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
     // better scrollIntoView
     const scrollIntoView = async (el: HTMLElement) => {
       el.scrollIntoView()
-      const wrap = view.parentElement
       // retain 60 px for better view.
-      if (wrap && wrap.scrollHeight !== wrap.scrollTop + wrap.clientHeight) {
-        wrap.scrollTop -= 60
-      }
+      const contentWindow = (await getRenderIframe()).contentWindow!
+      contentWindow.scrollBy(0, -60)
 
       // highlight element
       el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
@@ -93,7 +100,7 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
         // jump anchor
         if (hash) {
           await sleep(50)
-          const el = getElement(hash)
+          const el = await getElement(hash)
 
           if (el) {
             await sleep(0)
@@ -109,12 +116,13 @@ const handleLink = (link: HTMLAnchorElement, view: HTMLElement) => {
 
       return true
     } else if (href && href.startsWith('#')) { // for anchor
-      const el = getElement(href.replace(/^#/, ''))
-      el && scrollIntoView(el)
+      getElement(href.replace(/^#/, '')).then(el => {
+        el && scrollIntoView(el)
+      })
       return true
+    } else {
+      return false
     }
-
-    return false
   }
 }
 
@@ -164,12 +172,12 @@ function convertLink (state: StateCore) {
     const originPath = removeQuery(attrVal)
 
     if (repo === '__help__') {
-      token.attrSet(attrName, `api/help/file?path=${encodeURIComponent(originPath)}`)
+      token.attrSet(attrName, `/api/help/file?path=${encodeURIComponent(originPath)}`)
       return
     }
 
     const filePath = resolve(basePath, originPath)
-    token.attrSet(attrName, `api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
+    token.attrSet(attrName, `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
   }
 
   const convert = (tokens: Token[]) => {
@@ -240,11 +248,11 @@ export default {
       }
     })
 
-    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e, view }) => {
+    ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
       const anchorTarget = getAnchorElement(<HTMLElement>e.target)
 
       if (anchorTarget) {
-        if (handleLink(anchorTarget, view)) {
+        if (handleLink(anchorTarget)) {
           e.preventDefault()
           e.stopPropagation()
           return true

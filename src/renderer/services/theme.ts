@@ -55,25 +55,30 @@ export function setTheme (name: ThemeName) {
 /**
  * Add styles to page.
  * @param style
- * @return style tag id
+ * @return css dom
  */
-export function addStyles (style: string) {
+export async function addStyles (style: string) {
   const css = document.createElement('style')
   css.id = 'style-' + Math.random().toString(36).slice(2, 9) + '-' + Date.now()
   css.innerHTML = style
-  document.getElementsByTagName('head')[0].appendChild(css)
-  return css.id
+  document.head.appendChild(css)
+
+  return css
 }
 
 /**
- * Remove styles from page.
- * @param id style tag id
+ * Add style link to default preview.
+ * @param href
+ * @returns link dom
  */
-export function removeStyles (id: string) {
-  const css = document.getElementById(id)
-  if (css) {
-    css.remove()
-  }
+export async function addStyleLink (href: string) {
+  const link = document.createElement('link')
+  link.id = 'link-' + Math.random().toString(36).slice(2, 9) + '-' + Date.now()
+  link.rel = 'stylesheet'
+  link.href = href
+  document.head.appendChild(link)
+
+  return link
 }
 
 /**

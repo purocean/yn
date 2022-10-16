@@ -203,7 +203,7 @@ export default defineComponent({
         return
       }
 
-      await triggerHook('DOC_BEFORE_EXPORT', { type: convert.toType }, { breakable: true })
+      await triggerHook('VIEW_BEFORE_EXPORT', { type: convert.toType }, { breakable: true })
 
       if (convert.toType === 'pdf') {
         exportPdf(fileName.value)

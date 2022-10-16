@@ -5,7 +5,7 @@ import MarkdownItMark from 'markdown-it-mark'
 import MarkdownItAbbr from 'markdown-it-abbr'
 import MarkdownItAttributes from 'markdown-it-attributes'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
-import { triggerHook } from '@fe/core/hook'
+import { registerHook, triggerHook } from '@fe/core/hook'
 
 /**
  * Markdown-it instance
@@ -21,9 +21,60 @@ export function registerPlugin (plugin: (md: Markdown, ...args: any) => void, pa
   markdown.use(plugin, params)
 }
 
+const renderCache: Map<string, Map<string, any>> = new Map()
+
+/**
+ * Get render cache
+ * @param domain
+ * @param key
+ * @returns
+ */
+export function getRenderCache (domain: string): Map<string, any>
+export function getRenderCache<T> (domain: string, key: string, fallback?: T | (() => T)): T
+export function getRenderCache (domain: string, key?: string, fallback?: any) {
+  if (!domain) {
+    throw new Error('Domain is required')
+  }
+
+  if (!renderCache.has(domain)) {
+    renderCache.set(domain, new Map())
+  }
+
+  const cache = renderCache.get(domain)!
+
+  if (!key) {
+    return cache
+  }
+
+  const value = cache.get(key)
+  if (value) {
+    return value
+  }
+
+  const newValue = typeof fallback === 'function' ? fallback() : fallback
+  cache.set(key, newValue)
+  return newValue
+}
+
+registerHook('VIEW_BEFORE_REFRESH', () => {
+  renderCache.clear()
+})
+
 const render = markdown.render
 markdown.render = (src: string, env?: any) => {
   triggerHook('MARKDOWN_BEFORE_RENDER', { src, env })
+
+  // build render cache
+  if (env.file) {
+    const cacheKey = `__file_${env.file.repo}:${env.file.path}`
+    if (!renderCache.has(cacheKey)) {
+      renderCache.clear()
+      renderCache.set(cacheKey, new Map())
+    }
+  } else {
+    renderCache.clear()
+  }
+
   return render.call(markdown, src, env)
 }
 

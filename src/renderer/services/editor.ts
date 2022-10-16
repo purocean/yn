@@ -1,4 +1,5 @@
 import type * as Monaco from 'monaco-editor'
+import { cloneDeep, debounce } from 'lodash-es'
 import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron, isMacOS } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
@@ -10,6 +11,7 @@ import { useToast } from '@fe/support/ui/toast'
 import { sleep } from '@fe/utils'
 import { getColorScheme } from './theme'
 import { getSetting } from './setting'
+import { language as markdownLanguage } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
 
 export type SimpleCompletionItem = {
   label: string,
@@ -23,6 +25,12 @@ let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
 
 const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monospace'
+
+const refreshMarkdownMonarchLanguageDebounce = debounce(() => {
+  whenEditorReady().then(({ monaco }) => {
+    monaco.languages.setMonarchTokensProvider('markdown', getMarkdownMonarchLanguage())
+  })
+}, 100)
 
 function getFontFamily () {
   const customFontFamily = getSetting('editor.font-family')?.trim()
@@ -361,6 +369,26 @@ export function getSimpleCompletionItems () {
   const tappers: SimpleCompletionItemTappers[] = ioc.get('EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS')
   tappers.forEach(tap => tap(items))
   return items
+}
+
+/**
+ * Register a markdown monarch language processor.
+ * @param tapper
+ */
+export function tapMarkdownMonarchLanguage (tapper: (mdLanguage: any) => void) {
+  ioc.register('EDITOR_MARKDOWN_MONARCH_LANGUAGE_TAPPERS', tapper)
+  refreshMarkdownMonarchLanguageDebounce()
+}
+
+/**
+ * Get markdown monarch language.
+ * @returns
+ */
+export function getMarkdownMonarchLanguage () {
+  const mdLanguage = cloneDeep(markdownLanguage)
+  const tappers: SimpleCompletionItemTappers[] = ioc.get('EDITOR_MARKDOWN_MONARCH_LANGUAGE_TAPPERS')
+  tappers.forEach(tap => tap(mdLanguage))
+  return mdLanguage
 }
 
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })

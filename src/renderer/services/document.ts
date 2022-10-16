@@ -687,11 +687,3 @@ export function showHistory (doc: Doc) {
 export function hideHistory () {
   getActionHandler('doc.hide-history')()
 }
-
-/**
- * print current document
- */
-export async function print () {
-  await triggerHook('DOC_BEFORE_EXPORT', { type: 'pdf' }, { breakable: true })
-  window.print()
-}

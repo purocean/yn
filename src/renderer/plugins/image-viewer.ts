@@ -10,6 +10,7 @@ export default {
       setTimeout(() => {
         const viewer = new Viewer(ctx.view.getViewDom()!, {
           zIndex: 299999,
+          container: document.body,
           toolbar: {
             zoomIn: 4,
             zoomOut: 4,
@@ -42,6 +43,13 @@ export default {
 
       body .viewer-navbar {
         background: rgba(0, 0, 0, .57)
+      }
+    `)
+
+    // https://github.com/fengyuanchen/viewerjs/issues/197
+    ctx.view.addStyles(`
+      body.viewer-open {
+        padding-right: 0 !important;
       }
     `)
   }

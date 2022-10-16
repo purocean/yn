@@ -575,6 +575,7 @@ Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command
 `mdOptions.breaks` | `boolean` | 转换 `\n` 成 `<br>`
 `mdOptions.linkify` | `boolean` | 自动转换链接
 `mdOptions.typographer` | `boolean` | 开启语言替换和引号美化
+`katex` | `Record<string, any>` | [Katex 配置](https://katex.org/docs/options.html)
 
 ## 宏替换
 

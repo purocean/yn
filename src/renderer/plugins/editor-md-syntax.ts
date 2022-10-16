@@ -1,7 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 import type * as Monaco from 'monaco-editor'
 import type { Ctx, Plugin } from '@fe/context'
-import { language } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
 
 const surroundingPairs = [
   { open: '{', close: '}' },
@@ -30,6 +29,8 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
 
   private readonly monaco: typeof Monaco
   private readonly ctx: Ctx
+
+  private readonly pairsMap = new Map(surroundingPairs.map(x => [x.open, x.close]))
 
   constructor (monaco: typeof Monaco, ctx: Ctx) {
     this.monaco = monaco
@@ -77,11 +78,17 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     const items = this.ctx.editor.getSimpleCompletionItems()
 
     const result: Monaco.languages.CompletionItem[] = items.map((item, i) => {
+      let columnOffset = this.getRangeColumnOffset('suffix', lineSuffixText, item.insertText)
+      if (columnOffset === 0) {
+        // remove auto surrounding pairs
+        columnOffset = this.pairsMap.get(line.charAt(cursor - 1)) === line.charAt(cursor) ? 1 : 0
+      }
+
       const range = new this.monaco.Range(
         position.lineNumber,
         startColumn,
         position.lineNumber,
-        position.column + this.getRangeColumnOffset('suffix', lineSuffixText, item.insertText)
+        position.column + columnOffset,
       )
 
       return {
@@ -124,37 +131,6 @@ export default {
           { beforeText: /^\s*\d+\) .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1) ' } },
         ]
       })
-
-      const md = ctx.lib.lodash.cloneDeep(language)
-      md.tokenizer.root.unshift(
-        [/^:{3,}.*$/, 'tag'],
-        [/==\S.*\S?==/, 'keyword'],
-        [/~\S[^~]*\S?~/, 'string'],
-        [/\^\S[^^]*\S?\^/, 'string'],
-        [/^@@start(uml|salt|mindmap|gantt|wbs|json|yaml)$/, { token: 'string', next: '@plantuml' }],
-        [/\[=/, { token: 'keyword', next: '@monacoEnd', nextEmbedded: 'text/javascript' }],
-        [/\$\$/, { token: 'tag', next: '@latexBlockEnd', nextEmbedded: 'latex' }],
-        [/\$(?=\S)/, { token: 'tag', next: '@latexInlineEnd', nextEmbedded: 'latex' }],
-      )
-
-      md.tokenizer.monacoEnd = [
-        [/=\]/, { token: 'keyword', next: '@pop', nextEmbedded: '@pop' }]
-      ]
-
-      md.tokenizer.plantuml = [
-        [/^@@end(uml|salt|mindmap|gantt|wbs|json|yaml)$/, { token: 'string', next: '@pop' }],
-        [/.*$/, 'variable.source']
-      ]
-
-      md.tokenizer.latexBlockEnd = [
-        [/\$\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
-      ]
-
-      md.tokenizer.latexInlineEnd = [
-        [/\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
-      ]
-
-      monaco.languages.setMonarchTokensProvider('markdown', md)
     })
 
     ctx.editor.tapSimpleCompletionItems(items => {
@@ -184,6 +160,14 @@ export default {
         { label: '/ --- Horizontal Line', insertText: '---\n' },
         { label: '/ + [ ] TODO List', insertText: '+ [ ] ' },
         { label: '/ - [ ] TODO List', insertText: '- [ ] ' },
+      )
+    })
+
+    ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
+      mdLanguage.tokenizer.root.unshift(
+        [/==\S.*\S?==/, 'keyword'],
+        [/~\S[^~]*\S?~/, 'string'],
+        [/\^\S[^^]*\S?\^/, 'string'],
       )
     })
   }

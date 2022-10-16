@@ -5,7 +5,7 @@ import SvgIcon from '@fe/components/SvgIcon.vue'
 export default {
   name: 'markdown-code-copy',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .p-mcc-copy-btn-wrapper {
         width: 0;
         height: 0;
@@ -52,6 +52,20 @@ export default {
 
       .markdown-view .markdown-body .p-mcc-copy-btn:hover {
         background: var(--g-color-80);
+      }
+
+      .markdown-view .markdown-body .svg-icon {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      .markdown-view .markdown-body .svg-icon svg {
+        width: 100%;
+        height: 100%;
+        display: inline-block;
       }
     `)
 

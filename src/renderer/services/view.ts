@@ -1,7 +1,7 @@
 import juice from 'juice'
 import { CtrlCmd, Escape, registerCommand } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
-import { triggerHook } from '@fe/core/hook'
+import { registerHook, triggerHook } from '@fe/core/hook'
 import * as ioc from '@fe/core/ioc'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
@@ -25,6 +25,7 @@ export type Heading = {
 
 let tmpEnableSyncScroll = true
 let syncScrollTimer: any
+let renderIframe: HTMLIFrameElement
 
 const contextMenuFunList: BuildContextMenu[] = []
 
@@ -68,7 +69,7 @@ export async function refresh () {
  * Reveal line.
  * @param startLine
  */
-export function revealLine (startLine: number) {
+export async function revealLine (startLine: number) {
   return getActionHandler('view.reveal-line')(startLine)
 }
 
@@ -84,11 +85,9 @@ export async function highlightLine (line: number, reveal: boolean, duration = 1
   let el: HTMLElement | null | undefined = null
 
   if (reveal) {
-    el = revealLine(line)
-    const wrap = viewDom!.parentElement
-    if (wrap && wrap.scrollHeight !== wrap.scrollTop + wrap.clientHeight) {
-      wrap.scrollTop -= 120
-    }
+    el = await revealLine(line)
+    const contentWindow = (await getRenderIframe()).contentWindow!
+    contentWindow.scrollBy(0, -120)
   } else {
     el = viewDom?.querySelector<HTMLElement>(`[${DOM_ATTR_NAME.SOURCE_LINE_START}="${line}"]`)
   }
@@ -104,13 +103,14 @@ export async function highlightLine (line: number, reveal: boolean, duration = 1
  * Scroll to a position.
  * @param top
  */
-export function scrollTopTo (top: number) {
-  getActionHandler('view.scroll-top-to')(top)
+export async function scrollTopTo (top: number) {
+  const iframe = await getRenderIframe()
+  iframe.contentWindow?.scrollTo(0, top)
 }
 
 export function getPreviewStyles () {
   let styles = `article.${DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY} { max-width: 1024px; margin: 20px auto; }`
-  Array.prototype.forEach.call(document.styleSheets, item => {
+  Array.prototype.forEach.call(renderIframe.contentDocument!.styleSheets, item => {
     // inject global styles, normalize.css
     const flag = item.cssRules[0] &&
       item.cssRules[0].selectorText === 'html' &&
@@ -390,6 +390,85 @@ export async function disableSyncScrollAwhile (fn: Function, timeout = 500) {
   }, timeout)
 }
 
+/**
+ * Get render Iframe
+ * @returns
+ */
+export function getRenderIframe (): Promise<HTMLIFrameElement> {
+  if (renderIframe) {
+    return Promise.resolve(renderIframe)
+  }
+
+  return new Promise((resolve) => {
+    registerHook('VIEW_RENDER_IFRAME_READY', ({ iframe }) => {
+      renderIframe = iframe
+      resolve(iframe)
+    }, true)
+  })
+}
+
+/**
+ * Add styles to default preview.
+ * @param style
+ * @return css dom
+ */
+export async function addStyles (style: string) {
+  const iframe = await getRenderIframe()
+  const document = iframe.contentDocument!
+  const css = document.createElement('style')
+  css.id = 'style-' + Math.random().toString(36).slice(2, 9) + '-' + Date.now()
+  css.innerHTML = style
+  document.head.appendChild(css)
+
+  return css
+}
+
+/**
+ * Add style link to default preview.
+ * @param href
+ * @returns link dom
+ */
+export async function addStyleLink (href: string) {
+  const iframe = await getRenderIframe()
+  const document = iframe.contentDocument!
+  const link = document.createElement('link')
+  link.id = 'link-' + Math.random().toString(36).slice(2, 9) + '-' + Date.now()
+  link.rel = 'stylesheet'
+  link.href = href
+  document.head.appendChild(link)
+
+  return link
+}
+
+/**
+ * Add script to default preview.
+ * @param src
+ * @returns script dom
+ */
+export async function addScript (src: string) {
+  const iframe = await getRenderIframe()
+  const document = iframe.contentDocument!
+  const script = document.createElement('script')
+  script.id = 'script-' + Math.random().toString(36).slice(2, 9) + '-' + Date.now()
+  script.src = src
+  document.body.appendChild(script)
+
+  return script
+}
+
+/**
+ * print
+ */
+export async function print () {
+  await triggerHook('VIEW_BEFORE_EXPORT', { type: 'pdf' }, { breakable: true })
+  const iframe = await getRenderIframe()
+  iframe.contentWindow!.print()
+}
+
+registerHook('VIEW_RENDER_IFRAME_READY', ({ iframe }) => {
+  renderIframe = iframe
+})
+
 registerAction({
   name: 'view.enter-presentation',
   handler: () => present(true),
@@ -401,7 +480,7 @@ registerAction({
   handler: () => present(false),
   keys: [Escape],
   when: () => {
-    const el = window.document.activeElement
+    const el = (renderIframe?.contentDocument || window.document).activeElement
     return store.state.presentation &&
       el?.tagName !== 'INPUT' &&
       el?.tagName !== 'TEXTAREA' &&

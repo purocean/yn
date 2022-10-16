@@ -7,7 +7,7 @@ import { Plugin } from '@fe/context'
 export default {
   name: 'markdown-container',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .custom-container.section {
         padding: 12px;
         border: 1px solid var(--g-color-80);
@@ -325,6 +325,12 @@ export default {
         { label: '/ ::: Container', insertText: '${3|:::,::::,:::::|} ${1|tip,warning,danger,details,group,group-item,row,col,section|} ${2:Title}\n${4:Content}\n${3|:::,::::,:::::|}\n' },
         { label: '/ ::: Group Container', insertText: ':::: group ${1:Title}\n::: group-item Tab 1\ntest 1\n:::\n::: group-item *Tab 2\ntest 2\n:::\n::: group-item Tab 3\ntest 3\n:::\n::::\n' },
         { label: '/ ::: Column Container', insertText: ':::: row ${1:Title}\n::: col\ntest 1\n:::\n::: col\ntest 2\n:::\n::::\n' },
+      )
+    })
+
+    ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
+      mdLanguage.tokenizer.root.unshift(
+        [/^:{3,}.*$/, 'tag']
       )
     })
   }

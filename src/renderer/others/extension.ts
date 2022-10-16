@@ -8,6 +8,7 @@ import { getActionHandler } from '@fe/core/action'
 import type { Extension, ExtensionCompatible, ExtensionLoadStatus, RegistryHostname } from '@fe/types'
 import * as i18n from '@fe/services/i18n'
 import * as theme from '@fe/services/theme'
+import * as view from '@fe/services/view'
 import { triggerHook } from '@fe/core/hook'
 import { FLAG_DEMO } from '@fe/support/args'
 
@@ -223,10 +224,14 @@ async function load (extension: Extension) {
 
     const style = extension?.style
     if (!loadStatus.style && style && style.endsWith('.css')) {
-      const link = window.document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = getInstalledExtensionFileUrl(extension.id, style)
-      window.document.head.appendChild(link)
+      const href = getInstalledExtensionFileUrl(extension.id, style)
+
+      // add style to workbench
+      theme.addStyleLink(href)
+
+      // also add style to preview iframe
+      view.addStyleLink(href)
+
       loadStatus.style = true
     }
 

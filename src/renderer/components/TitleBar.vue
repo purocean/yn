@@ -205,6 +205,9 @@ export default defineComponent({
     watch(isSaved, (val: boolean) => {
       // expose save state for electron usage.
       window.documentSaved = val
+      if (win && isMacOS) {
+        win.setDocumentEdited(!val)
+      }
     }, { immediate: true })
 
     return {

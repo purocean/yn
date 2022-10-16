@@ -73,9 +73,7 @@ export function getLicenseInfo () {
     const info = parseLicense(licenseStr!)
 
     if (info) {
-      ga.setUserId(info.email)
       ga.setUserProperties({
-        name: info.name,
         expires: dayjs(info.expires).format('YYYY-MM-DD'),
         hash: info.hash,
       })

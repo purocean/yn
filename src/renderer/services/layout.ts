@@ -32,10 +32,16 @@ export function toggleSide (visible?: boolean) {
  */
 export function toggleView (visible?: boolean) {
   const val = typeof visible === 'boolean' ? visible : !store.state.showView
-  val && nextTick(view.refresh)
+  val && nextTick(view.render)
 
   store.commit('setShowView', val)
-  store.commit('setShowEditor', true)
+
+  if (store.state.editorPreviewExclusive && store.state.showEditor) {
+    store.commit('setShowEditor', false)
+  } else {
+    store.commit('setShowEditor', true)
+  }
+
   emitResize()
 }
 
@@ -44,8 +50,15 @@ export function toggleView (visible?: boolean) {
  * @param visible
  */
 export function toggleEditor (visible?: boolean) {
-  store.commit('setShowView', true)
-  store.commit('setShowEditor', typeof visible === 'boolean' ? visible : !store.state.showEditor)
+  const val = typeof visible === 'boolean' ? visible : !store.state.showEditor
+  store.commit('setShowEditor', val)
+
+  if (store.state.editorPreviewExclusive && store.state.showView) {
+    store.commit('setShowView', false)
+  } else {
+    store.commit('setShowView', true)
+  }
+
   emitResize()
 }
 
@@ -67,12 +80,29 @@ export function toggleXterm (visible?: boolean) {
     }
   })
 }
+
 /**
  * Toggle outline visible.
  * @param visible
  */
 export function toggleOutline (visible?: boolean) {
   store.commit('setShowOutline', typeof visible === 'boolean' ? visible : !store.state.showOutline)
+}
+
+/**
+ * Toggle editor preview exclusive.
+ * @param exclusive
+ */
+export function toggleEditorPreviewExclusive (exclusive?: boolean) {
+  const val = typeof exclusive === 'boolean' ? exclusive : !store.state.editorPreviewExclusive
+
+  store.commit('setEditorPreviewExclusive', val)
+
+  if (val && store.state.showEditor && store.state.showView) {
+    store.commit('setShowView', false)
+  }
+
+  emitResize()
 }
 
 registerAction({ name: 'layout.toggle-side', handler: toggleSide, keys: [Alt, 'e'] })

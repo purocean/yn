@@ -215,7 +215,7 @@ const Plantuml = defineComponent({
           [DOM_ATTR_NAME.ONLY_CHILD]: true,
           style,
           src: src.value,
-          onLoad
+          onload: onLoad
         })
       ])
     }
@@ -289,6 +289,17 @@ export default {
         { label: '/ @startjson PlantUML Json', insertText: '@startjson\n{\n   "fruit":"Apple",\n   "size":"Large",\n   "color": ["Red", "Green"]\n}\n@endjson\n' },
         { label: '/ @startyaml PlantUML Yaml', insertText: '@startyaml\nfruit: Apple\nsize: Large\ncolor: \n  - Red\n  - Green\n@endyaml\n' },
       )
+    })
+
+    ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
+      mdLanguage.tokenizer.root.unshift(
+        [/^@@start(uml|salt|mindmap|gantt|wbs|json|yaml)$/, { token: 'string', next: '@plantuml' }],
+      )
+
+      mdLanguage.tokenizer.plantuml = [
+        [/^@@end(uml|salt|mindmap|gantt|wbs|json|yaml)$/, { token: 'string', next: '@pop' }],
+        [/.*$/, 'variable.source']
+      ]
     })
   }
 } as Plugin

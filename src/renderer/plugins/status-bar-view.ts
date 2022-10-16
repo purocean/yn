@@ -67,6 +67,13 @@ export default {
               subTitle: getKeysLabel('layout.toggle-xterm'),
               onClick: () => ctx.layout.toggleXterm()
             }] : []),
+            {
+              id: 'toggle-editor-preview-exclusive',
+              type: 'normal',
+              checked: ctx.store.state.editorPreviewExclusive,
+              title: ctx.i18n.t('status-bar.view.editor-preview-exclusive'),
+              onClick: () => ctx.layout.toggleEditorPreviewExclusive()
+            },
           )
         })
       } else {

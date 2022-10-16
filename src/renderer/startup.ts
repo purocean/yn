@@ -108,9 +108,7 @@ registerHook('EXTENSION_READY', () => {
 
 registerHook('VIEW_PREVIEWER_CHANGE', ({ type }) => {
   if (type !== 'switch') {
-    setTimeout(() => {
-      switchDefaultPreviewer()
-    }, 500)
+    setTimeout(() => switchDefaultPreviewer(), 500)
   }
 })
 

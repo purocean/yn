@@ -4,7 +4,7 @@ import type { FrontMatterAttrs, RenderEnv } from '@fe/types'
 export default {
   name: 'markdown-code-wrap',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE},
       .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE} ~ .p-mcr-run-code-result {
         white-space: pre-wrap;

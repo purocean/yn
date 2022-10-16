@@ -594,7 +594,7 @@ function sortRows (td: HTMLTableCellElement, order: 'asc' | 'desc') {
 export default {
   name: 'markdown-table',
   register: (ctx) => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(`
       .markdown-view .markdown-body table.small td,
       .markdown-view .markdown-body table.small th {
         padding: 3px 6px;

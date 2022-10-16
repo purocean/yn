@@ -16,7 +16,10 @@ import katex from 'katex'
 import { h } from 'vue'
 import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
+import styles from 'katex/dist/katex.min.css'
 import monacoLatex from '@fe/others/monaco-latex'
+import { getRenderCache } from '@fe/services/markdown'
+import { triggerHook } from '@fe/core/hook'
 
 // Test if potential opening or closing delimieter
 // Assumes that there is a "$" at state.src[pos]
@@ -161,36 +164,58 @@ function math_block (state: any, start: number, end: number, silent: boolean) {
   return true
 }
 
-function math_plugin (md: any, options: any) {
-  // Default options
+function renderToString (latex: string, options: any) {
+  const cacheKey = JSON.stringify(options) + latex
 
-  options = options || {}
+  const innerHTML = getRenderCache('plugin-katex', cacheKey, () => {
+    const payload = { latex, options }
+    triggerHook('PLUGIN_HOOK', { plugin: 'markdown-katex', type: 'before-render', payload })
 
+    latex = payload.latex
+    options = payload.options
+
+    const html = katex.renderToString(latex, options)
+
+    // block
+    if (options.displayMode) {
+      return html
+    }
+
+    // inline
+    return html.replace(/^<span class="katex">/, '')
+      .replace(/<\/span>$/, '')
+  })
+
+  return { cacheKey, innerHTML }
+}
+
+function math_plugin (md: any) {
   // set KaTeX as the renderer for markdown-it-simplemath
-  const inlineRenderer = function (tokens: Token[], idx: number) {
+  const inlineRenderer = function (tokens: Token[], idx: number, _: any, env: any) {
     const latex = tokens[idx].content
 
-    options.displayMode = false
+    const { katex = {} } = env.attributes || {}
+    const options = Object.assign({ displayMode: false }, katex)
+
     try {
-      const html = katex.renderToString(latex, options)
-      const innerHTML = html.replace(/^<span class="katex">/, '')
-        .replace(/<\/span>$/, '')
-      return h('span', { class: 'katex', key: idx + innerHTML, innerHTML })
+      const { innerHTML, cacheKey } = renderToString(latex, options)
+      return h('span', { class: 'katex', key: idx + cacheKey, innerHTML })
     } catch (error: any) {
-      if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
 
-  const blockRenderer = function (tokens: Token[], idx: number) {
+  const blockRenderer = function (tokens: Token[], idx: number, _: any, env: any) {
     const token = tokens[idx]
     const latex = token.content
-    options.displayMode = true
+
+    const { katex = {} } = env.attributes || {}
+    const options = Object.assign({ displayMode: true }, katex)
+
     try {
-      const html = katex.renderToString(latex, options)
-      return h('p', { ...token.meta?.attrs, key: idx + html, innerHTML: html }, '')
+      const { innerHTML, cacheKey } = renderToString(latex, options)
+      return h('p', { ...token.meta?.attrs, key: idx + cacheKey, innerHTML }, '')
     } catch (error: any) {
-      if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
@@ -206,7 +231,8 @@ function math_plugin (md: any, options: any) {
 export default {
   name: 'markdown-katex',
   register: ctx => {
-    ctx.theme.addStyles(`
+    ctx.view.addStyles(styles)
+    ctx.view.addStyles(`
       .markdown-view .markdown-body .katex {
         background: initial;
       }
@@ -226,6 +252,21 @@ export default {
         { label: '/ $ Inline KaTeX', insertText: '$$1$' },
         { label: '/ $$ Block KaTeX', insertText: '$$$1$$\n' },
       )
+    })
+
+    ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
+      mdLanguage.tokenizer.root.unshift(
+        [/\$\$/, { token: 'tag', next: '@latexBlockEnd', nextEmbedded: 'latex' }],
+        [/\$(?=\S)/, { token: 'tag', next: '@latexInlineEnd', nextEmbedded: 'latex' }],
+      )
+
+      mdLanguage.tokenizer.latexBlockEnd = [
+        [/\$\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
+      ]
+
+      mdLanguage.tokenizer.latexInlineEnd = [
+        [/\$/, { token: 'tag', next: '@pop', nextEmbedded: '@pop' }],
+      ]
     })
   }
 } as Plugin

@@ -1,4 +1,5 @@
 import Highlight from 'highlight.js'
+import styles from 'highlight.js/styles/atom-one-dark.css'
 import { Plugin, Ctx } from '@fe/context'
 import { getLogger } from '@fe/utils'
 
@@ -19,7 +20,8 @@ const DATA_ATTR_NAME = 'data-line-number'
 const BREAK_LINE_REGEXP = /\r\n|\r|\n/g
 
 function addCustomStyles (ctx: Ctx) {
-  ctx.theme.addStyles(
+  ctx.view.addStyles(styles)
+  ctx.view.addStyles(
     `
       .markdown-view .markdown-body table.${TABLE_NAME} {
         margin: 0;

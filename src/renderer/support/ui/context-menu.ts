@@ -3,7 +3,7 @@ import type { Components } from '@fe/types'
 import Modal from '@fe/components/ContextMenu.vue'
 
 export interface Instance extends ComponentPublicInstance {
-  show: (menuItems: Components.ContextMenu.Item[]) => void;
+  show: (menuItems: Components.ContextMenu.Item[], opts?: Components.ContextMenu.ShowOpts) => void;
 }
 
 let instance: Instance
