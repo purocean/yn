@@ -305,6 +305,11 @@ export type BuildInHookTypes = {
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },
   EXTENSION_READY: { extensions: Extension[] },
   CODE_RUNNER_CHANGE: { type: 'register' | 'remove' },
+  PLUGIN_HOOK: {
+    plugin: 'markdown-katex',
+    type: 'before-render',
+    payload: { latex: string, options: any }
+  },
 }
 
 export type Previewer = {

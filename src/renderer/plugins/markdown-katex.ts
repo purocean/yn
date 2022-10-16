@@ -19,6 +19,7 @@ import type Token from 'markdown-it/lib/token'
 import styles from 'katex/dist/katex.min.css'
 import monacoLatex from '@fe/others/monaco-latex'
 import { getRenderCache } from '@fe/services/markdown'
+import { triggerHook } from '@fe/core/hook'
 
 // Test if potential opening or closing delimieter
 // Assumes that there is a "$" at state.src[pos]
@@ -163,27 +164,40 @@ function math_block (state: any, start: number, end: number, silent: boolean) {
   return true
 }
 
-function math_plugin (md: any, options: any) {
-  // Default options
+function renderToString (latex: string, options: any) {
+  const cacheKey = JSON.stringify(options) + latex
 
-  options = options || {}
+  const innerHTML = getRenderCache('plugin-katex', cacheKey, () => {
+    const payload = { latex, options }
+    triggerHook('PLUGIN_HOOK', { plugin: 'markdown-katex', type: 'before-render', payload })
 
+    latex = payload.latex
+    options = payload.options
+
+    const html = katex.renderToString(latex, options)
+
+    // block
+    if (options.displayMode) {
+      return html
+    }
+
+    // inline
+    return html.replace(/^<span class="katex">/, '')
+      .replace(/<\/span>$/, '')
+  })
+
+  return { cacheKey, innerHTML }
+}
+
+function math_plugin (md: any) {
   // set KaTeX as the renderer for markdown-it-simplemath
   const inlineRenderer = function (tokens: Token[], idx: number) {
     const latex = tokens[idx].content
 
-    options.displayMode = false
     try {
-      const cacheKey = JSON.stringify(options) + latex
-      const innerHTML = getRenderCache('plugin-katex', cacheKey, () => {
-        const html = katex.renderToString(latex, options)
-        return html.replace(/^<span class="katex">/, '')
-          .replace(/<\/span>$/, '')
-      })
-
+      const { innerHTML, cacheKey } = renderToString(latex, { displayMode: false })
       return h('span', { class: 'katex', key: idx + cacheKey, innerHTML })
     } catch (error: any) {
-      if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
@@ -191,16 +205,11 @@ function math_plugin (md: any, options: any) {
   const blockRenderer = function (tokens: Token[], idx: number) {
     const token = tokens[idx]
     const latex = token.content
-    options.displayMode = true
-    try {
-      const cacheKey = JSON.stringify(options) + latex
-      const innerHTML = getRenderCache('plugin-katex', cacheKey, () => {
-        return katex.renderToString(latex, options)
-      })
 
+    try {
+      const { innerHTML, cacheKey } = renderToString(latex, { displayMode: true })
       return h('p', { ...token.meta?.attrs, key: idx + cacheKey, innerHTML }, '')
     } catch (error: any) {
-      if (options.throwOnError) { console.warn(error) }
       return h('code', {}, `${error.message} [${latex}]`)
     }
   }
