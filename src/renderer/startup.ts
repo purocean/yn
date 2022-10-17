@@ -135,9 +135,16 @@ store.watch(() => store.state.currentRepo, (val) => {
 }, { immediate: true })
 
 store.watch(() => store.state.currentFile, (val) => {
-  document.documentElement.setAttribute('current-file-repo', val?.repo || '')
-  document.documentElement.setAttribute('current-file-name', val?.name || '')
-  document.documentElement.setAttribute('current-file-path', val?.path || '')
+  const setAttrs = (document: Document) => {
+    document.documentElement.setAttribute('current-file-repo', val?.repo || '')
+    document.documentElement.setAttribute('current-file-name', val?.name || '')
+    document.documentElement.setAttribute('current-file-path', val?.path || '')
+  }
+
+  view.getRenderIframe().then(iframe => {
+    setAttrs(document)
+    setAttrs(iframe.contentDocument!)
+  })
 }, { immediate: true })
 
 fetchSettings()
