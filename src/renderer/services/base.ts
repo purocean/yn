@@ -9,7 +9,7 @@ import { basename, resolve, extname, dirname, relative, isBelongTo } from '@fe/u
 import { dayjs } from '@fe/context/lib'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
-import { isWindows } from '@fe/support/env'
+import { isElectron, isWindows } from '@fe/support/env'
 import { t } from './i18n'
 
 const logger = getLogger('service-base')
@@ -113,6 +113,17 @@ export async function trashItem (path: string) {
   }
 
   await api.rpc(`require('electron').shell.trashItem(${quote(path)})`)
+}
+
+/**
+ * Force reload main page
+ */
+export async function forceReload () {
+  if (isElectron) {
+    await api.rpc("require('./action').getAction('reload-main-window')()")
+  } else {
+    location.reload()
+  }
 }
 
 /**

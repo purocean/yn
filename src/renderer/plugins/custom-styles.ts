@@ -39,7 +39,7 @@ export default {
           title: ctx.i18n.t('custom-css.change-confirm.title'),
           content: ctx.i18n.t('custom-css.change-confirm.content')
         })) {
-          window.location.reload()
+          ctx.base.forceReload()
         }
       }
     })
