@@ -661,6 +661,10 @@ onUnmounted(() => {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+
+        i {
+          color: #4c8cc1;
+        }
       }
 
       .version {
