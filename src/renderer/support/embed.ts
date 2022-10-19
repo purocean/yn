@@ -7,6 +7,7 @@ import type { ThemeName } from '@fe/types'
 import { FLAG_DEBUG } from './args'
 
 type BuildSrcOpts = {
+  id?: string,
   globalStyle?: boolean,
   triggerParentKeyBoardEvent?: boolean
 }
@@ -26,7 +27,7 @@ export function buildSrc (html: string, title?: string, opts?: boolean | BuildSr
   opts = (typeof opts === 'object' ? opts : { globalStyle }) as BuildSrcOpts
 
   const query = new URLSearchParams({
-    title: title || '',
+    title: title ?? '',
     globalStyle: String(globalStyle),
     debug: String(FLAG_DEBUG),
     'with-global-style': String(!!opts.globalStyle),
@@ -34,7 +35,9 @@ export function buildSrc (html: string, title?: string, opts?: boolean | BuildSr
     html,
   })
 
-  return `/embed/?_=${md5(html)}#${query.toString()}`
+  const id = opts.id || md5(html)
+
+  return `/embed/?_id=${id}#${query.toString()}`
 }
 
 export const IFrame = defineComponent({

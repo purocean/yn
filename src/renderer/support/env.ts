@@ -33,7 +33,14 @@ export function openWindow (url: string, target = '_blank', options: Record<stri
       ...options
     }
 
-    return window.open(url, target, Object.entries(opts).map(([k, v]) => `${k}=${v}`).join(','))
+    return window.open(
+      url,
+      target,
+      Object.entries(opts)
+        .map(([k, v]) => typeof v === 'undefined' ? null : `${k}=${v}`)
+        .filter(Boolean)
+        .join(',')
+    )
   } else {
     return window.open(url, target)
   }

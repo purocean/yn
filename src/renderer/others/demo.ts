@@ -2,6 +2,7 @@ import { setTheme } from '@fe/services/theme'
 import * as storage from '@fe/utils/storage'
 import { FLAG_DEMO } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
+import { getRenderIframe } from '@fe/services/view'
 import { t } from '@fe/services/i18n'
 
 let settings = {
@@ -131,7 +132,7 @@ if (FLAG_DEMO) {
   const xOpen = window.open
   const cache: {[key: string]: string} = {}
 
-  window.addEventListener('error', e => {
+  const handleImgError = (e: ErrorEvent) => {
     const target = e.target as HTMLImageElement
     if (target.tagName === 'IMG' || target.tagName === 'VIDEO') {
       if (target.src.includes('/api/plantuml')) {
@@ -146,7 +147,12 @@ if (FLAG_DEMO) {
     } else {
       console.error(e)
     }
-  }, true)
+  }
+
+  window.addEventListener('error', handleImgError, true)
+  getRenderIframe().then(iframe => {
+    iframe.contentWindow!.addEventListener('error', handleImgError, true)
+  })
 
   const fakeFetch = (uri: any, init: any) => Promise.resolve({
     headers: { get: () => 'application/json' },

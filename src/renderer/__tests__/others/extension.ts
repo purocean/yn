@@ -2,6 +2,7 @@ import * as extension from '@fe/others/extension'
 
 jest.mock('@fe/support/api', () => ({}))
 jest.mock('@fe/services/theme', () => ({}))
+jest.mock('@fe/services/view', () => ({}))
 jest.mock('js-untar', () => ({}))
 jest.mock('@fe/support/args', () => ({
   FLAG_DEMO: false,

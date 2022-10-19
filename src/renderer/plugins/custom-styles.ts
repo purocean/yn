@@ -12,6 +12,11 @@ export default {
       cssLink.href = ctx.args.FLAG_DEMO ? '/github.css' : '/custom-css'
 
       head.appendChild(cssLink)
+
+      // for demo
+      if (ctx.args.FLAG_DEMO) {
+        ctx.view.addStyleLink('/github.css')
+      }
     })
 
     if (ctx.args.FLAG_DEMO) {
