@@ -7,10 +7,12 @@ import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import { sleep } from '@fe/utils'
-import type { BuildInHookTypes, Components, Previewer } from '@fe/types'
+import type { BuildInHookTypes, Components, Previewer, PrintOpts } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
 import { switchDoc } from './document'
+import { getElectronRemote, isElectron, openWindow } from '@fe/support/env'
+import { buildSrc } from '@fe/support/embed'
 
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
@@ -457,9 +459,77 @@ export async function addScript (src: string) {
  * print
  */
 export async function print () {
-  await triggerHook('VIEW_BEFORE_EXPORT', { type: 'pdf' }, { breakable: true })
+  await triggerHook('VIEW_BEFORE_EXPORT', { type: 'print' }, { breakable: true })
   const iframe = await getRenderIframe()
   iframe.contentWindow!.print()
+}
+
+export async function printToPDF (opts?: PrintOpts): Promise<Buffer> {
+  if (!isElectron) {
+    throw new Error('Not support export pdf in browser.')
+  }
+
+  await triggerHook('VIEW_BEFORE_EXPORT', { type: 'pdf' }, { breakable: true })
+
+  const iframe = await getRenderIframe()
+  const appHTML = iframe.contentDocument!.getElementById('app')!.innerHTML
+  let styles = ''
+  iframe.contentDocument!.querySelectorAll('link,style').forEach(node => {
+    styles += node.outerHTML
+  })
+
+  const id = '__export_pdf__' + Date.now()
+  const url = buildSrc(`
+    <style> @media screen { html { overflow: hidden; } } </style>
+    <div class="skip-print" style="position: fixed; width: 100%; height: 100%; z-index: 99999; background: #fff; color: #24292f; display: flex; align-items: center; justify-content: center;">Exporting……</div>
+    <div id="app"></div>
+  `, 'Export PDF', { id, globalStyle: true })
+
+  const win = openWindow(url, 'export-pdf', {
+    width: 300,
+    height: 100,
+    title: '',
+    x: undefined,
+    y: undefined,
+    center: true,
+    resizable: false,
+    minimizable: false,
+    closable: false,
+    modal: true,
+    alwaysOnTop: false,
+  })
+
+  if (!win) {
+    return Promise.reject(new Error('Open window failed.'))
+  }
+
+  let browserWin: any
+
+  return new Promise((resolve, reject) => {
+    win.addEventListener('load', async () => {
+      try {
+        const remote = getElectronRemote()
+        browserWin = remote.BrowserWindow.getAllWindows()
+          .find((item: any) => item.getURL().includes(`_id=${id}`))
+        browserWin.setParentWindow(remote.getCurrentWindow())
+
+        win.document.head.innerHTML += styles
+        win.document.getElementById('app')!.innerHTML = appHTML
+
+        await sleep(1500)
+
+        const webContents = remote.webContents.getAllWebContents()
+          .find((item: any) => item.getURL().includes(`_id=${id}`))
+
+        const data = await webContents!.printToPDF(opts || {})
+        resolve(data)
+      } catch (error) {
+        reject(error)
+      } finally {
+        browserWin && browserWin.destroy()
+      }
+    })
+  })
 }
 
 registerHook('VIEW_RENDER_IFRAME_READY', ({ iframe }) => {

@@ -85,8 +85,8 @@
 import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, ref, toRefs, watch } from 'vue'
 import { MARKDOWN_FILE_EXT } from '@share/misc'
-import { getElectronRemote, isElectron, isWindows } from '@fe/support/env'
-import { getContentHtml, getPreviewStyles } from '@fe/services/view'
+import { isElectron, isWindows } from '@fe/support/env'
+import { getContentHtml, getPreviewStyles, print, printToPDF } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
 import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
@@ -175,26 +175,25 @@ export default defineComponent({
     const localHtml = computed(() => convert.toType === 'html' && convert.fromType === 'html')
 
     async function exportPdf (name: string) {
+      close()
+      await sleep(300)
       if (!isElectron) {
-        close()
-        await sleep(300)
-        window.print()
+        await print()
       } else {
-        close()
-        toast.show('info', t('export-panel.loading'))
-        await sleep(300)
-
-        const content = getElectronRemote().getCurrentWebContents()
-
         const { landscape, pageSize, scaleFactor, printBackground } = convert.pdfOptions
-        const buffer: Buffer = await content.printToPDF({
-          pageSize,
-          printBackground,
-          landscape: Boolean(landscape),
-          scaleFactor: Number(scaleFactor)
-        })
 
-        downloadContent(name + '.pdf', buffer, 'application/pdf')
+        try {
+          const buffer = await printToPDF({
+            pageSize,
+            printBackground,
+            landscape: Boolean(landscape),
+            scaleFactor: Number(scaleFactor)
+          })
+          downloadContent(name + '.pdf', buffer, 'application/pdf')
+        } catch (error) {
+          toast.show('warning', String(error))
+          throw error
+        }
       }
     }
 
@@ -203,12 +202,12 @@ export default defineComponent({
         return
       }
 
-      await triggerHook('VIEW_BEFORE_EXPORT', { type: convert.toType }, { breakable: true })
-
       if (convert.toType === 'pdf') {
         exportPdf(fileName.value)
         return
       }
+
+      await triggerHook('VIEW_BEFORE_EXPORT', { type: convert.toType }, { breakable: true })
 
       if (FLAG_DEMO) {
         toast.show('warning', t('demo-tips'))

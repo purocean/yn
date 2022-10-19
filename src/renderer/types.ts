@@ -122,9 +122,16 @@ export namespace Components {
 
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
-export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
+export type ExportType = 'print' | 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
+
+export type PrintOpts = {
+  landscape?: boolean,
+  pageSize?: string,
+  scaleFactor?: number,
+  printBackground?: boolean,
+}
 
 export type RenderEnv = {
   source: string,
