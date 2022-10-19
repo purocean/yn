@@ -278,6 +278,7 @@ export type BuildInHookTypes = {
   VIEW_PREVIEWER_CHANGE: { type: 'register' | 'remove' | 'switch' },
   VIEW_RENDER_IFRAME_READY: { iframe: HTMLIFrameElement },
   VIEW_BEFORE_EXPORT: { type: ExportType },
+  VIEW_AFTER_EXPORT: { type: ExportType },
   VIEW_ON_GET_HTML_FILTER_NODE: {
     node: HTMLElement,
     options: {

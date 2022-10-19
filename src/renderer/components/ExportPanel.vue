@@ -86,7 +86,7 @@ import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, ref, toRefs, watch } from 'vue'
 import { MARKDOWN_FILE_EXT } from '@share/misc'
 import { isElectron, isWindows } from '@fe/support/env'
-import { getContentHtml, getPreviewStyles, print, printToPDF } from '@fe/services/view'
+import { getContentHtml, getPreviewStyles, print, printToPDF, wrapExportProcess } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
 import { triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
@@ -207,8 +207,6 @@ export default defineComponent({
         return
       }
 
-      await triggerHook('VIEW_BEFORE_EXPORT', { type: convert.toType }, { breakable: true })
-
       if (FLAG_DEMO) {
         toast.show('warning', t('demo-tips'))
         return
@@ -220,14 +218,14 @@ export default defineComponent({
       toast.show('info', t('export-panel.loading'), 5000)
 
       if (localHtml.value) {
-        const html = await getContentHtml(convert.localHtmlOptions)
+        const html = await wrapExportProcess(convert.toType, () => getContentHtml(convert.localHtmlOptions))
         downloadContent(fileName.value + '.html', buildHtml(fileName.value, html, convert.localHtmlOptions))
         return
       }
 
       const source = convert.fromType === 'markdown'
         ? currentFile.value.content
-        : await getContentHtml({
+        : await wrapExportProcess(convert.toType, () => getContentHtml({
           preferPng: true,
           nodeProcessor: node => {
             // for pandoc highlight code
@@ -240,7 +238,9 @@ export default defineComponent({
               node.remove()
             }
           }
-        })
+        }))
+
+      triggerHook('VIEW_AFTER_EXPORT', { type: convert.toType })
 
       convert.fileName = `${fileName.value}.${convert.toType}`
       convert.source = source

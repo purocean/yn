@@ -7,7 +7,7 @@ import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import { sleep } from '@fe/utils'
-import type { BuildInHookTypes, Components, Previewer, PrintOpts } from '@fe/types'
+import type { BuildInHookTypes, Components, ExportType, Previewer, PrintOpts } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
 import { switchDoc } from './document'
@@ -455,13 +455,23 @@ export async function addScript (src: string) {
   return script
 }
 
+export async function wrapExportProcess<T extends () => any> (type: ExportType, fn: T): Promise<ReturnType<T>> {
+  try {
+    await triggerHook('VIEW_BEFORE_EXPORT', { type }, { breakable: true })
+    return await fn()
+  } finally {
+    triggerHook('VIEW_AFTER_EXPORT', { type })
+  }
+}
+
 /**
  * print
  */
 export async function print () {
-  await triggerHook('VIEW_BEFORE_EXPORT', { type: 'print' }, { breakable: true })
-  const iframe = await getRenderIframe()
-  iframe.contentWindow!.print()
+  wrapExportProcess('print', async () => {
+    const iframe = await getRenderIframe()
+    iframe.contentWindow!.print()
+  })
 }
 
 export async function printToPDF (opts?: PrintOpts): Promise<Buffer> {
@@ -469,14 +479,18 @@ export async function printToPDF (opts?: PrintOpts): Promise<Buffer> {
     throw new Error('Not support export pdf in browser.')
   }
 
-  await triggerHook('VIEW_BEFORE_EXPORT', { type: 'pdf' }, { breakable: true })
+  const [styles, appHTML] = await wrapExportProcess('pdf', async () => {
+    const iframe = await getRenderIframe()
+    const appHTML = iframe.contentDocument!.getElementById('app')!.innerHTML
+    let styles = ''
+    iframe.contentDocument!.querySelectorAll('link,style').forEach(node => {
+      styles += node.outerHTML
+    })
 
-  const iframe = await getRenderIframe()
-  const appHTML = iframe.contentDocument!.getElementById('app')!.innerHTML
-  let styles = ''
-  iframe.contentDocument!.querySelectorAll('link,style').forEach(node => {
-    styles += node.outerHTML
+    return [styles, appHTML]
   })
+
+  triggerHook('VIEW_AFTER_EXPORT', { type: 'pdf' })
 
   const id = '__export_pdf__' + Date.now()
   const url = buildSrc(`
