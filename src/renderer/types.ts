@@ -193,7 +193,7 @@ export interface BuildInSettings {
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,
   'mark': FileItem[],
-  'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
+  'updater.source': 'github.com' | 'ghproxy.com',
   'doc-history.number-limit': number,
   'server.host': string,
   'server.port': number,
