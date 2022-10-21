@@ -44,7 +44,7 @@ export default {
           title: ctx.i18n.t('custom-css.change-confirm.title'),
           content: ctx.i18n.t('custom-css.change-confirm.content')
         })) {
-          ctx.base.forceReload()
+          ctx.base.reloadMainWindow()
         }
       }
     })

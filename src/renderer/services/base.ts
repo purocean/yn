@@ -116,9 +116,9 @@ export async function trashItem (path: string) {
 }
 
 /**
- * Force reload main page
+ * Reload main window main page
  */
-export async function forceReload () {
+export async function reloadMainWindow () {
   if (isElectron) {
     await api.rpc("require('./action').getAction('reload-main-window')()")
   } else {

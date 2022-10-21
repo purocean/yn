@@ -215,7 +215,7 @@ import XMask from '@fe/components/Mask.vue'
 import GroupTabs from '@fe/components/GroupTabs.vue'
 import * as extensionManager from '@fe/others/extension'
 import type { Extension, ExtensionCompatible } from '@fe/types'
-import { forceReload } from '@fe/services/base'
+import { reloadMainWindow } from '@fe/services/base'
 import * as setting from '@fe/services/setting'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
@@ -502,7 +502,7 @@ async function upgrade (extension?: Extension) {
 }
 
 function reload () {
-  forceReload()
+  reloadMainWindow()
 }
 
 async function enable (extension?: Extension) {
