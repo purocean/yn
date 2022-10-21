@@ -123,7 +123,10 @@
                   </div>
                 </div>
                 <div class="description">{{ currentExtension.description }}</div>
-                <div v-if="installing" class="actions"><i>{{ $t('extension.installing') }} <b>{{installing}}</b></i></div>
+                <div v-if="installing" class="actions">
+                  <i>{{ $t('extension.installing') }} <b>{{installing}}</b></i>
+                  <button class="small" @click="abortInstallation">{{$t('cancel')}}</button>
+                </div>
                 <div v-else-if="uninstalling" class="actions"><i>{{ $t('extension.uninstalling') }}</i></div>
                 <div v-else class="actions">
                   <template v-if="currentExtension.dirty">
@@ -452,6 +455,17 @@ async function install (extension?: Extension) {
   }
 
   useToast().show('info', $t.value('extension.toast-loaded'))
+}
+
+async function abortInstallation () {
+  try {
+    await extensionManager.abortInstallation()
+    installing.value = ''
+  } catch (error: any) {
+    logger.error('abort', error)
+    useToast().show('warning', error.message)
+    throw error
+  }
 }
 
 async function uninstall (extension?: Extension) {
@@ -815,6 +829,7 @@ onUnmounted(() => {
 
         i {
           font-size: 14px;
+          margin-right: 6px;
         }
       }
     }

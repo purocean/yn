@@ -11,6 +11,9 @@ import config from './config'
 const RE_EXTENSION_ID = /^[@$a-z0-9-_]+$/
 
 const configKey = 'extensions'
+
+let installRequest: request.Request | null = null
+
 function getExtensionPath (id: string) {
   const dir = id.replace(/\//g, '$')
 
@@ -60,6 +63,11 @@ export async function list () {
 
 export async function install (id: string, url: string) {
   console.log('[extension] install', id, url)
+
+  if (installRequest) {
+    throw new Error('Another extension is being installed')
+  }
+
   const extensionPath = getExtensionPath(id)
   if (await fs.pathExists(extensionPath)) {
     console.log('[extension] already installed. upgrade:', id)
@@ -73,7 +81,7 @@ export async function install (id: string, url: string) {
   const agent = await getAction('get-proxy-agent')(url)
 
   return new Promise((resolve, reject) => {
-    request({ url, agent, encoding: null }, (err, _, body) => {
+    installRequest = request({ url, agent, encoding: null }, (err, _, body) => {
       if (err) {
         reject(err)
         return
@@ -108,10 +116,25 @@ export async function install (id: string, url: string) {
 
         extract.on('error', reject)
 
-        Readable.from(data).pipe(extract)
+        Readable.from(data).on('error', reject).pipe(extract)
       })
     })
+
+    installRequest.on('abort', () => {
+      reject(new Error('Install request aborted'))
+    })
+  }).finally(() => {
+    installRequest = null
   })
+}
+
+export async function abortInstallation () {
+  console.log('[extension] abort installation')
+
+  if (installRequest) {
+    installRequest.abort()
+    installRequest = null
+  }
 }
 
 export async function uninstall (id: string) {

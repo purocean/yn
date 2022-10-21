@@ -373,23 +373,56 @@ export async function rpc (code: string) {
   return data
 }
 
+/**
+ * Fetch installed extensions
+ * @returns
+ */
 export async function fetchInstalledExtensions (): Promise<{id: string, enabled: boolean, isDev?: boolean}[]> {
   const { data } = await fetchHttp('/api/extensions')
   return data
 }
 
+/**
+ * Install extension
+ * @param id
+ * @param url
+ * @returns
+ */
 export async function installExtension (id: string, url: string): Promise<any> {
   return fetchHttp(`/api/extensions/install?id=${encodeURIComponent(id)}&url=${encodeURIComponent(url)}`, { method: 'POST' })
 }
 
+/**
+ * Abort extension installation
+ * @returns
+ */
+export async function abortExtensionInstallation (): Promise<any> {
+  return fetchHttp('/api/extensions/abort-installation', { method: 'DELETE' })
+}
+
+/**
+ * Uninstall extension
+ * @param id
+ * @returns
+ */
 export async function uninstallExtension (id: string): Promise<any> {
   return fetchHttp(`/api/extensions/uninstall?id=${encodeURIComponent(id)}`, { method: 'POST' })
 }
 
+/**
+ * Enable extension
+ * @param id
+ * @returns
+ */
 export async function enableExtension (id: string): Promise<any> {
   return fetchHttp(`/api/extensions/enable?id=${encodeURIComponent(id)}`, { method: 'POST' })
 }
 
+/**
+ * Disable extension
+ * @param id
+ * @returns
+ */
 export async function disableExtension (id: string): Promise<any> {
   return fetchHttp(`/api/extensions/disable?id=${encodeURIComponent(id)}`, { method: 'POST' })
 }
