@@ -203,6 +203,7 @@ export interface BuildInSettings {
   'proxy.pac-url': string,
   'proxy.bypass-list': string,
   'extension.registry': RegistryHostname,
+  'extension.auto-upgrade': boolean,
   'keep-running-after-closing-window': boolean,
   'plantuml-api': string,
 }
