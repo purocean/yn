@@ -10,15 +10,6 @@ import { basename, dirname } from '@fe/utils/path'
 import { getRepo } from './base'
 import { getContentHtml, getPreviewStyles, getRenderIframe } from './view'
 
-async function wrapExportProcess<T extends () => any> (type: ExportType, fn: T): Promise<ReturnType<T>> {
-  try {
-    await triggerHook('EXPORT_BEFORE_PREPARE', { type }, { breakable: true })
-    return await fn()
-  } finally {
-    triggerHook('EXPORT_AFTER_PREPARE', { type })
-  }
-}
-
 function buildHtml (title: string, body: string, options: { includeStyle: boolean }) {
   return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
@@ -48,6 +39,21 @@ function buildHtml (title: string, body: string, options: { includeStyle: boolea
  */
 export function toggleExportPanel (visible?: boolean) {
   store.commit('setShowExport', typeof visible === 'boolean' ? visible : !store.state.showExport)
+}
+
+/**
+ * Wrap export process.
+ * @param type
+ * @param fn
+ * @returns
+ */
+async function wrapExportProcess<T extends () => any> (type: ExportType, fn: T): Promise<ReturnType<T>> {
+  try {
+    await triggerHook('EXPORT_BEFORE_PREPARE', { type }, { breakable: true })
+    return await fn()
+  } finally {
+    triggerHook('EXPORT_AFTER_PREPARE', { type })
+  }
 }
 
 /**
