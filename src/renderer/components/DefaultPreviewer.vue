@@ -12,8 +12,8 @@
         </div>
         <div v-else></div>
         <div v-if="filePath" class="action-btns">
-          <button type="button" :class="{tr: !!todoCount}" @click="print()">{{$t('view.print')}}</button>
-          <button type="button" :class="{tr: !!todoCount}" @click="showExport">{{$t('export')}}</button>
+          <button type="button" :class="{tr: !!todoCount}" @click="printCurrentDocument()">{{$t('view.print')}}</button>
+          <button type="button" :class="{tr: !!todoCount}" @click="toggleExportPanel(true)">{{$t('export')}}</button>
         </div>
       </div>
     </div>
@@ -50,8 +50,8 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 
 import { IFrame as XIFrame } from '@fe/support/embed'
 import { getLogger } from '@fe/utils'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
-import { disableSyncScrollAwhile, getHeadings, getViewDom, Heading, print, scrollTopTo } from '@fe/services/view'
-import { showExport } from '@fe/services/document'
+import { disableSyncScrollAwhile, getHeadings, getViewDom, Heading, scrollTopTo } from '@fe/services/view'
+import { printCurrentDocument, toggleExportPanel } from '@fe/services/export'
 import { useI18n } from '@fe/services/i18n'
 import { getEditor } from '@fe/services/editor'
 import type { AppState } from '@fe/support/store'

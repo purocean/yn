@@ -22,7 +22,7 @@ export default {
             hidden: !ctx.store.state.currentFile,
             onClick: () => {
               setTimeout(() => {
-                ctx.view.print()
+                ctx.export.printCurrentDocument()
               }, 0)
             },
           },
@@ -31,7 +31,7 @@ export default {
             type: 'normal',
             hidden: !ctx.store.state.currentFile,
             title: ctx.i18n.t('status-bar.tool.export'),
-            onClick: () => ctx.doc.showExport(),
+            onClick: () => ctx.export.toggleExportPanel(),
           },
           {
             type: 'separator'

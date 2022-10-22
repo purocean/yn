@@ -2,10 +2,7 @@
   <XMask :show="showExport" @close="close" :maskCloseable="false">
     <div class="wrapper" @click.stop>
       <h3>{{$t('export-panel.export')}}</h3>
-      <iframe @load="complete" width="0" height="0" hidden id="export-download" name="export-download" @loadedmetadata="close" />
-      <form ref="refExportForm" :action="`/api/convert/${convert.fileName}`" method="post" target="export-download">
-        <input type="hidden" name="source" :value="convert.source">
-        <input type="hidden" name="resourcePath" :value="convert.resourcePath">
+      <form @submit.prevent>
         <div style="padding: 20px">
           <label class="row-label">
             {{$t('export-panel.format')}}
@@ -83,43 +80,18 @@
 
 <script lang="ts">
 import { useStore } from 'vuex'
-import { computed, defineComponent, reactive, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, reactive, watch } from 'vue'
 import { MARKDOWN_FILE_EXT } from '@share/misc'
-import { isElectron, isWindows } from '@fe/support/env'
-import { getContentHtml, getPreviewStyles, print, printToPDF, wrapExportProcess } from '@fe/services/view'
-import { FLAG_DEMO } from '@fe/support/args'
-import { triggerHook } from '@fe/core/hook'
-import { useToast } from '@fe/support/ui/toast'
-import { useModal } from '@fe/support/ui/modal'
-import { useI18n } from '@fe/services/i18n'
-import { getRepo } from '@fe/services/base'
-import { downloadContent, sleep } from '@fe/utils'
-import { basename, dirname } from '@fe/utils/path'
 import type { ExportType } from '@fe/types'
+import type { AppState } from '@fe/support/store'
+import { isElectron } from '@fe/support/env'
+import { FLAG_DEMO } from '@fe/support/args'
+import { useToast } from '@fe/support/ui/toast'
+import { useI18n } from '@fe/services/i18n'
+import { convertCurrentDocument, printCurrentDocument, printCurrentDocumentToPDF, toggleExportPanel } from '@fe/services/export'
+import { downloadContent, sleep } from '@fe/utils'
+import { basename } from '@fe/utils/path'
 import XMask from './Mask.vue'
-
-const buildHtml = (title: string, body: string, options: { includeStyle: boolean }) => `
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="generator" content="Yank Note" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-    <title>${title}</title>
-    ${
-      options.includeStyle
-      ? `<style>
-          ${getPreviewStyles()}
-        </style>`
-      : ''
-    }
-  </head>
-  <body>
-    ${body}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.css" rel="stylesheet" />
-  </body>
-</html>
-`
 
 export default defineComponent({
   name: 'export-panel',
@@ -127,17 +99,15 @@ export default defineComponent({
   setup () {
     const { t } = useI18n()
 
-    const store = useStore()
-    const toast = useToast()
-    const refExportForm = ref<HTMLFormElement | null>(null)
-    const { showExport, currentFile } = toRefs(store.state)
+    const store = useStore<AppState>()
+    const showExport = computed(() => store.state.showExport)
+    const currentFile = computed(() => store.state.currentFile)
     const fileName = computed(() => basename(currentFile.value?.name || 'export.md', MARKDOWN_FILE_EXT))
+
+    const toast = useToast()
     const convert = reactive({
-      fileName: '',
-      source: '',
       toType: 'pdf' as ExportType,
       fromType: 'html',
-      resourcePath: '.',
       localHtmlOptions: {
         inlineLocalImage: true,
         uploadLocalImage: false,
@@ -171,115 +141,66 @@ export default defineComponent({
       }
     })
 
-    const close = () => store.commit('setShowExport', false)
     const localHtml = computed(() => convert.toType === 'html' && convert.fromType === 'html')
 
+    function close () {
+      toggleExportPanel(false)
+    }
+
     async function exportPdf (name: string) {
-      close()
       await sleep(300)
       if (!isElectron) {
-        await print()
+        // in browser, use print api
+        await printCurrentDocument()
       } else {
         const { landscape, pageSize, scaleFactor, printBackground } = convert.pdfOptions
 
-        try {
-          const buffer = await printToPDF({
-            pageSize,
-            printBackground,
-            landscape: Boolean(landscape),
-            scaleFactor: Number(scaleFactor)
-          })
-          downloadContent(name + '.pdf', buffer, 'application/pdf')
-        } catch (error) {
-          toast.show('warning', String(error))
-          throw error
-        }
+        const buffer = await printCurrentDocumentToPDF({
+          pageSize,
+          printBackground,
+          landscape: Boolean(landscape),
+          scaleFactor: Number(scaleFactor)
+        })
+
+        downloadContent(name + '.pdf', buffer, 'application/pdf')
       }
-    }
-
-    async function exportDoc () {
-      if (!currentFile.value || !currentFile.value.content) {
-        return
-      }
-
-      if (convert.toType === 'pdf') {
-        exportPdf(fileName.value)
-        return
-      }
-
-      if (FLAG_DEMO) {
-        toast.show('warning', t('demo-tips'))
-        return
-      }
-
-      // close when download complete
-      window.addEventListener('blur', close, { once: true })
-
-      toast.show('info', t('export-panel.loading'), 5000)
-
-      if (localHtml.value) {
-        const html = await wrapExportProcess(convert.toType, () => getContentHtml(convert.localHtmlOptions))
-        downloadContent(fileName.value + '.html', buildHtml(fileName.value, html, convert.localHtmlOptions))
-        return
-      }
-
-      const source = convert.fromType === 'markdown'
-        ? currentFile.value.content
-        : await wrapExportProcess(convert.toType, () => getContentHtml({
-          preferPng: true,
-          nodeProcessor: node => {
-            // for pandoc highlight code
-            if (node.tagName === 'PRE' && node.dataset.lang) {
-              node.classList.add('sourceCode', node.dataset.lang)
-            }
-
-            // remove katex-html
-            if (node.classList.contains('katex-html')) {
-              node.remove()
-            }
-          }
-        }))
-
-      triggerHook('VIEW_AFTER_EXPORT', { type: convert.toType })
-
-      convert.fileName = `${fileName.value}.${convert.toType}`
-      convert.source = source
-
-      convert.resourcePath = [
-        getRepo(currentFile.value.repo)?.path || '.',
-        dirname(currentFile.value.absolutePath)
-      ].join(isWindows ? ';' : ':')
-
-      await sleep(300)
-      refExportForm.value!.submit()
     }
 
     async function ok () {
       try {
-        await exportDoc()
+        if (!currentFile.value || !currentFile.value.content) {
+          return
+        }
+
+        close()
+
+        if (convert.toType === 'pdf') {
+          exportPdf(fileName.value)
+          return
+        }
+
+        if (FLAG_DEMO) {
+          toast.show('warning', t('demo-tips'))
+          return
+        }
+
+        toast.show('info', t('export-panel.loading'), 5000)
+
+        const blob = await convertCurrentDocument({
+          fromType: convert.fromType as any,
+          toType: convert.toType as any,
+          fromHtmlOptions: convert.localHtmlOptions,
+        })
+
+        downloadContent(fileName.value + '.' + convert.toType, blob)
+        toast.hide()
       } catch (error: any) {
         toast.show('warning', error.message)
         throw error
       }
     }
 
-    function complete (e: Event) {
-      const iframe = e.target as HTMLIFrameElement
-      try {
-        const body = iframe.contentWindow?.document.body.innerText
-        if (body) {
-          const result = JSON.parse(body)
-          if (result.message) {
-            useModal().alert({
-              title: 'Error',
-              content: result.message
-            })
-          }
-        }
-      } catch {}
-    }
-
-    return { localHtml, complete, showExport, refExportForm, ok, close, convert, isElectron }
+    return { localHtml, ok, close, convert, isElectron, showExport }
   },
 })
 </script>

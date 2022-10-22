@@ -79,8 +79,10 @@ export function objectInsertAfterKey (obj: {}, key: string, content: {}) {
   return Object.fromEntries(items)
 }
 
-export function downloadContent (filename: string, content: ArrayBuffer | Buffer | string, type = 'application/octet-stream') {
-  const blob = new Blob([content], { type })
+export function downloadContent (filename: string, content: Blob): void
+export function downloadContent (filename: string, content: ArrayBuffer | Buffer | string, type: string): void
+export function downloadContent (filename: string, content: ArrayBuffer | Buffer | Blob | string, type = 'application/octet-stream') {
+  const blob = content instanceof Blob ? content : new Blob([content], { type })
   const href = window.URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = href

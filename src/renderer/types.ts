@@ -133,6 +133,18 @@ export type PrintOpts = {
   printBackground?: boolean,
 }
 
+export type ConvertOpts = {
+  fromType: 'markdown' | 'html',
+  toType: 'docx' | 'html' | 'rst' | 'adoc',
+  fromHtmlOptions?: {
+    inlineLocalImage: boolean,
+    uploadLocalImage: boolean,
+    inlineStyle: boolean,
+    includeStyle: boolean,
+    highlightCode: boolean,
+  }
+}
+
 export type RenderEnv = {
   source: string,
   file: Doc | null,
@@ -278,8 +290,8 @@ export type BuildInHookTypes = {
   VIEW_AFTER_REFRESH: never,
   VIEW_PREVIEWER_CHANGE: { type: 'register' | 'remove' | 'switch' },
   VIEW_RENDER_IFRAME_READY: { iframe: HTMLIFrameElement },
-  VIEW_BEFORE_EXPORT: { type: ExportType },
-  VIEW_AFTER_EXPORT: { type: ExportType },
+  EXPORT_BEFORE_PREPARE: { type: ExportType },
+  EXPORT_AFTER_PREPARE: { type: ExportType },
   VIEW_ON_GET_HTML_FILTER_NODE: {
     node: HTMLElement,
     options: {
