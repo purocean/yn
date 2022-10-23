@@ -29,6 +29,7 @@ import * as setting from '@fe/services/setting'
 import * as i18n from '@fe/services/i18n'
 import * as controlCenter from '@fe/services/control-center'
 import * as runner from '@fe/services/runner'
+import * as exportDoc from '@fe/services/export'
 import * as lib from './lib'
 import * as components from './components'
 
@@ -58,6 +59,7 @@ const ctx = Object.freeze({
   i18n,
   env,
   utils,
+  export: exportDoc,
   ui: { useToast, useModal, useQuickFilter, useContextMenu },
   registerHook: hook.registerHook,
   removeHook: hook.removeHook,

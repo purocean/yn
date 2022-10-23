@@ -199,14 +199,53 @@ const showWindow = (showInCurrentWindow = true) => {
   }
 }
 
-const reload = () => {
+const ensureDocumentSaved = () => {
+  return new Promise((resolve, reject) => {
+    if (!win) {
+      reject(new Error('window is not ready'))
+      return
+    }
+
+    const contents = win!.webContents
+    contents.executeJavaScript('window.documentSaved', true).then(val => {
+      if (!win) {
+        reject(new Error('window is not ready'))
+        return
+      }
+
+      if (val) {
+        resolve(undefined)
+        return
+      }
+
+      dialog.showMessageBox(win!, {
+        type: 'question',
+        title: $t('quit-check-dialog.title'),
+        message: $t('quit-check-dialog.desc'),
+        buttons: [
+          $t('quit-check-dialog.buttons.cancel'),
+          $t('quit-check-dialog.buttons.discard')
+        ],
+      }).then(choice => {
+        if (choice.response === 1) {
+          resolve(undefined)
+        } else {
+          reject(new Error('document not saved'))
+        }
+      }, reject)
+    })
+  })
+}
+
+const reload = async () => {
   if (win) {
     skipBeforeUnloadCheck = true
+    await ensureDocumentSaved()
     win.loadURL(getUrl())
   }
 }
 
-const quit = () => {
+const quit = async () => {
   saveWindowBounds()
 
   if (!win) {
@@ -214,34 +253,10 @@ const quit = () => {
     return
   }
 
-  const contents = win.webContents
-  if (contents) {
-    contents.executeJavaScript('window.documentSaved', true).then(val => {
-      if (!win) {
-        return
-      }
+  await ensureDocumentSaved()
 
-      if (val === false) {
-        dialog.showMessageBox(win, {
-          type: 'question',
-          title: $t('quit-check-dialog.title'),
-          message: $t('quit-check-dialog.desc'),
-          buttons: [
-            $t('quit-check-dialog.buttons.cancel'),
-            $t('quit-check-dialog.buttons.discard')
-          ],
-        }).then(choice => {
-          if (choice.response === 1) {
-            win && win.destroy()
-            app.quit()
-          }
-        })
-      } else {
-        win.destroy()
-        app.quit()
-      }
-    })
-  }
+  win.destroy()
+  app.quit()
 }
 
 const showSetting = () => {

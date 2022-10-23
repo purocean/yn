@@ -568,7 +568,9 @@ const data: BaseLanguage = {
     'registry': '仓库源',
     'activation-time': '激活时间',
     'requirement': '需要',
-    'unknown-origin-tips': '使用未知来源的扩展可能有风险，仍然要启用吗？'
+    'auto-upgrade': '自动升级',
+    'unknown-origin-tips': '使用未知来源的扩展可能有风险，仍然要启用吗？',
+    'extensions-auto-upgraded': '%s 个扩展已升级',
   },
 }
 

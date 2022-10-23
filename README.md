@@ -76,28 +76,18 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.40.1](https://github.com/purocean/yn/releases/tag/v3.40.1) 2022-10-16
+### [v3.41.0](https://github.com/purocean/yn/releases/tag/v3.41.0) 2022-10-23
 
-1. feat: optimize rendering performance for large documents containing formulas
-2. feat: support using frontmatter to define Katex formula rendering parameters
-3. feat: window traffic lights on macOS indicate whether the document has been saved
-4. feat: added "Editor/Preview Mutual Exclusion" function to "View" menu
-5. fix: fixed the problem that the editor's completion content was inserted incorrectly in some cases
-6. fix: fix the issue of opening a new window when clicking an empty link
-7. fix: Fix the abnormal display of the brain map in some cases
-8. refactor(plugin): change `DOC_BEFORE_EXPORT` Hook to `VIEW_BEFORE_EXPORT`
-9. refactor(plugin): change `ctx.doc.print` method to `ctx.view.print`
-10. refactor(plugin): remove `ctx.theme.removeStyles` method
-11. refactor(plugin): remove `view.scroll-top-to` Action
-12. feat(plugin): add `ctx.theme.addStyleLink` method
-13. feat(plugin): add `ctx.ui.useContextMenu` method to display the right-click menu
-14. feat(plugin): add `ctx.markdown.getRenderCache` method for using render cache
-15. feat(plugin): add `ctx.layout.toggleEditorPreviewExclusive` method for switching editor/preview exclusive mode
-16. feat(plugin): add `ctx.editor.tapMarkdownMonarchLanguage` method to change the editor markdown language definition
-17. feat(plugin): add `PLUGIN_HOOK` Hook, support to intercept and change Katex rendering parameters
-18. feat(plugin): add `VIEW_RENDER_IFRAME_READY`, `GLOBAL_KEYDOWN`, `GLOBAL_KEYUP` Hooks
-19. feat(plugin): preview rendering using iframe, related methods: `ctx.view.getRenderIframe`, `ctx.view.addStyles`, `ctx.view.addStyleLink`, `ctx.view.addScript`
-20. fix(plugin): fix the problem that the plugin changes the markdown rendering parameters invalid
+1. feat: extended support for automatic update
+2. feat: optimize the effect of mind map exporting to PDF and printing
+3. upd: update mirror to remove `mirror.ghproxy.com`
+4. fix: fix the problem that the background color of the preview "Print" and "Export" buttons is too transparent
+5. feat(plugin): `ctx.utils.downloadContent` supports passing in `Blob` object
+6. refactor(plugin): refactor the export function and add the `ctx.export` module
+7. refactor(plugin): remove `ctx.doc.print` method, add `ctx.export.printCurrentDocument` method
+8. refactor(plugin): remove `ctx.doc.showExport` method, add `ctx.export.toggleExportPanel` method
+9. refactor(plugin): remove `VIEW_BEFORE_EXPORT` Hook, add `EXPORT_BEFORE_PREPARE` `EXPORT_AFTER_PREPARE` Hooks
+10. refactor(plugin): remove `ctx.base.forceReload` method, add `ctx.base.reloadMainWindow` method
 
 [More release notes](https://github.com/purocean/yn/releases)
 

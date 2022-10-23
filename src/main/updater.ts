@@ -8,7 +8,7 @@ import { $t } from './i18n'
 import { registerAction } from './action'
 import config from './config'
 
-type Source = 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com'
+type Source = 'github.com' | 'ghproxy.com'
 
 logger.transports.file.level = 'info'
 autoUpdater.logger = logger

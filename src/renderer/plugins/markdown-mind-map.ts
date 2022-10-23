@@ -10,6 +10,8 @@ import store from '@fe/support/store'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { t } from '@fe/services/i18n'
 import { getRenderIframe } from '@fe/services/view'
+import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
+import type { ExportType } from '@fe/types'
 
 const logger = getLogger('markdown-mind-map')
 
@@ -391,6 +393,7 @@ const MindMap = defineComponent({
   setup (props) {
     const id = `mind-map-${mindMapId++}`
     const container = ref<HTMLElement>()
+    const img = ref('')
 
     let km: any = null
     const renderMindMap = debounce(() => {
@@ -422,6 +425,17 @@ const MindMap = defineComponent({
       renderMindMap()
     }
 
+    async function beforePrint ({ type }: { type: ExportType }) {
+      if (type === 'print' || type === 'pdf') {
+        const svg = await km.exportData('svg')
+        img.value = 'data:image/svg+xml;base64,' + strToBase64(svg)
+      }
+    }
+
+    function afterPrint () {
+      img.value = ''
+    }
+
     watch(() => props.content, renderMindMap)
 
     watch(() => store.state.showView, (visible) => {
@@ -433,24 +447,42 @@ const MindMap = defineComponent({
     onMounted(() => setTimeout(renderMindMap, 0))
 
     registerHook('I18N_CHANGE_LANGUAGE', reload)
+    registerHook('EXPORT_BEFORE_PREPARE', beforePrint)
+    registerHook('EXPORT_AFTER_PREPARE', afterPrint)
     onBeforeUnmount(() => {
       clean()
       removeHook('I18N_CHANGE_LANGUAGE', reload)
+      removeHook('EXPORT_BEFORE_PREPARE', beforePrint)
+      removeHook('EXPORT_AFTER_PREPARE', afterPrint)
     })
 
     let focused = false
 
-    return () => h('div', {
-      id,
-      ref: container,
-      class: 'mind-map reduce-brightness',
-      tabIndex: -1,
-      onClickCapture: () => { container.value?.focus() },
-      onFocus: () => { focused = true },
-      onBlur: () => { focused = false },
-      onMousewheelCapture: (e: WheelEvent) => { !focused && e.stopPropagation() },
-      ...props.attrs,
-    })
+    const className = [
+      'mind-map',
+      DOM_CLASS_NAME.REDUCE_BRIGHTNESS,
+      DOM_CLASS_NAME.SKIP_EXPORT,
+      DOM_CLASS_NAME.SKIP_PRINT,
+    ].join(' ')
+
+    return () => [
+      img.value ? h('p', { ...props.attrs }, h('img', {
+        src: img.value,
+        [DOM_ATTR_NAME.ONLY_CHILD]: true,
+      })) : null,
+      h('div', {
+        id,
+        ref: container,
+        class: className,
+        [DOM_ATTR_NAME.DISPLAY_NONE]: img.value ? true : undefined,
+        tabIndex: -1,
+        onClickCapture: () => { container.value?.focus() },
+        onFocus: () => { focused = true },
+        onBlur: () => { focused = false },
+        onMousewheelCapture: (e: WheelEvent) => { !focused && e.stopPropagation() },
+        ...props.attrs,
+      })
+    ]
   }
 })
 
@@ -513,6 +545,7 @@ export default {
         if (km) {
           const img = document.createElement('img')
           img.alt = 'mind-map'
+          img.setAttribute(DOM_ATTR_NAME.ONLY_CHILD, 'true')
 
           if (options.preferPng) {
             img.src = await km.exportData('png')
@@ -521,7 +554,11 @@ export default {
             img.src = 'data:image/svg+xml;base64,' + ctx.utils.strToBase64(svg)
           }
 
-          node.outerHTML = img.outerHTML
+          const p = document.createElement('p')
+          Object.assign(p.dataset, node.dataset)
+          p.appendChild(img)
+
+          node.outerHTML = p.outerHTML
         }
       }
     })

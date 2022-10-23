@@ -133,6 +133,18 @@ export type PrintOpts = {
   printBackground?: boolean,
 }
 
+export type ConvertOpts = {
+  fromType: 'markdown' | 'html',
+  toType: 'docx' | 'html' | 'rst' | 'adoc',
+  fromHtmlOptions?: {
+    inlineLocalImage: boolean,
+    uploadLocalImage: boolean,
+    inlineStyle: boolean,
+    includeStyle: boolean,
+    highlightCode: boolean,
+  }
+}
+
 export type RenderEnv = {
   source: string,
   file: Doc | null,
@@ -193,7 +205,7 @@ export interface BuildInSettings {
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,
   'mark': FileItem[],
-  'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
+  'updater.source': 'github.com' | 'ghproxy.com',
   'doc-history.number-limit': number,
   'server.host': string,
   'server.port': number,
@@ -203,6 +215,7 @@ export interface BuildInSettings {
   'proxy.pac-url': string,
   'proxy.bypass-list': string,
   'extension.registry': RegistryHostname,
+  'extension.auto-upgrade': boolean,
   'keep-running-after-closing-window': boolean,
   'plantuml-api': string,
 }
@@ -277,7 +290,8 @@ export type BuildInHookTypes = {
   VIEW_AFTER_REFRESH: never,
   VIEW_PREVIEWER_CHANGE: { type: 'register' | 'remove' | 'switch' },
   VIEW_RENDER_IFRAME_READY: { iframe: HTMLIFrameElement },
-  VIEW_BEFORE_EXPORT: { type: ExportType },
+  EXPORT_BEFORE_PREPARE: { type: ExportType },
+  EXPORT_AFTER_PREPARE: { type: ExportType },
   VIEW_ON_GET_HTML_FILTER_NODE: {
     node: HTMLElement,
     options: {

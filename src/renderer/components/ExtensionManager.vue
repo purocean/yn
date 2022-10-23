@@ -2,12 +2,13 @@
   <XMask :mask-closeable="false" :style="{paddingTop: '7vh'}" :show="!!showManager" @close="hide">
     <div class="wrapper">
       <div class="body">
-        <div class="side">
+        <div class="side" ref="refSide">
           <group-tabs class="tabs" :tabs="listTypes" v-model="listType" />
           <div v-if="extensions.length > 0" class="list">
             <div
               v-for="item in extensions"
               :key="item.id"
+              :data-id="item.id"
               :class="{item: true, selected: item.id === currentExtension?.id}"
               @click="choose(item.id)">
               <div class="left">
@@ -123,7 +124,10 @@
                   </div>
                 </div>
                 <div class="description">{{ currentExtension.description }}</div>
-                <div v-if="installing" class="actions"><i>{{ $t('extension.installing') }} <b>{{installing}}</b></i></div>
+                <div v-if="installing" class="actions">
+                  <i>{{ $t('extension.installing') }} <b>{{installing}}</b></i>
+                  <button class="small" @click="abortInstallation">{{$t('cancel')}}</button>
+                </div>
                 <div v-else-if="uninstalling" class="actions"><i>{{ $t('extension.uninstalling') }}</i></div>
                 <div v-else class="actions">
                   <template v-if="currentExtension.dirty">
@@ -185,6 +189,10 @@
                   :selected="hostname === currentRegistry"
                 >{{ hostname }}</option>
               </select>
+              <label>
+                <input type="checkbox" v-model="autoUpgrade" />
+                <b>{{$t('extension.auto-upgrade')}}</b>
+              </label>
             </div>
             <div class="right">
               <template v-if="reloadRequired">
@@ -201,18 +209,19 @@
 </template>
 
 <script lang="ts" setup>
+import { debounce } from 'lodash-es'
 import Markdown from 'markdown-it'
 import semver from 'semver'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
-import { getLogger } from '@fe/utils'
+import { getLogger, sleep } from '@fe/utils'
 import * as api from '@fe/support/api'
 import { registerAction, removeAction } from '@fe/core/action'
 import XMask from '@fe/components/Mask.vue'
 import GroupTabs from '@fe/components/GroupTabs.vue'
 import * as extensionManager from '@fe/others/extension'
 import type { Extension, ExtensionCompatible } from '@fe/types'
-import { forceReload } from '@fe/services/base'
+import { reloadMainWindow } from '@fe/services/base'
 import * as setting from '@fe/services/setting'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
@@ -227,6 +236,7 @@ const { $t, t } = useI18n()
 
 const registries = extensionManager.registries
 
+const refSide = ref<HTMLElement>()
 const showManager = ref(false)
 const currentId = ref('')
 const iframeLoaded = ref(false)
@@ -237,6 +247,7 @@ const registryExtensions = ref<Extension[] | null>(null)
 const installedExtensions = ref<Extension[] | null>(null)
 const listType = ref<'all' | 'installed'>('all')
 const contentType = ref<'readme' | 'changelog'>('readme')
+const autoUpgrade = ref<boolean>()
 const currentRegistry = ref(setting.getSetting(
   'extension.registry',
   getCurrentLanguage() === 'zh-CN' ? 'registry.npmmirror.com' : 'registry.npmjs.org'
@@ -256,38 +267,40 @@ const contentTypes = computed(() => [
   { label: 'CHANGELOG', value: 'changelog' },
 ])
 
+type ListExtensionItem = Extension & {
+  dirty?: boolean,
+  upgradable?: boolean,
+  latestVersion?: string,
+  newVersionCompatible?: ExtensionCompatible,
+  activationTime?: number,
+}
+
+function buildListExtensionItem (extension: Extension, installedExtension: Extension) {
+  const upgradable = installedExtension.version !== extension.version && semver.gt(extension.version, installedExtension.version)
+  return {
+    ...extension,
+    installed: true,
+    icon: upgradable ? extension.icon : installedExtension.icon,
+    readmeUrl: upgradable ? extension.readmeUrl : installedExtension.readmeUrl,
+    changelogUrl: upgradable ? extension.changelogUrl : installedExtension.changelogUrl,
+    requirements: upgradable ? extension.requirements : installedExtension.requirements,
+    enabled: installedExtension.enabled,
+    version: installedExtension.version,
+    compatible: installedExtension.compatible,
+    isDev: installedExtension.isDev,
+    newVersionCompatible: extension.compatible,
+    latestVersion: extension.version,
+    upgradable,
+  }
+}
+
 const extensions = computed(() => {
-  let list: (Extension & {
-    dirty?: boolean,
-    upgradable?: boolean,
-    latestVersion?: string,
-    newVersionCompatible?: ExtensionCompatible,
-    activationTime?: number,
-  })[] = []
+  let list: ListExtensionItem[] = []
 
   if (registryExtensions.value) {
     list = registryExtensions.value.map(item => {
       const installedInfo = installedExtensions.value?.find(installed => installed.id === item.id)
-      if (installedInfo) {
-        const upgradable = installedInfo.version !== item.version && semver.gt(item.version, installedInfo.version)
-        return {
-          ...item,
-          installed: true,
-          icon: upgradable ? item.icon : installedInfo.icon,
-          readmeUrl: upgradable ? item.readmeUrl : installedInfo.readmeUrl,
-          changelogUrl: upgradable ? item.changelogUrl : installedInfo.changelogUrl,
-          requirements: upgradable ? item.requirements : installedInfo.requirements,
-          enabled: installedInfo.enabled,
-          version: installedInfo.version,
-          compatible: installedInfo.compatible,
-          isDev: installedInfo.isDev,
-          newVersionCompatible: item.compatible,
-          latestVersion: item.version,
-          upgradable,
-        }
-      }
-
-      return item
+      return installedInfo ? buildListExtensionItem(item, installedInfo) : item
     })
   }
 
@@ -432,7 +445,7 @@ async function checkRequirements (extension: Extension) {
   }
 }
 
-async function install (extension?: Extension) {
+async function install (extension?: Extension, auto?: boolean) {
   if (!extension) {
     return
   }
@@ -442,16 +455,27 @@ async function install (extension?: Extension) {
   try {
     installing.value = extension.id
     await extensionManager.install(extension, currentRegistry.value)
-    await refreshInstalledExtensions()
+    !auto && await refreshInstalledExtensions()
   } catch (error: any) {
     logger.error('install', error)
-    useToast().show('warning', error.message)
+    !auto && useToast().show('warning', error.message)
     throw error
   } finally {
     installing.value = ''
   }
 
-  useToast().show('info', $t.value('extension.toast-loaded'))
+  !auto && useToast().show('info', $t.value('extension.toast-loaded'))
+}
+
+async function abortInstallation () {
+  try {
+    await extensionManager.abortInstallation()
+    installing.value = ''
+  } catch (error: any) {
+    logger.error('abort', error)
+    useToast().show('warning', error.message)
+    throw error
+  }
 }
 
 async function uninstall (extension?: Extension) {
@@ -483,12 +507,12 @@ async function uninstall (extension?: Extension) {
   }
 }
 
-async function upgrade (extension?: Extension) {
-  install(extension)
+async function upgrade (extension?: Extension, auto?: boolean) {
+  await install(extension, auto)
 }
 
 function reload () {
-  forceReload()
+  reloadMainWindow()
 }
 
 async function enable (extension?: Extension) {
@@ -541,6 +565,61 @@ function openUrl (url?: string) {
   }
 }
 
+let autoUpgrading = false
+async function triggerAutoUpgrade () {
+  logger.debug('triggerAutoUpgrade', autoUpgrade.value)
+
+  if (!autoUpgrade.value) {
+    return
+  }
+
+  if (autoUpgrading) {
+    logger.warn('triggerAutoUpgrade', 'upgrading')
+    return
+  }
+
+  autoUpgrading = true
+
+  try {
+    logger.debug('triggerAutoUpgrade', 'start')
+
+    const registryExtensions = await extensionManager.getRegistryExtensions(currentRegistry.value)
+    const installed = await extensionManager.getInstalledExtensions()
+
+    let count = 0
+    let firstUpgradeId = ''
+    for (const extension of registryExtensions) {
+      const installedExt = installed.find(e => e.id === extension.id)
+      if (installedExt) {
+        const item = buildListExtensionItem(extension, installedExt)
+        if (item.upgradable && item.newVersionCompatible.value && !item.isDev) {
+          logger.debug('triggerAutoUpgrade', item.id, item.latestVersion)
+          try {
+            await upgrade(item, true)
+            firstUpgradeId = firstUpgradeId || item.id
+            count++
+          } catch (error: any) {
+            logger.error('triggerAutoUpgrade', item.id, error)
+          }
+        }
+      }
+    }
+
+    if (count) {
+      if (showManager.value) {
+        await refreshInstalledExtensions()
+      }
+
+      useToast().show('info', $t.value('extension.extensions-auto-upgraded', String(count)))
+      await sleep(2000)
+      show(firstUpgradeId)
+    }
+  } finally {
+    logger.debug('triggerAutoUpgrade', 'done')
+    autoUpgrading = false
+  }
+}
+
 watch(extensions, () => {
   if (!currentId.value && extensions.value.length > 0) {
     choose(extensions.value[0].id)
@@ -565,13 +644,25 @@ watch(currentRegistry, (val) => {
 })
 
 watch(currentExtension, (val) => {
+  if (val) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    refSide.value?.querySelector(`[data-id="${val.id}"]`)?.scrollIntoViewIfNeeded()
+  }
+
   if (val && installedExtensions.value) {
     fetchContent('readme', val)
     fetchContent('changelog', val)
   }
 })
 
+watch(autoUpgrade, debounce((val) => {
+  triggerAutoUpgrade()
+  setting.setSetting('extension.auto-upgrade', !!val)
+}, 5000))
+
 onMounted(() => {
+  autoUpgrade.value = setting.getSetting('extension.auto-upgrade', true)
   registerAction({ name: 'extension.show-manager', handler: show })
 })
 
@@ -815,6 +906,7 @@ onUnmounted(() => {
 
         i {
           font-size: 14px;
+          margin-right: 6px;
         }
       }
     }
@@ -881,10 +973,21 @@ iframe {
   .left {
     display: flex;
     align-items: center;
+    user-select: none;
 
     select {
       margin-left: 12px;
       padding: 4px;
+    }
+
+    label {
+      margin-left: 12px;
+      display: flex;
+      align-items: center;
+
+      input {
+        margin-right: 4px;
+      }
     }
   }
 

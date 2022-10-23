@@ -29,6 +29,7 @@ export const DOM_ATTR_NAME = {
   LOCAL_IMAGE: 'local-image',
   ONLY_CHILD: 'only-child',
   TOKEN_IDX: 'data-token-idx',
+  DISPLAY_NONE: 'display-none',
 }
 
 export const DOM_CLASS_NAME = {

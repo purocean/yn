@@ -480,6 +480,8 @@ const userExtension = async (ctx: any, next: any) => {
       ctx.body = result('ok', 'success', await extension.enable(id))
     } else if (ctx.path.startsWith('/api/extensions/disable')) {
       ctx.body = result('ok', 'success', await extension.disable(id))
+    } else if (ctx.path.startsWith('/api/extensions/abort-installation')) {
+      ctx.body = result('ok', 'success', await extension.abortInstallation())
     } else {
       await next()
     }

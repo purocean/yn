@@ -667,13 +667,6 @@ export async function showHelp (docName: string) {
 }
 
 /**
- * Show export panel.
- */
-export function showExport () {
-  store.commit('setShowExport', true)
-}
-
-/**
  * show history versions of document
  * @param doc
  */

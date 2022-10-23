@@ -176,6 +176,10 @@ export async function uninstall (extension: Pick<Extension, 'id'>) {
   await api.uninstallExtension(extension.id)
 }
 
+export async function abortInstallation () {
+  await api.abortExtensionInstallation()
+}
+
 export async function install (extension: Extension, registry: RegistryHostname = 'registry.npmjs.org') {
   const url = extension.dist.tarball
   if (!url) {
