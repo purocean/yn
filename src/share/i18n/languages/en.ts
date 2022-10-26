@@ -233,7 +233,6 @@ const data = {
       'copy-content': 'Copy Content',
       'doc-history': 'Document History',
       'share-preview': 'Share Preview',
-      'extension-manager': 'Extension Manager',
       'print': 'Print Document',
       'export': 'Export Document',
     },
@@ -254,7 +253,10 @@ const data = {
     'present': 'Present',
     'get': {
       'get-application': 'Get Application',
-    }
+    },
+    'extension': {
+      'extension-manager': 'Extension Manager',
+    },
   },
   'view': {
     'outline': 'Outline',

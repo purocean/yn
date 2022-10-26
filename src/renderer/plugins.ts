@@ -15,6 +15,7 @@ import statusBarHistory from './plugins/status-bar-history'
 import statusBarPresentation from '@fe/plugins/status-bar-presentation'
 import statusBarControlCenter from '@fe/plugins/status-bar-control-center'
 import statusBarTerminal from '@fe/plugins/status-bar-terminal'
+import statusBarExtension from './plugins/status-bar-extension'
 import statusBarGet from '@fe/plugins/status-bar-get'
 import editorPaste from '@fe/plugins/editor-paste'
 import editorAttachment from '@fe/plugins/editor-attachment'
@@ -75,6 +76,7 @@ export default [
   statusBarPreviewer,
   statusBarHistory,
   statusBarTerminal,
+  statusBarExtension,
   statusBarControlCenter,
   statusBarPresentation,
   statusBarGet,

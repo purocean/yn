@@ -234,7 +234,6 @@ const data: BaseLanguage = {
       'copy-content': '复制内容',
       'doc-history': '文档历史版本',
       'share-preview': '分享预览',
-      'extension-manager': '扩展管理',
       'print': '打印文档',
       'export': '导出文档',
     },
@@ -255,6 +254,9 @@ const data: BaseLanguage = {
     'present': '预览',
     'get': {
       'get-application': '获取应用',
+    },
+    'extension': {
+      'extension-manager': '扩展管理',
     },
   },
   'view': {
