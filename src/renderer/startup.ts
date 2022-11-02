@@ -17,7 +17,6 @@ import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 import ga from '@fe/support/ga'
-import { getActionHandler } from './core/action'
 
 init(plugins, ctx)
 
