@@ -16,14 +16,14 @@
               <div class="item">
                 <a href="javascript:void(0);" @click="createFile()">{{$t('tree.context-menu.create-doc')}}</a>
               </div>
-              <div class="item">
-                <a href="javascript:void(0);" @click="showSettingPanel()">{{$t('status-bar.setting')}}</a>
-              </div>
-              <div class="item">
+              <div class="item" v-if="!getPurchased()">
                 <a href="javascript:void(0);" @click="showPremium()">{{$t('premium.premium')}}</a>
               </div>
               <div class="item">
                 <a href="javascript:void(0);" @click="showExtensionManager()">{{$t('status-bar.extension.extension-manager')}}</a>
+              </div>
+              <div class="item">
+                <a href="javascript:void(0);" @click="showSettingPanel()">{{$t('status-bar.setting')}}</a>
               </div>
             </template>
           </div>
@@ -70,7 +70,7 @@ import { useStore } from 'vuex'
 import { useI18n } from '@fe/services/i18n'
 import type { AppState } from '@fe/support/store'
 import { showManager as showExtensionManager } from '@fe/others/extension'
-import { showPremium } from '@fe/others/premium'
+import { showPremium, getPurchased } from '@fe/others/premium'
 import { showSettingPanel } from '@fe/services/setting'
 import { createDoc, isMarkdownFile, switchDoc } from '@fe/services/document'
 import { getActionHandler } from '@fe/core/action'
