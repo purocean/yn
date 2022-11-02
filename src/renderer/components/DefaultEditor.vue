@@ -95,6 +95,7 @@ export default defineComponent({
       }
 
       getMonacoEditor().setModel(toUri(current), current?.content ?? '\n')
+      await nextTick()
       getEditor().updateOptions({
         readOnly: !current || !current.plain
       })
