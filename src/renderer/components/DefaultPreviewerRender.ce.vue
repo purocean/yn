@@ -82,9 +82,9 @@ async function render (checkInComposition = false) {
 
   let content = currentContent.value
 
-  // not markdown file, displace as code.
   if (currentFile.value && !isMarkdownFile(currentFile.value)) {
-    content = currentFile.value.name
+    content = `## ${currentFile.value.name} \n *Not a markdown file.*`
+    currentFile.value.name
   }
 
   const startTime = performance.now()
