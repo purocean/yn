@@ -18,6 +18,7 @@ export interface Doc extends PathItem {
   contentHash?: string;
   status?: 'loaded' | 'save-failed' | 'saved';
   absolutePath?: string,
+  plain?: boolean;
 }
 
 export interface Repo {

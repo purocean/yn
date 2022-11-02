@@ -9,7 +9,7 @@ import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { isEncrypted, saveDoc, toUri } from '@fe/services/document'
-import { whenEditorReady } from '@fe/services/editor'
+import { getEditor, whenEditorReady } from '@fe/services/editor'
 import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
 import { getSetting } from '@fe/services/setting'
@@ -25,7 +25,7 @@ export default defineComponent({
     const refEditor = ref<any>(null)
     const { currentFile, currentContent } = toRefs(store.state)
 
-    const getEditor = () => refEditor.value
+    const getMonacoEditor = () => refEditor.value
 
     function setCurrentValue ({ uri, value }: { uri: string; value: any}) {
       if (toUri(currentFile.value) === uri) {
@@ -94,11 +94,14 @@ export default defineComponent({
         return
       }
 
-      getEditor().setModel(toUri(current), current?.content ?? '\n')
+      getMonacoEditor().setModel(toUri(current), current?.content ?? '\n')
+      getEditor().updateOptions({
+        readOnly: !current || !current.plain
+      })
     }
 
     function resize () {
-      nextTick(() => getEditor().resize())
+      nextTick(() => getMonacoEditor().resize())
     }
 
     watch(currentFile, changeFile)

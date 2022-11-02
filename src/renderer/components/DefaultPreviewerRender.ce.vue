@@ -10,7 +10,6 @@
 import { debounce } from 'lodash-es'
 import { useStore } from 'vuex'
 import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { extname } from '@fe/utils/path'
 import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
 import { triggerHook } from '@fe/core/hook'
@@ -49,7 +48,6 @@ const inComposition = computed(() => store.state.inComposition)
 const autoPreview = computed(() => store.state.autoPreview)
 const currentFile = computed(() => store.state.currentFile)
 const currentContent = computed(() => store.state.currentContent)
-const fileName = computed(() => currentFile.value?.name)
 const fileUri = computed(() => toUri(currentFile.value))
 
 const refView = ref<HTMLElement | null>(null)
@@ -86,7 +84,7 @@ async function render (checkInComposition = false) {
 
   // not markdown file, displace as code.
   if (currentFile.value && !isMarkdownFile(currentFile.value)) {
-    content = '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
+    content = currentFile.value.name
   }
 
   const startTime = performance.now()

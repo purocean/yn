@@ -55,11 +55,10 @@
 import { computed, defineComponent, h, nextTick, PropType, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
-import extensions from '@fe/others/file-extensions'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems } from '@fe/services/tree'
 import type { Components } from '@fe/types'
-import { createDir, createDoc, deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, openInOS, switchDoc } from '@fe/services/document'
+import { createDir, createDoc, deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, switchDoc } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
 import { useToast } from '@fe/support/ui/toast'
@@ -108,13 +107,9 @@ export default defineComponent({
     }
 
     async function select (node: Components.Tree.Node) {
-      if (node.type !== 'dir') {
-        if (extensions.supported(node.name)) {
+      if (node.type === 'file') {
+        if (!(await triggerHook('TREE_NODE_SELECT', { node }, { breakable: true, ignoreError: true }))) {
           switchDoc(node)
-        } else {
-          if (!(await triggerHook('TREE_NODE_SELECT', { node }, { breakable: true }))) {
-            openInOS(node)
-          }
         }
       }
     }
