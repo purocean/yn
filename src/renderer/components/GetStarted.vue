@@ -130,7 +130,7 @@ function openHelpDoc (name: string) {
   overflow-y: auto;
   display: flex;
   justify-content: center;
-  background: var(--g-color-94);
+  background: var(--g-color-100);
   padding-top: 10vh;
 }
 
