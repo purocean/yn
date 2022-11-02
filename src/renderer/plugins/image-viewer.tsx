@@ -1,12 +1,13 @@
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import mime from 'mime'
 import { debounce } from 'lodash-es'
 import Viewer from 'viewerjs'
 import type { Plugin } from '@fe/context'
-import 'viewerjs/dist/viewer.css'
 import store from '@fe/support/store'
 import type { Doc } from '@fe/types'
 import { sleep } from '@fe/utils'
+
+import 'viewerjs/dist/viewer.css'
 
 function isImageFile (doc?: Doc | null) {
   if (!doc || doc.plain) {
