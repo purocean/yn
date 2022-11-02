@@ -16,7 +16,7 @@
     </template>
     <template v-slot:editor>
       <FileTabs />
-      <Editor />
+      <Editor @editor:change="onEditorChange" />
     </template>
     <template v-slot:preview>
       <Previewer />
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, toRef } from 'vue'
+import { computed, defineComponent, onMounted, ref, toRef } from 'vue'
 import { useStore } from 'vuex'
 import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
@@ -83,21 +83,32 @@ export default defineComponent({
     const showOutline = toRef(store.state, 'showOutline')
     onMounted(startup)
 
-    const classes = {
-      'flag-disable-xterm': FLAG_DISABLE_XTERM
-    }
+    const forceHiddenPreview = ref(false)
+
+    const classes = computed(() => ({
+      'flag-disable-xterm': FLAG_DISABLE_XTERM,
+      'force-hidden-preview': forceHiddenPreview.value,
+    }))
 
     function hideXterm () {
       getActionHandler('layout.toggle-xterm')(false)
     }
 
-    return { classes, hideXterm, showOutline }
+    function onEditorChange (payload: { hiddenPreview: boolean }) {
+      forceHiddenPreview.value = payload.hiddenPreview
+    }
+
+    return { classes, hideXterm, showOutline, onEditorChange }
   }
 })
 </script>
 
 <style scoped>
 .flag-disable-xterm :deep(.run-in-xterm){
+  display: none;
+}
+
+.force-hidden-preview :deep(.content .preview) {
   display: none;
 }
 </style>

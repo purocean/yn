@@ -1,140 +1,67 @@
 <template>
-  <div class="editor-container">
-    <MonacoEditor ref="refEditor" class="editor" />
-  </div>
+  <component v-if="currentEditor" :is="currentEditor.component" />
+  <default-editor v-show="!currentEditor" />
 </template>
 
-<script lang="ts">
-import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch } from 'vue'
+<script lang="ts" setup>
+import { computed, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'vue'
 import { useStore } from 'vuex'
+import { getAllCustomEditors, switchEditor } from '@fe/services/editor'
+import type { AppState } from '@fe/support/store'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { isEncrypted, saveDoc, toUri } from '@fe/services/document'
-import { whenEditorReady } from '@fe/services/editor'
-import type { Doc } from '@fe/types'
-import MonacoEditor from './MonacoEditor.vue'
-import { getSetting } from '@fe/services/setting'
+import { CustomEditor, Doc } from '@fe/types'
+import DefaultEditor from './DefaultEditor.vue'
 
-export default defineComponent({
-  name: 'editor',
-  components: { MonacoEditor },
-  setup () {
-    let editorIsReady = false
-    const store = useStore()
+// eslint-disable-next-line no-undef, func-call-spacing
+const emit = defineEmits<{
+  (event: 'editor:change', payload: { name: string, hiddenPreview: boolean }): void
+}>()
 
-    let timer: number | null = null
-    const refEditor = ref<any>(null)
-    const { currentFile, currentContent } = toRefs(store.state)
+const store = useStore<AppState>()
 
-    const getEditor = () => refEditor.value
+const availableEditors = shallowRef<CustomEditor[]>([])
+const currentEditor = computed(() => {
+  return availableEditors.value.find(item => item.name === store.state.editor)
+})
 
-    function setCurrentValue ({ uri, value }: { uri: string; value: any}) {
-      if (toUri(currentFile.value) === uri) {
-        store.commit('setCurrentContent', value)
-      }
-    }
+async function changeEditor ({ doc }: { doc?: Doc | null, name?: string }) {
+  availableEditors.value = (await Promise.allSettled(
+    getAllCustomEditors().map(x => x.when({ doc }) ? x : null))
+  ).filter(x => x.status === 'fulfilled' && x.value).map(x => (x as any).value)
 
-    function clearTimer () {
-      if (timer) {
-        window.clearTimeout(timer)
-        timer = null
-      }
-    }
+  console.log('xxxm', availableEditors.value)
 
-    async function saveFile (f: Doc | null = null) {
-      const file = f || currentFile.value
+  if (availableEditors.value.length < 1) {
+    switchEditor('default')
+    return
+  }
 
-      if (!(file && file.repo && file.path && file.status)) {
-        return
-      }
+  if (!availableEditors.value.some(x => x.name === store.state.editor)) {
+    switchEditor(availableEditors.value[0].name)
+  }
+}
 
-      if (file.content === currentContent.value) {
-        return
-      }
+function documentSwitchFailed () {
+  changeEditor({ doc: store.state.currentFile })
+}
 
-      if (!currentContent.value) {
-        return
-      }
+onMounted(() => {
+  registerHook('DOC_BEFORE_SWITCH', changeEditor)
+  registerHook('DOC_SWITCH_FAILED', documentSwitchFailed)
+})
 
-      if (file.repo === '__help__') {
-        return
-      }
+onBeforeUnmount(() => {
+  removeHook('DOC_BEFORE_SWITCH', changeEditor)
+  removeHook('DOC_SWITCH_FAILED', documentSwitchFailed)
+})
 
-      clearTimer()
-
-      await saveDoc(file, currentContent.value)
-    }
-
-    function restartTimer () {
-      clearTimer()
-
-      if (!(currentFile.value && currentFile.value.repo && currentFile.value.path)) {
-        return
-      }
-
-      const autoSave = getSetting('auto-save', 2000)
-
-      if (!autoSave) {
-        return
-      }
-
-      timer = window.setTimeout(() => {
-        // prevent auto save encrypted file.
-        if (!currentFile.value || isEncrypted(currentFile.value)) {
-          return
-        }
-
-        saveFile()
-      }, autoSave)
-    }
-
-    async function changeFile (current?: Doc | null) {
-      clearTimer()
-
-      if (!editorIsReady) {
-        return
-      }
-
-      getEditor().setModel(toUri(current), current?.content ?? '\n')
-    }
-
-    function resize () {
-      nextTick(() => getEditor().resize())
-    }
-
-    watch(currentFile, changeFile)
-    watch(currentContent, restartTimer)
-
-    onMounted(() => {
-      registerHook('GLOBAL_RESIZE', resize)
-      registerHook('EDITOR_CHANGE', setCurrentValue)
-      restartTimer()
-    })
-
-    onBeforeMount(() => {
-      removeHook('GLOBAL_RESIZE', resize)
-      removeHook('EDITOR_CHANGE', setCurrentValue)
-    })
-
-    whenEditorReady().then(({ editor, monaco }) => {
-      editorIsReady = true
-      if (currentFile.value) {
-        changeFile(currentFile.value)
-      }
-
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-        saveFile()
-      })
-    })
-
-    return { refEditor }
+watchEffect(() => {
+  console.log('xxx', currentEditor.value)
+  if (currentEditor.value) {
+    const hiddenPreview = !!currentEditor.value.hiddenPreview
+    emit('editor:change', { name: currentEditor.value.name, hiddenPreview })
+  } else {
+    emit('editor:change', { name: 'default', hiddenPreview: false })
   }
 })
 </script>
-
-<style scoped>
-.editor-container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-</style>

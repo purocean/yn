@@ -1,4 +1,5 @@
 import { Fragment, h } from 'vue'
+import { cloneDeep } from 'lodash-es'
 import { Optional } from 'utility-types'
 import { URI } from 'monaco-editor/esm/vs/base/common/uri.js'
 import * as misc from '@share/misc'
@@ -550,6 +551,8 @@ export async function ensureCurrentFileSaved () {
  * @param force
  */
 export async function switchDoc (doc: Doc | null, force = false) {
+  doc = doc ? cloneDeep(doc) : null
+
   logger.debug('switchDoc', doc)
 
   if (!force && toUri(doc) === toUri(store.state.currentFile)) {
@@ -564,6 +567,8 @@ export async function switchDoc (doc: Doc | null, force = false) {
       throw error
     }
   })
+
+  await triggerHook('DOC_BEFORE_SWITCH', { doc }, { breakable: true, ignoreError: true })
 
   try {
     if (!doc) {

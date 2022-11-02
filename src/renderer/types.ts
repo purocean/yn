@@ -310,12 +310,15 @@ export type BuildInHookTypes = {
   MONACO_BEFORE_INIT: { monaco: typeof Monaco },
   MONACO_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
   EDITOR_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
+  EDITOR_CUSTOM_EDITOR_CHANGE: { type: 'register' | 'remove' | 'switch' },
   EDITOR_CHANGE: { uri: string, value: string },
   DOC_CREATED: { doc: Doc },
   DOC_DELETED: { doc: Doc },
   DOC_MOVED: { oldDoc: Doc, newDoc: Doc },
   DOC_BEFORE_SAVE: { doc: Doc, content: string },
   DOC_SAVED: { doc: Doc },
+  DOC_BEFORE_SWITCH: { doc?: Doc | null },
+  DOC_SWITCHING: { doc?: Doc | null },
   DOC_SWITCHED: { doc: Doc | null },
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
@@ -335,6 +338,17 @@ export type BuildInHookTypes = {
 
 export type Previewer = {
   name: string,
+  component: any,
+}
+
+export type CustomEditorCtx = {
+  doc?: Doc | null,
+}
+
+export type CustomEditor = {
+  name: string,
+  hiddenPreview?: boolean,
+  when: (ctx: CustomEditorCtx) => boolean | Promise<boolean>,
   component: any,
 }
 
@@ -359,6 +373,7 @@ export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   EDITOR_MARKDOWN_MONARCH_LANGUAGE_TAPPERS: any;
   THEME_STYLES: any;
   VIEW_PREVIEWER: Previewer;
+  EDITOR_CUSTOM_EDITOR: CustomEditor,
   CODE_RUNNER: CodeRunner;
 }
 
