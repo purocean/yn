@@ -28,6 +28,7 @@ import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
 import emoji from '@fe/plugins/emoji'
+import getStarted from './plugins/get-started'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownMacro from '@fe/plugins/markdown-macro'
@@ -91,6 +92,7 @@ export default [
   switchTodo,
   imageViewer,
   emoji,
+  getStarted,
   markdownHtml,
   markdownRenderVnode,
   markdownMacro,

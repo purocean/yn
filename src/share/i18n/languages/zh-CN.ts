@@ -9,7 +9,7 @@ const data: BaseLanguage = {
   'undo': '撤销',
   'ok': '确定',
   'demo-tips': 'DEMO 模式下一些功能不可用',
-  'blank-page': '空白页',
+  'more': '更多',
   'copied': '已复制',
   'insert-different-repo-doc': '不能插入不同仓库的文档',
   'need-clipboard-permission': '请授予剪切板权限',
@@ -573,6 +573,12 @@ const data: BaseLanguage = {
     'auto-upgrade': '自动升级',
     'unknown-origin-tips': '使用未知来源的扩展可能有风险，仍然要启用吗？',
     'extensions-auto-upgraded': '%s 个扩展已升级',
+  },
+  'get-started': {
+    'get-started': '开始使用',
+    'start': '开始',
+    'help': '帮助',
+    'recent': '最近打开',
   },
 }
 

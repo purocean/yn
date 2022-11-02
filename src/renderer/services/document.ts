@@ -555,7 +555,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
 
   logger.debug('switchDoc', doc)
 
-  if (!force && toUri(doc) === toUri(store.state.currentFile)) {
+  if (!force && toUri(doc) === toUri(store.state.currentFile) && store.state.currentFile !== undefined) {
     logger.debug('skip switch', doc)
     return
   }

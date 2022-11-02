@@ -38,6 +38,7 @@ import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import type { AppState } from '@fe/support/store'
+import { emitResize } from '@fe/services/layout'
 import Layout from '@fe/components/Layout.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
 import StatusBar from '@fe/components/StatusBar.vue'
@@ -96,6 +97,7 @@ export default defineComponent({
 
     function onEditorChange (payload: { hiddenPreview: boolean }) {
       forceHiddenPreview.value = payload.hiddenPreview
+      emitResize()
     }
 
     return { classes, hideXterm, showOutline, onEditorChange }

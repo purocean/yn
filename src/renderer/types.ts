@@ -243,6 +243,7 @@ export type BuildInActions = {
   'control-center.refresh': () => void,
   'tree.refresh': () => void,
   'editor.toggle-wrap': () => void,
+  'editor.refresh-custom-editor': () => void,
   'filter.show-quick-open': () => void,
   'filter.choose-document': () => Promise<Doc>,
   'file-tabs.switch-left': () => void,

@@ -11,6 +11,7 @@ import type { AppState } from '@fe/support/store'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { CustomEditor, Doc } from '@fe/types'
 import DefaultEditor from './DefaultEditor.vue'
+import { registerAction, removeAction } from '@fe/core/action'
 
 // eslint-disable-next-line no-undef, func-call-spacing
 const emit = defineEmits<{
@@ -29,8 +30,6 @@ async function changeEditor ({ doc }: { doc?: Doc | null, name?: string }) {
     getAllCustomEditors().map(x => x.when({ doc }) ? x : null))
   ).filter(x => x.status === 'fulfilled' && x.value).map(x => (x as any).value)
 
-  console.log('xxxm', availableEditors.value)
-
   if (availableEditors.value.length < 1) {
     switchEditor('default')
     return
@@ -41,22 +40,29 @@ async function changeEditor ({ doc }: { doc?: Doc | null, name?: string }) {
   }
 }
 
-function documentSwitchFailed () {
+function refreshEditor () {
   changeEditor({ doc: store.state.currentFile })
 }
 
 onMounted(() => {
+  registerAction({
+    name: 'editor.refresh-custom-editor',
+    handler: refreshEditor,
+  })
+
   registerHook('DOC_BEFORE_SWITCH', changeEditor)
-  registerHook('DOC_SWITCH_FAILED', documentSwitchFailed)
+  registerHook('DOC_SWITCH_FAILED', refreshEditor)
+
+  refreshEditor()
 })
 
 onBeforeUnmount(() => {
+  removeAction('editor.refresh-custom-editor')
   removeHook('DOC_BEFORE_SWITCH', changeEditor)
-  removeHook('DOC_SWITCH_FAILED', documentSwitchFailed)
+  removeHook('DOC_SWITCH_FAILED', refreshEditor)
 })
 
 watchEffect(() => {
-  console.log('xxx', currentEditor.value)
   if (currentEditor.value) {
     const hiddenPreview = !!currentEditor.value.hiddenPreview
     emit('editor:change', { name: currentEditor.value.name, hiddenPreview })
