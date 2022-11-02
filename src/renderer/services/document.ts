@@ -588,7 +588,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
       return
     }
 
-    let content = 'Not supported file type.'
+    let content = ''
     let hash = ''
     if (doc.plain) {
       const timer = setTimeout(() => {
