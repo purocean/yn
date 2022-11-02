@@ -88,7 +88,7 @@ export default defineComponent({
 
     const classes = computed(() => ({
       'flag-disable-xterm': FLAG_DISABLE_XTERM,
-      'force-hidden-preview': forceHiddenPreview.value,
+      'editor-force-only': forceHiddenPreview.value,
     }))
 
     function hideXterm () {
@@ -110,7 +110,11 @@ export default defineComponent({
   display: none;
 }
 
-.force-hidden-preview :deep(.content .preview) {
-  display: none;
+.editor-force-only :deep(.content .preview) {
+  display: none !important;
+}
+
+.editor-force-only :deep(.content .editor) {
+  display: block !important;
 }
 </style>
