@@ -43,12 +43,24 @@ export default defineComponent({
     const showFilterBtnShortcuts = [Shift, Alt, 'p']
     const filterBtnTitle = computed(() => $t.value('tabs.search-tabs') + ' ' + getKeysLabel(showFilterBtnShortcuts))
 
+    function copyDoc (file: Doc | null): Doc | null {
+      return file ? {
+        type: 'file',
+        name: file?.name,
+        repo: file?.repo,
+        path: file?.path,
+      } : null
+    }
+
     function setTabs (list: Components.FileTabs.Item[]) {
-      store.commit('setTabs', list)
+      store.commit('setTabs', list.map(item => {
+        item.payload.file = copyDoc(item.payload.file)
+        return item
+      }))
     }
 
     function switchFile (file: Doc | null) {
-      return switchDoc(file)
+      return switchDoc(copyDoc(file))
     }
 
     function switchTab (item: Components.FileTabs.Item) {
