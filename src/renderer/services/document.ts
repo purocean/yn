@@ -603,7 +603,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
       status: 'loaded'
     })
 
-    triggerHook('DOC_SWITCHED', { doc: store.state.currentFile })
+    triggerHook('DOC_SWITCHED', { doc: store.state.currentFile || null })
   } catch (error: any) {
     triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message })
     useToast().show('warning', error.message.includes('Malformed') ? t('document.wrong-password') : error.message)

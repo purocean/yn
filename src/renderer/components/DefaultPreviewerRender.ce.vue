@@ -90,7 +90,7 @@ async function render (checkInComposition = false) {
   }
 
   const startTime = performance.now()
-  renderEnv = { tokens: [], source: content, file: currentFile.value, renderCount: renderCount }
+  renderEnv = { tokens: [], source: content, file: currentFile.value || null, renderCount: renderCount }
   try {
     renderContent.value = markdown.render(content, renderEnv)
   } catch (error: any) {
