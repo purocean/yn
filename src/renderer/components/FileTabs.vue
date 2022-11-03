@@ -8,6 +8,7 @@
     @switch="switchTab"
     @change-list="setTabs"
     @dblclick-item="makeTabPermanent"
+    @dblclick-blank="onDblclickBlank"
   />
 </template>
 
@@ -169,6 +170,10 @@ export default defineComponent({
       }
     }
 
+    function onDblclickBlank () {
+      switchDoc(null)
+    }
+
     onBeforeMount(() => {
       registerHook('DOC_MOVED', handleMoved)
       registerHook('DOC_CREATED', handleDocCreated)
@@ -239,16 +244,6 @@ export default defineComponent({
     }, { immediate: true })
 
     watch(tabs, list => {
-      if (list.length < 1) {
-        addTab({
-          key: blankUri,
-          label: t('get-started.get-started'),
-          description: t('get-started.get-started'),
-          temporary: getSetting('editor.enable-preview', true),
-          payload: { file: null }
-        })
-      }
-
       const tab = list.find(x => x.key === current.value)
       if (!tab) {
         const currentFile = list.length > 0 ? list[list.length - 1].payload.file : null
@@ -294,6 +289,7 @@ export default defineComponent({
       refTabs,
       filterBtnTitle,
       makeTabPermanent,
+      onDblclickBlank,
     }
   },
 })
