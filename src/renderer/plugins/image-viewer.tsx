@@ -10,7 +10,15 @@ import { sleep } from '@fe/utils'
 import 'viewerjs/dist/viewer.css'
 
 function isImageFile (doc?: Doc | null) {
-  if (!doc || doc.plain) {
+  if (!doc) {
+    return false
+  }
+
+  if (doc.name.toLocaleLowerCase().endsWith('.svg')) {
+    return true
+  }
+
+  if (doc.plain) {
     return false
   }
 
