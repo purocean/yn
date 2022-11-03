@@ -144,9 +144,7 @@ function openFeedback () {
 
 .get-started {
   width: 80%;
-  height: 100%;
-  max-height: 600px;
-  min-height: 480px;
+  height: 480px;
 
   .head {
     .caption {
@@ -181,7 +179,7 @@ function openFeedback () {
     .list {
       margin-top: 10px;
       margin-left: 4px;
-      max-width: 40vw;
+      max-width: 50vw;
 
       .item {
         margin-top: 8px;
@@ -200,14 +198,18 @@ function openFeedback () {
       }
     }
 
-    .help {
-      grid-column: 2;
-      grid-row: 1 / span 2;
+    .recent {
+      grid-column: 1 / span 2;
+      grid-row: 2;
     }
   }
 }
 
-@media screen and (max-height: 700px) {
+@media screen and (max-height: 730px) {
+  .get-started-wrapper {
+    padding-top: 0;
+  }
+
   .get-started {
     .head {
       display: none;
