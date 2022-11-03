@@ -139,13 +139,14 @@ function openFeedback () {
   display: flex;
   justify-content: center;
   background: var(--g-color-100);
-  padding-top: 10vh;
+  padding-top: 8vh;
 }
 
 .get-started {
   width: 80%;
   height: 100%;
-  max-height: 480px;
+  max-height: 600px;
+  min-height: 480px;
 
   .head {
     .caption {
@@ -202,6 +203,14 @@ function openFeedback () {
     .help {
       grid-column: 2;
       grid-row: 1 / span 2;
+    }
+  }
+}
+
+@media screen and (max-height: 700px) {
+  .get-started {
+    .head {
+      display: none;
     }
   }
 }
