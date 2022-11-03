@@ -311,7 +311,7 @@ export default {
               const content = ctx.editor.getLinesContent(lineStart, lineEnd)
                 .replace(new RegExp(`(?<!\\()<?${link}>?(?!\\))`, 'i'), `[${title}](${link})`)
 
-              ctx.editor.replaceLine(lineStart, content)
+              ctx.editor.replaceLines(lineStart, lineEnd, content)
               ctx.ui.useToast().hide()
             } catch (error: any) {
               console.error(error)
