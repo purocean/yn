@@ -3,6 +3,7 @@
 const data = {
   'app-name': 'Yank Note',
   'about': 'About',
+  'feedback': 'Feedback',
   'slogan': 'A Hackable Markdown editor for developers',
   'cancel': 'Cancel',
   'undo': 'Undo',

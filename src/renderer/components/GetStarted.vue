@@ -43,6 +43,9 @@
             <div class="item">
               <a href="javascript:void(0);" @click="openHelpDoc('shortcuts')">{{$t('status-bar.help.shortcuts')}}</a>
             </div>
+            <div class="item">
+              <a href="javascript:void(0);" @click="openFeedback()">{{$t('feedback')}}</a>
+            </div>
           </div>
         </div>
         <div class="recent" v-if="recentFiles.length">
@@ -65,8 +68,10 @@
 </template>
 
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { URL_GITHUB } from '@fe/support/args'
 import { useI18n } from '@fe/services/i18n'
 import type { AppState } from '@fe/support/store'
 import { showManager as showExtensionManager } from '@fe/others/extension'
@@ -74,7 +79,6 @@ import { showPremium, getPurchased } from '@fe/others/premium'
 import { showSettingPanel } from '@fe/services/setting'
 import { createDoc, isMarkdownFile, switchDoc } from '@fe/services/document'
 import { getActionHandler } from '@fe/core/action'
-import dayjs from 'dayjs'
 
 useI18n()
 const store = useStore<AppState>()
@@ -120,6 +124,10 @@ async function createFile () {
 function openHelpDoc (name: string) {
   getActionHandler(`plugin.status-bar-help.show-${name}`)()
 }
+
+function openFeedback () {
+  window.open(URL_GITHUB)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -137,8 +145,7 @@ function openHelpDoc (name: string) {
 .get-started {
   width: 80%;
   height: 100%;
-  max-height: 450px;
-  min-height: fit-content;
+  max-height: 480px;
 
   .head {
     .caption {
@@ -158,7 +165,7 @@ function openHelpDoc (name: string) {
     margin-top: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 2fr 3fr;
     grid-template-areas: "start help"
                          "recent .";
     height: 100%;

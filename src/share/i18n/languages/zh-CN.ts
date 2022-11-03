@@ -4,6 +4,7 @@ import type { BaseLanguage } from './en'
 const data: BaseLanguage = {
   'app-name': 'Yank Note',
   'about': '关于',
+  'feedback': '反馈',
   'slogan': '一款面向程序员的 Markdown 编辑器',
   'cancel': '取消',
   'undo': '撤销',
