@@ -115,6 +115,6 @@ export default defineComponent({
 }
 
 .editor-force-only :deep(.content .editor) {
-  display: block !important;
+  display: flex !important;
 }
 </style>
