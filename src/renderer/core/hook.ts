@@ -37,19 +37,27 @@ export function removeHook<T extends HookType> (type: T, fun: HookFun<BuildInHoo
  * @returns
  */
 export async function triggerHook<T extends HookTypeWithoutPayload> (type: T): Promise<void>
-export async function triggerHook<T extends HookTypeWithPayload> (type: T, arg: BuildInHookTypes[T], options?: { breakable?: boolean }): Promise<boolean>
-export async function triggerHook<T extends HookType> (type: T, arg?: BuildInHookTypes[T], options?: { breakable?: boolean }): Promise<boolean | void> {
+export async function triggerHook<T extends HookTypeWithPayload> (type: T, arg: BuildInHookTypes[T], options?: { breakable?: boolean, ignoreError?: boolean }): Promise<boolean>
+export async function triggerHook<T extends HookType> (type: T, arg?: BuildInHookTypes[T], options?: { breakable?: boolean, ignoreError?: boolean }): Promise<boolean | void> {
   logger.debug('triggerHook', type, arg)
   const items: HookFun<any>[] = ioc.get(type)
   for (const fun of items) {
     fun.once && removeHook(type, fun)
-    if (options?.breakable) {
-      if (await fun(arg)) {
-        logger.debug('triggerHook', 'break', fun)
-        return true
+    try {
+      if (options?.breakable) {
+        if (await fun(arg)) {
+          logger.debug('triggerHook', 'break', fun)
+          return true
+        }
+      } else {
+        fun(arg)
       }
-    } else {
-      fun(arg)
+    } catch (error) {
+      if (options?.ignoreError) {
+        console.warn('triggerHook', error)
+      } else {
+        throw error
+      }
     }
   }
 

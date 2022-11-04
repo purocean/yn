@@ -4,12 +4,13 @@ import type { BaseLanguage } from './en'
 const data: BaseLanguage = {
   'app-name': 'Yank Note',
   'about': '关于',
+  'feedback': '反馈',
   'slogan': '一款面向程序员的 Markdown 编辑器',
   'cancel': '取消',
   'undo': '撤销',
   'ok': '确定',
   'demo-tips': 'DEMO 模式下一些功能不可用',
-  'blank-page': '空白页',
+  'more': '更多',
   'copied': '已复制',
   'insert-different-repo-doc': '不能插入不同仓库的文档',
   'need-clipboard-permission': '请授予剪切板权限',
@@ -234,7 +235,6 @@ const data: BaseLanguage = {
       'copy-content': '复制内容',
       'doc-history': '文档历史版本',
       'share-preview': '分享预览',
-      'extension-manager': '扩展管理',
       'print': '打印文档',
       'export': '导出文档',
     },
@@ -255,6 +255,9 @@ const data: BaseLanguage = {
     'present': '预览',
     'get': {
       'get-application': '获取应用',
+    },
+    'extension': {
+      'extension-manager': '扩展管理',
     },
   },
   'view': {
@@ -571,6 +574,12 @@ const data: BaseLanguage = {
     'auto-upgrade': '自动升级',
     'unknown-origin-tips': '使用未知来源的扩展可能有风险，仍然要启用吗？',
     'extensions-auto-upgraded': '%s 个扩展已升级',
+  },
+  'get-started': {
+    'get-started': '开始使用',
+    'start': '开始',
+    'help': '帮助',
+    'recent': '最近打开',
   },
 }
 

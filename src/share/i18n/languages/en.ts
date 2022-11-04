@@ -3,12 +3,13 @@
 const data = {
   'app-name': 'Yank Note',
   'about': 'About',
+  'feedback': 'Feedback',
   'slogan': 'A Hackable Markdown editor for developers',
   'cancel': 'Cancel',
   'undo': 'Undo',
   'ok': 'OK',
   'demo-tips': 'Some features are not available in DEMO mode.',
-  'blank-page': 'Blank',
+  'more': 'More',
   'copied': 'Copied',
   'insert-different-repo-doc': 'Documents from different repository cannot be inserted',
   'need-clipboard-permission': 'Please grant clipboard permissions',
@@ -233,7 +234,6 @@ const data = {
       'copy-content': 'Copy Content',
       'doc-history': 'Document History',
       'share-preview': 'Share Preview',
-      'extension-manager': 'Extension Manager',
       'print': 'Print Document',
       'export': 'Export Document',
     },
@@ -254,7 +254,10 @@ const data = {
     'present': 'Present',
     'get': {
       'get-application': 'Get Application',
-    }
+    },
+    'extension': {
+      'extension-manager': 'Extension Manager',
+    },
   },
   'view': {
     'outline': 'Outline',
@@ -570,6 +573,12 @@ const data = {
     'auto-upgrade': 'Auto Upgrade',
     'unknown-origin-tips': 'Using extensions from unknown sources can be risky, still want to enable?',
     'extensions-auto-upgraded': '%s extensions have been upgraded',
+  },
+  'get-started': {
+    'get-started': 'Get Started',
+    'start': 'Start',
+    'help': 'Help',
+    'recent': 'Recent',
   },
 }
 

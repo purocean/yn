@@ -76,18 +76,20 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.41.0](https://github.com/purocean/yn/releases/tag/v3.41.0) 2022-10-23
+### [v3.42.0](https://github.com/purocean/yn/releases/tag/v3.42.0) 2022-11-04
 
-1. feat: extended support for automatic update
-2. feat: optimize the effect of mind map exporting to PDF and printing
-3. upd: update mirror to remove `mirror.ghproxy.com`
-4. fix: fix the problem that the background color of the preview "Print" and "Export" buttons is too transparent
-5. feat(plugin): `ctx.utils.downloadContent` supports passing in `Blob` object
-6. refactor(plugin): refactor the export function and add the `ctx.export` module
-7. refactor(plugin): remove `ctx.doc.print` method, add `ctx.export.printCurrentDocument` method
-8. refactor(plugin): remove `ctx.doc.showExport` method, add `ctx.export.toggleExportPanel` method
-9. refactor(plugin): remove `VIEW_BEFORE_EXPORT` Hook, add `EXPORT_BEFORE_PREPARE` `EXPORT_AFTER_PREPARE` Hooks
-10. refactor(plugin): remove `ctx.base.forceReload` method, add `ctx.base.reloadMainWindow` method
+[Windows](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x86](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-amd64-3.42.0.deb)
+
+1. feat: add start page
+2. feat: support to preview images directly in the editor
+3. feat: add an extension management button to the status bar
+4. upd: optimize multi-monitor recovery window position logic on Windows
+5. fix: fixed the problem that the terminal cannot be used when the terminal configuration is empty
+6. fix: fix "Convert to link with title" may incorrectly replace text
+7. feat(plugin): support for registering custom editors
+8. feat(plugin): `triggerHook` supports ignoring errors
+9. feat(plugin): add `ctx.base.getServerTimestamp` method
+10. feat(plugin): add `DOC_BEFORE_SWITCH` `DOC_SWITCHING` Hooks
 
 [More release notes](https://github.com/purocean/yn/releases)
 

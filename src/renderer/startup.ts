@@ -4,7 +4,7 @@ import store from '@fe/support/store'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
-import { isMarked, markDoc, showHelp, switchDoc, unmarkDoc } from '@fe/services/document'
+import { isMarked, markDoc, switchDoc, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
 import { whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage } from '@fe/services/i18n'
@@ -16,7 +16,6 @@ import { toggleOutline } from '@fe/services/layout'
 import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
-import { MODE } from '@fe/support/args'
 import ga from '@fe/support/ga'
 
 init(plugins, ctx)
@@ -114,19 +113,6 @@ registerHook('VIEW_PREVIEWER_CHANGE', ({ type }) => {
 
 registerHook('VIEW_FILE_CHANGE', () => {
   registerHook('VIEW_RENDER', switchDefaultPreviewer, true)
-})
-
-whenEditorReady().then(() => {
-  const { currentFile } = store.state
-
-  if (!currentFile && MODE === 'normal') {
-    // no recent file, show readme.
-    showHelp(
-      ctx.i18n.getCurrentLanguage() === 'zh-CN'
-        ? 'README_ZH-CN.md'
-        : 'README.md'
-    )
-  }
 })
 
 store.watch(() => store.state.currentRepo, (val) => {

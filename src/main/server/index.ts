@@ -258,6 +258,11 @@ const proxy = async (ctx: any, next: any) => {
         } else {
           ctx.status = response.statusCode
           ctx.set('content-type', response.headers['content-type'])
+
+          Object.keys(response.headers).forEach((key) => {
+            ctx.set(`x-origin-${key}`, response.headers[key])
+          })
+
           ctx.body = body
           resolve()
         }

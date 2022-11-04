@@ -1,7 +1,9 @@
 import { Fragment, h } from 'vue'
+import { cloneDeep } from 'lodash-es'
 import { Optional } from 'utility-types'
 import { URI } from 'monaco-editor/esm/vs/base/common/uri.js'
 import * as misc from '@share/misc'
+import extensions from '@fe/others/file-extensions'
 import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
@@ -407,6 +409,11 @@ export async function moveDoc (doc: Doc, newPath?: string) {
 export async function saveDoc (doc: Doc, content: string) {
   logger.debug('saveDoc', doc)
 
+  if (!doc.plain) {
+    logger.warn('saveDoc', 'is not plain doc')
+    return
+  }
+
   const payload = { doc, content }
 
   await triggerHook('DOC_BEFORE_SAVE', payload, { breakable: true })
@@ -550,9 +557,11 @@ export async function ensureCurrentFileSaved () {
  * @param force
  */
 export async function switchDoc (doc: Doc | null, force = false) {
+  doc = doc ? cloneDeep(doc) : null
+
   logger.debug('switchDoc', doc)
 
-  if (!force && toUri(doc) === toUri(store.state.currentFile)) {
+  if (!force && toUri(doc) === toUri(store.state.currentFile) && store.state.currentFile !== undefined) {
     logger.debug('skip switch', doc)
     return
   }
@@ -565,6 +574,13 @@ export async function switchDoc (doc: Doc | null, force = false) {
     }
   })
 
+  if (doc) {
+    doc.plain = extensions.supported(doc.name)
+    doc.absolutePath = getAbsolutePath(doc)
+  }
+
+  await triggerHook('DOC_BEFORE_SWITCH', { doc }, { breakable: true, ignoreError: true })
+
   try {
     if (!doc) {
       store.commit('setCurrentFile', null)
@@ -572,17 +588,22 @@ export async function switchDoc (doc: Doc | null, force = false) {
       return
     }
 
-    doc.absolutePath = getAbsolutePath(doc)
+    let content = ''
+    let hash = ''
+    if (doc.plain) {
+      const timer = setTimeout(() => {
+        store.commit('setCurrentFile', { ...doc, status: undefined })
+      }, 150)
 
-    const timer = setTimeout(() => {
-      store.commit('setCurrentFile', { ...doc, status: undefined })
-    }, 150)
+      const res = await api.readFile(doc)
+      clearTimeout(timer)
 
-    let passwordHash = ''
-    let { content, hash } = await api.readFile(doc)
-    clearTimeout(timer)
+      content = res.content
+      hash = res.hash
+    }
 
     // decrypt content.
+    let passwordHash = ''
     if (isEncrypted(doc)) {
       const password = await inputPassword(t('document.password-open'), doc.name, true)
       const decrypted = decrypt(content, password)
@@ -598,7 +619,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
       status: 'loaded'
     })
 
-    triggerHook('DOC_SWITCHED', { doc: store.state.currentFile })
+    triggerHook('DOC_SWITCHED', { doc: store.state.currentFile || null })
   } catch (error: any) {
     triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message })
     useToast().show('warning', error.message.includes('Malformed') ? t('document.wrong-password') : error.message)

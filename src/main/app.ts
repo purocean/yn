@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { protocol, app, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, shell, BrowserWindow } from 'electron'
+import { protocol, app, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, screen, shell, BrowserWindow, Display, Rectangle } from 'electron'
 import type TBrowserWindow from 'electron'
 import * as path from 'path'
 import * as os from 'os'
@@ -17,6 +17,8 @@ import { getProxyAgent } from './proxy-agent'
 import config from './config'
 import { initProxy } from './proxy'
 import { initEnvs } from './envs'
+
+type WindowState = { maximized: boolean } & Rectangle
 
 initProxy()
 initEnvs()
@@ -85,9 +87,114 @@ const hideWindow = () => {
 }
 
 const restoreWindowBounds = () => {
-  const bounds = store.get('window.bounds', null)
-  if (bounds) {
-    win!.setBounds(bounds)
+  const state: WindowState = store.get('window.state', null)
+  if (state) {
+    if (state.maximized) {
+      win!.maximize()
+    } else {
+      const validateWindowState = (state: WindowState, displays: Display[]): WindowState | undefined => {
+        if (state.width <= 0 || state.height <= 0) {
+          return undefined
+        }
+
+        const getWorkingArea = (display: Display): Rectangle | undefined => {
+          if (display.workArea.width > 0 && display.workArea.height > 0) {
+            return display.workArea
+          }
+
+          if (display.bounds.width > 0 && display.bounds.height > 0) {
+            return display.bounds
+          }
+
+          return undefined
+        }
+
+        if (displays.length === 1) {
+          const displayWorkingArea = getWorkingArea(displays[0])
+          if (displayWorkingArea) {
+            const ensureStateInDisplayWorkingArea = (): void => {
+              if (!state || typeof state.x !== 'number' || typeof state.y !== 'number' || !displayWorkingArea) {
+                return
+              }
+
+              if (state.x < displayWorkingArea.x) {
+                // prevent window from falling out of the screen to the left
+                state.x = displayWorkingArea.x
+              }
+
+              if (state.y < displayWorkingArea.y) {
+                // prevent window from falling out of the screen to the top
+                state.y = displayWorkingArea.y
+              }
+            }
+
+            // ensure state is not outside display working area (top, left)
+            ensureStateInDisplayWorkingArea()
+
+            if (state.width > displayWorkingArea.width) {
+              // prevent window from exceeding display bounds width
+              state.width = displayWorkingArea.width
+            }
+
+            if (state.height > displayWorkingArea.height) {
+              // prevent window from exceeding display bounds height
+              state.height = displayWorkingArea.height
+            }
+
+            if (state.x > (displayWorkingArea.x + displayWorkingArea.width - 128)) {
+              // prevent window from falling out of the screen to the right with
+              // 128px margin by positioning the window to the far right edge of
+              // the screen
+              state.x = displayWorkingArea.x + displayWorkingArea.width - state.width
+            }
+
+            if (state.y > (displayWorkingArea.y + displayWorkingArea.height - 128)) {
+              // prevent window from falling out of the screen to the bottom with
+              // 128px margin by positioning the window to the far bottom edge of
+              // the screen
+              state.y = displayWorkingArea.y + displayWorkingArea.height - state.height
+            }
+
+            // again ensure state is not outside display working area
+            // (it may have changed from the previous validation step)
+            ensureStateInDisplayWorkingArea()
+          }
+
+          return state
+        }
+
+        // Multi Monitor (non-fullscreen): ensure window is within display bounds
+        let display: Display | undefined
+        let displayWorkingArea: Rectangle | undefined
+        try {
+          display = screen.getDisplayMatching({ x: state.x, y: state.y, width: state.width, height: state.height })
+          displayWorkingArea = getWorkingArea(display)
+        } catch (error) {
+          // Electron has weird conditions under which it throws errors
+          // e.g. https://github.com/microsoft/vscode/issues/100334 when
+          // large numbers are passed in
+        }
+
+        if (
+          display && // we have a display matching the desired bounds
+          displayWorkingArea && // we have valid working area bounds
+          state.x + state.width > displayWorkingArea.x && // prevent window from falling out of the screen to the left
+          state.y + state.height > displayWorkingArea.y && // prevent window from falling out of the screen to the top
+          state.x < displayWorkingArea.x + displayWorkingArea.width && // prevent window from falling out of the screen to the right
+          state.y < displayWorkingArea.y + displayWorkingArea.height // prevent window from falling out of the screen to the bottom
+        ) {
+          return state
+        }
+
+        return undefined
+      }
+
+      const displays = screen.getAllDisplays()
+      const validatedState = validateWindowState(state, displays)
+      if (validatedState) {
+        win!.setBounds(validatedState)
+      }
+    }
   }
 }
 
@@ -96,10 +203,10 @@ const saveWindowBounds = () => {
     const fullscreen = win.isFullScreen()
     const maximized = win.isMaximized()
 
-    // save bounds only when not fullscreen and not maximized
-    if (!fullscreen && !maximized) {
-      const bounds = win.getBounds()
-      store.set('window.bounds', bounds)
+    // save bounds only when not fullscreen
+    if (!fullscreen) {
+      const state: WindowState = { ...win.getBounds(), maximized }
+      store.set('window.state', state)
     }
   }
 }

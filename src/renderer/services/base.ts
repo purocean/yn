@@ -177,3 +177,12 @@ export async function writeToClipboard (type: string, value: any) {
     [type]: new Blob([value], { type })
   })])
 }
+
+/**
+ * Get Server Timestamp
+ * @returns timestamp in ms
+ */
+export async function getServerTimestamp () {
+  const date = (await api.proxyRequest('https://www.baidu.com/')).headers.get('x-origin-date')
+  return dayjs(date || undefined).valueOf()
+}

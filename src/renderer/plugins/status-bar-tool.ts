@@ -10,12 +10,6 @@ export default {
         title: ctx.i18n.t('status-bar.tool.tool'),
         list: [
           {
-            id: 'extension-manager',
-            type: 'normal',
-            title: ctx.i18n.t('status-bar.tool.extension-manager'),
-            onClick: () => ctx.showExtensionManager(),
-          },
-          {
             id: 'print',
             type: 'normal',
             title: ctx.i18n.t('status-bar.tool.print'),

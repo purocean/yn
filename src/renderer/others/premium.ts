@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { getActionHandler } from '@fe/core/action'
 import { decrypt } from '@fe/utils/crypto'
 import { getSetting, setSetting } from '@fe/services/setting'
+import { getServerTimestamp } from '@fe/services/base'
 import { refresh } from '@fe/services/view'
 import { FLAG_DEMO, MODE } from '@fe/support/args'
 import ga from '@fe/support/ga'
@@ -88,14 +89,9 @@ export function getLicenseInfo () {
 }
 
 export async function setLicense (licenseStr: string) {
-  async function getTime () {
-    const time = await fetch('http://worldclockapi.com/api/json/est/now').then(r => r.json())
-    return dayjs(time.currentDateTime).valueOf()
-  }
-
   const license = parseLicense(licenseStr)
 
-  const now = await getTime()
+  const now = await getServerTimestamp()
   if (!license || now > license.activateExpires) {
     throw new Error('Invalid License')
   }

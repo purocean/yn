@@ -8,6 +8,7 @@
     @switch="switchTab"
     @change-list="setTabs"
     @dblclick-item="makeTabPermanent"
+    @dblclick-blank="onDblclickBlank"
   />
 </template>
 
@@ -43,12 +44,24 @@ export default defineComponent({
     const showFilterBtnShortcuts = [Shift, Alt, 'p']
     const filterBtnTitle = computed(() => $t.value('tabs.search-tabs') + ' ' + getKeysLabel(showFilterBtnShortcuts))
 
+    function copyDoc (file: Doc | null): Doc | null {
+      return file ? {
+        type: 'file',
+        name: file?.name,
+        repo: file?.repo,
+        path: file?.path,
+      } : null
+    }
+
     function setTabs (list: Components.FileTabs.Item[]) {
-      store.commit('setTabs', list)
+      store.commit('setTabs', list.map(item => {
+        item.payload.file = copyDoc(item.payload.file)
+        return item
+      }))
     }
 
     function switchFile (file: Doc | null) {
-      return switchDoc(file)
+      return switchDoc(copyDoc(file))
     }
 
     function switchTab (item: Components.FileTabs.Item) {
@@ -144,7 +157,7 @@ export default defineComponent({
     function makeTabPermanent (item: Pick<Components.FileTabs.Item, 'key'>) {
       const tab = tabs.value.find(x => item.key === x.key)
 
-      if (tab && tab.temporary) {
+      if (tab && tab.temporary && tab.payload.file) {
         tab.temporary = false
         setTabs(tabs.value)
       }
@@ -155,6 +168,10 @@ export default defineComponent({
       if (doc) {
         makeTabPermanent({ key: toUri(doc) })
       }
+    }
+
+    function onDblclickBlank () {
+      switchDoc(null)
     }
 
     onBeforeMount(() => {
@@ -210,32 +227,23 @@ export default defineComponent({
     })
 
     watch(currentFile, file => {
+      if (file === undefined) {
+        return
+      }
+
       const uri = toUri(file)
       const item = {
         key: uri,
-        label: file ? file.name : t('blank-page'),
-        description: file ? `[${file.repo}] ${file.path}` : t('blank-page'),
+        label: file ? file.name : t('get-started.get-started'),
+        description: file ? `[${file.repo}] ${file.path}` : t('get-started.get-started'),
         temporary: getSetting('editor.enable-preview', true),
         payload: { file },
       }
 
       addTab(item)
-    })
+    }, { immediate: true })
 
     watch(tabs, list => {
-      if (list.length < 1) {
-        addTab({
-          key: blankUri,
-          label: t('blank-page'),
-          description: t('blank-page'),
-          payload: { file: null }
-        })
-      } else if (tabs.value.length === 2) {
-        if (tabs.value.some(x => x.key === blankUri)) {
-          setTabs(tabs.value.filter(x => x.key !== blankUri))
-        }
-      }
-
       const tab = list.find(x => x.key === current.value)
       if (!tab) {
         const currentFile = list.length > 0 ? list[list.length - 1].payload.file : null
@@ -281,13 +289,14 @@ export default defineComponent({
       refTabs,
       filterBtnTitle,
       makeTabPermanent,
+      onDblclickBlank,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-::v-deep(.tabs div[data-key="yank-note://system/blank.md"] > .icon) {
+::v-deep(.tabs div:only-child[data-key="yank-note://system/blank.md"] > .icon) {
   display: none;
 }
 </style>

@@ -16,7 +16,7 @@
     </template>
     <template v-slot:editor>
       <FileTabs />
-      <Editor />
+      <Editor @editor:change="onEditorChange" />
     </template>
     <template v-slot:preview>
       <Previewer />
@@ -32,12 +32,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, toRef } from 'vue'
+import { computed, defineComponent, onMounted, ref, toRef } from 'vue'
 import { useStore } from 'vuex'
 import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import type { AppState } from '@fe/support/store'
+import { emitResize } from '@fe/services/layout'
 import Layout from '@fe/components/Layout.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
 import StatusBar from '@fe/components/StatusBar.vue'
@@ -83,15 +84,23 @@ export default defineComponent({
     const showOutline = toRef(store.state, 'showOutline')
     onMounted(startup)
 
-    const classes = {
-      'flag-disable-xterm': FLAG_DISABLE_XTERM
-    }
+    const forceHiddenPreview = ref(false)
+
+    const classes = computed(() => ({
+      'flag-disable-xterm': FLAG_DISABLE_XTERM,
+      'editor-force-only': forceHiddenPreview.value,
+    }))
 
     function hideXterm () {
       getActionHandler('layout.toggle-xterm')(false)
     }
 
-    return { classes, hideXterm, showOutline }
+    function onEditorChange (payload: { hiddenPreview: boolean }) {
+      forceHiddenPreview.value = payload.hiddenPreview
+      emitResize()
+    }
+
+    return { classes, hideXterm, showOutline, onEditorChange }
   }
 })
 </script>
@@ -99,5 +108,13 @@ export default defineComponent({
 <style scoped>
 .flag-disable-xterm :deep(.run-in-xterm){
   display: none;
+}
+
+.editor-force-only :deep(.content .preview) {
+  display: none !important;
+}
+
+.editor-force-only :deep(.content .editor) {
+  display: flex !important;
 }
 </style>

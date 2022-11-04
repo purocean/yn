@@ -23,10 +23,11 @@ export const initState = {
   currentContent: '',
   inComposition: false,
   currentRepo: storage.get<Repo>('currentRepo'),
-  currentFile: null as Doc | null,
+  currentFile: undefined as Doc | null | undefined,
   recentOpenTime: storage.get<Record<string, number>>('recentOpenTime', {}),
   tabs: storage.get<Components.FileTabs.Item[]>('tabs', []),
   previewer: 'default',
+  editor: 'default',
 }
 
 export type AppState = typeof initState
@@ -90,6 +91,9 @@ export default createStore({
     },
     setPreviewer (state, data: string) {
       state.previewer = data
+    },
+    setEditor (state, data: string) {
+      state.editor = data
     },
     setShowOutline (state, data) {
       state.showOutline = data

@@ -12,6 +12,7 @@ import { sleep } from '@fe/utils'
 import { getColorScheme } from './theme'
 import { getSetting } from './setting'
 import { language as markdownLanguage } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
+import { CustomEditor } from '@fe/types'
 
 export type SimpleCompletionItem = {
   label: string,
@@ -389,6 +390,41 @@ export function getMarkdownMonarchLanguage () {
   const tappers: SimpleCompletionItemTappers[] = ioc.get('EDITOR_MARKDOWN_MONARCH_LANGUAGE_TAPPERS')
   tappers.forEach(tap => tap(mdLanguage))
   return mdLanguage
+}
+
+/**
+ * Switch current editor
+ * @param name Editor name
+ */
+export function switchEditor (name: string) {
+  store.commit('setEditor', name)
+}
+
+/**
+ * Register a custom editor.
+ * @param editor Editor
+ */
+export function registerCustomEditor (editor: CustomEditor) {
+  ioc.register('EDITOR_CUSTOM_EDITOR', editor)
+  triggerHook('EDITOR_CUSTOM_EDITOR_CHANGE', { type: 'register' })
+}
+
+/**
+ * Remove a custom editor.
+ * @param name Editor name
+ */
+export function removeCustomEditor (name: string) {
+  ioc.removeWhen('EDITOR_CUSTOM_EDITOR', item => item.name === name)
+  triggerHook('EDITOR_CUSTOM_EDITOR_CHANGE', { type: 'remove' })
+  switchEditor('default')
+}
+
+/**
+ * Get all custom editors.
+ * @returns Editors
+ */
+export function getAllCustomEditors () {
+  return ioc.get('EDITOR_CUSTOM_EDITOR')
 }
 
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })

@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.41.0",
+  "version": "3.42.0",
   "description": "Yank Note: A hackable markdown note application for programmers",
   "main": "dist/main/app.js",
   "license": "AGPL-3.0",
@@ -132,7 +132,7 @@
     "typedoc": "^0.22.7",
     "typescript": "^4.3.2",
     "utility-types": "^3.10.0",
-    "viewerjs": "^1.10.5",
+    "viewerjs": "^1.11.0",
     "vite": "^2.9.13",
     "vue": "^3.2.23",
     "vue-router": "^4.0.0-0",

@@ -5,6 +5,7 @@
       @mousewheel="onMouseWheel"
       @scroll="handleShadow"
       @mouseenter="handleShadow"
+      @dblclick.self="onBlankDblClick"
       class="tabs">
       <div
         v-for="item in tabList"
@@ -16,7 +17,7 @@
         @contextmenu.exact.prevent.stop="showContextMenu(item)"
         @mouseup="e => e.button === 1 ? removeTabs([item]) : null"
         @click="switchTab(item)"
-        @dblclick="onDblClick(item)">
+        @dblclick.stop="onItemDblClick(item)">
         <div class="label">{{item.label}}</div>
         <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @click.prevent.stop="toggleFix(item)">
           <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
@@ -54,7 +55,7 @@ export default defineComponent({
     },
     filterBtnTitle: String,
   },
-  emits: ['input', 'remove', 'switch', 'change-list', 'dblclick-item'],
+  emits: ['input', 'remove', 'switch', 'change-list', 'dblclick-blank', 'dblclick-item'],
   setup (props, { emit }) {
     const { t } = useI18n()
 
@@ -78,8 +79,12 @@ export default defineComponent({
       emit('remove', items)
     }
 
-    function onDblClick (item: Components.Tabs.Item) {
+    function onItemDblClick (item: Components.Tabs.Item) {
       emit('dblclick-item', item)
+    }
+
+    function onBlankDblClick (e: MouseEvent) {
+      emit('dblclick-blank', e)
     }
 
     function removeOther (item: Components.Tabs.Item) {
@@ -243,7 +248,8 @@ export default defineComponent({
       switchTab,
       showContextMenu,
       removeTabs,
-      onDblClick,
+      onItemDblClick,
+      onBlankDblClick,
       tabList,
       toggleFix,
       handleShadow,
