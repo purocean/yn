@@ -534,9 +534,10 @@ export default {
 
       const style = await ctx.view.addStyleLink('/kity/kityminder.core.css')
       const script1 = await ctx.view.addScript('/kity/kity.min.js')
-      const script2 = await ctx.view.addScript('/kity/kityminder.core.min.js')
-
-      links = [style.outerHTML, script1.outerHTML, script2.outerHTML].join('\n')
+      script1.onload = async () => {
+        const script2 = await ctx.view.addScript('/kity/kityminder.core.min.js')
+        links = [style.outerHTML, script1.outerHTML, script2.outerHTML].join('\n')
+      }
     })
 
     ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
