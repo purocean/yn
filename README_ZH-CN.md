@@ -78,7 +78,7 @@
 
 ### [v3.42.0](https://github.com/purocean/yn/releases/tag/v3.42.0) 2022-11-04
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x86](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-amd64-3.42.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-amd64-3.42.0.deb)
 
 1. feat: 增加开始页面
 2. feat: 支持在编辑器中直接预览图片
