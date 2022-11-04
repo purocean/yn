@@ -76,18 +76,20 @@
 
 ## 更新日志
 
-### [v3.41.0](https://github.com/purocean/yn/releases/tag/v3.41.0) 2022-10-23
+### [v3.42.0](https://github.com/purocean/yn/releases/tag/v3.42.0) 2022-11-04
 
-1. feat: 扩展支持自动更新
-2. feat: 优化思维导图导出 PDF 和打印的效果
-3. upd: 更新镜像移除 `mirror.ghproxy.com`
-4. fix: 修复预览“打印”“导出”按钮背景色过于透明问题
-5. feat(plugin): `ctx.utils.downloadContent` 支持传入 `Blob` 对象
-6. refactor(plugin): 重构导出功能，增加 `ctx.export` 模块
-7. refactor(plugin): 移除 `ctx.doc.print` 方法，增加 `ctx.export.printCurrentDocument` 方法
-8. refactor(plugin): 移除 `ctx.doc.showExport` 方法，增加 `ctx.export.toggleExportPanel` 方法
-9. refactor(plugin): 移除 `VIEW_BEFORE_EXPORT` Hook，增加 `EXPORT_BEFORE_PREPARE` `EXPORT_AFTER_PREPARE` Hooks
-10. refactor(plugin): 移除 `ctx.base.forceReload` 方法，增加 `ctx.base.reloadMainWindow` 方法
+[Windows](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x86](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-amd64-3.42.0.deb)
+
+1. feat: 增加开始页面
+2. feat: 支持在编辑器中直接预览图片
+3. feat: 状态栏增加扩展管理按钮
+4. upd: 优化 Windows 上多显示器恢复窗口位置逻辑
+5. fix: 修复终端配置为空时不能使用终端问题
+6. fix: 修复“转换为带标题的链接”可能错误替换文本问题
+7. feat(plugin): 支持注册自定义编辑器
+8. feat(plugin): `triggerHook` 支持忽略错误
+9. feat(plugin): 增加 `ctx.base.getServerTimestamp` 方法
+10. feat(plugin): 增加 `DOC_BEFORE_SWITCH` `DOC_SWITCHING` Hooks
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
