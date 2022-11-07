@@ -8,7 +8,7 @@ import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
-import { getRepo, openExternal, openPath } from '@fe/services/base'
+import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/base'
 import { getRenderIframe } from '@fe/services/view'
 
 async function getElement (id: string) {
@@ -176,8 +176,14 @@ function convertLink (state: StateCore) {
       return
     }
 
-    const filePath = resolve(basePath, originPath)
-    token.attrSet(attrName, `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
+    const targetUri = getAttachmentURL({
+      type: 'file',
+      repo,
+      path: resolve(basePath, originPath),
+      name: fileName,
+    })
+
+    token.attrSet(attrName, targetUri)
   }
 
   const convert = (tokens: Token[]) => {

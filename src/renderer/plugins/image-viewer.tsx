@@ -4,8 +4,9 @@ import { debounce } from 'lodash-es'
 import Viewer from 'viewerjs'
 import type { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import type { Doc } from '@fe/types'
+import { getAttachmentURL } from '@fe/services/base'
 import { sleep } from '@fe/utils'
+import type { Doc } from '@fe/types'
 
 import 'viewerjs/dist/viewer.css'
 
@@ -62,10 +63,7 @@ const ImageViewer = defineComponent({
               rotateRight: true,
             },
             url () {
-              const fileName = doc.name
-              const repo = doc.repo
-              const filePath = doc.path
-              return `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`
+              return getAttachmentURL(doc)
             },
           })
 
