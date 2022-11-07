@@ -292,10 +292,10 @@ const data = {
     'sort': {
       'asc': 'Ascending',
       'desc': 'Descending',
-      'by-name': 'Name',
-      'by-mtime': 'Modified',
-      'by-birthtime': 'Created',
-      'by-serial': 'Serial',
+      'by-name': 'Sort by Name (%s)',
+      'by-mtime': 'Sort by Modified (%s)',
+      'by-birthtime': 'Sort by Created (%s)',
+      'by-serial': 'Sort by Serial (%s)',
     },
   },
   'tabs': {

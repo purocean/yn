@@ -293,10 +293,10 @@ const data: BaseLanguage = {
     'sort': {
       'asc': '升序',
       'desc': '降序',
-      'by-name': '按名称',
-      'by-mtime': '按修改时间',
-      'by-birthtime': '按创建时间',
-      'by-serial': '按序号',
+      'by-name': '按名称 (%s)',
+      'by-mtime': '按修改时间 (%s)',
+      'by-birthtime': '按创建时间 (%s)',
+      'by-serial': '按序号 (%s)',
     },
   },
   'tabs': {

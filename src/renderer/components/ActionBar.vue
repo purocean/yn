@@ -8,8 +8,9 @@
         </div>
       </div>
       <div v-if="!showOutline">
-        <div class="btn flat" @click="showSortMenu()" :title="$t(showOutline ? 'files' : 'outline') + ' ' + getKeysLabel('layout.toggle-outline')">
-          <svg-icon name="bars-sort-solid" />
+        <div class="btn flat" @click="showSortMenu()" :title="$t(('tree.sort.by-' + treeSort.by) as any, $t(('tree.sort.' + treeSort.order) as any))">
+          <svg-icon v-if="treeSort.order === 'asc'" name="arrow-up-wide-short-solid" />
+          <svg-icon v-else name="arrow-down-short-wide-solid" />
         </div>
       </div>
     </div>
@@ -45,6 +46,7 @@ import { FileSort } from '@fe/types'
 const store = useStore<AppState>()
 const navigation = ref<Schema['navigation']>()
 const showOutline = toRef(store.state, 'showOutline')
+const treeSort = toRef(store.state, 'treeSort')
 
 const { t } = useI18n()
 
@@ -54,7 +56,7 @@ function showSortMenu () {
     const id = `${by}-${order}`
     return {
       id,
-      label: t(('tree.sort.by-' + by) as any) + ' ' + t(('tree.sort.' + order) as any),
+      label: t(('tree.sort.by-' + by) as any, t(('tree.sort.' + order) as any)),
       checked: sort.by === by && sort.order === order,
       onClick: () => {
         store.commit('setTreeSort', { by, order })
