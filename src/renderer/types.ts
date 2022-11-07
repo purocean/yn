@@ -60,7 +60,7 @@ export namespace Components {
   }
 
   export namespace ContextMenu {
-    export type ShowOpts = { mouseX?: number, mouseY?: number }
+    export type ShowOpts = { mouseX?: number | ((x: number) => number), mouseY?: number | ((y: number) => number) }
     export type SeparatorItem = { type: 'separator', hidden?: boolean; }
 
     export type NormalItem = {
@@ -68,6 +68,7 @@ export namespace Components {
       id: string;
       label: string;
       hidden?: boolean;
+      checked?: boolean;
       onClick: (item?: NormalItem) => void;
     }
 
@@ -120,6 +121,8 @@ export namespace Components {
     }
   }
 }
+
+export type FileSort = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: 'asc' | 'desc' }
 
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
@@ -243,6 +246,7 @@ export type BuildInActions = {
   'status-bar.refresh-menu': () => void,
   'control-center.refresh': () => void,
   'tree.refresh': () => void,
+  'tree.reveal-current-node': () => void,
   'editor.toggle-wrap': () => void,
   'editor.refresh-custom-editor': () => void,
   'filter.show-quick-open': () => void,

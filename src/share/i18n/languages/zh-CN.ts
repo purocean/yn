@@ -286,9 +286,17 @@ const data: BaseLanguage = {
       'copy-name': '复制名称',
       'copy-path': '复制路径',
     },
-    toast: {
+    'toast': {
       'moved': '[%s] 已移动到 [%s]',
       'copied': '[%s] 已复制到 [%s]',
+    },
+    'sort': {
+      'asc': '升序',
+      'desc': '降序',
+      'by-name': '按名称',
+      'by-mtime': '按修改时间',
+      'by-birthtime': '按创建时间',
+      'by-serial': '按序号',
     },
   },
   'tabs': {

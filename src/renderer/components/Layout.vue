@@ -6,7 +6,7 @@
     <div class="main">
       <div class="left" ref="aside" v-show="showSide">
         <slot name="left"></slot>
-        <div class="sash-right" @dblclick="resetSize('right', 'aside')" @mousedown="e => initResize('right', 'aside', 100, 700, e)"></div>
+        <div class="sash-right" @dblclick="resetSize('right', 'aside')" @mousedown="e => initResize('right', 'aside', 130, 700, e)"></div>
       </div>
       <div class="right">
         <div class="content" ref="content">
