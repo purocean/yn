@@ -29,8 +29,14 @@ const currentEditor = computed(() => {
 
 async function changeEditor ({ doc }: { doc?: Doc | null, name?: string }) {
   availableEditors.value = (await Promise.allSettled(
-    getAllCustomEditors().map(x => x.when({ doc }) ? x : null))
-  ).filter(x => x.status === 'fulfilled' && x.value).map(x => (x as any).value)
+    getAllCustomEditors().map(async val => {
+      if (await val.when({ doc })) {
+        return val
+      }
+
+      return null
+    })
+  )).filter(x => x.status === 'fulfilled' && x.value).map(x => (x as any).value)
 
   logger.debug('changeEditor', store.state.editor, availableEditors.value)
 
