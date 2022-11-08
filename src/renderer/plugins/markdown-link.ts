@@ -23,7 +23,7 @@ async function getElement (id: string) {
     document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
     document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
 
-  return _find(id) || _find(id.toLowerCase())
+  return _find(id) || _find(id.toUpperCase())
 }
 
 function getAnchorElement (target: HTMLElement) {
