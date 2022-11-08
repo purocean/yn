@@ -102,7 +102,7 @@
                     style="cursor: pointer;"
                     @click="openUrl(`https://www.npmjs.com/package/${currentExtension?.id}`)"
                   >
-                    <img alt="npm" :src="`https://img.shields.io/npm/dy/${currentExtension.id}?color=%234180bd&label=Download&style=flat-square`">
+                    <img alt="npm" :key="`download-${currentExtension.id}`" :src="`https://img.shields.io/npm/dy/${currentExtension.id}?color=%234180bd&label=Download&style=flat-square`">
                   </div>
                   <div
                     v-if="currentExtension.requirements.premium"
@@ -297,7 +297,7 @@ function buildListExtensionItem (extension: Extension, installedExtension: Exten
 const extensions = computed(() => {
   let list: ListExtensionItem[] = []
 
-  if (registryExtensions.value) {
+  if (registryExtensions.value && installedExtensions.value) {
     list = registryExtensions.value.map(item => {
       const installedInfo = installedExtensions.value?.find(installed => installed.id === item.id)
       return installedInfo ? buildListExtensionItem(item, installedInfo) : item

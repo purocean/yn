@@ -125,6 +125,7 @@ export async function getInstalledExtensions () {
 
       extensions.push({
         ...info,
+        installed: true,
         enabled: item.enabled && info.compatible.value,
         icon: getInstalledExtensionFileUrl(info.id, info.icon),
         readmeUrl: getInstalledExtensionFileUrl(info.id, 'README.md'),
