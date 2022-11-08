@@ -36,6 +36,7 @@
               current: item.key === props.current,
             }"
             @click="chooseItem(item)"
+            @mouseover="updateSelected(item)"
           >
             {{ item.label }}
           </div>
@@ -89,7 +90,7 @@ function updateSelected (item: Item | null = null) {
   if (item) {
     selected.value = item
   } else {
-    selected.value = list.value.length > 0 ? list.value[0] : null
+    selected.value = list.value.find(x => x.key === props.current) || null
   }
 
   nextTick(() => {
@@ -200,11 +201,6 @@ watch(() => keyword.value, (val) => {
       &.selected {
         background: var(--g-color-active-a);
         color: var(--g-color-5);
-      }
-
-      &:hover {
-        background: var(--g-color-active-a);
-        color: var(--g-color-0);
       }
     }
   }
