@@ -30,7 +30,7 @@
 
   --g-border-radius: 4px;
   --g-backdrop-filter: blur(18px);
-  --g-color-backdrop: #{rgba(var(--g-color-100-rgb), 0.65)};
+  --g-color-backdrop: #{rgba(var(--g-color-95-rgb), 0.87)};
 
   --g-color-active-a: #{rgba(var(--g-color-0-rgb), 0.1)};
   --g-color-active-b: #{rgba(var(--g-color-0-rgb), 0.15)};
@@ -47,7 +47,7 @@ html[app-theme=light]:root, :root {
   @import './dark.scss';
   @include root-vars($g-background-color, $g-foreground-color);
 
-  --g-color-backdrop: #{rgba(var(--g-color-84-rgb), 0.7)};
+  --g-color-backdrop: #{rgba(var(--g-color-88-rgb), 0.9)};
 }
 
 html {

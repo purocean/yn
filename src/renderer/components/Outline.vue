@@ -144,7 +144,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 input.search-input[type="text"] {
   border-radius: 0;
-  background: rgba(var(--g-color-95-rgb), 0.75);
+  background: var(--g-color-backdrop);
   font-size: 14px;
   padding: 6px 14px;
   position: sticky;
@@ -202,7 +202,7 @@ input.search-input[type="text"] {
     }
 
     .tag-name {
-      color: var(--g-color-60);
+      color: var(--g-color-50);
       font-size: 12px;
       padding-left: 0.5em;
     }

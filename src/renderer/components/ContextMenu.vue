@@ -129,7 +129,7 @@ export default defineComponent({
   top: -99999px;
   visibility: hidden;
   overflow-y: auto;
-  background: rgba(var(--g-color-82-rgb), 0.5);
+  background: rgba(var(--g-color-77-rgb), 0.65);
   backdrop-filter: var(--g-backdrop-filter);
   border: 1px var(--g-color-84) solid;
   border-left: 0;

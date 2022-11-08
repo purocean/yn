@@ -150,7 +150,7 @@ watch(() => keyword.value, (val) => {
   position: absolute;
   padding: 1px;
   margin: 0;
-  background: rgba(var(--g-color-82-rgb), 0.5);
+  background: var(--g-color-backdrop);
   border: 1px var(--g-color-84) solid;
   border-left: 0;
   border-top: 0;
@@ -180,7 +180,8 @@ watch(() => keyword.value, (val) => {
     max-height: 70vh;
     overflow-y: auto;
     user-select: none;
-    padding-left: 1px;
+    padding: 3px 1px;
+    box-sizing: border-box;
 
     .item {
       padding: 0 16px;
@@ -202,7 +203,7 @@ watch(() => keyword.value, (val) => {
       }
 
       &:hover {
-        background: var(--g-color-active-b);
+        background: var(--g-color-active-a);
         color: var(--g-color-0);
       }
     }
