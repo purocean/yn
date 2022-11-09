@@ -89,6 +89,7 @@ export default {
         const viewer = new Viewer(ctx.view.getViewDom()!, {
           zIndex: 299999,
           container: document.body,
+          transition: false,
           toolbar: {
             zoomIn: 4,
             zoomOut: 4,
@@ -121,6 +122,10 @@ export default {
 
       body .viewer-navbar {
         background: rgba(0, 0, 0, .57)
+      }
+
+      body .viewer-canvas > img {
+        transition: transform .2s;
       }
     `)
 
