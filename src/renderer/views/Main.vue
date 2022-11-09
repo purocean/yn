@@ -110,11 +110,11 @@ export default defineComponent({
   display: none;
 }
 
-.editor-force-only :deep(.content .preview) {
+.editor-force-only :deep(.content > .preview) {
   display: none !important;
 }
 
-.editor-force-only :deep(.content .editor) {
+.editor-force-only :deep(.content > .editor) {
   display: flex !important;
 }
 </style>
