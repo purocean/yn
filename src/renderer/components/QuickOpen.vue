@@ -30,6 +30,7 @@
           v-for="(item, i) in dataList"
           :key="item.repo + item.path"
           :class="{selected: selected === item}"
+          @mouseover="updateSelected(item)"
           @click="chooseItem(item)">
           <span :ref="el => refFilename[i] = el">
             {{item.name}}
@@ -334,6 +335,7 @@ export default defineComponent({
       selectItem,
       chooseItem,
       switchTab,
+      updateSelected,
     }
   },
 })
@@ -362,15 +364,12 @@ export default defineComponent({
   color: var(--g-color-40);
   line-height: 1.5em;
   font-size: 18px;
-  padding: 2px;
-  transition: all .1s ease-in-out;
-  cursor: pointer;
+  padding: 2px 6px;
+  user-select: none;
   border-radius: var(--g-border-radius);
 }
 
-.result li.selected,
-.result li:hover {
-  padding: 2px 6px;
+.result li.selected {
   background: var(--g-color-active-a);
   color: var(--g-color-10);
 }
