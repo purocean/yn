@@ -105,6 +105,22 @@ export default {
           }
         })
 
+        function wrapEventBind (fn: () => void) {
+          return function (this: any) {
+            const element = this.element
+            this.element = window.document.body
+            fn.call(this)
+            this.element = element
+          }
+        }
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        viewer.bind = wrapEventBind(viewer.bind)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        viewer.unbind = wrapEventBind(viewer.unbind)
+
         ctx.registerHook('VIEW_RENDERED', debounce(() => {
           viewer.update()
         }, 500))
