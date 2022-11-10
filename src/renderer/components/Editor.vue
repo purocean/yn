@@ -1,6 +1,6 @@
 <template>
-  <component v-if="currentEditor" :is="currentEditor.component" />
-  <default-editor v-show="!currentEditor" />
+  <component v-if="currentEditor && currentEditor.component" :is="currentEditor.component" />
+  <DefaultEditor v-show="!(currentEditor && currentEditor.component)" />
 </template>
 
 <script lang="ts" setup>
@@ -9,36 +9,57 @@ import { useStore } from 'vuex'
 import { getAllCustomEditors, switchEditor } from '@fe/services/editor'
 import { registerAction, removeAction } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { getLogger, storage } from '@fe/utils'
+import { refreshTabsActionBtns, removeTabsActionBtnTapper, tapTabsActionBtns } from '@fe/services/layout'
+import { useQuickFilter } from '@fe/support/ui/quick-filter'
 import type { AppState } from '@fe/support/store'
-import { CustomEditor, Doc } from '@fe/types'
-import { getLogger } from '@fe/utils'
+import type { Components, CustomEditor, Doc } from '@fe/types'
 import DefaultEditor from './DefaultEditor.vue'
+import { isMarkdownFile } from '@fe/services/document'
 
 // eslint-disable-next-line no-undef, func-call-spacing
 const emit = defineEmits<{
   (event: 'editor:change', payload: { name: string, hiddenPreview: boolean }): void
 }>()
 
+const EDITOR_LAST_USAGE_TIME_KEY = 'editor.last-usage-time'
+
+const defaultEditor: CustomEditor = {
+  name: 'default-markdown-editor',
+  displayName: 'Default Editor',
+  component: null,
+  when ({ doc }) {
+    return !!(doc && isMarkdownFile(doc))
+  }
+}
+
 const store = useStore<AppState>()
 const logger = getLogger('main-editor')
+const editorLastUsageTime = storage.get<Record<string, number>>(EDITOR_LAST_USAGE_TIME_KEY, {})
 
 const availableEditors = shallowRef<CustomEditor[]>([])
 const currentEditor = computed(() => {
   return availableEditors.value.find(item => item.name === store.state.editor)
 })
 
+function recordEditorUsageTime (name: string) {
+  editorLastUsageTime[name] = Date.now()
+  storage.set(EDITOR_LAST_USAGE_TIME_KEY, editorLastUsageTime)
+}
+
 async function changeEditor ({ doc }: { doc?: Doc | null, name?: string }) {
   availableEditors.value = (await Promise.allSettled(
-    getAllCustomEditors().map(async val => {
+    getAllCustomEditors().concat([defaultEditor]).map(async val => {
       if (await val.when({ doc })) {
-        return val
+        return { ...val, _lastUsageAt: editorLastUsageTime[val.name] || 0 }
       }
 
       return null
     })
-  )).filter(x => x.status === 'fulfilled' && x.value).map(x => (x as any).value)
-
-  logger.debug('changeEditor', store.state.editor, availableEditors.value)
+  ))
+    .filter(x => x.status === 'fulfilled' && x.value)
+    .map(x => (x as any).value)
+    .sort((a, b) => b._lastUsageAt - a._lastUsageAt)
 
   if (availableEditors.value.length < 1) {
     switchEditor('default')
@@ -55,6 +76,26 @@ function refreshEditor () {
   changeEditor({ doc: store.state.currentFile })
 }
 
+function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
+  if (availableEditors.value.length > 1) {
+    btns.push({
+      icon: 'pen-solid',
+      title: '切换编辑器',
+      onClick: (e) => {
+        const rect = (e.target as HTMLElement).getBoundingClientRect()
+        useQuickFilter().show({
+          filterInputHidden: true,
+          top: `${rect.bottom + 10}px`,
+          right: `${document.body.clientWidth - rect.right - 30}px`,
+          list: availableEditors.value.map(x => ({ key: x.name, label: x.displayName || x.name })),
+          current: currentEditor.value?.name || 'default',
+          onChoose: ({ key }) => switchEditor(key),
+        })
+      },
+    })
+  }
+}
+
 onMounted(() => {
   registerAction({
     name: 'editor.refresh-custom-editor',
@@ -65,6 +106,7 @@ onMounted(() => {
   registerHook('DOC_SWITCH_FAILED', refreshEditor)
   registerHook('EDITOR_CUSTOM_EDITOR_CHANGE', refreshEditor)
   registerHook('DOC_SWITCHED', refreshEditor, true)
+  tapTabsActionBtns(tabsActionBtnTapper)
   refreshEditor()
 })
 
@@ -73,6 +115,7 @@ onBeforeUnmount(() => {
   removeHook('DOC_BEFORE_SWITCH', changeEditor)
   removeHook('DOC_SWITCH_FAILED', refreshEditor)
   removeHook('EDITOR_CUSTOM_EDITOR_CHANGE', refreshEditor)
+  removeTabsActionBtnTapper(tabsActionBtnTapper)
 })
 
 watchEffect(() => {
@@ -82,5 +125,8 @@ watchEffect(() => {
   } else {
     emit('editor:change', { name: 'default', hiddenPreview: false })
   }
+
+  refreshTabsActionBtns()
+  recordEditorUsageTime(currentEditor.value?.name || 'default')
 })
 </script>

@@ -153,7 +153,8 @@ export default {
     `)
 
     ctx.editor.registerCustomEditor({
-      name: 'ImageViewer',
+      name: 'image-viewer',
+      displayName: 'Image Viewer',
       hiddenPreview: true,
       when ({ doc }) {
         return isImageFile(doc)

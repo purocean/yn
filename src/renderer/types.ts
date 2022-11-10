@@ -362,6 +362,7 @@ export type CustomEditorCtx = {
 
 export type CustomEditor = {
   name: string,
+  displayName: string,
   hiddenPreview?: boolean,
   when: (ctx: CustomEditorCtx) => boolean | Promise<boolean>,
   component: any,

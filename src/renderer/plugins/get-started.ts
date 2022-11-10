@@ -5,7 +5,8 @@ export default {
   name: 'get-started',
   register: (ctx) => {
     ctx.editor.registerCustomEditor({
-      name: 'GetStarted',
+      name: 'get-started',
+      displayName: 'Get Started',
       hiddenPreview: true,
       when ({ doc }) {
         return doc === null && ctx.args.MODE === 'normal'
