@@ -28,7 +28,10 @@ export function getAttachmentURL (doc: Doc, opts: { origin: boolean } = { origin
   const fileName = removeQuery(doc.name)
   const repo = doc.repo
   const filePath = doc.path
-  const uri = `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`
+
+  const uri = repo === '__help__'
+    ? `/api/help/file?path=${encodeURIComponent(filePath)}`
+    : `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`
 
   if (opts.origin) {
     return `${window.location.origin}${uri}`

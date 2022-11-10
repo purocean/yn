@@ -171,11 +171,6 @@ function convertLink (state: StateCore) {
 
     const originPath = removeQuery(attrVal)
 
-    if (repo === '__help__') {
-      token.attrSet(attrName, `/api/help/file?path=${encodeURIComponent(originPath)}`)
-      return
-    }
-
     const targetUri = getAttachmentURL({
       type: 'file',
       repo,
