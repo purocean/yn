@@ -4,6 +4,7 @@
     :list="fileTabs"
     :value="current"
     :filter-btn-title="filterBtnTitle"
+    :action-btns="actionBtns"
     @remove="removeTabs"
     @switch="switchTab"
     @change-list="setTabs"
@@ -25,6 +26,7 @@ import { useI18n } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
 import { isElectron } from '@fe/support/env'
 import Tabs from './Tabs.vue'
+import { getTabsActionBtns } from '@fe/services/layout'
 
 const blankUri = toUri(null)
 
@@ -43,6 +45,7 @@ export default defineComponent({
     const refTabs = ref<InstanceType<typeof Tabs> | null>(null)
     const showFilterBtnShortcuts = [Shift, Alt, 'p']
     const filterBtnTitle = computed(() => $t.value('tabs.search-tabs') + ' ' + getKeysLabel(showFilterBtnShortcuts))
+    const actionBtns = ref<Components.Tabs.ActionBtn[]>([])
 
     function copyDoc (file: Doc | null): Doc | null {
       return file ? {
@@ -174,6 +177,10 @@ export default defineComponent({
       switchDoc(null)
     }
 
+    function refreshActionBtns () {
+      actionBtns.value = getTabsActionBtns()
+    }
+
     onBeforeMount(() => {
       registerHook('DOC_MOVED', handleMoved)
       registerHook('DOC_CREATED', handleDocCreated)
@@ -212,6 +219,11 @@ export default defineComponent({
         },
         keys: showFilterBtnShortcuts
       })
+
+      registerAction({
+        name: 'file-tabs.refresh-action-btns',
+        handler: refreshActionBtns,
+      })
     })
 
     onBeforeUnmount(() => {
@@ -224,6 +236,7 @@ export default defineComponent({
       removeAction('file-tabs.switch-right')
       removeAction('file-tabs.close-current')
       removeAction('file-tabs.search-tabs')
+      removeAction('file-tabs.refresh-action-btns')
     })
 
     watch(currentFile, file => {
@@ -287,6 +300,7 @@ export default defineComponent({
       switchTab,
       setTabs,
       refTabs,
+      actionBtns,
       filterBtnTitle,
       makeTabPermanent,
       onDblclickBlank,

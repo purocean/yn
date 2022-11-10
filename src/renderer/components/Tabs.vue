@@ -27,7 +27,10 @@
         </div>
       </div>
     </div>
-    <div ref="refFilterBtn" class="filter-btn" @click="showQuickFilter" :title="filterBtnTitle">
+    <div v-for="(btn, i) in actionBtns" :key="i" class="action-btn" @click="btn.onClick" :title="btn.title">
+      <svg-icon :name="btn.icon" width="10px" />
+    </div>
+    <div ref="refFilterBtn" class="action-btn" @click="showQuickFilter" :title="filterBtnTitle">
       <svg-icon name="chevron-down" width="10px" />
     </div>
   </div>
@@ -54,6 +57,10 @@ export default defineComponent({
       required: true,
     },
     filterBtnTitle: String,
+    actionBtns: {
+      type: Array as () => Components.Tabs.ActionBtn[],
+      default: () => [],
+    },
   },
   emits: ['input', 'remove', 'switch', 'change-list', 'dblclick-blank', 'dblclick-item'],
   setup (props, { emit }) {
@@ -271,7 +278,7 @@ export default defineComponent({
   align-items: center;
   background: var(--g-color-87);
 
-  .filter-btn {
+  .action-btn {
     flex: none;
     width: 20px;
     height: 20px;
@@ -301,9 +308,11 @@ export default defineComponent({
   &::before,
   &::after {
     content: '';
-    position: absolute;
+    position: sticky;
     top: 0;
     width: 4px;
+    flex: none;
+    margin-left: -4px;
     height: 30px;
     display: block;
     pointer-events: none;
@@ -317,7 +326,7 @@ export default defineComponent({
   }
 
   &::after {
-    right: 30px;
+    right: 0;
     background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
   }
 

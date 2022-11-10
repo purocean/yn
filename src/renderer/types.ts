@@ -84,6 +84,12 @@ export namespace Components {
       fixed?: boolean;
       temporary?: boolean;
     }
+
+    export interface ActionBtn {
+      icon: string,
+      title: string,
+      onClick: (e: MouseEvent) => void,
+    }
   }
 
   export namespace FileTabs {
@@ -257,6 +263,7 @@ export type BuildInActions = {
   'file-tabs.switch-right': () => void,
   'file-tabs.close-current': () => void,
   'file-tabs.search-tabs': () => void,
+  'file-tabs.refresh-action-btns': () => void,
   'xterm.run': (cmd: { code: string, start: string, exit?: string } | string) => void,
   'xterm.init': (opts?: { cwd?: string }) => void,
   'plugin.document-history-stack.back': () => void,
@@ -375,6 +382,7 @@ export interface CodeRunner {
 }
 
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
+  TABS_ACTION_BTN_TAPPERS: (btns: Components.Tabs.ActionBtn[]) => void;
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
   EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS: any;
