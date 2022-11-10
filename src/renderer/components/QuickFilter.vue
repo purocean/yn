@@ -20,6 +20,7 @@
             type="text"
             :placeholder="placeholder"
             v-model="keyword"
+            v-if="!props.filterInputHidden"
             @keydown.up.prevent
             @keydown.down.prevent
             @keydown.esc="close"
@@ -61,6 +62,7 @@ const props: Props = defineProps({
   left: String,
   placeholder: String,
   current: String,
+  filterInputHidden: Boolean,
   list: {
     type: Array as () => Item[],
     required: true,

@@ -111,6 +111,7 @@ export namespace Components {
     }
 
     export interface Props {
+      filterInputHidden?: boolean;
       top?: string | undefined;
       right?: string | undefined;
       bottom?: string | undefined;
