@@ -16,7 +16,7 @@
     </template>
     <template v-slot:editor>
       <FileTabs />
-      <Editor @editor:change="onEditorChange" />
+      <Editor />
     </template>
     <template v-slot:preview>
       <Previewer />
@@ -32,12 +32,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, toRef } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRef } from 'vue'
 import { useStore } from 'vuex'
 import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
+import { registerHook, removeHook } from '@fe/core/hook'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import type { AppState } from '@fe/support/store'
+import type { CustomEditor } from '@fe/types'
 import { emitResize } from '@fe/services/layout'
 import Layout from '@fe/components/Layout.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
@@ -95,10 +97,16 @@ export default defineComponent({
       getActionHandler('layout.toggle-xterm')(false)
     }
 
-    function onEditorChange (payload: { hiddenPreview: boolean }) {
-      forceHiddenPreview.value = payload.hiddenPreview
+    function onEditorChange (payload: { current?: CustomEditor | null }) {
+      forceHiddenPreview.value = !!payload.current?.hiddenPreview
       emitResize()
     }
+
+    registerHook('EDITOR_CURRENT_EDITOR_CHANGE', onEditorChange)
+
+    onBeforeUnmount(() => {
+      removeHook('EDITOR_CURRENT_EDITOR_CHANGE', onEditorChange)
+    })
 
     return { classes, hideXterm, showOutline, onEditorChange }
   }

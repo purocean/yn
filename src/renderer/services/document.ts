@@ -584,6 +584,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
   try {
     if (!doc) {
       store.commit('setCurrentFile', null)
+      store.commit('setCurrentContent', '')
       triggerHook('DOC_SWITCHED', { doc: null })
       return
     }
@@ -593,6 +594,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
     if (doc.plain) {
       const timer = setTimeout(() => {
         store.commit('setCurrentFile', { ...doc, status: undefined })
+        store.commit('setCurrentContent', doc?.content || '')
       }, 150)
 
       const res = await api.readFile(doc)
@@ -619,6 +621,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
       status: 'loaded'
     })
 
+    store.commit('setCurrentContent', content)
     triggerHook('DOC_SWITCHED', { doc: store.state.currentFile || null })
   } catch (error: any) {
     triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message })

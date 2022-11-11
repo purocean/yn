@@ -416,7 +416,8 @@ const data: BaseLanguage = {
       'insert-date': '插入当前日期',
       'insert-time': '插入当前时间',
       'reveal-line-in-preview': '在预览中聚焦',
-    }
+    },
+    'switch-editor': '切换编辑器',
   },
   'picgo': {
     'setting': {

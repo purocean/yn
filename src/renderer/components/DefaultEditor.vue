@@ -10,7 +10,7 @@ import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { isEncrypted, saveDoc, toUri } from '@fe/services/document'
-import { getEditor, whenEditorReady } from '@fe/services/editor'
+import { getEditor, getIsDefault, whenEditorReady } from '@fe/services/editor'
 import { getSetting } from '@fe/services/setting'
 import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
@@ -29,7 +29,7 @@ export default defineComponent({
     const getMonacoEditor = () => refEditor.value
 
     function setCurrentValue ({ uri, value }: { uri: string; value: any}) {
-      if (toUri(currentFile.value) === uri) {
+      if (toUri(currentFile.value) === uri && getIsDefault()) {
         store.commit('setCurrentContent', value)
       }
     }

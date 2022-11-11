@@ -8,19 +8,15 @@ import { computed, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'v
 import { useStore } from 'vuex'
 import { getAllCustomEditors, switchEditor } from '@fe/services/editor'
 import { registerAction, removeAction } from '@fe/core/action'
-import { registerHook, removeHook } from '@fe/core/hook'
+import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { getLogger, storage } from '@fe/utils'
 import { refreshTabsActionBtns, removeTabsActionBtnTapper, tapTabsActionBtns } from '@fe/services/layout'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
+import { isMarkdownFile } from '@fe/services/document'
+import { t } from '@fe/services/i18n'
 import type { AppState } from '@fe/support/store'
 import type { Components, CustomEditor, Doc } from '@fe/types'
 import DefaultEditor from './DefaultEditor.vue'
-import { isMarkdownFile } from '@fe/services/document'
-
-// eslint-disable-next-line no-undef, func-call-spacing
-const emit = defineEmits<{
-  (event: 'editor:change', payload: { name: string, hiddenPreview: boolean }): void
-}>()
 
 const EDITOR_LAST_USAGE_TIME_KEY = 'editor.last-usage-time'
 
@@ -80,7 +76,7 @@ function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
   if (availableEditors.value.length > 1) {
     btns.push({
       icon: 'pen-solid',
-      title: '切换编辑器',
+      title: t('editor.switch-editor'),
       onClick: (e) => {
         const rect = (e.target as HTMLElement).getBoundingClientRect()
         useQuickFilter().show({
@@ -119,13 +115,7 @@ onBeforeUnmount(() => {
 })
 
 watchEffect(() => {
-  if (currentEditor.value) {
-    const hiddenPreview = !!currentEditor.value.hiddenPreview
-    emit('editor:change', { name: currentEditor.value.name, hiddenPreview })
-  } else {
-    emit('editor:change', { name: 'default', hiddenPreview: false })
-  }
-
+  triggerHook('EDITOR_CURRENT_EDITOR_CHANGE', { current: currentEditor.value })
   refreshTabsActionBtns()
   recordEditorUsageTime(currentEditor.value?.name || 'default')
 })

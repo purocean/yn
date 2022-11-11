@@ -326,6 +326,7 @@ export type BuildInHookTypes = {
   MONACO_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
   EDITOR_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
   EDITOR_CUSTOM_EDITOR_CHANGE: { type: 'register' | 'remove' | 'switch' },
+  EDITOR_CURRENT_EDITOR_CHANGE: { current?: CustomEditor | null },
   EDITOR_CHANGE: { uri: string, value: string },
   DOC_CREATED: { doc: Doc },
   DOC_DELETED: { doc: Doc },

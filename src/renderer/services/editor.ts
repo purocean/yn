@@ -22,6 +22,7 @@ export type SimpleCompletionItem = {
 
 export type SimpleCompletionItemTappers = (items: SimpleCompletionItem[]) => void
 
+let isDefaultEditor = true
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
 
@@ -434,7 +435,19 @@ export function triggerSave () {
   getActionHandler('editor.trigger-save')()
 }
 
+/**
+ * Get current editor is default or not.
+ * @returns
+ */
+export function getIsDefault () {
+  return isDefaultEditor
+}
+
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
+
+registerHook('EDITOR_CURRENT_EDITOR_CHANGE', ({ current }) => {
+  isDefaultEditor = !current?.component
+})
 
 registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
   monaco.editor.defineTheme('vs', {

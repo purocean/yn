@@ -415,7 +415,8 @@ const data = {
       'insert-date': 'Insert Today\'s Date',
       'insert-time': 'Insert Current Time',
       'reveal-line-in-preview': 'Reveal Line in Preview',
-    }
+    },
+    'switch-editor': 'Switch Editor',
   },
   'picgo': {
     'setting': {
