@@ -3,8 +3,11 @@
     <div class="mask" v-if="isShow" @click="hide" @contextmenu.prevent.stop="hide"></div>
     <ul class="menu" ref="refMenu" :style="{visibility: isShow ? 'visible' : 'hidden'}" @contextmenu.prevent>
       <template v-for="(item, i) in items">
-        <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type || 'normal'"></li>
-        <li v-else :key="item.id" v-show="!item.hidden" @click="handleClick(item)" :class="item.type || 'normal'">{{item.label}}</li>
+        <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type" />
+        <li v-else :key="item.id" v-show="!item.hidden" @click="handleClick(item)" :class="item.type || 'normal'">
+          <svg-icon class="checked-icon" v-if="item.checked" name="check-solid" />
+          <span>{{item.label}}</span>
+        </li>
       </template>
     </ul>
   </div>
@@ -13,9 +16,11 @@
 <script lang="ts">
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { Components } from '@fe/types'
+import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
   name: 'context-menu',
+  components: { SvgIcon },
   setup () {
     const refMenu = ref<HTMLUListElement | null>(null)
     const items = ref<Components.ContextMenu.Item[]>([])
@@ -48,8 +53,12 @@ export default defineComponent({
         return
       }
 
-      const _mouseX = opts?.mouseX ?? mouseX
-      const _mouseY = opts?.mouseY ?? mouseY
+      const _mouseX = opts?.mouseX
+        ? (typeof opts.mouseX === 'function' ? opts.mouseX(mouseX) : opts.mouseX)
+        : mouseX
+      const _mouseY = opts?.mouseY
+        ? (typeof opts.mouseY === 'function' ? opts.mouseY(mouseY) : opts.mouseY)
+        : mouseY
 
       const windowWidth = window.innerWidth
       const windowHeight = window.innerHeight
@@ -120,7 +129,7 @@ export default defineComponent({
   top: -99999px;
   visibility: hidden;
   overflow-y: auto;
-  background: rgba(var(--g-color-82-rgb), 0.5);
+  background: rgba(var(--g-color-77-rgb), 0.65);
   backdrop-filter: var(--g-backdrop-filter);
   border: 1px var(--g-color-84) solid;
   border-left: 0;
@@ -151,6 +160,13 @@ export default defineComponent({
   cursor: default;
   font-size: 12px;
   border-radius: var(--g-border-radius);
+
+  .checked-icon {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    transform: translateX(-14px) translateY(0px) scaleX(0.8);
+  }
 }
 
 .menu > li.normal:hover {

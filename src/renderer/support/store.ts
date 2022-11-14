@@ -1,10 +1,11 @@
 import { orderBy, pick } from 'lodash-es'
 import { createStore } from 'vuex'
 import * as storage from '@fe/utils/storage'
-import type { Components, Doc, Repo } from '@fe/types'
+import type { Components, Doc, FileSort, Repo } from '@fe/types'
 
 export const initState = {
   tree: null as Components.Tree.Node[] | null,
+  treeSort: storage.get<FileSort>('treeSort', { by: 'serial', order: 'asc' }),
   wordWrap: storage.get<'off' | 'on'>('wordWrap', 'off'),
   typewriterMode: storage.get<boolean>('typewriterMode', false),
   showSide: storage.get('showSide', true),
@@ -36,6 +37,10 @@ export default createStore({
   mutations: {
     setTree (state, data) {
       state.tree = data
+    },
+    setTreeSort (state, data) {
+      state.treeSort = data
+      storage.set('treeSort', data)
     },
     setWordWrap (state, data: 'off' | 'on') {
       state.wordWrap = data

@@ -8,7 +8,7 @@ import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
-import { getRepo, openExternal, openPath } from '@fe/services/base'
+import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/base'
 import { getRenderIframe } from '@fe/services/view'
 
 async function getElement (id: string) {
@@ -23,7 +23,7 @@ async function getElement (id: string) {
     document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
     document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
 
-  return _find(id) || _find(id.toLowerCase())
+  return _find(id) || _find(id.toUpperCase())
 }
 
 function getAnchorElement (target: HTMLElement) {
@@ -171,13 +171,14 @@ function convertLink (state: StateCore) {
 
     const originPath = removeQuery(attrVal)
 
-    if (repo === '__help__') {
-      token.attrSet(attrName, `/api/help/file?path=${encodeURIComponent(originPath)}`)
-      return
-    }
+    const targetUri = getAttachmentURL({
+      type: 'file',
+      repo,
+      path: resolve(basePath, originPath),
+      name: fileName,
+    })
 
-    const filePath = resolve(basePath, originPath)
-    token.attrSet(attrName, `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`)
+    token.attrSet(attrName, targetUri)
   }
 
   const convert = (tokens: Token[]) => {

@@ -1,6 +1,6 @@
-import type { Ref } from 'vue'
+import { nextTick, Ref } from 'vue'
 import type { Components } from '@fe/types'
-import { registerAction } from '@fe/core/action'
+import { getActionHandler, registerAction } from '@fe/core/action'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import * as api from '@fe/support/api'
@@ -46,11 +46,23 @@ export async function refreshTree () {
   }
 
   try {
-    const tree = await api.fetchTree(repo.name)
+    const tree = await api.fetchTree(repo.name, store.state.treeSort || { by: 'serial', order: 'asc' })
     store.commit('setTree', tree)
   } catch (error: any) {
     useToast().show('warning', error.message)
   }
 }
 
+/**
+ * Reveal current node.
+ */
+export function revealCurrentNode () {
+  getActionHandler('tree.reveal-current-node')()
+}
+
+store.watch(state => state.treeSort, async () => {
+  await refreshTree()
+  await nextTick()
+  revealCurrentNode()
+})
 registerAction({ name: 'tree.refresh', handler: refreshTree })

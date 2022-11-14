@@ -7,6 +7,12 @@
           <svg-icon v-else name="list" />
         </div>
       </div>
+      <div v-if="!showOutline">
+        <div class="btn flat" @click="showSortMenu()" :title="$t(('tree.sort.by-' + treeSort.by) as any, $t(('tree.sort.' + treeSort.order) as any))">
+          <svg-icon v-if="treeSort.order === 'asc'" name="arrow-up-wide-short-solid" />
+          <svg-icon v-else name="arrow-down-short-wide-solid" />
+        </div>
+      </div>
     </div>
     <div class="title">{{$t(showOutline ? 'outline' : 'files')}}</div>
     <div class="btns" v-if="navigation">
@@ -29,17 +35,49 @@ import { onBeforeUnmount, ref, toRef } from 'vue'
 import { useStore } from 'vuex'
 import { registerAction, removeAction } from '@fe/core/action'
 import { getSchema, Schema } from '@fe/services/control-center'
+import { useContextMenu } from '@fe/support/ui/context-menu'
 import type { AppState } from '@fe/support/store'
 import SvgIcon from './SvgIcon.vue'
 import { useI18n } from '@fe/services/i18n'
 import { toggleOutline } from '@fe/services/layout'
 import { getKeysLabel } from '@fe/core/command'
+import { FileSort } from '@fe/types'
 
 const store = useStore<AppState>()
 const navigation = ref<Schema['navigation']>()
 const showOutline = toRef(store.state, 'showOutline')
+const treeSort = toRef(store.state, 'treeSort')
 
-useI18n()
+const { t } = useI18n()
+
+function showSortMenu () {
+  const buildItem = ({ by, order }: FileSort) => {
+    const sort = store.state.treeSort
+    const id = `${by}-${order}`
+    return {
+      id,
+      label: t(('tree.sort.by-' + by) as any, t(('tree.sort.' + order) as any)),
+      checked: sort.by === by && sort.order === order,
+      onClick: () => {
+        store.commit('setTreeSort', { by, order })
+      },
+    }
+  }
+
+  useContextMenu().show([
+    buildItem({ by: 'name', order: 'asc' }),
+    buildItem({ by: 'name', order: 'desc' }),
+    { type: 'separator' },
+    buildItem({ by: 'serial', order: 'asc' }),
+    buildItem({ by: 'serial', order: 'desc' }),
+    { type: 'separator' },
+    buildItem({ by: 'birthtime', order: 'asc' }),
+    buildItem({ by: 'birthtime', order: 'desc' }),
+    { type: 'separator' },
+    buildItem({ by: 'mtime', order: 'asc' }),
+    buildItem({ by: 'mtime', order: 'desc' }),
+  ], { mouseX: x => x - 20, mouseY: y => y + 16 })
+}
 
 registerAction({
   name: 'action-bar.refresh',
@@ -63,6 +101,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   align-items: center;
   position: relative;
+  padding: 0 3px;
 
   & > .title {
     position: absolute;
@@ -85,8 +124,8 @@ onBeforeUnmount(() => {
   }
 
   .btn {
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
@@ -94,12 +133,12 @@ onBeforeUnmount(() => {
     font-size: 12px;
     color: var(--g-color-20);
     border-radius: var(--g-border-radius);
-    margin: 4px;
+    margin: 3px;
     transition: .1s ease-in-out;
 
     &.flat {
-      width: 30px;
-      height: 30px;
+      width: 24px;
+      height: 24px;
       margin: 0;
     }
 

@@ -289,6 +289,14 @@ const data = {
       'moved': '[%s] Moved to [%s]',
       'copied': '[%s] Copied to [%s]',
     },
+    'sort': {
+      'asc': 'Ascending',
+      'desc': 'Descending',
+      'by-name': 'Sort by Name (%s)',
+      'by-mtime': 'Sort by Modified (%s)',
+      'by-birthtime': 'Sort by Created (%s)',
+      'by-serial': 'Sort by Serial (%s)',
+    },
   },
   'tabs': {
     'close-others': 'Close Others',
@@ -407,7 +415,8 @@ const data = {
       'insert-date': 'Insert Today\'s Date',
       'insert-time': 'Insert Current Time',
       'reveal-line-in-preview': 'Reveal Line in Preview',
-    }
+    },
+    'switch-editor': 'Switch Editor',
   },
   'picgo': {
     'setting': {

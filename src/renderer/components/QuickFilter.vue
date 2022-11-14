@@ -20,24 +20,26 @@
             type="text"
             :placeholder="placeholder"
             v-model="keyword"
+            v-if="!props.filterInputHidden"
             @keydown.up.prevent
             @keydown.down.prevent
             @keydown.esc="close"
             @blur="input?.focus()"
           />
         </div>
-        <div ref="refList" class="list">
+        <div ref="refList" class="list" :style="{width: fixedWidth}">
           <div
             v-for="item in list"
             :key="item.key"
             :class="{
               item: true,
               selected: selected && selected.key === item.key,
-              current: item.key === props.current,
             }"
             @click="chooseItem(item)"
+            @mouseover="updateSelected(item)"
           >
-            {{ item.label }}
+            <svg-icon class="checked-icon" v-if="item.key === props.current" name="check-solid" />
+            <span>{{ item.label }}</span>
           </div>
         </div>
       </div>
@@ -48,6 +50,7 @@
 <script lang="ts" setup>
 import { Components } from '@fe/types'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import SvgIcon from './SvgIcon.vue'
 
 type Item = Components.QuickFilter.Item
 type Props = Components.QuickFilter.Props
@@ -60,6 +63,7 @@ const props: Props = defineProps({
   left: String,
   placeholder: String,
   current: String,
+  filterInputHidden: Boolean,
   list: {
     type: Array as () => Item[],
     required: true,
@@ -70,6 +74,7 @@ const input = ref<HTMLInputElement | null>(null)
 const refList = ref<HTMLElement | null>(null)
 // eslint-disable-next-line no-undef
 const emit = defineEmits(['close', 'choose', 'input'])
+const fixedWidth = ref(undefined as string | undefined)
 const keyword = ref('')
 const selected = ref<Item | null>(null)
 const list = computed(() => props.list.filter(
@@ -89,7 +94,7 @@ function updateSelected (item: Item | null = null) {
   if (item) {
     selected.value = item
   } else {
-    selected.value = list.value.length > 0 ? list.value[0] : null
+    selected.value = list.value.find(x => x.key === props.current) || list.value.length > 0 ? list.value[0] : null
   }
 
   nextTick(() => {
@@ -131,6 +136,12 @@ function chooseItem (item: Item | null = null) {
 watch(() => keyword.value, (val) => {
   emit('input', val)
   updateSelected()
+
+  if (val) {
+    fixedWidth.value = refList.value?.offsetWidth + 'px'
+  } else {
+    fixedWidth.value = undefined
+  }
 })
 
 </script>
@@ -150,7 +161,7 @@ watch(() => keyword.value, (val) => {
   position: absolute;
   padding: 1px;
   margin: 0;
-  background: rgba(var(--g-color-82-rgb), 0.5);
+  background: var(--g-color-backdrop);
   border: 1px var(--g-color-84) solid;
   border-left: 0;
   border-top: 0;
@@ -166,8 +177,8 @@ watch(() => keyword.value, (val) => {
   input[type="text"] {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    font-size: 16px;
-    padding: 6px 10px;
+    font-size: 14px;
+    padding: 4px 8px;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 2px;
 
     &:focus {
@@ -180,30 +191,29 @@ watch(() => keyword.value, (val) => {
     max-height: 70vh;
     overflow-y: auto;
     user-select: none;
-    padding-left: 1px;
+    padding: 3px 1px;
+    box-sizing: border-box;
 
     .item {
-      padding: 0 16px;
+      padding: 0 20px;
       line-height: 1.9;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
       color: var(--g-color-20);
       border-radius: var(--g-border-radius);
-
-      &.current {
-        font-weight: bold;
-        color: var(--g-color-5);
-      }
+      font-size: 14px;
 
       &.selected {
         background: var(--g-color-active-a);
         color: var(--g-color-5);
       }
 
-      &:hover {
-        background: var(--g-color-active-b);
-        color: var(--g-color-0);
+      .checked-icon {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        transform: translateX(-14px) translateY(0px) scaleX(0.8);
       }
     }
   }

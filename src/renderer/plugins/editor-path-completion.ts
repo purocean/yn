@@ -323,7 +323,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
       if (token.type === 'heading_open') {
         const nextToken = tokens[i + 1]
         if (nextToken && nextToken.content) {
-          const id = nextToken.content.trim().toLowerCase().replace(/\s+/g, '-')
+          const id = nextToken.content.trim().replace(/\s+/g, '-')
           yield {
             kind: this.monaco.languages.CompletionItemKind.Reference,
             label: '# ' + tokens[i].tag.toUpperCase() + ' ' + nextToken.content,

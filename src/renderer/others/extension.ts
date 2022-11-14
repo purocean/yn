@@ -125,6 +125,7 @@ export async function getInstalledExtensions () {
 
       extensions.push({
         ...info,
+        installed: true,
         enabled: item.enabled && info.compatible.value,
         icon: getInstalledExtensionFileUrl(info.id, info.icon),
         readmeUrl: getInstalledExtensionFileUrl(info.id, 'README.md'),
@@ -202,11 +203,17 @@ async function load (extension: Extension) {
     let pluginPromise: Promise<void> | undefined
 
     const main = extension?.main
-    if (!loadStatus.plugin && main && main.endsWith('.js')) {
+    if (!loadStatus.plugin && main && (main.endsWith('.js') || main.endsWith('.mjs'))) {
       pluginPromise = new Promise((resolve, reject) => {
         const script = window.document.createElement('script')
         script.src = getInstalledExtensionFileUrl(extension.id, main)
         script.defer = true
+
+        // support esm
+        if (main.endsWith('.mjs')) {
+          script.type = 'module'
+        }
+
         script.onload = () => {
           resolve()
           scriptEndTime = performance.now()

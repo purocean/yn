@@ -94,7 +94,7 @@ export default {
 
     function revealLineInPreview () {
       const line = getEditor().getPosition()?.lineNumber
-      if (line) {
+      if (line && ctx.doc.isSameFile(ctx.view.getRenderEnv()?.file, ctx.store.state.currentFile)) {
         ctx.view.highlightLine(line, true, 1000)
       }
     }

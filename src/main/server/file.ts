@@ -27,6 +27,8 @@ interface TreeItem extends XFile {
   level: number;
 }
 
+type Order = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: 'asc' | 'desc' }
+
 function getExcludeRegex () {
   try {
     const regex = config.get('tree.exclude', DEFAULT_EXCLUDE_REGEX) || '^$'
@@ -217,23 +219,24 @@ async function travels (
   basePath: string,
   data: TreeItem,
   excludeRegex: RegExp,
+  order: Order,
 ): Promise<void> {
-  const list = await fs.readdir(location, { withFileTypes: true })
+  const list = await fs.readdir(location)
 
   const dirs: TreeItem[] = []
   const files: TreeItem[] = []
 
-  await Promise.all(list.map(async x => {
-    if (x.isFile()) {
-      if (excludeRegex.test(x.name)) {
+  await Promise.all(list.map(async name => {
+    const p = path.join(location, name)
+    const stat = await fs.stat(p)
+
+    if (stat.isFile()) {
+      if (excludeRegex.test(name)) {
         return
       }
 
-      const p = path.join(location, x.name)
-      const stat = await fs.stat(p)
-
       files.push({
-        name: x.name,
+        name: name,
         path: getRelativePath(basePath, p),
         type: 'file',
         repo: repo,
@@ -241,41 +244,45 @@ async function travels (
         mtime: stat.mtimeMs,
         level: data.level + 1,
       })
-    } else if (x.isDirectory()) {
-      if (excludeRegex.test(x.name + '/')) {
+    } else if (stat.isDirectory()) {
+      if (excludeRegex.test(name + '/')) {
         return
       }
 
-      const p = path.join(location, x.name)
-
       const dir: TreeItem = {
-        name: x.name,
+        name: name,
         path: getRelativePath(basePath, p),
         type: 'dir',
         repo: repo,
         children: [],
+        birthtime: stat.birthtimeMs,
+        mtime: stat.mtimeMs,
         level: data.level + 1,
       }
 
       dirs.push(dir)
-      await travels(p, repo, basePath, dir, excludeRegex)
+      await travels(p, repo, basePath, dir, excludeRegex, order)
     }
   }))
 
-  const sort = (items: TreeItem[]) => orderBy(items, x => {
-    const number = parseFloat(x.name)
-    if (!isNaN(number) && isFinite(number)) {
-      return number.toFixed(12).padStart(20) + x.name
+  const sort = (items: TreeItem[], order: Order) => orderBy(items, x => {
+    if (order.by === 'serial') {
+      const number = parseFloat(x.name)
+      if (!isNaN(number) && isFinite(number)) {
+        return number.toFixed(12).padStart(20) + x.name
+      } else {
+        return x.name
+      }
     }
 
-    return x.name
-  })
+    return x[order.by] || x.name
+  }, order.order)
 
-  data.children = sort(dirs)
-    .concat(sort(files))
+  data.children = sort(dirs, order)
+    .concat(sort(files, order))
 }
 
-export async function tree (repo: string): Promise<TreeItem[]> {
+export async function tree (repo: string, order: Order): Promise<TreeItem[]> {
   const data: TreeItem[] = [{
     name: '/',
     type: 'dir',
@@ -285,7 +292,7 @@ export async function tree (repo: string): Promise<TreeItem[]> {
     level: 1,
   }]
 
-  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0], getExcludeRegex()))
+  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0], getExcludeRegex(), order))
 
   return data
 }

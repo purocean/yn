@@ -8,11 +8,12 @@
 import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { registerAction, removeAction } from '@fe/core/action'
 import { isEncrypted, saveDoc, toUri } from '@fe/services/document'
-import { getEditor, whenEditorReady } from '@fe/services/editor'
+import { getEditor, getIsDefault, whenEditorReady } from '@fe/services/editor'
+import { getSetting } from '@fe/services/setting'
 import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
-import { getSetting } from '@fe/services/setting'
 
 export default defineComponent({
   name: 'editor',
@@ -28,7 +29,7 @@ export default defineComponent({
     const getMonacoEditor = () => refEditor.value
 
     function setCurrentValue ({ uri, value }: { uri: string; value: any}) {
-      if (toUri(currentFile.value) === uri) {
+      if (toUri(currentFile.value) === uri && getIsDefault()) {
         store.commit('setCurrentContent', value)
       }
     }
@@ -41,13 +42,17 @@ export default defineComponent({
     }
 
     async function saveFile (f: Doc | null = null) {
-      const file = f || currentFile.value
+      const file: Doc = f || currentFile.value
 
       if (!(file && file.repo && file.path && file.status)) {
         return
       }
 
       if (file.content === currentContent.value) {
+        return
+      }
+
+      if (!file.plain) {
         return
       }
 
@@ -111,12 +116,14 @@ export default defineComponent({
     onMounted(() => {
       registerHook('GLOBAL_RESIZE', resize)
       registerHook('EDITOR_CHANGE', setCurrentValue)
+      registerAction({ name: 'editor.trigger-save', handler: () => saveFile() })
       restartTimer()
     })
 
     onBeforeMount(() => {
       removeHook('GLOBAL_RESIZE', resize)
       removeHook('EDITOR_CHANGE', setCurrentValue)
+      removeAction('editor.trigger-save')
     })
 
     whenEditorReady().then(({ editor, monaco }) => {

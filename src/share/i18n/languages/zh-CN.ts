@@ -286,9 +286,17 @@ const data: BaseLanguage = {
       'copy-name': '复制名称',
       'copy-path': '复制路径',
     },
-    toast: {
+    'toast': {
       'moved': '[%s] 已移动到 [%s]',
       'copied': '[%s] 已复制到 [%s]',
+    },
+    'sort': {
+      'asc': '升序',
+      'desc': '降序',
+      'by-name': '按名称 (%s)',
+      'by-mtime': '按修改时间 (%s)',
+      'by-birthtime': '按创建时间 (%s)',
+      'by-serial': '按序号 (%s)',
     },
   },
   'tabs': {
@@ -298,7 +306,7 @@ const data: BaseLanguage = {
     'close-all': '全部关闭',
     'pin': '固定',
     'unpin': '取消固定',
-    'search-tabs': '搜索标签',
+    'search-tabs': '搜索选项卡',
   },
   'export-panel': {
     'export': '导出',
@@ -408,7 +416,8 @@ const data: BaseLanguage = {
       'insert-date': '插入当前日期',
       'insert-time': '插入当前时间',
       'reveal-line-in-preview': '在预览中聚焦',
-    }
+    },
+    'switch-editor': '切换编辑器',
   },
   'picgo': {
     'setting': {

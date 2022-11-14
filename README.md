@@ -76,20 +76,20 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.42.0](https://github.com/purocean/yn/releases/tag/v3.42.0) 2022-11-04
+### [v3.43.0](https://github.com/purocean/yn/releases/tag/v3.43.0) 2022-11-14
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x86](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-amd64-3.42.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-amd64-3.42.0.deb)
 
-1. feat: add start page
-2. feat: support to preview images directly in the editor
-3. feat: add an extension management button to the status bar
-4. upd: optimize multi-monitor recovery window position logic on Windows
-5. fix: fixed the problem that the terminal cannot be used when the terminal configuration is empty
-6. fix: fix "Convert to link with title" may incorrectly replace text
-7. feat(plugin): support for registering custom editors
-8. feat(plugin): `triggerHook` supports ignoring errors
-9. feat(plugin): add `ctx.base.getServerTimestamp` method
-10. feat(plugin): add `DOC_BEFORE_SWITCH` `DOC_SWITCHING` Hooks
+1. feat: add file list sorting function
+2. upd: Fine-tune UI and UX
+3. fix: fix the case adaptation problem of anchor jump
+4. fix: fix the problem that the image previewer cannot be dragged
+5. feat(plugin): the context menu item supports the selected state
+6. feat(plugin): support custom editor Tabs action button
+7. feat(plugin): Optimize custom editor related API
+8. feat(plugin): support loading `.mjs` scripts
+9. feat(plugin): add `ctx.base.getAttachmentURL` method
+10. feat(plugin): add `ctx.tree.revealCurrentNode` method
 
 [More release notes](https://github.com/purocean/yn/releases)
 

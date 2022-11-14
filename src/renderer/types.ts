@@ -60,7 +60,7 @@ export namespace Components {
   }
 
   export namespace ContextMenu {
-    export type ShowOpts = { mouseX?: number, mouseY?: number }
+    export type ShowOpts = { mouseX?: number | ((x: number) => number), mouseY?: number | ((y: number) => number) }
     export type SeparatorItem = { type: 'separator', hidden?: boolean; }
 
     export type NormalItem = {
@@ -68,6 +68,7 @@ export namespace Components {
       id: string;
       label: string;
       hidden?: boolean;
+      checked?: boolean;
       onClick: (item?: NormalItem) => void;
     }
 
@@ -82,6 +83,12 @@ export namespace Components {
       payload: any;
       fixed?: boolean;
       temporary?: boolean;
+    }
+
+    export interface ActionBtn {
+      icon: string,
+      title: string,
+      onClick: (e: MouseEvent) => void,
     }
   }
 
@@ -110,6 +117,7 @@ export namespace Components {
     }
 
     export interface Props {
+      filterInputHidden?: boolean;
       top?: string | undefined;
       right?: string | undefined;
       bottom?: string | undefined;
@@ -120,6 +128,8 @@ export namespace Components {
     }
   }
 }
+
+export type FileSort = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: 'asc' | 'desc' }
 
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
@@ -243,14 +253,17 @@ export type BuildInActions = {
   'status-bar.refresh-menu': () => void,
   'control-center.refresh': () => void,
   'tree.refresh': () => void,
+  'tree.reveal-current-node': () => void,
   'editor.toggle-wrap': () => void,
   'editor.refresh-custom-editor': () => void,
+  'editor.trigger-save': () => void,
   'filter.show-quick-open': () => void,
   'filter.choose-document': () => Promise<Doc>,
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
   'file-tabs.close-current': () => void,
   'file-tabs.search-tabs': () => void,
+  'file-tabs.refresh-action-btns': () => void,
   'xterm.run': (cmd: { code: string, start: string, exit?: string } | string) => void,
   'xterm.init': (opts?: { cwd?: string }) => void,
   'plugin.document-history-stack.back': () => void,
@@ -313,6 +326,7 @@ export type BuildInHookTypes = {
   MONACO_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
   EDITOR_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
   EDITOR_CUSTOM_EDITOR_CHANGE: { type: 'register' | 'remove' | 'switch' },
+  EDITOR_CURRENT_EDITOR_CHANGE: { current?: CustomEditor | null },
   EDITOR_CHANGE: { uri: string, value: string },
   DOC_CREATED: { doc: Doc },
   DOC_DELETED: { doc: Doc },
@@ -349,6 +363,7 @@ export type CustomEditorCtx = {
 
 export type CustomEditor = {
   name: string,
+  displayName: string,
   hiddenPreview?: boolean,
   when: (ctx: CustomEditorCtx) => boolean | Promise<boolean>,
   component: any,
@@ -369,6 +384,7 @@ export interface CodeRunner {
 }
 
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
+  TABS_ACTION_BTN_TAPPERS: (btns: Components.Tabs.ActionBtn[]) => void;
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
   EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS: any;

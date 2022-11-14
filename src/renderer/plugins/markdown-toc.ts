@@ -6,7 +6,7 @@ import StateInline from 'markdown-it/lib/rules_inline/state_inline'
 import { getKeyLabel } from '@fe/core/command'
 import ctx, { Plugin } from '@fe/context'
 
-const slugify = (s: string) => encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
+const slugify = (s: string) => encodeURIComponent(String(s).trim().toUpperCase().replace(/\s+/g, '-'))
 
 const defaults = {
   level: [2, 3],

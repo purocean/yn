@@ -4,8 +4,9 @@ import { debounce } from 'lodash-es'
 import Viewer from 'viewerjs'
 import type { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import type { Doc } from '@fe/types'
+import { getAttachmentURL } from '@fe/services/base'
 import { sleep } from '@fe/utils'
+import type { Doc } from '@fe/types'
 
 import 'viewerjs/dist/viewer.css'
 
@@ -62,10 +63,7 @@ const ImageViewer = defineComponent({
               rotateRight: true,
             },
             url () {
-              const fileName = doc.name
-              const repo = doc.repo
-              const filePath = doc.path
-              return `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`
+              return getAttachmentURL(doc)
             },
           })
 
@@ -91,6 +89,7 @@ export default {
         const viewer = new Viewer(ctx.view.getViewDom()!, {
           zIndex: 299999,
           container: document.body,
+          transition: false,
           toolbar: {
             zoomIn: 4,
             zoomOut: 4,
@@ -105,6 +104,22 @@ export default {
             flipVertical: 4,
           }
         })
+
+        function wrapEventBind (fn: () => void) {
+          return function (this: any) {
+            const element = this.element
+            this.element = window.document.body
+            fn.call(this)
+            this.element = element
+          }
+        }
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        viewer.bind = wrapEventBind(viewer.bind)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        viewer.unbind = wrapEventBind(viewer.unbind)
 
         ctx.registerHook('VIEW_RENDERED', debounce(() => {
           viewer.update()
@@ -124,6 +139,10 @@ export default {
       body .viewer-navbar {
         background: rgba(0, 0, 0, .57)
       }
+
+      body .viewer-canvas > img {
+        transition: transform .2s;
+      }
     `)
 
     // https://github.com/fengyuanchen/viewerjs/issues/197
@@ -134,7 +153,8 @@ export default {
     `)
 
     ctx.editor.registerCustomEditor({
-      name: 'ImageViewer',
+      name: 'image-viewer',
+      displayName: 'Image Viewer',
       hiddenPreview: true,
       when ({ doc }) {
         return isImageFile(doc)

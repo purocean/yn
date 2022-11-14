@@ -4,6 +4,7 @@
     class="side"
     @contextmenu.exact.prevent="showContextMenu"
     @dblclick="refresh"
+    ref="asideRef"
     :title="$t('tree.db-click-refresh')">
     <div class="loading" v-if="tree === null"> {{$t('loading')}} </div>
     <template v-else>
@@ -19,15 +20,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs, watch } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { refreshTree } from '@fe/services/tree'
 import { fetchSettings, showSettingPanel } from '@fe/services/setting'
+import { registerAction, removeAction } from '@fe/core/action'
 import { useI18n } from '@fe/services/i18n'
-import TreeNode from './TreeNode.vue'
 import { createDir, createDoc } from '@fe/services/document'
 import type { Components } from '@fe/types'
+import TreeNode from './TreeNode.vue'
 
 export default defineComponent({
   name: 'tree',
@@ -36,6 +38,7 @@ export default defineComponent({
     const { t } = useI18n()
     const store = useStore()
     const contextMenu = useContextMenu()
+    const asideRef = ref<HTMLElement>()
 
     const { currentRepo, tree } = toRefs(store.state)
     const hasRepo = computed(() => !!currentRepo.value)
@@ -72,9 +75,24 @@ export default defineComponent({
       contextMenu.show(items)
     }
 
+    function revealCurrentNode () {
+      const currentNode = asideRef.value?.querySelector('.tree-node > .name.selected')
+      currentNode?.scrollIntoView({ block: 'center' })
+    }
+
     watch(currentRepo, refreshTree, { immediate: true })
 
+    registerAction({
+      name: 'tree.reveal-current-node',
+      handler: revealCurrentNode
+    })
+
+    onBeforeUnmount(() => {
+      removeAction('tree.reveal-current-node')
+    })
+
     return {
+      asideRef,
       tree,
       refresh,
       showContextMenu,

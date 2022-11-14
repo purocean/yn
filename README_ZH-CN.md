@@ -76,20 +76,20 @@
 
 ## 更新日志
 
-### [v3.42.0](https://github.com/purocean/yn/releases/tag/v3.42.0) 2022-11-04
+### [v3.43.0](https://github.com/purocean/yn/releases/tag/v3.43.0) 2022-11-14
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x86](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.42.0/Yank-Note-linux-amd64-3.42.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-amd64-3.42.0.deb)
 
-1. feat: 增加开始页面
-2. feat: 支持在编辑器中直接预览图片
-3. feat: 状态栏增加扩展管理按钮
-4. upd: 优化 Windows 上多显示器恢复窗口位置逻辑
-5. fix: 修复终端配置为空时不能使用终端问题
-6. fix: 修复“转换为带标题的链接”可能错误替换文本问题
-7. feat(plugin): 支持注册自定义编辑器
-8. feat(plugin): `triggerHook` 支持忽略错误
-9. feat(plugin): 增加 `ctx.base.getServerTimestamp` 方法
-10. feat(plugin): 增加 `DOC_BEFORE_SWITCH` `DOC_SWITCHING` Hooks
+1. feat: 增加文件列表排序功能
+2. upd: 微调 UI 和 UX
+3. fix: 修复锚点跳转大小写适配问题
+4. fix: 修复图片预览器不能拖动问题
+5. feat(plugin): 上下文菜单项支持选中状态
+6. feat(plugin): 支持自定义编辑器 Tabs 操作按钮
+7. feat(plugin): 优化自定义编辑器相关 API
+8. feat(plugin): 支持加载 `.mjs` 脚本
+9. feat(plugin): 增加 `ctx.base.getAttachmentURL` 方法
+10. feat(plugin): 增加 `ctx.tree.revealCurrentNode` 方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

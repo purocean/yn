@@ -28,10 +28,11 @@ import { throttle } from 'lodash-es'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
+import type { AppState } from '@fe/support/store'
 import { highlightLine as editorHighlightLine } from '@fe/services/editor'
+import { isSameFile } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
-import { AppState } from '@fe/support/store'
-import { getHeadings, Heading, highlightLine as viewHighlightLine } from '@fe/services/view'
+import { getHeadings, getRenderEnv, Heading, highlightLine as viewHighlightLine } from '@fe/services/view'
 
 export default defineComponent({
   name: 'outline',
@@ -68,9 +69,12 @@ export default defineComponent({
       const scrollEditor = store.state.showEditor && !store.state.presentation
       const scrollPreview = !scrollEditor || !store.state.syncScroll
 
-      // highlight heading
-      editorHighlightLine(line, scrollEditor, 1000)
-      viewHighlightLine(line, scrollPreview, 1000)
+      if (isSameFile(getRenderEnv()?.file, store.state.currentFile)) {
+        editorHighlightLine(line, scrollEditor, 1000)
+        viewHighlightLine(line, scrollPreview, 1000)
+      } else {
+        viewHighlightLine(line, true, 1000)
+      }
     }
 
     function refresh () {
@@ -140,7 +144,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 input.search-input[type="text"] {
   border-radius: 0;
-  background: rgba(var(--g-color-95-rgb), 0.75);
+  background: var(--g-color-backdrop);
   font-size: 14px;
   padding: 6px 14px;
   position: sticky;
@@ -198,7 +202,7 @@ input.search-input[type="text"] {
     }
 
     .tag-name {
-      color: var(--g-color-60);
+      color: var(--g-color-50);
       font-size: 12px;
       padding-left: 0.5em;
     }

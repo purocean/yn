@@ -10,7 +10,7 @@ import { sleep } from '@fe/utils'
 import type { BuildInHookTypes, Components, Previewer } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
-import { switchDoc } from './document'
+import { isSameFile, switchDoc } from './document'
 
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
@@ -370,7 +370,9 @@ export function getContextMenuItems (e: MouseEvent) {
  * @returns
  */
 export function getEnableSyncScroll () {
-  return tmpEnableSyncScroll && store.state.syncScroll
+  return tmpEnableSyncScroll &&
+    store.state.syncScroll &&
+    isSameFile(getRenderEnv()?.file, store.state.currentFile)
 }
 
 /**

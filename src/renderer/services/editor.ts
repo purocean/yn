@@ -3,7 +3,7 @@ import { cloneDeep, debounce } from 'lodash-es'
 import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron, isMacOS } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
-import { registerAction } from '@fe/core/action'
+import { getActionHandler, registerAction } from '@fe/core/action'
 import * as ioc from '@fe/core/ioc'
 import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
@@ -22,6 +22,7 @@ export type SimpleCompletionItem = {
 
 export type SimpleCompletionItemTappers = (items: SimpleCompletionItem[]) => void
 
+let isDefaultEditor = true
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
 
@@ -427,7 +428,26 @@ export function getAllCustomEditors () {
   return ioc.get('EDITOR_CUSTOM_EDITOR')
 }
 
+/**
+ * Trigger save.
+ */
+export function triggerSave () {
+  getActionHandler('editor.trigger-save')()
+}
+
+/**
+ * Get current editor is default or not.
+ * @returns
+ */
+export function getIsDefault () {
+  return isDefaultEditor
+}
+
 registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
+
+registerHook('EDITOR_CURRENT_EDITOR_CHANGE', ({ current }) => {
+  isDefaultEditor = !current?.component
+})
 
 registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
   monaco.editor.defineTheme('vs', {

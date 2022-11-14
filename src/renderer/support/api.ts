@@ -1,4 +1,4 @@
-import type { Components, Doc, ExportType, FileItem, PathItem } from '@fe/types'
+import type { Components, Doc, ExportType, FileItem, FileSort, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
 import { JWT_TOKEN } from './args'
 
@@ -197,8 +197,8 @@ export async function commentHistoryVersion (file: PathItem, version: string, ms
  * @param repo
  * @returns
  */
-export async function fetchTree (repo: string): Promise<Components.Tree.Node[]> {
-  const result = await fetchHttp(`/api/tree?repo=${encodeURIComponent(repo)}`)
+export async function fetchTree (repo: string, sort: FileSort): Promise<Components.Tree.Node[]> {
+  const result = await fetchHttp(`/api/tree?repo=${encodeURIComponent(repo)}&sort=${sort.by}-${sort.order}`)
   return result.data
 }
 
