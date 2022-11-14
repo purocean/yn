@@ -78,7 +78,7 @@ function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
       icon: 'pen-solid',
       title: t('editor.switch-editor'),
       onClick: (e) => {
-        const rect = (e.target as HTMLElement).getBoundingClientRect()
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
         useQuickFilter().show({
           filterInputHidden: true,
           top: `${rect.bottom + 10}px`,
