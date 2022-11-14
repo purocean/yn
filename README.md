@@ -78,7 +78,7 @@ For more information on how to use the following functions, please see [characte
 
 ### [v3.43.0](https://github.com/purocean/yn/releases/tag/v3.43.0) 2022-11-14
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-win-x64-3.42.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-arm64-3.42.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-x64-3.42.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-x86_64-3.42.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-amd64-3.42.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-win-x64-3.43.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-arm64-3.43.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-x64-3.43.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-x86_64-3.43.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-amd64-3.43.0.deb)
 
 1. feat: add file list sorting function
 2. upd: Fine-tune UI and UX
