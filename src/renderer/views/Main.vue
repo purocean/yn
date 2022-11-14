@@ -125,7 +125,7 @@ export default defineComponent({
 .editor-force-only :deep(.content > .editor) {
   display: flex !important;
   width: revert !important;
-  min-width: revert !important;
+  min-width: 0 !important;
   max-width: revert !important;
 }
 </style>
