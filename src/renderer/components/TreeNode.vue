@@ -387,7 +387,6 @@ summary.folder::before {
   margin-right: 4px;
   transform: rotate(-90deg);
   transition: transform 0.06s;
-  color: red;
 }
 
 details.name[open] > summary.folder::before {
