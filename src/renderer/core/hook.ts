@@ -3,7 +3,12 @@ import { getLogger } from '@fe/utils'
 import * as ioc from './ioc'
 
 export type HookType = keyof BuildInHookTypes
-export type HookFun<T> = ((arg: T) => boolean | void | Promise<boolean | void>) & { once?: boolean }
+export type HookFun<T> = (arg: T) => (boolean | void | Promise<boolean | void>)
+
+export type Hook<T> = {
+  fun: HookFun<T>,
+  once: boolean,
+}
 
 export type HookTypeWithoutPayload = { [K in keyof BuildInHookTypes]: BuildInHookTypes[K] extends never ? K : never }[keyof BuildInHookTypes]
 export type HookTypeWithPayload = keyof Omit<BuildInHookTypes, HookTypeWithoutPayload>
@@ -17,8 +22,7 @@ const logger = getLogger('hook')
  * @param once
  */
 export function registerHook<T extends HookType> (type: T, fun: HookFun<BuildInHookTypes[T]>, once = false) {
-  fun.once = once
-  ioc.register(type, fun)
+  ioc.register(type, { fun, once })
 }
 
 /**
@@ -27,7 +31,7 @@ export function registerHook<T extends HookType> (type: T, fun: HookFun<BuildInH
  * @param fun
  */
 export function removeHook<T extends HookType> (type: T, fun: HookFun<BuildInHookTypes[T]>) {
-  ioc.remove(type, fun)
+  ioc.removeWhen(type, item => item.fun === fun)
 }
 
 /**
@@ -40,9 +44,9 @@ export async function triggerHook<T extends HookTypeWithoutPayload> (type: T): P
 export async function triggerHook<T extends HookTypeWithPayload> (type: T, arg: BuildInHookTypes[T], options?: { breakable?: boolean, ignoreError?: boolean }): Promise<boolean>
 export async function triggerHook<T extends HookType> (type: T, arg?: BuildInHookTypes[T], options?: { breakable?: boolean, ignoreError?: boolean }): Promise<boolean | void> {
   logger.debug('triggerHook', type, arg)
-  const items: HookFun<any>[] = ioc.get(type)
-  for (const fun of items) {
-    fun.once && removeHook(type, fun)
+  const items: Hook<any>[] = ioc.get(type)
+  for (const { fun, once } of items) {
+    once && removeHook<any>(type, fun)
     try {
       if (options?.breakable) {
         if (await fun(arg)) {

@@ -92,8 +92,11 @@ test('hook usage 8', async () => {
 
 test('hook usage 8', async () => {
   const fn1: any = jest.fn()
+  hook.registerHook('ACTION_BEFORE_RUN', fn1)
   hook.registerHook('ACTION_AFTER_RUN', fn1, true)
   await hook.triggerHook('ACTION_AFTER_RUN', { name: 'test' })
   await hook.triggerHook('ACTION_AFTER_RUN', { name: 'test' })
-  expect(fn1).toBeCalledTimes(1)
+  await hook.triggerHook('ACTION_BEFORE_RUN', { name: 'test' })
+  await hook.triggerHook('ACTION_BEFORE_RUN', { name: 'test' })
+  expect(fn1).toBeCalledTimes(3)
 })
