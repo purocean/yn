@@ -100,3 +100,14 @@ test('hook usage 8', async () => {
   await hook.triggerHook('ACTION_BEFORE_RUN', { name: 'test' })
   expect(fn1).toBeCalledTimes(3)
 })
+
+test('hook usage 9', async () => {
+  const fn1 = () => { throw new Error('test') }
+  const fn2 = () => Promise.reject(new Error('test'))
+  hook.registerHook('ACTION_BEFORE_RUN', fn1)
+  hook.registerHook('ACTION_AFTER_RUN', fn2)
+  await hook.triggerHook('ACTION_BEFORE_RUN', { name: 'test' }, { ignoreError: true })
+  await hook.triggerHook('ACTION_AFTER_RUN', { name: 'test' }, { breakable: true, ignoreError: true })
+  await expect(hook.triggerHook('ACTION_BEFORE_RUN', { name: 'test' })).rejects.toThrow()
+  await expect(hook.triggerHook('ACTION_AFTER_RUN', { name: 'test' }, { breakable: true })).rejects.toThrow()
+})
