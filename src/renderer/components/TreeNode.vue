@@ -372,6 +372,12 @@ summary {
   display: block;
 }
 
+summary.folder::-webkit-details-marker,
+summary.folder::marker {
+  content: '';
+  display: none;
+}
+
 summary.folder::before {
   display: inline-block;
   width: 10px;
