@@ -258,6 +258,12 @@ const data = {
     'extension': {
       'extension-manager': 'Extension Manager',
     },
+    'theme': {
+      'tips': 'Theme: %s',
+      'dark': 'Dark',
+      'light': 'Light',
+      'system': 'OS Default',
+    },
   },
   'view': {
     'outline': 'Outline',

@@ -259,6 +259,12 @@ const data: BaseLanguage = {
     'extension': {
       'extension-manager': '扩展管理',
     },
+    'theme': {
+      'tips': '主题: %s',
+      'dark': '深色',
+      'light': '浅色',
+      'system': '跟随系统',
+    },
   },
   'view': {
     'outline': '目录',
