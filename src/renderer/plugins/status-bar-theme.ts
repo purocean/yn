@@ -28,8 +28,13 @@ export default {
             system: 'light',
           }[theme] as ThemeName
 
-          ctx.theme.setTheme(nextTheme as any)
-          ctx.ui.useToast().show('info', ctx.i18n.t('status-bar.theme.tips', ctx.i18n.t(`status-bar.theme.${nextTheme}`)))
+          if (ctx.getPremium()) {
+            ctx.theme.setTheme(nextTheme as any)
+            ctx.ui.useToast().show('info', ctx.i18n.t('status-bar.theme.tips', ctx.i18n.t(`status-bar.theme.${nextTheme}`)))
+          } else {
+            ctx.ui.useToast().show('warning', ctx.i18n.t('premium.need-purchase', 'Theme'))
+            ctx.showPremium()
+          }
         }
       }
     })
