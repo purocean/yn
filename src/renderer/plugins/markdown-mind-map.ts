@@ -2,7 +2,7 @@ import { defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } 
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context'
-import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
+import { downloadDataURL, getLogger, sleep, strToBase64 } from '@fe/utils'
 import { openWindow } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/support/embed'
@@ -42,14 +42,14 @@ async function processRenderWindow () {
   Object.defineProperty(window, 'kityminder', {
     get: () => {
       logger.debug('new kityminder')
-      return window.kityminderM()
+      return window.kityminderM && window.kityminderM()
     },
   })
 }
 
 processRenderWindow()
 
-function newMinder () {
+async function newMinder () {
   // hack addEventListener, fix memory leak.
   const realAddEventListener = window.addEventListener.bind(window)
   const events: {type: string, listener: any}[] = []
@@ -59,7 +59,13 @@ function newMinder () {
     realAddEventListener(type, listener)
   }
 
-  const km = new window.kityminder.Minder()
+  let kityminder = window.kityminder
+  if (!kityminder) {
+    await sleep(800)
+    kityminder = window.kityminder
+  }
+
+  const km = new kityminder.Minder()
 
   // restore addEventListener
   window.addEventListener = realAddEventListener
@@ -260,7 +266,7 @@ const buildSrcdoc = (json: string, btns: string) => {
   `
 }
 
-const init = (ele: HTMLElement) => {
+const init = async (ele: HTMLElement) => {
   const div = document.createElement('div')
   div.setAttribute('minder-data-type', 'text')
   div.style.position = 'relative'
@@ -269,7 +275,7 @@ const init = (ele: HTMLElement) => {
   ele.innerHTML = ''
   ele.appendChild(div)
 
-  const km = newMinder()
+  const km = await newMinder()
 
   km.setup(div)
   km.disable()
@@ -396,13 +402,13 @@ const MindMap = defineComponent({
     const img = ref('')
 
     let km: any = null
-    const renderMindMap = debounce(() => {
+    const renderMindMap = debounce(async () => {
       if (!container.value) {
         return
       }
 
       if (!km) {
-        km = init(container.value)
+        km = await init(container.value)
         km.disableAnimationAwhile(async () => {
           await render(km, props.content)
           km.execCommand('hand')
@@ -529,15 +535,19 @@ export default {
       }
     `)
 
-    ctx.markdown.registerPlugin(async md => {
-      md.renderer.rules.bullet_list_open = renderRule
-
+    async function injectScripts () {
       const style = await ctx.view.addStyleLink('/kity/kityminder.core.css')
       const script1 = await ctx.view.addScript('/kity/kity.min.js')
       script1.onload = async () => {
         const script2 = await ctx.view.addScript('/kity/kityminder.core.min.js')
         links = [style.outerHTML, script1.outerHTML, script2.outerHTML].join('\n')
       }
+    }
+
+    injectScripts()
+
+    ctx.markdown.registerPlugin(async md => {
+      md.renderer.rules.bullet_list_open = renderRule
     })
 
     ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
