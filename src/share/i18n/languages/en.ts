@@ -46,7 +46,7 @@ const data = {
       'intro': 'Intro',
       'current-plan': 'Current Plan',
       'included': 'Included',
-      'desc': 'Yank Note is open-source, I\'ve been constantly updating it since 2018. It consumes my energy and money (such as the annual Apple developer account subscription). Now a paid premium version is available. If you need advanced features or want to support my development, you can buy a license.',
+      'desc': 'Yank Note is open-source, I\'ve been constantly developing it since 2018. It takes my energy and money. Now a premium version is available. If you want to support my development or need advanced features, you can buy a license.',
       'free-desc': 'For most users',
       'premium-desc': 'More features',
       'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History\nExtension',
