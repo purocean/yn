@@ -588,6 +588,7 @@ const data = {
     'auto-upgrade': 'Auto Upgrade',
     'unknown-origin-tips': 'Using extensions from unknown sources can be risky, still want to enable?',
     'extensions-auto-upgraded': '%s extensions have been upgraded',
+    'fetch-registry-failed': 'Fetch registry failed, please switch to another registry or try again later',
   },
   'get-started': {
     'get-started': 'Get Started',

@@ -589,6 +589,7 @@ const data: BaseLanguage = {
     'auto-upgrade': '自动升级',
     'unknown-origin-tips': '使用未知来源的扩展可能有风险，仍然要启用吗？',
     'extensions-auto-upgraded': '%s 个扩展已升级',
+    'fetch-registry-failed': '获取扩展仓库失败，请切换到其他仓库源或稍后重试',
   },
   'get-started': {
     'get-started': '开始使用',

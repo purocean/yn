@@ -373,6 +373,7 @@ async function fetchExtensions () {
     registryExtensions.value = await extensionManager.getRegistryExtensions(currentRegistry.value)
   } catch (error) {
     logger.error('fetchExtensions', error)
+    useToast().show('warning', t('extension.fetch-registry-failed'))
     registryExtensions.value = []
     throw error
   } finally {
