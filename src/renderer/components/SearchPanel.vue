@@ -676,6 +676,10 @@ mark {
 }
 
 @include dark-theme {
+  .search-panel-wrapper {
+    background-color: rgba(255, 255, 255, 0.07);
+  }
+
   mark {
     background: #746900 !important;
     color: #ebebeb;
