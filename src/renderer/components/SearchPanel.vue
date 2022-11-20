@@ -466,7 +466,7 @@ onBeforeUnmount(() => {
   }
 
   .search {
-    padding: 6px 4px;
+    padding: 6px;
     flex: none;
 
     .search-input {
@@ -538,7 +538,7 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  padding: 0 4px;
+  padding: 0 6px;
   user-select: none;
 
   .message {
