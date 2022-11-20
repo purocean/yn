@@ -19,6 +19,9 @@ export function resolve (...args: string[]) {
 }
 
 export function relative (from: string, to: string) {
+  from = normalizeSep(from)
+  to = normalizeSep(to)
+
   return Path.relative(
     from.startsWith('/') ? from : ('/' + from),
     to.startsWith('/') ? to : ('/' + to)
