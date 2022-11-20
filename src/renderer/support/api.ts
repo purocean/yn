@@ -1,4 +1,6 @@
+import type { IProgressMessage, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery } from 'ripgrep-wrapper'
 import type { Components, Doc, ExportType, FileItem, FileSort, PathItem } from '@fe/types'
+import type { SearchMessage } from '@share/typings'
 import { isElectron } from '@fe/support/env'
 import { JWT_TOKEN } from './args'
 
@@ -249,15 +251,67 @@ export async function choosePath (options: Record<string, any>): Promise<{ cance
   return result.data
 }
 
+type SearchReturn = (
+  onResult: (result: ISerializedFileMatch[]) => void,
+  onMessage?: (message: IProgressMessage) => void
+) => Promise<ISerializedSearchSuccess | null>
+
 /**
- * Search in a repository.
- * @param repo
- * @param text
+ * Search files.
+ * @param controller
+ * @param query
  * @returns
  */
-export async function search (repo: string, text: string): Promise<Pick<Doc, 'repo' | 'type' | 'path' | 'name'>> {
-  const result = await fetchHttp(`/api/search?repo=${encodeURIComponent(repo)}&search=${encodeURIComponent(text)}`)
-  return result.data
+export async function search (controller: AbortController, query: ITextQuery): Promise<SearchReturn> {
+  const response = await fetchHttp('/api/search', {
+    signal: controller.signal,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query })
+  })
+
+  return async function (onResult, onMessage) {
+    let val = ''
+    let success: ISerializedSearchSuccess | null = null
+
+    const reader: ReadableStreamDefaultReader = response.body.getReader()
+
+    // read stream
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) {
+        return success
+      }
+
+      val += new TextDecoder().decode(value)
+
+      const idx = val.lastIndexOf('\n')
+      if (idx === -1) {
+        continue
+      }
+
+      const lines = val.slice(0, idx)
+      val = val.slice(idx + 1)
+
+      for (const line of lines.split('\n')) {
+        const data = JSON.parse(line)
+
+        switch (data.type) {
+          case 'result':
+            onResult((<SearchMessage<'result'>>data).payload)
+            break
+          case 'message':
+            onMessage?.((<SearchMessage<'message'>>data).payload)
+            break
+          case 'done':
+            success = (<SearchMessage<'done'>>data).payload
+            break
+          default:
+            throw (<SearchMessage<'error'>>data).payload
+        }
+      }
+    }
+  }
 }
 
 /**

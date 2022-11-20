@@ -64,6 +64,7 @@ jobs:
       - name: Electron-Mac
         if: matrix.platform == 'mac'
         run: |
+          sh ./scripts/download-ripgrep.sh
           yarn run electron-builder --${{ matrix.platform }} --x64 -p never | sed 's/identityName=.*$//'
           find ./out -regex '.*app.asar.unpacked/node_modules/node-pty/build/Release/pty.node$' | grep pty.node
           mv out/latest-mac.yml out/latest-mac-x64.yml

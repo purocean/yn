@@ -7,12 +7,15 @@
           <svg-icon v-else name="list" />
         </div>
       </div>
-      <div v-if="!showOutline">
+      <template v-if="!showOutline">
         <div class="btn flat" @click="showSortMenu()" :title="$t(('tree.sort.by-' + treeSort.by) as any, $t(('tree.sort.' + treeSort.order) as any))">
           <svg-icon v-if="treeSort.order === 'asc'" name="arrow-up-wide-short-solid" />
           <svg-icon v-else name="arrow-down-short-wide-solid" />
         </div>
-      </div>
+        <div class="btn flat" @click="findInFolder()" :title="$t('search-panel.search-files') + ' ' + getKeysLabel('tree.find-in-folder')">
+          <svg-icon name="search-solid" />
+        </div>
+      </template>
     </div>
     <div class="title">{{$t(showOutline ? 'outline' : 'files')}}</div>
     <div class="btns" v-if="navigation">
@@ -37,11 +40,12 @@ import { registerAction, removeAction } from '@fe/core/action'
 import { getSchema, Schema } from '@fe/services/control-center'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import type { AppState } from '@fe/support/store'
-import SvgIcon from './SvgIcon.vue'
 import { useI18n } from '@fe/services/i18n'
 import { toggleOutline } from '@fe/services/layout'
+import { findInFolder } from '@fe/services/tree'
 import { getKeysLabel } from '@fe/core/command'
-import { FileSort } from '@fe/types'
+import type { FileSort } from '@fe/types'
+import SvgIcon from './SvgIcon.vue'
 
 const store = useStore<AppState>()
 const navigation = ref<Schema['navigation']>()

@@ -108,7 +108,7 @@ export default {
         },
         {
           type: 'btn',
-          icon: 'search-solid',
+          icon: 'bolt-solid',
           flat: true,
           title: ctx.i18n.t('control-center.navigation.goto', ctx.command.getKeysLabel('filter.show-quick-open')),
           showInActionBar: true,

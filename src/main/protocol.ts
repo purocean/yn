@@ -59,6 +59,8 @@ export async function transformProtocolRequest (request: ProtocolRequest) {
 
   const res = new ServerResponse(req)
   res.write = out.write.bind(out)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   res.end = out.end.bind(out)
 
   return { req, res, out }

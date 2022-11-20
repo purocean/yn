@@ -290,6 +290,7 @@ const data = {
       'create-in-cd': 'New File',
       'copy-name': 'Copy Name',
       'copy-path': 'Copy Path',
+      'find-in-folder': 'Find in Folder',
     },
     'toast': {
       'moved': '[%s] Moved to [%s]',
@@ -407,7 +408,6 @@ const data = {
     'input-placeholder': 'Type characters...',
     'empty': 'Empty',
     'files': 'Files',
-    'search': 'Search',
     'marked': 'Marked',
   },
   'editor': {
@@ -595,6 +595,16 @@ const data = {
     'start': 'Start',
     'help': 'Help',
     'recent': 'Recent',
+  },
+  'search-panel': {
+    'search-files': 'Search Files',
+    'placeholder-search': 'Search',
+    'for-history': '(⇅ for history)',
+    'files-to-include': 'Files to include',
+    'files-to-exclude': 'Files to exclude',
+    'match-case': 'Match Case',
+    'match-whole-word': 'Match Whole Word',
+    'use-regex': 'Use Regular Expression',
   },
 }
 

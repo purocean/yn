@@ -254,6 +254,7 @@ export type BuildInActions = {
   'control-center.refresh': () => void,
   'tree.refresh': () => void,
   'tree.reveal-current-node': () => void,
+  'tree.find-in-folder': (path?: string) => void,
   'editor.toggle-wrap': () => void,
   'editor.refresh-custom-editor': () => void,
   'editor.trigger-save': () => void,
