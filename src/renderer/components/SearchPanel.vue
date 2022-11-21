@@ -228,14 +228,61 @@ async function search () {
     return obj
   }
 
+  const isMultiline = (pattern: string, isRegExp: boolean) => {
+    const isMultilineRegexSource = (searchString: string) => {
+      if (!searchString || searchString.length === 0) {
+        return false
+      }
+
+      for (let i = 0, len = searchString.length; i < len; i++) {
+        const chCode = searchString.charCodeAt(i)
+
+        if (chCode === 10 /* \n */) {
+          return true
+        }
+
+        if (chCode === 92 /* \ */) {
+          // move to next char
+          i++
+
+          if (i >= len) {
+            // string ends with a \
+            break
+          }
+
+          const nextChCode = searchString.charCodeAt(i)
+          if (
+            nextChCode === 110 || // \n
+            nextChCode === 114 || // \r
+            nextChCode === 87 // \W
+          ) {
+            return true
+          }
+        }
+      }
+
+      return false
+    }
+
+    if (isRegExp && isMultilineRegexSource(pattern)) {
+      return true
+    }
+
+    if (pattern.indexOf('\n') >= 0) {
+      return true
+    }
+
+    return false
+  }
+
   controller = new AbortController()
   const query: ITextQuery = {
     contentPattern: {
-      pattern: pattern.value,
+      pattern: option.isRegExp ? pattern.value.replace(/\r?\n/g, '\\n') : pattern.value,
       isRegExp: option.isRegExp,
       isWordMatch: option.isWordMatch,
       isCaseSensitive: option.isCaseSensitive,
-      isMultiline: pattern.value.includes('\n')
+      isMultiline: isMultiline(pattern.value, option.isRegExp)
     },
     folderQueries: [
       {
