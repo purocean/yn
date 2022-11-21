@@ -22,6 +22,7 @@ jobs:
       npm_config_disturl: https://electronjs.org/headers
       npm_config_target: 15.4.1
       npm_config_runtime: "electron"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Set git config
