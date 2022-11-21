@@ -1,6 +1,6 @@
 <template>
   <transition name="search-panel-wrapper">
-    <div v-show="visible" class="search-panel-wrapper" @keydown.esc="close">
+    <div v-show="visible" class="search-panel-wrapper" @keydown.esc="close" @click.self="close">
       <transition name="search-panel">
         <div v-if="visible" class="search-panel">
           <div class="title">{{$t('search-panel.search-files')}}</div>
@@ -74,10 +74,22 @@
           </div>
           <div class="message-wrapper">
             <div class="message">{{message}}</div>
-            <a v-show="loading" class="action-btn" href="javascript:void(0)" @click="stop">{{$t('cancel')}}</a>
+            <a v-if="loading" class="action-btn" href="javascript:void(0)" @click="stop">{{$t('cancel')}}</a>
+            <a
+              v-else-if="result.length > 1"
+              class="action-btn"
+              href="javascript:void(0)"
+              @click="toggleExpandAll"
+            >{{ $t(allResultCollapsed ? 'search-panel.expand-all' : 'search-panel.collapse-all') }}</a>
           </div>
           <div class="results" v-if="result.length > 0">
-            <details class="item" v-for="item in result" :key="item.path" open>
+            <details
+              class="item"
+              v-for="item in result"
+              :key="item.path"
+              :open="item.open"
+              @toggle="(e: any) => item.open = e.target.open"
+            >
               <summary :title="item.path">
                 <div class="item-info">
                   <span class="item-name">{{basename(item.path)}}</span>
@@ -139,7 +151,7 @@ const option = reactive({
 })
 
 const loading = ref(false)
-const result = shallowRef<(ISerializedFileMatch)[]>([])
+const result = ref<(ISerializedFileMatch & { open: boolean })[]>([])
 const success = shallowRef<ISerializedSearchSuccess | null>(null)
 const errorMessage = shallowRef('')
 const currentItemKey = ref('')
@@ -151,7 +163,7 @@ const message = computed(() => {
   }
 
   if (result.value.length === 0) {
-    return success.value ? 'No results found' : ''
+    return success.value ? 'No results found' : (loading.value ? 'Searching...' : '')
   }
 
   const results = result.value.reduce((acc, cur) => acc + (cur.numMatches || 0), 0)
@@ -161,6 +173,10 @@ const message = computed(() => {
   } else {
     return `${results} results in ${result.value.length} files`
   }
+})
+
+const allResultCollapsed = computed(() => {
+  return result.value.every(item => !item.open)
 })
 
 watchEffect(async () => {
@@ -311,6 +327,7 @@ async function search () {
           ...result.value,
           ...data.map((item) => ({
             repo,
+            open: true,
             numMatches: item.numMatches,
             results: (item.results!).map((match: any, i) => ({
               ...match,
@@ -385,6 +402,13 @@ function onKeydownEnter (e: KeyboardEvent) {
   } else {
     search()
   }
+}
+
+function toggleExpandAll () {
+  result.value = result.value.map(r => ({
+    ...r,
+    open: allResultCollapsed.value,
+  }))
 }
 
 function markText (text: string, ranges: ISearchRange[]) {
@@ -618,6 +642,7 @@ onBeforeUnmount(() => {
   font-size: 13px;
   padding: 0 6px;
   user-select: none;
+  align-items: flex-end;
 
   .message {
     color: var(--g-color-30);
@@ -632,6 +657,8 @@ onBeforeUnmount(() => {
     text-decoration: none;
     flex: none;
     margin-left: 6px;
+    font-size: 12px;
+    padding-bottom: 4px;
   }
 }
 
@@ -696,7 +723,7 @@ onBeforeUnmount(() => {
         flex: none;
         background-color: var(--g-color-90);
         line-height: 16px;
-        font-size: 13px;
+        font-size: 12px;
         box-sizing: border-box;
         min-width: 16px;
         text-align: center;

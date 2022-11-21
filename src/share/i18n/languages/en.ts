@@ -608,6 +608,8 @@ const data = {
     'match-case': 'Match Case',
     'match-whole-word': 'Match Whole Word',
     'use-regex': 'Use Regular Expression',
+    'expand-all': 'Expand All',
+    'collapse-all': 'Collapse All',
   },
 }
 

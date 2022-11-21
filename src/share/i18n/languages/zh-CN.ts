@@ -609,6 +609,8 @@ const data: BaseLanguage = {
     'match-case': '区分大小写',
     'match-whole-word': '匹配整词',
     'use-regex': '使用正则表达式',
+    'expand-all': '展开所有',
+    'collapse-all': '折叠所有',
   },
 }
 
