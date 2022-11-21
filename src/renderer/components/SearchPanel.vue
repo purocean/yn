@@ -656,7 +656,6 @@ onBeforeUnmount(() => {
       font-size: 14px;
       user-select: none;
       padding: 6px;
-      color: var(--g-color-10);
 
       &::-webkit-details-marker,
       &::marker {
@@ -681,6 +680,10 @@ onBeforeUnmount(() => {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+
+        .item-name {
+          font-weight: 500;
+        }
 
         .item-dir {
           color: var(--g-color-50);
