@@ -380,32 +380,16 @@ summary.folder::marker {
 
 summary.folder::before {
   display: inline-block;
-  width: 10px;
-  height: 25px;
+  width: 12px;
+  height: 26px;
   content: url(data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIgZGF0YS1wcmVmaXg9ImZhciIgZGF0YS1pY29uPSJjaGV2cm9uLWRvd24iIHJvbGU9ImltZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNDQ4IDUxMiIgPjxwYXRoIGZpbGw9IiM3YzdmODIiIGQ9Ik00NDEuOSAxNjcuM2wtMTkuOC0xOS44Yy00LjctNC43LTEyLjMtNC43LTE3IDBMMjI0IDMyOC4yIDQyLjkgMTQ3LjVjLTQuNy00LjctMTIuMy00LjctMTcgMEw2LjEgMTY3LjNjLTQuNyA0LjctNC43IDEyLjMgMCAxN2wyMDkuNCAyMDkuNGM0LjcgNC43IDEyLjMgNC43IDE3IDBsMjA5LjQtMjA5LjRjNC43LTQuNyA0LjctMTIuMyAwLTE3eiIgY2xhc3M9IiI+PC9wYXRoPjwvc3ZnPg==);
-  margin-right: 4px;
+  margin-right: 2px;
   transform: rotate(-90deg);
   transition: transform 0.1s;
 }
 
 details.name[open] > summary.folder::before {
   transform: rotate(0);
-}
-
-summary.folder > .item > .item-label::before {
-  display: inline-block;
-  width: 14px;
-  height: 27px;
-  margin-right: 6px;
-  content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjN2M3ZjgyIiBkPSJNNjQgNDgwSDQ0OGMzNS4zIDAgNjQtMjguNyA2NC02NFYxNjBjMC0zNS4zLTI4LjctNjQtNjQtNjRIMjk4LjVjLTE3IDAtMzMuMy02LjctNDUuMy0xOC43TDIyNi43IDUwLjdjLTEyLTEyLTI4LjMtMTguNy00NS4zLTE4LjdINjRDMjguNyAzMiAwIDYwLjcgMCA5NlY0MTZjMCAzNS4zIDI4LjcgNjQgNjQgNjR6Ii8+PC9zdmc+);
-  vertical-align: middle;
-}
-
-details.name[open] > summary.folder > .item > .item-label::before {
-  width: 15px;
-  height: 28px;
-  margin-right: 5px;
-  content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48cGF0aCBmaWxsPSIjN2M3ZjgyIiBkPSJNODguNyAyMjMuOEwwIDM3NS44Vjk2QzAgNjAuNyAyOC43IDMyIDY0IDMySDE4MS41YzE3IDAgMzMuMyA2LjcgNDUuMyAxOC43bDI2LjUgMjYuNWMxMiAxMiAyOC4zIDE4LjcgNDUuMyAxOC43SDQxNmMzNS4zIDAgNjQgMjguNyA2NCA2NHYzMkgxNDRjLTIyLjggMC00My44IDEyLjEtNTUuMyAzMS44em0yNy42IDE2LjFDMTIyLjEgMjMwIDEzMi42IDIyNCAxNDQgMjI0SDU0NGMxMS41IDAgMjIgNi4xIDI3LjcgMTYuMXM1LjcgMjIuMi0uMSAzMi4xbC0xMTIgMTkyQzQ1My45IDQ3NCA0NDMuNCA0ODAgNDMyIDQ4MEgzMmMtMTEuNSAwLTIyLTYuMS0yNy43LTE2LjFzLTUuNy0yMi4yIC4xLTMyLjFsMTEyLTE5MnoiLz48L3N2Zz4=);
 }
 
 .folder {
