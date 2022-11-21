@@ -59,12 +59,9 @@ export async function transformProtocolRequest (request: ProtocolRequest) {
 
   const res = new Proxy(new ServerResponse(req), {
     get (target, prop: keyof typeof out) {
-      if (out[prop]) {
-        const val = out[prop]
-
-        if (typeof val === 'function') {
-          return val.bind(out)
-        }
+      const val = out[prop]
+      if (val && typeof val === 'function') {
+        return val.bind(out)
       }
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
