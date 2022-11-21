@@ -166,6 +166,14 @@ export type RenderEnv = {
 
 export type ExtensionCompatible = { value: boolean, reason: string }
 export type ExtensionLoadStatus = { version?: string, themes: boolean, plugin: boolean, style: boolean, activationTime: number }
+export type FindInRepositoryQuery = {
+  pattern?: string,
+  caseSensitive?: boolean,
+  wholeWord?: boolean,
+  regExp?: boolean,
+  include?: string,
+  exclude?: string,
+}
 
 export interface Extension {
   id: string;
@@ -255,7 +263,6 @@ export type BuildInActions = {
   'control-center.refresh': () => void,
   'tree.refresh': () => void,
   'tree.reveal-current-node': () => void,
-  'tree.find-in-folder': (path?: string) => void,
   'editor.toggle-wrap': () => void,
   'editor.refresh-custom-editor': () => void,
   'editor.trigger-save': () => void,
@@ -281,6 +288,7 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-out': () => void,
   'plugin.electron-zoom.zoom-reset': () => void,
   'premium.show': () => void,
+  'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
 }
 
 export type BuildInActionName = keyof BuildInActions

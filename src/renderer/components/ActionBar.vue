@@ -12,7 +12,7 @@
           <svg-icon v-if="treeSort.order === 'asc'" name="arrow-up-wide-short-solid" />
           <svg-icon v-else name="arrow-down-short-wide-solid" />
         </div>
-        <div class="btn flat" @click="findInFolder()" :title="$t('search-panel.search-files') + ' ' + getKeysLabel('tree.find-in-folder')">
+        <div class="btn flat" @click="findInRepository()" :title="$t('search-panel.search-files') + ' ' + getKeysLabel('base.find-in-repository')">
           <svg-icon name="search-solid" />
         </div>
       </template>
@@ -42,7 +42,7 @@ import { useContextMenu } from '@fe/support/ui/context-menu'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
 import { toggleOutline } from '@fe/services/layout'
-import { findInFolder } from '@fe/services/tree'
+import { findInRepository } from '@fe/services/base'
 import { getKeysLabel } from '@fe/core/command'
 import type { FileSort } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'

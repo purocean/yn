@@ -60,14 +60,6 @@ export function revealCurrentNode () {
   getActionHandler('tree.reveal-current-node')()
 }
 
-/**
- * Find in folder
- * @param path
- */
-export function findInFolder (path?: string) {
-  getActionHandler('tree.find-in-folder')(path)
-}
-
 store.watch(state => state.treeSort, async () => {
   await refreshTree()
   await nextTick()

@@ -56,7 +56,7 @@
               v-up-down-history
               v-placeholder="{
                 blur: '',
-                focus: 'e.g. foo/**/include ' + $t('search-panel.for-history')
+                focus: 'e.g. a.md,foo/**/include ' + $t('search-panel.for-history')
               }"
             />
             <div class="search-input-label">{{$t('search-panel.files-to-exclude')}}</div>
@@ -68,7 +68,7 @@
               v-up-down-history
               v-placeholder="{
                 blur: '',
-                focus: 'e.g. bar/**/exclude ' + $t('search-panel.for-history')
+                focus: 'e.g. b.md,bar/**/exclude ' + $t('search-panel.for-history')
               }"
             />
           </div>
@@ -132,6 +132,7 @@ import { switchDoc } from '@fe/services/document'
 import { getIsDefault, highlightLine } from '@fe/services/editor'
 import { useI18n } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
+import type { FindInRepositoryQuery } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
 const MAX_RESULTS = 1000
@@ -493,18 +494,29 @@ function markText (text: string, ranges: ISearchRange[]) {
 }
 
 registerAction({
-  name: 'tree.find-in-folder',
+  name: 'base.find-in-repository',
   keys: [CtrlCmd, Shift, 'f'],
-  handler: (path) => {
+  handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
-    if (path) {
-      include.value = path.replace(/^\//, '')
+    if (query) {
+      query.include && (include.value = query.include)
+      query.exclude && (exclude.value = query.exclude)
+      query.pattern && (pattern.value = query.pattern)
+      query.caseSensitive && (option.isCaseSensitive = query.caseSensitive)
+      query.wholeWord && (option.isWordMatch = query.wholeWord)
+      query.regExp && (option.isRegExp = query.regExp)
+
+      if (query.pattern) {
+        nextTick(() => {
+          search()
+        })
+      }
     }
   },
 })
 
 onBeforeUnmount(() => {
-  removeAction('tree.find-in-folder')
+  removeAction('base.find-in-repository')
 })
 </script>
 
@@ -777,7 +789,7 @@ onBeforeUnmount(() => {
 
 .search-panel-leave-to,
 .search-panel-enter-from {
-  transform: translateY(80vh);
+  transform: translateY(70vh);
 }
 
 mark {
