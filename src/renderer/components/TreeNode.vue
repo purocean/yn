@@ -491,10 +491,6 @@ summary > .item {
   background: var(--g-color-85);
 }
 
-.file-name .item-label {
-  padding-left: 12px;
-}
-
 .file-name .item-label::before {
   display: inline-block;
   width: 12px;
