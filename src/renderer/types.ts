@@ -166,6 +166,14 @@ export type RenderEnv = {
 
 export type ExtensionCompatible = { value: boolean, reason: string }
 export type ExtensionLoadStatus = { version?: string, themes: boolean, plugin: boolean, style: boolean, activationTime: number }
+export type FindInRepositoryQuery = {
+  pattern?: string,
+  caseSensitive?: boolean,
+  wholeWord?: boolean,
+  regExp?: boolean,
+  include?: string,
+  exclude?: string,
+}
 
 export interface Extension {
   id: string;
@@ -218,6 +226,7 @@ export interface BuildInSettings {
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com',
   'doc-history.number-limit': number,
+  'search.number-limit': number,
   'server.host': string,
   'server.port': number,
   'tree.exclude': string,
@@ -279,6 +288,7 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-out': () => void,
   'plugin.electron-zoom.zoom-reset': () => void,
   'premium.show': () => void,
+  'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
 }
 
 export type BuildInActionName = keyof BuildInActions

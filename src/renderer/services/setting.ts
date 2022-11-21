@@ -140,6 +140,14 @@ const schema: Schema = {
       required: true,
       group: 'other',
     },
+    'search.number-limit': {
+      defaultValue: 300,
+      title: 'T_setting-panel.schema.search.number-limit',
+      type: 'number',
+      enum: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+      required: true,
+      group: 'other',
+    },
     'assets-dir': {
       defaultValue: './FILES/{docName}',
       title: 'T_setting-panel.schema.assets-dir',

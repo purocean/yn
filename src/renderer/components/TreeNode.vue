@@ -369,14 +369,27 @@ summary {
   height: 26px;
   overflow: hidden;
   contain: strict;
+  display: block;
 }
 
 summary.folder::-webkit-details-marker,
 summary.folder::marker {
-  flex: none;
-  width: 10px;
-  margin: 0;
-  margin-right: 5px;
+  content: '';
+  display: none;
+}
+
+summary.folder::before {
+  display: inline-block;
+  width: 11px;
+  height: 27px;
+  content: url(data:image/svg+xml;base64,PHN2ZyBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIgZGF0YS1wcmVmaXg9ImZhciIgZGF0YS1pY29uPSJjaGV2cm9uLWRvd24iIHJvbGU9ImltZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNDQ4IDUxMiIgPjxwYXRoIGZpbGw9IiM3YzdmODIiIGQ9Ik00NDEuOSAxNjcuM2wtMTkuOC0xOS44Yy00LjctNC43LTEyLjMtNC43LTE3IDBMMjI0IDMyOC4yIDQyLjkgMTQ3LjVjLTQuNy00LjctMTIuMy00LjctMTcgMEw2LjEgMTY3LjNjLTQuNyA0LjctNC43IDEyLjMgMCAxN2wyMDkuNCAyMDkuNGM0LjcgNC43IDEyLjMgNC43IDE3IDBsMjA5LjQtMjA5LjRjNC43LTQuNyA0LjctMTIuMyAwLTE3eiIgY2xhc3M9IiI+PC9wYXRoPjwvc3ZnPg==);
+  margin-right: 3px;
+  transform: rotate(-90deg);
+  transition: transform 0.1s;
+}
+
+details.name[open] > summary.folder::before {
+  transform: rotate(0);
 }
 
 .folder {

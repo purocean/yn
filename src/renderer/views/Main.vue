@@ -10,6 +10,7 @@
       <ActionBar />
       <Outline show-filter v-if="showOutline" />
       <Tree v-show="!showOutline" />
+      <SearchPanel />
     </template>
     <template v-slot:terminal>
       <Xterm @hide="hideXterm" />
@@ -58,6 +59,7 @@ import ControlCenter from '@fe/components/ControlCenter.vue'
 import DocHistory from '@fe/components/DocHistory.vue'
 import ActionBar from '@fe/components/ActionBar.vue'
 import Outline from '@fe/components/Outline.vue'
+import SearchPanel from '@fe/components/SearchPanel.vue'
 import ExtensionManager from '@fe/components/ExtensionManager.vue'
 
 export default defineComponent({
@@ -79,6 +81,7 @@ export default defineComponent({
     DocHistory,
     ActionBar,
     Outline,
+    SearchPanel,
     ExtensionManager,
   },
   setup () {

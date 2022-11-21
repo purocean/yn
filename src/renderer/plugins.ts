@@ -11,6 +11,7 @@ import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarDocumentInfo from '@fe/plugins/status-bar-document-info'
 import statusBarPreviewer from '@fe/plugins/status-bar-previewer'
+import statusBarTheme from './plugins/status-bar-theme'
 import statusBarHistory from './plugins/status-bar-history'
 import statusBarPresentation from '@fe/plugins/status-bar-presentation'
 import statusBarControlCenter from '@fe/plugins/status-bar-control-center'
@@ -75,6 +76,7 @@ export default [
   statusBarDocumentInfo,
   statusBarHelp,
   statusBarPreviewer,
+  statusBarTheme,
   statusBarHistory,
   statusBarTerminal,
   statusBarExtension,

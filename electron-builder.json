@@ -8,7 +8,8 @@
     "help/**/*",
     "dist/main/resources/**/*",
     "node_modules/plantuml-pipe/**/*",
-    "node_modules/node-pty/**/*"
+    "node_modules/node-pty/**/*",
+    "node_modules/@vscode/ripgrep/**/*"
   ],
   "files": [
     "./bin/**",

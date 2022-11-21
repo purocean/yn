@@ -1,6 +1,6 @@
 import { slugify } from 'transliteration'
 import filenamify from 'filenamify/browser'
-import type { Doc } from '@fe/types'
+import type { Doc, FindInRepositoryQuery } from '@fe/types'
 import * as api from '@fe/support/api'
 import { getSetting } from './setting'
 import { FLAG_DEMO } from '@fe/support/args'
@@ -11,6 +11,7 @@ import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import { isElectron, isWindows } from '@fe/support/env'
 import { t } from './i18n'
+import { getActionHandler } from '@fe/core/action'
 
 const logger = getLogger('service-base')
 
@@ -211,4 +212,12 @@ export async function writeToClipboard (type: string, value: any) {
 export async function getServerTimestamp () {
   const date = (await api.proxyRequest('https://www.baidu.com/')).headers.get('x-origin-date')
   return dayjs(date || undefined).valueOf()
+}
+
+/**
+ * Find in current repository.
+ * @param query
+ */
+export function findInRepository (query?: FindInRepositoryQuery) {
+  getActionHandler('base.find-in-repository')(query)
 }

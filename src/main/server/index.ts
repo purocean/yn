@@ -9,6 +9,7 @@ import request from 'request'
 import { promisify } from 'util'
 import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES, USER_EXTENSION_DIR } from '../constant'
 import * as file from './file'
+import * as search from './search'
 import run from './run'
 import convert from './convert'
 import plantuml from './plantuml'
@@ -175,11 +176,9 @@ const attachment = async (ctx: any, next: any) => {
 }
 
 const searchFile = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/search')) {
-    const search = ctx.query.search
-    const repo = ctx.query.repo
-
-    ctx.body = result('ok', 'success', await file.search(repo, search))
+  if (ctx.path.startsWith('/api/search') && ctx.method === 'POST') {
+    const query = ctx.request.body.query
+    ctx.body = await search.search(query)
   } else {
     await next()
   }

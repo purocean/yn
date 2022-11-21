@@ -46,10 +46,8 @@
 </template>
 
 <script lang="ts">
-import { debounce } from 'lodash-es'
 import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import * as api from '@fe/support/api'
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
@@ -79,20 +77,16 @@ export default defineComponent({
     const refFilepath = ref<HTMLElement[]>([])
     const markedFiles = ref<PathItem[]>(markedFilesCache)
 
-    const { currentRepo, recentOpenTime, tree } = toRefs(store.state)
+    const { recentOpenTime, tree } = toRefs(store.state)
 
     const selected = ref<any>(null)
     const searchText = ref('')
     const currentTab = ref<TabKey>(lastTab)
     const list = ref<any>([])
-    const lastFetchTime = ref(0)
-
-    const repo = computed(() => currentRepo.value?.name)
 
     const tabs = computed(() => {
       const arr: {key: TabKey; label: string}[] = [
         { key: 'file', label: t('quick-open.files') },
-        { key: 'search', label: t('quick-open.search') },
       ]
 
       if (props.withMarked) {
@@ -168,20 +162,6 @@ export default defineComponent({
       return sortList(arr).slice(0, 70)
     })
 
-    const searchWithDebounce = debounce(async (text: string, call: Function) => {
-      if (repo.value && text.trim()) {
-        const fetchTime = new Date().getTime()
-        lastFetchTime.value = fetchTime
-        const data = await api.search(repo.value, text.trim())
-        // ensure last result be ahead of list.
-        if (fetchTime >= lastFetchTime.value) {
-          call(data)
-        }
-      } else {
-        call([])
-      }
-    }, 500)
-
     function highlightText (search: string) {
       if (refFilename.value && refFilepath.value) {
         search = search.toLowerCase()
@@ -221,15 +201,6 @@ export default defineComponent({
         list.value = files.value
       } else if (currentTab.value === 'marked') {
         list.value = markedFiles.value
-      } else if (currentTab.value === 'search') {
-        const keyword = searchText.value.trim()
-        list.value = keyword ? null : []
-
-        searchWithDebounce(keyword, (data: any[]) => {
-          if (currentTab.value === 'search') {
-            list.value = data
-          }
-        })
       }
     }
 

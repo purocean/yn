@@ -46,7 +46,7 @@ const data = {
       'intro': 'Intro',
       'current-plan': 'Current Plan',
       'included': 'Included',
-      'desc': 'Yank Note is open-source, I\'ve been constantly updating it since 2018. It consumes my energy and money (such as the annual Apple developer account subscription). Now a paid premium version is available. If you need advanced features or want to support my development, you can buy a license.',
+      'desc': 'Yank Note is open-source, I\'ve been constantly developing it since 2018. It takes my energy and money. Now a premium version is available. If you want to support my development or need advanced features, you can buy a license.',
       'free-desc': 'For most users',
       'premium-desc': 'More features',
       'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History\nExtension',
@@ -258,6 +258,12 @@ const data = {
     'extension': {
       'extension-manager': 'Extension Manager',
     },
+    'theme': {
+      'tips': 'Theme: %s',
+      'dark': 'Dark',
+      'light': 'Light',
+      'system': 'OS Default',
+    },
   },
   'view': {
     'outline': 'Outline',
@@ -284,6 +290,7 @@ const data = {
       'create-in-cd': 'New File',
       'copy-name': 'Copy Name',
       'copy-path': 'Copy Path',
+      'find-in-folder': 'Find in Folder',
     },
     'toast': {
       'moved': '[%s] Moved to [%s]',
@@ -380,6 +387,9 @@ const data = {
       'doc-history': {
         'number-limit': 'Versions Retained',
       },
+      'search': {
+        'number-limit': 'Search Max Results',
+      },
       'server': {
         'host': 'Listen Host',
         'port': 'Listen Port',
@@ -401,7 +411,6 @@ const data = {
     'input-placeholder': 'Type characters...',
     'empty': 'Empty',
     'files': 'Files',
-    'search': 'Search',
     'marked': 'Marked',
   },
   'editor': {
@@ -582,12 +591,25 @@ const data = {
     'auto-upgrade': 'Auto Upgrade',
     'unknown-origin-tips': 'Using extensions from unknown sources can be risky, still want to enable?',
     'extensions-auto-upgraded': '%s extensions have been upgraded',
+    'fetch-registry-failed': 'Fetch registry failed, please switch to another registry or try again later',
   },
   'get-started': {
     'get-started': 'Get Started',
     'start': 'Start',
     'help': 'Help',
     'recent': 'Recent',
+  },
+  'search-panel': {
+    'search-files': 'Search Files',
+    'placeholder-search': 'Search',
+    'for-history': '(⇅ for history)',
+    'files-to-include': 'Files to include',
+    'files-to-exclude': 'Files to exclude',
+    'match-case': 'Match Case',
+    'match-whole-word': 'Match Whole Word',
+    'use-regex': 'Use Regular Expression',
+    'expand-all': 'Expand All',
+    'collapse-all': 'Collapse All',
   },
 }
 
