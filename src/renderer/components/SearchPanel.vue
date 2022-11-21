@@ -141,10 +141,15 @@ const option = reactive({
 const loading = ref(false)
 const result = shallowRef<(ISerializedFileMatch)[]>([])
 const success = shallowRef<ISerializedSearchSuccess | null>(null)
+const errorMessage = shallowRef('')
 const currentItemKey = ref('')
 const visible = ref(false)
 
 const message = computed(() => {
+  if (errorMessage.value) {
+    return errorMessage.value
+  }
+
   if (result.value.length === 0) {
     return success.value ? 'No results found' : ''
   }
@@ -176,6 +181,7 @@ let controller: AbortController | null = null
 async function stop () {
   logger.debug('stop')
   success.value = null
+  loading.value = false
 
   if (controller) {
     controller.abort()
@@ -297,6 +303,7 @@ async function search () {
   try {
     loading.value = true
     result.value = []
+    errorMessage.value = ''
     const receiveResult = await api.search(controller, query)
     success.value = await receiveResult(
       (data) => {
@@ -315,6 +322,9 @@ async function search () {
       },
       (data) => {
         logger.debug('onMessage', data)
+        if (data.message && data.message.includes('regex engine error')) {
+          errorMessage.value = data.message.replace(/^~{10,}$/gm, '~~~~~~~~~~~~~~~~~~')
+        }
       },
     )
   } finally {
@@ -451,7 +461,7 @@ function markText (text: string, ranges: ISearchRange[]) {
   }
 
   // remove end br
-  while (result[result.length - 1].type === 'br') {
+  while (result[result.length - 1]?.type === 'br') {
     result.pop()
   }
 
@@ -615,6 +625,7 @@ onBeforeUnmount(() => {
     width: 100%;
     overflow: hidden;
     padding: 4px 0 ;
+    white-space: pre-wrap;
   }
 
   .action-btn {
