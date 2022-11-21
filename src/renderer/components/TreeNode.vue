@@ -492,7 +492,7 @@ summary > .item {
 }
 
 .file-name .item-label {
-  padding-left: 14px;
+  padding-left: 12px;
 }
 
 .file-name .item-label::before {
