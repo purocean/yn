@@ -77,14 +77,21 @@ export default defineComponent({
       return false
     }
 
+    function getContainerSibling (ref: HTMLElement, resizeOrigin: any): HTMLElement | null {
+      return (resizeOrigin.type === 'right'
+        ? ref.nextElementSibling
+        : ref.previousElementSibling) as HTMLElement | null
+    }
+
     function clearResize () {
       if (resizeOrigin) {
         const ref = refs[resizeOrigin.ref].value
         ref.style.filter = ''
         ref.style.pointerEvents = ''
-        const nextContainer = ref.nextElementSibling as HTMLElement
-        if (nextContainer) {
-          nextContainer.style.pointerEvents = ''
+
+        const sibling = getContainerSibling(ref, resizeOrigin)
+        if (sibling) {
+          sibling.style.pointerEvents = ''
         }
 
         resizeOrigin = null
@@ -114,10 +121,10 @@ export default defineComponent({
       }
 
       // prevent pointer events when mouse in container range
-      const nextContainer: HTMLElement = ref.nextElementSibling as HTMLElement
-      if (nextContainer) {
+      const sibling = getContainerSibling(ref, resizeOrigin)
+      if (sibling) {
         ref.style.pointerEvents = 'none'
-        nextContainer.style.pointerEvents = 'none'
+        sibling.style.pointerEvents = 'none'
       }
 
       if (resizeOrigin.type === 'right') {
