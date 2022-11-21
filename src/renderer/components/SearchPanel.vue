@@ -323,6 +323,7 @@ function onKeydownEnter (e: KeyboardEvent) {
     if (start !== null && end !== null) {
       target.value = content.slice(0, start) + '\n' + content.slice(end)
       target.dispatchEvent(new Event('input'))
+      target.setSelectionRange(start + 1, start + 1)
     }
   } else {
     search()

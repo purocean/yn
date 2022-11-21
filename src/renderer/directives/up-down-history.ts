@@ -17,9 +17,7 @@ export function install (app: App) {
         const target = e.target as HTMLInputElement
         const offset = e.key === 'ArrowUp' ? -1 : 1
 
-        if (target.tagName === 'INPUT') {
-          e.preventDefault()
-        } else if (target.selectionStart === target.selectionEnd) {
+        if (target.selectionStart === target.selectionEnd) {
           const style = window.getComputedStyle(target)
           const singleHeight = parseFloat(style.lineHeight) + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
           if (
@@ -27,22 +25,32 @@ export function install (app: App) {
             (offset < 0 && target.selectionStart === 0) ||
             (offset > 0 && target.selectionEnd === target.value.length)
           ) {
-            e.preventDefault()
+            // If the textarea is a single line and the cursor is at the top or bottom, go back/forward in history.
           } else {
             return
           }
         }
 
+        e.preventDefault()
+
+        const input = (val: string) => {
+          el.value = val
+          el.dispatchEvent(new Event('input'))
+        }
+
         index += offset
+
+        if (index >= history.length) {
+          index = history.length - 1
+          input('')
+          return
+        }
 
         if (index < 0) {
           index = 0
-        } else if (index >= history.length) {
-          index = history.length - 1
         }
 
-        el.value = history[index]
-        el.dispatchEvent(new Event('input'))
+        input(history[index])
       }
 
       el.addEventListener('keydown', (e: KeyboardEvent) => {
