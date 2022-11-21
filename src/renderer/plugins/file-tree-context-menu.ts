@@ -56,7 +56,7 @@ export default {
         { id: 'refresh', label: t('tree.context-menu.refresh'), onClick: () => ctx.tree.refreshTree() },
         ...(node.type === 'dir' && !FLAG_DISABLE_XTERM ? [
           { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: revealInXterminal },
-          { id: 'find-in-folder', label: t('tree.context-menu.find-in-folder'), onClick: () => ctx.tree.findInFolder(node.path) },
+          { id: 'find-in-folder', label: t('tree.context-menu.find-in-folder'), onClick: () => ctx.tree.findInFolder(node.path + '/**/*.md') },
         ] : []),
         ...(isMarkdown ? [
           { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }

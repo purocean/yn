@@ -201,11 +201,30 @@ async function search () {
   }
 
   const buildGlobObject = (str: string) => {
+    const expandGlobalGlob = (pattern: string) => {
+      const patterns = [
+        `**/${pattern}/**`,
+        `**/${pattern}`
+      ]
+
+      return patterns.map(p => p.replace(/\*\*\/\*\*/g, '**'))
+    }
+
+    const normalizeGlobPattern = (pattern: string) => {
+      return pattern.replace(/\\/g, '/')
+        .replace(/^\.\//, '')
+        .replace(/\/+$/g, '')
+    }
+
     const obj: Record<string, boolean> = {}
     str.split(',')
       .map(s => s.trim())
       .filter(Boolean)
-      .forEach(s => { obj[s] = true })
+      .forEach(s => {
+        const patterns = expandGlobalGlob(normalizeGlobPattern(s))
+        patterns.forEach(p => { obj[p] = true })
+      })
+
     return obj
   }
 
@@ -221,7 +240,7 @@ async function search () {
     folderQueries: [
       {
         folder,
-        includePattern: buildGlobObject('**/*.md,' + include.value),
+        includePattern: buildGlobObject(include.value || '*.md'),
         excludePattern: buildGlobObject(exclude.value),
       },
     ],
