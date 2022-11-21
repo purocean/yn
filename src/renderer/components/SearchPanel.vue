@@ -118,10 +118,11 @@ import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { switchDoc } from '@fe/services/document'
 import { getIsDefault, highlightLine } from '@fe/services/editor'
-import SvgIcon from './SvgIcon.vue'
 import { useI18n } from '@fe/services/i18n'
+import { getSetting } from '@fe/services/setting'
+import SvgIcon from './SvgIcon.vue'
 
-const MAX_RESULTS = 200
+const MAX_RESULTS = 1000
 
 const logger = getLogger('search-panel')
 const toast = useToast()
@@ -224,7 +225,7 @@ async function search () {
         excludePattern: buildGlobObject(exclude.value),
       },
     ],
-    maxResults: MAX_RESULTS,
+    maxResults: Math.min(MAX_RESULTS, getSetting('search.number-limit', 300)),
   }
 
   try {

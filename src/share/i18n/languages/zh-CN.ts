@@ -380,6 +380,9 @@ const data: BaseLanguage = {
       'doc-history': {
         'number-limit': '版本保留数',
       },
+      'search': {
+        'number-limit': '搜索结果限制',
+      },
       'server': {
         'host': '监听主机',
         'port': '监听端口',

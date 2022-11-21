@@ -387,6 +387,9 @@ const data = {
       'doc-history': {
         'number-limit': 'Versions Retained',
       },
+      'search': {
+        'number-limit': 'Search Max Results',
+      },
       'server': {
         'host': 'Listen Host',
         'port': 'Listen Port',

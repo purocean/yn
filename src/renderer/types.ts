@@ -218,6 +218,7 @@ export interface BuildInSettings {
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com',
   'doc-history.number-limit': number,
+  'search.number-limit': number,
   'server.host': string,
   'server.port': number,
   'tree.exclude': string,
