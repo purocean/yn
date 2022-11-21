@@ -76,20 +76,19 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.43.0](https://github.com/purocean/yn/releases/tag/v3.43.0) 2022-11-14
+### [v3.44.0](https://github.com/purocean/yn/releases/tag/v3.44.0) 2022-11-21
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-win-x64-3.43.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-arm64-3.43.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-mac-x64-3.43.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-x86_64-3.43.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.43.0/Yank-Note-linux-amd64-3.43.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-win-x64-3.44.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-mac-arm64-3.44.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-mac-x64-3.44.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-linux-x86_64-3.44.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-linux-amd64-3.44.0.deb)
 
-1. feat: add file list sorting function
-2. upd: Fine-tune UI and UX
-3. fix: fix the case adaptation problem of anchor jump
-4. fix: fix the problem that the image previewer cannot be dragged
-5. feat(plugin): the context menu item supports the selected state
-6. feat(plugin): support custom editor Tabs action button
-7. feat(plugin): Optimize custom editor related API
-8. feat(plugin): support loading `.mjs` scripts
-9. feat(plugin): add `ctx.base.getAttachmentURL` method
-10. feat(plugin): add `ctx.tree.revealCurrentNode` method
+1. feat: add new file search panel
+2. feat: the status bar adds a switch theme button
+3. feat: add a prompt that fails to pull the index from the extension registry
+4. upd: adjust the file directory style
+5. fix: fix the problem that the editor list was not refreshed when the custom editor extension was enabled
+6. fix: fix the problem that the mouse pointer may be detached when changing the terminal size
+7. fix: fix the problem that the mind map may fail to load when opening the application
+8. feat(plugin): add `ctx.base.findInRepository` method
+9. fix(plugin): fix abnormal behavior of registration Hook with `once` parameters
 
 [More release notes](https://github.com/purocean/yn/releases)
 
