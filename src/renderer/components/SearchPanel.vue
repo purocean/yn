@@ -565,7 +565,7 @@ onBeforeUnmount(() => {
   border-top: 1px solid var(--g-color-90);
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
   }
 
   details.item {

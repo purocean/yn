@@ -324,7 +324,7 @@ export default defineComponent({
   z-index: 11;
   height: 100%;
   position: absolute;
-  right: 0;
+  right: -2px;
   top: 0;
   width: 4px;
   cursor: ew-resize;
