@@ -57,11 +57,21 @@ export async function transformProtocolRequest (request: ProtocolRequest) {
     },
   })
 
-  const res = new ServerResponse(req)
-  res.write = out.write.bind(out)
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  res.end = out.end.bind(out)
+  const res = new Proxy(new ServerResponse(req), {
+    get (target, prop: keyof typeof out) {
+      if (out[prop]) {
+        const val = out[prop]
+
+        if (typeof val === 'function') {
+          return val.bind(out)
+        }
+      }
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return target[prop]
+    },
+  })
 
   return { req, res, out }
 }
