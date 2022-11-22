@@ -54,13 +54,16 @@ export default {
           { id: 'reveal-in-os', label: t('tree.context-menu.reveal-in-os'), onClick: () => ctx.doc.openInOS(node, true) }
         ] : []),
         { id: 'refresh', label: t('tree.context-menu.refresh'), onClick: () => ctx.tree.refreshTree() },
+        ...(node.type === 'dir' ? [
+          { id: 'find-in-folder', label: t('tree.context-menu.find-in-folder'), onClick: () => ctx.base.findInRepository({ include: node.path.replace(/^\//, '') + '/**/*.md' }) },
+        ] : []),
         ...(node.type === 'dir' && !FLAG_DISABLE_XTERM ? [
           { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: revealInXterminal },
-          { id: 'find-in-folder', label: t('tree.context-menu.find-in-folder'), onClick: () => ctx.base.findInRepository({ include: node.path.replace(/^\//, '') + '/**/*.md' }) },
         ] : []),
         ...(isMarkdown ? [
           { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
         ] : []),
+        { type: 'separator' },
         { id: 'copy-name', label: t('tree.context-menu.copy-name'), onClick: () => ctx.utils.copyText(node.name) },
         { id: 'copy-path', label: t('tree.context-menu.copy-path'), onClick: () => ctx.utils.copyText(node.path) }
       ].filter(x => (!x.id || !disableItems.includes(x.id))) as typeof items)
