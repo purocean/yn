@@ -234,17 +234,19 @@ async function search () {
     }
 
     const normalizeGlobPattern = (pattern: string) => {
-      return pattern.replace(/\\/g, '/')
+      return pattern.trim()
+        .replace(/\\/g, '/')
         .replace(/^\.\//, '')
         .replace(/\/+$/g, '')
+        .replace(/^\/|\/$/, '')
     }
 
     const obj: Record<string, boolean> = {}
     str.split(',')
-      .map(s => s.trim())
+      .map(normalizeGlobPattern)
       .filter(Boolean)
       .forEach(s => {
-        const patterns = expandGlobalGlob(normalizeGlobPattern(s))
+        const patterns = expandGlobalGlob(s)
         patterns.forEach(p => { obj[p] = true })
       })
 

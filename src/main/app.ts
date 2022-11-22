@@ -215,7 +215,7 @@ const createWindow = () => {
   win = new BrowserWindow({
     maximizable: true,
     show: false,
-    minWidth: 800,
+    minWidth: 880,
     minHeight: 500,
     frame: false,
     backgroundColor: '#282a2b',
