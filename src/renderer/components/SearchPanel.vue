@@ -132,6 +132,7 @@ import { switchDoc } from '@fe/services/document'
 import { getIsDefault, highlightLine } from '@fe/services/editor'
 import { useI18n } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
+import { toggleSide } from '@fe/services/layout'
 import type { FindInRepositoryQuery } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
@@ -500,15 +501,22 @@ registerAction({
   keys: [CtrlCmd, Shift, 'f'],
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
-    if (query) {
-      query.include && (include.value = query.include)
-      query.exclude && (exclude.value = query.exclude)
-      query.pattern && (pattern.value = query.pattern)
-      query.caseSensitive && (option.isCaseSensitive = query.caseSensitive)
-      query.wholeWord && (option.isWordMatch = query.wholeWord)
-      query.regExp && (option.isRegExp = query.regExp)
 
-      if (query.pattern) {
+    toggleSide(true)
+
+    if (query) {
+      function notEmpty <T> (val: T | null | undefined): val is T {
+        return val !== undefined && val !== null
+      }
+
+      notEmpty(query.include) && (include.value = query.include)
+      notEmpty(query.exclude) && (exclude.value = query.exclude)
+      notEmpty(query.caseSensitive) && (option.isCaseSensitive = query.caseSensitive)
+      notEmpty(query.wholeWord) && (option.isWordMatch = query.wholeWord)
+      notEmpty(query.regExp) && (option.isRegExp = query.regExp)
+
+      if (notEmpty(query.pattern)) {
+        pattern.value = query.pattern
         nextTick(() => {
           search()
         })
