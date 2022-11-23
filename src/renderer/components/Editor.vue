@@ -4,9 +4,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'vue'
 import { useStore } from 'vuex'
-import { getAllCustomEditors, switchEditor } from '@fe/services/editor'
+import { getAllCustomEditors, getIsDefault, getValue, setValue, switchEditor } from '@fe/services/editor'
 import { registerAction, removeAction } from '@fe/core/action'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { getLogger, storage } from '@fe/utils'
@@ -85,7 +85,17 @@ function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
           right: `${document.body.clientWidth - rect.right - 30}px`,
           list: availableEditors.value.map(x => ({ key: x.name, label: x.displayName || x.name })),
           current: currentEditor.value?.name || 'default',
-          onChoose: ({ key }) => switchEditor(key),
+          onChoose: ({ key }) => {
+            switchEditor(key)
+
+            // sync default editor content
+            nextTick(() => {
+              const { currentContent } = store.state
+              if (getIsDefault() && getValue() !== currentContent) {
+                setValue(currentContent)
+              }
+            })
+          },
         })
       },
     })
