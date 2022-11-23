@@ -6,6 +6,9 @@
       class="search-input"
       type="text"
       v-model="keyword"
+      @keydown.up.prevent="changeCurrentIdx(-1)"
+      @keydown.down.prevent="changeCurrentIdx(1)"
+      @keydown.enter.prevent="chooseCurrentItem()"
       :placeholder="$t('quick-open.input-placeholder')"
     />
     <div v-if="heads.length < 1" class="empty">Empty</div>
@@ -15,8 +18,9 @@
       :class="head.class"
       :style="{paddingLeft: `${head.level}em`}"
       :data-activated="activatedLine > -1 ? head.sourceLine === activatedLine : head.activated"
+      :data-current="index === currentIdx"
       :title="head.text"
-      @click="handleClickItem(head)">
+      @click="handleClickItem(head, index)">
       <span class="heading-title">{{ head.text }}</span>
       <span class="tag-name">{{head.tag}}</span>
     </div>
@@ -25,7 +29,7 @@
 
 <script lang="ts">
 import { throttle } from 'lodash-es'
-import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import type { AppState } from '@fe/support/store'
@@ -49,12 +53,16 @@ export default defineComponent({
     const keyword = ref('')
     const activatedLine = ref(-1)
     const refInput = ref<HTMLInputElement>()
+    const currentIdx = ref(-1)
 
     useI18n()
 
     let disableRefresh: any = null
 
-    function handleClickItem (heading: Heading) {
+    function handleClickItem (heading: Heading, index: number) {
+      refInput.value?.focus({ preventScroll: true })
+      setCurrentIdx(-index - 10)
+
       activatedLine.value = heading.sourceLine
 
       if (disableRefresh) {
@@ -84,6 +92,7 @@ export default defineComponent({
 
       _heads.value = getHeadings(true)
       activatedLine.value = -1
+      setCurrentIdx(-1)
 
       if (!container.value || container.value.clientWidth < 50) {
         return
@@ -98,12 +107,50 @@ export default defineComponent({
             container.value!.scrollTop = 0
           }
 
-          const item: any = container.value?.querySelectorAll('div.heading').item(idx)
+          const item: any = container.value?.querySelector('div.heading[data-activated="true"]')
           if (item) {
             item.scrollIntoViewIfNeeded(false)
           }
         }
       })
+    }
+
+    function setCurrentIdx (idx: number) {
+      currentIdx.value = idx
+
+      if (idx < 0 || idx >= heads.value.length) {
+        return
+      }
+
+      nextTick(() => {
+        const item: any = container.value?.querySelector('div.heading[data-current="true"]')
+        if (item) {
+          item.scrollIntoViewIfNeeded(false)
+        }
+      })
+    }
+
+    function changeCurrentIdx (offset: number) {
+      if (currentIdx.value < -1) {
+        currentIdx.value = currentIdx.value * -1 - 10
+      }
+
+      let idx = currentIdx.value + offset
+      if (idx < 0) {
+        idx = heads.value.length - 1
+      } else if (idx >= heads.value.length) {
+        idx = 0
+      }
+
+      setCurrentIdx(idx)
+    }
+
+    function chooseCurrentItem () {
+      if (currentIdx.value < 0 || currentIdx.value >= heads.value.length) {
+        return
+      }
+
+      handleClickItem(heads.value[currentIdx.value], currentIdx.value)
     }
 
     const throttleRefresh = throttle(refresh, 150, { trailing: true })
@@ -116,6 +163,16 @@ export default defineComponent({
       }
 
       return _heads.value
+    })
+
+    watch(keyword, () => {
+      currentIdx.value = -1
+      nextTick(() => {
+        const item: any = container.value?.querySelector('div.heading:first-of-type')
+        if (item) {
+          item.scrollIntoViewIfNeeded()
+        }
+      })
     })
 
     const clearKeyword = () => {
@@ -136,7 +193,7 @@ export default defineComponent({
       removeHook('DOC_SWITCHED', clearKeyword)
     })
 
-    return { refInput, keyword, container, heads, activatedLine, handleClickItem }
+    return { refInput, keyword, container, heads, activatedLine, currentIdx, handleClickItem, setCurrentIdx, changeCurrentIdx, chooseCurrentItem }
   },
 })
 </script>
@@ -163,6 +220,7 @@ input.search-input[type="text"] {
   overflow-x: hidden;
   padding-bottom: 16px;
   user-select: none;
+  scroll-padding-top: 32px;
 
   & > .empty {
     text-align: center;
@@ -182,10 +240,18 @@ input.search-input[type="text"] {
     overflow-wrap: break-word;
     color: var(--g-color-10);
 
-    &[data-activated="true"],
-    &:hover {
+    &[data-current="true"] {
+      outline: 1px solid #4c93e2;
+      outline-offset: -3px;
+    }
+
+    &[data-activated="true"] {
       background: var(--g-color-active-b);
       color: var(--g-color-0);
+    }
+
+    &:hover {
+      background: var(--g-color-active-a);
     }
 
     &.tag-h1 {
