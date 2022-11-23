@@ -15,14 +15,14 @@
         :title="item.description"
         :data-key="item.key"
         @contextmenu.exact.prevent.stop="showContextMenu(item)"
-        @mouseup="e => e.button === 1 ? removeTabs([item]) : null"
-        @click="switchTab(item)"
+        @mouseup.middle="removeTabs([item])"
+        @mousedown.left="switchTab(item)"
         @dblclick.stop="onItemDblClick(item)">
         <div class="label">{{item.label}}</div>
-        <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @click.prevent.stop="toggleFix(item)">
+        <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @mousedown.prevent.stop @click.prevent.stop="toggleFix(item)">
           <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
         </div>
-        <div v-else class="icon" :title="$t('close')" @click.prevent.stop="removeTabs([item])">
+        <div v-else class="icon" :title="$t('close')" @mousedown.prevent.stop @click.prevent.stop="removeTabs([item])">
           <svg-icon name="times" style="width: 12px; height: 12px;" />
         </div>
       </div>
