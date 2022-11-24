@@ -2,6 +2,9 @@
 <XMask :show="showPanel" @close="close" style="padding-top: 4em">
   <div class="premium-wrapper" @click.stop>
     <h2>{{$t('premium.premium')}}</h2>
+    <div class="close-btn" @click="close" :title="$t('close')">
+      <svg-icon class="close-btn-icon" name="times" width="10px" />
+    </div>
     <group-tabs :tabs="tabs" v-model="tab" />
     <div v-show="tab === 'intro'" class="intro">
       <div v-if="!purchased" class="desc">{{$t('premium.intro.desc')}}</div>
@@ -77,9 +80,8 @@
         <img class="qrcode" src="~@fe/assets/qrcode-wechat.jpg" >
       </div>
     </div>
-    <div class="action">
-      <button class="btn primary tr" @click="close">{{$t('close')}}</button>
-      <button v-if="tab === 'activation' && license.trim()" class="btn tr" @click="activate">{{$t('ok')}}</button>
+    <div v-if="tab === 'activation'" class="action">
+      <button class="btn tr" :disabled="!license.trim()" @click="activate">{{$t('ok')}}</button>
     </div>
   </div>
 </XMask>
@@ -219,7 +221,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .premium-wrapper {
-  width: 480px;
+  width: 490px;
   background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
@@ -290,14 +292,19 @@ export default defineComponent({
 }
 
 .qrcode {
-  width: 200px;
+  max-width: 200px;
+  width: 34vh;
   position: absolute;
   display: none;
   z-index: 1000;
-  margin-top: 10px;
+  margin-top: 6px;
 }
 
 .step {
+  &:first-of-type > h4 {
+    margin-top: 6px;
+  }
+
   .pay-icon {
     vertical-align: bottom;
   }
@@ -352,6 +359,31 @@ export default defineComponent({
         display: block;
       }
     }
+  }
+}
+
+.intro,
+.buy,
+.activation {
+  max-height: calc(100vh - 14em);
+  overflow-y: auto;
+}
+
+.close-btn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--g-color-15);
+
+  &:hover {
+    color: var(--g-color-0);
+    background-color: var(--g-color-86);
+    border-radius: 50%;
   }
 }
 </style>
