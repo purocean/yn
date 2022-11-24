@@ -49,8 +49,8 @@ const data = {
       'desc': 'Yank Note is open-source, I\'ve been constantly developing it since 2018. It takes my energy and money. Now a premium version is available. If you want to support my development or need advanced features, you can buy a license.',
       'free-desc': 'For most users',
       'premium-desc': 'More features',
-      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History\nExtension',
-      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History (Advanced)\nExtension (More)\nMacro Replacement\nDark Mode',
+      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nDocument History\nExtension',
+      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nDocument History (Advanced)\nExtension (More)\nMacro Replacement\nDark Mode',
     },
     'buy': {
       'buy': 'Buy',
