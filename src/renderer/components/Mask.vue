@@ -1,8 +1,8 @@
 <template>
   <teleport to="body">
     <transition name="fade">
-      <div v-if="show" class="mask-wrapper" :style="wrapperStyle">
-        <div class="mask" @click="() => maskCloseable && $emit('close')" />
+      <div v-if="show" :class="{'mask-wrapper': true, transparent}" :style="wrapperStyle">
+        <div class="mask" @click="() => maskCloseable && $emit('close')" @contextmenu.prevent.stop="$emit('close')" />
         <div class="content">
           <slot></slot>
         </div>
@@ -28,10 +28,14 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    transparent: {
+      type: Boolean,
+      default: false,
+    },
     style: {
       type: [Object, String],
       default: () => ({}),
-    }
+    },
   },
   emits: ['close', 'key-enter'],
   setup (props, { emit }) {
@@ -92,6 +96,11 @@ export default defineComponent({
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.mask-wrapper.transparent .mask {
+  background: transparent;
+  backdrop-filter: none;
 }
 
 .fade-enter-active, .fade-leave-active {
