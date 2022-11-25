@@ -1,11 +1,5 @@
 <template>
-  <div
-    v-if="visible && schema"
-    class="control-center"
-    tabindex="0"
-    @blur="onBlur"
-    ref="container"
-  >
+  <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: () => toggle(false) }">
     <div v-for="(row, category) in schema" :key="category" class="row">
       <template v-for="(item, i) in row?.items" :key="i">
         <div
@@ -22,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, ref, watch } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import { Alt, Escape, getKeysLabel } from '@fe/core/command'
 import { ControlCenter, FileTabs } from '@fe/services/workbench'
@@ -30,18 +24,11 @@ import { t } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
-const container = ref<HTMLElement>()
 const visible = ref(false)
 const schema = ref<Components.ControlCenter.Schema | null>(null)
 
 function toggle (val?: boolean) {
   visible.value = typeof val === 'boolean' ? val : !visible.value
-}
-
-function onBlur () {
-  setTimeout(() => {
-    toggle(false)
-  }, 0)
 }
 
 registerAction({
@@ -64,25 +51,22 @@ registerAction({
   when: () => visible.value
 })
 
-FileTabs.tapActionBtns((btns) => {
+const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
   btns.push({
-    icon: 'sliders-h-solid',
+    icon: 'sliders-solid',
     title: t('control-center.control-center', getKeysLabel('control-center.toggle')),
     onClick: () => toggle(),
     order: 9999,
   })
-})
+}
+
+FileTabs.tapActionBtns(tabsActionBtnTapper)
 
 onBeforeUnmount(() => {
   removeAction('control-center.refresh')
-})
-
-watch(visible, (val) => {
-  if (val) {
-    setTimeout(() => {
-      container.value?.focus()
-    }, 0)
-  }
+  removeAction('control-center.toggle')
+  removeAction('control-center.hide')
+  FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
 
 </script>
