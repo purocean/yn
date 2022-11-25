@@ -88,6 +88,7 @@ export namespace Components {
     export interface ActionBtn {
       icon: string,
       title: string,
+      order?: number,
       onClick: (e: MouseEvent) => void,
     }
   }

@@ -9,6 +9,7 @@
         <div class="sash-right" @dblclick="resetSize('right', 'aside')" @mousedown="e => initResize('right', 'aside', 130, 700, e)"></div>
       </div>
       <div class="right">
+        <slot name="right-before" />
         <div class="content" ref="content">
           <div class="editor" ref="editor" v-show="showEditor">
             <slot name="editor"></slot>

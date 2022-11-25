@@ -16,11 +16,13 @@
       <Xterm @hide="hideXterm" />
     </template>
     <template v-slot:editor>
-      <FileTabs />
       <Editor />
     </template>
     <template v-slot:preview>
       <Previewer />
+    </template>
+    <template v-slot:right-before>
+      <FileTabs />
     </template>
   </Layout>
   <XFilter />

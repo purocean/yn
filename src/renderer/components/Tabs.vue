@@ -27,11 +27,12 @@
         </div>
       </div>
     </div>
-    <div v-for="(btn, i) in actionBtns" :key="i" class="action-btn" @click="btn.onClick" :title="btn.title">
-      <svg-icon :name="btn.icon" width="10px" />
-    </div>
     <div ref="refFilterBtn" class="action-btn" @click="showQuickFilter" :title="filterBtnTitle">
       <svg-icon name="chevron-down" width="10px" />
+    </div>
+    <div class="action-btn-division" />
+    <div v-for="(btn, i) in [...actionBtns].sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))" :key="i" class="action-btn" @click="btn.onClick" :title="btn.title">
+      <svg-icon :name="btn.icon" width="10px" />
     </div>
   </div>
 </template>
@@ -282,7 +283,7 @@ export default defineComponent({
     flex: none;
     width: 20px;
     height: 20px;
-    margin: 0 5px;
+    margin: 0 3px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -411,5 +412,17 @@ export default defineComponent({
 
 .tab.temporary {
   font-style: italic;
+}
+
+.action-btn-division {
+  width: 1px;
+  height: 14px;
+  background: var(--g-color-70);
+  margin: 0 3px;
+  flex: none;
+
+  &:last-of-type {
+    display: none;
+  }
 }
 </style>
