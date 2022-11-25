@@ -9,7 +9,9 @@
         <div class="sash-right" @dblclick="resetSize('right', 'aside')" @mousedown="e => initResize('right', 'aside', 130, 700, e)"></div>
       </div>
       <div class="right">
-        <slot name="right-before" />
+        <div class="right-before">
+          <slot name="right-before" />
+        </div>
         <div class="content" ref="content">
           <div class="editor" ref="editor" v-show="showEditor">
             <slot name="editor"></slot>
@@ -267,6 +269,7 @@ export default defineComponent({
   &.presentation {
     .terminal,
     .left,
+    .right-before,
     .editor,
     .header,
     .footer {
@@ -356,6 +359,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.right-before {
+  flex: none;
 }
 
 .content {

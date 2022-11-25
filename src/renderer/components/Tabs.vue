@@ -28,14 +28,14 @@
       </div>
     </div>
     <div ref="refFilterBtn" class="action-btn" @click="showQuickFilter" :title="filterBtnTitle">
-      <svg-icon name="chevron-down" width="10px" />
+      <svg-icon name="chevron-down" width="12px" />
     </div>
-    <div class="action-btn-separator" />
     <template v-for="(btn, i) in [...actionBtns].sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))">
       <div  v-if="btn.type === 'separator'" class="action-btn-separator" :key="i" />
-      <div v-else :key="`${i}`" class="action-btn" @click="btn.onClick" :title="btn.title">
-        <svg-icon :name="btn.icon" width="10px" />
+      <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" class="action-btn" @click="btn.onClick" :title="btn.title">
+        <svg-icon :name="btn.icon" width="12px" />
       </div>
+      <component v-else-if="btn.type === 'custom'" :key="btn.key || `custom-${i}`" :is="btn.component" />
     </template>
   </div>
 </template>
@@ -284,13 +284,13 @@ export default defineComponent({
 
   .action-btn {
     flex: none;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     margin: 0 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--g-color-30);
+    color: var(--g-color-20);
 
     &:hover {
       color: var(--g-color-0);

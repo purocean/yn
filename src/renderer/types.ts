@@ -87,11 +87,12 @@ export namespace Components {
 
     export type ActionBtn = {
       type: 'normal',
+      key?: string | number,
       icon: string,
       title: string,
       order?: number,
       onClick: (e: MouseEvent) => void,
-    } | { type: 'separator', order?: number }
+    } | { type: 'separator', order?: number } | { type: 'custom', key?: string | number, component: any, order?: number }
   }
 
   export namespace FileTabs {

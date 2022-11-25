@@ -1,22 +1,5 @@
 <template>
   <div ref="refPreviewer" :class="{'default-previewer': true, presentation}">
-    <div class="action-bar" :style="{width: (width - 50) + 'px'}">
-      <div :class="{ todo: !!todoCount }">
-        <div v-if="todoCount" class="todo-progress">
-          <div :style="{
-            backgroundColor: `rgb(${220 - 220 * todoDoneCount / todoCount}, ${200 * todoDoneCount / todoCount}, 0)`,
-            width: `${todoDoneCount * 100 / todoCount}%`
-          }">
-            <span style="padding-right: 3px;">{{(todoDoneCount * 100 / todoCount).toFixed(2)}}% {{todoDoneCount}}/{{todoCount}}</span>
-          </div>
-        </div>
-        <div v-else></div>
-        <div v-if="filePath" class="action-btns">
-          <button type="button" :class="{tr: !!todoCount}" @click="printCurrentDocument()">{{$t('view.print')}}</button>
-          <button type="button" :class="{tr: !!todoCount}" @click="toggleExportPanel(true)">{{$t('export')}}</button>
-        </div>
-      </div>
-    </div>
     <div v-if="heads && heads.length > 0" :class="{outline: true, pined: pinOutline}">
       <div class="outline-title">
         <svg-icon class="outline-title-icon" name="list" />
@@ -44,9 +27,9 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="tsx" setup>
 import { useStore } from 'vuex'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { IFrame as XIFrame } from '@fe/support/embed'
 import { getLogger } from '@fe/utils'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
@@ -57,12 +40,14 @@ import { getEditor } from '@fe/services/editor'
 import type { AppState } from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { isElectron } from '@fe/support/env'
+import type { Components } from '@fe/types'
 
 import DefaultPreviewerRender from './DefaultPreviewerRender.ce.vue'
 import SvgIcon from './SvgIcon.vue'
 import Outline from './Outline.vue'
+import { FileTabs } from '@fe/services/workbench'
 
-useI18n()
+const { t } = useI18n()
 
 const logger = getLogger('preview')
 
@@ -80,7 +65,6 @@ const filePath = computed(() => store.state.currentFile?.path)
 const presentation = computed(() => store.state.presentation)
 
 const container = shallowRef<HTMLIFrameElement | null>(null)
-const width = ref(1024)
 const height = ref(768)
 const todoCount = ref(0)
 const todoDoneCount = ref(0)
@@ -164,7 +148,6 @@ function togglePinOutline () {
 
 function handleResize () {
   if (refPreviewer.value) {
-    width.value = refPreviewer.value.clientWidth
     height.value = refPreviewer.value.clientHeight
   }
 }
@@ -188,15 +171,94 @@ function handleRendered () {
   }
 }
 
+const Progress = defineComponent({
+  props: {
+    total: {
+      type: Number,
+      required: true,
+    },
+    done: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup (props) {
+    const text = computed(() => `${props.done} of ${props.total} task` + (props.total > 1 ? 's' : ''))
+    const offset = computed(() => 38 - (props.done / props.total) * 38)
+    const percent = computed(() => ((props.done / props.total) * 100).toFixed(2) + '%')
+
+    return () => <div class="todo-progress" style={{ display: 'flex', margin: '0 4px' }} title={percent.value}>
+      <svg key="123" width="16" height="16" style={{ marginRight: '5px', transform: 'rotate(-90deg)' }}>
+        <circle stroke="var(--g-color-70)" stroke-width="3" fill="transparent" cx="50%" cy="50%" r="6"></circle>
+        <circle style="transition: stroke-dashoffset 0.35s; transform: rotate(7.105263157894736deg); transform-origin: center"
+        stroke="var(--g-color-anchor)"
+        stroke-width="3"
+        stroke-dasharray="38"
+        stroke-dashoffset={ offset.value }
+        stroke-linecap="round" fill="transparent" cx="50%" cy="50%" r="6"></circle>
+      </svg>
+      <span style={{ fontSize: '12px', whiteSpace: 'nowrap', lineHeight: '16px' }}>{text.value}</span>
+    </div>
+  }
+})
+
+const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
+  console.log('xxx', tabsActionBtnTapper)
+  if (!filePath.value) {
+    return
+  }
+
+  const order = 8000
+
+  btns.push(
+    { type: 'separator', order },
+    {
+      type: 'normal',
+      icon: 'print-solid',
+      title: t('print'),
+      onClick: () => printCurrentDocument(),
+      order,
+    },
+    {
+      type: 'normal',
+      icon: 'file-export-solid',
+      title: t('export'),
+      onClick: () => toggleExportPanel(),
+      order,
+    }
+  )
+
+  if (todoCount.value > 0) {
+    btns.push(
+      { type: 'separator', order },
+      {
+        type: 'custom',
+        order,
+        component: h(Progress, {
+          total: todoCount.value,
+          done: todoDoneCount.value,
+        }),
+      },
+    )
+  }
+}
+
+watch([filePath, todoCount, todoDoneCount], () => {
+  console.log('xxx', filePath.value, todoCount.value, todoDoneCount.value)
+  FileTabs.refreshActionBtns()
+})
+
 onMounted(() => {
   registerHook('GLOBAL_RESIZE', handleResize)
   registerHook('VIEW_RENDERED', handleRendered)
+  FileTabs.tapActionBtns(tabsActionBtnTapper)
   handleResize()
 })
 
 onBeforeUnmount(() => {
   removeHook('GLOBAL_RESIZE', handleResize)
   removeHook('VIEW_RENDERED', handleRendered)
+  FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
 
 async function scrollToTop () {
@@ -274,7 +336,7 @@ async function scrollToTop () {
 .outline {
   position: fixed;
   right: 2em;
-  top: 3em;
+  top: 0.5em;
   background: rgba(var(--g-color-85-rgb), 0.8);
   backdrop-filter: var(--g-backdrop-filter);
   color: var(--g-color-10);

@@ -1,6 +1,7 @@
 <template>
   <Tabs
     ref="refTabs"
+    class="file-tabs"
     :list="fileTabs"
     :value="current"
     :filter-btn-title="filterBtnTitle"

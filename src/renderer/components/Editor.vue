@@ -74,6 +74,7 @@ function refreshEditor () {
 
 function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
   if (availableEditors.value.length > 1) {
+    btns.push({ type: 'separator' })
     btns.push({
       type: 'normal',
       icon: 'pen-solid',
