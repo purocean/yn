@@ -10,7 +10,7 @@ import { getAllCustomEditors, getIsDefault, getValue, setValue, switchEditor } f
 import { registerAction, removeAction } from '@fe/core/action'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { getLogger, storage } from '@fe/utils'
-import { refreshTabsActionBtns, removeTabsActionBtnTapper, tapTabsActionBtns } from '@fe/services/layout'
+import { FileTabs } from '@fe/services/workbench'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
 import { isMarkdownFile } from '@fe/services/document'
 import { t } from '@fe/services/i18n'
@@ -112,7 +112,7 @@ onMounted(() => {
   registerHook('DOC_SWITCH_FAILED', refreshEditor)
   registerHook('EDITOR_CUSTOM_EDITOR_CHANGE', refreshEditor)
   registerHook('DOC_SWITCHED', refreshEditor, true)
-  tapTabsActionBtns(tabsActionBtnTapper)
+  FileTabs.tapActionBtns(tabsActionBtnTapper)
   refreshEditor()
 })
 
@@ -121,12 +121,12 @@ onBeforeUnmount(() => {
   removeHook('DOC_BEFORE_SWITCH', changeEditor)
   removeHook('DOC_SWITCH_FAILED', refreshEditor)
   removeHook('EDITOR_CUSTOM_EDITOR_CHANGE', refreshEditor)
-  removeTabsActionBtnTapper(tabsActionBtnTapper)
+  FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
 
 watchEffect(() => {
   triggerHook('EDITOR_CURRENT_EDITOR_CHANGE', { current: currentEditor.value })
-  refreshTabsActionBtns()
+  FileTabs.refreshActionBtns()
   recordEditorUsageTime(currentEditor.value?.name || 'default')
 })
 </script>

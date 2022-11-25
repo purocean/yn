@@ -23,10 +23,10 @@ import { registerAction, removeAction } from '@fe/core/action'
 import { ensureCurrentFileSaved, isEncrypted, isMarkdownFile, isSameFile, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
+import { FileTabs } from '@fe/services/workbench'
 import { getSetting } from '@fe/services/setting'
 import { isElectron } from '@fe/support/env'
 import Tabs from './Tabs.vue'
-import { getTabsActionBtns } from '@fe/services/layout'
 
 const blankUri = toUri(null)
 
@@ -178,7 +178,7 @@ export default defineComponent({
     }
 
     function refreshActionBtns () {
-      actionBtns.value = getTabsActionBtns()
+      actionBtns.value = FileTabs.getActionBtns()
     }
 
     onBeforeMount(() => {
