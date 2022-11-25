@@ -4,16 +4,6 @@ import store from '@fe/support/store'
 export default {
   name: 'status-control-center',
   register: ctx => {
-    ctx.statusBar.tapMenus(menus => {
-      menus['status-bar-control-center'] = {
-        id: 'status-bar-control-center',
-        position: 'right',
-        tips: ctx.i18n.t('control-center.control-center', ctx.command.getKeysLabel('control-center.toggle')),
-        icon: 'sliders-h-solid',
-        onMousedown: () => ctx.workbench.ControlCenter.toggle()
-      }
-    })
-
     let count = 0
     ctx.store.subscribe(() => {
       if (count === 0) {

@@ -22,12 +22,13 @@
 </template>
 
 <script lang="ts" setup>
-import { registerAction, removeAction } from '@fe/core/action'
-import { ControlCenter } from '@fe/services/workbench'
 import { onBeforeUnmount, ref, watch } from 'vue'
+import { registerAction, removeAction } from '@fe/core/action'
+import { Alt, Escape, getKeysLabel } from '@fe/core/command'
+import { ControlCenter, FileTabs } from '@fe/services/workbench'
+import { t } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
-import { Alt, Escape } from '@fe/core/command'
 
 const container = ref<HTMLElement>()
 const visible = ref(false)
@@ -58,16 +59,25 @@ registerAction({
 
 registerAction({
   name: 'control-center.hide',
-  handler: ControlCenter.toggle.bind(null, false),
+  handler: () => toggle(false),
   keys: [Escape],
   when: () => visible.value
+})
+
+FileTabs.tapActionBtns((btns) => {
+  btns.push({
+    icon: 'sliders-h-solid',
+    title: t('control-center.control-center', getKeysLabel('control-center.toggle')),
+    onClick: () => toggle(),
+    order: 9999,
+  })
 })
 
 onBeforeUnmount(() => {
   removeAction('control-center.refresh')
 })
 
-watch(() => visible, (val) => {
+watch(visible, (val) => {
   if (val) {
     setTimeout(() => {
       container.value?.focus()
@@ -80,8 +90,8 @@ watch(() => visible, (val) => {
 <style lang="scss">
 .control-center {
   position: fixed;
-  right: 25px;
-  bottom: 40px;
+  right: 14px;
+  top: 40px;
   z-index: 1000;
   outline: none;
   background: rgba(var(--g-color-85-rgb), 0.8);
@@ -113,7 +123,7 @@ watch(() => visible, (val) => {
       font-size: 14px;
 
       border-radius: var(--g-border-radius);
-      margin: 4px;
+      margin: 4px 4.3px;
       transition: .1s ease-in-out;
 
       &.flat {
