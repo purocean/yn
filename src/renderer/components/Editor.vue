@@ -82,7 +82,7 @@ function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
         useQuickFilter().show({
           filterInputHidden: true,
           top: `${rect.bottom + 10}px`,
-          right: `${document.body.clientWidth - rect.right - 30}px`,
+          right: `${document.body.clientWidth - rect.right}px`,
           list: availableEditors.value.map(x => ({ key: x.name, label: x.displayName || x.name })),
           current: currentEditor.value?.name || 'default',
           onChoose: ({ key }) => {
