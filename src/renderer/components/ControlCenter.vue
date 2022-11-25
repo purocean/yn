@@ -52,7 +52,9 @@ registerAction({
 })
 
 const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
+  btns.push({ type: 'separator', order: 9999 })
   btns.push({
+    type: 'normal',
     icon: 'sliders-solid',
     title: t('control-center.control-center', getKeysLabel('control-center.toggle')),
     onClick: () => toggle(),

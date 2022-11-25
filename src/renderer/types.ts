@@ -85,12 +85,13 @@ export namespace Components {
       temporary?: boolean;
     }
 
-    export interface ActionBtn {
+    export type ActionBtn = {
+      type: 'normal',
       icon: string,
       title: string,
       order?: number,
       onClick: (e: MouseEvent) => void,
-    }
+    } | { type: 'separator', order?: number }
   }
 
   export namespace FileTabs {
