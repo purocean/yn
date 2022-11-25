@@ -2,7 +2,7 @@
   <div class="action-bar">
     <div class="btns">
       <div>
-        <div class="btn flat" @click="toggleOutline()" :title="$t(showOutline ? 'files' : 'outline') + ' ' + getKeysLabel('layout.toggle-outline')">
+        <div class="btn flat" @click="toggleOutline()" :title="$t(showOutline ? 'files' : 'outline') + ' ' + getKeysLabel('workbench.toggle-outline')">
           <svg-icon v-if="showOutline" name="folder-tree-solid" />
           <svg-icon v-else name="list" />
         </div>
@@ -41,7 +41,7 @@ import { getSchema, Schema } from '@fe/services/control-center'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
-import { toggleOutline } from '@fe/services/layout'
+import { toggleOutline } from '@fe/services/workbench'
 import { findInRepository } from '@fe/services/base'
 import { getKeysLabel } from '@fe/core/command'
 import type { FileSort } from '@fe/types'

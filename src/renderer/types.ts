@@ -257,7 +257,6 @@ export type BuildInActions = {
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
   'layout.toggle-editor': (visible?: boolean) => void,
-  'layout.toggle-outline': (visible?: boolean) => void,
   'control-center.toggle': (visible?: boolean) => void,
   'status-bar.refresh-menu': () => void,
   'control-center.refresh': () => void,
@@ -289,6 +288,7 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-reset': () => void,
   'premium.show': () => void,
   'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
+  'workbench.toggle-outline': (visible?: boolean) => void,
 }
 
 export type BuildInActionName = keyof BuildInActions

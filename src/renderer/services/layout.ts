@@ -3,7 +3,7 @@ import { debounce, throttle } from 'lodash-es'
 import * as ioc from '@fe/core/ioc'
 import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
-import { Alt, Shift } from '@fe/core/command'
+import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
 import type { Components } from '@fe/types'
 import * as view from './view'
@@ -84,14 +84,6 @@ export function toggleXterm (visible?: boolean) {
 }
 
 /**
- * Toggle outline visible.
- * @param visible
- */
-export function toggleOutline (visible?: boolean) {
-  store.commit('setShowOutline', typeof visible === 'boolean' ? visible : !store.state.showOutline)
-}
-
-/**
  * Toggle editor preview exclusive.
  * @param exclusive
  */
@@ -151,4 +143,3 @@ registerAction({ name: 'layout.toggle-side', handler: toggleSide, keys: [Alt, 'e
 registerAction({ name: 'layout.toggle-editor', handler: toggleEditor, keys: [Alt, 'x'] })
 registerAction({ name: 'layout.toggle-view', handler: toggleView, keys: [Alt, 'v'] })
 registerAction({ name: 'layout.toggle-xterm', handler: toggleXterm, keys: [Alt, 't'] })
-registerAction({ name: 'layout.toggle-outline', handler: toggleOutline, keys: [Shift, Alt, 'o'] })

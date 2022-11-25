@@ -14,6 +14,7 @@ import { useContextMenu } from '@fe/support/ui/context-menu'
 import * as env from '@fe/support/env'
 import store from '@fe/support/store'
 import * as base from '@fe/services/base'
+import * as workbench from '@fe/services/workbench'
 import * as api from '@fe/support/api'
 import * as embed from '@fe/support/embed'
 import * as args from '@fe/support/args'
@@ -45,6 +46,7 @@ const ctx = Object.freeze({
   doc,
   command,
   tree,
+  workbench,
   markdown,
   statusBar,
   controlCenter,
