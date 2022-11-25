@@ -1,6 +1,7 @@
 import { init } from '@fe/core/plugin'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
+import { isElectron } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
@@ -125,6 +126,7 @@ store.watch(() => store.state.currentFile, (val) => {
     document.documentElement.setAttribute('current-file-repo', val?.repo || '')
     document.documentElement.setAttribute('current-file-name', val?.name || '')
     document.documentElement.setAttribute('current-file-path', val?.path || '')
+    document.documentElement.setAttribute('electron', String(isElectron))
   }
 
   view.getRenderIframe().then(iframe => {

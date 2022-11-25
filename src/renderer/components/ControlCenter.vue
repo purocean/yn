@@ -1,18 +1,20 @@
 <template>
-  <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: () => toggle(false) }">
-    <div v-for="(row, category) in schema" :key="category" class="row">
-      <template v-for="(item, i) in row?.items" :key="i">
-        <div
-          v-if="item.type === 'btn'"
-          :class="{ btn: true, flat: item.flat, disabled: item.disabled, checked: item.checked }"
-          :title="item.title"
-          @click.stop="item.onClick"
-        >
-          <svg-icon :name="item.icon" />
-        </div>
-      </template>
+  <teleport to="body">
+    <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: () => toggle(false) }">
+      <div v-for="(row, category) in schema" :key="category" class="row">
+        <template v-for="(item, i) in row?.items" :key="i">
+          <div
+            v-if="item.type === 'btn'"
+            :class="{ btn: true, flat: item.flat, disabled: item.disabled, checked: item.checked }"
+            :title="item.title"
+            @click.stop="item.onClick"
+          >
+            <svg-icon :name="item.icon" />
+          </div>
+        </template>
+      </div>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <script lang="ts" setup>
@@ -70,17 +72,16 @@ onBeforeUnmount(() => {
   removeAction('control-center.hide')
   FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
-
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .control-center {
   position: fixed;
   right: 14px;
-  top: 40px;
+  top: 36px;
   z-index: 1000;
   outline: none;
-  background: rgba(var(--g-color-85-rgb), 0.8);
+  background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);
   color: var(--g-color-10);
   overflow: hidden;
@@ -137,5 +138,9 @@ onBeforeUnmount(() => {
       }
     }
   }
+}
+
+:root[electron="true"] .control-center {
+  top: 66px;
 }
 </style>
