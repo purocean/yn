@@ -10,14 +10,14 @@ export default {
         position: 'right',
         tips: ctx.i18n.t('control-center.control-center', ctx.command.getKeysLabel('control-center.toggle')),
         icon: 'sliders-h-solid',
-        onMousedown: () => ctx.controlCenter.toggle()
+        onMousedown: () => ctx.workbench.ControlCenter.toggle()
       }
     })
 
     let count = 0
     ctx.store.subscribe(() => {
       if (count === 0) {
-        ctx.controlCenter.tapSchema(schema => {
+        ctx.workbench.ControlCenter.tapSchema(schema => {
           schema.switch.items.push(
             {
               type: 'btn',
@@ -88,13 +88,13 @@ export default {
           )
         })
       } else {
-        ctx.controlCenter.refresh()
+        ctx.workbench.ControlCenter.refresh()
       }
 
       count++
     })
 
-    ctx.controlCenter.tapSchema(schema => {
+    ctx.workbench.ControlCenter.tapSchema(schema => {
       schema.navigation.items.push(
         {
           type: 'btn',
@@ -103,7 +103,7 @@ export default {
           title: ctx.i18n.t('control-center.navigation.refresh', ctx.command.getKeysLabel('view.refresh')),
           onClick: () => {
             ctx.view.refresh()
-            ctx.controlCenter.toggle(false)
+            ctx.workbench.ControlCenter.toggle(false)
           }
         },
         {
@@ -114,7 +114,7 @@ export default {
           showInActionBar: true,
           onClick: () => {
             ctx.action.getActionHandler('filter.show-quick-open')()
-            ctx.controlCenter.toggle(false)
+            ctx.workbench.ControlCenter.toggle(false)
           }
         },
       )

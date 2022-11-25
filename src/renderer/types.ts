@@ -127,6 +127,29 @@ export namespace Components {
       list: Item[];
     }
   }
+
+  export namespace ControlCenter {
+    export type Item = {
+      type: 'btn',
+      flat?: boolean,
+      checked?: boolean,
+      disabled?: boolean,
+      icon: string,
+      title: string,
+      onClick?: () => void,
+      showInActionBar?: boolean,
+    }
+
+    export type SchemaItem = { items: Item[] }
+    export type Schema = {
+      [category: string]: SchemaItem | undefined
+    } & {
+      switch: SchemaItem,
+      navigation: SchemaItem,
+    }
+
+    export type SchemaTapper = (schema: Schema) => void
+  }
 }
 
 export type FileSort = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: 'asc' | 'desc' }

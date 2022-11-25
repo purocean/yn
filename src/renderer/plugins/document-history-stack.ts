@@ -11,7 +11,7 @@ export default {
     const forwardId = 'plugin.document-history-stack.forward'
 
     function refresh () {
-      ctx.controlCenter.refresh()
+      ctx.workbench.ControlCenter.refresh()
       ctx.statusBar.refreshMenu()
     }
 
@@ -85,7 +85,7 @@ export default {
       })
     })
 
-    ctx.controlCenter.tapSchema(schema => {
+    ctx.workbench.ControlCenter.tapSchema(schema => {
       schema.navigation.items.push(
         {
           type: 'btn',

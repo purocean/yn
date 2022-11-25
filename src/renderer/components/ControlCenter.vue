@@ -23,26 +23,27 @@
 
 <script lang="ts" setup>
 import { registerAction, removeAction } from '@fe/core/action'
-import { getSchema, Schema, toggle } from '@fe/services/control-center'
+import { ControlCenter } from '@fe/services/workbench'
 import { onBeforeUnmount, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import type { Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
-const schema = ref<Schema | null>(null)
+const schema = ref<Components.ControlCenter.Schema | null>(null)
 const store = useStore()
 
 const container = ref<HTMLElement>()
 
 function onBlur () {
   setTimeout(() => {
-    toggle(false)
+    ControlCenter.toggle(false)
   }, 0)
 }
 
 registerAction({
   name: 'control-center.refresh',
   handler () {
-    schema.value = getSchema()
+    schema.value = ControlCenter.getSchema()
   }
 })
 

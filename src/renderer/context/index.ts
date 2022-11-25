@@ -28,7 +28,6 @@ import * as editor from '@fe/services/editor'
 import * as theme from '@fe/services/theme'
 import * as setting from '@fe/services/setting'
 import * as i18n from '@fe/services/i18n'
-import * as controlCenter from '@fe/services/control-center'
 import * as runner from '@fe/services/runner'
 import * as exportDoc from '@fe/services/export'
 import * as lib from './lib'
@@ -49,7 +48,6 @@ const ctx = Object.freeze({
   workbench,
   markdown,
   statusBar,
-  controlCenter,
   runner,
   layout,
   editor,
