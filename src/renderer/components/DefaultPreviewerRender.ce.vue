@@ -384,7 +384,7 @@ watch(fileUri, () => {
     margin-top: 1em;
 
     a {
-      color: #4c93e2;
+      color: var(--g-color-anchor);
     }
 
     tr {

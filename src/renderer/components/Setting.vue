@@ -306,7 +306,7 @@ export default defineComponent({
   }
 
   ::v-deep(a) {
-    color: #4c93e2;
+    color: var(-g-color-anchor);
   }
 }
 

@@ -241,7 +241,7 @@ input.search-input[type="text"] {
     color: var(--g-color-10);
 
     &[data-current="true"] {
-      outline: 1px solid #4c93e2;
+      outline: 1px solid var(--g-color-anchor);
       outline-offset: -3px;
     }
 
