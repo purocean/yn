@@ -262,6 +262,7 @@ watch(fileUri, () => {
 
 .markdown-view {
   padding: 40px;
+  padding-top: 20px;
   box-sizing: border-box;
 
   .markdown-body {

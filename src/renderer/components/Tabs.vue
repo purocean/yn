@@ -246,11 +246,11 @@ export default defineComponent({
       }
     })
 
-    watch(() => props.value, () => {
+    watch([() => props.value, () => props.actionBtns], () => {
       nextTick(() => {
         handleShadow()
         const el = refTabs.value?.querySelector<any>('.tab.current')
-        el?.scrollIntoViewIfNeeded(true)
+        el?.scrollIntoViewIfNeeded(false)
       })
     })
 
@@ -304,7 +304,6 @@ export default defineComponent({
   height: 100%;
   display: flex;
   z-index: 1;
-  box-shadow: 0px 3px 3px -3px var(--g-color-90);
   width: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -326,12 +325,12 @@ export default defineComponent({
 
   &::before {
     left: 0;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.1), transparent);
+    background: linear-gradient(to right, rgba(var(--g-color-70-rgb), 0.9), transparent);
   }
 
   &::after {
     right: 0;
-    background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
+    background: linear-gradient(to left, rgba(var(--g-color-70-rgb), 0.9), transparent);
   }
 
   &.left::before {

@@ -1,5 +1,6 @@
 <template>
   <div ref="refPreviewer" :class="{'default-previewer': true}">
+    <div v-show="scrollTop > 0" class="scroll-decoration"></div>
     <div v-if="heads && heads.length > 0" :class="{outline: true, pined: pinOutline}">
       <div class="outline-title">
         <svg-icon class="outline-title-icon" name="list" />
@@ -395,5 +396,17 @@ async function scrollToTop () {
     opacity: 0;
     right: -60px;
   }
+}
+
+.scroll-decoration {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 6px;
+  box-shadow: rgba(var(--g-color-80-rgb), 0.8) 0 6px 6px -6px inset;
 }
 </style>
