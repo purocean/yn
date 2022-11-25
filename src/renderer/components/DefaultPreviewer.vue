@@ -1,5 +1,5 @@
 <template>
-  <div ref="refPreviewer" :class="{'default-previewer': true, presentation}">
+  <div ref="refPreviewer" :class="{'default-previewer': true}">
     <div v-if="heads && heads.length > 0" :class="{outline: true, pined: pinOutline}">
       <div class="outline-title">
         <svg-icon class="outline-title-icon" name="list" />
@@ -62,7 +62,6 @@ const initHTML = '<div id="app">Loading……</div>'
 const store = useStore<AppState>()
 
 const filePath = computed(() => store.state.currentFile?.path)
-const presentation = computed(() => store.state.presentation)
 
 const container = shallowRef<HTMLIFrameElement | null>(null)
 const height = ref(768)
@@ -203,7 +202,6 @@ const Progress = defineComponent({
 })
 
 const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
-  console.log('xxx', tabsActionBtnTapper)
   if (!filePath.value) {
     return
   }
@@ -244,7 +242,6 @@ const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
 }
 
 watch([filePath, todoCount, todoDoneCount], () => {
-  console.log('xxx', filePath.value, todoCount.value, todoDoneCount.value)
   FileTabs.refreshActionBtns()
 })
 
@@ -275,62 +272,6 @@ async function scrollToTop () {
   height: 100%;
   width: 100%;
   transform: translateZ(0);
-
-  &.presentation {
-    .action-bar {
-      display: none;
-    }
-  }
-}
-
-.action-bar {
-  position: fixed;
-  width: 27vw;
-  padding: 0;
-  right: 20px;
-  top: 10px;
-  box-sizing: border-box;
-  z-index: 1000;
-  pointer-events: none;
-
-  & > div {
-    &.todo {
-      background-color: rgba(var(--g-color-80-rgb), 0.6);
-      backdrop-filter: var(--g-backdrop-filter);
-    }
-
-    padding: .3em;
-    border-radius: var(--g-border-radius);
-    height: 26px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    align-content: flex-end;
-    transition: all .1s ease-in-out;
-  }
-
-  .todo-progress {
-    flex-grow: 1;
-    margin-right: 1em;
-    background: var(--g-color-98);
-    opacity: 0.8;
-    z-index: 999;
-
-    div {
-      font-size: 12px;
-      line-height: 15px;
-      color: #ddd;
-      text-align: right;
-      box-sizing: border-box;
-      transition: all .1s ease-in-out;
-      white-space: nowrap;
-    }
-  }
-
-  .action-btns {
-    font-size: 14px;
-    pointer-events: initial;
-  }
 }
 
 .outline {
