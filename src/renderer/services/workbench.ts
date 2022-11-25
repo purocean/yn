@@ -95,16 +95,6 @@ export const ControlCenter = {
    * @param visible
    */
   toggle (visible?: boolean) {
-    const val = typeof visible === 'boolean' ? visible : !store.state.showControlCenter
-    store.commit('setShowControlCenter', val)
+    getActionHandler('control-center.toggle')(visible)
   },
 }
-
-registerAction({ name: 'control-center.toggle', handler: ControlCenter.toggle, keys: [Alt, 'c'] })
-
-registerAction({
-  name: 'control-center.hide',
-  handler: ControlCenter.toggle.bind(null, false),
-  keys: [Escape],
-  when: () => store.state.showControlCenter
-})

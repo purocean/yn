@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="store.state.showControlCenter && schema"
+    v-if="visible && schema"
     class="control-center"
     tabindex="0"
     @blur="onBlur"
@@ -25,18 +25,21 @@
 import { registerAction, removeAction } from '@fe/core/action'
 import { ControlCenter } from '@fe/services/workbench'
 import { onBeforeUnmount, ref, watch } from 'vue'
-import { useStore } from 'vuex'
 import type { Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
-
-const schema = ref<Components.ControlCenter.Schema | null>(null)
-const store = useStore()
+import { Alt, Escape } from '@fe/core/command'
 
 const container = ref<HTMLElement>()
+const visible = ref(false)
+const schema = ref<Components.ControlCenter.Schema | null>(null)
+
+function toggle (val?: boolean) {
+  visible.value = typeof val === 'boolean' ? val : !visible.value
+}
 
 function onBlur () {
   setTimeout(() => {
-    ControlCenter.toggle(false)
+    toggle(false)
   }, 0)
 }
 
@@ -47,11 +50,24 @@ registerAction({
   }
 })
 
+registerAction({
+  name: 'control-center.toggle',
+  handler: toggle,
+  keys: [Alt, 'c']
+})
+
+registerAction({
+  name: 'control-center.hide',
+  handler: ControlCenter.toggle.bind(null, false),
+  keys: [Escape],
+  when: () => visible.value
+})
+
 onBeforeUnmount(() => {
   removeAction('control-center.refresh')
 })
 
-watch(() => store.state.showControlCenter, (val) => {
+watch(() => visible, (val) => {
   if (val) {
     setTimeout(() => {
       container.value?.focus()
@@ -83,6 +99,7 @@ watch(() => store.state.showControlCenter, (val) => {
 
     &:last-of-type {
       border-bottom: none;
+      justify-content: space-between;
     }
 
     .btn {
