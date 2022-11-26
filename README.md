@@ -76,19 +76,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.44.0](https://github.com/purocean/yn/releases/tag/v3.44.0) 2022-11-21
+### [v3.45.0](https://github.com/purocean/yn/releases/tag/v3.45.0) 2022-11-26
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-win-x64-3.44.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-mac-arm64-3.44.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-mac-x64-3.44.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-linux-x86_64-3.44.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-linux-amd64-3.44.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-win-x64-3.45.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-mac-arm64-3.45.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-mac-x64-3.45.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-linux-x86_64-3.45.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-linux-amd64-3.45.0.deb)
 
-1. feat: add new file search panel
-2. feat: the status bar adds a switch theme button
-3. feat: add a prompt that fails to pull the index from the extension registry
-4. upd: adjust the file directory style
-5. fix: fix the problem that the editor list was not refreshed when the custom editor extension was enabled
-6. fix: fix the problem that the mouse pointer may be detached when changing the terminal size
-7. fix: fix the problem that the mind map may fail to load when opening the application
-8. feat(plugin): add `ctx.base.findInRepository` method
-9. fix(plugin): fix abnormal behavior of registration Hook with `once` parameters
+1. feat: some interaction and visual optimization
+2. feat: presentation mode adds exit button
+3. fix: fix the problem that HTML a tag links may not be opened when in browser
+4. refactor(plugin): Refactor some interfaces and add `ctx.workbench` module
 
 [More release notes](https://github.com/purocean/yn/releases)
 
