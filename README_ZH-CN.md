@@ -76,19 +76,14 @@
 
 ## 更新日志
 
-### [v3.44.0](https://github.com/purocean/yn/releases/tag/v3.44.0) 2022-11-21
+### [v3.45.0](https://github.com/purocean/yn/releases/tag/v3.45.0) 2022-11-26
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-win-x64-3.44.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-mac-arm64-3.44.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-mac-x64-3.44.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-linux-x86_64-3.44.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.44.0/Yank-Note-linux-amd64-3.44.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-win-x64-3.45.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-mac-arm64-3.45.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-mac-x64-3.45.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-linux-x86_64-3.45.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-linux-amd64-3.45.0.deb)
 
-1. feat: 增加新版文件搜索面板
-2. feat: 状态栏增加切换主题按钮
-3. feat: 增加从扩展注册中心拉取索引失败的提示
-4. upd: 调整文件目录样式
-5. fix: 修复启用自定义编辑器扩展时候没刷新编辑器列表问题
-6. fix: 修复更改终端尺寸可能鼠标指针脱离问题
-7. fix: 修复打开应用时候脑图可能加载失败问题
-8. feat(plugin): 增加 `ctx.base.findInRepository` 方法
-9. fix(plugin): 修复注册 Hook `once` 参数行为异常问题
+1. feat: 一些交互和视觉优化
+2. feat: 演示模式增加退出演示按钮
+3. fix: 修复在浏览器中使用时 HTML a 标签链接可能不能打开问题
+4. refactor(plugin): 重构部分接口，增加 `ctx.workbench` 模块
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
