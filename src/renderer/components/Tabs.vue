@@ -15,24 +15,28 @@
         :title="item.description"
         :data-key="item.key"
         @contextmenu.exact.prevent.stop="showContextMenu(item)"
-        @mouseup="e => e.button === 1 ? removeTabs([item]) : null"
-        @click="switchTab(item)"
+        @mouseup.middle="removeTabs([item])"
+        @mousedown.left="switchTab(item)"
         @dblclick.stop="onItemDblClick(item)">
         <div class="label">{{item.label}}</div>
-        <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @click.prevent.stop="toggleFix(item)">
+        <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @mousedown.prevent.stop @click.prevent.stop="toggleFix(item)">
           <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
         </div>
-        <div v-else class="icon" :title="$t('close')" @click.prevent.stop="removeTabs([item])">
+        <div v-else class="icon" :title="$t('close')" @mousedown.prevent.stop @click.prevent.stop="removeTabs([item])">
           <svg-icon name="times" style="width: 12px; height: 12px;" />
         </div>
       </div>
     </div>
-    <div v-for="(btn, i) in actionBtns" :key="i" class="action-btn" @click="btn.onClick" :title="btn.title">
-      <svg-icon :name="btn.icon" width="10px" />
-    </div>
     <div ref="refFilterBtn" class="action-btn" @click="showQuickFilter" :title="filterBtnTitle">
-      <svg-icon name="chevron-down" width="10px" />
+      <svg-icon name="chevron-down" width="12px" />
     </div>
+    <template v-for="(btn, i) in [...actionBtns].filter(x => !x.hidden).sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))">
+      <div  v-if="btn.type === 'separator'" class="action-btn-separator" :key="i" />
+      <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" class="action-btn" @click="btn.onClick" :title="btn.title">
+        <svg-icon :name="btn.icon" width="12px" />
+      </div>
+      <component v-else-if="btn.type === 'custom'" :key="btn.key || `custom-${i}`" :is="btn.component" />
+    </template>
   </div>
 </template>
 
@@ -242,11 +246,11 @@ export default defineComponent({
       }
     })
 
-    watch(() => props.value, () => {
+    watch([() => props.value, () => props.actionBtns], () => {
       nextTick(() => {
         handleShadow()
         const el = refTabs.value?.querySelector<any>('.tab.current')
-        el?.scrollIntoViewIfNeeded(true)
+        el?.scrollIntoViewIfNeeded(false)
       })
     })
 
@@ -280,13 +284,13 @@ export default defineComponent({
 
   .action-btn {
     flex: none;
-    width: 20px;
-    height: 20px;
-    margin: 0 5px;
+    width: 22px;
+    height: 22px;
+    margin: 0 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--g-color-30);
+    color: var(--g-color-20);
 
     &:hover {
       color: var(--g-color-0);
@@ -300,7 +304,6 @@ export default defineComponent({
   height: 100%;
   display: flex;
   z-index: 1;
-  box-shadow: 0px 3px 3px -3px var(--g-color-90);
   width: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -322,12 +325,12 @@ export default defineComponent({
 
   &::before {
     left: 0;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.1), transparent);
+    background: linear-gradient(to right, rgba(var(--g-color-70-rgb), 0.9), transparent);
   }
 
   &::after {
     right: 0;
-    background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
+    background: linear-gradient(to left, rgba(var(--g-color-70-rgb), 0.9), transparent);
   }
 
   &.left::before {
@@ -411,5 +414,19 @@ export default defineComponent({
 
 .tab.temporary {
   font-style: italic;
+}
+
+.action-btn-separator {
+  width: 1px;
+  height: 14px;
+  background: var(--g-color-70);
+  margin: 0 3px;
+  flex: none;
+
+  &:first-child,
+  &:last-child,
+  & + .action-btn-separator {
+    display: none;
+  }
 }
 </style>

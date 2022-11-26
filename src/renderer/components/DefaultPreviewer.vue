@@ -1,22 +1,6 @@
 <template>
-  <div ref="refPreviewer" :class="{'default-previewer': true, presentation}">
-    <div class="action-bar" :style="{width: (width - 50) + 'px'}">
-      <div :class="{ todo: !!todoCount }">
-        <div v-if="todoCount" class="todo-progress">
-          <div :style="{
-            backgroundColor: `rgb(${220 - 220 * todoDoneCount / todoCount}, ${200 * todoDoneCount / todoCount}, 0)`,
-            width: `${todoDoneCount * 100 / todoCount}%`
-          }">
-            <span style="padding-right: 3px;">{{(todoDoneCount * 100 / todoCount).toFixed(2)}}% {{todoDoneCount}}/{{todoCount}}</span>
-          </div>
-        </div>
-        <div v-else></div>
-        <div v-if="filePath" class="action-btns">
-          <button type="button" :class="{tr: !!todoCount}" @click="printCurrentDocument()">{{$t('view.print')}}</button>
-          <button type="button" :class="{tr: !!todoCount}" @click="toggleExportPanel(true)">{{$t('export')}}</button>
-        </div>
-      </div>
-    </div>
+  <div ref="refPreviewer" :class="{'default-previewer': true}">
+    <div v-show="scrollTop > 0" class="scroll-decoration"></div>
     <div v-if="heads && heads.length > 0" :class="{outline: true, pined: pinOutline}">
       <div class="outline-title">
         <svg-icon class="outline-title-icon" name="list" />
@@ -44,9 +28,9 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="tsx" setup>
 import { useStore } from 'vuex'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { IFrame as XIFrame } from '@fe/support/embed'
 import { getLogger } from '@fe/utils'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
@@ -57,12 +41,15 @@ import { getEditor } from '@fe/services/editor'
 import type { AppState } from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { isElectron } from '@fe/support/env'
+import type { Components } from '@fe/types'
 
 import DefaultPreviewerRender from './DefaultPreviewerRender.ce.vue'
 import SvgIcon from './SvgIcon.vue'
 import Outline from './Outline.vue'
+import { FileTabs } from '@fe/services/workbench'
+import { isMarkdownFile } from '@fe/services/document'
 
-useI18n()
+const { t } = useI18n()
 
 const logger = getLogger('preview')
 
@@ -77,10 +64,8 @@ const initHTML = '<div id="app">Loading……</div>'
 const store = useStore<AppState>()
 
 const filePath = computed(() => store.state.currentFile?.path)
-const presentation = computed(() => store.state.presentation)
 
 const container = shallowRef<HTMLIFrameElement | null>(null)
-const width = ref(1024)
 const height = ref(768)
 const todoCount = ref(0)
 const todoDoneCount = ref(0)
@@ -164,7 +149,6 @@ function togglePinOutline () {
 
 function handleResize () {
   if (refPreviewer.value) {
-    width.value = refPreviewer.value.clientWidth
     height.value = refPreviewer.value.clientHeight
   }
 }
@@ -188,15 +172,97 @@ function handleRendered () {
   }
 }
 
+const Progress = defineComponent({
+  props: {
+    total: {
+      type: Number,
+      required: true,
+    },
+    done: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup (props) {
+    const text = computed(() => `${props.done} of ${props.total} task` + (props.total > 1 ? 's' : ''))
+    const offset = computed(() => 38 - (props.done / props.total) * 38)
+    const percent = computed(() => ((props.done / props.total) * 100).toFixed(2) + '%')
+
+    return () => <div class="todo-progress" style={{ display: 'flex', margin: '0 4px' }} title={percent.value}>
+      <svg key="123" width="16" height="16" style={{ marginRight: '5px', transform: 'rotate(-90deg)' }}>
+        <circle stroke="var(--g-color-70)" stroke-width="3" fill="transparent" cx="50%" cy="50%" r="6"></circle>
+        <circle style="transition: stroke-dashoffset 0.35s; transform: rotate(7.105263157894736deg); transform-origin: center"
+        stroke="var(--g-color-anchor)"
+        stroke-width="3"
+        stroke-dasharray="38"
+        stroke-dashoffset={ offset.value }
+        stroke-linecap="round" fill="transparent" cx="50%" cy="50%" r="6"></circle>
+      </svg>
+      <span style={{ fontSize: '12px', whiteSpace: 'nowrap', lineHeight: '16px' }}>{text.value}</span>
+    </div>
+  }
+})
+
+const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
+  if (!filePath.value) {
+    return
+  }
+
+  const order = 8000
+
+  if (todoCount.value > 0) {
+    btns.push(
+      { type: 'separator', order },
+      {
+        type: 'custom',
+        order,
+        component: h(Progress, {
+          total: todoCount.value,
+          done: todoDoneCount.value,
+        }),
+      },
+    )
+  }
+
+  if (
+    (!store.state.previewer || store.state.previewer === 'default') &&
+    store.state.currentFile && isMarkdownFile(store.state.currentFile)
+  ) {
+    btns.push(
+      { type: 'separator', order },
+      {
+        type: 'normal',
+        icon: 'print-solid',
+        title: t('print'),
+        onClick: () => printCurrentDocument(),
+        order,
+      },
+      {
+        type: 'normal',
+        icon: 'file-export-solid',
+        title: t('export'),
+        onClick: () => toggleExportPanel(),
+        order,
+      }
+    )
+  }
+}
+
+watch([filePath, todoCount, todoDoneCount], () => {
+  FileTabs.refreshActionBtns()
+})
+
 onMounted(() => {
   registerHook('GLOBAL_RESIZE', handleResize)
   registerHook('VIEW_RENDERED', handleRendered)
+  FileTabs.tapActionBtns(tabsActionBtnTapper)
   handleResize()
 })
 
 onBeforeUnmount(() => {
   removeHook('GLOBAL_RESIZE', handleResize)
   removeHook('VIEW_RENDERED', handleRendered)
+  FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
 
 async function scrollToTop () {
@@ -213,68 +279,12 @@ async function scrollToTop () {
   height: 100%;
   width: 100%;
   transform: translateZ(0);
-
-  &.presentation {
-    .action-bar {
-      display: none;
-    }
-  }
-}
-
-.action-bar {
-  position: fixed;
-  width: 27vw;
-  padding: 0;
-  right: 20px;
-  top: 10px;
-  box-sizing: border-box;
-  z-index: 1000;
-  pointer-events: none;
-
-  & > div {
-    &.todo {
-      background-color: rgba(var(--g-color-80-rgb), 0.6);
-      backdrop-filter: var(--g-backdrop-filter);
-    }
-
-    padding: .3em;
-    border-radius: var(--g-border-radius);
-    height: 26px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    align-content: flex-end;
-    transition: all .1s ease-in-out;
-  }
-
-  .todo-progress {
-    flex-grow: 1;
-    margin-right: 1em;
-    background: var(--g-color-98);
-    opacity: 0.8;
-    z-index: 999;
-
-    div {
-      font-size: 12px;
-      line-height: 15px;
-      color: #ddd;
-      text-align: right;
-      box-sizing: border-box;
-      transition: all .1s ease-in-out;
-      white-space: nowrap;
-    }
-  }
-
-  .action-btns {
-    font-size: 14px;
-    pointer-events: initial;
-  }
 }
 
 .outline {
   position: fixed;
   right: 2em;
-  top: 3em;
+  top: 0.5em;
   background: rgba(var(--g-color-85-rgb), 0.8);
   backdrop-filter: var(--g-backdrop-filter);
   color: var(--g-color-10);
@@ -392,5 +402,17 @@ async function scrollToTop () {
     opacity: 0;
     right: -60px;
   }
+}
+
+.scroll-decoration {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 6px;
+  box-shadow: rgba(var(--g-color-80-rgb), 0.8) 0 6px 6px -6px inset;
 }
 </style>

@@ -13,7 +13,7 @@ export default {
         icon: 'presentation',
         onClick: () => {
           ctx.view.enterPresent()
-          ctx.controlCenter.toggle(false)
+          ctx.workbench.ControlCenter.toggle(false)
         }
       }
     })

@@ -10,11 +10,10 @@ import statusBarInsert from '@fe/plugins/status-bar-insert'
 import statusBarTool from '@fe/plugins/status-bar-tool'
 import statusBarHelp from '@fe/plugins/status-bar-help'
 import statusBarDocumentInfo from '@fe/plugins/status-bar-document-info'
-import statusBarPreviewer from '@fe/plugins/status-bar-previewer'
 import statusBarTheme from './plugins/status-bar-theme'
 import statusBarHistory from './plugins/status-bar-history'
 import statusBarPresentation from '@fe/plugins/status-bar-presentation'
-import statusBarControlCenter from '@fe/plugins/status-bar-control-center'
+import controlCenter from '@fe/plugins/control-center'
 import statusBarTerminal from '@fe/plugins/status-bar-terminal'
 import statusBarExtension from './plugins/status-bar-extension'
 import statusBarGet from '@fe/plugins/status-bar-get'
@@ -75,12 +74,11 @@ export default [
   statusBarTool,
   statusBarDocumentInfo,
   statusBarHelp,
-  statusBarPreviewer,
   statusBarTheme,
   statusBarHistory,
   statusBarTerminal,
   statusBarExtension,
-  statusBarControlCenter,
+  controlCenter,
   statusBarPresentation,
   statusBarGet,
   editorPaste,

@@ -2,7 +2,7 @@
   <div class="action-bar">
     <div class="btns">
       <div>
-        <div class="btn flat" @click="toggleOutline()" :title="$t(showOutline ? 'files' : 'outline') + ' ' + getKeysLabel('layout.toggle-outline')">
+        <div class="btn flat" @click="toggleOutline()" :title="$t(showOutline ? 'files' : 'outline') + ' ' + getKeysLabel('workbench.toggle-outline')">
           <svg-icon v-if="showOutline" name="folder-tree-solid" />
           <svg-icon v-else name="list" />
         </div>
@@ -37,18 +37,17 @@
 import { onBeforeUnmount, ref, toRef } from 'vue'
 import { useStore } from 'vuex'
 import { registerAction, removeAction } from '@fe/core/action'
-import { getSchema, Schema } from '@fe/services/control-center'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
-import { toggleOutline } from '@fe/services/layout'
+import { toggleOutline, ControlCenter } from '@fe/services/workbench'
 import { findInRepository } from '@fe/services/base'
 import { getKeysLabel } from '@fe/core/command'
-import type { FileSort } from '@fe/types'
+import type { FileSort, Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
 const store = useStore<AppState>()
-const navigation = ref<Schema['navigation']>()
+const navigation = ref<Components.ControlCenter.Schema['navigation']>()
 const showOutline = toRef(store.state, 'showOutline')
 const treeSort = toRef(store.state, 'treeSort')
 
@@ -86,7 +85,7 @@ function showSortMenu () {
 registerAction({
   name: 'action-bar.refresh',
   handler () {
-    navigation.value = getSchema().navigation
+    navigation.value = ControlCenter.getSchema().navigation
   }
 })
 

@@ -31,6 +31,8 @@
   --g-border-radius: 4px;
   --g-backdrop-filter: blur(18px);
   --g-color-backdrop: #{rgba(var(--g-color-95-rgb), 0.87)};
+  --g-color-accent: rgb(20, 112, 251);
+  --g-color-anchor: #4c93e2;
 
   --g-color-active-a: #{rgba(var(--g-color-0-rgb), 0.1)};
   --g-color-active-b: #{rgba(var(--g-color-0-rgb), 0.15)};
@@ -53,7 +55,7 @@ html[app-theme=light]:root, :root {
 html {
   outline: none;
   font-family: system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
-  accent-color: rgb(20, 112, 251);
+  accent-color: var(--g-color-accent);
 
   &[platform^=Win] {
     font-family: arial,system-ui,Segoe UI,Helvetica,sans-serif;
@@ -61,7 +63,7 @@ html {
 }
 
 a {
-  color: #4c93e2;
+  color: var(--g-color-anchor);
 }
 
 ::selection {

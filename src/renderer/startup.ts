@@ -1,6 +1,7 @@
 import { init } from '@fe/core/plugin'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
+import { isElectron } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
@@ -12,7 +13,7 @@ import { fetchSettings } from '@fe/services/setting'
 import { getPurchased } from '@fe/others/premium'
 import * as extension from '@fe/others/extension'
 import { setTheme } from '@fe/services/theme'
-import { toggleOutline } from '@fe/services/layout'
+import { toggleOutline } from '@fe/services/workbench'
 import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
@@ -125,6 +126,7 @@ store.watch(() => store.state.currentFile, (val) => {
     document.documentElement.setAttribute('current-file-repo', val?.repo || '')
     document.documentElement.setAttribute('current-file-name', val?.name || '')
     document.documentElement.setAttribute('current-file-path', val?.path || '')
+    document.documentElement.setAttribute('electron', String(isElectron))
   }
 
   view.getRenderIframe().then(iframe => {

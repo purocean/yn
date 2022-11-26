@@ -262,6 +262,7 @@ watch(fileUri, () => {
 
 .markdown-view {
   padding: 40px;
+  padding-top: 20px;
   box-sizing: border-box;
 
   .markdown-body {
@@ -384,7 +385,7 @@ watch(fileUri, () => {
     margin-top: 1em;
 
     a {
-      color: #4c93e2;
+      color: var(--g-color-anchor);
     }
 
     tr {

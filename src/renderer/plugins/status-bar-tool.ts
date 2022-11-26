@@ -4,6 +4,9 @@ export default {
   name: 'status-bar-tool',
   register: ctx => {
     ctx.statusBar.tapMenus(menus => {
+      const printExportVisible = (!ctx.store.state.previewer || ctx.store.state.previewer === 'default') &&
+        ctx.store.state.currentFile && ctx.doc.isMarkdownFile(ctx.store.state.currentFile)
+
       menus['status-bar-tool'] = {
         id: 'status-bar-tool',
         position: 'left',
@@ -13,7 +16,7 @@ export default {
             id: 'print',
             type: 'normal',
             title: ctx.i18n.t('status-bar.tool.print'),
-            hidden: !ctx.store.state.currentFile,
+            hidden: !printExportVisible,
             onClick: () => {
               setTimeout(() => {
                 ctx.export.printCurrentDocument()
@@ -23,7 +26,7 @@ export default {
           {
             id: 'export',
             type: 'normal',
-            hidden: !ctx.store.state.currentFile,
+            hidden: !printExportVisible,
             title: ctx.i18n.t('status-bar.tool.export'),
             onClick: () => ctx.export.toggleExportPanel(),
           },

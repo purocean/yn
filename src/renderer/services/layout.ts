@@ -1,11 +1,9 @@
 import { nextTick } from 'vue'
-import { debounce, throttle } from 'lodash-es'
-import * as ioc from '@fe/core/ioc'
+import { throttle } from 'lodash-es'
 import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
-import { Alt, Shift } from '@fe/core/command'
+import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
-import type { Components } from '@fe/types'
 import * as view from './view'
 
 const emitResizeDebounce = throttle(() => {
@@ -84,14 +82,6 @@ export function toggleXterm (visible?: boolean) {
 }
 
 /**
- * Toggle outline visible.
- * @param visible
- */
-export function toggleOutline (visible?: boolean) {
-  store.commit('setShowOutline', typeof visible === 'boolean' ? visible : !store.state.showOutline)
-}
-
-/**
  * Toggle editor preview exclusive.
  * @param exclusive
  */
@@ -107,48 +97,7 @@ export function toggleEditorPreviewExclusive (exclusive?: boolean) {
   emitResize()
 }
 
-const _refreshTabsActionBtns = debounce(() => {
-  getActionHandler('file-tabs.refresh-action-btns')()
-}, 10)
-
-/**
- * Refresh tabs action buttons.
- */
-export function refreshTabsActionBtns () {
-  _refreshTabsActionBtns()
-}
-
-/**
- * Add a tabs action button processor.
- * @param tapper
- */
-export function tapTabsActionBtns (tapper: (btns: Components.Tabs.ActionBtn[]) => void) {
-  ioc.register('TABS_ACTION_BTN_TAPPERS', tapper)
-  refreshTabsActionBtns()
-}
-
-/**
- * Remove a tabs action button processor.
- * @param tapper
- */
-export function removeTabsActionBtnTapper (tapper: (btns: Components.Tabs.ActionBtn[]) => void) {
-  ioc.remove('TABS_ACTION_BTN_TAPPERS', tapper)
-  refreshTabsActionBtns()
-}
-
-/**
- * Get tabs action buttons.
- * @returns
- */
-export function getTabsActionBtns () {
-  const btns: Components.Tabs.ActionBtn[] = []
-  const tappers = ioc.get('TABS_ACTION_BTN_TAPPERS')
-  tappers.forEach(tap => tap(btns))
-  return btns
-}
-
 registerAction({ name: 'layout.toggle-side', handler: toggleSide, keys: [Alt, 'e'] })
 registerAction({ name: 'layout.toggle-editor', handler: toggleEditor, keys: [Alt, 'x'] })
 registerAction({ name: 'layout.toggle-view', handler: toggleView, keys: [Alt, 'v'] })
 registerAction({ name: 'layout.toggle-xterm', handler: toggleXterm, keys: [Alt, 't'] })
-registerAction({ name: 'layout.toggle-outline', handler: toggleOutline, keys: [Shift, Alt, 'o'] })

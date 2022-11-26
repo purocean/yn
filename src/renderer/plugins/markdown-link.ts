@@ -49,13 +49,14 @@ function handleLink (link: HTMLAnchorElement): boolean {
   if (!href.trim()) {
     useToast().show('warning', 'Link is empty.')
     return true
-  } else if (/^(http:|https:|ftp:)\/\//i.test(href)) { // external link
+  } else if (/^(http:|https:|ftp:)\/\//i.test(href) || /^(mailto|tel):/i.test(href)) { // external link
     if (isElectron) {
       openExternal(link.href)
-      return true
     } else {
-      return false
+      window.open(link.href)
     }
+
+    return true
   } else if (/^file:\/\//i.test(href)) {
     openPath(decodeURI(href.replace(/^file:\/\//i, '')))
     return true

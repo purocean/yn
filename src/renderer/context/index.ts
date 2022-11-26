@@ -14,6 +14,7 @@ import { useContextMenu } from '@fe/support/ui/context-menu'
 import * as env from '@fe/support/env'
 import store from '@fe/support/store'
 import * as base from '@fe/services/base'
+import * as workbench from '@fe/services/workbench'
 import * as api from '@fe/support/api'
 import * as embed from '@fe/support/embed'
 import * as args from '@fe/support/args'
@@ -27,7 +28,6 @@ import * as editor from '@fe/services/editor'
 import * as theme from '@fe/services/theme'
 import * as setting from '@fe/services/setting'
 import * as i18n from '@fe/services/i18n'
-import * as controlCenter from '@fe/services/control-center'
 import * as runner from '@fe/services/runner'
 import * as exportDoc from '@fe/services/export'
 import * as lib from './lib'
@@ -45,9 +45,9 @@ const ctx = Object.freeze({
   doc,
   command,
   tree,
+  workbench,
   markdown,
   statusBar,
-  controlCenter,
   runner,
   layout,
   editor,

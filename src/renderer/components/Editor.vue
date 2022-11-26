@@ -4,13 +4,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'vue'
 import { useStore } from 'vuex'
-import { getAllCustomEditors, switchEditor } from '@fe/services/editor'
+import { getAllCustomEditors, getIsDefault, getValue, setValue, switchEditor } from '@fe/services/editor'
 import { registerAction, removeAction } from '@fe/core/action'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { getLogger, storage } from '@fe/utils'
-import { refreshTabsActionBtns, removeTabsActionBtnTapper, tapTabsActionBtns } from '@fe/services/layout'
+import { FileTabs } from '@fe/services/workbench'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
 import { isMarkdownFile } from '@fe/services/document'
 import { t } from '@fe/services/i18n'
@@ -22,7 +22,7 @@ const EDITOR_LAST_USAGE_TIME_KEY = 'editor.last-usage-time'
 
 const defaultEditor: CustomEditor = {
   name: 'default-markdown-editor',
-  displayName: 'Default Editor',
+  displayName: t('editor.default-editor'),
   component: null,
   when ({ doc }) {
     return !!(doc && isMarkdownFile(doc))
@@ -73,19 +73,33 @@ function refreshEditor () {
 }
 
 function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
+  const order = 7000
   if (availableEditors.value.length > 1) {
+    btns.push({ type: 'separator', order })
     btns.push({
+      type: 'normal',
       icon: 'pen-solid',
+      order,
       title: t('editor.switch-editor'),
       onClick: (e) => {
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
         useQuickFilter().show({
           filterInputHidden: true,
           top: `${rect.bottom + 10}px`,
-          right: `${document.body.clientWidth - rect.right - 30}px`,
+          right: `${document.body.clientWidth - rect.right}px`,
           list: availableEditors.value.map(x => ({ key: x.name, label: x.displayName || x.name })),
           current: currentEditor.value?.name || 'default',
-          onChoose: ({ key }) => switchEditor(key),
+          onChoose: ({ key }) => {
+            switchEditor(key)
+
+            // sync default editor content
+            nextTick(() => {
+              const { currentContent } = store.state
+              if (getIsDefault() && getValue() !== currentContent) {
+                setValue(currentContent)
+              }
+            })
+          },
         })
       },
     })
@@ -102,7 +116,7 @@ onMounted(() => {
   registerHook('DOC_SWITCH_FAILED', refreshEditor)
   registerHook('EDITOR_CUSTOM_EDITOR_CHANGE', refreshEditor)
   registerHook('DOC_SWITCHED', refreshEditor, true)
-  tapTabsActionBtns(tabsActionBtnTapper)
+  FileTabs.tapActionBtns(tabsActionBtnTapper)
   refreshEditor()
 })
 
@@ -111,12 +125,12 @@ onBeforeUnmount(() => {
   removeHook('DOC_BEFORE_SWITCH', changeEditor)
   removeHook('DOC_SWITCH_FAILED', refreshEditor)
   removeHook('EDITOR_CUSTOM_EDITOR_CHANGE', refreshEditor)
-  removeTabsActionBtnTapper(tabsActionBtnTapper)
+  FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
 
 watchEffect(() => {
   triggerHook('EDITOR_CURRENT_EDITOR_CHANGE', { current: currentEditor.value })
-  refreshTabsActionBtns()
+  FileTabs.refreshActionBtns()
   recordEditorUsageTime(currentEditor.value?.name || 'default')
 })
 </script>

@@ -1,73 +1,87 @@
 <template>
-  <div
-    v-if="store.state.showControlCenter && schema"
-    class="control-center"
-    tabindex="0"
-    @blur="onBlur"
-    ref="container"
-  >
-    <div v-for="(row, category) in schema" :key="category" class="row">
-      <template v-for="(item, i) in row?.items" :key="i">
-        <div
-          v-if="item.type === 'btn'"
-          :class="{ btn: true, flat: item.flat, disabled: item.disabled, checked: item.checked }"
-          :title="item.title"
-          @click.stop="item.onClick"
-        >
-          <svg-icon :name="item.icon" />
-        </div>
-      </template>
+  <teleport to="body">
+    <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: () => toggle(false) }">
+      <div v-for="(row, category) in schema" :key="category" class="row">
+        <template v-for="(item, i) in row?.items" :key="i">
+          <div
+            v-if="item.type === 'btn'"
+            :class="{ btn: true, flat: item.flat, disabled: item.disabled, checked: item.checked }"
+            :title="item.title"
+            @click.stop="item.onClick"
+          >
+            <svg-icon :name="item.icon" />
+          </div>
+        </template>
+      </div>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <script lang="ts" setup>
+import { onBeforeUnmount, ref } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
-import { getSchema, Schema, toggle } from '@fe/services/control-center'
-import { onBeforeUnmount, ref, watch } from 'vue'
-import { useStore } from 'vuex'
+import { Alt, Escape, getKeysLabel } from '@fe/core/command'
+import { ControlCenter, FileTabs } from '@fe/services/workbench'
+import { t } from '@fe/services/i18n'
+import type { Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
-const schema = ref<Schema | null>(null)
-const store = useStore()
+const visible = ref(false)
+const schema = ref<Components.ControlCenter.Schema | null>(null)
 
-const container = ref<HTMLElement>()
-
-function onBlur () {
-  setTimeout(() => {
-    toggle(false)
-  }, 0)
+function toggle (val?: boolean) {
+  visible.value = typeof val === 'boolean' ? val : !visible.value
 }
 
 registerAction({
   name: 'control-center.refresh',
   handler () {
-    schema.value = getSchema()
+    schema.value = ControlCenter.getSchema()
   }
 })
+
+registerAction({
+  name: 'control-center.toggle',
+  handler: toggle,
+  keys: [Alt, 'c']
+})
+
+registerAction({
+  name: 'control-center.hide',
+  handler: () => toggle(false),
+  keys: [Escape],
+  when: () => visible.value
+})
+
+const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
+  btns.push({ type: 'separator', order: 9999 })
+  btns.push({
+    type: 'normal',
+    icon: 'sliders-solid',
+    title: t('control-center.control-center', getKeysLabel('control-center.toggle')),
+    onClick: () => toggle(),
+    order: 9999,
+  })
+}
+
+FileTabs.tapActionBtns(tabsActionBtnTapper)
 
 onBeforeUnmount(() => {
   removeAction('control-center.refresh')
+  removeAction('control-center.toggle')
+  removeAction('control-center.hide')
+  FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
-
-watch(() => store.state.showControlCenter, (val) => {
-  if (val) {
-    setTimeout(() => {
-      container.value?.focus()
-    }, 0)
-  }
-})
-
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .control-center {
   position: fixed;
-  right: 25px;
-  bottom: 40px;
+  right: 14px;
+  top: 36px;
   z-index: 1000;
   outline: none;
-  background: rgba(var(--g-color-85-rgb), 0.8);
+  background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);
   color: var(--g-color-10);
   overflow: hidden;
@@ -82,6 +96,7 @@ watch(() => store.state.showControlCenter, (val) => {
 
     &:last-of-type {
       border-bottom: none;
+      justify-content: space-between;
     }
 
     .btn {
@@ -95,7 +110,7 @@ watch(() => store.state.showControlCenter, (val) => {
       font-size: 14px;
 
       border-radius: var(--g-border-radius);
-      margin: 4px;
+      margin: 4px 4.3px;
       transition: .1s ease-in-out;
 
       &.flat {
@@ -123,5 +138,9 @@ watch(() => store.state.showControlCenter, (val) => {
       }
     }
   }
+}
+
+:root[electron="true"] .control-center {
+  top: 66px;
 }
 </style>

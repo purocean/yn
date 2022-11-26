@@ -16,11 +16,13 @@
       <Xterm @hide="hideXterm" />
     </template>
     <template v-slot:editor>
-      <FileTabs />
       <Editor />
     </template>
     <template v-slot:preview>
       <Previewer />
+    </template>
+    <template v-slot:right-before>
+      <FileTabs />
     </template>
   </Layout>
   <XFilter />
@@ -30,19 +32,24 @@
   <ControlCenter />
   <DocHistory />
   <ExtensionManager />
+  <div v-if="presentationExitVisible" class="presentation-exit" title="Exit" @click="exitPresent">
+    <svg-icon name="times" />
+  </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRef } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { FLAG_DISABLE_XTERM } from '@fe/support/args'
+import { FLAG_DISABLE_XTERM, MODE } from '@fe/support/args'
 import type { AppState } from '@fe/support/store'
 import type { CustomEditor } from '@fe/types'
 import { emitResize } from '@fe/services/layout'
+import { exitPresent } from '@fe/services/view'
 import Layout from '@fe/components/Layout.vue'
+import SvgIcon from '@fe/components/SvgIcon.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
 import StatusBar from '@fe/components/StatusBar.vue'
 import Tree from '@fe/components/Tree.vue'
@@ -66,6 +73,7 @@ export default defineComponent({
   name: 'x-main',
   components: {
     Layout,
+    SvgIcon,
     TitleBar,
     StatusBar,
     Tree,
@@ -86,7 +94,9 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<AppState>()
-    const showOutline = toRef(store.state, 'showOutline')
+    const showOutline = computed(() => store.state.showOutline)
+    const presentationExitVisible = computed(() => MODE === 'normal' && store.state.presentation)
+
     onMounted(startup)
 
     const forceHiddenPreview = ref(false)
@@ -111,7 +121,7 @@ export default defineComponent({
       removeHook('EDITOR_CURRENT_EDITOR_CHANGE', onEditorChange)
     })
 
-    return { classes, hideXterm, showOutline, onEditorChange }
+    return { presentationExitVisible, classes, hideXterm, showOutline, onEditorChange, exitPresent }
   }
 })
 </script>
@@ -130,5 +140,21 @@ export default defineComponent({
   width: revert !important;
   min-width: 0 !important;
   max-width: revert !important;
+}
+
+.presentation-exit {
+  position: fixed;
+  z-index: 99999;
+  bottom: 6px;
+  left: 6px;
+  padding: 10px;
+  color: var(--g-color-50);
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.presentation-exit:hover {
+  opacity: 1;
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
-  <div class="context-menu">
-    <div class="mask" v-if="isShow" @click="hide" @contextmenu.prevent.stop="hide"></div>
-    <ul class="menu" ref="refMenu" :style="{visibility: isShow ? 'visible' : 'hidden'}" @contextmenu.prevent>
+  <Mask transparent :show="items && items.length > 0" @close="hide" :style="{ zIndex: 2147483646 }">
+    <ul class="menu" ref="refMenu" @contextmenu.prevent>
       <template v-for="(item, i) in items">
         <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type" />
         <li v-else :key="item.id" v-show="!item.hidden" @click="handleClick(item)" :class="item.type || 'normal'">
@@ -10,32 +9,27 @@
         </li>
       </template>
     </ul>
-  </div>
+  </Mask>
 </template>
 
 <script lang="ts">
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { Components } from '@fe/types'
+import Mask from './Mask.vue'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
   name: 'context-menu',
-  components: { SvgIcon },
+  components: { SvgIcon, Mask },
   setup () {
     const refMenu = ref<HTMLUListElement | null>(null)
     const items = ref<Components.ContextMenu.Item[]>([])
-    const isShow = ref(false)
 
     let mouseX = 0
     let mouseY = 0
 
-    function hideMenu () {
-      isShow.value = false
-    }
-
     function hide () {
       items.value = []
-      hideMenu()
     }
 
     function handleClick (item: Components.ContextMenu.NormalItem) {
@@ -48,7 +42,7 @@ export default defineComponent({
       mouseY = e.clientY
     }
 
-    function showMenu (opts?: Components.ContextMenu.ShowOpts) {
+    function setPosition (opts?: Components.ContextMenu.ShowOpts) {
       if (!refMenu.value) {
         return
       }
@@ -72,8 +66,6 @@ export default defineComponent({
       refMenu.value.style.left = x + 'px'
       refMenu.value.style.height = y < 0 ? `${menuHeight + y}px` : 'unset'
       refMenu.value.style.top = y < 0 ? '0px' : y + 'px'
-
-      isShow.value = true
     }
 
     function show (menuItems: Components.ContextMenu.Item[], opts?: Components.ContextMenu.ShowOpts) {
@@ -84,7 +76,7 @@ export default defineComponent({
       }
 
       nextTick(() => {
-        showMenu(opts)
+        setPosition(opts)
       })
     }
 
@@ -100,7 +92,6 @@ export default defineComponent({
 
     return {
       refMenu,
-      isShow,
       items,
       hide,
       show,
@@ -111,15 +102,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2147483646;
-}
-
 .menu {
   list-style: none;
   padding: 1px;
@@ -127,7 +109,6 @@ export default defineComponent({
   position: fixed;
   left: -99999px;
   top: -99999px;
-  visibility: hidden;
   overflow-y: auto;
   background: rgba(var(--g-color-77-rgb), 0.65);
   backdrop-filter: var(--g-backdrop-filter);

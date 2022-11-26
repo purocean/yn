@@ -6,6 +6,7 @@ import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import store from '@fe/support/store'
 import { isMacOS, isWindows } from '@fe/support/env'
 import { basename } from '@fe/utils/path'
+import { sleep } from '@fe/utils'
 import { DEFAULT_EXCLUDE_REGEX } from '@share/misc'
 import type{ BuildInSettings, FileItem, PathItem, SettingGroup } from '@fe/types'
 import { getThemeName } from './theme'
@@ -532,17 +533,32 @@ export async function setSetting<T extends keyof BuildInSettings> (key: T, val: 
 
 /**
  * Show setting panel.
- * @param group
+ * @param keyOrGroup
  */
-export function showSettingPanel (group?: string) {
+export async function showSettingPanel (keyOrGroup?: SettingGroup | keyof BuildInSettings): Promise<void>
+export async function showSettingPanel (keyOrGroup?: string): Promise<void>
+export async function showSettingPanel (keyOrGroup?: string) {
   store.commit('setShowSetting', true)
+  if (!keyOrGroup) {
+    return
+  }
 
-  // temporary solution
-  if (group) {
-    setTimeout(() => {
-      const tab: HTMLElement | null = document.querySelector(`.editor-wrapper div[data-key="${group}"]`)
-      tab?.click()
-    }, 200)
+  const schema = getSchema().properties[keyOrGroup as keyof Schema['properties']]
+  const group = schema?.group || keyOrGroup
+
+  await sleep(200)
+  const tab: HTMLElement | null = document.querySelector(`.editor-wrapper div[data-key="${group}"]`)
+  tab?.click()
+
+  if (schema) {
+    const el: HTMLElement | null = document.querySelector(`.editor-wrapper .row > div[data-schemapath="root.${keyOrGroup}"]`)
+    if (el) {
+      await sleep(200)
+      el.style.backgroundColor = 'rgba(255, 255, 50, 0.3)'
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      await sleep(2000)
+      el.style.backgroundColor = ''
+    }
   }
 }
 

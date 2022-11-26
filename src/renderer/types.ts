@@ -85,11 +85,17 @@ export namespace Components {
       temporary?: boolean;
     }
 
-    export interface ActionBtn {
+    export type ActionBtn = {
+      type: 'normal',
+      key?: string | number,
       icon: string,
       title: string,
+      order?: number,
+      hidden?: boolean,
       onClick: (e: MouseEvent) => void,
     }
+    | { type: 'separator', order?: number, hidden?: boolean }
+    | { type: 'custom', key?: string | number, hidden?: boolean, component: any, order?: number }
   }
 
   export namespace FileTabs {
@@ -126,6 +132,29 @@ export namespace Components {
       current?: string | undefined;
       list: Item[];
     }
+  }
+
+  export namespace ControlCenter {
+    export type Item = {
+      type: 'btn',
+      flat?: boolean,
+      checked?: boolean,
+      disabled?: boolean,
+      icon: string,
+      title: string,
+      onClick?: () => void,
+      showInActionBar?: boolean,
+    }
+
+    export type SchemaItem = { items: Item[] }
+    export type Schema = {
+      [category: string]: SchemaItem | undefined
+    } & {
+      switch: SchemaItem,
+      navigation: SchemaItem,
+    }
+
+    export type SchemaTapper = (schema: Schema) => void
   }
 }
 
@@ -257,7 +286,6 @@ export type BuildInActions = {
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
   'layout.toggle-editor': (visible?: boolean) => void,
-  'layout.toggle-outline': (visible?: boolean) => void,
   'control-center.toggle': (visible?: boolean) => void,
   'status-bar.refresh-menu': () => void,
   'control-center.refresh': () => void,
@@ -289,6 +317,7 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-reset': () => void,
   'premium.show': () => void,
   'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
+  'workbench.toggle-outline': (visible?: boolean) => void,
 }
 
 export type BuildInActionName = keyof BuildInActions
@@ -364,6 +393,7 @@ export type BuildInHookTypes = {
 
 export type Previewer = {
   name: string,
+  displayName?: string,
   component: any,
 }
 

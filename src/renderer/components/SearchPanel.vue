@@ -73,7 +73,8 @@
             />
           </div>
           <div class="message-wrapper">
-            <div class="message">{{message}}</div>
+            <div v-if="typeof message === 'string'" class="message">{{message}}</div>
+            <div v-else class="message"><component :is="message" /></div>
             <a v-if="loading" class="action-btn" href="javascript:void(0)" @click="stop">{{$t('cancel')}}</a>
             <a
               v-else-if="result.length > 1"
@@ -119,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, reactive, ref, shallowRef, watch, watchEffect } from 'vue'
+import { computed, Fragment, h, nextTick, onBeforeUnmount, reactive, ref, shallowRef, Text, watch, watchEffect } from 'vue'
 import type { ISearchRange, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery, ITextSearchMatch } from 'ripgrep-wrapper'
 import { getLogger, sleep } from '@fe/utils'
 import { basename, dirname, join, relative } from '@fe/utils/path'
@@ -131,11 +132,13 @@ import { useToast } from '@fe/support/ui/toast'
 import { switchDoc } from '@fe/services/document'
 import { getIsDefault, highlightLine } from '@fe/services/editor'
 import { useI18n } from '@fe/services/i18n'
-import { getSetting } from '@fe/services/setting'
+import { getSetting, showSettingPanel } from '@fe/services/setting'
+import { toggleSide } from '@fe/services/layout'
 import type { FindInRepositoryQuery } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
 const MAX_RESULTS = 1000
+const SEARCH_LIMIT_SETTING_KEY = 'search.number-limit'
 
 const logger = getLogger('search-panel')
 const toast = useToast()
@@ -170,7 +173,10 @@ const message = computed(() => {
   const results = result.value.reduce((acc, cur) => acc + (cur.numMatches || 0), 0)
 
   if (success?.value?.limitHit) {
-    return `${results} results (limited) in ${result.value.length} files`
+    return h(Fragment, [
+      h(Text, `${results} results in ${result.value.length} files - `),
+      h('a', { href: 'javascript:void(0)', onClick: () => showSettingPanel(SEARCH_LIMIT_SETTING_KEY) }, 'limited'),
+    ])
   } else {
     return `${results} results in ${result.value.length} files`
   }
@@ -316,7 +322,7 @@ async function search () {
         excludePattern: buildGlobObject(exclude.value),
       },
     ],
-    maxResults: Math.min(MAX_RESULTS, getSetting('search.number-limit', 300)),
+    maxResults: Math.min(MAX_RESULTS, getSetting(SEARCH_LIMIT_SETTING_KEY, 300)),
   }
 
   try {
@@ -500,15 +506,22 @@ registerAction({
   keys: [CtrlCmd, Shift, 'f'],
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
-    if (query) {
-      query.include && (include.value = query.include)
-      query.exclude && (exclude.value = query.exclude)
-      query.pattern && (pattern.value = query.pattern)
-      query.caseSensitive && (option.isCaseSensitive = query.caseSensitive)
-      query.wholeWord && (option.isWordMatch = query.wholeWord)
-      query.regExp && (option.isRegExp = query.regExp)
 
-      if (query.pattern) {
+    toggleSide(true)
+
+    if (query) {
+      function notEmpty <T> (val: T | null | undefined): val is T {
+        return val !== undefined && val !== null
+      }
+
+      notEmpty(query.include) && (include.value = query.include)
+      notEmpty(query.exclude) && (exclude.value = query.exclude)
+      notEmpty(query.caseSensitive) && (option.isCaseSensitive = query.caseSensitive)
+      notEmpty(query.wholeWord) && (option.isWordMatch = query.wholeWord)
+      notEmpty(query.regExp) && (option.isRegExp = query.regExp)
+
+      if (notEmpty(query.pattern)) {
+        pattern.value = query.pattern
         nextTick(() => {
           search()
         })
