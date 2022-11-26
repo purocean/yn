@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRef } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
