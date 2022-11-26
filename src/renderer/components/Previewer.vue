@@ -4,10 +4,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { getAllPreviewers } from '@fe/services/view'
+import { registerHook, removeHook } from '@fe/core/hook'
+import { useQuickFilter } from '@fe/support/ui/quick-filter'
+import { getAllPreviewers, switchPreviewer } from '@fe/services/view'
+import { FileTabs } from '@fe/services/workbench'
+import { t } from '@fe/services/i18n'
 import type { AppState } from '@fe/support/store'
+import type { Components } from '@fe/types'
 import DefaultPreviewer from './DefaultPreviewer.vue'
 
 const store = useStore<AppState>()
@@ -16,6 +21,54 @@ const previewer = computed(() => {
   const { previewer } = store.state
   return getAllPreviewers().find(item => item.name === previewer)
 })
+
+function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
+  const previewers = getAllPreviewers()
+
+  if (previewers.length < 1 || store.state.currentFile?.repo === '__help__') {
+    return
+  }
+
+  const availablePreviewers = [
+    {
+      name: 'default',
+      displayName: t('previewer.default-previewer'),
+      component: null,
+    },
+    ...previewers,
+  ]
+
+  btns.push({
+    type: 'normal',
+    icon: 'eye-solid',
+    title: t('previewer.switch-previewer'),
+    order: 7001,
+    onClick: (e) => {
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+      useQuickFilter().show({
+        filterInputHidden: true,
+        top: `${rect.bottom + 10}px`,
+        right: `${document.body.clientWidth - rect.right}px`,
+        list: availablePreviewers.map(x => ({ key: x.name, label: x.displayName || x.name })),
+        current: previewer.value?.name || 'default',
+        onChoose: ({ key }) => {
+          switchPreviewer(key)
+        },
+      })
+    },
+  })
+}
+
+onMounted(() => {
+  FileTabs.tapActionBtns(tabsActionBtnTapper)
+  registerHook('VIEW_PREVIEWER_CHANGE', FileTabs.refreshActionBtns)
+})
+
+onBeforeUnmount(() => {
+  FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
+  removeHook('VIEW_PREVIEWER_CHANGE', FileTabs.refreshActionBtns)
+})
+
 </script>
 
 <style scoped>

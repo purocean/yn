@@ -47,6 +47,7 @@ import DefaultPreviewerRender from './DefaultPreviewerRender.ce.vue'
 import SvgIcon from './SvgIcon.vue'
 import Outline from './Outline.vue'
 import { FileTabs } from '@fe/services/workbench'
+import { isMarkdownFile } from '@fe/services/document'
 
 const { t } = useI18n()
 
@@ -209,24 +210,6 @@ const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
 
   const order = 8000
 
-  btns.push(
-    { type: 'separator', order },
-    {
-      type: 'normal',
-      icon: 'print-solid',
-      title: t('print'),
-      onClick: () => printCurrentDocument(),
-      order,
-    },
-    {
-      type: 'normal',
-      icon: 'file-export-solid',
-      title: t('export'),
-      onClick: () => toggleExportPanel(),
-      order,
-    }
-  )
-
   if (todoCount.value > 0) {
     btns.push(
       { type: 'separator', order },
@@ -238,6 +221,29 @@ const tabsActionBtnTapper = (btns: Components.Tabs.ActionBtn[]) => {
           done: todoDoneCount.value,
         }),
       },
+    )
+  }
+
+  if (
+    (!store.state.previewer || store.state.previewer === 'default') &&
+    store.state.currentFile && isMarkdownFile(store.state.currentFile)
+  ) {
+    btns.push(
+      { type: 'separator', order },
+      {
+        type: 'normal',
+        icon: 'print-solid',
+        title: t('print'),
+        onClick: () => printCurrentDocument(),
+        order,
+      },
+      {
+        type: 'normal',
+        icon: 'file-export-solid',
+        title: t('export'),
+        onClick: () => toggleExportPanel(),
+        order,
+      }
     )
   }
 }

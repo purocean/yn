@@ -22,7 +22,7 @@ const EDITOR_LAST_USAGE_TIME_KEY = 'editor.last-usage-time'
 
 const defaultEditor: CustomEditor = {
   name: 'default-markdown-editor',
-  displayName: 'Default Editor',
+  displayName: t('editor.default-editor'),
   component: null,
   when ({ doc }) {
     return !!(doc && isMarkdownFile(doc))
@@ -73,11 +73,13 @@ function refreshEditor () {
 }
 
 function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
+  const order = 7000
   if (availableEditors.value.length > 1) {
-    btns.push({ type: 'separator' })
+    btns.push({ type: 'separator', order })
     btns.push({
       type: 'normal',
       icon: 'pen-solid',
+      order,
       title: t('editor.switch-editor'),
       onClick: (e) => {
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()

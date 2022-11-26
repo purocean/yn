@@ -160,6 +160,7 @@ watch(() => keyword.value, (val) => {
   border-radius: var(--g-border-radius);
   overflow: hidden;
   backdrop-filter: var(--g-backdrop-filter);
+  z-index: 9999999;
 
   input[type="text"] {
     border-bottom-left-radius: 0;

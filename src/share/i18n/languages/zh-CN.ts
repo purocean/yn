@@ -35,7 +35,6 @@ const data: BaseLanguage = {
   'install-extension-tips': '请先安装并启用 “%s” 扩展',
   'not-support-mas': '从 Mac Apple Store 中下载的应用不支持此拓展。',
   'learn-more': '了解更多',
-  'previewer': '预览器',
   'default': '默认',
   'print': '打印',
   'premium': {
@@ -427,6 +426,11 @@ const data: BaseLanguage = {
       'reveal-line-in-preview': '在预览中聚焦',
     },
     'switch-editor': '切换编辑器',
+    'default-editor': '默认编辑器',
+  },
+  'previewer': {
+    'default-previewer': '默认预览器',
+    'switch-previewer': '切换预览器',
   },
   'picgo': {
     'setting': {

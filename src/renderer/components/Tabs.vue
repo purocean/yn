@@ -30,7 +30,7 @@
     <div ref="refFilterBtn" class="action-btn" @click="showQuickFilter" :title="filterBtnTitle">
       <svg-icon name="chevron-down" width="12px" />
     </div>
-    <template v-for="(btn, i) in [...actionBtns].sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))">
+    <template v-for="(btn, i) in [...actionBtns].filter(x => !x.hidden).sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))">
       <div  v-if="btn.type === 'separator'" class="action-btn-separator" :key="i" />
       <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" class="action-btn" @click="btn.onClick" :title="btn.title">
         <svg-icon :name="btn.icon" width="12px" />

@@ -91,8 +91,11 @@ export namespace Components {
       icon: string,
       title: string,
       order?: number,
+      hidden?: boolean,
       onClick: (e: MouseEvent) => void,
-    } | { type: 'separator', order?: number } | { type: 'custom', key?: string | number, component: any, order?: number }
+    }
+    | { type: 'separator', order?: number, hidden?: boolean }
+    | { type: 'custom', key?: string | number, hidden?: boolean, component: any, order?: number }
   }
 
   export namespace FileTabs {
@@ -390,6 +393,7 @@ export type BuildInHookTypes = {
 
 export type Previewer = {
   name: string,
+  displayName?: string,
   component: any,
 }
 

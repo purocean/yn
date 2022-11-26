@@ -34,7 +34,6 @@ const data = {
   'install-extension-tips': 'Please install and enable the "%s" extension first',
   'not-support-mas': 'Yank Note downloaded from the Mac Apple Store does not support this extension.',
   'learn-more': 'Learn More',
-  'previewer': 'Previewer',
   'default': 'Default',
   'print': 'Print',
   'premium': {
@@ -426,6 +425,11 @@ const data = {
       'reveal-line-in-preview': 'Reveal Line in Preview',
     },
     'switch-editor': 'Switch Editor',
+    'default-editor': 'Default Editor',
+  },
+  'previewer': {
+    'default-previewer': 'Default Previewer',
+    'switch-previewer': 'Switch Previewer',
   },
   'picgo': {
     'setting': {
