@@ -1,11 +1,12 @@
 import { Ref, ref, watch } from 'vue'
 
-export function useLazyRef<T> (fun: Ref<T> | (() => T), delay: ((val: T) => number) | number) {
-  const value = ref<T>()
+export function useLazyRef<T> (source: Ref<T> | (() => T), delay: ((val: T) => number) | number) {
+  const initValue = typeof source === 'function' ? source() : source.value
+  const value = ref<T>(initValue) as Ref<T>
 
-  let timer:any = 0
+  let timer: any = 0
 
-  watch(fun, (val) => {
+  watch(source, (val) => {
     if (timer) {
       clearTimeout(timer)
       timer = 0

@@ -75,7 +75,7 @@
           <div class="message-wrapper">
             <div v-if="typeof message === 'string'" class="message">{{message}}</div>
             <div v-else class="message"><component :is="message" /></div>
-            <a v-if="loading" class="action-btn" href="javascript:void(0)" @click="stop">{{$t('cancel')}}</a>
+            <a v-if="loadingVisible" class="action-btn" href="javascript:void(0)" @click="stop">{{$t('cancel')}}</a>
             <a
               v-else-if="result.length > 1"
               class="action-btn"
@@ -126,6 +126,7 @@ import { getLogger, sleep } from '@fe/utils'
 import { basename, dirname, join, relative } from '@fe/utils/path'
 import { registerAction, removeAction } from '@fe/core/action'
 import { CtrlCmd, Shift } from '@fe/core/command'
+import { useLazyRef } from '@fe/utils/composable'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
@@ -155,6 +156,7 @@ const option = reactive({
 })
 
 const loading = ref(false)
+const loadingVisible = useLazyRef(loading, val => val ? 200 : -1)
 const result = ref<(ISerializedFileMatch & { open: boolean })[]>([])
 const success = shallowRef<ISerializedSearchSuccess | null>(null)
 const errorMessage = shallowRef('')
@@ -167,7 +169,7 @@ const message = computed(() => {
   }
 
   if (result.value.length === 0) {
-    return success.value ? 'No results found' : (loading.value ? 'Searching...' : '')
+    return success.value ? 'No results found' : (loadingVisible.value ? 'Searching...' : '')
   }
 
   const results = result.value.reduce((acc, cur) => acc + (cur.numMatches || 0), 0)
