@@ -20,7 +20,7 @@
         @contextmenu.exact.prevent.stop="showContextMenu(itemNode)">
         <div class="item">
           <div class="item-label" draggable="true" @dragstart="onDragStart">
-            {{ itemNode.name === '/' ? currentRepoName : itemNode.name }} <span class="count">({{itemNode.children ? itemNode.children.length : 0}})</span>
+            {{ itemNode.name }} <span class="count">({{itemNode.children ? itemNode.children.length : 0}})</span>
           </div>
           <div class="item-action">
             <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFolder()" :title="$t('tree.context-menu.create-dir')"></svg-icon>
@@ -62,6 +62,7 @@ import { createDir, createDoc, deleteDoc, duplicateDoc, isMarkdownFile, isMarked
 import { useI18n } from '@fe/services/i18n'
 import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
 import { useToast } from '@fe/support/ui/toast'
+import type { AppState } from '@fe/support/store'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -76,7 +77,7 @@ export default defineComponent({
   setup (props) {
     const { t } = useI18n()
 
-    const store = useStore()
+    const store = useStore<AppState>()
     const toast = useToast()
 
     const refFile = ref<any>(null)
@@ -90,7 +91,7 @@ export default defineComponent({
       localMarked.value = null
     })
 
-    const { currentFile, currentRepo } = toRefs(store.state)
+    const currentFile = computed(() => store.state.currentFile)
 
     async function createFile () {
       await createDoc({ repo: props.item.repo }, props.item)
@@ -285,8 +286,6 @@ export default defineComponent({
       }
     }
 
-    const currentRepoName = computed(() => currentRepo.value?.name ?? '/')
-
     const selected = computed(() => {
       if (!currentFile.value) {
         return false
@@ -331,7 +330,6 @@ export default defineComponent({
       itemNode,
       refFile,
       fileTitle,
-      currentRepoName,
       selected,
       onTreeNodeDblClick,
       marked,

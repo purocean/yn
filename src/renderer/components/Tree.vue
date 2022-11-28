@@ -6,7 +6,7 @@
     @dblclick="refresh"
     ref="asideRef"
     :title="$t('tree.db-click-refresh')">
-    <div class="loading" v-if="tree === null"> {{$t('loading')}} </div>
+    <div class="loading" v-if="loadingVisible"> {{$t('loading')}} </div>
     <template v-else>
       <TreeNode v-for="item in tree" :item="item" :key="item.path" />
     </template>
@@ -22,6 +22,7 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useLazyRef } from '@fe/utils/composable'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { refreshTree } from '@fe/services/tree'
 import { fetchSettings, showSettingPanel } from '@fe/services/setting'
@@ -40,7 +41,9 @@ export default defineComponent({
     const contextMenu = useContextMenu()
     const asideRef = ref<HTMLElement>()
 
-    const { currentRepo, tree } = toRefs(store.state)
+    const currentRepo = computed(() => store.state.currentRepo)
+    const tree = useLazyRef(() => store.state.tree, val => val ? -1 : 200)
+    const loadingVisible = useLazyRef(() => store.state.tree === null, val => val ? 200 : 100)
     const hasRepo = computed(() => !!currentRepo.value)
 
     async function refresh () {
@@ -95,6 +98,7 @@ export default defineComponent({
       asideRef,
       tree,
       refresh,
+      loadingVisible,
       showContextMenu,
       showSettingPanel,
       hasRepo,
