@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, h, nextTick, PropType, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, h, nextTick, PropType, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { triggerHook } from '@fe/core/hook'

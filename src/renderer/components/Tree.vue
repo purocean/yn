@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUnmount, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useLazyRef } from '@fe/utils/composable'
 import { useContextMenu } from '@fe/support/ui/context-menu'
