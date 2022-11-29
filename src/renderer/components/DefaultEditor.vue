@@ -104,6 +104,11 @@ export default defineComponent({
       getEditor().updateOptions({
         readOnly: !current || !current.plain
       })
+
+      if (getIsDefault()) {
+        await nextTick()
+        getEditor().focus()
+      }
     }
 
     function resize () {
