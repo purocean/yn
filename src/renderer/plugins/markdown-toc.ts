@@ -3,7 +3,6 @@
 import { h } from 'vue'
 import Markdown from 'markdown-it'
 import StateInline from 'markdown-it/lib/rules_inline/state_inline'
-import { getKeyLabel } from '@fe/core/command'
 import ctx, { Plugin } from '@fe/context'
 
 const slugify = (s: string) => encodeURIComponent(String(s).trim().toUpperCase().replace(/\s+/g, '-'))
@@ -166,7 +165,7 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
     return h('div', { key: html, class: options.containerClass, innerHTML: html }) as any
   }
 
-  const headTitle = getKeyLabel('CtrlCmd') + ' + ' + ctx.i18n.t('click-to-copy-link')
+  const headTitle = ctx.action.getKeyLabel(ctx.action.Keys.CtrlCmd) + ' + ' + ctx.i18n.t('click-to-copy-link')
 
   md.renderer.rules.heading_open = function (tokens, idx, opt, env, slf) {
     const header = tokens[idx]

@@ -53,13 +53,13 @@ export default {
     ctx.action.registerAction({
       name: backId,
       handler: () => go(-1),
-      keys: [ctx.command.Alt, ctx.command.BracketLeft],
+      keys: [ctx.action.Keys.Alt, ctx.action.Keys.BracketLeft],
     })
 
     ctx.action.registerAction({
       name: forwardId,
       handler: () => go(1),
-      keys: [ctx.command.Alt, ctx.command.BracketRight],
+      keys: [ctx.action.Keys.Alt, ctx.action.Keys.BracketRight],
     })
 
     ctx.registerHook('STARTUP', () => {
@@ -70,7 +70,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('status-bar.nav.forward'),
             disabled: idx >= stack.length - 1,
-            subTitle: ctx.command.getKeysLabel(forwardId),
+            subTitle: ctx.action.getKeysLabel(forwardId),
             onClick: () => ctx.action.getActionHandler(forwardId)()
           },
           {
@@ -78,7 +78,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('status-bar.nav.back'),
             disabled: idx <= 0,
-            subTitle: ctx.command.getKeysLabel(backId),
+            subTitle: ctx.action.getKeysLabel(backId),
             onClick: () => ctx.action.getActionHandler(backId)()
           },
         )
@@ -91,7 +91,7 @@ export default {
           type: 'btn',
           icon: 'arrow-left-solid',
           flat: true,
-          title: ctx.i18n.t('control-center.navigation.back', ctx.command.getKeysLabel(backId)),
+          title: ctx.i18n.t('control-center.navigation.back', ctx.action.getKeysLabel(backId)),
           disabled: idx <= 0,
           showInActionBar: true,
           onClick: () => ctx.action.getActionHandler(backId)()
@@ -100,7 +100,7 @@ export default {
           type: 'btn',
           icon: 'arrow-right-solid',
           flat: true,
-          title: ctx.i18n.t('control-center.navigation.forward', ctx.command.getKeysLabel(forwardId)),
+          title: ctx.i18n.t('control-center.navigation.forward', ctx.action.getKeysLabel(forwardId)),
           disabled: idx >= stack.length - 1,
           showInActionBar: true,
           onClick: () => ctx.action.getActionHandler(forwardId)()

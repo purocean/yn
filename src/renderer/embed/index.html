@@ -57,10 +57,10 @@
       if (window.parent && window.parent.ctx && params.get('trigger-parent-keyboard-event') === 'true') {
         window.addEventListener('keydown', (e) => {
           // debugger
-          window.parent.ctx.command.keydownHandler(e)
+          window.parent.ctx.action.keydownHandler(e)
         }, true)
         window.addEventListener('keyup', (e) => {
-          window.parent.ctx.command.keyupHandler(e)
+          window.parent.ctx.action.keyupHandler(e)
         }, true)
       }
 

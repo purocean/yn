@@ -36,13 +36,12 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, ref, toRef } from 'vue'
 import { useStore } from 'vuex'
-import { registerAction, removeAction } from '@fe/core/action'
+import { getKeysLabel, registerAction, removeAction } from '@fe/core/action'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
 import { toggleOutline, ControlCenter } from '@fe/services/workbench'
 import { findInRepository } from '@fe/services/base'
-import { getKeysLabel } from '@fe/core/command'
 import type { FileSort, Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 

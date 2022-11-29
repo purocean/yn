@@ -5,7 +5,7 @@ import { deleteLine, getEditor, getLineContent, getOneIndent, insert, replaceLin
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
-import { isKeydown } from '@fe/core/command'
+import { isKeydown, Keys } from '@fe/core/action'
 
 function processCursorChange (source: string, position: Monaco.Position) {
   const isEnter = source === 'keyboard' && isKeydown('ENTER')
@@ -167,14 +167,14 @@ export default {
           id: 'plugin.editor.insert-time',
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.insert-time'),
-          subTitle: ctx.command.getKeysLabel([ctx.command.Shift, ctx.command.Alt, 't']),
+          subTitle: ctx.action.getKeysLabel([Keys.Shift, Keys.Alt, 't']),
           onClick: insertTime,
         },
         {
           id: 'plugin.editor.insert-date',
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.insert-date'),
-          subTitle: ctx.command.getKeysLabel([ctx.command.Shift, ctx.command.Alt, 'd']),
+          subTitle: ctx.action.getKeysLabel([Keys.Shift, Keys.Alt, 'd']),
           onClick: insertDate,
         },
       )

@@ -31,19 +31,19 @@ export default {
 
       ctx.action.registerAction({
         name: zoomInId,
-        keys: [ctx.command.CtrlCmd, '='],
+        keys: [ctx.action.Keys.CtrlCmd, '='],
         handler: () => changeZoomFactor(true)
       })
 
       ctx.action.registerAction({
         name: zoomOutId,
-        keys: [ctx.command.CtrlCmd, '-'],
+        keys: [ctx.action.Keys.CtrlCmd, '-'],
         handler: () => changeZoomFactor(false)
       })
 
       ctx.action.registerAction({
         name: zoomResetId,
-        keys: [ctx.command.CtrlCmd, '0'],
+        keys: [ctx.action.Keys.CtrlCmd, '0'],
         handler: () => setZoomFactor(1)
       })
 
@@ -56,7 +56,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('electron-zoom.zoom-in'),
             disabled: factor >= 1.9,
-            subTitle: ctx.command.getKeysLabel(zoomInId),
+            subTitle: ctx.action.getKeysLabel(zoomInId),
             onClick: () => ctx.action.getActionHandler(zoomInId)()
           },
           {
@@ -64,7 +64,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('electron-zoom.zoom-out'),
             disabled: factor < 0.25,
-            subTitle: ctx.command.getKeysLabel(zoomOutId),
+            subTitle: ctx.action.getKeysLabel(zoomOutId),
             onClick: () => ctx.action.getActionHandler(zoomOutId)()
           },
           {
@@ -72,7 +72,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('electron-zoom.zoom-reset'),
             disabled: factor === 1,
-            subTitle: ctx.command.getKeysLabel(zoomResetId),
+            subTitle: ctx.action.getKeysLabel(zoomResetId),
             onClick: () => ctx.action.getActionHandler(zoomResetId)()
           },
         )

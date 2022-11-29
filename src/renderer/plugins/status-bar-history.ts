@@ -12,7 +12,7 @@ export default {
       menus['status-bar-history'] = {
         id: 'status-bar-history',
         position: 'right',
-        tips: ctx.i18n.t('status-bar.tool.doc-history') + ` (${ctx.command.getKeysLabel(action.name)})`,
+        tips: ctx.i18n.t('status-bar.tool.doc-history') + ` (${ctx.action.getKeysLabel(action.name)})`,
         icon: 'history-solid',
         onClick: () => {
           action.handler()

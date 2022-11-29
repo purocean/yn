@@ -208,7 +208,7 @@ function getContentHtml () {
   return refView.value?.outerHTML || ''
 }
 
-function refresh () {
+function rerender () {
   logger.debug('refresh')
   triggerHook('VIEW_BEFORE_REFRESH')
   renderDebounce()
@@ -220,7 +220,7 @@ onMounted(() => {
   triggerHook('VIEW_MOUNTED')
   registerAction({ name: 'view.render-immediately', handler: render.bind(null, false) })
   registerAction({ name: 'view.render', handler: renderDebounce })
-  registerAction({ name: 'view.refresh', handler: refresh })
+  registerAction({ name: 'view.rerender', handler: rerender })
   registerAction({ name: 'view.reveal-line', handler: revealLine })
   registerAction({ name: 'view.get-content-html', handler: getContentHtml })
   registerAction({ name: 'view.get-view-dom', handler: getViewDom })

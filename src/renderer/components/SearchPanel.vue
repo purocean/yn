@@ -124,8 +124,7 @@ import { computed, Fragment, h, nextTick, onBeforeUnmount, reactive, ref, shallo
 import type { ISearchRange, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery, ITextSearchMatch } from 'ripgrep-wrapper'
 import { getLogger, sleep } from '@fe/utils'
 import { basename, dirname, join, relative } from '@fe/utils/path'
-import { registerAction, removeAction } from '@fe/core/action'
-import { CtrlCmd, Shift } from '@fe/core/command'
+import { Keys, registerAction, removeAction } from '@fe/core/action'
 import { useLazyRef } from '@fe/utils/composable'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
@@ -505,7 +504,7 @@ function markText (text: string, ranges: ISearchRange[]) {
 
 registerAction({
   name: 'base.find-in-repository',
-  keys: [CtrlCmd, Shift, 'f'],
+  keys: [Keys.CtrlCmd, Keys.Shift, 'f'],
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
 

@@ -1,6 +1,5 @@
 import type { Plugin } from '@fe/context'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
-import { getKeysLabel } from '@fe/core/command'
 
 export default {
   name: 'status-bar-view',
@@ -24,7 +23,7 @@ export default {
               type: 'normal',
               checked: ctx.store.state.wordWrap === 'on',
               title: ctx.i18n.t('status-bar.view.word-wrap'),
-              subTitle: getKeysLabel('editor.toggle-wrap'),
+              subTitle: ctx.action.getKeysLabel('editor.toggle-wrap'),
               onClick: () => ctx.editor.toggleWrap()
             },
             {
@@ -40,7 +39,7 @@ export default {
               type: 'normal',
               title: ctx.i18n.t('status-bar.view.side-bar'),
               checked: ctx.store.state.showSide,
-              subTitle: getKeysLabel('layout.toggle-side'),
+              subTitle: ctx.action.getKeysLabel('layout.toggle-side'),
               onClick: () => ctx.layout.toggleSide()
             },
             {
@@ -48,7 +47,7 @@ export default {
               type: 'normal',
               checked: ctx.store.state.showEditor,
               title: ctx.i18n.t('status-bar.view.editor'),
-              subTitle: getKeysLabel('layout.toggle-editor'),
+              subTitle: ctx.action.getKeysLabel('layout.toggle-editor'),
               onClick: () => ctx.layout.toggleEditor()
             },
             {
@@ -56,7 +55,7 @@ export default {
               type: 'normal',
               checked: ctx.store.state.showView,
               title: ctx.i18n.t('status-bar.view.preview'),
-              subTitle: getKeysLabel('layout.toggle-view'),
+              subTitle: ctx.action.getKeysLabel('layout.toggle-view'),
               onClick: () => ctx.layout.toggleView()
             },
             ...(!FLAG_DISABLE_XTERM ? [{
@@ -64,7 +63,7 @@ export default {
               type: 'normal' as any,
               checked: ctx.store.state.showXterm,
               title: ctx.i18n.t('status-bar.view.xterm'),
-              subTitle: getKeysLabel('layout.toggle-xterm'),
+              subTitle: ctx.action.getKeysLabel('layout.toggle-xterm'),
               onClick: () => ctx.layout.toggleXterm()
             }] : []),
             {

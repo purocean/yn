@@ -3,7 +3,7 @@ import * as api from '@fe/support/api'
 import { encodeMarkdownLink } from '@fe/utils'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import { CtrlCmd, isCommand, LeftClick, Shift } from '@fe/core/command'
+import { Keys, matchKeys } from '@fe/core/action'
 import { replaceValue } from '@fe/services/editor'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
@@ -88,7 +88,7 @@ async function handleClick ({ e }: { e: MouseEvent }) {
   }
 
   const img = target as HTMLImageElement
-  if (isCommand(e, commandClick)) { // download image to local
+  if (matchKeys(e, [Keys.CtrlCmd, Keys.Shift, Keys.LeftClick])) { // download image to local
     const data = await transformImgOutLink(img)
     if (data) {
       replaceValue(data.oldLink, data.replacedLink)
@@ -110,12 +110,6 @@ export default {
     ctx.action.registerAction({
       name: actionKeydown,
       handler: transformAll
-    })
-
-    ctx.command.registerCommand({
-      id: commandClick,
-      keys: [CtrlCmd, Shift, LeftClick],
-      handler: null
     })
 
     ctx.registerHook('VIEW_ELEMENT_CLICK', handleClick)

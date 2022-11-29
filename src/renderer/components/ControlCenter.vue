@@ -19,8 +19,7 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, ref } from 'vue'
-import { registerAction, removeAction } from '@fe/core/action'
-import { Alt, Escape, getKeysLabel } from '@fe/core/command'
+import { getKeysLabel, Keys, registerAction, removeAction } from '@fe/core/action'
 import { ControlCenter, FileTabs } from '@fe/services/workbench'
 import { t } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
@@ -43,13 +42,13 @@ registerAction({
 registerAction({
   name: 'control-center.toggle',
   handler: toggle,
-  keys: [Alt, 'c']
+  keys: [Keys.Alt, 'c']
 })
 
 registerAction({
   name: 'control-center.hide',
   handler: () => toggle(false),
-  keys: [Escape],
+  keys: [Keys.Escape],
   when: () => visible.value
 })
 
