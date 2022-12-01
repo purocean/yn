@@ -537,6 +537,10 @@ const data = {
       'title': 'Mark Version [%s]',
       'hint': 'Input some message (optional)',
     },
+    'content-too-long-alert': {
+      'title': 'Warning',
+      'content': 'For performance reasons, documents with more than [%s] characters will not store history. The current document length is [%s] characters.',
+    },
   },
   'copy-content': {
     'options': 'Options: ',

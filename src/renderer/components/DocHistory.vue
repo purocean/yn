@@ -56,7 +56,8 @@
 import dayjs from 'dayjs'
 import type * as Monaco from 'monaco-editor'
 import { useStore } from 'vuex'
-import { ref, onMounted, onUnmounted, watch, toRef, computed } from 'vue'
+import { ref, onMounted, onUnmounted, watch, toRef, computed, nextTick } from 'vue'
+import { DOC_HISTORY_MAX_CONTENT_LENGTH } from '@share/misc'
 import { removeAction, registerAction, Keys } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { commentHistoryVersion, deleteHistoryVersion, fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
@@ -117,6 +118,15 @@ const xVersions = computed(() => {
 function show (doc?: Doc) {
   doc ??= currentFile.value!
   currentDoc.value = doc
+
+  if (currentContent.value && currentContent.value.length > DOC_HISTORY_MAX_CONTENT_LENGTH) {
+    nextTick(() => {
+      useModal().alert({
+        title: t('doc-history.content-too-long-alert.title'),
+        content: t('doc-history.content-too-long-alert.content', String(DOC_HISTORY_MAX_CONTENT_LENGTH), String(currentContent.value.length)),
+      })
+    })
+  }
 }
 
 function hide () {

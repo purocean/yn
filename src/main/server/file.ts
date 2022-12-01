@@ -6,7 +6,7 @@ import * as crypto from 'crypto'
 import * as yargs from 'yargs'
 import AdmZip from 'adm-zip'
 import dayjs from 'dayjs'
-import { DEFAULT_EXCLUDE_REGEX, ENCRYPTED_MARKDOWN_FILE_EXT, isEncryptedMarkdownFile, isMarkdownFile, MARKDOWN_FILE_EXT } from '../../share/misc'
+import { DEFAULT_EXCLUDE_REGEX, DOC_HISTORY_MAX_CONTENT_LENGTH, ENCRYPTED_MARKDOWN_FILE_EXT, isEncryptedMarkdownFile, isMarkdownFile, MARKDOWN_FILE_EXT } from '../../share/misc'
 import { HISTORY_DIR } from '../constant'
 import config from '../config'
 import repository from './repository'
@@ -149,7 +149,7 @@ export function write (repo: string, p: string, content: any): Promise<string> {
     await fs.writeFile(filePath, content)
 
     if (isMarkdownFile(filePath) && typeof content === 'string') {
-      if (content.length > 100 * 1024) {
+      if (content.length > DOC_HISTORY_MAX_CONTENT_LENGTH) {
         console.log('skip write history for large file', filePath, content.length)
       } else {
         setTimeout(() => writeHistory(filePath, content), 0)
