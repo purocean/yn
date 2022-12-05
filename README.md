@@ -1,6 +1,6 @@
 # Yank Note
 
-A **hackable** markdown note application for programmers **[Download](https://github.com/purocean/yn/releases)** | **[Try it Online >>>](https://yank-note.vercel.app/)**
+A **hackable** markdown note application for programmers **[Download](https://github.com/purocean/yn/releases)** | **[Try it Online >>>](https://demo.yank-note.com/)**
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not recommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
