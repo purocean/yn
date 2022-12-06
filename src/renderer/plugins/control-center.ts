@@ -12,7 +12,7 @@ export default {
             {
               type: 'btn',
               icon: 'side-bar',
-              title: ctx.i18n.t('control-center.switch.side-bar', ctx.action.getKeysLabel('layout.toggle-side')),
+              title: ctx.i18n.t('control-center.switch.side-bar', ctx.command.getKeysLabel('layout.toggle-side')),
               checked: ctx.store.state.showSide,
               onClick: () => {
                 ctx.layout.toggleSide()
@@ -21,7 +21,7 @@ export default {
             {
               type: 'btn',
               icon: 'edit-solid',
-              title: ctx.i18n.t('control-center.switch.editor', ctx.action.getKeysLabel('layout.toggle-editor')),
+              title: ctx.i18n.t('control-center.switch.editor', ctx.command.getKeysLabel('layout.toggle-editor')),
               checked: ctx.store.state.showEditor,
               onClick: () => {
                 ctx.layout.toggleEditor()
@@ -30,7 +30,7 @@ export default {
             {
               type: 'btn',
               icon: 'eye-regular',
-              title: ctx.i18n.t('control-center.switch.view', ctx.action.getKeysLabel('layout.toggle-view')),
+              title: ctx.i18n.t('control-center.switch.view', ctx.command.getKeysLabel('layout.toggle-view')),
               checked: ctx.store.state.showView,
               onClick: () => {
                 ctx.layout.toggleView()
@@ -60,7 +60,7 @@ export default {
             {
               type: 'btn',
               icon: 'text-width-solid',
-              title: ctx.i18n.t('control-center.switch.word-wrap', ctx.action.getKeysLabel('editor.toggle-wrap')),
+              title: ctx.i18n.t('control-center.switch.word-wrap', ctx.command.getKeysLabel('editor.toggle-wrap')),
               checked: ctx.store.state.wordWrap === 'on',
               onClick: () => {
                 ctx.editor.toggleWrap()
@@ -90,7 +90,7 @@ export default {
           type: 'btn',
           icon: 'sync-alt-solid',
           flat: true,
-          title: ctx.i18n.t('control-center.navigation.refresh', ctx.action.getKeysLabel('view.refresh')),
+          title: ctx.i18n.t('control-center.navigation.refresh', ctx.command.getKeysLabel('view.refresh')),
           onClick: () => {
             ctx.view.refresh()
             ctx.workbench.ControlCenter.toggle(false)
@@ -100,7 +100,7 @@ export default {
           type: 'btn',
           icon: 'bolt-solid',
           flat: true,
-          title: ctx.i18n.t('control-center.navigation.goto', ctx.action.getKeysLabel('filter.show-quick-open')),
+          title: ctx.i18n.t('control-center.navigation.goto', ctx.command.getKeysLabel('filter.show-quick-open')),
           showInActionBar: true,
           onClick: () => {
             ctx.action.getActionHandler('filter.show-quick-open')()

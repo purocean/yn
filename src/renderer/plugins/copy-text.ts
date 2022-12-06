@@ -1,4 +1,5 @@
 import { Plugin } from '@fe/context'
+import { hasCtrlCmd } from '@fe/core/command'
 import { copyText, encodeMarkdownLink } from '@fe/utils'
 import store from '@fe/support/store'
 
@@ -15,7 +16,7 @@ export default {
       }
 
       // copy heading link.
-      if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && ctx.action.hasCtrlCmd(e)) {
+      if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(target.tagName) > -1 && target.id && hasCtrlCmd(e)) {
         const { currentFile } = store.state
         if (currentFile) {
           let path = currentFile.path
@@ -34,7 +35,7 @@ export default {
       }
 
       // copy content.
-      if (target.classList.contains('copy-inner-text') && ctx.action.hasCtrlCmd(e)) {
+      if (target.classList.contains('copy-inner-text') && hasCtrlCmd(e)) {
         copyText(target.innerText)
         return preventEvent()
       }

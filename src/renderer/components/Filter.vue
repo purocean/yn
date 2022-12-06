@@ -7,7 +7,8 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import type { Doc } from '@fe/types'
-import { Keys, registerAction, removeAction } from '@fe/core/action'
+import { registerAction, removeAction } from '@fe/core/action'
+import { CtrlCmd } from '@fe/core/command'
 import { switchDoc } from '@fe/services/document'
 import XMask from './Mask.vue'
 import QuickOpen from './QuickOpen.vue'
@@ -44,7 +45,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      registerAction({ name: 'filter.show-quick-open', handler: showQuickOpen, keys: [Keys.CtrlCmd, 'p'] })
+      registerAction({ name: 'filter.show-quick-open', handler: showQuickOpen, keys: [CtrlCmd, 'p'] })
       registerAction({ name: 'filter.choose-document', handler: chooseDocument })
     })
 

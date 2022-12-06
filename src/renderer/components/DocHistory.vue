@@ -58,8 +58,9 @@ import type * as Monaco from 'monaco-editor'
 import { useStore } from 'vuex'
 import { ref, onMounted, onUnmounted, watch, toRef, computed, nextTick } from 'vue'
 import { DOC_HISTORY_MAX_CONTENT_LENGTH } from '@share/misc'
-import { removeAction, registerAction, Keys } from '@fe/core/action'
+import { removeAction, registerAction } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { Alt } from '@fe/core/command'
 import { commentHistoryVersion, deleteHistoryVersion, fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
 import { getDefaultOptions, getMonaco, setValue, whenEditorReady } from '@fe/services/editor'
 import { isEncrypted, isSameFile } from '@fe/services/document'
@@ -344,7 +345,7 @@ watch(currentVersion, async val => {
 watch([content, displayType, refEditor], updateEditor)
 
 onMounted(() => {
-  registerAction({ name: 'doc.show-history', handler: show, keys: [Keys.Alt, 'h'] })
+  registerAction({ name: 'doc.show-history', handler: show, keys: [Alt, 'h'] })
   registerAction({ name: 'doc.hide-history', handler: hide })
 
   registerHook('GLOBAL_RESIZE', layoutEditor)

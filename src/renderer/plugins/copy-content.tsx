@@ -128,7 +128,7 @@ export default {
     ctx.action.registerAction({
       name: id,
       handler: copyContent,
-      keys: [ctx.action.Keys.CtrlCmd, ctx.action.Keys.Shift, 'c'],
+      keys: [ctx.command.CtrlCmd, ctx.command.Shift, 'c'],
     })
 
     ctx.statusBar.tapMenus(menus => {
@@ -137,7 +137,7 @@ export default {
           id,
           type: 'normal',
           title: ctx.i18n.t('status-bar.tool.copy-content'),
-          subTitle: ctx.action.getKeysLabel(id),
+          subTitle: ctx.command.getKeysLabel(id),
           onClick: () => copyContent(),
           order: 100,
         },

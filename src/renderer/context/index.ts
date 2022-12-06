@@ -6,6 +6,7 @@ import * as ioc from '@fe/core/ioc'
 import * as plugin from '@fe/core/plugin'
 import * as hook from '@fe/core/hook'
 import * as action from '@fe/core/action'
+import * as command from '@fe/core/command'
 import { useToast } from '@fe/support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
@@ -42,6 +43,7 @@ const ctx = Object.freeze({
   store,
   action,
   doc,
+  command,
   tree,
   workbench,
   markdown,

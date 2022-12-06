@@ -50,6 +50,7 @@ Yank Note 有一些概念，是支撑整个插件体系的基础：
 
 1. Hook 钩子
 1. Action 动作
+1. Command 命令
 
 ### Hook 钩子
 
@@ -59,7 +60,7 @@ Yank Note 在执行一些操作的时候，会触发一些钩子调用。
 
 调用 `triggerHook` 时候附加选项 `{ breakable: true }`，表明这个钩子调用是可中断的。
 
-如下面的内部钩子调用是可中断的
+下面的内部钩子调用是可中断的
 
 - `ACTION_AFTER_RUN`
 - `ACTION_BEFORE_RUN`
@@ -75,9 +76,13 @@ Yank Note 在执行一些操作的时候，会触发一些钩子调用。
 
 ### Action 动作
 
-Yank Note 有一个 Action 中心 [`ctx.action`](https://yn-api-doc.vercel.app/modules/renderer_core_action.html)，提供动作和快捷键的管理和运行。
+Yank Note 有一个 Action 中心 [`ctx.action`](https://yn-api-doc.vercel.app/modules/renderer_core_action.html)，提供动作的管理和运行。
 
 内部 Action 可以参考 [Api 文档](https://yn-api-doc.vercel.app/modules/renderer_types.html#BuildInActions)
+
+### Command 命令
+
+Yank Note 有一个 Command 中心 [`ctx.command`](https://yn-api-doc.vercel.app/modules/renderer_core_command.html)，主要负责快捷键相关的管理和运行。
 
 ## 插件能力
 

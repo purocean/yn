@@ -24,7 +24,7 @@ export default {
 
     ctx.action.registerAction({
       name: actionName,
-      keys: [ctx.action.Keys.Alt, 'o'],
+      keys: [ctx.command.Alt, 'o'],
       handler: (line?: number, checked?: boolean) => {
         if (line) {
           switchTodo(line, checked)

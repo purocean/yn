@@ -3,8 +3,9 @@ import { cloneDeep, debounce } from 'lodash-es'
 import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron, isMacOS } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
-import { getActionHandler, Keys, registerAction } from '@fe/core/action'
+import { getActionHandler, registerAction } from '@fe/core/action'
 import * as ioc from '@fe/core/ioc'
+import { Alt } from '@fe/core/command'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { sleep } from '@fe/utils'
@@ -442,7 +443,7 @@ export function getIsDefault () {
   return isDefaultEditor
 }
 
-registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Keys.Alt, 'w'] })
+registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
 
 registerHook('EDITOR_CURRENT_EDITOR_CHANGE', ({ current }) => {
   isDefaultEditor = !current?.component

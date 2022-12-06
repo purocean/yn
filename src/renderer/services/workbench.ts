@@ -1,6 +1,7 @@
 import { debounce } from 'lodash-es'
 import * as ioc from '@fe/core/ioc'
-import { getActionHandler, Keys, registerAction } from '@fe/core/action'
+import { getActionHandler, registerAction } from '@fe/core/action'
+import { Alt, Shift } from '@fe/core/command'
 import store from '@fe/support/store'
 import type { Components } from '@fe/types'
 
@@ -12,7 +13,7 @@ export function toggleOutline (visible?: boolean) {
   store.commit('setShowOutline', typeof visible === 'boolean' ? visible : !store.state.showOutline)
 }
 
-registerAction({ name: 'workbench.toggle-outline', handler: toggleOutline, keys: [Keys.Shift, Keys.Alt, 'o'] })
+registerAction({ name: 'workbench.toggle-outline', handler: toggleOutline, keys: [Shift, Alt, 'o'] })
 
 const _refreshTabsActionBtns = debounce(() => {
   getActionHandler('file-tabs.refresh-action-btns')()

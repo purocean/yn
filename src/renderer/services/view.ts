@@ -1,5 +1,6 @@
 import juice from 'juice'
-import { getActionHandler, Keys, registerAction } from '@fe/core/action'
+import { CtrlCmd, Escape, registerCommand } from '@fe/core/command'
+import { getActionHandler, registerAction } from '@fe/core/action'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import * as ioc from '@fe/core/ioc'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
@@ -61,7 +62,7 @@ export async function refresh () {
     await switchDoc({ type, name, path, repo }, true)
   }
 
-  getActionHandler('view.rerender')()
+  getActionHandler('view.refresh')()
 }
 
 /**
@@ -467,7 +468,7 @@ registerAction({
 registerAction({
   name: 'view.exit-presentation',
   handler: () => present(false),
-  keys: [Keys.Escape],
+  keys: [Escape],
   when: () => {
     const el = (renderIframe?.contentDocument || window.document).activeElement
     return store.state.presentation &&
@@ -479,8 +480,8 @@ registerAction({
   }
 })
 
-registerAction({
-  name: 'view.refresh',
+registerCommand({
+  id: 'view.refresh',
   handler: refresh,
-  keys: [Keys.CtrlCmd, 'r']
+  keys: [CtrlCmd, 'r']
 })

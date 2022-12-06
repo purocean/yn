@@ -17,9 +17,10 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
+import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/command'
 import type { Components, Doc } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { getKeysLabel, Keys, registerAction, removeAction } from '@fe/core/action'
+import { registerAction, removeAction } from '@fe/core/action'
 import { ensureCurrentFileSaved, isEncrypted, isMarkdownFile, isSameFile, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
@@ -43,7 +44,7 @@ export default defineComponent({
     const list = ref<Components.FileTabs.Item[]>([])
     const current = ref(blankUri)
     const refTabs = ref<InstanceType<typeof Tabs> | null>(null)
-    const showFilterBtnShortcuts = [Keys.Shift, Keys.Alt, 'p']
+    const showFilterBtnShortcuts = [Shift, Alt, 'p']
     const filterBtnTitle = computed(() => $t.value('tabs.search-tabs') + ' ' + getKeysLabel(showFilterBtnShortcuts))
     const actionBtns = ref<Components.Tabs.ActionBtn[]>([])
 
@@ -190,7 +191,7 @@ export default defineComponent({
 
       registerAction({
         name: 'file-tabs.switch-left',
-        keys: [Keys.CtrlCmd, Keys.Alt, 'ArrowLeft'],
+        keys: [CtrlCmd, Alt, 'ArrowLeft'],
         handler () {
           const prev = findTab(-1)
           prev && switchTab(prev)
@@ -203,13 +204,13 @@ export default defineComponent({
           const next = findTab(1)
           next && switchTab(next)
         },
-        keys: [Keys.CtrlCmd, Keys.Alt, 'ArrowRight']
+        keys: [CtrlCmd, Alt, 'ArrowRight']
       })
 
       registerAction({
         name: 'file-tabs.close-current',
         handler: closeCurrent,
-        keys: isElectron ? [Keys.CtrlCmd, 'w'] : [Keys.CtrlCmd, Keys.Alt, 'w']
+        keys: isElectron ? [CtrlCmd, 'w'] : [CtrlCmd, Alt, 'w']
       })
 
       registerAction({

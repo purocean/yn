@@ -2,8 +2,9 @@ import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref,
 import Markdown from 'markdown-it'
 import { escape } from 'lodash-es'
 import { Plugin } from '@fe/context'
-import { getActionHandler, getKeyLabel, Keys, matchKeys } from '@fe/core/action'
+import { getActionHandler } from '@fe/core/action'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
+import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/core/command'
 import { useI18n } from '@fe/services/i18n'
 import { getLogger, md5 } from '@fe/utils'
 import SvgIcon from '@fe/components/SvgIcon.vue'
@@ -112,7 +113,7 @@ const RunCode = defineComponent({
       getActionHandler('xterm.run')({
         code: props.code,
         start: cmd.start,
-        exit: matchKeys(e, [Keys.CtrlCmd]) ? undefined : cmd.exit,
+        exit: matchKeys(e, [CtrlCmd]) ? undefined : cmd.exit,
       })
     }
 
@@ -150,7 +151,7 @@ const RunCode = defineComponent({
             onClick: run
           }),
           h('div', {
-            title: t('code-run.run-in-xterm-tips', getKeyLabel(Keys.CtrlCmd)),
+            title: t('code-run.run-in-xterm-tips', getKeyLabel(CtrlCmd)),
             class: 'p-mcr-run-xterm-btn skip-print',
             hidden: !getTerminalCmd.value,
             onClick: runInXterm
