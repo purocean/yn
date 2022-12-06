@@ -9,7 +9,7 @@ import { DOM_ATTR_NAME } from '@fe/support/args'
 
 const emptySrc = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
 
-const baseUrl = location.origin + '/api/plantuml/png'
+const baseUrl = location.origin + '/api/plantuml'
 
 const MarkdownItPlugin = function umlPlugin (md: Markdown, options: any) {
   function generateSourceDefault (umlCode: string) {
