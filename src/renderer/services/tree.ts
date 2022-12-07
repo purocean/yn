@@ -47,6 +47,11 @@ export async function refreshTree () {
 
   try {
     const tree = await api.fetchTree(repo.name, store.state.treeSort || { by: 'serial', order: 'asc' })
+
+    if (tree.length > 0 && tree[0].name === '/') {
+      tree[0].name = repo.name
+    }
+
     store.commit('setTree', tree)
   } catch (error: any) {
     useToast().show('warning', error.message)

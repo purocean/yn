@@ -538,6 +538,10 @@ const data: BaseLanguage = {
       'title': '标记版本 [%s]',
       'hint': '输入一些信息（可选）',
     },
+    'content-too-long-alert': {
+      'title': '警告',
+      'content': '出于性能考虑，超过 [%s] 字符的文档将不会存储历史。当前文档长度为 [%s] 字符。',
+    },
   },
   'copy-content': {
     'options': '选项: ',

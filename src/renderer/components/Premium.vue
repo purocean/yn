@@ -80,7 +80,7 @@
         <img class="qrcode" src="~@fe/assets/qrcode-wechat.jpg" >
       </div>
     </div>
-    <div v-if="tab === 'activation'" class="action">
+    <div v-if="tab === 'activation' && !info" class="action">
       <button class="btn tr" :disabled="!license.trim()" @click="activate">{{$t('ok')}}</button>
     </div>
   </div>

@@ -81,6 +81,10 @@ export default {
 
     let clickTimer: number | null = null
     ctx.registerHook('VIEW_ELEMENT_CLICK', async ({ e }) => {
+      if ((e.target as HTMLElement).ownerDocument?.defaultView?.getSelection()?.toString()?.length) {
+        return
+      }
+
       if (clickTimer) {
         clearTimeout(clickTimer)
         clickTimer = null

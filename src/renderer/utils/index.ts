@@ -6,6 +6,7 @@ import { FLAG_DEBUG } from '@fe/support/args'
 export * as path from './path'
 export * as storage from './storage'
 export * as crypto from './crypto'
+export * as composable from './composable'
 
 /**
  * quote string

@@ -125,9 +125,9 @@ export default defineComponent({
 }
 
 .menu > li.separator {
-  border-top: 1px rgba(var(--g-color-90-rgb), 0.5) solid;
-  border-bottom: 1px rgba(var(--g-color-70-rgb), 0.5) solid;
-  margin: 3px 0;
+  border-top: 1px rgba(var(--g-color-90-rgb), 0.7) solid;
+  border-bottom: 1px rgba(var(--g-color-70-rgb), 0.7) solid;
+  margin: 3px 6px;
 
   &:first-child,
   &:last-child,

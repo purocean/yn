@@ -6,7 +6,7 @@ import StateInline from 'markdown-it/lib/rules_inline/state_inline'
 import { getKeyLabel } from '@fe/core/command'
 import ctx, { Plugin } from '@fe/context'
 
-const slugify = (s: string) => encodeURIComponent(String(s).trim().toUpperCase().replace(/\s+/g, '-'))
+const slugify = (s: string) => String(s).trim().replace(/\s+/g, '-')
 
 const defaults = {
   level: [2, 3],
@@ -112,8 +112,10 @@ const MarkdownItPlugin = (md: Markdown, o: any) => {
 
       const slug = options.slugify(heading.content)
 
-      buffer = `<li><a href="#${slug}">`
-      buffer += typeof options.format === 'function' ? options.format(heading.content) : heading.content
+      buffer = `<li><a href="#${slug.replace(/"/g, '&quot;')}">`
+      buffer += typeof options.format === 'function'
+        ? options.format(heading.content)
+        : heading.content.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
       buffer += '</a>'
       i++
     }

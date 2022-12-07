@@ -15,7 +15,7 @@ function plantumlBase64 (base64: string) {
   return base64.split('').map(x => map[x] || '').join('')
 }
 
-export default async function (data: string) {
+export default async function (data: string): Promise<{ content: any, type: string }> {
   const code = pako.inflateRaw(Buffer.from(data, 'base64'))
 
   const api = config.get('plantuml-api', 'local')
@@ -37,14 +37,14 @@ export default async function (data: string) {
     puml.in.write(code)
     puml.in.end()
 
-    return puml.out
+    return { content: puml.out, type: 'image/png' }
   } else {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       request({ url: api.replace('{data}', plantumlBase64(data)), encoding: null }, function (err: any, res: any) {
         if (err) {
           reject(err)
         } else {
-          resolve(res.body)
+          resolve({ content: res.body, type: res.headers['content-type'] })
         }
       })
     })

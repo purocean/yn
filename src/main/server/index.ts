@@ -185,10 +185,11 @@ const searchFile = async (ctx: any, next: any) => {
 }
 
 const plantumlGen = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/plantuml/png')) {
-    ctx.type = 'image/png'
+  if (ctx.path.startsWith('/api/plantuml')) {
     try {
-      ctx.body = await plantuml(ctx.query.data)
+      const { type, content } = await plantuml(ctx.query.data)
+      ctx.type = type
+      ctx.body = content
       ctx.set('cache-control', 'max-age=86400') // 1 day.
     } catch (error) {
       ctx.body = error
