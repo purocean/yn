@@ -76,14 +76,15 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.45.0](https://github.com/purocean/yn/releases/tag/v3.45.0) 2022-11-26
+### [v3.46.0](https://github.com/purocean/yn/releases/tag/v3.46.0) 2022-12-07
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-win-x64-3.45.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-mac-arm64-3.45.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-mac-x64-3.45.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-linux-x86_64-3.45.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.45.0/Yank-Note-linux-amd64-3.45.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-win-x64-3.46.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-mac-arm64-3.46.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-mac-x64-3.46.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-linux-x86_64-3.46.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-linux-amd64-3.46.0.deb)
 
-1. feat: some interaction and visual optimization
-2. feat: presentation mode adds exit button
-3. fix: fix the problem that HTML a tag links may not be opened when in browser
-4. refactor(plugin): Refactor some interfaces and add `ctx.workbench` module
+1. feat: Plantuml supports SVG format
+1. feat: optimize interaction and UI
+1. feat(plugin): add `ctx.components.SvgIcon` component
+1. feat(plugin): add `ctx.utils.composable` module
+1. fix: Fix the problem that some anchor points cannot jump when exporting PDF
 
 [More release notes](https://github.com/purocean/yn/releases)
 
