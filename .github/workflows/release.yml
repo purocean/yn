@@ -69,7 +69,7 @@ jobs:
           yarn run electron-builder --${{ matrix.platform }} --x64 -p never | sed 's/identityName=.*$//'
           find ./out -regex '.*app.asar.unpacked/node_modules/node-pty/build/Release/pty.node$' | grep pty.node
           mv out/latest-mac.yml out/latest-mac-x64.yml
-          cp ./files/*pty.node ./node_modules/node-pty/build/Release/pty.node
+          cp ./files/m1*pty.node ./node_modules/node-pty/build/Release/pty.node
           sed -i '' 's/out\/mac\/Yank Note.app/out\/mac-arm64\/Yank Note.app/' electron-builder.json
           yarn run electron-builder --${{ matrix.platform }} --arm64 -p never | sed 's/identityName=.*$//'
           mv out/latest-mac.yml out/latest-mac-arm64.yml
@@ -80,6 +80,15 @@ jobs:
         run: |
           yarn run electron-builder --${{ matrix.platform }} -p never | sed 's/identityName=.*$//'
           find ./out -regex '.*app.asar.unpacked/node_modules/node-pty/build/Release/pty.node$' | grep pty.node
+          mv out/latest-linux.yml out/latest-linux-x64.yml
+
+      - name: Electron-Linux-Arm64
+        if: matrix.platform == 'linux' && matrix.os != 'ubuntu-18.04'
+        run: |
+          node scripts/download-pandoc.js --force-arm64
+          cp ./files/linux-arm64*pty.node ./node_modules/node-pty/build/Release/pty.node
+          yarn run electron-builder --${{ matrix.platform }} --arm64 -p never | sed 's/identityName=.*$//'
+          mv out/latest-linux.yml out/latest-linux-arm64.yml
 
       - name: Rename Artifact for Ubuntu-18.04
         if: matrix.os == 'ubuntu-18.04'
