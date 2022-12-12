@@ -86,7 +86,7 @@ jobs:
         if: matrix.platform == 'linux' && matrix.os != 'ubuntu-18.04'
         run: |
           export npm_config_arch=arm64
-          node "$NODE_MODULES_PATH/@vscode/ripgrep/lib/postinstall.js" --force
+          node "./node_modules/@vscode/ripgrep/lib/postinstall.js" --force
           node scripts/download-pandoc.js --force-arm64
           cp ./files/linux-arm64*pty.node ./node_modules/node-pty/build/Release/pty.node
           yarn run electron-builder --${{ matrix.platform }} --arm64 -p never | sed 's/identityName=.*$//'
