@@ -163,7 +163,7 @@ export type FileSort = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: '
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'print' | 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
-export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other'
+export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'macros'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 
 export type PrintOpts = {
@@ -233,6 +233,7 @@ export interface Extension {
 
 export interface BuildInSettings {
   'repos': Repo[],
+  'macros': { match: string, replace: string }[],
   'theme': ThemeName,
   'language': LanguageName,
   'auto-save': number,
@@ -381,7 +382,7 @@ export type BuildInHookTypes = {
   SETTING_PANEL_BEFORE_SHOW: {},
   SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
-  SETTING_BEFORE_WRITE: { settings: BuildInSettings },
+  SETTING_BEFORE_WRITE: { settings: Partial<BuildInSettings> },
   EXTENSION_READY: { extensions: Extension[] },
   CODE_RUNNER_CHANGE: { type: 'register' | 'remove' },
   PLUGIN_HOOK: {

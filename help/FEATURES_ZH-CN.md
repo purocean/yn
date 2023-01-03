@@ -598,6 +598,10 @@ Yank Note 允许你在页面中嵌入宏，用以动态地替换文档。
 
 Front Matter 中的 `define` 字段可以定义一些文本替换映射。支持在另一个文件定义，支持宏表达式。具体可参考本文件顶部 Front Matter 部分。
 
+::: tip
+你还可以在设置中配置 *<a href="javascript: ctx.setting.showSettingPanel('macros')">全局宏替换</a>* ，这样所有文档都可以使用。不过，你仍然需要在 Front Matter 中定义 `enableMacro: true`。
+:::
+
 - 应用名: --APP_NAME--
 - 应用版本: --APP_VERSION--
 - 另一个文件的定义: --TEST_DEFINE--

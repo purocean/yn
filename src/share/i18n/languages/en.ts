@@ -347,6 +347,7 @@ const data = {
       'editor': 'Editor',
       'image': 'Image',
       'proxy': 'Proxy',
+      'macros': 'Macro',
       'other': 'Other',
     },
     'schema': {
@@ -403,6 +404,13 @@ const data = {
         'server-hint': '127.0.0.1:8080',
         'bypass-list': 'Bypass List',
         'pac-url': 'PAC URL',
+      },
+      'macros': {
+        'macros': 'Macros',
+        'match': 'Match',
+        'replace': 'Replace',
+        'match-placeholder': '%foo%',
+        'replace-placeholder': '%foo% -> BAR',
       },
     }
   },
