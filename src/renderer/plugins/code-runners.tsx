@@ -32,8 +32,8 @@ class JavascriptExecutor implements ReadableStreamDefaultReader<string> {
     }).join(' ')
 
     const tick = async (args: any[]) => {
-      await sleep(0)
       const str = stringify(args) + '\n'
+      await sleep(0)
       this._readResolve(str)
     }
 
@@ -49,6 +49,9 @@ class JavascriptExecutor implements ReadableStreamDefaultReader<string> {
       });
       ${this.code}
     })()`)
+
+    await sleep(0)
+    this._readResolve('')
 
     return undefined
   }

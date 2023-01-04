@@ -598,6 +598,10 @@ Using macro replacement may lead to inaccurate correspondence between source cod
 
 The `define` field can define some text replacement mappings. Supports definition in another file, supports macro expressions. For details, please refer to the Front Matter at the top of this document.
 
+::: tip
+You can define global macros in the <a href="javascript: ctx.setting.showSettingPanel('macros')">settings</a>. But you still need to define `enableMacro: true` in Front Matter.
+:::
+
 - App Name: --APP_NAME--
 - App Version: --APP_VERSION--
 - From Another File: --TEST_DEFINE--

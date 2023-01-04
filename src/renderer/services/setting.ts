@@ -498,7 +498,7 @@ export async function writeSettings (settings: Record<string, any>) {
     delete data.theme
   }
 
-  triggerHook('SETTING_BEFORE_WRITE', { settings } as any)
+  triggerHook('SETTING_BEFORE_WRITE', { settings: data } as any)
 
   await api.writeSettings(data)
   return await fetchSettings()

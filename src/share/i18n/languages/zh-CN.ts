@@ -397,6 +397,13 @@ const data: BaseLanguage = {
         'bypass-list': 'Bypass List',
         'pac-url': 'PAC URL',
       },
+      'macros': {
+        'macros': '宏',
+        'match': '匹配',
+        'replace': '替换',
+        'match-placeholder': '%foo%',
+        'replace-placeholder': '%foo% -> BAR',
+      },
     },
     'tabs': {
       'repos': '仓库',
@@ -404,6 +411,7 @@ const data: BaseLanguage = {
       'editor': '编辑器',
       'image': '图片',
       'proxy': '代理',
+      'macros': '宏替换',
       'other': '其他',
     },
   },

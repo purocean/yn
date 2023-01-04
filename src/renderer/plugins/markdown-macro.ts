@@ -1,7 +1,7 @@
 import { escapeRegExp, omit } from 'lodash-es'
 import frontMatter from 'front-matter'
 import type { Plugin } from '@fe/context'
-import type { Doc } from '@fe/types'
+import type { BuildInSettings, Doc } from '@fe/types'
 import type { MenuItem } from '@fe/services/status-bar'
 import { render } from '@fe/services/view'
 import { t } from '@fe/services/i18n'
@@ -23,6 +23,7 @@ const magicNewline = '--yn-macro-new-line--'
 
 const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
 let macroOuterVars = {}
+let globalMacroReplacement: Record<string, string> = {}
 
 const globalVars = {
   $export: exportVar,
@@ -95,7 +96,7 @@ function transform (
     callback?: (result: Result | Promise<Result>, match: string, matchPos: number) => void
   },
 ) {
-  const define = { ...vars.define, ...options.cache.$define }
+  const define = { ...globalMacroReplacement, ...vars.define, ...options.cache.$define }
   vars.define = define
   const keys = Object.keys(define)
   if (keys.length) {
@@ -420,6 +421,70 @@ export default {
       mdLanguage.tokenizer.monacoEnd = [
         [/=\]/, { token: 'keyword', next: '@pop', nextEmbedded: '@pop' }]
       ]
+    })
+
+    ctx.setting.changeSchema(schema => {
+      schema.groups.push({ label: 'T_setting-panel.tabs.macros', value: 'macros' })
+      schema.properties.macros = {
+        defaultValue: [],
+        type: 'array',
+        title: 'T_setting-panel.schema.repos.repos',
+        format: 'table',
+        group: 'macros',
+        items: {
+          type: 'object',
+          title: 'T_setting-panel.schema.macros.macros',
+          properties: {
+            match: {
+              type: 'string',
+              title: 'T_setting-panel.schema.macros.match',
+              defaultValue: '',
+              maxLength: 50,
+              options: {
+                inputAttributes: { placeholder: 'T_setting-panel.schema.macros.match-placeholder' }
+              },
+            },
+            replace: {
+              type: 'string',
+              title: 'T_setting-panel.schema.macros.replace',
+              defaultValue: '',
+              format: 'textarea',
+              options: {
+                inputAttributes: {
+                  placeholder: 'T_setting-panel.schema.macros.replace-placeholder',
+                  style: 'height: auto; resize: vertical; min-height: 37px;',
+                  rows: 1,
+                }
+              },
+            }
+          } as any
+        },
+      }
+    })
+
+    ctx.registerHook('SETTING_BEFORE_WRITE', ({ settings }) => {
+      if (settings.macros && Array.isArray(settings.macros)) {
+        settings.macros = settings.macros.filter(x => x.match && x.replace)
+      }
+    })
+
+    function buildGlobalMacroReplacement (settings: BuildInSettings) {
+      const macros = settings.macros || []
+      globalMacroReplacement = {}
+      macros.forEach(x => {
+        globalMacroReplacement[x.match] = x.replace
+      })
+    }
+
+    ctx.registerHook('SETTING_FETCHED', ({ settings }) => {
+      buildGlobalMacroReplacement(settings)
+    }, true)
+
+    ctx.registerHook('SETTING_CHANGED', ({ changedKeys, settings }) => {
+      if (changedKeys.includes('macros')) {
+        buildGlobalMacroReplacement(settings)
+        ctx.view.render()
+      }
     })
   }
 } as Plugin

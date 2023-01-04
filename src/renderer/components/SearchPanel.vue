@@ -1,6 +1,6 @@
 <template>
   <transition name="search-panel-wrapper">
-    <div v-show="visible" class="search-panel-wrapper" @keydown.esc="close" @click.self="close">
+    <div v-show="visible" class="search-panel-wrapper" tabindex="-1" @keydown.esc="close" @click.self="close">
       <transition name="search-panel">
         <div v-if="visible" class="search-panel">
           <div class="title">{{$t('search-panel.search-files')}}</div>
@@ -554,6 +554,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
   opacity: 1;
   transition: opacity 0.2s cubic-bezier(1, 0.29, 0.63, 0.94);
+  outline: none;
 }
 
 .search-panel {

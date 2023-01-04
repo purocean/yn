@@ -164,16 +164,15 @@
                 <div v-if="!iframeLoaded" class="placeholder">{{ $t('loading') }}</div>
               </template>
               <template v-else>
-                <div class="content">
+                <div v-if="contentMap[contentType][currentExtension.id]" class="content">
                   <iframe
-                    v-if="contentMap[contentType][currentExtension.id]"
                     @load="iframeOnload"
                     sandbox="allow-scripts allow-popups allow-same-origin"
                     referrerpolicy="no-referrer"
                     :srcdoc="contentMap[contentType][currentExtension.id] || ''"
                   />
                 </div>
-                <div v-if="!iframeLoaded" class="placeholder">{{ $t('loading') }}</div>
+                <div v-else class="placeholder">{{ $t('loading') }}</div>
               </template>
             </div>
           </template>

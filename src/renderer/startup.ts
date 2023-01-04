@@ -58,7 +58,7 @@ export default function startup () {
 const doc = getLastOpenFile()
 switchDoc(doc)
 
-function changeLanguage ({ settings }: { settings: BuildInSettings }) {
+function changeLanguage ({ settings }: { settings: Partial<BuildInSettings> }) {
   if (settings.language && settings.language !== getLanguage()) {
     setLanguage(settings.language)
   }

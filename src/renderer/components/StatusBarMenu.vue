@@ -149,6 +149,8 @@ export default defineComponent({
 
 .list {
   min-width: 70px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
   margin: 0;
   list-style: none;
   background: #4a4b4d;
