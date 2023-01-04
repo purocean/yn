@@ -76,15 +76,15 @@
 
 ## 更新日志
 
-### [v3.46.0](https://github.com/purocean/yn/releases/tag/v3.46.0) 2022-12-07
+### [v3.47.0](https://github.com/purocean/yn/releases/tag/v3.47.0) 2023-01-04
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-win-x64-3.46.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-mac-arm64-3.46.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-mac-x64-3.46.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-linux-x86_64-3.46.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.46.0/Yank-Note-linux-amd64-3.46.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-win-x64-3.47.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-mac-arm64-3.47.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-mac-x64-3.47.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-linux-x86_64-3.47.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-linux-amd64-3.47.0.deb)
 
-1. feat: Plantuml 支持 SVG 格式
-1. feat: 优化交互和 UI
-1. feat(plugin): 增加 `ctx.components.SvgIcon` 组件
-1. feat(plugin): 增加 `ctx.utils.composable` 模块
-1. fix: 修复导出 PDF 部分锚点不能跳转问题
+1. feat: 增加全局宏替换设置项
+1. feat: 增加 Linux arm64 构建产物
+1. fix: 修复扩展管理器显示 README 可能空白问题
+1. fix: 修复搜索面吧输入框失去焦点时按 ESC 键不能关闭问题
+1. fix: 修复 js 代码执行日志打印问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
