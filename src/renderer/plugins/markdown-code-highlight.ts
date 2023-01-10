@@ -108,6 +108,10 @@ function getLines (text: string) {
 function addLineNumbersBlockFor (inputHtml: string, firstLineIndex: number, lang: string) {
   const lines = getLines(inputHtml)
 
+  if (lines.length === 0) {
+    return inputHtml
+  }
+
   // if last line contains only carriage return remove it
   if (lines[lines.length - 1].trim() === '') {
     lines.pop()
