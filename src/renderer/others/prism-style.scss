@@ -1,0 +1,24 @@
+@import '@fe/styles/mixins.scss';
+@import 'prismjs/themes/prism.css';
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  background: none;
+}
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+  text-shadow: none;
+  background: var(--selection-color);
+}
+
+@include dark-theme {
+  code[class*="language-"], pre[class*="language-"] {
+    text-shadow: none;
+  }
+
+  @import 'prismjs/themes/prism-tomorrow';
+}

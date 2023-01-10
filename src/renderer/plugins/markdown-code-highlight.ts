@@ -1,15 +1,11 @@
-import Highlight from 'highlight.js'
-import styles from 'highlight.js/styles/atom-one-dark.css'
-import { Plugin, Ctx } from '@fe/context'
+import prism from 'prismjs'
+import defaultStyle from 'prismjs/themes/prism.css'
+import type { Plugin, Ctx } from '@fe/context'
 import { getLogger } from '@fe/utils'
+import styles from '@fe/others/prism-style.scss'
+import '@fe/others/prism-languages-all'
 
-const logger = getLogger('markdown-code')
-
-Highlight.registerAliases('node', { languageName: 'javascript' })
-
-/* eslint-disable */
-
-// https://github.com/wcoder/highlightjs-line-numbers.js
+const logger = getLogger('markdown-code-highlight')
 
 const TABLE_NAME = 'hljs-ln'
 const LINE_NAME = 'hljs-ln-line'
@@ -100,87 +96,8 @@ function addCustomStyles (ctx: Ctx) {
   )
 }
 
-function lineNumbersInternal (element: any, lang: string) {
-  duplicateMultilineNodes(element)
-  return addLineNumbersBlockFor(element.innerHTML, 1, lang)
-}
-
-function addLineNumbersBlockFor (inputHtml: string, firstLineIndex: number, lang: string) {
-  var lines = getLines(inputHtml)
-
-  // if last line contains only carriage return remove it
-  if (lines[lines.length - 1].trim() === '') {
-    lines.pop()
-  }
-
-  if (lines.length > firstLineIndex) {
-    var html = ''
-
-    for (var i = 0, l = lines.length; i < l; i++) {
-      html += format(
-        '<tr>' +
-          '<td class="{0}">' +
-          '<div class="{1} {2}" {3}="{5}"></div>' +
-          '</td>' +
-          '<td class="{4}">' +
-          '<div class="{1}">{6}</div>' +
-          '</td>' +
-          '</tr>',
-        [
-          NUMBERS_BLOCK_NAME,
-          LINE_NAME,
-          NUMBER_LINE_NAME,
-          DATA_ATTR_NAME,
-          CODE_BLOCK_NAME,
-          i + 1,
-          lines[i].length > 0 ? lines[i] : ' '
-        ])
-    }
-
-    return format(`<table class="{0}" data-lang="${lang}">{1}</table>`, [ TABLE_NAME, html ])
-  }
-
-  return inputHtml
-}
-
-/**
-  * Recursive method for fix multi-line elements implementation in highlight.js
-  * Doing deep passage on child nodes.
-  * @param {HTMLElement} element
-  */
-function duplicateMultilineNodes (element: any) {
-  var nodes = element.childNodes
-  for (var node in nodes) {
-    if (nodes.hasOwnProperty(node)) {
-      var child = nodes[node]
-      if (getLinesCount(child.textContent) > 0) {
-        if (child.childNodes.length > 0) {
-          duplicateMultilineNodes(child)
-        } else {
-          duplicateMultilineNode(child.parentNode)
-        }
-      }
-    }
-  }
-}
-
-/**
-  * Method for fix multi-line elements implementation in highlight.js
-  * @param {HTMLElement} element
-  */
-function duplicateMultilineNode (element: any) {
-  var className = element.className
-
-  if (!/hljs-/.test(className)) return
-
-  var lines = getLines(element.innerHTML)
-
-  for (var i = 0, result = ''; i < lines.length; i++) {
-    var lineText = lines[i].length > 0 ? lines[i] : ' '
-    result += format('<span class="{0}">{1}</span>\n', [ className, lineText ])
-  }
-
-  element.innerHTML = result.trim()
+function getLinesCount (text: string) {
+  return (text.trim().match(BREAK_LINE_REGEXP) || []).length
 }
 
 function getLines (text: string) {
@@ -188,46 +105,116 @@ function getLines (text: string) {
   return text.split(BREAK_LINE_REGEXP)
 }
 
-function getLinesCount (text: string) {
-  return (text.trim().match(BREAK_LINE_REGEXP) || []).length
+function addLineNumbersBlockFor (inputHtml: string, firstLineIndex: number, lang: string) {
+  const lines = getLines(inputHtml)
+
+  // if last line contains only carriage return remove it
+  if (lines[lines.length - 1].trim() === '') {
+    lines.pop()
+  }
+
+  if (lines.length > firstLineIndex) {
+    let html = ''
+
+    for (let i = 0, l = lines.length; i < l; i++) {
+      html += '<tr>' +
+        `<td class="${NUMBERS_BLOCK_NAME}">` +
+          `<div class="${LINE_NAME} ${NUMBER_LINE_NAME}" ${DATA_ATTR_NAME}="${i + 1}"></div>` +
+        '</td>' +
+        `<td class="${CODE_BLOCK_NAME}">` +
+          `<div class="${LINE_NAME}">${lines[i].length > 0 ? lines[i] : ' '}</div>` +
+        '</td>' +
+      '</tr>'
+    }
+
+    return `<table class="${TABLE_NAME}" data-lang="${lang}">${html}</table>`
+  }
+
+  return inputHtml
+}
+
+function duplicateMultilineNode (element: HTMLElement) {
+  const className = element.className
+
+  if (!/^token/.test(className)) return
+
+  const lines = getLines(element.innerHTML)
+
+  let result = ''
+  for (let i = 0; i < lines.length; i++) {
+    const lineText = lines[i].length > 0 ? lines[i] : ' '
+    result += `<span class="${className}">${lineText}</span>\n`
+  }
+
+  element.innerHTML = result.trim()
 }
 
 /**
-  * {@link https://wcoder.github.io/notes/string-format-for-string-formating-in-javascript}
-  * @param {string} format
-  * @param {array} args
+  * Recursive method for fix multi-line elements implementation
+  * Doing deep passage on child nodes.
   */
-function format (format: string, args: any) {
-  return format.replace(/\{(\d+)\}/g, function (m, n) {
-    return args[n] ? args[n] : m
+function duplicateMultilineNodes (element: HTMLElement) {
+  element.childNodes.forEach(child => {
+    if (child.textContent && getLinesCount(child.textContent) > 0) {
+      if (child.childNodes.length > 0) {
+        duplicateMultilineNodes(child as HTMLElement)
+      } else {
+        duplicateMultilineNode(child.parentNode! as HTMLElement)
+      }
+    }
   })
 }
 
-function highlight (str: string, lang: string) {
-  if (lang && Highlight.getLanguage(lang)) {
-    try {
-      const element = document.createElement('code')
-      element.innerHTML = Highlight.highlight(str, { language: lang }).value
-      return lineNumbersInternal(element, lang)
-    } catch (error) {
-      logger.error(error)
-    }
+function wrap (code: string, lang: string, lineNumber: boolean) {
+  let html = code
+
+  if (lineNumber) {
+    const element = document.createElement('code')
+    element.innerHTML = html
+    duplicateMultilineNodes(element)
+    html = addLineNumbersBlockFor(element.innerHTML, 1, lang)
   }
 
-  return ''
+  return html
 }
 
-export function getHljsStyles () {
-  let styles = ''
-  Array.prototype.forEach.call(document.styleSheets, item => {
-    Array.prototype.forEach.call(item.cssRules, (rule) => {
-      if (rule.selectorText && rule.selectorText.includes('.hljs')) {
-        styles += rule.cssText + '\n'
-      }
-    })
-  })
+function getLangCodeFromExtension (extension: string) {
+  const extensionMap: Record<string, string> = {
+    vue: 'markup',
+    html: 'markup',
+    md: 'markdown',
+    rb: 'ruby',
+    ts: 'typescript',
+    py: 'python',
+    sh: 'bash',
+    yml: 'yaml',
+    styl: 'stylus',
+    kt: 'kotlin',
+    rs: 'rust',
+    node: 'js'
+  }
 
-  return styles
+  return extensionMap[extension] || extension
+}
+
+function highlight (str: string, lang: string, lineNumber: boolean) {
+  if (!lang) {
+    return str
+  }
+
+  lang = lang.toLowerCase()
+  const rawLang = lang
+
+  lang = getLangCodeFromExtension(lang)
+
+  if (prism.languages[lang]) {
+    const code = prism.highlight(str, prism.languages[lang], lang)
+    return wrap(code, rawLang, lineNumber)
+  } else {
+    logger.warn(`Syntax highlight for language "${lang}" is not supported.`)
+  }
+
+  return wrap(str, 'text', lineNumber)
 }
 
 export default {
@@ -235,10 +222,15 @@ export default {
   register: (ctx: Ctx) => {
     addCustomStyles(ctx)
     ctx.markdown.registerPlugin(md => {
-      md.options.highlight = highlight as any
+      md.options.highlight = (str, lang) => highlight(str, lang, true)
     })
 
-    let hljsStyles = ''
+    const exportStyles = `
+      ${defaultStyle}
+      code[class*="language-"], pre[class*="language-"] {
+        text-shadow: none;
+      }
+    `
 
     ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node, options }) => {
       if (node.tagName === 'TABLE' && node.dataset.lang) {
@@ -251,16 +243,12 @@ export default {
         if (code) {
           if (options.highlightCode) {
             if (options.inlineStyle || options.includeStyle) {
-              if (!hljsStyles) {
-                hljsStyles = getHljsStyles()
-              }
-
               node.outerHTML = ctx.lib.juice(
-                Highlight.highlight(node.dataset.lang, code).value,
-                { extraCss: hljsStyles }
+                highlight(code, node.dataset.lang, false),
+                { extraCss: exportStyles }
               )
             } else {
-              node.outerHTML = Highlight.highlight(node.dataset.lang, code).value
+              node.outerHTML = highlight(code, node.dataset.lang, false)
             }
           } else {
             node.outerHTML = ctx.lib.lodash.escape(code)
