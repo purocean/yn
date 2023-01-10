@@ -561,6 +561,8 @@ const data: BaseLanguage = {
     'highlight-code': '高亮代码',
     'rt': '富文本',
     'complete': '转换完成，点击确定复制',
+    'copy-tips': '如需复制部分内容，需要预览区选中后再操作',
+    'copy-tips-selected': '复制选中的内容，%s 个字符',
   },
   'share-preview': {
     'expire': '到期',

@@ -560,6 +560,8 @@ const data = {
     'highlight-code': 'Highlight Code',
     'rt': 'Rich Text',
     'complete': 'Conversion completed, click OK to copy',
+    'copy-tips': 'If you need to copy part of the content, you need select it in the preview area first.',
+    'copy-tips-selected': 'Copy selected content, %s characters.',
   },
   'share-preview': {
     'expire': 'Expire',

@@ -275,7 +275,7 @@ export type BuildInActions = {
   'view.render': () => void,
   'view.refresh': () => void,
   'view.reveal-line': (startLine: number) => Promise<HTMLElement | null>,
-  'view.get-content-html': () => string,
+  'view.get-content-html': (selected?: boolean) => string,
   'view.get-view-dom': () => HTMLElement | null,
   'view.get-render-env': () => RenderEnv | null,
   'view.enter-presentation': () => void,
@@ -356,7 +356,8 @@ export type BuildInHookTypes = {
       uploadLocalImage?: boolean,
       highlightCode?: boolean,
       preferPng?: boolean,
-      nodeProcessor?: (node: HTMLElement) => void
+      onlySelected?: boolean,
+      nodeProcessor?: (node: HTMLElement) => void,
     }
   },
   TREE_NODE_SELECT: { node: Components.Tree.Node },

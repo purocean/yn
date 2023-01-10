@@ -182,7 +182,7 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
     return div.innerHTML || ''
   }
 
-  let html = getActionHandler('view.get-content-html')()
+  let html = getActionHandler('view.get-content-html')(options.onlySelected)
     .replace(/ src="/g, ' loading="lazy" src="')
 
   if (inlineStyle) {
