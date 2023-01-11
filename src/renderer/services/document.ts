@@ -36,6 +36,12 @@ function encrypt (content: any, password: string) {
   return crypto.encrypt(content, password)
 }
 
+function checkFilePath (path: string) {
+  if (path.includes('#')) {
+    throw new Error('Path should not contain #')
+  }
+}
+
 /**
  * Get absolutePath of document
  * @param doc
@@ -195,6 +201,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
       file.content = encrypted.content
     }
 
+    checkFilePath(file.path)
     await api.writeFile(file, file.content)
 
     triggerHook('DOC_CREATED', { doc: file })
@@ -244,6 +251,7 @@ export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
   const dir: Doc = { ...doc, path: doc.path, type: 'dir', name, contentHash: 'new' }
 
   try {
+    checkFilePath(dir.path)
     await api.writeFile(dir)
 
     triggerHook('DOC_CREATED', { doc: dir })
