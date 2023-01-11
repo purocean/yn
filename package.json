@@ -121,7 +121,7 @@
     "markdown-it-multimd-table": "^4.1.2",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
-    "monaco-editor": "^0.31.1",
+    "monaco-editor": "^0.34.1",
     "normalize.css": "^8.0.1",
     "parse-author": "^2.0.0",
     "path-browserify": "^1.0.1",
