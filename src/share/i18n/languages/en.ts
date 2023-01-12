@@ -4,7 +4,7 @@ const data = {
   'app-name': 'Yank Note',
   'about': 'About',
   'feedback': 'Feedback',
-  'slogan': 'A Hackable Markdown editor for developers',
+  'slogan': 'A highly extensible Markdown editor, designed for productivity.',
   'cancel': 'Cancel',
   'undo': 'Undo',
   'ok': 'OK',
