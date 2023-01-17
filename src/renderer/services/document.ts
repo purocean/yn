@@ -1,4 +1,5 @@
 import { Fragment, h } from 'vue'
+import AsyncLock from 'async-lock'
 import { cloneDeep } from 'lodash-es'
 import { Optional } from 'utility-types'
 import { URI } from 'monaco-editor/esm/vs/base/common/uri.js'
@@ -19,6 +20,7 @@ import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
 
 const logger = getLogger('document')
+const lock = new AsyncLock()
 
 function decrypt (content: any, password: string) {
   if (!password) {
@@ -409,12 +411,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
   }
 }
 
-/**
- * Save a document.
- * @param doc
- * @param content
- */
-export async function saveDoc (doc: Doc, content: string) {
+async function _saveDoc (doc: Doc, content: string): Promise<void> {
   logger.debug('saveDoc', doc)
 
   if (!doc.plain) {
@@ -466,6 +463,18 @@ export async function saveDoc (doc: Doc, content: string) {
     useToast().show('warning', error.message)
     throw error
   }
+}
+
+/**
+ * Save a document.
+ * @param doc
+ * @param content
+ */
+export async function saveDoc (doc: Doc, content: string): Promise<void> {
+  return lock.acquire('saveDoc', async (done) => {
+    await _saveDoc(doc, content)
+    done()
+  })
 }
 
 /**
@@ -559,12 +568,7 @@ export async function ensureCurrentFileSaved () {
   }
 }
 
-/**
- * Switch document.
- * @param doc
- * @param force
- */
-export async function switchDoc (doc: Doc | null, force = false) {
+async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
   doc = doc ? cloneDeep(doc) : null
 
   logger.debug('switchDoc', doc)
@@ -636,6 +640,18 @@ export async function switchDoc (doc: Doc | null, force = false) {
     useToast().show('warning', error.message.includes('Malformed') ? t('document.wrong-password') : error.message)
     throw error
   }
+}
+
+/**
+ * Switch document.
+ * @param doc
+ * @param force
+ */
+export async function switchDoc (doc: Doc | null, force = false): Promise<void> {
+  return lock.acquire('switchDoc', async (done) => {
+    await _switchDoc(doc, force)
+    done()
+  })
 }
 
 /**
