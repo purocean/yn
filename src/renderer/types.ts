@@ -22,6 +22,7 @@ export interface Doc extends PathItem {
   title?: string;
   passwordHash?: string;
   contentHash?: string;
+  stat?: FileStat,
   status?: 'loaded' | 'save-failed' | 'saved';
   absolutePath?: string,
   plain?: boolean;

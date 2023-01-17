@@ -450,8 +450,9 @@ async function _saveDoc (doc: Doc, content: string): Promise<void> {
       passwordHash = encrypted.passwordHash
     }
 
-    const { hash } = await api.writeFile(doc, sendContent)
+    const { hash, stat } = await api.writeFile(doc, sendContent)
     Object.assign(doc, {
+      stat,
       content,
       passwordHash,
       contentHash: hash,
@@ -603,6 +604,7 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
 
     let content = ''
     let hash = ''
+    let stat
     if (doc.plain) {
       const timer = setTimeout(() => {
         store.commit('setCurrentFile', { ...doc, status: undefined })
@@ -614,6 +616,7 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
 
       content = res.content
       hash = res.hash
+      stat = res.stat
     }
 
     // decrypt content.
@@ -627,6 +630,7 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
 
     store.commit('setCurrentFile', {
       ...doc,
+      stat,
       content,
       passwordHash,
       contentHash: hash,
