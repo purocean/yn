@@ -1,6 +1,5 @@
 import type { IProgressMessage, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery } from 'ripgrep-wrapper'
 import type { Components, Doc, ExportType, FileItem, FileSort, PathItem } from '@fe/types'
-import type { SearchMessage } from '@share/typings'
 import { isElectron } from '@fe/support/env'
 import { JWT_TOKEN } from './args'
 
@@ -256,6 +255,49 @@ type SearchReturn = (
   onMessage?: (message: IProgressMessage) => void
 ) => Promise<ISerializedSearchSuccess | null>
 
+async function readReader<R = any, S = any, M = any> (
+  reader: ReadableStreamDefaultReader,
+  onResult: (result: R) => void,
+  onMessage?: (message: M) => void
+): Promise<S | null> {
+  let val = ''
+
+  // read stream
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) {
+      return null
+    }
+
+    val += new TextDecoder().decode(value)
+
+    const idx = val.lastIndexOf('\n')
+    if (idx === -1) {
+      continue
+    }
+
+    const lines = val.slice(0, idx)
+    val = val.slice(idx + 1)
+
+    for (const line of lines.split('\n')) {
+      const data = JSON.parse(line)
+
+      switch (data.type) {
+        case 'result':
+          onResult(data.payload)
+          break
+        case 'message':
+          onMessage?.(data.payload)
+          break
+        case 'done':
+          return data.payload
+        default:
+          throw data.payload
+      }
+    }
+  }
+}
+
 /**
  * Search files.
  * @param controller
@@ -271,46 +313,12 @@ export async function search (controller: AbortController, query: ITextQuery): P
   })
 
   return async function (onResult, onMessage) {
-    let val = ''
-    let success: ISerializedSearchSuccess | null = null
-
     const reader: ReadableStreamDefaultReader = response.body.getReader()
-
-    // read stream
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) {
-        return success
-      }
-
-      val += new TextDecoder().decode(value)
-
-      const idx = val.lastIndexOf('\n')
-      if (idx === -1) {
-        continue
-      }
-
-      const lines = val.slice(0, idx)
-      val = val.slice(idx + 1)
-
-      for (const line of lines.split('\n')) {
-        const data = JSON.parse(line)
-
-        switch (data.type) {
-          case 'result':
-            onResult((<SearchMessage<'result'>>data).payload)
-            break
-          case 'message':
-            onMessage?.((<SearchMessage<'message'>>data).payload)
-            break
-          case 'done':
-            success = (<SearchMessage<'done'>>data).payload
-            break
-          default:
-            throw (<SearchMessage<'error'>>data).payload
-        }
-      }
-    }
+    return readReader<ISerializedFileMatch[], ISerializedSearchSuccess, IProgressMessage>(
+      reader,
+      onResult,
+      onMessage
+    )
   }
 }
 
