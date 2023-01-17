@@ -291,6 +291,8 @@ export function setValue (text: string) {
   const maxLine = model!.getLineCount()
   const endLineLength = model!.getLineLength(maxLine)
 
+  const viewState = editor.saveViewState()
+
   editor.executeEdits('', [
     {
       range: new (getMonaco().Range)(1, 1, maxLine, endLineLength + 1),
@@ -298,7 +300,9 @@ export function setValue (text: string) {
       forceMoveMarkers: true
     }
   ])
-  getEditor().focus()
+
+  editor.restoreViewState(viewState)
+  editor.focus()
 }
 
 /**
