@@ -9,6 +9,12 @@ export interface PathItem {
 
 export interface FileItem extends PathItem { name: string }
 
+export interface FileStat {
+  mtime: number,
+  birthtime: number,
+  size: number,
+}
+
 export interface Doc extends PathItem {
   type: 'file' | 'dir';
   name: string;

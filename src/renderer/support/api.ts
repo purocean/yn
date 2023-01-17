@@ -1,5 +1,5 @@
 import type { IProgressMessage, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery } from 'ripgrep-wrapper'
-import type { Components, Doc, ExportType, FileItem, FileSort, PathItem } from '@fe/types'
+import type { Components, Doc, ExportType, FileItem, FileSort, FileStat, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
 import { JWT_TOKEN } from './args'
 
@@ -80,7 +80,7 @@ export async function proxyRequest (url: string, reqOptions: Record<string, any>
  */
 async function fetchHelpContent (docName: string) {
   const result = await fetchHttp('/api/help?doc=' + docName)
-  return { content: result.data.content, hash: '' }
+  return { content: result.data.content, hash: '', stat: { mtime: 0, birthtime: 0, size: 0 } }
 }
 
 /**
@@ -89,18 +89,17 @@ async function fetchHelpContent (docName: string) {
  * @param asBase64
  * @returns
  */
-export async function readFile (file: PathItem, asBase64 = false) {
+export async function readFile (file: PathItem, asBase64 = false): Promise<{content: string, hash: string, stat: FileStat}> {
   const { path, repo } = file
 
   if (repo === '__help__') {
     return await fetchHelpContent(path)
   }
 
-  const result = await fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}${asBase64 ? '&asBase64=true' : ''}`)
-  const hash = result.data.hash
-  const content = result.data.content
+  const url = `/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}${asBase64 ? '&asBase64=true' : ''}`
+  const { data } = await fetchHttp(url)
 
-  return { content, hash }
+  return data
 }
 
 /**
@@ -110,15 +109,15 @@ export async function readFile (file: PathItem, asBase64 = false) {
  * @param asBase64
  * @returns
  */
-export async function writeFile (file: Doc, content = '', asBase64 = false) {
+export async function writeFile (file: Doc, content = '', asBase64 = false): Promise<{ hash: string, stat: FileStat }> {
   const { repo, path, contentHash } = file
-  const result = await fetchHttp('/api/file', {
+  const { data } = await fetchHttp('/api/file', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ repo, path, content, oldHash: contentHash, asBase64 })
   })
 
-  return { hash: result.data }
+  return data
 }
 
 /**

@@ -135,6 +135,18 @@ export function read (repo: string, p: string): Promise<Buffer> {
   return withRepo(repo, (_, targetPath) => fs.readFile(targetPath), p)
 }
 
+export function stat (repo: string, p: string) {
+  return withRepo(repo, async (_, targetPath) => {
+    const stat = await fs.stat(targetPath)
+
+    return {
+      birthtime: stat.birthtimeMs,
+      mtime: stat.mtimeMs,
+      size: stat.size,
+    }
+  }, p)
+}
+
 export function write (repo: string, p: string, content: any): Promise<string> {
   if (readonly) throw new Error('Readonly')
 
