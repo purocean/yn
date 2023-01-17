@@ -99,7 +99,7 @@ export default defineComponent({
         return
       }
 
-      getMonacoEditor().setModel(toUri(current), current?.content ?? '\n')
+      getMonacoEditor().createModel(toUri(current), current?.content ?? '\n')
       await nextTick()
       getEditor().updateOptions({
         readOnly: !current || !current.plain

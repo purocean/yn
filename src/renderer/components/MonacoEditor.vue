@@ -9,8 +9,6 @@ import { getDefaultOptions } from '@fe/services/editor'
 import { toUri } from '@fe/services/document'
 import { triggerHook } from '@fe/core/hook'
 
-const models: {[key: string]: monaco.editor.ITextModel} = {}
-
 export default defineComponent({
   name: 'monaco-editor',
   props: {
@@ -24,29 +22,35 @@ export default defineComponent({
     const getEditor = () => editor!
     const resize = () => editor && editor.layout()
 
-    function getModel (uri: string, value: string) {
-      let model = models[uri]
+    function createModel (uriString: string, value: string) {
+      const monaco = getMonaco()
+      const models: monaco.editor.ITextModel[] = monaco.editor.getModels()
+      const uri: monaco.Uri = monaco.Uri.parse(uriString)
+
+      let model = models.find(x => uri.toString() === x.uri.toString())
 
       if (!model) {
-        model = getMonaco().editor.createModel(value, undefined, getMonaco().Uri.parse(uri))
-        model.onDidChangeContent(() => {
-          const value = model.getValue()
-          triggerHook('MONACO_CHANGE_VALUE', { uri, value })
-        })
+        model = getMonaco().editor.createModel(value, undefined, uri)
       }
 
-      // TODO keep edit state
-      model.setValue(value)
+      model!.onDidChangeContent(() => {
+        const value = model!.getValue()
+        triggerHook('MONACO_CHANGE_VALUE', { uri: uri.toString(), value })
+      })
 
+      model!.setValue(value)
+
+      getEditor().setModel(model!)
+
+      // clear all other models
       // TODO cache model
-      models[uri] = model
-
-      return model
-    }
-
-    function setModel (uri: string, value: string) {
-      const model = getModel(uri, value || '')
-      getEditor().setModel(model)
+      setTimeout(() => {
+        monaco.editor.getModels().forEach((model: monaco.editor.ITextModel) => {
+          if (model.uri.toString() !== uri.toString()) {
+            model.dispose()
+          }
+        })
+      }, 0)
     }
 
     function initMonaco () {
@@ -57,7 +61,7 @@ export default defineComponent({
         fixedOverflowWidgets: true,
       })
 
-      setModel(toUri(null), '')
+      createModel(toUri(null), '')
 
       setTimeout(() => {
         triggerHook('MONACO_READY', { editor: getEditor(), monaco: getMonaco() })
@@ -83,7 +87,7 @@ export default defineComponent({
     return {
       refEditor,
       resize,
-      setModel,
+      createModel,
     }
   }
 })
