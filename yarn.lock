@@ -1188,6 +1188,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/async-lock@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@types/async-lock/-/async-lock-1.3.0.tgz#12d165b890935afbc553eb9db467c0b540658b8e"
+  integrity sha512-Z93wDSYW9aMgPR5t+7ouwTvy91Vp3M0Snh4Pd3tf+caSAq5bXZaGnnH9CDbjrwgmfDkRIX0Dx8GvSDgwuoaxoA==
+
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.17"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.17.tgz#f50ac9d20d64153b510578d84f9643f9a3afbe64"
@@ -2207,6 +2212,11 @@ async-exit-hook@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/async-exit-hook/-/async-exit-hook-2.0.1.tgz#8bd8b024b0ec9b1c01cccb9af9db29bd717dfaf3"
   integrity sha512-NW2cX8m1Q7KPA7a5M2ULQeZ2wR5qI5PAbw5L0UOMxdioVk9PMZ0h1TmyZEkPYrCvYjDlFICusOu1dlEKAAeXBw==
+
+async-lock@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/async-lock/-/async-lock-1.4.0.tgz#c8b6630eff68fbbdd8a5b6eb763dac3bfbb8bf02"
+  integrity sha512-coglx5yIWuetakm3/1dsX9hxCNox22h7+V80RQOu2XUUMidtArxKoZoOtHUPuR84SycKTXzgGzAUR5hJxujyJQ==
 
 async@^3.2.3:
   version "3.2.3"

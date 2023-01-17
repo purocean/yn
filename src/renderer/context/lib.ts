@@ -20,6 +20,7 @@ export { default as mime } from 'mime'
 export { default as markdownit } from 'markdown-it'
 export { default as domtoimage } from 'dom-to-image'
 export { default as pako } from 'pako'
+export { default as asynclock } from 'async-lock'
 
 _dayjs.extend(relativeTime)
 _dayjs.locale('zh-cn')
