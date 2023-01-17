@@ -14,6 +14,7 @@ export default {
     const AsyncLock = ctx.lib.asynclock
     const lock = new AsyncLock()
 
+    type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
     let handler: Awaited<ReturnType<typeof ctx.api.watchFile>> | null = null
 
     function stopWatch () {
