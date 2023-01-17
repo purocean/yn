@@ -1,4 +1,5 @@
 import { shell } from 'electron'
+import chokidar from 'chokidar'
 import orderBy from 'lodash/orderBy'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -7,6 +8,7 @@ import * as yargs from 'yargs'
 import AdmZip from 'adm-zip'
 import dayjs from 'dayjs'
 import { DEFAULT_EXCLUDE_REGEX, DOC_HISTORY_MAX_CONTENT_LENGTH, ENCRYPTED_MARKDOWN_FILE_EXT, isEncryptedMarkdownFile, isMarkdownFile, MARKDOWN_FILE_EXT } from '../../share/misc'
+import { createStreamResponse } from '../helper'
 import { HISTORY_DIR } from '../constant'
 import config from '../config'
 import repository from './repository'
@@ -448,5 +450,38 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
     entry.comment = msg
 
     writeHistoryZip(zip, historyFilePath)
+  }, p)
+}
+
+export async function watchFile (repo: string, p: string, options: chokidar.WatchOptions) {
+  return withRepo(repo, async (_, filePath) => {
+    const watcher = chokidar.watch(filePath, options)
+    const { response, enqueue, close } = createStreamResponse()
+
+    watcher.on('all', (eventName, path, stats) => {
+      enqueue('result', { eventName, path, stats })
+    })
+
+    const _close = () => {
+      close()
+      watcher.close()
+    }
+
+    watcher.on('error', err => {
+      console.error('watchFile', filePath, 'error', err)
+      enqueue('error', err)
+    })
+
+    response.once('close', () => {
+      console.log('watchFile', filePath, 'close')
+      _close()
+    })
+
+    response.on('error', (err) => {
+      console.warn('watchFile', filePath, 'error', err)
+      _close()
+    })
+
+    return response
   }, p)
 }

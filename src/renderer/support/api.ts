@@ -1,3 +1,5 @@
+import type { Stats } from 'fs'
+import type { WatchOptions } from 'chokidar'
 import type { IProgressMessage, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery } from 'ripgrep-wrapper'
 import type { Components, Doc, ExportType, FileItem, FileSort, FileStat, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
@@ -319,6 +321,34 @@ export async function search (controller: AbortController, query: ITextQuery): P
       onMessage
     )
   }
+}
+
+/**
+ * Watch a file.
+ * @param controller
+ * @param query
+ * @returns
+ */
+export async function watchFile (
+  repo: string,
+  path: string,
+  options: WatchOptions,
+  onResult: (result: { eventName: 'add' | 'change' | 'unlink', path: string, stats?: Stats }) => void
+) {
+  const controller: AbortController = new AbortController()
+
+  const response = await fetchHttp('/api/watch-file', {
+    signal: controller.signal,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo, path, options })
+  })
+
+  const reader: ReadableStreamDefaultReader = response.body.getReader()
+  const result: Promise<string | null> = readReader(reader, onResult)
+  const abort = () => controller.abort()
+
+  return { result, abort }
 }
 
 /**

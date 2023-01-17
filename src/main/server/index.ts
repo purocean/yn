@@ -155,6 +155,9 @@ const fileContent = async (ctx: any, next: any) => {
   } else if (ctx.path === '/api/history/comment') {
     const { repo, path, version, msg } = ctx.request.body
     ctx.body = result('ok', 'success', (await file.commentHistoryVersion(repo, path, version, msg)))
+  } else if (ctx.path === '/api/watch-file') {
+    const { repo, path, options } = ctx.request.body
+    ctx.body = await file.watchFile(repo, path, options)
   } else {
     await next()
   }
