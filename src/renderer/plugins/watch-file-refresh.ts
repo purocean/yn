@@ -63,10 +63,13 @@ export default {
       lock.acquire('triggerWatch', async (done) => {
         logger.debug('triggerWatch', !!doc)
         stopWatch()
-        if (doc && ctx.doc.isSameFile(doc, ctx.store.state.currentFile)) {
-          await startWatch(doc)
+        try {
+          if (doc && ctx.doc.isSameFile(doc, ctx.store.state.currentFile)) {
+            await startWatch(doc)
+          }
+        } finally {
+          done()
         }
-        done()
       })
     }
 
