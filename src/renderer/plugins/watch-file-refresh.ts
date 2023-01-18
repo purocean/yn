@@ -35,7 +35,12 @@ export default {
         payload => {
           logger.debug('startWatch onResult', payload)
           const currentFile = ctx.store.state.currentFile
-          if (currentFile && currentFile.stat && currentFile?.absolutePath === payload.path && payload.stats) {
+          if (
+            currentFile &&
+            currentFile.stat &&
+            payload.stats &&
+            currentFile?.absolutePath === ctx.utils.path.normalizeSep(payload.path)
+          ) {
             const remoteFileUpdated = payload.stats.mtimeMs > currentFile.stat.mtime
             const currentFileSaved = ctx.store.getters.isSaved
 

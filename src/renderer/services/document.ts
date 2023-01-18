@@ -50,7 +50,7 @@ function checkFilePath (path: string) {
  * @returns
  */
 export function getAbsolutePath (doc: Doc) {
-  return join(getRepo(doc.repo)?.path || '/', doc.path)
+  return normalizeSep(join(getRepo(doc.repo)?.path || '/', doc.path))
 }
 
 /**
