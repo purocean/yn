@@ -1,6 +1,6 @@
 # Yank Note
 
-一款面向程序员的 Markdown 笔记应用 **[全平台下载](https://github.com/purocean/yn/releases)** ｜ **[在线体验>>>](https://demo.yank-note.com/)**
+一款**强大可扩展**的 Markdown 编辑器，为生产力而生。**[全平台下载](https://github.com/purocean/yn/releases)** ｜ **[在线体验>>>](https://demo.yank-note.com/)**
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Mac App Store 版本说明](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
@@ -76,15 +76,18 @@
 
 ## 更新日志
 
-### [v3.47.0](https://github.com/purocean/yn/releases/tag/v3.47.0) 2023-01-04
+### [v3.48.0](https://github.com/purocean/yn/releases/tag/v3.48.0) 2023-01-18
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-win-x64-3.47.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-mac-arm64-3.47.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-mac-x64-3.47.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-linux-x86_64-3.47.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-linux-amd64-3.47.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-win-x64-3.48.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-mac-arm64-3.48.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-mac-x64-3.48.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-linux-x86_64-3.48.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-linux-amd64-3.48.0.deb)
 
-1. feat: 增加全局宏替换设置项
-1. feat: 增加 Linux arm64 构建产物
-1. fix: 修复扩展管理器显示 README 可能空白问题
-1. fix: 修复搜索面吧输入框失去焦点时按 ESC 键不能关闭问题
-1. fix: 修复 js 代码执行日志打印问题
+1. feat: 监听当前编辑文件，自动刷新或提示文件被其他应用修改
+2. feat: 使用 prismjs 代替 highlight.js 作为代码高亮引擎
+3. feat: 复制面板支持复制文档部分内容
+4. feat: 升级 katex 到 0.16.4
+5. feat: 升级 monaco-editor 到 0.34.1
+6. fix: 修复 Linux amd64 打包问题
+7. fix: 修复编辑器潜在的内存泄漏问题
+8. feat(plugin): 增加 `ctx.api.watchFile` 方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

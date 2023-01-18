@@ -4,7 +4,7 @@ const data = {
   'app-name': 'Yank Note',
   'about': 'About',
   'feedback': 'Feedback',
-  'slogan': 'A Hackable Markdown editor for developers',
+  'slogan': 'A highly extensible Markdown editor, designed for productivity.',
   'cancel': 'Cancel',
   'undo': 'Undo',
   'ok': 'OK',
@@ -560,6 +560,8 @@ const data = {
     'highlight-code': 'Highlight Code',
     'rt': 'Rich Text',
     'complete': 'Conversion completed, click OK to copy',
+    'copy-tips': 'If you need to copy part of the content, you need select it in the preview area first.',
+    'copy-tips-selected': 'Copy selected content, %s characters.',
   },
   'share-preview': {
     'expire': 'Expire',
@@ -626,6 +628,11 @@ const data = {
     'use-regex': 'Use Regular Expression',
     'expand-all': 'Expand All',
     'collapse-all': 'Collapse All',
+  },
+  'file-changed-alert': {
+    'title': 'File Changed',
+    'content': 'The file has been changed on disk, do you want to reload it?',
+    'reload': 'Reload',
   },
 }
 

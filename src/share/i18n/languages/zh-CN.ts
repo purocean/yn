@@ -5,7 +5,7 @@ const data: BaseLanguage = {
   'app-name': 'Yank Note',
   'about': '关于',
   'feedback': '反馈',
-  'slogan': '一款面向程序员的 Markdown 编辑器',
+  'slogan': '一款强大可扩展的 Markdown 编辑器，为生产力而生',
   'cancel': '取消',
   'undo': '撤销',
   'ok': '确定',
@@ -561,6 +561,8 @@ const data: BaseLanguage = {
     'highlight-code': '高亮代码',
     'rt': '富文本',
     'complete': '转换完成，点击确定复制',
+    'copy-tips': '如需复制部分内容，需要预览区选中后再操作',
+    'copy-tips-selected': '复制选中的内容，%s 个字符',
   },
   'share-preview': {
     'expire': '到期',
@@ -627,6 +629,11 @@ const data: BaseLanguage = {
     'use-regex': '使用正则表达式',
     'expand-all': '展开所有',
     'collapse-all': '折叠所有',
+  },
+  'file-changed-alert': {
+    'title': '文件已更改',
+    'content': '文件已被其他应用更改，是否重新加载？',
+    'reload': '重载',
   },
 }
 

@@ -366,8 +366,8 @@ Js 代码块第一行包含以 `--echarts--` 字符串会被解析成 ECharts �
 
 ```js
 // --echarts--
-function (chart) {
-chart.setOption({
+
+const option = {
     // backgroundColor: '#2c343c',
 
     title: {
@@ -438,8 +438,9 @@ chart.setOption({
             }
         }
     ]
-}, true)
 }
+
+chart.setOption(option, true)
 ```
 
 ## Draw.io 图形

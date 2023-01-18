@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FoldingRegions, MAX_LINE_NUMBER } from 'monaco-editor/esm/vs/editor/contrib/folding/foldingRanges.js';
+import { FoldingRegions, MAX_LINE_NUMBER } from 'monaco-editor/esm/vs/editor/contrib/folding/browser/foldingRanges.js';
 const MAX_FOLDING_REGIONS_FOR_INDENT_LIMIT = 5000;
 export const ID_INDENT_PROVIDER = 'indent';
 export class IndentRangeProvider {

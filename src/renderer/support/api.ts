@@ -1,6 +1,7 @@
+import type { Stats } from 'fs'
+import type { WatchOptions } from 'chokidar'
 import type { IProgressMessage, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery } from 'ripgrep-wrapper'
-import type { Components, Doc, ExportType, FileItem, FileSort, PathItem } from '@fe/types'
-import type { SearchMessage } from '@share/typings'
+import type { Components, Doc, ExportType, FileItem, FileSort, FileStat, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
 import { JWT_TOKEN } from './args'
 
@@ -81,7 +82,7 @@ export async function proxyRequest (url: string, reqOptions: Record<string, any>
  */
 async function fetchHelpContent (docName: string) {
   const result = await fetchHttp('/api/help?doc=' + docName)
-  return { content: result.data.content, hash: '' }
+  return { content: result.data.content, hash: '', stat: { mtime: 0, birthtime: 0, size: 0 } }
 }
 
 /**
@@ -90,18 +91,17 @@ async function fetchHelpContent (docName: string) {
  * @param asBase64
  * @returns
  */
-export async function readFile (file: PathItem, asBase64 = false) {
+export async function readFile (file: PathItem, asBase64 = false): Promise<{content: string, hash: string, stat: FileStat}> {
   const { path, repo } = file
 
   if (repo === '__help__') {
     return await fetchHelpContent(path)
   }
 
-  const result = await fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}${asBase64 ? '&asBase64=true' : ''}`)
-  const hash = result.data.hash
-  const content = result.data.content
+  const url = `/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}${asBase64 ? '&asBase64=true' : ''}`
+  const { data } = await fetchHttp(url)
 
-  return { content, hash }
+  return data
 }
 
 /**
@@ -111,15 +111,15 @@ export async function readFile (file: PathItem, asBase64 = false) {
  * @param asBase64
  * @returns
  */
-export async function writeFile (file: Doc, content = '', asBase64 = false) {
+export async function writeFile (file: Doc, content = '', asBase64 = false): Promise<{ hash: string, stat: FileStat }> {
   const { repo, path, contentHash } = file
-  const result = await fetchHttp('/api/file', {
+  const { data } = await fetchHttp('/api/file', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ repo, path, content, oldHash: contentHash, asBase64 })
   })
 
-  return { hash: result.data }
+  return data
 }
 
 /**
@@ -256,6 +256,49 @@ type SearchReturn = (
   onMessage?: (message: IProgressMessage) => void
 ) => Promise<ISerializedSearchSuccess | null>
 
+async function readReader<R = any, S = any, M = any> (
+  reader: ReadableStreamDefaultReader,
+  onResult: (result: R) => void,
+  onMessage?: (message: M) => void
+): Promise<S | null> {
+  let val = ''
+
+  // read stream
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) {
+      return null
+    }
+
+    val += new TextDecoder().decode(value)
+
+    const idx = val.lastIndexOf('\n')
+    if (idx === -1) {
+      continue
+    }
+
+    const lines = val.slice(0, idx)
+    val = val.slice(idx + 1)
+
+    for (const line of lines.split('\n')) {
+      const data = JSON.parse(line)
+
+      switch (data.type) {
+        case 'result':
+          onResult(data.payload)
+          break
+        case 'message':
+          onMessage?.(data.payload)
+          break
+        case 'done':
+          return data.payload
+        default:
+          throw data.payload
+      }
+    }
+  }
+}
+
 /**
  * Search files.
  * @param controller
@@ -271,47 +314,49 @@ export async function search (controller: AbortController, query: ITextQuery): P
   })
 
   return async function (onResult, onMessage) {
-    let val = ''
-    let success: ISerializedSearchSuccess | null = null
-
     const reader: ReadableStreamDefaultReader = response.body.getReader()
-
-    // read stream
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) {
-        return success
-      }
-
-      val += new TextDecoder().decode(value)
-
-      const idx = val.lastIndexOf('\n')
-      if (idx === -1) {
-        continue
-      }
-
-      const lines = val.slice(0, idx)
-      val = val.slice(idx + 1)
-
-      for (const line of lines.split('\n')) {
-        const data = JSON.parse(line)
-
-        switch (data.type) {
-          case 'result':
-            onResult((<SearchMessage<'result'>>data).payload)
-            break
-          case 'message':
-            onMessage?.((<SearchMessage<'message'>>data).payload)
-            break
-          case 'done':
-            success = (<SearchMessage<'done'>>data).payload
-            break
-          default:
-            throw (<SearchMessage<'error'>>data).payload
-        }
-      }
-    }
+    return readReader<ISerializedFileMatch[], ISerializedSearchSuccess, IProgressMessage>(
+      reader,
+      onResult,
+      onMessage
+    )
   }
+}
+
+/**
+ * Watch a file.
+ * @param controller
+ * @param query
+ * @returns
+ */
+export async function watchFile (
+  repo: string,
+  path: string,
+  options: WatchOptions,
+  onResult: (result: { eventName: 'add' | 'change' | 'unlink', path: string, stats?: Stats }) => void,
+  onError: (error: Error) => void
+) {
+  const controller: AbortController = new AbortController()
+
+  const response = await fetchHttp('/api/watch-file', {
+    signal: controller.signal,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ repo, path, options })
+  })
+
+  const reader: ReadableStreamDefaultReader = response.body.getReader()
+  const result: Promise<string | null> = readReader(reader, onResult)
+
+  result.catch(error => {
+    if (!error.message.includes('abort')) {
+      onError(error)
+    }
+  })
+
+  const abort = () => controller.abort()
+
+  return { result, abort }
 }
 
 /**

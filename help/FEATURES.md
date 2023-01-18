@@ -367,8 +367,8 @@ The string containing `--echarts--` in the first line of the Js code block will 
 
 ```js
 // --echarts--
-function (chart) {
-chart.setOption({
+
+const option = {
     // backgroundColor: '#2c343c',
 
     title: {
@@ -439,8 +439,9 @@ chart.setOption({
             }
         }
     ]
-}, true)
 }
+
+chart.setOption(option, true)
 ```
 
 ## Draw.io

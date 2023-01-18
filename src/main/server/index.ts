@@ -95,7 +95,8 @@ const fileContent = async (ctx: any, next: any) => {
 
       ctx.body = result('ok', 'success', {
         content: content.toString(asBase64 ? 'base64' : undefined),
-        hash: await file.hash(repo, path)
+        hash: await file.hash(repo, path),
+        stat: await file.stat(repo, path)
       })
     } else if (ctx.method === 'POST') {
       const { oldHash, content, asBase64, repo, path } = ctx.request.body
@@ -116,8 +117,10 @@ const fileContent = async (ctx: any, next: any) => {
         )
       }
 
-      const hash: string = await file.write(repo, path, saveContent)
-      ctx.body = result('ok', 'success', hash)
+      ctx.body = result('ok', 'success', {
+        hash: await file.write(repo, path, saveContent),
+        stat: await file.stat(repo, path),
+      })
     } else if (ctx.method === 'DELETE') {
       await file.rm(ctx.query.repo, ctx.query.path)
       ctx.body = result()
@@ -152,6 +155,9 @@ const fileContent = async (ctx: any, next: any) => {
   } else if (ctx.path === '/api/history/comment') {
     const { repo, path, version, msg } = ctx.request.body
     ctx.body = result('ok', 'success', (await file.commentHistoryVersion(repo, path, version, msg)))
+  } else if (ctx.path === '/api/watch-file') {
+    const { repo, path, options } = ctx.request.body
+    ctx.body = await file.watchFile(repo, path, options)
   } else {
     await next()
   }

@@ -9,6 +9,12 @@ export interface PathItem {
 
 export interface FileItem extends PathItem { name: string }
 
+export interface FileStat {
+  mtime: number,
+  birthtime: number,
+  size: number,
+}
+
 export interface Doc extends PathItem {
   type: 'file' | 'dir';
   name: string;
@@ -16,6 +22,7 @@ export interface Doc extends PathItem {
   title?: string;
   passwordHash?: string;
   contentHash?: string;
+  stat?: FileStat,
   status?: 'loaded' | 'save-failed' | 'saved';
   absolutePath?: string,
   plain?: boolean;
@@ -275,7 +282,7 @@ export type BuildInActions = {
   'view.render': () => void,
   'view.refresh': () => void,
   'view.reveal-line': (startLine: number) => Promise<HTMLElement | null>,
-  'view.get-content-html': () => string,
+  'view.get-content-html': (selected?: boolean) => string,
   'view.get-view-dom': () => HTMLElement | null,
   'view.get-render-env': () => RenderEnv | null,
   'view.enter-presentation': () => void,
@@ -356,7 +363,8 @@ export type BuildInHookTypes = {
       uploadLocalImage?: boolean,
       highlightCode?: boolean,
       preferPng?: boolean,
-      nodeProcessor?: (node: HTMLElement) => void
+      onlySelected?: boolean,
+      nodeProcessor?: (node: HTMLElement) => void,
     }
   },
   TREE_NODE_SELECT: { node: Components.Tree.Node },

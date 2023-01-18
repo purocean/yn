@@ -1,6 +1,6 @@
 # Yank Note
 
-A **hackable** markdown note application for programmers **[Download](https://github.com/purocean/yn/releases)** | **[Try it Online >>>](https://demo.yank-note.com/)**
+A **highly extensible** Markdown editor, designed for productivity. **[Download](https://github.com/purocean/yn/releases)** | **[Try it Online >>>](https://demo.yank-note.com/)**
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not recommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
@@ -76,15 +76,18 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.47.0](https://github.com/purocean/yn/releases/tag/v3.47.0) 2023-01-04
+### [v3.48.0](https://github.com/purocean/yn/releases/tag/v3.48.0) 2023-01-18
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-win-x64-3.47.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-mac-arm64-3.47.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-mac-x64-3.47.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-linux-x86_64-3.47.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.47.0/Yank-Note-linux-amd64-3.47.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-win-x64-3.48.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-mac-arm64-3.48.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-mac-x64-3.48.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-linux-x86_64-3.48.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.48.0/Yank-Note-linux-amd64-3.48.0.deb)
 
-1. feat: add global macro replacement setting
-1. feat: add Linux arm64 build product
-1. fix: fix the problem that the README displayed in the extension manager may be blank
-1. fix: fix the problem that the search panel input box cannot be closed by pressing the ESC key when the input box loses focus
-1. fix: fix the problem of js code execution log printing
+1. feat: monitor the currently edited file, automatically refresh or prompt that the file is modified by other applications
+2. feat: use prismjs instead of highlight.js as the code highlighting engine
+3. feat: the copy panel supports copying part of the content of the document
+4. feat: upgrade katex to 0.16.4
+5. feat: upgrade monaco-editor to 0.34.1
+6. fix: fix Linux amd64 packaging problem
+7. fix: fix potential memory leaks in the editor
+8. feat(plugin): Add `ctx.api.watchFile` method
 
 [More release notes](https://github.com/purocean/yn/releases)
 

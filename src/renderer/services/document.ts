@@ -1,4 +1,5 @@
 import { Fragment, h } from 'vue'
+import AsyncLock from 'async-lock'
 import { cloneDeep } from 'lodash-es'
 import { Optional } from 'utility-types'
 import { URI } from 'monaco-editor/esm/vs/base/common/uri.js'
@@ -19,6 +20,7 @@ import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
 
 const logger = getLogger('document')
+const lock = new AsyncLock()
 
 function decrypt (content: any, password: string) {
   if (!password) {
@@ -36,13 +38,19 @@ function encrypt (content: any, password: string) {
   return crypto.encrypt(content, password)
 }
 
+function checkFilePath (path: string) {
+  if (path.includes('#')) {
+    throw new Error('Path should not contain #')
+  }
+}
+
 /**
  * Get absolutePath of document
  * @param doc
  * @returns
  */
 export function getAbsolutePath (doc: Doc) {
-  return join(getRepo(doc.repo)?.path || '/', doc.path)
+  return normalizeSep(join(getRepo(doc.repo)?.path || '/', doc.path))
 }
 
 /**
@@ -195,6 +203,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
       file.content = encrypted.content
     }
 
+    checkFilePath(file.path)
     await api.writeFile(file, file.content)
 
     triggerHook('DOC_CREATED', { doc: file })
@@ -244,6 +253,7 @@ export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
   const dir: Doc = { ...doc, path: doc.path, type: 'dir', name, contentHash: 'new' }
 
   try {
+    checkFilePath(dir.path)
     await api.writeFile(dir)
 
     triggerHook('DOC_CREATED', { doc: dir })
@@ -401,12 +411,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
   }
 }
 
-/**
- * Save a document.
- * @param doc
- * @param content
- */
-export async function saveDoc (doc: Doc, content: string) {
+async function _saveDoc (doc: Doc, content: string): Promise<void> {
   logger.debug('saveDoc', doc)
 
   if (!doc.plain) {
@@ -445,8 +450,9 @@ export async function saveDoc (doc: Doc, content: string) {
       passwordHash = encrypted.passwordHash
     }
 
-    const { hash } = await api.writeFile(doc, sendContent)
+    const { hash, stat } = await api.writeFile(doc, sendContent)
     Object.assign(doc, {
+      stat,
       content,
       passwordHash,
       contentHash: hash,
@@ -458,6 +464,21 @@ export async function saveDoc (doc: Doc, content: string) {
     useToast().show('warning', error.message)
     throw error
   }
+}
+
+/**
+ * Save a document.
+ * @param doc
+ * @param content
+ */
+export async function saveDoc (doc: Doc, content: string): Promise<void> {
+  return lock.acquire('saveDoc', async (done) => {
+    try {
+      await _saveDoc(doc, content)
+    } finally {
+      done()
+    }
+  })
 }
 
 /**
@@ -551,12 +572,7 @@ export async function ensureCurrentFileSaved () {
   }
 }
 
-/**
- * Switch document.
- * @param doc
- * @param force
- */
-export async function switchDoc (doc: Doc | null, force = false) {
+async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
   doc = doc ? cloneDeep(doc) : null
 
   logger.debug('switchDoc', doc)
@@ -591,6 +607,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
 
     let content = ''
     let hash = ''
+    let stat
     if (doc.plain) {
       const timer = setTimeout(() => {
         store.commit('setCurrentFile', { ...doc, status: undefined })
@@ -602,6 +619,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
 
       content = res.content
       hash = res.hash
+      stat = res.stat
     }
 
     // decrypt content.
@@ -615,6 +633,7 @@ export async function switchDoc (doc: Doc | null, force = false) {
 
     store.commit('setCurrentFile', {
       ...doc,
+      stat,
       content,
       passwordHash,
       contentHash: hash,
@@ -628,6 +647,21 @@ export async function switchDoc (doc: Doc | null, force = false) {
     useToast().show('warning', error.message.includes('Malformed') ? t('document.wrong-password') : error.message)
     throw error
   }
+}
+
+/**
+ * Switch document.
+ * @param doc
+ * @param force
+ */
+export async function switchDoc (doc: Doc | null, force = false): Promise<void> {
+  return lock.acquire('switchDoc', async (done) => {
+    try {
+      await _switchDoc(doc, force)
+    } finally {
+      done()
+    }
+  })
 }
 
 /**

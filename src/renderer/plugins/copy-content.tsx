@@ -12,6 +12,8 @@ export default {
       highlightCode: true,
     })
 
+    const selectionLength = ctx.lib.vue.ref(0)
+
     const panel = ctx.lib.vue.defineComponent({
       setup () {
         ctx.lib.vue.watch(() => ({ ...options }), (val, prev) => {
@@ -42,6 +44,13 @@ export default {
               {options.type !== 'markdown' && <label><input v-model={options.highlightCode} type="checkbox" /> {ctx.i18n.t('copy-content.highlight-code')} </label>}
             </div>
           </div>
+          {options.type !== 'markdown' && <div class="copy-content-tips">
+            {
+              selectionLength.value
+                ? ctx.i18n.t('copy-content.copy-tips-selected', String(selectionLength.value))
+                : ctx.i18n.t('copy-content.copy-tips')
+            }
+          </div>}
         </div>
       }
     })
@@ -95,6 +104,9 @@ export default {
     }
 
     async function copyContent () {
+      const iframe = await ctx.view.getRenderIframe()
+      selectionLength.value = iframe.contentWindow?.getSelection()?.toString()?.trim()?.length || 0
+
       if (await ctx.ui.useModal().confirm({
         title: ctx.i18n.t('status-bar.tool.copy-content'),
         component: panel,
@@ -104,7 +116,7 @@ export default {
           ctx.ui.useToast().show('info', ctx.i18n.t('loading'), 10000)
           const content = options.type === 'markdown'
             ? await transformMarkdown()
-            : await ctx.view.getContentHtml(options)
+            : await ctx.view.getContentHtml({ ...options, onlySelected: selectionLength.value > 0 })
 
           if (Date.now() - startedAt > 3000) {
             await ctx.ui.useModal().alert({ content: ctx.i18n.t('copy-content.complete') })
@@ -168,6 +180,11 @@ export default {
         margin-left: 12px;
         white-space: nowrap;
         margin-bottom: 8px;
+      }
+
+      .copy-content .copy-content-tips {
+        font-size: 13px;
+        color: var(--g-color-35);
       }
     `)
   }
