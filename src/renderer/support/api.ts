@@ -333,7 +333,8 @@ export async function watchFile (
   repo: string,
   path: string,
   options: WatchOptions,
-  onResult: (result: { eventName: 'add' | 'change' | 'unlink', path: string, stats?: Stats }) => void
+  onResult: (result: { eventName: 'add' | 'change' | 'unlink', path: string, stats?: Stats }) => void,
+  onError: (error: Error) => void
 ) {
   const controller: AbortController = new AbortController()
 
@@ -346,6 +347,13 @@ export async function watchFile (
 
   const reader: ReadableStreamDefaultReader = response.body.getReader()
   const result: Promise<string | null> = readReader(reader, onResult)
+
+  result.catch(error => {
+    if (!error.message.includes('abort')) {
+      onError(error)
+    }
+  })
+
   const abort = () => controller.abort()
 
   return { result, abort }
