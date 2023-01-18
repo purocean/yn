@@ -45,8 +45,21 @@ export default {
             const currentFileSaved = ctx.store.getters.isSaved
 
             logger.debug('startWatch onResult', { remoteFileUpdated, currentFileSaved })
-            if (remoteFileUpdated && currentFileSaved) {
-              ctx.doc.switchDoc(currentFile, true)
+            if (remoteFileUpdated) {
+              if (currentFileSaved) {
+                ctx.doc.switchDoc(currentFile, true)
+              } else {
+                ctx.ui.useModal().confirm({
+                  title: ctx.i18n.t('file-changed-alert.title'),
+                  content: ctx.i18n.t('file-changed-alert.content'),
+                  okText: ctx.i18n.t('file-changed-alert.reload'),
+                }).then((ok) => {
+                  if (ok) {
+                    ctx.store.state.currentContent = currentFile.content || '' // reset content
+                    ctx.doc.switchDoc(currentFile, true)
+                  }
+                })
+              }
             }
           } else {
             logger.debug('startWatch onResult abort watch')

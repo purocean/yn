@@ -629,6 +629,11 @@ const data = {
     'expand-all': 'Expand All',
     'collapse-all': 'Collapse All',
   },
+  'file-changed-alert': {
+    'title': 'File Changed',
+    'content': 'The file has been changed on disk, do you want to reload it?',
+    'reload': 'Reload',
+  },
 }
 
 export type BaseLanguage = typeof data

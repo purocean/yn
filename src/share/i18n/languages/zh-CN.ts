@@ -630,6 +630,11 @@ const data: BaseLanguage = {
     'expand-all': '展开所有',
     'collapse-all': '折叠所有',
   },
+  'file-changed-alert': {
+    'title': '文件已更改',
+    'content': '文件已被其他应用更改，是否重新加载？',
+    'reload': '重载',
+  },
 }
 
 export default data
