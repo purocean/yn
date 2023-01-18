@@ -13,7 +13,7 @@ jobs:
             platform: 'mac'
           - os: windows-2019
             platform: 'win'
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             platform: 'linux'
           - os: ubuntu-18.04
             platform: 'linux'
