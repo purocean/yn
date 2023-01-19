@@ -454,6 +454,10 @@ registerHook('EDITOR_CURRENT_EDITOR_CHANGE', ({ current }) => {
 })
 
 registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
+  // Quick fix: https://github.com/microsoft/monaco-editor/issues/2962
+  monaco.languages.register({ id: 'vs.editor.nullLanguage' })
+  monaco.languages.setLanguageConfiguration('vs.editor.nullLanguage', {})
+
   monaco.editor.defineTheme('vs', {
     base: 'vs',
     inherit: true,

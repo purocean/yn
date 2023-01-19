@@ -49,14 +49,18 @@ export default {
               if (currentFileSaved) {
                 ctx.doc.switchDoc(currentFile, true)
               } else {
-                ctx.ui.useModal().confirm({
-                  title: ctx.i18n.t('file-changed-alert.title'),
-                  content: ctx.i18n.t('file-changed-alert.content'),
-                  okText: ctx.i18n.t('file-changed-alert.reload'),
-                }).then((ok) => {
-                  if (ok) {
-                    ctx.store.state.currentContent = currentFile.content || '' // reset content
-                    ctx.doc.switchDoc(currentFile, true)
+                ctx.api.readFile(currentFile).then(({ hash }) => {
+                  if (ctx.store.state.currentFile === currentFile && hash !== currentFile.contentHash) {
+                    ctx.ui.useModal().confirm({
+                      title: ctx.i18n.t('file-changed-alert.title'),
+                      content: ctx.i18n.t('file-changed-alert.content'),
+                      okText: ctx.i18n.t('file-changed-alert.reload'),
+                    }).then((ok) => {
+                      if (ok && ctx.store.state.currentFile === currentFile) {
+                        ctx.store.state.currentContent = currentFile.content || '' // reset content
+                        ctx.doc.switchDoc(currentFile, true)
+                      }
+                    })
                   }
                 })
               }
