@@ -76,9 +76,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.48.1](https://github.com/purocean/yn/releases/tag/v3.48.1) 2023-01-19
+### [v3.48.2](https://github.com/purocean/yn/releases/tag/v3.48.2) 2023-01-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-win-x64-3.48.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-mac-arm64-3.48.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-mac-x64-3.48.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-linux-x86_64-3.48.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-linux-amd64-3.48.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-win-x64-3.48.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-mac-arm64-3.48.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-mac-x64-3.48.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-linux-x86_64-3.48.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-linux-amd64-3.48.2.deb)
 
 1. feat: monitor the currently edited file, automatically refresh or prompt that the file is modified by other applications
 2. feat: use prismjs instead of highlight.js as the code highlighting engine
