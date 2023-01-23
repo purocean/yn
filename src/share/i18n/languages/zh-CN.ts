@@ -117,6 +117,7 @@ const data: BaseLanguage = {
         'buttons': {
           'download': '下载',
           'view-changes': '查看更新内容',
+          'download-and-view-changes': '下载并查看更新内容',
           'cancel': '取消',
           'ignore': '忽略'
         }
