@@ -59,6 +59,8 @@ function paste (e: ClipboardEvent) {
     for (let i = 0; i < items.length; i++) {
       const fileType = items[i].type
       if (fileType.match(IMAGE_REG)) {
+        e.preventDefault()
+        e.stopPropagation()
         const asBase64 = isKeydown('B') // press key b, paste image as base64
         pasteImage(items[i].getAsFile()!, asBase64)
       }
