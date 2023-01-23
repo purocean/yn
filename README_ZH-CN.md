@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.48.1](https://github.com/purocean/yn/releases/tag/v3.48.1) 2023-01-19
+### [v3.48.2](https://github.com/purocean/yn/releases/tag/v3.48.2) 2023-01-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-win-x64-3.48.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-mac-arm64-3.48.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-mac-x64-3.48.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-linux-x86_64-3.48.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.48.1/Yank-Note-linux-amd64-3.48.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-win-x64-3.48.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-mac-arm64-3.48.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-mac-x64-3.48.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-linux-x86_64-3.48.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-linux-amd64-3.48.2.deb)
 
 1. feat: 监听当前编辑文件，自动刷新或提示文件被其他应用修改
 2. feat: 使用 prismjs 代替 highlight.js 作为代码高亮引擎
