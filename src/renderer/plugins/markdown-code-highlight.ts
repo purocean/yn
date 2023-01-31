@@ -1,5 +1,6 @@
 import prism from 'prismjs'
 import defaultStyle from 'prismjs/themes/prism.css'
+import { escape } from 'lodash-es'
 import type { Plugin, Ctx } from '@fe/context'
 import { getLogger } from '@fe/utils'
 import styles from '@fe/others/prism-style.scss'
@@ -172,6 +173,10 @@ function duplicateMultilineNodes (element: HTMLElement) {
 function wrap (code: string, lang: string, lineNumber: boolean) {
   let html = code
 
+  if (lang === 'text') {
+    html = escape(code)
+  }
+
   if (lineNumber) {
     const element = document.createElement('code')
     element.innerHTML = html
@@ -203,7 +208,7 @@ function getLangCodeFromExtension (extension: string) {
 
 function highlight (str: string, lang: string, lineNumber: boolean) {
   if (!lang) {
-    return str
+    return escape(str)
   }
 
   lang = lang.toLowerCase()
