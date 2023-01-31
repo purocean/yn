@@ -69,6 +69,7 @@ const schema: Schema = {
             title: 'T_setting-panel.schema.repos.name',
             defaultValue: '',
             maxLength: 10,
+            pattern: '^[^_\\s]+$',
             options: {
               inputAttributes: { placeholder: 'T_setting-panel.schema.repos.name-placeholder' }
             },
