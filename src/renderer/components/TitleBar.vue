@@ -31,6 +31,7 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
+import { HELP_REPO_NAME } from '@fe/support/args'
 import { getElectronRemote, isElectron, isMacOS, nodeRequire } from '@fe/support/env'
 import { isEncrypted } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
@@ -157,7 +158,7 @@ export default defineComponent({
       const file: Doc = currentFile.value
 
       if (file) {
-        if (file.repo === '__help__') {
+        if (file.repo === HELP_REPO_NAME) {
           return file.title
         }
 

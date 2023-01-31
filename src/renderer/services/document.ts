@@ -13,6 +13,7 @@ import type { Doc, PathItem } from '@fe/types'
 import { basename, dirname, extname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
+import { HELP_REPO_NAME } from '@fe/support/args'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
 import { getRepo, inputPassword, openPath, showItemInFolder } from './base'
@@ -513,7 +514,7 @@ export async function ensureCurrentFileSaved () {
     return
   }
 
-  const unsaved = !store.getters.isSaved && currentFile.repo !== '__help__'
+  const unsaved = !store.getters.isSaved && currentFile.repo !== HELP_REPO_NAME
 
   if (!unsaved) {
     return
@@ -717,7 +718,7 @@ export async function openInOS (doc: Doc, reveal?: boolean) {
 export async function showHelp (docName: string) {
   switchDoc({
     type: 'file',
-    repo: '__help__',
+    repo: HELP_REPO_NAME,
     title: docName,
     name: docName,
     path: docName,

@@ -3,7 +3,7 @@ import type { WatchOptions } from 'chokidar'
 import type { IProgressMessage, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery } from 'ripgrep-wrapper'
 import type { Components, Doc, ExportType, FileItem, FileSort, FileStat, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
-import { JWT_TOKEN } from './args'
+import { HELP_REPO_NAME, JWT_TOKEN } from './args'
 
 export type ApiResult<T = any> = {
   status: 'ok' | 'error',
@@ -94,7 +94,7 @@ async function fetchHelpContent (docName: string) {
 export async function readFile (file: PathItem, asBase64 = false): Promise<{content: string, hash: string, stat: FileStat}> {
   const { path, repo } = file
 
-  if (repo === '__help__') {
+  if (repo === HELP_REPO_NAME) {
     return await fetchHelpContent(path)
   }
 

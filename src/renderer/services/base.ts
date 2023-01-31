@@ -3,7 +3,7 @@ import filenamify from 'filenamify/browser'
 import type { Doc, FindInRepositoryQuery } from '@fe/types'
 import * as api from '@fe/support/api'
 import { getSetting } from './setting'
-import { FLAG_DEMO } from '@fe/support/args'
+import { FLAG_DEMO, HELP_REPO_NAME } from '@fe/support/args'
 import { binMd5, quote, fileToBase64URL, getLogger, removeQuery } from '@fe/utils'
 import { basename, resolve, extname, dirname, relative, isBelongTo } from '@fe/utils/path'
 import { dayjs } from '@fe/context/lib'
@@ -30,7 +30,7 @@ export function getAttachmentURL (doc: Doc, opts: { origin: boolean } = { origin
   const repo = doc.repo
   const filePath = doc.path
 
-  const uri = repo === '__help__'
+  const uri = repo === HELP_REPO_NAME
     ? `/api/help/file?path=${encodeURIComponent(filePath)}`
     : `/api/attachment/${encodeURIComponent(fileName)}?repo=${repo}&path=${encodeURIComponent(filePath)}`
 
