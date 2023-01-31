@@ -26,6 +26,11 @@ export default {
     }
 
     async function startWatch (doc: Doc) {
+      if (doc.repo === ctx.args.HELP_REPO_NAME) {
+        stopWatch()
+        return
+      }
+
       const { repo, path } = doc
       logger.debug('startWatch', repo, path)
       const watchHandler = await ctx.api.watchFile(
