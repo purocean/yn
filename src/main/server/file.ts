@@ -1,4 +1,4 @@
-import { shell } from 'electron'
+import { app, shell } from 'electron'
 import chokidar from 'chokidar'
 import orderBy from 'lodash/orderBy'
 import * as fs from 'fs-extra'
@@ -465,7 +465,10 @@ export async function watchFile (repo: string, p: string, options: chokidar.Watc
     const _close = () => {
       close()
       watcher.close()
+      app.off('quit', _close)
     }
+
+    app.on('quit', _close)
 
     watcher.on('error', err => {
       console.error('watchFile', filePath, 'error', err)
