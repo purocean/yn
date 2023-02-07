@@ -8,6 +8,10 @@ import type { Plugin } from '@fe/context'
 const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
 const defaultRules = {} as any
 
+function validateAttrName (name: string) {
+  return attrNameReg.test(name) && !/^on/i.test(name)
+}
+
 function getLine (token: Token, env?: Record<string, any>) {
   const [lineStart, lineEnd] = token.map || [0, 1]
 
@@ -46,7 +50,7 @@ export function setSourceLine (token: Token, env?: Record<string, any>) {
       // transform array to object
       token.attrs?.forEach(([name, val]) => {
         // filter attrs
-        if (attrNameReg.test(name)) {
+        if (validateAttrName(name)) {
           token.meta.attrs[name] = val
         }
       })
@@ -234,7 +238,7 @@ function renderAttrs (this: Renderer, token: Token) {
   const result: any = {}
 
   token.attrs.forEach(token => {
-    if (attrNameReg.test(token[0])) {
+    if (validateAttrName(token[0])) {
       result[token[0]] = token[1]
     }
   })
