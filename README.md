@@ -76,18 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.48.2](https://github.com/purocean/yn/releases/tag/v3.48.2) 2023-01-23
+### [v3.49.0](https://github.com/purocean/yn/releases/tag/v3.49.0) 2023-02-08
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-win-x64-3.48.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-mac-arm64-3.48.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-mac-x64-3.48.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-linux-x86_64-3.48.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-linux-amd64-3.48.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-win-x64-3.49.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-mac-arm64-3.49.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-mac-x64-3.49.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-linux-x86_64-3.49.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-linux-amd64-3.49.0.deb)
 
-1. feat: monitor the currently edited file, automatically refresh or prompt that the file is modified by other applications
-2. feat: use prismjs instead of highlight.js as the code highlighting engine
-3. feat: the copy panel supports copying part of the content of the document
-4. feat: upgrade katex to 0.16.4
-5. feat: upgrade monaco-editor to 0.34.1
-6. fix: fix Linux amd64 packaging problem
-7. fix: fix potential memory leaks in the editor
-8. feat(plugin): Add `ctx.api.watchFile` method
+1. feat: add alias `node => javascript`, `bash => shell` for editor language highlighting
+1. feat: the update dialog adds a "Download and view update content" button
+1. fix: fix the problem that the output of Python code running on Windows platform may be garbled
+1. fix: fix the problem that the application will crash when pressing `Cmd + Q` on the macOS platform
+1. fix: fix the issue that highlighting unknown language code output may not be correct
+1. fix: fix the problem that using shortcut keys to switch todos in the editor may not be able to switch correctly
 
 [More release notes](https://github.com/purocean/yn/releases)
 
