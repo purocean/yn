@@ -73,7 +73,12 @@ const runCode = async (cmd: { cmd: string, args: string[] } | string, code: stri
         return execFile('wsl.exe', [...args, '--', cmd.cmd].concat(cmd.args).concat([code]))
       }
 
-      if (!isWin) {
+      if (isWin) {
+        if (!env.PYTHONIOENCODING) {
+          // use utf-8 encoding for python on windows
+          env.PYTHONIOENCODING = 'utf-8'
+        }
+      } else {
         const extPath = '/usr/local/bin'
         if (env.PATH && env.PATH.indexOf(extPath) < 0) {
           env.PATH = `${extPath}:${env.PATH}`

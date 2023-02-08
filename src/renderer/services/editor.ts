@@ -458,6 +458,14 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
   monaco.languages.register({ id: 'vs.editor.nullLanguage' })
   monaco.languages.setLanguageConfiguration('vs.editor.nullLanguage', {})
 
+  monaco.languages.getLanguages().forEach(function (lang) {
+    if (lang.id === 'javascript') {
+      lang.aliases?.push('node')
+    } else if (lang.id === 'shell') {
+      lang.aliases?.push('bash')
+    }
+  })
+
   monaco.editor.defineTheme('vs', {
     base: 'vs',
     inherit: true,

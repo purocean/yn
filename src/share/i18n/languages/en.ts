@@ -116,6 +116,7 @@ const data = {
         'buttons': {
           'download': 'Download',
           'view-changes': 'View Changes',
+          'download-and-view-changes': 'Download and View Changes',
           'cancel': 'Cancel',
           'ignore': 'Don\'t Ask Again'
         }

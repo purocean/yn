@@ -76,7 +76,10 @@ request(registryUrl, (err, _, body) => {
 
   const registry = JSON.parse(body);
 
-  const extensions = registry.filter(x => x.origin === 'official')
+  const extensions = registry.filter(x =>
+    x.origin === 'official' &&
+    x.name !== '@yank-note/extension-milkdown'
+  )
     .map(x => ({ id: x.name, enabled: true, isDev: false }))
   const extensionsFile = path.join(__dirname, '../src/renderer/public/extensions.json')
   console.log(`Writing extensions ${extensionsFile}`)

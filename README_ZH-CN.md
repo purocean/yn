@@ -76,18 +76,16 @@
 
 ## 更新日志
 
-### [v3.48.2](https://github.com/purocean/yn/releases/tag/v3.48.2) 2023-01-23
+### [v3.49.0](https://github.com/purocean/yn/releases/tag/v3.49.0) 2023-02-08
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-win-x64-3.48.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-mac-arm64-3.48.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-mac-x64-3.48.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-linux-x86_64-3.48.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.48.2/Yank-Note-linux-amd64-3.48.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-win-x64-3.49.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-mac-arm64-3.49.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-mac-x64-3.49.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-linux-x86_64-3.49.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-linux-amd64-3.49.0.deb)
 
-1. feat: 监听当前编辑文件，自动刷新或提示文件被其他应用修改
-2. feat: 使用 prismjs 代替 highlight.js 作为代码高亮引擎
-3. feat: 复制面板支持复制文档部分内容
-4. feat: 升级 katex 到 0.16.4
-5. feat: 升级 monaco-editor 到 0.34.1
-6. fix: 修复 Linux amd64 打包问题
-7. fix: 修复编辑器潜在的内存泄漏问题
-8. feat(plugin): 增加 `ctx.api.watchFile` 方法
+1. feat: 编辑器语言高亮增加别名 `node => javascript`, `bash => shell`
+1. feat: 更新对话框增加 “下载并查看更新内容” 按钮
+1. fix: 修复 Windows 平台运行 Python 代码输出可能乱码问题
+1. fix: 修复 macOS 平台按 `Cmd + Q` 应用会崩溃问题
+1. fix: 修复高亮未知语言代码输出可能不正确问题
+1. fix: 修复在编辑器中使用快捷键切换待办可能不能正确切换问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

@@ -75,12 +75,13 @@ const init = (call: () => void) => {
       buttons: [
         $t('app.updater.found-dialog.buttons.download'),
         $t('app.updater.found-dialog.buttons.view-changes'),
+        $t('app.updater.found-dialog.buttons.download-and-view-changes'),
         $t('app.updater.found-dialog.buttons.cancel'),
         $t('app.updater.found-dialog.buttons.ignore')
       ],
     })
 
-    if (response === 0) {
+    if (response === 0 || response === 2) {
       progressBar = new ProgressBar({
         title: $t('app.updater.progress-bar.title'),
         text: `${info.version}`,
@@ -111,9 +112,13 @@ const init = (call: () => void) => {
         console.log('cancel download')
         cancellationToken.cancel()
       })
-    } else if (response === 1) {
+    }
+
+    if (response === 1 || response === 2) {
       shell.openExternal(GITHUB_URL + '/releases')
-    } else if (response === 3) {
+    }
+
+    if (response === 4) {
       store.set('dontCheckUpdates', true)
     }
   })

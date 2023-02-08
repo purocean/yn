@@ -11,6 +11,7 @@ import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { isEncrypted, isSameFile, saveDoc, toUri } from '@fe/services/document'
 import { getEditor, getIsDefault, setValue, whenEditorReady } from '@fe/services/editor'
+import { HELP_REPO_NAME } from '@fe/support/args'
 import { getSetting } from '@fe/services/setting'
 import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
@@ -60,7 +61,7 @@ export default defineComponent({
         return
       }
 
-      if (file.repo === '__help__') {
+      if (file.repo === HELP_REPO_NAME) {
         return
       }
 

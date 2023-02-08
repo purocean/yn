@@ -10,7 +10,7 @@ export default {
       const lineText = ctx.editor.getLineContent(line)
 
       if (typeof checked !== 'boolean') {
-        checked = !lineText.includes(' [x] ')
+        checked = !lineText.match(/^\s*[-+*]\s+\[x\]/)
       }
 
       const value = checked
