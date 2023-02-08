@@ -14,7 +14,7 @@ import ctx from '@fe/context'
 type Result = { __macroResult: true, vars?: Record<string, any>, value: string }
 type CacheItem = {
   $include?: Record<string, CacheItem>
-  $define: Record<string, CacheItem>
+  $define: Record<string, string>
 } & Record<string, Result | Promise<Result>>
 
 const logger = getLogger('plugin-macro')
@@ -95,8 +95,9 @@ function transform (
     callback?: (result: Result | Promise<Result>, match: string, matchPos: number) => void
   },
 ): { value: string, vars: Record<string, any> } {
-  let _vars = merge({ define: { ...globalMacroReplacement } }, vars)
+  let _vars: Record<string, any> = merge({ define: { ...globalMacroReplacement } }, vars)
   const define = { ...options.cache.$define, ..._vars.define }
+  _vars.define = define
   const keys = Object.keys(define)
   if (keys.length) {
     const reg = new RegExp(keys.map(escapeRegExp).join('|'), 'g')
@@ -145,7 +146,7 @@ function transform (
       options.callback?.(result, match, matchPos)
 
       if (result instanceof Promise) {
-        return 'running……'
+        return 'running...'
       }
 
       if (result.vars) {
@@ -240,7 +241,10 @@ async function include (
         autoRerender: false,
         callback: res => {
           if (res instanceof Promise) {
-            tasks.push(res)
+            tasks.push(res.then(x => {
+              cache.$include![cacheKey].$define = { ...x.vars?.define }
+              return x
+            }))
           }
         }
       }
@@ -263,7 +267,7 @@ async function include (
 
     cache.$define = { ...result.vars.define }
 
-    return { __macroResult: true, vars: omit(result.vars, '$include'), value: result.value }
+    return { __macroResult: true, vars: omit(result.vars, '$include', '$_doc'), value: result.value }
   } catch (error: any) {
     return error.message
   }
