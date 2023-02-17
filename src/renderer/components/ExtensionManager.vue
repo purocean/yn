@@ -844,7 +844,7 @@ onUnmounted(() => {
       padding: 12px;
 
       .title {
-        align-items: flex-end;
+        align-items: center;
         justify-content: start;
         overflow: hidden;
         margin-top: -6px;
