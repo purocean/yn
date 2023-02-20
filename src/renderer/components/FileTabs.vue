@@ -88,8 +88,13 @@ export default defineComponent({
 
       // no this tab, add new one.
       if (!tab) {
-        // remove temporary tab and add new one.
-        setTabs(tabs.value.filter(x => !x.temporary).concat([item]))
+        if (item.payload.file) {
+          // remove temporary tab and add new one.
+          setTabs(tabs.value.filter(x => !x.temporary).concat([item]))
+        } else {
+          // welcome tab
+          setTabs(tabs.value.concat([item]))
+        }
       }
 
       current.value = item.key
