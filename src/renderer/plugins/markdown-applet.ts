@@ -1,8 +1,56 @@
-import { h } from 'vue'
+import { defineComponent, h, onBeforeUnmount, ref } from 'vue'
 import Markdown from 'markdown-it'
+import { registerHook, removeHook } from '@fe/core/hook'
 import { Plugin } from '@fe/context'
 import { IFrame } from '@fe/support/embed'
 import { md5 } from '@fe/utils'
+
+const Applet = defineComponent({
+  name: 'Applet',
+  props: {
+    appletId: String,
+    html: String,
+    attrs: Object as () => Record<string, string>,
+  },
+  setup (props) {
+    const displayFlag = ref(false)
+
+    function hide () {
+      displayFlag.value = false
+    }
+
+    function show () {
+      displayFlag.value = true
+    }
+
+    registerHook('DOC_SWITCHED', hide)
+    registerHook('VIEW_BEFORE_REFRESH', hide)
+    registerHook('VIEW_RENDERED', show)
+
+    onBeforeUnmount(() => {
+      removeHook('DOC_SWITCHED', hide)
+      removeHook('VIEW_BEFORE_REFRESH', hide)
+      removeHook('VIEW_RENDERED', show)
+    })
+
+    return () => !displayFlag.value ? null : h(IFrame, {
+      html: props.html,
+      debounce: 1000,
+      globalStyle: true,
+      onLoad (iframe: HTMLIFrameElement) {
+        const win = iframe.contentWindow as any
+        win.appletId = props.appletId
+        win.init?.()
+        win.resize()
+      },
+      iframeProps: {
+        ...props.attrs,
+        class: 'applet-iframe',
+        height: '20px',
+      }
+    })
+  }
+})
 
 const MarkdownItPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
@@ -28,21 +76,10 @@ const MarkdownItPlugin = (md: Markdown) => {
       ${code}
     `
 
-    const iframe = h(IFrame, {
+    const iframe = h(Applet, {
       html,
-      debounce: 1000,
-      globalStyle: true,
-      onLoad (iframe: HTMLIFrameElement) {
-        const win = iframe.contentWindow as any
-        win.appletId = appletId
-        win.init?.()
-        win.resize()
-      },
-      iframeProps: {
-        ...token.meta?.attrs,
-        class: 'applet-iframe',
-        height: '20px',
-      }
+      appletId,
+      attrs: token.meta?.attrs,
     })
 
     if (!appletTitle) {

@@ -407,7 +407,8 @@ const showOpenDialog = (params: OpenDialogOptions) => {
 }
 
 const showTray = () => {
-  tray = new Tray(path.join(__dirname, './assets/tray.png'))
+  const img = isMacos ? 'trayTemplate.png' : 'tray.png'
+  tray = new Tray(path.join(__dirname, `./assets/${img}`))
   tray.setToolTip(`${$t('app-name')} - ${$t('slogan')}`)
   if (isMacos) {
     tray.on('click', function (this: Tray) { this.popUpContextMenu() })
