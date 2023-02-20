@@ -27,12 +27,12 @@
         </div>
       </div>
     </div>
-    <div ref="refFilterBtn" class="action-btn" @click="showQuickFilter" :title="filterBtnTitle">
+    <div ref="refFilterBtn" class="action-btn" style="order: -512" @click="showQuickFilter" :title="filterBtnTitle">
       <svg-icon name="chevron-down" width="12px" />
     </div>
     <template v-for="(btn, i) in [...actionBtns].filter(x => !x.hidden).sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))">
       <div  v-if="btn.type === 'separator'" class="action-btn-separator" :key="i" />
-      <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" class="action-btn" @click="btn.onClick" :title="btn.title">
+      <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" class="action-btn" @click="btn.onClick" :title="btn.title" :style="btn.style">
         <svg-icon :name="btn.icon" width="12px" />
       </div>
       <component v-else-if="btn.type === 'custom'" :key="btn.key || `custom-${i}`" :is="btn.component" />
@@ -307,6 +307,7 @@ export default defineComponent({
   width: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
+  order: -1024;
 
   &::before,
   &::after {

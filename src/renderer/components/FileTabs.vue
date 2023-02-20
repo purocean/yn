@@ -48,6 +48,8 @@ export default defineComponent({
     const filterBtnTitle = computed(() => $t.value('tabs.search-tabs') + ' ' + getKeysLabel(showFilterBtnShortcuts))
     const actionBtns = ref<Components.Tabs.ActionBtn[]>([])
 
+    const welcomeShortcuts = isElectron ? [CtrlCmd, 'n'] : [CtrlCmd, Alt, 'n']
+
     function copyDoc (file: Doc | null): Doc | null {
       return file ? {
         type: 'file',
@@ -179,7 +181,22 @@ export default defineComponent({
     }
 
     function refreshActionBtns () {
-      actionBtns.value = FileTabs.getActionBtns()
+      const arr = [...FileTabs.getActionBtns()]
+
+      if (currentFile.value) {
+        arr.unshift({
+          icon: 'plus-regular',
+          type: 'normal',
+          title: t('tabs.new-tab') + ' ' + getKeysLabel(welcomeShortcuts),
+          onClick () {
+            switchDoc(null)
+          },
+          order: -600,
+          style: 'order: -600;'
+        })
+      }
+
+      actionBtns.value = arr
     }
 
     onBeforeMount(() => {
@@ -222,6 +239,14 @@ export default defineComponent({
       })
 
       registerAction({
+        name: 'file-tabs.show-welcome',
+        handler () {
+          switchDoc(null)
+        },
+        keys: welcomeShortcuts
+      })
+
+      registerAction({
         name: 'file-tabs.refresh-action-btns',
         handler: refreshActionBtns,
       })
@@ -238,6 +263,7 @@ export default defineComponent({
       removeAction('file-tabs.close-current')
       removeAction('file-tabs.search-tabs')
       removeAction('file-tabs.refresh-action-btns')
+      removeAction('file-tabs.show-welcome')
     })
 
     watch(currentFile, file => {

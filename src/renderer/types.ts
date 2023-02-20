@@ -99,6 +99,7 @@ export namespace Components {
       title: string,
       order?: number,
       hidden?: boolean,
+      style?: string,
       onClick: (e: MouseEvent) => void,
     }
     | { type: 'separator', order?: number, hidden?: boolean }

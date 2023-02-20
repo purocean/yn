@@ -313,6 +313,7 @@ const data = {
     'pin': 'Pin',
     'unpin': 'Unpin',
     'search-tabs': 'Search tabs',
+    'new-tab': 'New Tab',
   },
   'export-panel': {
     'export': 'Export',
