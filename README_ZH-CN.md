@@ -76,16 +76,14 @@
 
 ## 更新日志
 
-### [v3.49.0](https://github.com/purocean/yn/releases/tag/v3.49.0) 2023-02-08
+### [v3.50.0](https://github.com/purocean/yn/releases/tag/v3.50.0) 2023-02-20
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-win-x64-3.49.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-mac-arm64-3.49.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-mac-x64-3.49.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-linux-x86_64-3.49.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-linux-amd64-3.49.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-win-x64-3.50.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-mac-arm64-3.50.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-mac-x64-3.50.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-linux-x86_64-3.50.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-linux-amd64-3.50.0.deb)
 
-1. feat: 编辑器语言高亮增加别名 `node => javascript`, `bash => shell`
-1. feat: 更新对话框增加 “下载并查看更新内容” 按钮
-1. fix: 修复 Windows 平台运行 Python 代码输出可能乱码问题
-1. fix: 修复 macOS 平台按 `Cmd + Q` 应用会崩溃问题
-1. fix: 修复高亮未知语言代码输出可能不正确问题
-1. fix: 修复在编辑器中使用快捷键切换待办可能不能正确切换问题
+1. feat: 增加“新建标签页“按钮
+2. feat: 更改 macOS 菜单栏图标风格
+3. fix: 修复 HTML 小工具的一些问题
+4. fix: 修复宏替换的一些问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
