@@ -76,16 +76,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.49.0](https://github.com/purocean/yn/releases/tag/v3.49.0) 2023-02-08
+### [v3.50.0](https://github.com/purocean/yn/releases/tag/v3.50.0) 2023-02-20
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-win-x64-3.49.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-mac-arm64-3.49.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-mac-x64-3.49.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-linux-x86_64-3.49.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.49.0/Yank-Note-linux-amd64-3.49.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-win-x64-3.50.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-mac-arm64-3.50.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-mac-x64-3.50.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-linux-x86_64-3.50.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-linux-amd64-3.50.0.deb)
 
-1. feat: add alias `node => javascript`, `bash => shell` for editor language highlighting
-1. feat: the update dialog adds a "Download and view update content" button
-1. fix: fix the problem that the output of Python code running on Windows platform may be garbled
-1. fix: fix the problem that the application will crash when pressing `Cmd + Q` on the macOS platform
-1. fix: fix the issue that highlighting unknown language code output may not be correct
-1. fix: fix the problem that using shortcut keys to switch todos in the editor may not be able to switch correctly
+1. feat: add "New Tab" button
+2. feat: change the icon of the macOS menu bar
+3. fix: fix issue of "HTML Applet"
+4. fix: fix issue of "Macro Replacement"
 
 [More release notes](https://github.com/purocean/yn/releases)
 
