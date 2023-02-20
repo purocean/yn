@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.50.0](https://github.com/purocean/yn/releases/tag/v3.50.0) 2023-02-20
+### [v3.50.1](https://github.com/purocean/yn/releases/tag/v3.50.1) 2023-02-20
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-win-x64-3.50.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-mac-arm64-3.50.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-mac-x64-3.50.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-linux-x86_64-3.50.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.50.0/Yank-Note-linux-amd64-3.50.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-win-x64-3.50.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-mac-arm64-3.50.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-mac-x64-3.50.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-linux-x86_64-3.50.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-linux-amd64-3.50.1.deb)
 
 1. feat: 增加“新建标签页“按钮
 2. feat: 更改 macOS 菜单栏图标风格
