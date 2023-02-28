@@ -309,7 +309,7 @@ watch(fileUri, () => {
       cursor: zoom-in;
     }
 
-    p > img[only-child] {
+    p > img[auto-center] {
       display: block;
       margin-left: auto;
       margin-right: auto;
