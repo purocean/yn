@@ -76,14 +76,12 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.50.1](https://github.com/purocean/yn/releases/tag/v3.50.1) 2023-02-20
+### [v3.50.2](https://github.com/purocean/yn/releases/tag/v3.50.2) 2023-02-28
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-win-x64-3.50.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-mac-arm64-3.50.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-mac-x64-3.50.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-linux-x86_64-3.50.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.50.1/Yank-Note-linux-amd64-3.50.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-win-x64-3.50.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-mac-arm64-3.50.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-mac-x64-3.50.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-linux-x86_64-3.50.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-linux-amd64-3.50.2.deb)
 
-1. feat: add "New Tab" button
-2. feat: change the icon of the macOS menu bar
-3. fix: fix some issues with "HTML Applet"
-4. fix: fix some issues with "Macro Replacement"
+1. feat: remove repo name limitation
+2. fix: correct auto-center alignment for images
 
 [More release notes](https://github.com/purocean/yn/releases)
 

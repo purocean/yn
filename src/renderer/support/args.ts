@@ -29,7 +29,7 @@ export const DOM_ATTR_NAME = {
   ORIGIN_SRC: 'origin-src',
   ORIGIN_HREF: 'origin-href',
   LOCAL_IMAGE: 'local-image',
-  ONLY_CHILD: 'only-child',
+  ONLY_CHILD: 'auto-center',
   TOKEN_IDX: 'data-token-idx',
   DISPLAY_NONE: 'display-none',
 }
