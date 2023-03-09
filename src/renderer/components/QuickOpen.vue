@@ -30,7 +30,7 @@
           v-for="(item, i) in dataList"
           :key="item.repo + item.path"
           :class="{selected: selected === item}"
-          @mouseover="updateSelected(item)"
+          @mouseover="!disableMouseover && updateSelected(item)"
           @click="chooseItem(item)">
           <span :ref="el => refFilename[i] = el">
             {{item.name}}
@@ -83,6 +83,7 @@ export default defineComponent({
     const searchText = ref('')
     const currentTab = ref<TabKey>(lastTab)
     const list = ref<any>([])
+    const disableMouseover = ref(false)
 
     const tabs = computed(() => {
       const arr: {key: TabKey; label: string}[] = [
@@ -270,8 +271,16 @@ export default defineComponent({
 
     watch(searchText, () => updateDataSource())
 
-    watch(dataList, () => {
+    watch(dataList, val => {
+      if (val.length) {
+        disableMouseover.value = true
+        setTimeout(() => {
+          disableMouseover.value = false
+        }, 0)
+      }
+
       updateSelected()
+
       if (currentTab.value !== 'search') { // search model do not highlight text.
         nextTick(() => highlightText(searchText.value.trim()))
       }
@@ -307,6 +316,7 @@ export default defineComponent({
       chooseItem,
       switchTab,
       updateSelected,
+      disableMouseover,
     }
   },
 })
