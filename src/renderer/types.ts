@@ -40,6 +40,7 @@ export namespace Components {
       content?: string;
       okText?: string;
       cancelText?: string;
+      modalWidth?: string;
     }
 
     export interface ConfirmModalParams extends BaseParams {
@@ -56,7 +57,6 @@ export namespace Components {
       type?: string;
       value?: string;
       hint?: string;
-      modalWidth?: string;
       readonly?: boolean;
       select?: boolean | [number, number, 'forward' | 'backward' | 'none'];
     }
