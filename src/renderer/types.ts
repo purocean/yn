@@ -1,4 +1,5 @@
 import type { Language } from '@share/i18n'
+import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
 
@@ -347,7 +348,7 @@ export type BuildInHookTypes = {
   ACTION_AFTER_RUN: { name: string }
   THEME_CHANGE: { name: ThemeName },
   EDITOR_PASTE_IMAGE: { file: File },
-  MARKDOWN_BEFORE_RENDER: { src: string, env: RenderEnv }
+  MARKDOWN_BEFORE_RENDER: { src: string, env: RenderEnv, md: MarkdownIt },
   VIEW_ELEMENT_CLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },

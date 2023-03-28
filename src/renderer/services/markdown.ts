@@ -63,7 +63,7 @@ registerHook('VIEW_BEFORE_REFRESH', () => {
 
 const render = markdown.render
 markdown.render = (src: string, env?: any) => {
-  triggerHook('MARKDOWN_BEFORE_RENDER', { src, env })
+  triggerHook('MARKDOWN_BEFORE_RENDER', { src, env, md: markdown })
 
   // build render cache
   if (env.file) {
