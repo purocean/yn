@@ -86,10 +86,9 @@ markdown.render = (src: string, env?: any) => {
 
   ;(getSetting('render.md-sup', true) ? enabledRules : disabledRules).push('sup')
   ;(getSetting('render.md-sub', true) ? enabledRules : disabledRules).push('sub')
-  ;(getSetting('render.md-emoji', true) ? enabledRules : disabledRules).push('emoji')
 
-  markdown.enable(enabledRules)
-  markdown.disable(disabledRules)
+  markdown.enable(enabledRules, true)
+  markdown.disable(disabledRules, true)
 
   return render.call(markdown, src, env)
 }

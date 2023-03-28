@@ -258,6 +258,7 @@ export interface BuildInSettings {
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'editor.enable-preview': boolean,
   'editor.font-family': string,
+  'editor.complete-emoji': boolean,
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,

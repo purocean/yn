@@ -17,6 +17,10 @@ class EmojiCompletionProvider implements Monaco.languages.CompletionItemProvider
   }
 
   public provideCompletionItems (model: Monaco.editor.IModel, position: Monaco.Position): Monaco.languages.CompletionList {
+    if (!this.ctx.setting.getSetting('editor.complete-emoji')) {
+      return { suggestions: [] }
+    }
+
     const line = model.getLineContent(position.lineNumber)
     const cursor = position.column - 1
     const linePrefixText = line.slice(0, cursor)
@@ -64,6 +68,33 @@ export default {
         'markdown',
         new EmojiCompletionProvider(monaco, ctx)
       )
+    })
+
+    ctx.setting.changeSchema(schema => {
+      schema.properties['render.md-emoji'] = {
+        defaultValue: true,
+        title: 'T_setting-panel.schema.render.md-emoji',
+        type: 'boolean',
+        format: 'checkbox',
+        group: 'render',
+        required: true,
+      }
+      schema.properties['editor.complete-emoji'] = {
+        defaultValue: true,
+        title: 'T_setting-panel.schema.editor.complete-emoji',
+        type: 'boolean',
+        format: 'checkbox',
+        group: 'editor',
+        required: true,
+      }
+    })
+
+    ctx.registerHook('MARKDOWN_BEFORE_RENDER', ({ md }) => {
+      if (ctx.setting.getSetting('render.md-emoji')) {
+        md.enable('emoji', true)
+      } else {
+        md.disable('emoji', true)
+      }
     })
   }
 } as Plugin

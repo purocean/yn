@@ -304,14 +304,6 @@ const schema: Schema = ({
       group: 'render',
       required: true,
     },
-    'render.md-emoji': {
-      defaultValue: true,
-      title: 'T_setting-panel.schema.render.md-emoji',
-      type: 'boolean',
-      format: 'checkbox',
-      group: 'render',
-      required: true,
-    },
     shell: {
       defaultValue: '',
       title: 'T_setting-panel.schema.shell',

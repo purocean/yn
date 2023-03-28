@@ -371,6 +371,7 @@ const data = {
         'line-numbers': 'Line Numbers',
         'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
         'font-family': 'Font Family',
+        'complete-emoji': 'Complete Emoji - Input : to display emoji list',
       },
       'render': {
         'md-html': 'Enable HTML',
