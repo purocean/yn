@@ -171,7 +171,7 @@ export type FileSort = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: '
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'print' | 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
-export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'macros'
+export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'macros' | 'render'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 
 export type PrintOpts = {
@@ -257,6 +257,10 @@ export interface BuildInSettings {
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'editor.enable-preview': boolean,
   'editor.font-family': string,
+  'render.md-html': boolean,
+  'render.md-breaks': boolean,
+  'render.md-linkify': boolean,
+  'render.md-typographer': boolean,
   'assets.path-type': 'relative' | 'absolute' | 'auto',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,

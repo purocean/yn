@@ -6,6 +6,7 @@ import MarkdownItAbbr from 'markdown-it-abbr'
 import MarkdownItAttributes from 'markdown-it-attributes'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 import { registerHook, triggerHook } from '@fe/core/hook'
+import { getSetting } from './setting'
 
 /**
  * Markdown-it instance
@@ -74,6 +75,11 @@ markdown.render = (src: string, env?: any) => {
   } else {
     renderCache.clear()
   }
+
+  markdown.options.html = getSetting('render.md-html', true)
+  markdown.options.breaks = getSetting('render.md-breaks', true)
+  markdown.options.linkify = getSetting('render.md-linkify', true)
+  markdown.options.typographer = getSetting('render.md-typographer', false)
 
   return render.call(markdown, src, env)
 }
