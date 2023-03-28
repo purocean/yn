@@ -81,6 +81,16 @@ markdown.render = (src: string, env?: any) => {
   markdown.options.linkify = getSetting('render.md-linkify', true)
   markdown.options.typographer = getSetting('render.md-typographer', false)
 
+  const enabledRules: string[] = []
+  const disabledRules: string[] = []
+
+  ;(getSetting('render.md-sup', true) ? enabledRules : disabledRules).push('sup')
+  ;(getSetting('render.md-sub', true) ? enabledRules : disabledRules).push('sub')
+  ;(getSetting('render.md-emoji', true) ? enabledRules : disabledRules).push('emoji')
+
+  markdown.enable(enabledRules)
+  markdown.disable(disabledRules)
+
   return render.call(markdown, src, env)
 }
 
