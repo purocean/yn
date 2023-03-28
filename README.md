@@ -76,12 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.50.2](https://github.com/purocean/yn/releases/tag/v3.50.2) 2023-02-28
+### [v3.51.0](https://github.com/purocean/yn/releases/tag/v3.51.0) 2023-03-28
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-win-x64-3.50.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-mac-arm64-3.50.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-mac-x64-3.50.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-linux-x86_64-3.50.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.50.2/Yank-Note-linux-amd64-3.50.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-win-x64-3.51.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-mac-arm64-3.51.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-mac-x64-3.51.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-linux-x86_64-3.51.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-linux-amd64-3.51.0.deb)
 
-1. feat: remove repo name limitation
-2. fix: correct auto-center alignment for images
+1. feat: optimize the "Quick Open" panel interaction
+2. feat: increase rendering settings
+3. feat: add disable "Emoji" setting
+4. fix: fix the conflict between `markdown-it-sub` and `markdown-it-sup` plugins and HTML parsing
+5. feat(plugin): add user file interface
+6. feat(plugin): modal confirm supports defining dialog box width
 
 [More release notes](https://github.com/purocean/yn/releases)
 
