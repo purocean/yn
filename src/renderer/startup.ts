@@ -102,6 +102,12 @@ registerHook('SETTING_FETCHED', () => {
   }
 })
 
+registerHook('SETTING_CHANGED', ({ changedKeys }) => {
+  if (changedKeys.some(key => key.startsWith('render.'))) {
+    view.render()
+  }
+})
+
 registerHook('EXTENSION_READY', () => {
   view.render()
 })

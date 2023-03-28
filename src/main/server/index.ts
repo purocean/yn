@@ -7,7 +7,7 @@ import bodyParser from 'koa-body'
 import * as mime from 'mime'
 import request from 'request'
 import { promisify } from 'util'
-import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES, USER_EXTENSION_DIR } from '../constant'
+import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES, USER_EXTENSION_DIR, USER_DATA } from '../constant'
 import * as file from './file'
 import * as search from './search'
 import run from './run'
@@ -242,6 +242,35 @@ const tmpFile = async (ctx: any, next: any) => {
         )
       }
 
+      await fs.writeFile(absPath, body)
+      ctx.body = result('ok', 'success', { path: absPath })
+    } else if (ctx.method === 'DELETE') {
+      await fs.unlink(absPath)
+      ctx.body = result('ok', 'success')
+    }
+  } else {
+    await next()
+  }
+}
+
+const userFile = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/user-file')) {
+    const filePath = ctx.query.name.replace(/\.+/g, '.') // replace multiple dots with one dot
+    const absPath = path.join(USER_DATA, filePath)
+
+    if (ctx.method === 'GET') {
+      ctx.body = await fs.readFile(absPath)
+    } else if (ctx.method === 'POST') {
+      let body: any = ctx.request.body.toString()
+
+      if (ctx.query.asBase64) {
+        body = Buffer.from(
+          body.startsWith('data:') ? body.substring(body.indexOf(',') + 1) : body,
+          'base64'
+        )
+      }
+
+      await fs.ensureFile(absPath)
       await fs.writeFile(absPath, body)
       ctx.body = result('ok', 'success', { path: absPath })
     } else if (ctx.method === 'DELETE') {
@@ -540,6 +569,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, rpc))
 
   // static file

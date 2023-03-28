@@ -48,7 +48,9 @@ function validateTagName (name: string) {
   return !INVALID_HTML_TAG_NAME_RE.test(name)
 }
 
-function htmlInline (state: StateInline): boolean {
+function htmlInline (state: StateInline, silent = false): boolean {
+  if (silent) { return false }
+
   const pos = state.pos
 
   if (!state.md.options.html) { return false }

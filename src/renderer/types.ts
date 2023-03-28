@@ -1,4 +1,5 @@
 import type { Language } from '@share/i18n'
+import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
 
@@ -40,6 +41,7 @@ export namespace Components {
       content?: string;
       okText?: string;
       cancelText?: string;
+      modalWidth?: string;
     }
 
     export interface ConfirmModalParams extends BaseParams {
@@ -56,7 +58,6 @@ export namespace Components {
       type?: string;
       value?: string;
       hint?: string;
-      modalWidth?: string;
       readonly?: boolean;
       select?: boolean | [number, number, 'forward' | 'backward' | 'none'];
     }
@@ -171,7 +172,7 @@ export type FileSort = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: '
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'print' | 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
-export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'macros'
+export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'macros' | 'render'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 
 export type PrintOpts = {
@@ -257,6 +258,14 @@ export interface BuildInSettings {
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'editor.enable-preview': boolean,
   'editor.font-family': string,
+  'editor.complete-emoji': boolean,
+  'render.md-html': boolean,
+  'render.md-breaks': boolean,
+  'render.md-linkify': boolean,
+  'render.md-typographer': boolean,
+  'render.md-emoji': boolean,
+  'render.md-sub': boolean,
+  'render.md-sup': boolean,
   'assets.path-type': 'relative' | 'absolute' | 'auto',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
@@ -340,7 +349,7 @@ export type BuildInHookTypes = {
   ACTION_AFTER_RUN: { name: string }
   THEME_CHANGE: { name: ThemeName },
   EDITOR_PASTE_IMAGE: { file: File },
-  MARKDOWN_BEFORE_RENDER: { src: string, env: RenderEnv }
+  MARKDOWN_BEFORE_RENDER: { src: string, env: RenderEnv, md: MarkdownIt },
   VIEW_ELEMENT_CLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },

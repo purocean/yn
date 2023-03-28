@@ -15,6 +15,12 @@ English | [中文](./FEATURES_ZH-CN.md)
 
 ## Data Storage
 
+`<home>` is the directory of the current user. Example:
+
+1. Windows: `C:\Users\<username>`
+1. Linux: `/home/<username>`
+1. Mac: `/Users/<username>`
+
 The application generated data is stored in `<home>/yank-note` dir, click the "Open Main Dir" menu in the tray to view them.
 
 Directory description
@@ -31,6 +37,7 @@ Directory description
 1. plug-ins `<home>/yank-note/plugins`
 1. themes `<home>/yank-note/themes`
 1. extensions `<home>/yank-note/extensions`
+1. other user data `<home>/yank-note/data`
 
 ## TOC Generation
 

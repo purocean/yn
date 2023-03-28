@@ -410,6 +410,41 @@ export async function deleteTmpFile (name: string): Promise<ApiResult<any>> {
 }
 
 /**
+ * Write user file.
+ * @param name
+ * @param data
+ * @param asBase64
+ * @returns
+ */
+export async function writeUserFile (name: string, data: string, asBase64 = false): Promise<ApiResult<{ path: string }>> {
+  return fetchHttp(
+    `/api/user-file?name=${encodeURIComponent(name)}${asBase64 ? '&asBase64=true' : ''}`,
+    { method: 'post', body: data }
+  )
+}
+
+/**
+ * Read user file.
+ * @param name
+ * @returns
+ */
+export async function readUserFile (name: string): Promise<Response> {
+  return fetchHttp(`/api/user-file?name=${encodeURIComponent(name)}`)
+}
+
+/**
+ * Remove user file.
+ * @param name
+ * @returns
+ */
+export async function deleteUserFile (name: string): Promise<ApiResult<any>> {
+  return fetchHttp(
+    `/api/user-file?name=${encodeURIComponent(name)}`,
+    { method: 'delete' }
+  )
+}
+
+/**
  * Convert file
  * @param source
  * @param fromType

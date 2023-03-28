@@ -15,6 +15,12 @@ define:
 
 ## 应用数据
 
+`<home>` 为当前操作系统的用户主目录，例如：
+
+1. Windows: `C:\Users\<username>`
+1. Linux: `/home/<username>`
+1. macOS: `/Users/<username>`
+
 应用相关的数据目录存放在 `<home>/yank-note` 下面，点击托盘菜单“打开主目录”即可查看
 
 目录说明：
@@ -31,6 +37,7 @@ define:
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
 1. 扩展 `<home>/yank-note/extensions`
+1. 其他用户数据 `<home>/yank-note/data`
 
 ## TOC 生成
 

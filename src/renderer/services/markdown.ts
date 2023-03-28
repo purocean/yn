@@ -6,6 +6,7 @@ import MarkdownItAbbr from 'markdown-it-abbr'
 import MarkdownItAttributes from 'markdown-it-attributes'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 import { registerHook, triggerHook } from '@fe/core/hook'
+import { getSetting } from './setting'
 
 /**
  * Markdown-it instance
@@ -62,7 +63,7 @@ registerHook('VIEW_BEFORE_REFRESH', () => {
 
 const render = markdown.render
 markdown.render = (src: string, env?: any) => {
-  triggerHook('MARKDOWN_BEFORE_RENDER', { src, env })
+  triggerHook('MARKDOWN_BEFORE_RENDER', { src, env, md: markdown })
 
   // build render cache
   if (env.file) {
@@ -74,6 +75,20 @@ markdown.render = (src: string, env?: any) => {
   } else {
     renderCache.clear()
   }
+
+  markdown.options.html = getSetting('render.md-html', true)
+  markdown.options.breaks = getSetting('render.md-breaks', true)
+  markdown.options.linkify = getSetting('render.md-linkify', true)
+  markdown.options.typographer = getSetting('render.md-typographer', false)
+
+  const enabledRules: string[] = []
+  const disabledRules: string[] = []
+
+  ;(getSetting('render.md-sup', true) ? enabledRules : disabledRules).push('sup')
+  ;(getSetting('render.md-sub', true) ? enabledRules : disabledRules).push('sub')
+
+  markdown.enable(enabledRules, true)
+  markdown.disable(disabledRules, true)
 
   return render.call(markdown, src, env)
 }

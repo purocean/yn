@@ -81,7 +81,7 @@ export default defineComponent({
       component.value = params.component
       action.value = params.action
       show.value = true
-      modalWidth.value = undefined
+      modalWidth.value = params.modalWidth
 
       return new Promise(resolve => {
         resolveFun = resolve
@@ -97,7 +97,7 @@ export default defineComponent({
       component.value = params.component
       action.value = params.action
       show.value = true
-      modalWidth.value = undefined
+      modalWidth.value = params.modalWidth
 
       return new Promise(resolve => {
         resolveFun = resolve

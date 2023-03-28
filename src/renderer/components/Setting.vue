@@ -200,7 +200,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .editor-wrapper {
-  width: 700px;
+  width: 800px;
   background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
