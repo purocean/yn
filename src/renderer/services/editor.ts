@@ -18,6 +18,7 @@ export type SimpleCompletionItem = {
   label: string,
   kind?: Monaco.languages.CompletionItemKind,
   insertText: string,
+  detail?: string,
 }
 
 export type SimpleCompletionItemTappers = (items: SimpleCompletionItem[]) => void
