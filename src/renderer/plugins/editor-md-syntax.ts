@@ -98,6 +98,7 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
         insertTextRules: this.monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
         range,
         sortText: i.toString().padStart(7),
+        detail: item.detail,
       }
     })
 
