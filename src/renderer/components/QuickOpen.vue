@@ -407,6 +407,8 @@ export default defineComponent({
 
 .tab > div.selected {
   background: var(--g-color-active-b);
+  font-weight: bold;
+  color: var(--g-color-0);
 }
 
 .input {
