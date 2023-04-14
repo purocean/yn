@@ -29,7 +29,7 @@
         <li
           v-for="(item, i) in dataList"
           :key="item.repo + item.path"
-          :class="{selected: selected === item}"
+          :class="{selected: selected === item, marked: isMarked(item)}"
           @mouseover="!disableMouseover && updateSelected(item)"
           @click="chooseItem(item)">
           <span :ref="el => refFilename[i] = el">
@@ -51,7 +51,7 @@ import { useStore } from 'vuex'
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
-import { isMarkdownFile } from '@fe/services/document'
+import { isMarkdownFile, isMarked } from '@fe/services/document'
 import { PathItem } from '@fe/types'
 
 type TabKey = 'marked' | 'search' | 'file'
@@ -317,6 +317,7 @@ export default defineComponent({
       switchTab,
       updateSelected,
       disableMouseover,
+      isMarked,
     }
   },
 })
@@ -353,6 +354,13 @@ export default defineComponent({
 .result li.selected {
   background: var(--g-color-active-a);
   color: var(--g-color-10);
+}
+
+.result li.marked::after {
+  content: '★';
+  margin-left: 4px;
+  font-size: 12px;
+  vertical-align: text-top;
 }
 
 .result li span {

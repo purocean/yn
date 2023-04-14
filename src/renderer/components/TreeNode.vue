@@ -84,7 +84,7 @@ export default defineComponent({
     const localMarked = ref<boolean | null>(null)
     const dragOver = ref<boolean>(false)
 
-    const itemNode = computed(() => ({ ...props.item, marked: props.item.type === 'file' && isMarked(props.item) }))
+    const itemNode = computed(() => ({ ...props.item, marked: isMarked(props.item) }))
     const open = ref(itemNode.value.path === '/')
 
     watch(() => props.item, () => {

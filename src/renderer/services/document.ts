@@ -690,7 +690,11 @@ export function getMarkedFiles () {
   return getSetting('mark', [])
 }
 
-export function isMarked (doc: PathItem) {
+export function isMarked (doc: PathItem & { type?: Doc['type'] }) {
+  if (doc.type === 'dir') {
+    return false
+  }
+
   return getMarkedFiles().findIndex(x => doc.repo === x.repo && doc.path === x.path) > -1
 }
 
