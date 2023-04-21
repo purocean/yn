@@ -53,7 +53,7 @@
             <h3>{{$t('premium.premium')}}</h3>
             <div class="plan-desc">{{$t('premium.intro.premium-desc')}}</div>
           </div>
-          <button v-if="purchased" class="buy-btn tr" disabled>{{$t('premium.intro.current-plan')}}</button>
+          <button v-if="info" class="buy-btn tr" disabled>{{$t('premium.intro.current-plan')}}</button>
           <button v-else class="primary buy-btn tr" @click="buy">{{$t('premium.buy.buy')}}</button>
           <ul>
             <li v-for="item in $t('premium.intro.premium-list').split('\n')" :key="item">{{item}}</li>
@@ -63,21 +63,23 @@
     </div>
     <div class="activation" v-show="tab === 'activation'">
       <template v-if="info">
-        <div class="license-id">{{$t('premium.activation.id', info.licenseId)}}</div>
+        <div class="license-id">
+          ID:&nbsp;<code>{{info.licenseId}}</code>
+        </div>
+        <div v-if="info.status === 'stale'" class="status-action">
+          <span>{{$t('premium.activation.need-refresh')}}</span>
+          <span v-if="loading" class="loading">Refreshing...</span>
+          <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
+        </div>
         <div v-if="info.status === 'expired'" class="status-action">
           <span>{{$t('premium.activation.expired')}}</span>
           <button class="small primary" @click="renewal">{{ $t('premium.activation.renewal') }}</button>
           <span v-if="loading" class="loading">Refreshing...</span>
           <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
         </div>
-        <div v-if="tokenIsExpiredSoon(info)" class="status-action">
+        <div v-else-if="tokenIsExpiredSoon(info)" class="status-action">
           <span>{{$t('premium.activation.expiring', String(tokenAvailableDays(info)))}}</span>
           <button class="small primary" @click="renewal">{{ $t('premium.activation.renewal') }}</button>
-          <span v-if="loading" class="loading">Refreshing...</span>
-          <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
-        </div>
-        <div v-if="info.status === 'stale'" class="status-action">
-          <span>{{$t('premium.activation.need-refresh')}}</span>
           <span v-if="loading" class="loading">Refreshing...</span>
           <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
         </div>
@@ -95,7 +97,7 @@
             <h4>{{$t('premium.activation.devices')}} ({{devices.length}})</h4>
             <ol>
               <li v-for="device in devices" :key="device.id">
-                <span>{{device.label}}</span>
+                <span>{{device.label}}&nbsp;</span>
                 <a href="javascript:void(0)" @click="removeDevice(device)">{{$t('premium.activation.unbind')}}</a>
               </li>
             </ol>
@@ -118,7 +120,9 @@
       </div>
     </div>
     <div v-if="tab === 'activation' && !info" class="action">
-      <button class="btn tr" :disabled="license.trim().length < 36 || loading" @click="activate">{{$t('ok')}}</button>
+      <button class="btn tr" :disabled="license.trim().length < 36 || loading" @click="activate">
+        {{loading ? $t('premium.activation.activating') : $t('ok')}}
+      </button>
     </div>
   </div>
 </XMask>

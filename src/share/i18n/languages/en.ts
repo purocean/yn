@@ -69,7 +69,6 @@ const data = {
       'this-machine': 'This Machine',
       'unbind': 'Unbind',
       'unbind-confirm': 'Are you sure to unbind "%s"?',
-      'id': 'ID: %s',
       'name': 'Name: %s',
       'email': 'Email: %s',
       'expires': 'Expired at: %s',

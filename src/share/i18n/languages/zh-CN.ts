@@ -70,7 +70,6 @@ const data: BaseLanguage = {
       'this-machine': '本机',
       'unbind': '解绑',
       'unbind-confirm': '确定要解绑 “%s” 吗？',
-      'id': 'ID: %s',
       'name': '名字: %s',
       'email': '邮箱: %s',
       'expires': '有效期至: %s',

@@ -61,7 +61,9 @@ export function tokenIsExpiredSoon (token: LicenseToken) {
     return false
   }
 
-  return tokenAvailableDays(token) <= 3
+  const days = tokenAvailableDays(token)
+
+  return days <= 3 && days >= 0
 }
 
 async function upgradeV1License (oldLicense: string) {
@@ -164,7 +166,7 @@ async function setLicense (licenseId: string) {
 
       await setSetting('license', tokenPrefix + token.toString())
     } catch (error: any) {
-      if (error.message === 'DEVICE_NOT_FOUND') {
+      if (error.message === 'DEVICE_NOT_FOUND' || error.message === 'INVALID_LICENSE') {
         await cleanLicense()
       }
 
@@ -207,11 +209,11 @@ function checkLicenseStatus () {
     if (token.status === 'stale') {
       useToast().show('warning', 'License unrecognized, please refresh')
       showPremium('activation')
-    } else if (tokenIsExpiredSoon(token)) {
-      useToast().show('warning', 'License expires soon, please renew')
-      showPremium('activation')
     } else if (token.status === 'expired') {
       useToast().show('warning', 'License expired, please renew')
+      showPremium('activation')
+    } else if (tokenIsExpiredSoon(token)) {
+      useToast().show('warning', 'License expires soon, please renew')
       showPremium('activation')
     }
   }
