@@ -53,7 +53,7 @@
             <h3>{{$t('premium.premium')}}</h3>
             <div class="plan-desc">{{$t('premium.intro.premium-desc')}}</div>
           </div>
-          <button v-if="info" class="buy-btn tr" disabled>{{$t('premium.intro.current-plan')}}</button>
+          <button v-if="purchased || info" class="buy-btn tr" disabled>{{$t('premium.intro.current-plan')}}</button>
           <template v-else>
             <button class="primary buy-btn tr" @click="buy">{{$t('premium.buy.buy')}}</button>
             <button class="primary buy-btn tr" @click="switchTab('activation')">{{$t('premium.activation.activation')}}</button>
