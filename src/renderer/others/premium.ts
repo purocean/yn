@@ -10,6 +10,7 @@ import { getLogger, md5 } from '@fe/utils'
 import { registerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
 import type { PremiumTab } from '@fe/types'
+import { getCurrentLanguage } from '@fe/services/i18n'
 
 const tokenPrefix = 'ynkv2:'
 const logger = getLogger('premium')
@@ -22,7 +23,7 @@ type Payload = {
   removeDevice: { licenseId: string, device: string }
   addDevice: { licenseId: string }
   fetchDevices: { licenseId: string }
-  upgradeLicense: { oldLicense: string }
+  upgradeLicense: { oldLicense: string, locale: string }
 }
 
 export async function requestApi<T extends keyof Payload> (method: T, payload: Payload[T]) {
@@ -79,7 +80,7 @@ async function upgradeV1License (oldLicense: string) {
   upgradeTryCount++
 
   try {
-    const licenseId = await requestApi('upgradeLicense', { oldLicense })
+    const licenseId = await requestApi('upgradeLicense', { oldLicense, locale: getCurrentLanguage() })
     await activateLicense(licenseId)
     useToast().show('info', 'License upgraded successfully')
     showPremium('activation')

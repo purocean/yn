@@ -53,6 +53,6 @@ export function fetchDevices (payload: {licenseId: string}) {
   return client.fetchDevices(payload.licenseId)
 }
 
-export function upgradeLicense (payload: {oldLicense: string}) {
+export function upgradeLicense (payload: {oldLicense: string, locale: string}) {
   return fetchApi('/upgrade-license', payload)
 }
