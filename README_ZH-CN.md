@@ -76,16 +76,15 @@
 
 ## 更新日志
 
-### [v3.51.0](https://github.com/purocean/yn/releases/tag/v3.51.0) 2023-03-28
+### [v3.52.0](https://github.com/purocean/yn/releases/tag/v3.52.0) 2023-03-28
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-win-x64-3.51.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-mac-arm64-3.51.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-mac-x64-3.51.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-linux-x86_64-3.51.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.51.0/Yank-Note-linux-amd64-3.51.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-win-x64-3.52.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-mac-arm64-3.52.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-mac-x64-3.52.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-linux-x86_64-3.52.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-linux-amd64-3.52.0.deb)
 
-1. feat: 优化“快速打开”面板交互
-2. feat: 增加渲染设置
-3. feat: 增加禁用“Emoji”设置
-4. fix: 修复 `markdown-it-sub` 和 `markdown-it-sup` 插件和 HTML 解析冲突的问题
-5. feat(plugin): 增加用户文件接口
-6. feat(plugin): Modal confirm 支持定义对话框宽度
+1. feat: [Yank Note 官网](https://yank-note.com/)上线🎉🎉
+1. feat: 高级版增加“🎉五彩纸片”特效
+2. feat: 更改高级版激活机制
+3. feat: 优化“快速打开”面板样式
+4. feat(plugin): 编辑器自动补全增加详情字段
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
