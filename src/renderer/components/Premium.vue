@@ -54,7 +54,10 @@
             <div class="plan-desc">{{$t('premium.intro.premium-desc')}}</div>
           </div>
           <button v-if="info" class="buy-btn tr" disabled>{{$t('premium.intro.current-plan')}}</button>
-          <button v-else class="primary buy-btn tr" @click="buy">{{$t('premium.buy.buy')}}</button>
+          <template v-else>
+            <button class="primary buy-btn tr" @click="buy">{{$t('premium.buy.buy')}}</button>
+            <button class="primary buy-btn tr" @click="switchTab('activation')">{{$t('premium.activation.activation')}}</button>
+          </template>
           <ul>
             <li v-for="item in $t('premium.intro.premium-list').split('\n')" :key="item">{{item}}</li>
           </ul>
@@ -407,8 +410,9 @@ export default defineComponent({
   }
 
   .buy-btn {
-    width: 80%;
+    width: 45%;
     margin: 16px 0;
+    margin-right: 12px;
   }
 }
 
