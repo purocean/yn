@@ -17,6 +17,11 @@ export function fetchApi (url: string, payload: any) {
         if (err) {
           reject(err)
         } else {
+          if (!body || !body.status) {
+            reject(new Error('Invalid response'))
+            return
+          }
+
           const { data, message, status } = body
           if (status !== 'ok') {
             reject(new Error(message))
