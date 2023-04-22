@@ -13,6 +13,7 @@ import * as search from './search'
 import run from './run'
 import convert from './convert'
 import plantuml from './plantuml'
+import * as premium from './premium'
 import shell from '../shell'
 import config from '../config'
 import * as jwt from '../jwt'
@@ -530,6 +531,16 @@ const userExtension = async (ctx: any, next: any) => {
   }
 }
 
+const premiumManage = async (ctx: any, next: any) => {
+  if (ctx.method === 'POST' && ctx.path.startsWith('/api/premium')) {
+    const { method, payload } = ctx.request.body
+    const data = await (premium as any)[method](payload)
+    ctx.body = result('ok', 'success', data)
+  } else {
+    await next()
+  }
+}
+
 const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
@@ -566,6 +577,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, customCss))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userExtension))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, premiumManage))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))

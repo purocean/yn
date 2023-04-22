@@ -12,14 +12,16 @@ export function useLazyRef<T> (source: Ref<T> | (() => T), delay: ((val: T) => n
       timer = 0
     }
 
-    if (delay < 0) {
+    const _delay = typeof delay === 'function' ? delay(val) : delay
+
+    if (_delay < 0) {
       value.value = val
       return
     }
 
     timer = setTimeout(() => {
       value.value = val
-    }, typeof delay === 'function' ? delay(val) : delay)
+    }, _delay)
   })
 
   return value

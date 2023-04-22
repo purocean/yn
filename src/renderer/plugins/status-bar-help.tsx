@@ -84,6 +84,8 @@ export default {
                   <p>
                     <a href="https://github.com/purocean/yn/releases" target="_blank">{ctx.version}</a>
                     &nbsp;|&nbsp;
+                    <a href="https://yank-note.com/" target="_blank">Homepage</a>
+                    &nbsp;|&nbsp;
                     <a href="https://github.com/purocean/yn" target="_blank">Github</a>
                     &nbsp;|&nbsp;
                     <a href="https://blog-purocean.vercel.app/yank-note-01/" target="_blank">Blog</a>
