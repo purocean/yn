@@ -66,9 +66,6 @@
     </div>
     <div class="activation" v-show="tab === 'activation'">
       <template v-if="info">
-        <div class="license-id">
-          ID:&nbsp;<code>{{info.licenseId}}</code>
-        </div>
         <div v-if="info.status === 'stale'" class="status-action">
           <span>{{$t('premium.activation.need-refresh')}}</span>
           <span v-if="loading" class="loading">Refreshing...</span>
@@ -446,12 +443,6 @@ export default defineComponent({
     margin-bottom: 6px;
     display: flex;
     justify-content: space-between;
-  }
-
-  .license-id {
-    color: var(--g-color-15);
-    margin-bottom: 20px;
-    margin-top: 10px;
   }
 
   & > div {
