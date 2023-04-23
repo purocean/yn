@@ -78,6 +78,7 @@ const data: BaseLanguage = {
       'activating': '激活中',
       'tips': '如果您在激活过程中遇到问题，请联系我',
       'tips-wechat': '微信',
+      'activation-tips': '激活前请确保您的网络可以正常访问到 <a href="https://yank-note.com" target="_blank">https://yank-note.com</a>',
     },
   },
   'app': {
