@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.52.0](https://github.com/purocean/yn/releases/tag/v3.52.0) 2023-03-28
+### [v3.52.1](https://github.com/purocean/yn/releases/tag/v3.52.1) 2023-04-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-win-x64-3.52.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-mac-arm64-3.52.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-mac-x64-3.52.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-linux-x86_64-3.52.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.52.0/Yank-Note-linux-amd64-3.52.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-win-x64-3.52.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-mac-arm64-3.52.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-mac-x64-3.52.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-linux-x86_64-3.52.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-linux-amd64-3.52.1.deb)
 
 1. feat: [Yank Note 官网](https://yank-note.com/)上线🎉🎉
 1. feat: 高级版增加“🎉五彩纸片”特效
