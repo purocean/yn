@@ -80,6 +80,11 @@
           <span v-if="loading" class="loading">Refreshing...</span>
           <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
         </div>
+        <div v-else-if="tokenIsStaleSoon(info)" class="status-action">
+          <span>{{$t('premium.activation.need-refresh')}}</span>
+          <span v-if="loading" class="loading">Refreshing...</span>
+          <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
+        </div>
         <div v-else-if="tokenIsExpiredSoon(info)" class="status-action">
           <span>{{$t('premium.activation.expiring', String(tokenAvailableDays(info)))}}</span>
           <button class="small primary" @click="renewal">{{ $t('premium.activation.renewal') }}</button>
@@ -123,6 +128,7 @@
       </div>
     </div>
     <div v-if="tab === 'activation' && !info" class="action">
+      <div class="activation-tips" v-html="$t('premium.activation.activation-tips')" />
       <button class="btn tr" :disabled="license.trim().length < 36 || loading" @click="activate">
         {{loading ? $t('premium.activation.activating') : $t('ok')}}
       </button>
@@ -138,7 +144,7 @@ import { decodeDevice, LicenseToken } from 'app-license'
 import { computed, defineComponent, onBeforeUnmount, ref, shallowRef } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import { useI18n } from '@fe/services/i18n'
-import { activateLicense, getLicenseToken, getPurchased, refreshLicense, requestApi, tokenAvailableDays, tokenIsExpiredSoon } from '@fe/others/premium'
+import { activateLicense, getLicenseToken, getPurchased, refreshLicense, requestApi, tokenAvailableDays, tokenIsExpiredSoon, tokenIsStaleSoon } from '@fe/others/premium'
 import { useToast } from '@fe/support/ui/toast'
 import { FLAG_DEMO } from '@fe/support/args'
 import { useModal } from '@fe/support/ui/modal'
@@ -323,6 +329,7 @@ export default defineComponent({
       doConfetti,
       tokenAvailableDays,
       tokenIsExpiredSoon,
+      tokenIsStaleSoon,
       refreshStatus,
       renewal,
     }
@@ -373,7 +380,15 @@ export default defineComponent({
 .action {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   padding-top: 10px;
+
+  .activation-tips {
+    font-size: 13px;
+    color: var(--g-color-50);
+    font-weight: bold;
+    margin-right: 14px;
+  }
 }
 
 .plan-wrapper {

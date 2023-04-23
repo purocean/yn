@@ -67,6 +67,23 @@ export function tokenIsExpiredSoon (token: LicenseToken) {
   return days <= 3 && days >= 0
 }
 
+export function tokenIsStaleSoon (token: LicenseToken) {
+  if (token.status === 'stale') {
+    return false
+  }
+
+  if (!token.fetchedAt.getTime()) {
+    return true
+  }
+
+  // if fetched at 3 days ago, it's stale soon
+  if (token.fetchedAt.getTime() < Date.now() - 1000 * 60 * 60 * 24 * 3) {
+    return true
+  }
+
+  return false
+}
+
 async function upgradeV1License (oldLicense: string) {
   logger.debug('upgradeV1License', oldLicense)
   if (licenseToken) {
@@ -212,6 +229,9 @@ function checkLicenseStatus () {
       showPremium('activation')
     } else if (token.status === 'expired') {
       useToast().show('warning', 'License expired, please renew')
+      showPremium('activation')
+    } else if (tokenIsStaleSoon(token)) {
+      useToast().show('warning', 'License unrecognized, please refresh')
       showPremium('activation')
     } else if (tokenIsExpiredSoon(token)) {
       useToast().show('warning', 'License expires soon, please renew')
