@@ -95,11 +95,11 @@ jobs:
         run: |
           mv out/*.deb out/`basename -s .deb out/*.deb`-ubuntu-18.04.deb
           rm out/*.AppImage
-          
+
       - name: Upload to COS
         uses: zkqiang/tencent-cos-action@v0.1.0
         with:
-          args: delete -r -f / && upload -r ./out/Yank-Note*.* / && upload out/latest*.yml /
+          args: ls out/Yank-Note*.* out/latest*.yml | xargs -I {} upload {} /
           secret_id: ${{ secrets.COS_SECRET_ID }}
           secret_key: ${{ secrets.COS_SECRET_KEY }}
           bucket: ${{ secrets.COS_BUCKET }}
