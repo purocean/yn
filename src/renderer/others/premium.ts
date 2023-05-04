@@ -241,6 +241,10 @@ function checkLicenseStatus () {
 }
 
 async function refreshAndCheckLicenseStatus () {
+  if (FLAG_DEMO || MODE === 'share-preview') {
+    return
+  }
+
   logger.debug('refreshAndCheckLicenseStatus')
   try {
     await refreshLicense()
