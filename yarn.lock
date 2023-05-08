@@ -2112,10 +2112,10 @@ app-builder-lib@23.6.0:
     tar "^6.1.11"
     temp-file "^3.4.0"
 
-app-license@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/app-license/-/app-license-0.2.2.tgz#3e88837d27acf4622efaa2ecd2aa648e8f176023"
-  integrity sha512-QFr2ZpFgiT5BZz8HIH9rtflXy2ZtWaiN72C1gvRYaY6doLpn8CR9Rjj+ple1sfI7gofS/HREjQ83QBjh+VRsHw==
+app-license@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/app-license/-/app-license-0.2.3.tgz#db48324daab45d967131199345edb1d88eb6159f"
+  integrity sha512-hvKYjOYB9SheIdeybX+rgLIQWA0pNHy4V88RtOe7JT9T7nb7BOshz4Vf3yBypY1KHNXHeLx9KAc9eoDbc5cTaA==
   dependencies:
     node-forge "^1.3.1"
     node-machine-id "^1.1.12"

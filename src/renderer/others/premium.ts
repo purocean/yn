@@ -76,8 +76,8 @@ export function tokenIsStaleSoon (token: LicenseToken) {
     return true
   }
 
-  // if fetched at 3 days ago, it's stale soon
-  if (token.fetchedAt.getTime() < Date.now() - 1000 * 60 * 60 * 24 * 3) {
+  // if fetched at 25 days ago, it's stale soon
+  if (token.fetchedAt.getTime() < Date.now() - 1000 * 60 * 60 * 24 * 25) {
     return true
   }
 
