@@ -105,10 +105,10 @@ const schema: Schema = ({
       required: true,
     },
     'updater.source': {
-      defaultValue: 'github.com',
+      defaultValue: 'auto',
       title: 'T_setting-panel.schema.updater.source',
       type: 'string',
-      enum: ['github.com', 'ghproxy.com'],
+      enum: ['auto', 'yank-note', 'github'],
       group: 'other',
       required: true,
     },
