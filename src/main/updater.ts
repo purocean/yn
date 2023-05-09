@@ -4,6 +4,7 @@ import { resolveFiles } from 'electron-updater/out/providers/Provider'
 import { GitHubProvider } from 'electron-updater/out/providers/GitHubProvider'
 import logger from 'electron-log'
 import ProgressBar from 'electron-progressbar'
+import { HOMEPAGE_URL } from '../share/misc'
 import store from './storage'
 import { GITHUB_URL } from './constant'
 import { $t } from './i18n'
@@ -48,7 +49,7 @@ class UpdateProvider extends GitHubProvider {
       return super.resolveFiles(updateInfo as any)
     }
 
-    const baseUrl = new URL('https://yank-note.com')
+    const baseUrl = new URL(HOMEPAGE_URL)
 
     // still replace space to - due to backward compatibility
     return resolveFiles(updateInfo, baseUrl, p => '/download/' + p.replace(/ /g, '-'))
