@@ -123,7 +123,7 @@ jobs:
           coscmd config -a "%COS_SECRET_ID%" -s "%COS_SECRET_KEY%" -b "%COS_BUCKET%" -r ap-shanghai -m 30
 
       - name: Upload to COS
-        if: startsWith(github.ref_name, 'v-next') != true
+        if: contains(github.ref_name, '-next-') != true
         run: |
           coscmd upload -r out / --include out/Yank-Note*.*,out/latest*.yml
 
