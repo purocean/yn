@@ -69,10 +69,19 @@ function todoify (token: { children: any[]; content: string | any[] }, TokenCons
 
 function makeCheckbox (token: { content: string | string[] }, TokenConstructor: new (arg0: string, arg1: string, arg2: number) => any) {
   const checkbox = new TokenConstructor('html_inline', '', 0)
+
+  const props = {
+    class: DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX,
+    type: 'checkbox',
+    disabled: disableCheckboxes,
+  }
+
   if (token.content.indexOf('[ ] ') === 0) {
-    checkbox.contentVNode = h('input', { class: DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX, type: 'checkbox', disabled: disableCheckboxes, checked: false })
+    const checked = false
+    checkbox.contentVNode = h('input', { ...props, checked, 'data-checked': String(checked) })
   } else if (token.content.indexOf('[x] ') === 0 || token.content.indexOf('[X] ') === 0) {
-    checkbox.contentVNode = h('input', { class: DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX, type: 'checkbox', disabled: disableCheckboxes, checked: true })
+    const checked = true
+    checkbox.contentVNode = h('input', { ...props, checked, 'data-checked': String(checked) })
   }
 
   checkbox.content = token.content
@@ -92,5 +101,16 @@ export default {
   name: 'markdown-task-list',
   register: ctx => {
     ctx.markdown.registerPlugin(MarkdownItPlugin, { enabled: true })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
+      if (node.classList.contains(DOM_CLASS_NAME.TASK_LIST_ITEM_CHECKBOX)) {
+        node.setAttribute('disabled', 'disabled')
+        if (node.dataset.checked === 'true') {
+          node.setAttribute('checked', 'checked')
+        } else {
+          node.removeAttribute('checked')
+        }
+      }
+    })
   }
 } as Plugin
