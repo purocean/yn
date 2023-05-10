@@ -5,7 +5,8 @@
         <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type" />
         <li v-else :key="item.id" v-show="!item.hidden" @click="handleClick(item)" :class="item.type || 'normal'">
           <svg-icon class="checked-icon" v-if="item.checked" name="check-solid" />
-          <span>{{item.label}}</span>
+          <span v-if="(typeof item.label === 'string')">{{item.label}}</span>
+          <component v-else :is="item.label" />
         </li>
       </template>
     </ul>

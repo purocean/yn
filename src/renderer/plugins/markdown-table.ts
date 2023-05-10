@@ -1,4 +1,4 @@
-import { nextTick } from 'vue'
+import { nextTick, reactive } from 'vue'
 import Sortable from 'sortablejs'
 import { orderBy } from 'lodash-es'
 import type { Plugin } from '@fe/context'
@@ -346,7 +346,7 @@ async function handleClick (e: MouseEvent, modal: boolean) {
   return false
 }
 
-function addRow (td: HTMLTableCellElement, offset: -1 | 1) {
+function addRow (td: HTMLTableCellElement, num: number) {
   const start = parseInt(td.dataset.sourceLine || '0')
   const end = parseInt(td.dataset.sourceLineEnd || '0')
 
@@ -365,8 +365,11 @@ function addRow (td: HTMLTableCellElement, offset: -1 | 1) {
   const columns = cols.map(() => ' -- ')
 
   const str = columnsToStr(columns, refText)
+
+  const strs = Array.from({ length: Math.abs(num) }, () => str).join('\n')
+
   const content = getLineContent(start)
-  const text = offset > 0 ? `${content}\n${str}` : `${str}\n${content}`
+  const text = num > 0 ? `${content}\n${strs}` : `${strs}\n${content}`
 
   replaceLine(start, text)
 }
@@ -436,14 +439,17 @@ function alignCol (td: HTMLTableCellElement, type: 'left' | 'center' | 'right' |
   replaceLine(hr.start, columnsToStr(columns, content))
 }
 
-function addCol (td: HTMLTableCellElement, offset: 0 | 1) {
+function addCol (td: HTMLTableCellElement, num: number) {
+  const offset = num > 0 ? 1 : 0
   const cellIndex = getCellIndex(td)
+  const arr = Array.from({ length: Math.abs(num) }, () => ' -- ')
+
   processColumns(td, columns => {
     if (cellIndex > columns.length - 1 || cellIndex < 0) {
       return
     }
 
-    columns.splice(cellIndex + offset, 0, ' -- ')
+    columns.splice(cellIndex + offset, 0, ...arr)
   })
 }
 
@@ -591,6 +597,13 @@ function sortRows (td: HTMLTableCellElement, order: 'asc' | 'desc') {
   })
 }
 
+const insertNums = reactive({
+  colLeft: 1,
+  colRight: 1,
+  rowTop: 1,
+  rowBottom: 1,
+})
+
 export default {
   name: 'markdown-table',
   register: (ctx) => {
@@ -670,6 +683,22 @@ export default {
       }
     `)
 
+    ctx.theme.addStyles(`
+      .plugin-table-cell-edit-insert-nums {
+        display: flex;
+        align-items: center;
+      }
+
+      .plugin-table-cell-edit-insert-nums > input {
+        margin-left: 10px !important;
+        font-size: 12px !important;
+        padding: 2px !important;
+        width: 3em !important;
+        text-align: center !important;
+        background: var(--g-color-80) !important;
+      }
+    `)
+
     ctx.markdown.registerPlugin(md => {
       md.renderer.rules.table_open = (tokens, idx, options, _, slf) => {
         const table = slf.renderToken(tokens, idx, options)
@@ -730,19 +759,36 @@ export default {
           throw new Error(msg)
         }
 
+        const buildInput = (key: keyof typeof insertNums) => ctx.lib.vue.h('input', {
+          value: insertNums[key],
+          type: 'number',
+          min: 1,
+          max: 99,
+          step: 1,
+          onInput: (e: any) => { insertNums[key] = e.target.value },
+          onClick: (e: any) => { e.stopPropagation() },
+          onKeyup: (e: any) => { if (e.keyCode === 13) { e.target.parentNode.click(); e.stopPropagation() } }
+        })
+
         const editRowMenu: Components.ContextMenu.Item[] = tagName === 'TD' ? [
           { type: 'separator' },
           {
             id: 'plugin.table.cell-edit.add-row-above',
             type: 'normal',
-            label: ctx.i18n.t('table-cell-edit.context-menu.add-row-above'),
-            onClick: () => addRow(target, -1),
+            label: ctx.lib.vue.h('span', { class: 'plugin-table-cell-edit-insert-nums' }, [
+              ctx.i18n.t('table-cell-edit.context-menu.add-row-above'),
+              buildInput('rowTop')
+            ]),
+            onClick: () => addRow(target, -(insertNums.rowTop || 1)),
           },
           {
             id: 'plugin.table.cell-edit.add-row-below',
             type: 'normal',
-            label: ctx.i18n.t('table-cell-edit.context-menu.add-row-below'),
-            onClick: () => addRow(target, 1)
+            label: ctx.lib.vue.h('span', { class: 'plugin-table-cell-edit-insert-nums' }, [
+              ctx.i18n.t('table-cell-edit.context-menu.add-row-below'),
+              buildInput('rowBottom')
+            ]),
+            onClick: () => addRow(target, insertNums.rowBottom || 1),
           },
           {
             id: 'plugin.table.cell-edit.delete-row',
@@ -829,14 +875,20 @@ export default {
           {
             id: 'plugin.table.cell-edit.add-col-left',
             type: 'normal',
-            label: ctx.i18n.t('table-cell-edit.context-menu.add-col-left'),
-            onClick: () => addCol(target, 0)
+            label: ctx.lib.vue.h('span', { class: 'plugin-table-cell-edit-insert-nums' }, [
+              ctx.i18n.t('table-cell-edit.context-menu.add-col-left'),
+              buildInput('colLeft')
+            ]),
+            onClick: () => addCol(target, -(insertNums.colLeft || 1))
           },
           {
             id: 'plugin.table.cell-edit.add-col-right',
             type: 'normal',
-            label: ctx.i18n.t('table-cell-edit.context-menu.add-col-right'),
-            onClick: () => addCol(target, 1)
+            label: ctx.lib.vue.h('span', { class: 'plugin-table-cell-edit-insert-nums' }, [
+              ctx.i18n.t('table-cell-edit.context-menu.add-col-right'),
+              buildInput('colRight')
+            ]),
+            onClick: () => addCol(target, insertNums.colRight || 1)
           },
           {
             id: 'plugin.table.cell-edit.delete-col',

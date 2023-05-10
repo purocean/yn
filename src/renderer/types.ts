@@ -76,7 +76,7 @@ export namespace Components {
     export type NormalItem = {
       type?: 'normal';
       id: string;
-      label: string;
+      label: any; // support string or vue component
       hidden?: boolean;
       checked?: boolean;
       onClick: (item?: NormalItem) => void;
