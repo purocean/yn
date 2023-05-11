@@ -138,6 +138,9 @@ const data: BaseLanguage = {
         'desc': '当前已是最新版本'
       }
     },
+    'error': {
+      'EADDRINUSE': '端口 (%s) 已被使用，请在设置中配置一个其他端口',
+    }
   },
   'quit-check-dialog': {
     'title': '提示',

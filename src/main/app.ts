@@ -4,7 +4,7 @@ import type TBrowserWindow from 'electron'
 import * as path from 'path'
 import * as os from 'os'
 import * as yargs from 'yargs'
-import server from './server'
+import httpServer from './server'
 import store from './storage'
 import { APP_NAME } from './constant'
 import { getTrayMenus, getMainMenus } from './menus'
@@ -366,13 +366,13 @@ const quit = async () => {
   app.quit()
 }
 
-const showSetting = () => {
+const showSetting = (key?: string) => {
   if (!win || !win.webContents) {
     return
   }
 
   showWindow()
-  win.webContents.executeJavaScript('window.ctx.setting.showSettingPanel();', true)
+  win.webContents.executeJavaScript(`window.ctx.setting.showSettingPanel(${key ? `'${key}'` : ''});`, true)
 }
 
 const toggleFullscreen = () => {
@@ -381,7 +381,32 @@ const toggleFullscreen = () => {
 
 const serve = () => {
   try {
-    const handler = server(backendPort)
+    const { callback: handler, server } = httpServer(backendPort)
+
+    if (server) {
+      server.on('error', (e: Error) => {
+        console.error(e)
+
+        if (e.message.includes('EADDRINUSE')) {
+          // wait for electron app ready.
+          setTimeout(async () => {
+            await dialog.showMessageBox({
+              type: 'error',
+              title: 'Error',
+              message: $t('app.error.EADDRINUSE', String(backendPort))
+            })
+
+            setTimeout(() => {
+              showSetting('server.port')
+            }, 500)
+          }, 4000)
+          return
+        }
+
+        throw e
+      })
+    }
+
     protocol.registerStreamProtocol('yank-note', async (request, callback) => {
       // transform protocol data to koa request.
       const { req, res, out } = await transformProtocolRequest(request)

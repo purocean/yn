@@ -137,6 +137,9 @@ const data = {
         'desc': 'The current version is up-to-date'
       }
     },
+    'error': {
+      'EADDRINUSE': 'Port (%s) is in use, please configure another port in the settings',
+    },
   },
   'quit-check-dialog': {
     'title': 'Attention',

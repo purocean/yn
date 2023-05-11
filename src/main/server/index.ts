@@ -600,7 +600,7 @@ const server = (port = 3000) => {
   const callback = app.callback()
 
   if (FLAG_DISABLE_SERVER) {
-    return callback
+    return { callback }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -641,7 +641,7 @@ const server = (port = 3000) => {
 
   console.log(`Address: http://${host}:${port}`)
 
-  return callback
+  return { callback, server }
 }
 
 export default server
