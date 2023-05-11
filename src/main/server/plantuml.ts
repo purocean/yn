@@ -19,18 +19,21 @@ function plantumlBase64 (base64: string) {
 export default async function (data: string): Promise<{ content: any, type: string }> {
   const code = pako.inflateRaw(Buffer.from(data, 'base64'))
 
-  const api = config.get('plantuml-api', 'local')
+  const api: string = config.get('plantuml-api', 'local')
 
-  if (api === 'local') {
+  if (api.startsWith('local')) {
     try {
       await commandExists('java')
     } catch {
       throw fs.createReadStream(path.join(ASSETS_DIR, 'no-java-runtime.png'))
     }
 
+    const format = api.split('-')[1] || 'png'
+    const type = format === 'png' ? 'image/png' : 'image/svg+xml'
+
     const puml = new PlantUmlPipe({
-      split: false,
-      outputFormat: 'png',
+      split: format === 'svg',
+      outputFormat: format as 'png' | 'svg',
       plantUmlArgs: ['-charset', 'UTF-8'],
       jarPath: convertAppPath(addDefaultsToOptions({}).jarPath)
     })
@@ -38,7 +41,7 @@ export default async function (data: string): Promise<{ content: any, type: stri
     puml.in.write(code)
     puml.in.end()
 
-    return { content: puml.out, type: 'image/png' }
+    return { content: puml.out, type }
   } else {
     const url = api.replace('{data}', plantumlBase64(data))
     const agent = await getAction('get-proxy-agent')(url)

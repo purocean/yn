@@ -113,17 +113,19 @@ const schema: Schema = ({
       required: true,
     },
     'plantuml-api': {
-      defaultValue: 'local',
+      defaultValue: 'local-png',
       title: 'T_setting-panel.schema.plantuml-api',
       type: 'string',
       enum: [
-        'local',
+        'local-png',
+        'local-svg',
         'https://www.plantuml.com/plantuml/png/{data}',
         'https://www.plantuml.com/plantuml/svg/{data}',
       ],
       options: {
         enum_titles: [
-          'Local - Need Java and Graphviz',
+          'Local (PNG) - Need Java and Graphviz',
+          'Local (SVG) - Need Java and Graphviz',
           'Online (plantuml.com) - PNG',
           'Online (plantuml.com) - SVG',
         ],
