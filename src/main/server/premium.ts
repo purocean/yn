@@ -1,13 +1,16 @@
 import { AppLicenseClient } from 'app-license'
 import request from 'request'
 import { API_BASE_URL, PREMIUM_PUBLIC_KEY } from '../../share/misc'
+import { getAction } from '../action'
 
 const SERVER_BASE_URL = API_BASE_URL + '/api/premium'
 
-export function fetchApi (url: string, payload: any) {
+export async function fetchApi (url: string, payload: any) {
+  const agent = await getAction('get-proxy-agent')(url)
   return new Promise((resolve, reject) => {
     request(
       {
+        agent,
         url: SERVER_BASE_URL + url,
         method: 'POST',
         json: true,

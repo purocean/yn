@@ -8,6 +8,7 @@ import { addDefaultsToOptions } from 'plantuml-pipe/dist/plantuml_pipe_options'
 import config from '../config'
 import { convertAppPath } from '../helper'
 import { ASSETS_DIR } from '../constant'
+import { getAction } from '../action'
 
 function plantumlBase64 (base64: string) {
   // eslint-disable-next-line quote-props
@@ -39,8 +40,10 @@ export default async function (data: string): Promise<{ content: any, type: stri
 
     return { content: puml.out, type: 'image/png' }
   } else {
+    const url = api.replace('{data}', plantumlBase64(data))
+    const agent = await getAction('get-proxy-agent')(url)
     return new Promise((resolve, reject) => {
-      request({ url: api.replace('{data}', plantumlBase64(data)), encoding: null }, function (err: any, res: any) {
+      request({ agent, url, encoding: null }, function (err: any, res: any) {
         if (err) {
           reject(err)
         } else {
