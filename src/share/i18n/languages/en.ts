@@ -41,6 +41,7 @@ const data = {
     'buy-license': 'Buy License',
     'free': 'Free',
     'premium': 'Premium',
+    'upgrade': 'Upgrade to Premium',
     'intro': {
       'intro': 'Intro',
       'current-plan': 'Current Plan',

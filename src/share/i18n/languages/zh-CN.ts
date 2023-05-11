@@ -42,6 +42,7 @@ const data: BaseLanguage = {
     'buy-license': '立即购买',
     'free': '免费版',
     'premium': '高级版',
+    'upgrade': '升级到高级版',
     'intro': {
       'intro': '介绍',
       'current-plan': '当前版本',
