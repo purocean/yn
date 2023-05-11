@@ -76,15 +76,20 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.52.1](https://github.com/purocean/yn/releases/tag/v3.52.1) 2023-04-23
+### [v3.53.0](https://github.com/purocean/yn/releases/tag/v3.53.0) 2023-05-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-win-x64-3.52.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-mac-arm64-3.52.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-mac-x64-3.52.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-linux-x86_64-3.52.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-linux-amd64-3.52.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-win-x64-3.53.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-mac-arm64-3.53.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-mac-x64-3.53.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-linux-x86_64-3.53.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-linux-amd64-3.53.0.deb)
 
-1. feat: [Yank Note Homepage](https://yank-note.com/) is online 🎉🎉
-2. feat: The premium version adds "🎉 Confetti" special effects
-3. feat: change the activation mechanism of the premium version
-4. feat: optimize the "Quick Open" panel style
-5. feat(plugin): The editor auto-completion adds a detail field
+1. feat: enable local SVG rendering for PlantUML.
+2. feat: support inserting multiple rows/columns at once in table editing.
+3. feat: add prompt when the port is already occupied.
+4. feat: optimize the automatic update feature.
+5. feat: add aliases for nasm code highlighting: asm, s, assembly, masm.
+6. feat: include chinese punctuation in the word segmentation and character splitting of the editor.
+7. fix: fix the issue that the rename function fails to change only the file name capitalization.
+8. fix: fix the issue that the exported HTML TODO list could not correctly display the check status
+9. fix: fix the issue that opening the document history panel causes the custom editor theme to be invalidated.
+10. feat(plugin): support custom Vue components in the context menu.
 
 [More release notes](https://github.com/purocean/yn/releases)
 
