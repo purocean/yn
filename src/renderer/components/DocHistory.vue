@@ -295,6 +295,7 @@ async function updateEditor () {
       ...getDefaultOptions(),
       readOnly: true,
       scrollbar: undefined,
+      theme: undefined,
     }
 
     if (isDiffEditor) {

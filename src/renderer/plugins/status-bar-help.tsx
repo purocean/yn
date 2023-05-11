@@ -1,4 +1,5 @@
 import type { Plugin } from '@fe/context'
+import { HOMEPAGE_URL } from '@share/misc'
 import logoImg from '@fe/assets/icon.png'
 
 export default {
@@ -84,7 +85,7 @@ export default {
                   <p>
                     <a href="https://github.com/purocean/yn/releases" target="_blank">{ctx.version}</a>
                     &nbsp;|&nbsp;
-                    <a href="https://yank-note.com/" target="_blank">Homepage</a>
+                    <a href={HOMEPAGE_URL} target="_blank">Homepage</a>
                     &nbsp;|&nbsp;
                     <a href="https://github.com/purocean/yn" target="_blank">Github</a>
                     &nbsp;|&nbsp;

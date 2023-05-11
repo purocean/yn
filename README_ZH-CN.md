@@ -76,15 +76,20 @@
 
 ## 更新日志
 
-### [v3.52.1](https://github.com/purocean/yn/releases/tag/v3.52.1) 2023-04-23
+### [v3.53.0](https://github.com/purocean/yn/releases/tag/v3.53.0) 2023-05-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-win-x64-3.52.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-mac-arm64-3.52.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-mac-x64-3.52.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-linux-x86_64-3.52.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.52.1/Yank-Note-linux-amd64-3.52.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-win-x64-3.53.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-mac-arm64-3.53.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-mac-x64-3.53.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-linux-x86_64-3.53.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-linux-amd64-3.53.0.deb)
 
-1. feat: [Yank Note 官网](https://yank-note.com/)上线🎉🎉
-1. feat: 高级版增加“🎉五彩纸片”特效
-2. feat: 更改高级版激活机制
-3. feat: 优化“快速打开”面板样式
-4. feat(plugin): 编辑器自动补全增加详情字段
+1. feat: plantuml 支持本地 svg 渲染
+2. feat: 表格编辑支持一次性插入多行/列
+3. feat: 当端口被占用时候增加提示
+4. feat: 优化自动更新功能
+5. feat: 代码高亮为 nasm 语言增加别名: asm, s, assembly, masm
+6. feat: 编辑器分词分割字符增加中文标点
+7. fix: 修复重命名功能不能仅更改文件名大小写问题
+8. fix: 修复导出的 HTML TODO 列表不能正确显示勾选状态问题
+9. fix: 修复打开文档历史面板会导致自定义的编辑器主题失效问题
+10. feat(plugin): 上下文菜单支持自定义 Vue 组件
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

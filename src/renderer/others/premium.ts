@@ -76,10 +76,10 @@ export function tokenIsStaleSoon (token: LicenseToken) {
     return true
   }
 
-  // if fetched at 3 days ago, it's stale soon
-  if (token.fetchedAt.getTime() < Date.now() - 1000 * 60 * 60 * 24 * 3) {
-    return true
-  }
+  // if fetched at 25 days ago, it's stale soon
+  // if (token.fetchedAt.getTime() < Date.now() - 1000 * 60 * 60 * 24 * 25) {
+  //   return true
+  // }
 
   return false
 }
@@ -241,6 +241,10 @@ function checkLicenseStatus () {
 }
 
 async function refreshAndCheckLicenseStatus () {
+  if (FLAG_DEMO || MODE === 'share-preview') {
+    return
+  }
+
   logger.debug('refreshAndCheckLicenseStatus')
   try {
     await refreshLicense()

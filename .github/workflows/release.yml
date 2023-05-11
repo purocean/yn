@@ -15,8 +15,8 @@ jobs:
             platform: 'win'
           - os: ubuntu-20.04
             platform: 'linux'
-          - os: ubuntu-18.04
-            platform: 'linux'
+#           - os: ubuntu-18.04
+#             platform: 'linux'
     runs-on: ${{ matrix.os }}
     env:
       npm_config_disturl: https://electronjs.org/headers
@@ -95,6 +95,37 @@ jobs:
         run: |
           mv out/*.deb out/`basename -s .deb out/*.deb`-ubuntu-18.04.deb
           rm out/*.AppImage
+
+      - name: Setup Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install coscmd
+        if: matrix.platform != 'win'
+        env:
+          COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+          COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+          COS_BUCKET: ${{ secrets.COS_BUCKET }}
+        run: |
+          pip install coscmd
+          coscmd config -a $COS_SECRET_ID -s $COS_SECRET_KEY -b $COS_BUCKET -r ap-shanghai -m 30
+
+      - name: Install coscmd for Windows
+        if: matrix.platform == 'win'
+        shell: cmd
+        env:
+          COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+          COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+          COS_BUCKET: ${{ secrets.COS_BUCKET }}
+        run: |
+          pip install --upgrade --no-cache-dir coscmd
+          coscmd config -a "%COS_SECRET_ID%" -s "%COS_SECRET_KEY%" -b "%COS_BUCKET%" -r ap-shanghai -m 30
+
+      - name: Upload to COS
+        if: contains(github.ref_name, '-next-') != true
+        run: |
+          coscmd upload -r out / --include out/Yank-Note*.*,out/latest*.yml
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5

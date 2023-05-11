@@ -41,6 +41,7 @@ const data = {
     'buy-license': 'Buy License',
     'free': 'Free',
     'premium': 'Premium',
+    'upgrade': 'Upgrade to Premium',
     'intro': {
       'intro': 'Intro',
       'current-plan': 'Current Plan',
@@ -135,6 +136,9 @@ const data = {
         'title': 'Yank Note - No newer version',
         'desc': 'The current version is up-to-date'
       }
+    },
+    'error': {
+      'EADDRINUSE': 'Port (%s) is in use, please configure another port in the settings',
     },
   },
   'quit-check-dialog': {

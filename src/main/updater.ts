@@ -1,14 +1,17 @@
 import { dialog, app, shell } from 'electron'
-import { autoUpdater, CancellationToken, Provider } from 'electron-updater'
+import { autoUpdater, CancellationToken, UpdateInfo } from 'electron-updater'
+import { resolveFiles } from 'electron-updater/out/providers/Provider'
+import { GitHubProvider } from 'electron-updater/out/providers/GitHubProvider'
 import logger from 'electron-log'
 import ProgressBar from 'electron-progressbar'
+import { HOMEPAGE_URL } from '../share/misc'
 import store from './storage'
 import { GITHUB_URL } from './constant'
 import { $t } from './i18n'
 import { registerAction } from './action'
 import config from './config'
 
-type Source = 'github.com' | 'ghproxy.com'
+type Source = 'auto' | 'github' | 'yank-note'
 
 logger.transports.file.level = 'info'
 autoUpdater.logger = logger
@@ -16,46 +19,41 @@ autoUpdater.logger = logger
 let progressBar: any = null
 
 const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
-const disabled = isAppx || process.mas
+const disabled = isAppx || (process as any).mas
 
-const httpRequest = (Provider.prototype as any).httpRequest
-;(Provider.prototype as any).httpRequest = function (url: URL, headers: Record<string, string>, ...args: any[]) {
-  const source: Source = config.get('updater.source', 'github.com')
+class UpdateProvider extends GitHubProvider {
+  private getSource (): Exclude<Source, 'auto'> {
+    let source: Source = config.get('updater.source', 'auto')
 
-  if (source !== 'github.com') {
-    headers['user-agent'] = 'curl/7.77.0'
-    console.log('updater httpRequest', url.href)
-
-    if (url.pathname.endsWith('.atom')) {
-      url.host = 'github.com'
-      url.pathname = url.pathname.replace('/https://github.com', '')
+    if (source !== 'github' && source !== 'yank-note') {
+      source = 'auto'
     }
+
+    if (source === 'auto') {
+      if (app.getLocale().toLowerCase().includes('zh')) {
+        source = 'yank-note'
+      } else {
+        source = 'github'
+      }
+    }
+
+    return source
   }
 
-  return httpRequest.call(this, url, headers, ...args)
-}
+  private isGithub () {
+    return this.getSource() === 'github'
+  }
 
-const setFeedURL = autoUpdater.setFeedURL
-autoUpdater.setFeedURL = async function (options: any) {
-  setFeedURL.call(this, options)
-  const source: Source = config.get('updater.source', 'github.com')
-  const provider = await (this as any).clientPromise
-  Object.defineProperty(provider, 'baseUrl', {
-    get () {
-      return new URL(`https://${source}/`)
+  resolveFiles (updateInfo: UpdateInfo): ReturnType<GitHubProvider['resolveFiles']> {
+    if (this.isGithub()) {
+      return super.resolveFiles(updateInfo as any)
     }
-  })
-  Object.defineProperty(provider, 'basePath', {
-    get () {
-      const basePath = `/${this.options.owner}/${this.options.repo}/releases`
 
-      if (source.includes('ghproxy')) {
-        return `/https://github.com${basePath}`
-      }
+    const baseUrl = new URL(HOMEPAGE_URL)
 
-      return basePath
-    },
-  })
+    // still replace space to - due to backward compatibility
+    return resolveFiles(updateInfo, baseUrl, p => '/download/' + p.replace(/ /g, '-'))
+  }
 }
 
 const init = (call: () => void) => {
@@ -63,7 +61,7 @@ const init = (call: () => void) => {
     return
   }
 
-  autoUpdater.setFeedURL({ provider: 'github', owner: 'purocean', repo: 'yn' })
+  autoUpdater.setFeedURL({ provider: 'custom', owner: 'purocean', repo: 'yn', updateProvider: UpdateProvider as any })
   autoUpdater.autoDownload = false
 
   autoUpdater.on('update-available', async info => {

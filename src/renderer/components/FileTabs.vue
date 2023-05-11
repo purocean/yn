@@ -130,10 +130,12 @@ export default defineComponent({
     }
 
     function closeCurrent () {
+      // find current tab
       const files = tabs.value.filter((x: Components.FileTabs.Item) => x.key === current.value)
 
       if (files.length > 0) {
-        removeTabs(files)
+        // remove if not fixed
+        removeTabs(files.filter(x => !x.fixed))
       }
     }
 

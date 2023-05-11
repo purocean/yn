@@ -16,6 +16,7 @@ DQIDAQAB
 -----END PUBLIC KEY-----`
 
 export const API_BASE_URL = 'https://api.yank-note.com'
+export const HOMEPAGE_URL = 'https://yank-note.com'
 
 export function isMarkdownFile (path: string) {
   return path.endsWith(MARKDOWN_FILE_EXT)
