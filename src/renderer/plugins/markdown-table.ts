@@ -692,10 +692,12 @@ export default {
       .plugin-table-cell-edit-insert-nums > input {
         margin-left: 10px !important;
         font-size: 12px !important;
-        padding: 2px !important;
+        padding: 0 2px !important;
         width: 3em !important;
         text-align: center !important;
-        background: var(--g-color-80) !important;
+        background: rgba(var(--g-color-0-rgb), 0.2) !important;
+        margin-top: -4px !important;
+        margin-bottom: -4px !important;
       }
     `)
 
