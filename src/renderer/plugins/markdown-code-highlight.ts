@@ -200,7 +200,11 @@ function getLangCodeFromExtension (extension: string) {
     styl: 'stylus',
     kt: 'kotlin',
     rs: 'rust',
-    node: 'js'
+    node: 'js',
+    asm: 'nasm',
+    s: 'nasm',
+    assembly: 'nasm',
+    masm: 'nasm',
   }
 
   return extensionMap[extension] || extension
