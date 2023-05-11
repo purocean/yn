@@ -247,8 +247,8 @@ export default defineComponent({
     function doConfetti () {
       if (purchased.value) {
         confetti({
-          particleCount: 100,
-          spread: 70,
+          particleCount: 150,
+          spread: 100,
           origin: { y: 0.6 },
           zIndex: Number.MAX_SAFE_INTEGER,
         })
