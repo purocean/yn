@@ -76,9 +76,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.53.0](https://github.com/purocean/yn/releases/tag/v3.53.0) 2023-05-11
+### [v3.53.1](https://github.com/purocean/yn/releases/tag/v3.53.1) 2023-05-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-win-x64-3.53.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-mac-arm64-3.53.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-mac-x64-3.53.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-linux-x86_64-3.53.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.53.0/Yank-Note-linux-amd64-3.53.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.53.1/Yank-Note-win-x64-3.53.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.53.1/Yank-Note-mac-arm64-3.53.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.53.1/Yank-Note-mac-x64-3.53.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.53.1/Yank-Note-linux-x86_64-3.53.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.53.1/Yank-Note-linux-amd64-3.53.1.deb)
 
 1. feat: enable local SVG rendering for PlantUML.
 2. feat: support inserting multiple rows/columns at once in table editing.
