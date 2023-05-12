@@ -125,7 +125,7 @@ jobs:
       - name: Upload to COS
         if: contains(github.ref_name, '-next-') != true
         run: |
-          coscmd upload -d -r out / --include out/Yank-Note*.*,out/latest*.yml
+          coscmd -d upload -r out / --include out/Yank-Note*.*,out/latest*.yml
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.5
