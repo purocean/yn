@@ -20,6 +20,8 @@ export default {
       if (value !== lineText) {
         ctx.editor.replaceLine(line, value)
       }
+
+      return checked
     }
 
     ctx.action.registerAction({
@@ -30,9 +32,18 @@ export default {
           switchTodo(line, checked)
         } else {
           const selection = ctx.editor.getEditor().getSelection()
+
           if (selection) {
-            for (let i = selection.startLineNumber; i <= selection.endLineNumber; i++) {
-              switchTodo(i, checked)
+            const startLineNumber = selection.startLineNumber
+            let endLineNumber = selection.endLineNumber
+
+            // multi-line selection exclude last empty line
+            if (startLineNumber < endLineNumber && selection.endColumn === 1) {
+              endLineNumber--
+            }
+
+            for (let i = startLineNumber; i <= endLineNumber; i++) {
+              checked = switchTodo(i, checked)
             }
           }
         }
