@@ -54,7 +54,7 @@ import { fetchSettings } from '@fe/services/setting'
 import { isMarkdownFile, isMarked } from '@fe/services/document'
 import { PathItem } from '@fe/types'
 
-type TabKey = 'marked' | 'search' | 'file'
+type TabKey = 'marked' | 'file' | 'command'
 
 let lastTab: TabKey = 'marked'
 let markedFilesCache: PathItem[] = []
@@ -157,7 +157,7 @@ export default defineComponent({
       }
 
       // filter except full text search.
-      const arr = currentTab.value === 'search' ? list.value : filterFiles(list.value, searchText.value.trim(), false)
+      const arr = filterFiles(list.value, searchText.value.trim(), false)
 
       // sort by last usage time.
       return sortList(arr).slice(0, 70)
@@ -281,9 +281,7 @@ export default defineComponent({
 
       updateSelected()
 
-      if (currentTab.value !== 'search') { // search model do not highlight text.
-        nextTick(() => highlightText(searchText.value.trim()))
-      }
+      nextTick(() => highlightText(searchText.value.trim()))
     })
 
     watch(currentTab, (val) => {
