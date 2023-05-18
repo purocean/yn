@@ -50,6 +50,7 @@ Switch Editor Tab | Ctrl/Cmd + Alt/Option + Left/Right
 Search Editor Tabs | Shift + Alt/Option + P
 Close Editor Current Tab | TABS-CLOSE-CURRENT
 Switch Editor Current Tab | Ctrl + 0-9
+Focus Editor | Shift + Alt/Option + X
 Toggle Sidebar | Alt/Option + E
 Toggle Word Wrap | Alt/Option + W
 Toggle Preview | Alt/Option + V
@@ -104,6 +105,7 @@ Switch Repository | Alt/Option + 0-9
 搜索编辑器 Tab | Shift + Alt/Option + P
 关闭编辑器当前标签 Tab | TABS-CLOSE-CURRENT
 切换编辑器当前标签 | Ctrl + 0-9
+聚焦编辑器 | Shift + Alt/Option + X
 切换侧栏 | Alt/Option + E
 切换编辑器自动换行 | Alt/Option + W
 切换文档预览显示 | Alt/Option + V
