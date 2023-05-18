@@ -81,7 +81,7 @@ registerHook('DOC_DELETED', refreshTree)
 registerHook('DOC_MOVED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', (payload?: { doc?: Doc | null, message: string }) => {
-  if (payload && payload.doc && payload?.message?.indexOf('NOENT')) {
+  if (payload && payload.doc && payload.message?.includes('NOENT')) {
     unmarkDoc(payload.doc)
   }
 })
