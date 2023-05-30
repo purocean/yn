@@ -21,6 +21,7 @@ const comment = '(?:<!(--)|(--)>)'
 const HTML_TAG_RE = new RegExp('^(?:' + comment + '|' + openTag + '|' + closeTag + ')')
 const HTML_SELF_CLOSE_TAG_RE = new RegExp('^' + selfCloseTag, 'i')
 const INVALID_HTML_TAG_NAME_RE = /script|style/i
+const INVALID_ATTR_NAME_RE = /^on|^xmlns$|^xml$|^aria-|^srcdoc$/i
 
 function isLetter (ch: number) {
   const lc = ch | 0x20 // to lower case
@@ -39,13 +40,21 @@ function setAttrs (token: Token, content: string) {
   const attrs: [string, any][] = []
   for (let i = 0; i < element.attributes.length; i++) {
     const attr = element.attributes[i]
-    attrs.push([attr.name, attr.value])
+
+    if (validateAttrName(attr.name)) {
+      attrs.push([attr.name, attr.value])
+    }
+
     token.attrs = attrs
   }
 }
 
 function validateTagName (name: string) {
   return !INVALID_HTML_TAG_NAME_RE.test(name)
+}
+
+function validateAttrName (name: string) {
+  return !INVALID_ATTR_NAME_RE.test(name.trim())
 }
 
 function htmlInline (state: StateInline, silent = false): boolean {
