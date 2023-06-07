@@ -208,7 +208,7 @@ export default {
 
       .markdown-view .markdown-body .p-mcr-run-btn {
         position: absolute;
-        top: -.7em;
+        top: -.6em;
         height: 0;
         width: 0;
         border-left: .7em #b7b3b3 solid;
