@@ -61,6 +61,11 @@ export default {
     })
 
     function clickScroll (e: MouseEvent) {
+      const _target = e.target as HTMLElement
+      if (['button', 'div', 'img', 'input', 'canvas'].includes(_target.tagName.toLowerCase())) {
+        return
+      }
+
       const target: HTMLElement | null = (e.target as HTMLElement).closest('[data-source-line]')
 
       if (
