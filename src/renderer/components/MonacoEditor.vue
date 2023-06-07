@@ -8,13 +8,14 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { getDefaultOptions } from '@fe/services/editor'
 import { toUri } from '@fe/services/document'
 import { triggerHook } from '@fe/core/hook'
+import { MONACO_EDITOR_NLS } from '@fe/support/args'
 
 export default defineComponent({
   name: 'monaco-editor',
   props: {
-    options: Object,
+    nls: String,
   },
-  setup () {
+  setup (props) {
     let editor: monaco.editor.IStandaloneCodeEditor | null = null
     const refEditor = ref<HTMLElement | null>(null)
 
@@ -69,6 +70,16 @@ export default defineComponent({
     }
 
     function onGotAmdLoader () {
+      if (props.nls && Object.keys(MONACO_EDITOR_NLS).includes(props.nls)) {
+        (window as any).require.config({
+          'vs/nls': {
+            availableLanguages: {
+              '*': props.nls,
+            }
+          }
+        })
+      }
+
       (window as any).require(['vs/editor/editor.main'], initMonaco)
     }
 

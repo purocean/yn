@@ -3,7 +3,7 @@ import { MsgPath } from '@share/i18n'
 import { DEFAULT_EXCLUDE_REGEX } from '@share/misc'
 import { BuildInSettings, SettingGroup } from '@fe/types'
 import { isMacOS, isWindows } from '@fe/support/env'
-import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
+import { FLAG_DISABLE_XTERM, FLAG_MAS, MONACO_EDITOR_NLS } from '@fe/support/args'
 
 export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
 
@@ -82,6 +82,9 @@ const schema: Schema = ({
       title: 'T_setting-panel.schema.theme',
       type: 'string',
       enum: ['system', 'dark', 'light'],
+      options: {
+        enum_titles: ['System', 'Dark', 'Light'],
+      },
       group: 'appearance',
       required: true,
     },
@@ -90,6 +93,9 @@ const schema: Schema = ({
       title: 'T_setting-panel.schema.language',
       type: 'string',
       enum: ['system', 'en', 'zh-CN'],
+      options: {
+        enum_titles: ['System', 'English', '简体中文'],
+      },
       group: 'appearance',
       required: true,
     },
@@ -222,6 +228,18 @@ const schema: Schema = ({
       title: 'T_setting-panel.schema.editor.tab-size',
       type: 'number',
       enum: [2, 4],
+      group: 'editor',
+      required: true,
+    },
+    'editor.nls': {
+      defaultValue: 'en',
+      title: 'T_setting-panel.schema.editor.language',
+      description: 'T_setting-panel.schema.editor.language-desc',
+      type: 'string',
+      enum: ['en', ...Object.keys(MONACO_EDITOR_NLS)],
+      options: {
+        enum_titles: ['English', ...Object.values(MONACO_EDITOR_NLS)],
+      },
       group: 'editor',
       required: true,
     },

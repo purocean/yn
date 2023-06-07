@@ -355,6 +355,8 @@ const data: BaseLanguage = {
         'mouse-wheel-zoom': '鼠标滚动缩放',
         'font-size': '字体大小',
         'tab-size': 'Tab 宽度',
+        'language': '语言',
+        'language-desc': '设置编辑器菜单语言，重启后生效',
         'ordered-list-completion': '有序列表补全',
         'minimap': '显示小地图',
         'line-numbers': '行号',

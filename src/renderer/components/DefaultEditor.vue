@@ -1,6 +1,6 @@
 <template>
   <div class="editor-container">
-    <MonacoEditor ref="refEditor" class="editor" />
+    <MonacoEditor ref="refEditor" class="editor" :nls="nls" />
   </div>
 </template>
 
@@ -26,6 +26,7 @@ export default defineComponent({
     let timer: number | null = null
     const refEditor = ref<any>(null)
     const { currentFile, currentContent } = toRefs(store.state)
+    const nls = getSetting('editor.nls', 'en')
 
     const getMonacoEditor = () => refEditor.value
 
@@ -149,7 +150,7 @@ export default defineComponent({
       })
     })
 
-    return { refEditor }
+    return { refEditor, nls }
   }
 })
 </script>

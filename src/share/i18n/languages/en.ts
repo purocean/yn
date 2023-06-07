@@ -364,6 +364,8 @@ const data = {
         'mouse-wheel-zoom': 'Mouse Wheel Zoom',
         'font-size': 'Font Size',
         'tab-size': 'Tab Size',
+        'language': 'Language',
+        'language-desc': 'Need to restart the application.',
         'ordered-list-completion': 'Ordered List',
         'minimap': 'Minimap',
         'line-numbers': 'Line Numbers',
