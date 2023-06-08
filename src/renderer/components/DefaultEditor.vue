@@ -1,6 +1,6 @@
 <template>
   <div class="editor-container">
-    <MonacoEditor ref="refEditor" class="editor" />
+    <MonacoEditor ref="refEditor" class="editor" :nls="nls" />
   </div>
 </template>
 
@@ -13,6 +13,7 @@ import { isEncrypted, isSameFile, saveDoc, toUri } from '@fe/services/document'
 import { getEditor, getIsDefault, setValue, whenEditorReady } from '@fe/services/editor'
 import { HELP_REPO_NAME } from '@fe/support/args'
 import { getSetting } from '@fe/services/setting'
+import { getCurrentLanguage } from '@fe/services/i18n'
 import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
 
@@ -26,6 +27,7 @@ export default defineComponent({
     let timer: number | null = null
     const refEditor = ref<any>(null)
     const { currentFile, currentContent } = toRefs(store.state)
+    const nls = getCurrentLanguage().toLocaleLowerCase()
 
     const getMonacoEditor = () => refEditor.value
 
@@ -149,7 +151,7 @@ export default defineComponent({
       })
     })
 
-    return { refEditor }
+    return { refEditor, nls }
   }
 })
 </script>

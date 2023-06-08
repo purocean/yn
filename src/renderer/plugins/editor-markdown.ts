@@ -99,6 +99,16 @@ export default {
       }
     }
 
+    function focusEditor () {
+      const line = getEditor().getPosition()?.lineNumber
+      if (line) {
+        ctx.view.disableSyncScrollAwhile(() => {
+          getEditor().revealLineInCenter(line)
+          getEditor().focus()
+        })
+      }
+    }
+
     whenEditorReady().then(({ editor, monaco }) => {
       const KM = monaco.KeyMod
       const KC = monaco.KeyCode
@@ -178,6 +188,12 @@ export default {
           onClick: insertDate,
         },
       )
+    })
+
+    ctx.action.registerAction({
+      name: 'plugin.editor.focus-editor',
+      handler: focusEditor,
+      keys: [ctx.command.Shift, ctx.command.Alt, 'x']
     })
   }
 } as Plugin

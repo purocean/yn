@@ -76,20 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.53.3](https://github.com/purocean/yn/releases/tag/v3.53.3) 2023-05-12
+### [v3.54.0](https://github.com/purocean/yn/releases/tag/v3.54.0) 2023-06-08
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.53.3/Yank-Note-win-x64-3.53.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.53.3/Yank-Note-mac-arm64-3.53.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.53.3/Yank-Note-mac-x64-3.53.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.53.3/Yank-Note-linux-x86_64-3.53.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.53.3/Yank-Note-linux-amd64-3.53.3.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-win-x64-3.54.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-mac-arm64-3.54.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-mac-x64-3.54.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-linux-x86_64-3.54.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-linux-amd64-3.54.0.deb)
 
-1. feat: enable local SVG rendering for PlantUML.
-2. feat: support inserting multiple rows/columns at once in table editing.
-3. feat: add prompt when the port is already occupied.
-4. feat: optimize the automatic update feature.
-5. feat: add aliases for nasm code highlighting: asm, s, assembly, masm.
-6. feat: include chinese punctuation in the word segmentation and character splitting of the editor.
-7. fix: fix the issue that the rename function fails to change only the file name capitalization.
-8. fix: fix the issue that the exported HTML TODO list could not correctly display the check status
-9. fix: fix the issue that opening the document history panel causes the custom editor theme to be invalidated.
-10. feat(plugin): support custom Vue components in the context menu.
+1. feat: add focus editor shortcut `Shift + Alt/Option + X`
+2. feat: editor menu supports Chinese
+3. feat: optimize the behavior of clicking preview to scroll to the editor position
+4. feat: optimize the behavior of batch checking to-do items (press `Cmd/Ctrl + O` after selecting)
+5. feat(plugin): add `needReloadWindowWhenChanged` field to setting item, support to define whether to reload page after value changes
+6. feat(plugin): `SETTING_CHANGED` hook adds `schema` parameter
 
 [More release notes](https://github.com/purocean/yn/releases)
 

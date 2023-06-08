@@ -61,17 +61,22 @@ export default {
     })
 
     function clickScroll (e: MouseEvent) {
-      const target = e.target as HTMLElement
+      const _target = e.target as HTMLElement
+      if (['button', 'div', 'img', 'input', 'canvas'].includes(_target.tagName.toLowerCase())) {
+        return
+      }
+
+      const target: HTMLElement | null = (e.target as HTMLElement).closest('[data-source-line]')
 
       if (
+        target &&
         ctx.store.state.showEditor &&
         !ctx.store.state.presentation &&
-        target.dataset.sourceLine &&
         window.getSelection()!.toString().length < 1
       ) {
         ctx.view.disableSyncScrollAwhile(() => {
-          const line = parseInt(target.dataset.sourceLine || '0')
-          const lineEnd = parseInt(target.dataset.sourceLineEnd || '0')
+          const line = parseInt(target!.dataset.sourceLine || '0')
+          const lineEnd = parseInt(target!.dataset.sourceLineEnd || '0')
           ctx.editor.highlightLine(lineEnd ? [line, lineEnd - 1] : line, true, 1000)
         })
       }

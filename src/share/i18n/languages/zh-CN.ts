@@ -154,6 +154,10 @@ const data: BaseLanguage = {
     'title': '提示',
     'desc': '文档尚未保存，是否要保存？',
   },
+  'change-setting-reload-main-widow-dialog': {
+    'title': '提示',
+    'desc': '某些设置需要重载主窗口才能生效，是否要重载？',
+  },
   'file-status': {
     'unsaved': '未保存',
     'saving': '保存中',

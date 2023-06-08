@@ -2,13 +2,15 @@ import { init } from '@fe/core/plugin'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
 import { isElectron } from '@fe/support/env'
+import { useModal } from '@fe/support/ui/modal'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
+import { reloadMainWindow } from '@fe/services/base'
 import { isMarked, markDoc, switchDoc, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
 import { whenEditorReady } from '@fe/services/editor'
-import { getLanguage, setLanguage } from '@fe/services/i18n'
+import { getLanguage, setLanguage, t } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
 import { getPurchased } from '@fe/others/premium'
 import * as extension from '@fe/others/extension'
@@ -81,7 +83,7 @@ registerHook('DOC_DELETED', refreshTree)
 registerHook('DOC_MOVED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', (payload?: { doc?: Doc | null, message: string }) => {
-  if (payload && payload.doc && payload?.message?.indexOf('NOENT')) {
+  if (payload && payload.doc && payload.message?.includes('NOENT')) {
     unmarkDoc(payload.doc)
   }
 })
@@ -102,9 +104,20 @@ registerHook('SETTING_FETCHED', () => {
   }
 })
 
-registerHook('SETTING_CHANGED', ({ changedKeys }) => {
+registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
   if (changedKeys.some(key => key.startsWith('render.'))) {
     view.render()
+  }
+
+  if (changedKeys.some(key => schema.properties[key].needReloadWindowWhenChanged)) {
+    useModal().confirm({
+      title: t('change-setting-reload-main-widow-dialog.title'),
+      content: t('change-setting-reload-main-widow-dialog.desc'),
+    }).then(v => {
+      if (v) {
+        reloadMainWindow()
+      }
+    })
   }
 })
 

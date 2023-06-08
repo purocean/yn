@@ -4,10 +4,12 @@ import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { basename } from '@fe/utils/path'
 import { sleep } from '@fe/utils'
-import type { BuildInSettings, FileItem, PathItem, SettingGroup } from '@fe/types'
-import { getDefaultSettingSchema, Schema } from '@fe/others/setting-schema'
+import type { BuildInSettings, FileItem, PathItem, SettingGroup, SettingSchema } from '@fe/types'
+import { getDefaultSettingSchema } from '@fe/others/setting-schema'
 import { getThemeName } from './theme'
 import { t } from './i18n'
+
+type Schema = SettingSchema
 
 const schema = getDefaultSettingSchema()
 
@@ -94,7 +96,8 @@ export async function fetchSettings () {
     .filter((key) => !isEqual(settings[key], oldSettings[key]))
 
   if (changedKeys.length > 0) {
-    triggerHook('SETTING_CHANGED', { settings, oldSettings, changedKeys })
+    const schema = getSchema()
+    triggerHook('SETTING_CHANGED', { schema, settings, oldSettings, changedKeys })
   }
 
   return settings
