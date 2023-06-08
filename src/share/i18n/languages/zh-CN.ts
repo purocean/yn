@@ -154,6 +154,10 @@ const data: BaseLanguage = {
     'title': '提示',
     'desc': '文档尚未保存，是否要保存？',
   },
+  'change-setting-reload-main-widow-dialog': {
+    'title': '提示',
+    'desc': '某些设置需要重载主窗口才能生效，是否要重载？',
+  },
   'file-status': {
     'unsaved': '未保存',
     'saving': '保存中',
@@ -355,8 +359,8 @@ const data: BaseLanguage = {
         'mouse-wheel-zoom': '鼠标滚动缩放',
         'font-size': '字体大小',
         'tab-size': 'Tab 宽度',
-        'language': '语言',
-        'language-desc': '设置编辑器菜单语言，重启后生效',
+        'language': '界面语言',
+        'language-desc': '设置编辑器菜单语言，重载主窗口后生效',
         'ordered-list-completion': '有序列表补全',
         'minimap': '显示小地图',
         'line-numbers': '行号',

@@ -1,49 +1,10 @@
 import { cloneDeep } from 'lodash-es'
-import { MsgPath } from '@share/i18n'
 import { DEFAULT_EXCLUDE_REGEX } from '@share/misc'
-import { BuildInSettings, SettingGroup } from '@fe/types'
 import { isMacOS, isWindows } from '@fe/support/env'
 import { FLAG_DISABLE_XTERM, FLAG_MAS, MONACO_EDITOR_NLS } from '@fe/support/args'
+import { SettingSchema } from '@fe/types'
 
-export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
-
-export type Schema = {
-  type: string,
-  title: TTitle,
-  properties: {[K in keyof BuildInSettings]: {
-    type: string,
-    title: TTitle,
-    description?: TTitle,
-    required?: boolean,
-    defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
-    enum?: string[] | number [],
-    group: SettingGroup,
-    validator?: (schema: Schema['properties'][K], value: BuildInSettings[K], path: string) =>
-      {path: string, property: K, message: string}[]
-    items?: {
-      type: string,
-      title: TTitle,
-      properties: {
-        [K in string] : {
-          type: string,
-          title: TTitle,
-          description?: TTitle,
-          options: {
-            inputAttributes: { placeholder: TTitle }
-          }
-        }
-      }
-    },
-    [key: string]: any,
-  }},
-  required: (keyof BuildInSettings)[],
-  groups: {
-    label: TTitle,
-    value: SettingGroup,
-  }[],
-}
-
-const schema: Schema = ({
+const schema: SettingSchema = ({
   type: 'object',
   title: 'T_setting-panel.setting',
   properties: {
@@ -242,6 +203,7 @@ const schema: Schema = ({
       },
       group: 'editor',
       required: true,
+      needReloadWindowWhenChanged: true,
     },
     'editor.font-family': {
       defaultValue: '',
@@ -418,7 +380,7 @@ const schema: Schema = ({
         inputAttributes: { placeholder: 'http://', }
       }
     },
-  } as Partial<Schema['properties']> as any,
+  } as Partial<SettingSchema['properties']> as any,
   required: [],
   groups: [
     { label: 'T_setting-panel.tabs.repos', value: 'repos' },
@@ -445,6 +407,6 @@ if (FLAG_MAS) {
   delete (schema.properties as any)['updater.source']
 }
 
-export function getDefaultSettingSchema (): Schema {
+export function getDefaultSettingSchema (): SettingSchema {
   return cloneDeep(schema)
 }

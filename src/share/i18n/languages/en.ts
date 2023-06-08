@@ -153,6 +153,10 @@ const data = {
     'title': 'Attention',
     'desc': 'The document has not been saved, do you want to save it?',
   },
+  'change-setting-reload-main-widow-dialog': {
+    'title': 'Attention',
+    'desc': 'Some settings need to reload the main window to take effect, do you want to reload now?',
+  },
   'file-status': {
     'unsaved': 'Unsaved',
     'saving': 'Saving',
@@ -365,7 +369,7 @@ const data = {
         'font-size': 'Font Size',
         'tab-size': 'Tab Size',
         'language': 'Language',
-        'language-desc': 'Need to restart the application.',
+        'language-desc': 'Need to reload the main window to take effect',
         'ordered-list-completion': 'Ordered List',
         'minimap': 'Minimap',
         'line-numbers': 'Line Numbers',
