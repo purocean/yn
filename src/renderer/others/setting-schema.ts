@@ -192,19 +192,6 @@ const schema: SettingSchema = ({
       group: 'editor',
       required: true,
     },
-    'editor.nls': {
-      defaultValue: 'en',
-      title: 'T_setting-panel.schema.editor.language',
-      description: 'T_setting-panel.schema.editor.language-desc',
-      type: 'string',
-      enum: ['en', ...Object.keys(MONACO_EDITOR_NLS)],
-      options: {
-        enum_titles: ['English', ...Object.values(MONACO_EDITOR_NLS)],
-      },
-      group: 'editor',
-      required: true,
-      needReloadWindowWhenChanged: true,
-    },
     'editor.font-family': {
       defaultValue: '',
       title: 'T_setting-panel.schema.editor.font-family',

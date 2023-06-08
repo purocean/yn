@@ -368,8 +368,6 @@ const data = {
         'mouse-wheel-zoom': 'Mouse Wheel Zoom',
         'font-size': 'Font Size',
         'tab-size': 'Tab Size',
-        'language': 'Language',
-        'language-desc': 'Need to reload the main window to take effect',
         'ordered-list-completion': 'Ordered List',
         'minimap': 'Minimap',
         'line-numbers': 'Line Numbers',
