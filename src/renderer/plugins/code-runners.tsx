@@ -22,6 +22,23 @@ class JavascriptExecutor implements ReadableStreamDefaultReader<string> {
     })
   }
 
+  private getIframeWindow () {
+    const id = 'code-runner-javascript-vm'
+
+    // clean up
+    document.getElementById(id)?.remove()
+
+    const iframe = document.createElement('iframe')
+    iframe.id = id
+    iframe.style.display = 'none'
+    document.body.appendChild(iframe)
+    const iframeWindow = iframe.contentWindow! as Window & typeof globalThis
+
+    iframeWindow.ctx = window.ctx
+
+    return iframeWindow
+  }
+
   private async runCode (): Promise<undefined> {
     const stringify = (args: any[]) => args.map((arg) => {
       if (['boolean', 'number', 'bigint', 'string', 'symbol', 'function'].includes(typeof arg)) {
@@ -37,18 +54,23 @@ class JavascriptExecutor implements ReadableStreamDefaultReader<string> {
       this._readResolve(str)
     }
 
-    // eslint-disable-next-line no-eval
-    await eval(`(async () => {
-      const console = new Proxy(window.console, {
-        get: (obj, prop) => ['error', 'warn', 'info', 'log', 'debug'].includes(prop)
-          ? (...args) => {
-            obj[prop](...args);
-            ${tick.name}(args);
+    const iframeWindow = this.getIframeWindow()
+    const xConsole = new Proxy(iframeWindow.console, {
+      get: (obj: any, prop: any) => ['error', 'warn', 'info', 'log', 'debug'].includes(prop)
+        ? (...args: any[]) => {
+            obj[prop](...args)
+            if (prop === 'log') {
+              tick(args)
+            } else {
+              tick([`${prop[0]}:`, ...args])
+            }
           }
-          : obj[prop]
-      });
-      ${this.code}
-    })()`)
+        : obj[prop]
+    })
+
+    const AsyncFunction = iframeWindow.eval('(async function(){}).constructor')
+    const fn = new AsyncFunction('console', 'ctx', this.code)
+    await fn.call(iframeWindow, xConsole, window.ctx)
 
     await sleep(0)
     this._readResolve('')
