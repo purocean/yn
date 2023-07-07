@@ -87,7 +87,7 @@ export default {
   register: (ctx) => {
     ctx.runner.registerRunner({
       name: 'javascript',
-      order: 255,
+      order: 100,
       match (language) {
         return ['js', 'javascript'].includes(language.toLowerCase())
       },
@@ -95,8 +95,10 @@ export default {
         return null
       },
       async run (_, code) {
+        const firstLine = code.split('\n')[0].trim()
+        const outputHtml = firstLine.includes('--output-html--')
         return {
-          type: 'html',
+          type: outputHtml ? 'html' : 'plain',
           value: new JavascriptExecutor(code)
         }
       },
