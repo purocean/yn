@@ -155,11 +155,11 @@ export default {
       })
 
       editor.addCommand(KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyU), () => {
-        editor.getAction('editor.action.transformToUppercase').run()
+        editor.getAction('editor.action.transformToUppercase')?.run()
       })
 
       editor.addCommand(KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyL), () => {
-        editor.getAction('editor.action.transformToLowercase').run()
+        editor.getAction('editor.action.transformToLowercase')?.run()
       })
 
       editor.onDidCompositionStart(() => {
