@@ -22,7 +22,7 @@
           <div class="item-label" draggable="true" @dragstart="onDragStart">
             {{ itemNode.name }} <span class="count">({{itemNode.children ? itemNode.children.length : 0}})</span>
           </div>
-          <div class="item-action">
+          <div v-if="!FLAG_READONLY" class="item-action">
             <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFolder()" :title="$t('tree.context-menu.create-dir')"></svg-icon>
             <svg-icon class="icon" name="plus" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create-doc')"></svg-icon>
           </div>
@@ -62,6 +62,7 @@ import { createDir, createDoc, deleteDoc, duplicateDoc, isMarkdownFile, isMarked
 import { useI18n } from '@fe/services/i18n'
 import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
 import { useToast } from '@fe/support/ui/toast'
+import { FLAG_READONLY } from '@fe/support/args'
 import type { AppState } from '@fe/support/store'
 import SvgIcon from './SvgIcon.vue'
 
@@ -345,6 +346,7 @@ export default defineComponent({
       onDrop,
       onDragStart,
       isMarkdownFile,
+      FLAG_READONLY,
     }
   },
 })

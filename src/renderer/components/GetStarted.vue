@@ -6,7 +6,7 @@
         <div class="desc">{{$t('slogan')}}</div>
       </div>
       <div class="section">
-        <div class="start">
+        <div v-if="!FLAG_READONLY" class="start">
           <h2>{{$t('get-started.start')}}</h2>
           <div class="list">
             <div class="item" v-if="!hasRepo">
@@ -71,7 +71,7 @@
 import dayjs from 'dayjs'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import { URL_GITHUB } from '@fe/support/args'
+import { FLAG_READONLY, URL_GITHUB } from '@fe/support/args'
 import { useI18n } from '@fe/services/i18n'
 import type { AppState } from '@fe/support/store'
 import { showManager as showExtensionManager } from '@fe/others/extension'
