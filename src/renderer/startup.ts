@@ -109,7 +109,7 @@ registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
     view.render()
   }
 
-  if (changedKeys.some(key => schema.properties[key].needReloadWindowWhenChanged)) {
+  if (changedKeys.some(key => schema.properties[key]?.needReloadWindowWhenChanged)) {
     useModal().confirm({
       title: t('change-setting-reload-main-widow-dialog.title'),
       content: t('change-setting-reload-main-widow-dialog.desc'),

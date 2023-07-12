@@ -64,7 +64,7 @@ export default {
         onClick: () => {
           if (ctx.store.state.showEditor) {
             ctx.editor.getEditor().focus()
-            ctx.editor.getEditor().getAction('editor.action.gotoLine').run()
+            ctx.editor.getEditor().getAction('editor.action.gotoLine')?.run()
           }
         }
       }

@@ -266,6 +266,11 @@ ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log('HELLOWORLD')
 ```
 
+```js
+// --run-- --output-html--
+console.log(`output <i>HTML</i>`)
+```
+
 ```node
 // --run--
 console.log('HELLOWORLD')

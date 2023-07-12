@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash-es'
 import { DEFAULT_EXCLUDE_REGEX } from '@share/misc'
 import { isMacOS, isWindows } from '@fe/support/env'
-import { FLAG_DISABLE_XTERM, FLAG_MAS, MONACO_EDITOR_NLS } from '@fe/support/args'
+import { FLAG_DISABLE_XTERM, FLAG_MAS } from '@fe/support/args'
 import { SettingSchema } from '@fe/types'
 
 const schema: SettingSchema = ({

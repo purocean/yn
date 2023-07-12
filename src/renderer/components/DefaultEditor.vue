@@ -11,7 +11,7 @@ import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { isEncrypted, isSameFile, saveDoc, toUri } from '@fe/services/document'
 import { getEditor, getIsDefault, setValue, whenEditorReady } from '@fe/services/editor'
-import { HELP_REPO_NAME } from '@fe/support/args'
+import { FLAG_READONLY, HELP_REPO_NAME } from '@fe/support/args'
 import { getSetting } from '@fe/services/setting'
 import { getCurrentLanguage } from '@fe/services/i18n'
 import type { Doc } from '@fe/types'
@@ -111,7 +111,7 @@ export default defineComponent({
 
       await nextTick()
       getEditor().updateOptions({
-        readOnly: !current || !current.plain
+        readOnly: FLAG_READONLY || !current || !current.plain
       })
 
       if (getIsDefault()) {
