@@ -76,16 +76,14 @@
 
 ## 更新日志
 
-### [v3.54.0](https://github.com/purocean/yn/releases/tag/v3.54.0) 2023-06-08
+### [v3.55.0](https://github.com/purocean/yn/releases/tag/v3.55.0) 2023-07-12
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-win-x64-3.54.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-mac-arm64-3.54.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-mac-x64-3.54.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-linux-x86_64-3.54.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-linux-amd64-3.54.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-win-x64-3.55.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-mac-arm64-3.55.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-mac-x64-3.55.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-linux-x86_64-3.55.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-linux-amd64-3.55.0.deb)
 
-1. feat: 增加聚焦编辑器快捷键 `Shift + Alt/Option + X`
-2. feat: 编辑器菜单支持中文
-3. feat: 优化点击预览滚动到编辑器位置的行为
-4. feat: 优化批量勾选待办（选中后按 `Cmd/Ctrl + O`）的行为
-5. feat(plugin): 设置项增加 `needReloadWindowWhenChanged` 字段，支持定义值变更后是否重载页面
-6. feat(plugin): `SETTING_CHANGED` 钩子增加 `schema` 参数
+1. feat: 升级 Monaco editor 到 0.40.0
+2. feat: 运行 js 代码块时支持输出 HTML 结果
+3. fix: 修复运行 js 代码块作用域问题
+4. fix: 修复启动 `--readonly` 参数无效问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

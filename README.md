@@ -76,16 +76,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.54.0](https://github.com/purocean/yn/releases/tag/v3.54.0) 2023-06-08
+### [v3.55.0](https://github.com/purocean/yn/releases/tag/v3.55.0) 2023-07-12
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-win-x64-3.54.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-mac-arm64-3.54.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-mac-x64-3.54.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-linux-x86_64-3.54.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.54.0/Yank-Note-linux-amd64-3.54.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-win-x64-3.55.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-mac-arm64-3.55.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-mac-x64-3.55.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-linux-x86_64-3.55.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.55.0/Yank-Note-linux-amd64-3.55.0.deb)
 
-1. feat: add focus editor shortcut `Shift + Alt/Option + X`
-2. feat: editor menu supports Chinese
-3. feat: optimize the behavior of clicking preview to scroll to the editor position
-4. feat: optimize the behavior of batch checking to-do items (press `Cmd/Ctrl + O` after selecting)
-5. feat(plugin): add `needReloadWindowWhenChanged` field to setting item, support to define whether to reload page after value changes
-6. feat(plugin): `SETTING_CHANGED` hook adds `schema` parameter
+1. feat: upgrade Monaco editor to 0.40.0
+2. feat: support outputting HTML results when running js code blocks
+3. fix: fix the scope problem of running js code block
+4. fix: fix the problem that the startup `--readonly` parameter is invalid
 
 [More release notes](https://github.com/purocean/yn/releases)
 
