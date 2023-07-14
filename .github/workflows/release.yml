@@ -19,9 +19,6 @@ jobs:
 #             platform: 'linux'
     runs-on: ${{ matrix.os }}
     env:
-      npm_config_disturl: https://electronjs.org/headers
-      npm_config_target: 15.4.1
-      npm_config_runtime: "electron"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -42,6 +39,7 @@ jobs:
       - name: Install
         run: |
           yarn install
+          yarn electron-rebuild
           node scripts/download-pandoc.js
 
       - name: Set env
@@ -69,7 +67,7 @@ jobs:
           yarn run electron-builder --${{ matrix.platform }} --x64 -p never | sed 's/identityName=.*$//'
           find ./out -regex '.*app.asar.unpacked/node_modules/node-pty/build/Release/pty.node$' | grep pty.node
           mv out/latest-mac.yml out/latest-mac-x64.yml
-          cp ./files/m1*pty.node ./node_modules/node-pty/build/Release/pty.node
+          yarn electron-rebuild --arch=arm64
           sed -i '' 's/out\/mac\/Yank Note.app/out\/mac-arm64\/Yank Note.app/' electron-builder.json
           yarn run electron-builder --${{ matrix.platform }} --arm64 -p never | sed 's/identityName=.*$//'
           mv out/latest-mac.yml out/latest-mac-arm64.yml
@@ -87,7 +85,7 @@ jobs:
           export npm_config_arch=arm64
           node "./node_modules/@vscode/ripgrep/lib/postinstall.js" --force
           node scripts/download-pandoc.js --force-arm64
-          cp ./files/linux-arm64*pty.node ./node_modules/node-pty/build/Release/pty.node
+          yarn electron-rebuild --arch=arm64
           yarn run electron-builder --${{ matrix.platform }} --arm64 -p never | sed 's/identityName=.*$//'
 
       - name: Rename Artifact for Ubuntu-18.04

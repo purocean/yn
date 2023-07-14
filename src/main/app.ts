@@ -87,7 +87,7 @@ const hideWindow = () => {
 }
 
 const restoreWindowBounds = () => {
-  const state: WindowState = store.get('window.state', null)
+  const state: WindowState | null = store.get('window.state', null) as any
   if (state) {
     if (state.maximized) {
       win!.maximize()
