@@ -74,7 +74,7 @@ export default defineComponent({
       switchFile(item.payload.file)
     }
 
-    async function removeTabs (items: Components.FileTabs.Item[]) {
+    async function removeTabs (items: {key: string}[]) {
       if (items.find(x => x.key === current.value)) {
         await ensureCurrentFileSaved()
       }
@@ -206,6 +206,10 @@ export default defineComponent({
       actionBtns.value = arr
     }
 
+    function closeTabs (keys: string[]) {
+      removeTabs(keys.map(key => ({ key })))
+    }
+
     onBeforeMount(() => {
       registerHook('DOC_MOVED', handleMoved)
       registerHook('DOC_CREATED', handleDocCreated)
@@ -257,6 +261,11 @@ export default defineComponent({
         name: 'file-tabs.refresh-action-btns',
         handler: refreshActionBtns,
       })
+
+      registerAction({
+        name: 'file-tabs.close-tabs',
+        handler: closeTabs,
+      })
     })
 
     onBeforeUnmount(() => {
@@ -271,6 +280,7 @@ export default defineComponent({
       removeAction('file-tabs.search-tabs')
       removeAction('file-tabs.refresh-action-btns')
       removeAction('file-tabs.show-welcome')
+      removeAction('file-tabs.close-tabs')
     })
 
     watch(currentFile, file => {

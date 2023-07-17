@@ -360,6 +360,7 @@ export type BuildInActions = {
   'file-tabs.close-current': () => void,
   'file-tabs.search-tabs': () => void,
   'file-tabs.refresh-action-btns': () => void,
+  'file-tabs.close-tabs': (keys: string[]) => void,
   'xterm.run': (cmd: { code: string, start: string, exit?: string } | string) => void,
   'xterm.init': (opts?: { cwd?: string }) => void,
   'plugin.document-history-stack.back': () => void,
