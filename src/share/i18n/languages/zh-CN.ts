@@ -202,6 +202,10 @@ const data: BaseLanguage = {
       'title': '提示',
       'content': '密码和上一次输入的密码不一致，是否用新密码保存？',
     },
+    'switch-noent-dialog': {
+      'title': '文件不存在',
+      'content': '文件 [%s] 不存在，是否要创建？',
+    }
   },
   'status-bar': {
     'view': {
