@@ -1,42 +1,31 @@
 import { Plugin, Ctx } from '@fe/context'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
+import type { Components, Doc } from '@fe/types'
 
 export default {
   name: 'file-tree-context-menu',
   register: (ctx: Ctx) => {
-    ctx.tree.tapContextMenus((items, node, vueCtx) => {
-      function revealInXterminal () {
-        const { currentRepo } = ctx.store.state
-        const path = currentRepo ? ctx.utils.path.join(currentRepo.path, node.path) : ''
-        if (path) {
-          ctx.action.getActionHandler('xterm.run')(`--yank-note-run-command-cd-- ${path}`)
-        }
+    function revealInXterminal (node: Doc) {
+      const { currentRepo } = ctx.store.state
+      const path = currentRepo ? ctx.utils.path.join(currentRepo.path, node.path) : ''
+      if (path) {
+        ctx.action.getActionHandler('xterm.run')(`--yank-note-run-command-cd-- ${path}`)
       }
+    }
 
-      async function toggleMark () {
-        if ((node as any).marked) {
-          vueCtx.localMarked.value = false
-          await ctx.doc.unmarkDoc(node)
-        } else {
-          vueCtx.localMarked.value = true
-          await ctx.doc.markDoc(node)
-        }
-
-        node.marked = vueCtx.localMarked.value
-      }
-
+    function getItems (node: Doc, position: 'tabs' | 'tree'): Components.ContextMenu.Item[] {
+      const t = ctx.i18n.t
       const isMarkdown = ctx.doc.isMarkdownFile(node)
 
       const disableItems = ctx.args.FLAG_READONLY
         ? ['duplicate', 'duplicate', 'create-dir', 'create-doc', 'create-in-cd', 'rename', 'delete', 'open-in-terminal']
         : []
 
-      const t = ctx.i18n.t
+      if (position === 'tabs') {
+        disableItems.push('refresh')
+      }
 
-      items.push(...[
-        ...(isMarkdown ? [
-          { id: 'mark', label: node.marked ? t('tree.context-menu.unmark') : t('tree.context-menu.mark'), onClick: () => toggleMark() },
-        ] : []),
+      return [
         ...(isMarkdown && !ctx.doc.isEncrypted(node) ? [
           { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node) },
         ] : []),
@@ -58,7 +47,7 @@ export default {
           { id: 'find-in-folder', label: t('tree.context-menu.find-in-folder'), onClick: () => ctx.base.findInRepository({ include: node.path.replace(/^\//, '') + '/**/*.md' }) },
         ] : []),
         ...(node.type === 'dir' && !FLAG_DISABLE_XTERM ? [
-          { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: revealInXterminal },
+          { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: () => revealInXterminal(node) },
         ] : []),
         ...(isMarkdown ? [
           { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
@@ -66,7 +55,46 @@ export default {
         { type: 'separator' },
         { id: 'copy-name', label: t('tree.context-menu.copy-name'), onClick: () => ctx.utils.copyText(node.name) },
         { id: 'copy-path', label: t('tree.context-menu.copy-path'), onClick: () => ctx.utils.copyText(node.path) }
-      ].filter(x => (!x.id || !disableItems.includes(x.id))) as typeof items)
+      ].filter((x: any) => (!x.id || !disableItems.includes(x.id))) as Components.ContextMenu.Item[]
+    }
+
+    ctx.tree.tapContextMenus((items, node, vueCtx) => {
+      async function toggleMark () {
+        if ((node as any).marked) {
+          vueCtx.localMarked.value = false
+          await ctx.doc.unmarkDoc(node)
+        } else {
+          vueCtx.localMarked.value = true
+          await ctx.doc.markDoc(node)
+        }
+
+        node.marked = vueCtx.localMarked.value
+      }
+
+      const isMarkdown = ctx.doc.isMarkdownFile(node)
+
+      const t = ctx.i18n.t
+
+      items.push(...[
+        ...(isMarkdown ? [
+          {
+            id: 'mark',
+            label: node.marked ? t('tree.context-menu.unmark') : t('tree.context-menu.mark'),
+            onClick: () => toggleMark()
+          },
+        ] : []),
+        ...getItems(node, 'tree')
+      ])
+    })
+
+    ctx.workbench.FileTabs.tapTabContextMenus((items, tab) => {
+      const doc = tab.payload.file
+
+      if (!doc) {
+        return
+      }
+
+      items.push(...getItems(doc, 'tabs'))
     })
   }
 } as Plugin
