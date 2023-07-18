@@ -6,6 +6,7 @@
     :value="current"
     :filter-btn-title="filterBtnTitle"
     :action-btns="actionBtns"
+    :hook-context-menu="hookContextMenu"
     @remove="removeTabs"
     @switch="switchTab"
     @change-list="setTabs"
@@ -210,6 +211,13 @@ export default defineComponent({
       removeTabs(keys.map(key => ({ key })))
     }
 
+    function hookContextMenu (item: Components.Tabs.Item, menus: Components.ContextMenu.Item[]) {
+      const appendMenus = FileTabs.getTabContextMenus(item)
+      if (appendMenus.length) {
+        menus.push({ type: 'separator' }, ...appendMenus)
+      }
+    }
+
     onBeforeMount(() => {
       registerHook('DOC_MOVED', handleMoved)
       registerHook('DOC_CREATED', handleDocCreated)
@@ -348,6 +356,7 @@ export default defineComponent({
       filterBtnTitle,
       makeTabPermanent,
       onDblclickBlank,
+      hookContextMenu,
     }
   },
 })
