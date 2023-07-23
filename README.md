@@ -76,9 +76,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.56.3](https://github.com/purocean/yn/releases/tag/v3.56.3) 2023-07-23
+### [v3.56.4](https://github.com/purocean/yn/releases/tag/v3.56.4) 2023-07-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-win-x64-3.56.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-mac-arm64-3.56.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-mac-x64-3.56.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-linux-x86_64-3.56.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-linux-amd64-3.56.3.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-win-x64-3.56.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-mac-arm64-3.56.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-mac-x64-3.56.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-linux-x86_64-3.56.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-linux-amd64-3.56.4.deb)
 
 1. feat: upgrade Electron to 22.3.17
 2. feat: optimize the popup position of context menu when space is limited
