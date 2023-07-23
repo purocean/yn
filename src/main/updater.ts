@@ -192,7 +192,11 @@ export function changeSource () {
 }
 
 app.whenReady().then(() => {
-  init()
+  init(() => {
+    setTimeout(() => {
+      app.exit(0)
+    }, process.platform === 'darwin' ? 3500 : 0)
+  })
 
   setTimeout(() => {
     autoCheckForUpdates()

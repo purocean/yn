@@ -76,16 +76,16 @@
 
 ## 更新日志
 
-### [v3.56.2](https://github.com/purocean/yn/releases/tag/v3.56.2) 2023-07-23
+### [v3.56.3](https://github.com/purocean/yn/releases/tag/v3.56.3) 2023-07-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-win-x64-3.56.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-mac-arm64-3.56.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-mac-x64-3.56.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-linux-x86_64-3.56.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-linux-amd64-3.56.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-win-x64-3.56.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-mac-arm64-3.56.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-mac-x64-3.56.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-linux-x86_64-3.56.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.56.3/Yank-Note-linux-amd64-3.56.3.deb)
 
 1. feat: 升级 Electron 到 22.3.17
-1. feat: 优化当空间不够时上下文菜单弹出位置
-1. feat: 文件选项卡上下文菜单增加文件相关操作
-1. feat: 切换到一个不存在的文件时，提示是否创建
-1. feat(plugin): 增加 `file-tabs.close-tabs` Action
-1. feat(plugin): 增加文件选项卡上下文菜单拓展方法
+2. feat: 优化当空间不够时上下文菜单弹出位置
+3. feat: 文件选项卡上下文菜单增加文件相关操作
+4. feat: 切换到一个不存在的文件时，提示是否创建
+5. feat(plugin): 增加 `file-tabs.close-tabs` Action
+6. feat(plugin): 增加文件选项卡上下文菜单拓展方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
