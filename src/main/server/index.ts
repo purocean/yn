@@ -621,7 +621,8 @@ const server = (port = 3000) => {
       cols: 80,
       rows: 24,
       cwd: socket.handshake.query.cwd || HOME_DIR,
-      env: process.env
+      env: process.env,
+      useConpty: false,
     })
     ptyProcess.onData((data: any) => socket.emit('output', data))
     ptyProcess.onExit(() => socket.disconnect())
