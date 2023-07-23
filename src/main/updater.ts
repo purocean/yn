@@ -195,7 +195,7 @@ app.whenReady().then(() => {
   init(() => {
     setTimeout(() => {
       app.exit(0)
-    }, process.platform === 'darwin' ? 3500 : 0)
+    }, process.platform === 'darwin' ? 8000 : 0)
   })
 
   setTimeout(() => {
