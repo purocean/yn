@@ -76,14 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.55.1](https://github.com/purocean/yn/releases/tag/v3.55.1) 2023-07-12
+### [v3.56.2](https://github.com/purocean/yn/releases/tag/v3.56.2) 2023-07-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-win-x64-3.55.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-mac-arm64-3.55.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-mac-x64-3.55.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-linux-x86_64-3.55.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-linux-amd64-3.55.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-win-x64-3.56.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-mac-arm64-3.56.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-mac-x64-3.56.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-linux-x86_64-3.56.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-linux-amd64-3.56.2.deb)
 
-1. feat: upgrade Monaco editor to 0.40.0
-2. feat: support outputting HTML results when running js code blocks
-3. fix: fix the scope problem of running js code block
-4. fix: fix the problem that the startup `--readonly` parameter is invalid
+1. feat: upgrade Electron to 22.3.17
+2. feat: optimize the popup position of context menu when space is limited
+3. feat: add file-related operations to the context menu of file tabs
+4. feat: Prompt whether to create a new file when switching to a non-existent file
+5. feat(plugin): add `file-tabs.close-tabs` Action
+6. feat(plugin): add extension methods to the context menu of file tabs
 
 [More release notes](https://github.com/purocean/yn/releases)
 

@@ -76,14 +76,16 @@
 
 ## 更新日志
 
-### [v3.55.1](https://github.com/purocean/yn/releases/tag/v3.55.1) 2023-07-12
+### [v3.56.2](https://github.com/purocean/yn/releases/tag/v3.56.2) 2023-07-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-win-x64-3.55.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-mac-arm64-3.55.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-mac-x64-3.55.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-linux-x86_64-3.55.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.55.1/Yank-Note-linux-amd64-3.55.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-win-x64-3.56.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-mac-arm64-3.56.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-mac-x64-3.56.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-linux-x86_64-3.56.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.56.2/Yank-Note-linux-amd64-3.56.2.deb)
 
-1. feat: 升级 Monaco editor 到 0.40.0
-2. feat: 运行 js 代码块时支持输出 HTML 结果
-3. fix: 修复运行 js 代码块作用域问题
-4. fix: 修复启动 `--readonly` 参数无效问题
+1. feat: 升级 Electron 到 22.3.17
+1. feat: 优化当空间不够时上下文菜单弹出位置
+1. feat: 文件选项卡上下文菜单增加文件相关操作
+1. feat: 切换到一个不存在的文件时，提示是否创建
+1. feat(plugin): 增加 `file-tabs.close-tabs` Action
+1. feat(plugin): 增加文件选项卡上下文菜单拓展方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
