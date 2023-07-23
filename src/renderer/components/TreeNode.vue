@@ -509,7 +509,18 @@ summary > .item {
 }
 
 .marked {
-  color: #569bd5;
+  position: relative;
+}
+
+.marked::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: #569bd5;
+  border-radius: 50%;
+  position: absolute;
+  left: -5px;
+  top: 34%;
 }
 
 .name {

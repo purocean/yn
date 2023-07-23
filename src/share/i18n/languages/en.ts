@@ -201,6 +201,10 @@ const data = {
       'title': 'Attention',
       'content': 'The password doesn\'t match the old password, save it with the new password?',
     },
+    'switch-noent-dialog': {
+      'title': 'File Not Found',
+      'content': 'File [%s] not found, do you want to create it?',
+    }
   },
   'status-bar': {
     'view': {

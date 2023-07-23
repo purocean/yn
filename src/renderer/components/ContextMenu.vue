@@ -65,7 +65,7 @@ export default defineComponent({
       const y = _mouseY + menuHeight > windowHeight ? _mouseY - menuHeight : _mouseY
 
       refMenu.value.style.left = x + 'px'
-      refMenu.value.style.height = y < 0 ? `${menuHeight + y}px` : 'unset'
+      refMenu.value.style.height = y < 0 ? `${Math.min(Math.max(menuHeight + y, windowHeight - 30), menuHeight)}px` : 'unset'
       refMenu.value.style.top = y < 0 ? '0px' : y + 'px'
     }
 

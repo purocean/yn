@@ -55,6 +55,34 @@ export const FileTabs = {
     tappers.forEach(tap => tap(btns))
     return btns
   },
+
+  /**
+   * Add a tab context menu processor.
+   * @param tapper
+   */
+  tapTabContextMenus (tapper: (items: Components.ContextMenu.Item[], tab: Components.Tabs.Item) => void) {
+    ioc.register('TABS_TAB_CONTEXT_MENU_TAPPERS', tapper)
+  },
+
+  /**
+   * Remove a tab context menu processor.
+   * @param tapper
+   */
+  removeTabContextMenuTapper (tapper: (items: Components.ContextMenu.Item[], tab: Components.Tabs.Item) => void) {
+    ioc.remove('TABS_TAB_CONTEXT_MENU_TAPPERS', tapper)
+  },
+
+  /**
+   * Get tab context menus.
+   * @param tab
+   * @returns
+   */
+  getTabContextMenus (tab: Components.Tabs.Item) {
+    const items: Components.ContextMenu.Item[] = []
+    const tappers = ioc.get('TABS_TAB_CONTEXT_MENU_TAPPERS')
+    tappers.forEach(tap => tap(items, tab))
+    return items
+  }
 }
 
 const _refreshControlCenter = debounce(() => {

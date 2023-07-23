@@ -1,13 +1,15 @@
 import { init } from '@fe/core/plugin'
+import { getActionHandler } from '@fe/core/action'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
 import { isElectron } from '@fe/support/env'
+import { useToast } from './support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
 import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
 import { reloadMainWindow } from '@fe/services/base'
-import { isMarked, markDoc, switchDoc, unmarkDoc } from '@fe/services/document'
+import { createDoc, isMarked, markDoc, switchDoc, toUri, unmarkDoc } from '@fe/services/document'
 import { refreshTree } from '@fe/services/tree'
 import { whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage, t } from '@fe/services/i18n'
@@ -82,9 +84,23 @@ registerHook('DOC_CREATED', refreshTree)
 registerHook('DOC_DELETED', refreshTree)
 registerHook('DOC_MOVED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', refreshTree)
-registerHook('DOC_SWITCH_FAILED', (payload?: { doc?: Doc | null, message: string }) => {
+registerHook('DOC_SWITCH_FAILED', async (payload?: { doc?: Doc | null, message: string }) => {
   if (payload && payload.doc && payload.message?.includes('NOENT')) {
     unmarkDoc(payload.doc)
+
+    // wait toast show then hide
+    await Promise.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+    useToast().hide()
+
+    useModal().confirm({
+      title: t('document.switch-noent-dialog.title'),
+      content: t('document.switch-noent-dialog.content', payload.doc.path),
+    }).then(async v => {
+      getActionHandler('file-tabs.close-tabs')([toUri(payload.doc)])
+      v && await createDoc(payload.doc!)
+    })
   }
 })
 

@@ -65,6 +65,10 @@ export default defineComponent({
       type: Array as () => Components.Tabs.ActionBtn[],
       default: () => [],
     },
+    hookContextMenu: {
+      type: Function as unknown as () => ((item: Components.Tabs.Item, menus: Components.ContextMenu.Item[]) => void),
+      default: () => undefined,
+    }
   },
   emits: ['input', 'remove', 'switch', 'change-list', 'dblclick-blank', 'dblclick-item'],
   setup (props, { emit }) {
@@ -159,7 +163,7 @@ export default defineComponent({
     }
 
     function showContextMenu (item: Components.Tabs.Item) {
-      contextMenu.show([
+      const items: Components.ContextMenu.Item[] = [
         { id: 'close', label: t('close'), onClick: () => removeTabs([item]) },
         { id: 'close-others', label: t('tabs.close-others'), onClick: () => removeOther(item) },
         { id: 'close-right', label: t('tabs.close-right'), onClick: () => removeRight(item) },
@@ -167,7 +171,11 @@ export default defineComponent({
         { id: 'close-all', label: t('tabs.close-all'), onClick: () => removeAll() },
         { type: 'separator' },
         { id: 'fix', label: item.fixed ? t('tabs.unpin') : t('tabs.pin'), onClick: () => toggleFix(item) },
-      ])
+      ]
+
+      props.hookContextMenu?.(item, items)
+
+      contextMenu.show(items)
     }
 
     function showQuickFilter () {

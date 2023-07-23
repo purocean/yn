@@ -24,6 +24,7 @@ declare module 'katex'
 declare module 'xterm-theme'
 declare module 'parse-author'
 declare module 'js-untar'
+declare module 'semver'
 declare module 'path-browserify' {
   import path from 'path'
   export default path

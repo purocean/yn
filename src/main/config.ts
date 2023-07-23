@@ -1,16 +1,35 @@
 import * as fs from 'fs-extra'
+import cloneDeep from 'lodash/cloneDeep'
 import { CONFIG_FILE } from './constant'
+import store from './storage'
 
 const configFile = CONFIG_FILE
 
 const writeJson = (data: any) => {
+  if (!data) return
+
+  data = cloneDeep(data)
+  // save license to store
+  if (data.license) {
+    store.set('license', data.license)
+    delete data.license
+  }
+
   fs.ensureFileSync(configFile)
   fs.writeJsonSync(configFile, data, { spaces: 4 })
 }
 
 const readJson = () => {
   try {
-    return fs.readJSONSync(configFile)
+    const result = fs.readJSONSync(configFile)
+
+    // get license from store
+    const license = store.get('license', '')
+    if (license) {
+      result.license = license
+    }
+
+    return result
   } catch (error) {
     console.error(error)
     return null
