@@ -378,6 +378,7 @@ const data = {
         'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
         'font-family': 'Font Family',
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
+        'todo-with-time': 'Add time when checking todo',
       },
       'render': {
         'md-html': 'Enable HTML',
