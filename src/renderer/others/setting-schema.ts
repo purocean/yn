@@ -316,7 +316,7 @@ const schema: SettingSchema = ({
     },
     'keep-running-after-closing-window': {
       defaultValue: !isMacOS,
-      title: 'T_setting-panel.keep-running-after-closing-window',
+      title: 'T_setting-panel.schema.keep-running-after-closing-window',
       type: 'boolean',
       group: 'other',
       format: 'checkbox',

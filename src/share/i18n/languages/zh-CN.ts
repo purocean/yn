@@ -349,7 +349,6 @@ const data: BaseLanguage = {
     'add': '添加%s',
     'delete-warning': '确定要删除吗？',
     'error-choose-repo-path': '请选择储存位置',
-    'keep-running-after-closing-window': '关闭窗口后保持运行',
     'schema': {
       'repos': {
         'repos': '仓库',
@@ -423,6 +422,7 @@ const data: BaseLanguage = {
         'match-placeholder': '%foo%',
         'replace-placeholder': '%foo% -> BAR',
       },
+      'keep-running-after-closing-window': '关闭窗口后保持运行',
     },
     'tabs': {
       'repos': '仓库',
