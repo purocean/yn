@@ -31,6 +31,17 @@ const globalVars = {
   $noop: noop,
 }
 
+function createSeq () {
+  const counters: Record<string, number> = {}
+  return function (str = '') {
+    if (!counters[str]) {
+      counters[str] = 0
+    }
+    counters[str]++
+    return `${str}${counters[str]}`
+  }
+}
+
 function lineCount (str: string) {
   let s = 1
   const len = str.length
@@ -309,6 +320,7 @@ export default {
         const vars: Record<string, any> = { ...globalVars, ...env.attributes }
 
         vars.$include = include.bind(null, { ...options, belongDoc: file, count: 0, vars })
+        vars.$seq = createSeq()
         vars.$doc = {
           basename: file.name ? file.name.substring(0, file.name.lastIndexOf('.')) : '',
           ...ctx.lib.lodash.pick(env.file, 'name', 'repo', 'path', 'content', 'status')

@@ -641,6 +641,7 @@ Front Matter 中的 `define` 字段可以定义一些文本替换映射。支持
 - 应用版本：[= $ctx.version =]
 - 当前文档名: [= $doc.basename =]
 - 当前时间: [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]
+- 计数器: [= $seq`图-` =] | [= $seq`图-` =] | [= $seq`图-` =] | [= $seq`表-` =] | [= $seq`表-` =]
 - 限定符转义: [= '[\= =\]' =]
 - 四则运算: [= (1 + 2) / 2 =]
 - 引用文件（支持最多嵌套 3 层，可使用目标文档中定义的 Front Matter 变量)
@@ -679,6 +680,7 @@ Front Matter 中的 `define` 字段可以定义一些文本替换映射。支持
 `$export` | `(key: string, val: any) => Result` | 定义一个本文档可以使用的变量
 `$noop` | `() => Result` | 无操作函数，可用于文本占位使用
 `$afterMacro` | `(fn: (src: string) => string) => Result` | 定义一个宏替换后的回调函数，可用于对替换后的文本进行进一步处理。
+`$seq` | `(label: string) => Result` | 文档内部计数器
 `$doc` | `object` | 当前文档信息
 `$doc.basename` | `string` | 当前文档文件名（无后缀）
 `$doc.name` | `string` | 当前文档文件名
