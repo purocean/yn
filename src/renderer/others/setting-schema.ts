@@ -322,6 +322,14 @@ const schema: SettingSchema = ({
       format: 'checkbox',
       required: true,
     },
+    'hide-main-window-on-startup': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.hide-main-window-on-startup',
+      type: 'boolean',
+      group: 'other',
+      format: 'checkbox',
+      required: true,
+    },
     envs: {
       defaultValue: '',
       title: 'T_setting-panel.schema.envs',

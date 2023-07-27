@@ -326,6 +326,7 @@ export interface BuildInSettings {
   'extension.registry': RegistryHostname,
   'extension.auto-upgrade': boolean,
   'keep-running-after-closing-window': boolean,
+  'hide-main-window-on-startup': boolean,
   'plantuml-api': string,
 }
 

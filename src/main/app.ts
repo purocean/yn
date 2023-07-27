@@ -234,7 +234,11 @@ const createWindow = () => {
   win && win.loadURL(getUrl())
   restoreWindowBounds()
   win.on('ready-to-show', () => {
-    win!.show()
+    if (config.get('hide-main-window-on-startup', false)) {
+      hideWindow()
+    } else {
+      win!.show()
+    }
     skipBeforeUnloadCheck = false
   })
 

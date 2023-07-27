@@ -423,6 +423,7 @@ const data: BaseLanguage = {
         'replace-placeholder': '%foo% -> BAR',
       },
       'keep-running-after-closing-window': '关闭窗口后保持运行',
+      'hide-main-window-on-startup': '启动时隐藏主窗口',
     },
     'tabs': {
       'repos': '仓库',
