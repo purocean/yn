@@ -103,7 +103,7 @@
     "crypto-js": "^3.3.0",
     "dom-to-image": "^2.6.0",
     "electron": "22.3.17",
-    "electron-builder": "^24.4.0",
+    "electron-builder": "^23.6.0",
     "electron-notarize": "^1.2.2",
     "eslint": "^7.11.0",
     "eslint-plugin-import": "^2.20.2",
