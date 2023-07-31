@@ -86,7 +86,7 @@ function writeHistoryZip (zip: AdmZip, zipFilePath: string) {
 }
 
 async function writeHistory (filePath: string, content: any) {
-  const limit = Math.min(10000, config.get('doc-history.number-limit', 500))
+  let limit = Math.min(10000, config.get('doc-history.number-limit', 500))
   if (limit < 1) {
     return
   }
@@ -94,8 +94,15 @@ async function writeHistory (filePath: string, content: any) {
   const historyFilePath = getHistoryFilePath(filePath)
 
   let zip: AdmZip
+  let tooLarge = false
 
   if ((await fs.pathExists(historyFilePath))) {
+    const stats = await fs.stat(historyFilePath)
+    if (stats.size > 1024 * 1024 * 5) { // 5M
+      console.log('history file too large, limit max versions.', historyFilePath, stats.size)
+      tooLarge = true
+    }
+
     zip = readHistoryZip(historyFilePath)
   } else {
     zip = new AdmZip()
@@ -105,7 +112,12 @@ async function writeHistory (filePath: string, content: any) {
 
   zip.addFile(dayjs().format('YYYY-MM-DD HH-mm-ss') + ext, content)
 
-  orderBy(zip.getEntries(), x => x.entryName, 'desc').slice(limit).forEach(entry => {
+  const entries = zip.getEntries()
+  if (tooLarge) {
+    limit = Math.min(limit, Math.floor(entries.length / 3 * 2))
+  }
+
+  orderBy(entries, x => x.entryName, 'desc').slice(limit).forEach(entry => {
     if (!entry.comment) {
       zip.deleteFile(entry)
     }
@@ -376,14 +388,17 @@ export function historyList (repo: string, path: string) {
     const historyFilePath = getHistoryFilePath(filePath)
 
     if (!(await fs.pathExists(historyFilePath))) {
-      return []
+      return { list: [], size: 0 }
     }
 
+    const stats = await fs.stat(historyFilePath)
     const zip = readHistoryZip(historyFilePath)
-    return orderBy(zip.getEntries(), x => x.entryName, 'desc').map(x => ({
+    const list = orderBy(zip.getEntries(), x => x.entryName, 'desc').map(x => ({
       name: x.entryName,
       comment: x.comment
     }))
+
+    return { list, size: stats.size }
   }, path)
 }
 

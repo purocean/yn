@@ -3,7 +3,7 @@
     <div class="history-wrapper" v-if="currentDoc" @click.stop>
       <div class="history">
         <div class="versions-wrapper" v-if="versions && versions.length">
-          <div v-if="listType === 'all'" class="clear" @click="clearVersions">{{$t('doc-history.clear')}}</div>
+          <div v-if="listType === 'all'" class="clear" @click="clearVersions">{{$t('doc-history.clear')}}({{sizeText}})</div>
           <GroupTabs class="tabs" :tabs="getListTypes()" v-model="listType" />
           <div class="versions" v-if="xVersions && xVersions.length">
             <div
@@ -100,6 +100,7 @@ const getListTypes = () => [
 const currentDoc = ref<Doc | null>(null)
 const currentVersion = ref<Version>()
 const versions = ref<Version[] | null>([])
+const size = ref(0)
 const content = ref('')
 const displayType = ref<'content' | 'diff'>('content')
 const listType = ref<'all' | 'marked'>('all')
@@ -114,6 +115,11 @@ const xVersions = computed(() => {
   }
 
   return versions.value
+})
+
+const sizeText = computed(() => {
+  const val = Math.round(size.value / 1024)
+  return val > 1024 ? `${Math.round(val / 1024)}M` : `${val}K`
 })
 
 function show (doc?: Doc) {
@@ -133,12 +139,22 @@ function show (doc?: Doc) {
 function hide () {
   currentDoc.value = null
   versions.value = null
+  size.value = 0
 }
 
 async function fetchVersions () {
   try {
     versions.value = null
-    versions.value = (currentDoc.value ? await fetchHistoryList(currentDoc.value) : []).map(({ name: value, comment }) => {
+    size.value = 0
+
+    let list: any[] = []
+    if (currentDoc.value) {
+      const data = await fetchHistoryList(currentDoc.value!)
+      list = data.list
+      size.value = data.size
+    }
+
+    versions.value = list.map(({ name: value, comment }) => {
       const arr = value.split('.')
       const name = arr[0]
       const encrypted = isEncrypted({ type: 'file', path: value })

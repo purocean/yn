@@ -162,7 +162,7 @@ export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
   return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`, { method: 'DELETE' })
 }
 
-export async function fetchHistoryList (file: PathItem): Promise<{name: string, comment: string}[]> {
+export async function fetchHistoryList (file: PathItem): Promise<{size: number, list: {name: string, comment: string}[]}> {
   const { path, repo } = file
   const { data } = await fetchHttp(`/api/history/list?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`)
   return data
