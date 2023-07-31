@@ -641,6 +641,7 @@ If the expression needs to contain [\= or =\], please enter `[\=` or `=\]` to es
 - application version: [= $ctx.version =]
 - current document name: [= $doc.basename =]
 - current time:  [= $ctx.lib.dayjs().format('YYYY-MM-DD HH:mm') =]
+- sequence: [= $seq`Figure-` =] | [= $seq`Figure-` =] | [= $seq`Figure-` =] | [= $seq`Table-` =] | [= $seq`Table-` =]
 - qualifier escape:  [= '[\= =\]' =]
 - Arithmetic:  [= (1 + 2) / 2 =]
 - reference file (support 3 levels of nesting, you can use Front Matter variable defined in the target document):
@@ -680,6 +681,7 @@ variable name | type | description
 `$afterMacro` | `(fn: (src: string) => string) => Result` | Define a macro-replaced callback function that can be used for further processing of the replaced text.
 `$noop` | `() => Result` | no operation, Used for holding text space
 `$doc` | `object` | Current document information
+`$seq` | `(label: string) => Result` | Sequence
 `$doc.basename` | `string` | File name of current document (no suffix)
 `$doc.name` | `string` | File name of current document
 `$doc.path` | `string` | Current document path

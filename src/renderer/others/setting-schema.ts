@@ -316,7 +316,15 @@ const schema: SettingSchema = ({
     },
     'keep-running-after-closing-window': {
       defaultValue: !isMacOS,
-      title: 'T_setting-panel.keep-running-after-closing-window',
+      title: 'T_setting-panel.schema.keep-running-after-closing-window',
+      type: 'boolean',
+      group: 'other',
+      format: 'checkbox',
+      required: true,
+    },
+    'hide-main-window-on-startup': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.hide-main-window-on-startup',
       type: 'boolean',
       group: 'other',
       format: 'checkbox',

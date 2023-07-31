@@ -13,8 +13,12 @@ export default {
         checked = !lineText.match(/^\s*[-+*]\s+\[x\]/)
       }
 
+      const doneStr = ctx.setting.getSetting('editor.todo-with-time', true)
+        ? `[x] ~~${ctx.lib.dayjs().format('YYYY-MM-DD HH:mm')}~~`
+        : '[x]'
+
       const value = checked
-        ? lineText.replace('[ ]', `[x] ~~${ctx.lib.dayjs().format('YYYY-MM-DD HH:mm')}~~`)
+        ? lineText.replace('[ ]', doneStr)
         : lineText.replace(/(\[x\] ~~[\d-: ]+~~|\[x\])/, '[ ]')
 
       if (value !== lineText) {
@@ -67,6 +71,17 @@ export default {
       }
 
       return false
+    })
+
+    ctx.setting.changeSchema(schema => {
+      schema.properties['editor.todo-with-time'] = {
+        defaultValue: true,
+        title: 'T_setting-panel.schema.editor.todo-with-time',
+        type: 'boolean',
+        format: 'checkbox',
+        group: 'editor',
+        required: true,
+      }
     })
   }
 } as Plugin

@@ -300,6 +300,7 @@ export interface BuildInSettings {
   'editor.enable-preview': boolean,
   'editor.font-family': string,
   'editor.complete-emoji': boolean,
+  'editor.todo-with-time': boolean,
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,
@@ -325,6 +326,7 @@ export interface BuildInSettings {
   'extension.registry': RegistryHostname,
   'extension.auto-upgrade': boolean,
   'keep-running-after-closing-window': boolean,
+  'hide-main-window-on-startup': boolean,
   'plantuml-api': string,
 }
 

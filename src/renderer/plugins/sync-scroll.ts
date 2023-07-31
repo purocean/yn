@@ -62,7 +62,7 @@ export default {
 
     function clickScroll (e: MouseEvent) {
       const _target = e.target as HTMLElement
-      if (['button', 'div', 'img', 'input', 'canvas'].includes(_target.tagName.toLowerCase())) {
+      if (['button', 'div', 'img', 'input', 'canvas', 'details', 'summary'].includes(_target.tagName.toLowerCase())) {
         return
       }
 

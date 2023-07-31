@@ -93,7 +93,7 @@ export default {
             h('div', { class: 'p-mcc-language' }, token.info),
             h(
               'div',
-              { class: 'p-mcc-copy-btn copy-text', 'data-text': code, title: ctx.i18n.t('copy-code') },
+              { class: 'p-mcc-copy-btn copy-text', 'data-text': code.replace(/\n$/, ''), title: ctx.i18n.t('copy-code') },
               h(SvgIcon, { name: 'clipboard', style: 'pointer-events: none' })
             ),
           ]))

@@ -348,7 +348,6 @@ const data = {
     'add': 'Add %s',
     'delete-warning': 'Are you sure you want to remove this node?',
     'error-choose-repo-path': 'Please choose repository path',
-    'keep-running-after-closing-window': 'Keep Running after Closing Window',
     'tabs': {
       'repos': 'Repositories',
       'appearance': 'Appearance',
@@ -378,6 +377,7 @@ const data = {
         'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
         'font-family': 'Font Family',
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
+        'todo-with-time': 'Add time when checking todo',
       },
       'render': {
         'md-html': 'Enable HTML',
@@ -431,6 +431,8 @@ const data = {
         'match-placeholder': '%foo%',
         'replace-placeholder': '%foo% -> BAR',
       },
+      'hide-main-window-on-startup': 'Hide Main Window on Startup',
+      'keep-running-after-closing-window': 'Keep Running after Closing Window',
     }
   },
   'quick-open': {
