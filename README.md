@@ -76,16 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.56.4](https://github.com/purocean/yn/releases/tag/v3.56.4) 2023-07-23
+### [v3.57.0](https://github.com/purocean/yn/releases/tag/v3.57.0) 2023-07-31
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-win-x64-3.56.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-mac-arm64-3.56.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-mac-x64-3.56.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-linux-x86_64-3.56.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.56.4/Yank-Note-linux-amd64-3.56.4.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-win-x64-3.57.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-mac-arm64-3.57.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-mac-x64-3.57.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-linux-x86_64-3.57.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-linux-amd64-3.57.0.deb)
 
-1. feat: upgrade Electron to 22.3.17
-2. feat: optimize the popup position of context menu when space is limited
-3. feat: add file-related operations to the context menu of file tabs
-4. feat: Prompt whether to create a new file when switching to a non-existent file
-5. feat(plugin): add `file-tabs.close-tabs` Action
-6. feat(plugin): add extension methods to the context menu of file tabs
+1. feat: introducing the $seq method in the macro to generate sequential numbers like Figure-1, Figure-2.
+2. feat: added configuration to hide the main window upon startup.
+3. feat: implemented a configuration option to automatically add to-dos to the completion time.
+4. feat: implemented size restriction for generated historical version files.
+5. feat: enhanced scrolling behavior for the details tag when clicked.
+6. fix: resolved the issue of extra blank lines at the end of copied code blocks.
 
 [More release notes](https://github.com/purocean/yn/releases)
 
