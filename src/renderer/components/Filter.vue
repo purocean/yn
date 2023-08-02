@@ -10,6 +10,7 @@ import type { Doc } from '@fe/types'
 import { registerAction, removeAction } from '@fe/core/action'
 import { CtrlCmd } from '@fe/core/command'
 import { switchDoc } from '@fe/services/document'
+import { t } from '@fe/services/i18n'
 import XMask from './Mask.vue'
 import QuickOpen from './QuickOpen.vue'
 
@@ -45,12 +46,17 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      registerAction({ name: 'filter.show-quick-open', handler: showQuickOpen, keys: [CtrlCmd, 'p'] })
+      registerAction({
+        name: 'workbench.show-quick-open',
+        description: t('command-desc.workbench_show-quick-open'),
+        handler: showQuickOpen,
+        keys: [CtrlCmd, 'p']
+      })
       registerAction({ name: 'filter.choose-document', handler: chooseDocument })
     })
 
     onUnmounted(() => {
-      removeAction('filter.show-quick-open')
+      removeAction('workbench.show-quick-open')
       removeAction('filter.choose-document')
     })
 

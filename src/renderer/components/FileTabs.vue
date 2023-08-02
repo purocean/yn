@@ -46,7 +46,7 @@ export default defineComponent({
     const current = ref(blankUri)
     const refTabs = ref<InstanceType<typeof Tabs> | null>(null)
     const showFilterBtnShortcuts = [Shift, Alt, 'p']
-    const filterBtnTitle = computed(() => $t.value('tabs.search-tabs') + ' ' + getKeysLabel(showFilterBtnShortcuts))
+    const filterBtnTitle = computed(() => $t.value('tabs.search-tabs') + ' ' + getKeysLabel('file-tabs.search-tabs'))
     const actionBtns = ref<Components.Tabs.ActionBtn[]>([])
 
     const welcomeShortcuts = isElectron ? [CtrlCmd, 'n'] : [CtrlCmd, Alt, 'n']
@@ -195,7 +195,7 @@ export default defineComponent({
         arr.unshift({
           icon: 'plus-regular',
           type: 'normal',
-          title: t('tabs.new-tab') + ' ' + getKeysLabel(welcomeShortcuts),
+          title: t('tabs.new-tab') + ' ' + getKeysLabel('file-tabs.show-welcome'),
           onClick () {
             switchDoc(null)
           },
@@ -205,6 +205,11 @@ export default defineComponent({
       }
 
       actionBtns.value = arr
+    }
+
+    function refreshKeybindings () {
+      refreshActionBtns()
+      ;(filterBtnTitle as any)._dirty = true
     }
 
     function closeTabs (keys: string[]) {
@@ -224,9 +229,11 @@ export default defineComponent({
       registerHook('DOC_DELETED', handleDocDeleted)
       registerHook('DOC_SWITCH_FAILED', handleSwitchFailed)
       registerHook('TREE_NODE_DBLCLICK', handleTreeNodeDblClick)
+      registerHook('COMMAND_KEYBINDING_CHANGED', refreshKeybindings)
 
       registerAction({
         name: 'file-tabs.switch-left',
+        description: t('command-desc.file-tabs_switch-left'),
         keys: [CtrlCmd, Alt, 'ArrowLeft'],
         handler () {
           const prev = findTab(-1)
@@ -236,6 +243,7 @@ export default defineComponent({
 
       registerAction({
         name: 'file-tabs.switch-right',
+        description: t('command-desc.file-tabs_switch-right'),
         handler () {
           const next = findTab(1)
           next && switchTab(next)
@@ -245,12 +253,14 @@ export default defineComponent({
 
       registerAction({
         name: 'file-tabs.close-current',
+        description: t('command-desc.file-tabs_close-current'),
         handler: closeCurrent,
         keys: isElectron ? [CtrlCmd, 'w'] : [CtrlCmd, Alt, 'w']
       })
 
       registerAction({
         name: 'file-tabs.search-tabs',
+        description: t('command-desc.file-tabs_search-tabs'),
         handler () {
           refTabs.value?.showQuickFilter()
         },
@@ -259,6 +269,7 @@ export default defineComponent({
 
       registerAction({
         name: 'file-tabs.show-welcome',
+        description: t('command-desc.file-tabs_show-welcome'),
         handler () {
           switchDoc(null)
         },
@@ -282,6 +293,7 @@ export default defineComponent({
       removeHook('DOC_DELETED', handleDocDeleted)
       removeHook('DOC_SWITCH_FAILED', handleSwitchFailed)
       removeHook('TREE_NODE_DBLCLICK', handleTreeNodeDblClick)
+      removeHook('COMMAND_KEYBINDING_CHANGED', refreshKeybindings)
       removeAction('file-tabs.switch-left')
       removeAction('file-tabs.switch-right')
       removeAction('file-tabs.close-current')

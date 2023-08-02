@@ -11,6 +11,7 @@ import { useToast } from '@fe/support/ui/toast'
 import { sleep } from '@fe/utils'
 import { getColorScheme } from './theme'
 import { getSetting } from './setting'
+import { t } from './i18n'
 import { language as markdownLanguage } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
 import { CustomEditor } from '@fe/types'
 
@@ -449,7 +450,12 @@ export function getIsDefault () {
   return isDefaultEditor
 }
 
-registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
+registerAction({
+  name: 'editor.toggle-wrap',
+  description: t('command-desc.editor_toggle-wrap'),
+  handler: toggleWrap,
+  keys: [Alt, 'w']
+})
 
 registerHook('EDITOR_CURRENT_EDITOR_CHANGE', ({ current }) => {
   isDefaultEditor = !current?.component

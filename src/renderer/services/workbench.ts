@@ -4,6 +4,7 @@ import { getActionHandler, registerAction } from '@fe/core/action'
 import { Alt, Shift } from '@fe/core/command'
 import store from '@fe/support/store'
 import type { Components } from '@fe/types'
+import { t } from './i18n'
 
 /**
  * Toggle outline visible.
@@ -13,7 +14,12 @@ export function toggleOutline (visible?: boolean) {
   store.commit('setShowOutline', typeof visible === 'boolean' ? visible : !store.state.showOutline)
 }
 
-registerAction({ name: 'workbench.toggle-outline', handler: toggleOutline, keys: [Shift, Alt, 'o'] })
+registerAction({
+  name: 'workbench.toggle-outline',
+  description: t('command-desc.workbench_toggle-outline'),
+  handler: toggleOutline,
+  keys: [Shift, Alt, 'o']
+})
 
 const _refreshTabsActionBtns = debounce(() => {
   getActionHandler('file-tabs.refresh-action-btns')()

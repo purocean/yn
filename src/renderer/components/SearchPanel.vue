@@ -143,7 +143,7 @@ const SEARCH_LIMIT_SETTING_KEY = 'search.number-limit'
 
 const logger = getLogger('search-panel')
 const toast = useToast()
-useI18n()
+const { t } = useI18n()
 
 const patternInputRef = ref<HTMLInputElement>()
 const pattern = ref('')
@@ -506,6 +506,7 @@ function markText (text: string, ranges: ISearchRange[]) {
 registerAction({
   name: 'base.find-in-repository',
   keys: [CtrlCmd, Shift, 'f'],
+  description: t('command-desc.base_find-in-repository'),
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
 

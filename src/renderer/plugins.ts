@@ -1,4 +1,5 @@
 import customStyles from '@fe/plugins/custom-styles'
+import customKeybindings from '@fe/plugins/custom-keybindings'
 import electronZoom from '@fe/plugins/electron-zoom'
 import documentHistoryStack from '@fe/plugins/document-history-stack'
 import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
@@ -65,6 +66,7 @@ import watchFileRefresh from '@fe/plugins/watch-file-refresh'
 
 export default [
   customStyles,
+  customKeybindings,
   electronZoom,
   documentHistoryStack,
   fileTreeContextMenu,

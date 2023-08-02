@@ -45,6 +45,7 @@ import { findInRepository } from '@fe/services/base'
 import { getKeysLabel } from '@fe/core/command'
 import type { FileSort, Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
+import { registerHook, removeHook } from '@fe/core/hook'
 
 const store = useStore<AppState>()
 const navigation = ref<Components.ControlCenter.Schema['navigation']>()
@@ -82,15 +83,16 @@ function showSortMenu () {
   ], { mouseX: x => x - 20, mouseY: y => y + 16 })
 }
 
-registerAction({
-  name: 'action-bar.refresh',
-  handler () {
-    navigation.value = ControlCenter.getSchema().navigation
-  }
-})
+function refresh () {
+  navigation.value = ControlCenter.getSchema().navigation
+}
+
+registerAction({ name: 'action-bar.refresh', handler: refresh })
+registerHook('COMMAND_KEYBINDING_CHANGED', refresh)
 
 onBeforeUnmount(() => {
   removeAction('action-bar.refresh')
+  removeHook('COMMAND_KEYBINDING_CHANGED', refresh)
 })
 </script>
 

@@ -12,7 +12,7 @@ export default {
       menus['status-bar-terminal'] = {
         id: 'status-bar-terminal',
         position: 'right',
-        tips: ctx.i18n.t('status-bar.terminal') + ` (${ctx.command.getKeysLabel('layout.toggle-xterm')})`,
+        tips: ctx.i18n.t('status-bar.terminal') + ` ${ctx.command.getKeysLabel('layout.toggle-xterm')}`,
         icon: 'terminal',
         onClick: () => ctx.action.getActionHandler('layout.toggle-xterm')()
       }

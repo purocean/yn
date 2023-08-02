@@ -32,6 +32,7 @@
   <ControlCenter />
   <DocHistory />
   <ExtensionManager />
+  <KeyboardShortcuts />
   <div v-if="presentationExitVisible" class="presentation-exit" title="Exit" @click="exitPresent">
     <svg-icon name="times" />
   </div>
@@ -68,6 +69,7 @@ import ActionBar from '@fe/components/ActionBar.vue'
 import Outline from '@fe/components/Outline.vue'
 import SearchPanel from '@fe/components/SearchPanel.vue'
 import ExtensionManager from '@fe/components/ExtensionManager.vue'
+import KeyboardShortcuts from '@fe/components/KeyboardShortcuts.vue'
 
 export default defineComponent({
   name: 'x-main',
@@ -91,6 +93,7 @@ export default defineComponent({
     Outline,
     SearchPanel,
     ExtensionManager,
+    KeyboardShortcuts,
   },
   setup () {
     const store = useStore<AppState>()

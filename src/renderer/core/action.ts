@@ -15,6 +15,16 @@ export interface Action<T extends string> {
   name: T,
 
   /**
+   * Description
+   */
+  description?: string
+
+  /**
+   * user can config it
+   */
+  configurable?: boolean
+
+  /**
    * Associate shortcuts
    */
   keys?: null | (string | number)[]
@@ -43,6 +53,8 @@ export function registerAction<T extends string> (action: Action<T>) {
   if (action.keys) {
     registerCommand({
       id: action.name,
+      description: action.description,
+      configurable: typeof action.configurable === 'boolean' ? action.configurable : true,
       keys: action.keys,
       handler: getActionHandler(action.name),
       when: action.when,

@@ -58,7 +58,7 @@
               </span>
             </div>
             <div class="item">
-              <a href="javascript:void(0);" @click="getActionHandler('filter.show-quick-open')()">{{$t('more')}}…</a>
+              <a href="javascript:void(0);" @click="getActionHandler('workbench.show-quick-open')()">{{$t('more')}}…</a>
             </div>
           </div>
         </div>

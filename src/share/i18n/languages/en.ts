@@ -348,6 +348,7 @@ const data = {
     'add': 'Add %s',
     'delete-warning': 'Are you sure you want to remove this node?',
     'error-choose-repo-path': 'Please choose repository path',
+    'change-keyboard-shortcuts': 'Change Keyboard Shortcuts',
     'tabs': {
       'repos': 'Repositories',
       'appearance': 'Appearance',
@@ -523,7 +524,7 @@ const data = {
     }
   },
   'control-center': {
-    'control-center': 'Control Center (%s)',
+    'control-center': 'Control Center %s',
     'switch': {
       'side-bar': 'Side Bar %s',
       'editor': 'Editor %s',
@@ -655,6 +656,45 @@ const data = {
     'content': 'The file has been changed on disk, do you want to reload it?',
     'reload': 'Reload',
   },
+  'command-desc': {
+    'base_find-in-repository': 'Find Content in Repository',
+    'control-center_toggle': 'Show / Hide Control Center',
+    'doc_show-history': 'Show Document History',
+    'editor_toggle-wrap': 'Enable / Disable Word Wrap',
+    'file-tabs_close-current': 'Close Current File',
+    'file-tabs_search-tabs': 'Search Tabs',
+    'file-tabs_show-welcome': 'Show Welcome',
+    'file-tabs_switch-left': 'Switch to Left Tab',
+    'file-tabs_switch-right': 'Switch to Right Tab',
+    'layout_toggle-editor': 'Show / Hide Editor',
+    'layout_toggle-side': 'Show / Hide Side Bar',
+    'layout_toggle-view': 'Show / Hide Preview',
+    'layout_toggle-xterm': 'Show / Hide Terminal',
+    'plugin_copy-content_copy-content': 'Show Copy Content Panel',
+    'plugin_document-history-stack_back': 'Back to Previous Document',
+    'plugin_document-history-stack_forward': 'Forward to Next Document',
+    'plugin_editor_focus-editor': 'Focus Editor',
+    'plugin_switch-todo_switch': 'Check / Uncheck Todo (need to select the content in the editor first)',
+    'view_enter-presentation': 'Enter Presentation Mode',
+    'workbench_show-quick-open': 'Show Quick Open',
+    'workbench_toggle-outline': 'Show / Hide Outline',
+  },
+  'keyboard-shortcuts': {
+    'keyboard-shortcuts': 'Keyboard Shortcuts',
+    'command': 'Command',
+    'keybinding': 'Keybinding',
+    'not-set': 'Not Set',
+    'clear': 'Clear',
+    'change': 'Change',
+    'reset': 'Reset',
+    'recorder': {
+      'tip': 'Press desired key combination and then press ENTER, ESC to cancel.',
+      'conflict-commands': '%s exists commands have the same keybinding',
+    },
+    'conflict': 'Conflict',
+    'conflict-title': 'Conflict Keybinding (%s)',
+    'conflict-commands': 'Following commands have the same keybindings:',
+  }
 }
 
 export type BaseLanguage = typeof data

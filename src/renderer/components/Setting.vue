@@ -4,6 +4,7 @@
     <group-tabs :tabs="tabs" v-model="tab" />
     <div v-show="isReady" ref="refEditor" class="editor" @click="onClick" />
     <div class="action">
+      <a href="javascript:void(0)" @click="showKeyboardShortcuts">{{ $t('setting-panel.change-keyboard-shortcuts') }}</a>
       <button class="btn tr" @click="cancel">{{$t('cancel')}}</button>
       <button class="btn primary tr" @click="ok">{{$t('ok')}}</button>
     </div>
@@ -24,6 +25,7 @@ import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
 import GroupTabs from '@fe/components/GroupTabs.vue'
 import { BuildInSettings, SettingGroup } from '@fe/types'
+import { getActionHandler } from '@fe/core/action'
 
 JSONEditor.defaults.language = 'en'
 
@@ -191,9 +193,14 @@ export default defineComponent({
       })
     }
 
+    function showKeyboardShortcuts () {
+      emit('close')
+      getActionHandler('keyboard-shortcuts.show-manager')()
+    }
+
     watch(tab, updateTab)
 
-    return { isReady, tab, tabs, show, refEditor, cancel, ok, onClick }
+    return { isReady, tab, tabs, show, refEditor, cancel, ok, onClick, showKeyboardShortcuts }
   },
 })
 </script>
@@ -314,5 +321,12 @@ export default defineComponent({
   display: flex;
   justify-content: flex-end;
   padding-top: 10px;
+
+  a {
+    font-size: 14px;
+    text-decoration: none;
+    margin-right: auto;
+    align-self: center;
+  }
 }
 </style>

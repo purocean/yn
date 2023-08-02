@@ -192,6 +192,7 @@ export default {
 
     ctx.action.registerAction({
       name: 'plugin.editor.focus-editor',
+      description: ctx.i18n.t('command-desc.plugin_editor_focus-editor'),
       handler: focusEditor,
       keys: [ctx.command.Shift, ctx.command.Alt, 'x']
     })

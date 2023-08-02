@@ -16,7 +16,7 @@ const writeJson = (data: any) => {
   }
 
   fs.ensureFileSync(configFile)
-  fs.writeJsonSync(configFile, data, { spaces: 4 })
+  fs.writeJsonSync(configFile, data, { spaces: 2 })
 }
 
 const readJson = () => {

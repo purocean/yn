@@ -1,15 +1,19 @@
-import { upperFirst } from 'lodash-es'
+import { cloneDeep, orderBy, upperFirst } from 'lodash-es'
 import { getLogger } from '@fe/utils'
-import { isMacOS } from '@fe/support/env'
+import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { FLAG_DISABLE_SHORTCUTS } from '@fe/support/args'
+import type { Command } from '@fe/types'
 import { getActionHandler } from './action'
 import { triggerHook } from './hook'
+import * as ioc from './ioc'
 
 const logger = getLogger('command')
 
 export const Escape = 'Escape'
 export const Ctrl = 'Ctrl'
 export const Meta = 'Meta'
+export const Cmd = 'Cmd'
+export const Win = 'Win'
 export const CtrlCmd = 'CtrlCmd'
 export const Alt = 'Alt'
 export const Space = 'Space'
@@ -21,31 +25,11 @@ export const Tab = 'Tab'
 
 type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 
-export interface Command {
-  /**
-   * Command Id
-   */
-  id: string,
-
-  /**
-   * Associate shortcuts
-   */
-  keys: null | (string | number)[]
-
-  /**
-   * Handler
-   */
-  handler: null | string | (() => void),
-
-  /**
-   * When should execute handler
-   */
-  when?: () => boolean
-}
-
 const commands: { [key: string]: Command } = {}
 
 let keys: Record<string, boolean> = {}
+
+let flagDisableShortcuts = false
 
 function recordKeys (e: KeyboardEvent) {
   if (e.type === 'keydown') {
@@ -54,6 +38,59 @@ function recordKeys (e: KeyboardEvent) {
     // keyup event not fired some times such as in key combination.
     keys = {}
   }
+}
+
+/**
+ * Register a command tapper.
+ * @param tapper
+ */
+export function tapCommand (tapper: (command: Command) => void) {
+  ioc.register('COMMAND_TAPPERS', tapper)
+}
+
+/**
+ * Remove a command tapper.
+ * @param tapper
+ */
+export function removeCommandTapper (tapper: (command: Command) => void) {
+  ioc.remove('COMMAND_TAPPERS', tapper)
+}
+
+/**
+ * Disable shortcuts
+ */
+export function disableShortcuts () {
+  flagDisableShortcuts = true
+}
+
+/**
+ * Enable shortcuts
+ */
+export function enableShortcuts () {
+  flagDisableShortcuts = false
+}
+
+/**
+ * Get all commands
+ * @returns all commands
+ */
+export function getRawCommands (): Command[] {
+  return orderBy(cloneDeep(Object.values(commands)), 'id')
+}
+
+/**
+ * Get a command
+ * @param id
+ * @returns
+ */
+export function getCommand (id: string): Command | undefined {
+  const command = cloneDeep(commands[id])
+  if (command) {
+    const tappers = ioc.get('COMMAND_TAPPERS')
+    tappers.forEach(tap => tap(command))
+  }
+
+  return command
 }
 
 /**
@@ -80,15 +117,22 @@ export function hasCtrlCmd (e: KeyboardEvent | MouseEvent) {
  */
 export function getKeyLabel (key: XKey | string | number) {
   const str = {
-    CtrlCmd: isMacOS ? '⌘' : 'Ctrl',
-    Alt: isMacOS ? '⌥' : 'Alt',
-    Ctrl: isMacOS ? '⌃' : 'Ctrl',
-    Shift: isMacOS ? '⇧' : 'Shift',
-    BracketLeft: '[',
-    BracketRight: ']',
-    Period: '.',
-    Tab: 'Tab',
-  }[key]
+    CMD: '⌘',
+    WIN: 'Win',
+    CTRLCMD: isMacOS ? '⌘' : 'Ctrl',
+    ALT: isMacOS ? '⌥' : 'Alt',
+    CTRL: isMacOS ? '⌃' : 'Ctrl',
+    SHIFT: isMacOS ? '⇧' : 'Shift',
+    BRACKETLEFT: '[',
+    BRACKETRIGHT: ']',
+    PERIOD: '.',
+    TAB: 'Tab',
+    ESCAPE: 'Esc',
+    ARROWUP: '↑',
+    ARROWDOWN: '↓',
+    ARROWLEFT: '←',
+    ARROWRIGHT: '→',
+  }[key.toString().toUpperCase()]
 
   return str || upperFirst(key.toString())
 }
@@ -100,11 +144,15 @@ export function getKeyLabel (key: XKey | string | number) {
  * @returns
  */
 export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number)[]) {
+  if (keys.length === 0) {
+    return false
+  }
+
   const modifiers = { metaKey: false, ctrlKey: false, altKey: false, shiftKey: false }
 
   for (const key of keys) {
-    switch (key) {
-      case CtrlCmd:
+    switch (key.toString().toUpperCase()) {
+      case CtrlCmd.toUpperCase():
         if (isMacOS) {
           modifiers.metaKey = true
         } else {
@@ -112,19 +160,27 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
         }
         if (!hasCtrlCmd(e)) return false
         break
-      case Alt:
+      case Alt.toUpperCase():
         modifiers.altKey = true
         if (!e.altKey) return false
         break
-      case Ctrl:
+      case Ctrl.toUpperCase():
         modifiers.ctrlKey = true
         if (!e.ctrlKey) return false
         break
-      case Meta:
-        modifiers.metaKey = true
-        if (!e.ctrlKey) return false
+      case Meta.toUpperCase():
+        modifiers.metaKey = isOtherOS
+        if (!e.metaKey) return false
         break
-      case Shift:
+      case Cmd.toUpperCase():
+        modifiers.metaKey = isMacOS
+        if (!e.metaKey) return false
+        break
+      case Win.toUpperCase():
+        modifiers.metaKey = isWindows
+        if (!e.metaKey) return false
+        break
+      case Shift.toUpperCase():
         modifiers.shiftKey = true
         if (!e.shiftKey) return false
         break
@@ -132,10 +188,15 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
         // if the event from iframe, it not instance of KeyboardEvent.
         if (e instanceof KeyboardEvent || '' + e === '[object KeyboardEvent]') {
           e = e as KeyboardEvent
+          const eCode = e.code.toUpperCase()
+          const eKey = e.key.toUpperCase()
+          const iKey = key.toString().toUpperCase()
+
           if (
-            key !== e.key &&
-            key.toString().toUpperCase() !== e.code.toUpperCase() &&
-            `Key${key}`.toUpperCase() !== e.code.toUpperCase()
+            iKey !== eKey &&
+            iKey !== eCode &&
+            `KEY${iKey}` !== eCode &&
+            `DIGIT${iKey}` !== eCode
           ) return false
         } else {
           if (key !== e.button) return false
@@ -150,22 +211,13 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
 }
 
 /**
- * Get a command
- * @param id
- * @returns
- */
-export function getCommand (id: string): Command | undefined {
-  return commands[id]
-}
-
-/**
  * Determine whether the event shortcut key combination matches a command.
  * @param e
- * @param id
+ * @param idOrCommand
  * @returns
  */
-export function isCommand (e: KeyboardEvent | MouseEvent, id: string) {
-  const command = getCommand(id)
+export function isCommand (e: KeyboardEvent | MouseEvent, idOrCommand: string | Command) {
+  const command = typeof idOrCommand === 'string' ? getCommand(idOrCommand) : idOrCommand
   return !!(command && command.keys && matchKeys(e, command.keys))
 }
 
@@ -229,15 +281,16 @@ export function removeCommand (id: string) {
 export function keydownHandler (e: KeyboardEvent) {
   recordKeys(e)
 
-  if (FLAG_DISABLE_SHORTCUTS) {
+  if (FLAG_DISABLE_SHORTCUTS || flagDisableShortcuts) {
     logger.warn('shortcut disabled')
     return
   }
 
   triggerHook('GLOBAL_KEYDOWN', e)
 
-  for (const command of Object.values(commands)) {
-    if (isCommand(e, command.id)) {
+  for (const item of getRawCommands()) {
+    const command = getCommand(item.id)
+    if (command && isCommand(e, command)) {
       if (command.when && !command.when()) {
         continue
       }

@@ -362,7 +362,12 @@ watch(currentVersion, async val => {
 watch([content, displayType, refEditor], updateEditor)
 
 onMounted(() => {
-  registerAction({ name: 'doc.show-history', handler: show, keys: [Alt, 'h'] })
+  registerAction({
+    name: 'doc.show-history',
+    handler: show,
+    keys: [Alt, 'h'],
+    description: t('command-desc.doc_show-history'),
+  })
   registerAction({ name: 'doc.hide-history', handler: hide })
 
   registerHook('GLOBAL_RESIZE', layoutEditor)

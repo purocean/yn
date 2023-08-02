@@ -461,12 +461,14 @@ registerHook('VIEW_RENDER_IFRAME_READY', ({ iframe }) => {
 
 registerAction({
   name: 'view.enter-presentation',
+  description: t('command-desc.view_enter-presentation'),
   handler: () => present(true),
   keys: ['F5']
 })
 
 registerAction({
   name: 'view.exit-presentation',
+  configurable: false,
   handler: () => present(false),
   keys: [Escape],
   when: () => {

@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { registerHook, removeHook } from '@fe/core/hook'
 
 let zIndex = 199998
 
@@ -50,6 +51,7 @@ export default defineComponent({
     function keydownHandler (e: KeyboardEvent) {
       if (e.key === 'Escape' && props.show) {
         props.escCloseable && emit('close')
+        e.stopPropagation()
       }
     }
 
@@ -64,12 +66,12 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('keypress', keypressHandler, true)
-      window.addEventListener('keydown', keydownHandler, true)
+      registerHook('GLOBAL_KEYDOWN', keydownHandler)
     })
 
     onBeforeUnmount(() => {
       window.removeEventListener('keypress', keypressHandler, true)
-      window.removeEventListener('keydown', keydownHandler, true)
+      removeHook('GLOBAL_KEYDOWN', keydownHandler)
     })
 
     return { wrapperStyle }

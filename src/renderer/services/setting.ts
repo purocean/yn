@@ -82,7 +82,7 @@ export function getDefaultSetting () {
  * @returns settings
  */
 export async function fetchSettings () {
-  const oldSettings = cloneDeep(getSettings())
+  const oldSettings = getSettings()
   const data = transformSettings(await api.fetchSettings())
 
   Object.assign(settings, {
@@ -140,7 +140,7 @@ export async function writeSettings (settings: Record<string, any>) {
  * @returns settings
  */
 export function getSettings () {
-  return settings
+  return cloneDeep(settings)
 }
 
 /**

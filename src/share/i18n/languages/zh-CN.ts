@@ -349,6 +349,7 @@ const data: BaseLanguage = {
     'add': '添加%s',
     'delete-warning': '确定要删除吗？',
     'error-choose-repo-path': '请选择储存位置',
+    'change-keyboard-shortcuts': '更改键盘快捷键',
     'schema': {
       'repos': {
         'repos': '仓库',
@@ -524,7 +525,7 @@ const data: BaseLanguage = {
     }
   },
   'control-center': {
-    'control-center': '控制中心 (%s)',
+    'control-center': '控制中心 %s',
     'switch': {
       'side-bar': '侧栏 %s',
       'editor': '编辑器 %s',
@@ -655,6 +656,45 @@ const data: BaseLanguage = {
     'title': '文件已更改',
     'content': '文件已被其他应用更改，是否重新加载？',
     'reload': '重载',
+  },
+  'command-desc': {
+    'base_find-in-repository': '在仓库中查找内容',
+    'control-center_toggle': '展示/隐藏控制中心',
+    'doc_show-history': '显示文档历史',
+    'editor_toggle-wrap': '启用/禁用编辑器换行',
+    'file-tabs_close-current': '关闭当前标签页',
+    'file-tabs_search-tabs': '搜索标签页',
+    'file-tabs_show-welcome': '显示欢迎页',
+    'file-tabs_switch-left': '切换到左侧标签页',
+    'file-tabs_switch-right': '切换到右侧标签页',
+    'layout_toggle-editor': '显示/隐藏编辑器',
+    'layout_toggle-side': '显示/隐藏侧栏',
+    'layout_toggle-view': '显示/隐藏预览',
+    'layout_toggle-xterm': '显示/隐藏终端',
+    'plugin_copy-content_copy-content': '显示复制内容面板',
+    'plugin_document-history-stack_back': '返回上一个文档',
+    'plugin_document-history-stack_forward': '前进到下一个文档',
+    'plugin_editor_focus-editor': '聚焦编辑器',
+    'plugin_switch-todo_switch': '勾选/取消勾选待办事项（需在编辑器中选中内容）',
+    'view_enter-presentation': '进入演示模式',
+    'workbench_show-quick-open': '显示快速跳转',
+    'workbench_toggle-outline': '显示/隐藏目录',
+  },
+  'keyboard-shortcuts': {
+    'keyboard-shortcuts': '键盘快捷键',
+    'command': '命令',
+    'keybinding': '快捷键',
+    'not-set': '未设置',
+    'clear': '清除',
+    'change': '更改',
+    'reset': '重置',
+    'recorder': {
+      'tip': '按下想要的键组合，然后按回车，按ESC取消。',
+      'conflict-commands': '存在 %s 个命令使用了相同的快捷键',
+    },
+    'conflict': '冲突',
+    'conflict-title': '冲突的快捷键 (%s)',
+    'conflict-commands': '下面的命令使用了相同的快捷键：',
   },
 }
 
