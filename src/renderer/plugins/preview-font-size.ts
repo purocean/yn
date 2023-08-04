@@ -34,7 +34,7 @@ export default {
             step: 1,
             value: previewFontSize.value,
             onInput: (e: any) => {
-              previewFontSize.value = e.target.value
+              previewFontSize.value = parseInt(e.target.value)
             }
           }),
           h('output', { style: 'margin-left: 8px; font-size: 14px; font-family: "Helvetica Neue"' }, previewFontSize.value),
