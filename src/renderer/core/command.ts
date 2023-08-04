@@ -196,7 +196,8 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
             iKey !== eKey &&
             iKey !== eCode &&
             `KEY${iKey}` !== eCode &&
-            `DIGIT${iKey}` !== eCode
+            `DIGIT${iKey}` !== eCode &&
+            `NUMPAD${iKey}` !== eCode
           ) return false
         } else {
           if (key !== e.button) return false
