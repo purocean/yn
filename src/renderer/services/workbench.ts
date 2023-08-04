@@ -121,6 +121,9 @@ export const ControlCenter = {
     const schema: Components.ControlCenter.Schema = { switch: { items: [] }, navigation: { items: [] } }
     const tappers: Components.ControlCenter.SchemaTapper[] = ioc.get('CONTROL_CENTER_SCHEMA_TAPPERS')
     tappers.forEach(tap => tap(schema))
+    const sortFun = (a: Components.ControlCenter.Item, b: Components.ControlCenter.Item) => (a.order || 256) - (b.order || 256)
+    schema.switch.items = schema.switch.items.sort(sortFun)
+    schema.navigation.items = schema.navigation.items.sort(sortFun)
     return schema
   },
 

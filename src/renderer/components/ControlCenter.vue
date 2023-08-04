@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: () => toggle(false) }">
+    <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: (byClickSelf: any) => !byClickSelf && toggle(false) }">
       <div v-for="(row, category) in schema" :key="category" class="row">
         <template v-for="(item, i) in row?.items" :key="i">
           <div
@@ -11,6 +11,7 @@
           >
             <svg-icon :name="item.icon" />
           </div>
+          <component v-if="item.type === 'custom'" :is="item.component" />
         </template>
       </div>
     </div>

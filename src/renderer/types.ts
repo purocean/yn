@@ -226,6 +226,11 @@ export namespace Components {
       title: string,
       onClick?: () => void,
       showInActionBar?: boolean,
+      order?: number,
+    } | {
+      type: 'custom',
+      component: any,
+      order?: number,
     }
 
     export type SchemaItem = { items: Item[] }

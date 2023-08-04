@@ -16,8 +16,19 @@ export function install (app: App) {
         el.style.outline = 'none'
       }
 
+      let byClickSelf = false
+
+      el.addEventListener('mousedown', () => {
+        byClickSelf = true
+      }, true)
+
+      el.addEventListener('mouseup', () => {
+        byClickSelf = false
+        el.focus()
+      }, true)
+
       el.addEventListener('blur', () => {
-        onClose()
+        onClose(byClickSelf)
       })
 
       el.addEventListener('keydown', (e) => {
