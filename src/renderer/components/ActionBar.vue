@@ -21,7 +21,7 @@
     <div class="btns" v-if="navigation">
       <div v-for="(item, i) in navigation.items" :key="i">
         <div
-          v-if="item.showInActionBar && item.type === 'btn'"
+          v-if="item.type === 'btn' && item.showInActionBar"
           :class="{ btn: true, flat: item.flat, disabled: item.disabled, checked: item.checked }"
           :title="item.title"
           @click.stop="item.onClick"
