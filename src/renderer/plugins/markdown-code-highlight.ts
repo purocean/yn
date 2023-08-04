@@ -187,26 +187,26 @@ function wrap (code: string, lang: string, lineNumber: boolean) {
   return html
 }
 
-function getLangCodeFromExtension (extension: string) {
-  const extensionMap: Record<string, string> = {
-    vue: 'markup',
-    html: 'markup',
-    md: 'markdown',
-    rb: 'ruby',
-    ts: 'typescript',
-    py: 'python',
-    sh: 'bash',
-    yml: 'yaml',
-    styl: 'stylus',
-    kt: 'kotlin',
-    rs: 'rust',
-    node: 'js',
-    asm: 'nasm',
-    s: 'nasm',
-    assembly: 'nasm',
-    masm: 'nasm',
-  }
+const extensionMap: Record<string, string> = {
+  vue: 'markup',
+  html: 'markup',
+  md: 'markdown',
+  rb: 'ruby',
+  ts: 'typescript',
+  py: 'python',
+  sh: 'bash',
+  yml: 'yaml',
+  styl: 'stylus',
+  kt: 'kotlin',
+  rs: 'rust',
+  node: 'js',
+  asm: 'nasm',
+  s: 'nasm',
+  assembly: 'nasm',
+  masm: 'nasm',
+}
 
+function getLangCodeFromExtension (extension: string) {
   return extensionMap[extension] || extension
 }
 
@@ -236,6 +236,16 @@ export default {
     addCustomStyles(ctx)
     ctx.markdown.registerPlugin(md => {
       md.options.highlight = (str, lang) => highlight(str, lang, true)
+    })
+
+    let supportedLanguages: string
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      if (!supportedLanguages) {
+        supportedLanguages = Object.keys(prism.languages).concat(Object.keys(extensionMap)).sort().join(',').replace('DFS,', '')
+      }
+
+      items.push({ label: '/ ``` Code', insertText: '```${1|' + supportedLanguages + '|}\n$2\n```\n' })
     })
 
     const exportStyles = `
