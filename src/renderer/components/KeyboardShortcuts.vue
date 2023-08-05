@@ -77,7 +77,7 @@ import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { useModal } from '@fe/support/ui/modal'
 import { getSetting, setSetting } from '@fe/services/setting'
 import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
-import { whenEditorReady } from '@fe/services/editor'
+import { lookupKeybindingKeys, whenEditorReady } from '@fe/services/editor'
 import { getLogger } from '@fe/utils'
 import type { Command, Keybinding } from '@fe/types'
 
@@ -202,19 +202,7 @@ async function refresh () {
   } else if (tab.value === 'editor') {
     const { editor } = await whenEditorReady()
     commands.value = (editor as any).getActions().map((x: any) => {
-      const keybinding = (editor as any)._standaloneKeybindingService.lookupKeybinding(x.id)
-
-      let keys: string[] | null = null
-
-      if (keybinding) {
-        const electronAccelerator = keybinding.getElectronAccelerator()
-        const userSettingsLabel = keybinding.getUserSettingsLabel()
-        if (electronAccelerator) {
-          keys = electronAccelerator.split('+')
-        } else {
-          keys = userSettingsLabel?.split(' ')
-        }
-      }
+      const keys = lookupKeybindingKeys(x.id)
 
       return {
         type: 'editor' as Tab,

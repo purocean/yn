@@ -224,7 +224,7 @@ export default {
             when = originalKeybinding.when?.serialize()
             const originMonacoKeys = encodeMonacoChords(monaco, originalKeybinding.resolvedKeybinding._chords)
             // remove original keybinding
-            newKeybindings.push({ keybinding: originMonacoKeys, command: null, when, })
+            newKeybindings.push({ keybinding: originMonacoKeys, command: `-${keybinding.command}`, when })
           }
 
           const monacoKeys = resolveKeys(monaco, keybinding.keys)

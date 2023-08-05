@@ -165,6 +165,30 @@ export function whenEditorReady (): Promise<{ editor: typeof editor, monaco: typ
   })
 }
 
+export function lookupKeybindingKeys (commandId: string): string[] | null {
+  if (!editor) {
+    return null
+  }
+
+  const service = (editor as any)._standaloneKeybindingService
+
+  const keybinding = service.lookupKeybinding(commandId) || service.lookupKeybinding(`vs.editor.ICodeEditor:1:${commandId}`)
+
+  let keys: string[] | null = null
+
+  if (keybinding) {
+    const electronAccelerator = keybinding.getElectronAccelerator()
+    const userSettingsLabel = keybinding.getUserSettingsLabel()
+    if (electronAccelerator) {
+      keys = electronAccelerator.split('+')
+    } else {
+      keys = userSettingsLabel?.split(' ')
+    }
+  }
+
+  return keys
+}
+
 /**
  * Insert text at current cursor.
  * @param text

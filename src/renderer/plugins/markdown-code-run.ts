@@ -271,6 +271,7 @@ export default {
         label: ctx.i18n.t('code-run.run-in-xterm'),
         contextMenuGroupId: 'other',
         precondition: 'editorHasSelection',
+        keybindingContext: 'editorHasSelection',
         keybindings: [
           monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KeyR
         ],

@@ -454,6 +454,8 @@ const data: BaseLanguage = {
       'insert-date': '插入当前日期',
       'insert-time': '插入当前时间',
       'reveal-line-in-preview': '在预览中聚焦',
+      'force-insert-new-line': '强制插入新行',
+      'force-insert-indent': '强制插入缩进',
     },
     'switch-editor': '切换编辑器',
     'default-editor': '默认编辑器',
