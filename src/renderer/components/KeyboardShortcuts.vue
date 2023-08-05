@@ -16,8 +16,8 @@
               <th></th>
             </tr>
           </thead>
-          <tbody v-if="list.length">
-            <tr v-for="(item, i) in list" :key="item.command" class="item">
+          <tbody v-if="items.length">
+            <tr v-for="(item, i) in items" :key="item.command" class="item">
               <td><code>{{ i + 1 }}</code></td>
               <td :class="{unavailable: item.unavailable}">
                 <div v-if="item.description">{{ item.description }}</div>
@@ -77,7 +77,7 @@ import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { useModal } from '@fe/support/ui/modal'
 import { getSetting, setSetting } from '@fe/services/setting'
 import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
-import { getEditor, whenEditorReady } from '@fe/services/editor'
+import { whenEditorReady } from '@fe/services/editor'
 import { getLogger } from '@fe/utils'
 import type { Command, Keybinding } from '@fe/types'
 
@@ -88,6 +88,7 @@ type Item = {
   command: string,
   description?: string,
   keys: string[],
+  keybinding: string,
   modified: boolean,
   unavailable?: boolean,
 }
@@ -131,6 +132,7 @@ const list = computed<Item[]>(() => {
       command: item.id,
       description: item.description,
       keys: (keys || []).map(getKeyLabel),
+      keybinding: keys?.join('+') || '',
       modified,
     }
   })
@@ -145,10 +147,15 @@ const list = computed<Item[]>(() => {
       command: item.command,
       description: '不可用',
       keys: (item.keys?.split('+') || []).map(getKeyLabel),
+      keybinding: item.keys || '',
       modified: true,
       unavailable: true,
     }
-  })).filter(x => {
+  }))
+})
+
+const items = computed(() => {
+  return list.value.filter(x => {
     const str = filterStr.value.trim().toLowerCase()
     if (!str) {
       return true
@@ -159,15 +166,25 @@ const list = computed<Item[]>(() => {
       return x.modified
     }
 
+    if (str === '#') {
+      return getConflictCommands(x.keys).length > 1
+    }
+
     return x.command.toLowerCase().includes(filterStr.value) ||
-      (x.description || '').toLowerCase().includes(filterStr.value)
+      (x.description || '').toLowerCase().includes(filterStr.value) ||
+      x.keybinding.toLowerCase().includes(filterStr.value)
   })
 })
 
 function getConflictCommands (keys: (number | string)[]) {
-  const keyLabels = getKeysLabel(keys)
   const commands = list.value.filter(x => !x.unavailable)
 
+  // do not check Enter, Esc conflict for editor commands
+  if (tab.value === 'editor' && keys.length === 1 && ['Enter', 'Esc'].includes(keys[0] as any)) {
+    return []
+  }
+
+  const keyLabels = getKeysLabel(keys)
   if (!keyLabels) {
     return []
   }
