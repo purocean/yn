@@ -4,8 +4,9 @@
       <div class="title-bar">
         <h3>{{ $t('keyboard-shortcuts.keyboard-shortcuts') }}</h3>
         <group-tabs :tabs="tabs" v-model="tab" />
+        <input v-model="filterStr" :placeholder="$t('keyboard-shortcuts.search')" />
       </div>
-      <div v-if="tab !== 'editor'" class="list">
+      <div class="list">
         <table cellspacing="0">
           <thead>
             <tr>
@@ -15,7 +16,7 @@
               <th></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="list.length">
             <tr v-for="(item, i) in list" :key="item.command" class="item">
               <td><code>{{ i + 1 }}</code></td>
               <td :class="{unavailable: item.unavailable}">
@@ -40,10 +41,14 @@
               </td>
             </tr>
           </tbody>
+          <tbody v-else>
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--g-color-50)">
+                {{ $t('keyboard-shortcuts.empty') }}
+              </td>
+            </tr>
+          </tbody>
         </table>
-      </div>
-      <div v-else class="list" style="text-align: center;">
-        Coming soon...
       </div>
       <div class="action">
         <button class="btn primary tr" @click="hide">{{$t('close')}}</button>
@@ -64,19 +69,20 @@
 
 <script lang="ts" setup>
 import { keyBy } from 'lodash-es'
-import { computed, h, onUnmounted, ref, shallowRef, watchEffect } from 'vue'
+import { computed, h, onUnmounted, ref, shallowRef, watch, watchEffect } from 'vue'
+import { getDefaultApplicationAccelerators } from '@share/misc'
 import { registerAction, removeAction } from '@fe/core/action'
 import { Alt, Cmd, Ctrl, Meta, Shift, Win, disableShortcuts, enableShortcuts, getKeyLabel, getKeysLabel, getRawCommands } from '@fe/core/command'
 import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { useModal } from '@fe/support/ui/modal'
 import { getSetting, setSetting } from '@fe/services/setting'
 import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
+import { getEditor, whenEditorReady } from '@fe/services/editor'
 import { getLogger } from '@fe/utils'
 import type { Command, Keybinding } from '@fe/types'
 
 import XMask from '@fe/components/Mask.vue'
 import GroupTabs from '@fe/components/GroupTabs.vue'
-import { getDefaultApplicationAccelerators } from '@share/misc'
 
 type Item = {
   command: string,
@@ -102,6 +108,7 @@ const logger = getLogger('keyboard-shortcuts')
 const tab = ref<Tab>('workbench')
 const managerVisible = ref(false)
 const currentCommand = ref('')
+const filterStr = ref('')
 const shortcuts = shallowRef<string[] | null>(null)
 const commands = shallowRef<XCommand[]>([])
 const keybindings = shallowRef<Keybinding[]>([])
@@ -141,7 +148,20 @@ const list = computed<Item[]>(() => {
       modified: true,
       unavailable: true,
     }
-  }))
+  })).filter(x => {
+    const str = filterStr.value.trim().toLowerCase()
+    if (!str) {
+      return true
+    }
+
+    // show all modified commands
+    if (str === '*') {
+      return x.modified
+    }
+
+    return x.command.toLowerCase().includes(filterStr.value) ||
+      (x.description || '').toLowerCase().includes(filterStr.value)
+  })
 })
 
 function getConflictCommands (keys: (number | string)[]) {
@@ -159,23 +179,55 @@ const conflictCommands = computed(() => {
   return getConflictCommands(shortcuts.value || [])
 })
 
-function refresh () {
-  commands.value = [
-    ...getRawCommands().filter(x => x.configurable).map(x => ({ ...x, type: 'workbench' as Tab })),
-    ...getDefaultApplicationAccelerators(isMacOS ? 'darwin' : isWindows ? 'win32' : 'linux', getCurrentLanguage())
+async function refresh () {
+  if (tab.value === 'workbench') {
+    commands.value = getRawCommands().filter(x => x.configurable).map(x => ({ ...x, type: 'workbench' as Tab }))
+  } else if (tab.value === 'editor') {
+    const { editor } = await whenEditorReady()
+    commands.value = (editor as any).getActions().map((x: any) => {
+      const keybinding = (editor as any)._standaloneKeybindingService.lookupKeybinding(x.id)
+
+      let keys: string[] | null = null
+
+      if (keybinding) {
+        const electronAccelerator = keybinding.getElectronAccelerator()
+        const userSettingsLabel = keybinding.getUserSettingsLabel()
+        if (electronAccelerator) {
+          keys = electronAccelerator.split('+')
+        } else {
+          keys = userSettingsLabel?.split(' ')
+        }
+      }
+
+      return {
+        type: 'editor' as Tab,
+        id: x.id,
+        description: x.label,
+        keys,
+        handler: null,
+      }
+    })
+  } else if (tab.value === 'application') {
+    commands.value = getDefaultApplicationAccelerators(isMacOS ? 'darwin' : isWindows ? 'win32' : 'linux', getCurrentLanguage())
       .map(x => ({
         type: 'application' as Tab,
         id: x.command,
         keys: x.accelerator.split('+'),
         description: x.description,
         handler: null,
-      })),
-  ]
+      }))
+  }
 
   keybindings.value = getSetting('keybindings', [])
 }
 
+watch(tab, refresh)
+watch(tab, () => {
+  filterStr.value = ''
+})
+
 function show () {
+  filterStr.value = ''
   managerVisible.value = true
   refresh()
 }
@@ -259,8 +311,6 @@ function recordKey (e: KeyboardEvent) {
       val = val.slice(3)
     } else if (val.startsWith('Digit')) {
       val = val.slice(5)
-    } else if (val.startsWith('Numpad')) {
-      val = val.slice(6)
     } else if (val.startsWith('Arrow')) {
       val = val.slice(5)
     } else if (val === 'Equal') { // avoid conflict with '+'
@@ -330,6 +380,13 @@ onUnmounted(() => {
     margin-right: 3em;
     position: absolute;
     left: 0;
+  }
+
+  input {
+    position: absolute;
+    right: 0;
+    max-width: 200px;
+    font-size: 14px !important;
   }
 
   .tabs {
@@ -415,6 +472,10 @@ table {
     color: var(--g-color-50);
     font-style: italic;
     font-size: 14px;
+  }
+
+  .desc {
+    word-break: break-all;
   }
 
   a {

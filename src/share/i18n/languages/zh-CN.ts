@@ -688,6 +688,8 @@ const data: BaseLanguage = {
     'clear': '清除',
     'change': '更改',
     'reset': '重置',
+    'search': '键入以搜索，“*”搜索已更改',
+    'empty': '无结果',
     'recorder': {
       'tip': '按下想要的键组合，然后按回车，按ESC取消。',
       'conflict-commands': '存在 %s 个命令使用了相同的快捷键',

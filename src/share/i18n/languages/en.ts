@@ -687,6 +687,8 @@ const data = {
     'clear': 'Clear',
     'change': 'Change',
     'reset': 'Reset',
+    'search': 'Search, "*" to show modified',
+    'empty': 'No Result',
     'recorder': {
       'tip': 'Press desired key combination and then press ENTER, ESC to cancel.',
       'conflict-commands': '%s exists commands have the same keybinding',
