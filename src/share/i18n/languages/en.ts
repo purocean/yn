@@ -678,6 +678,9 @@ const data = {
     'view_enter-presentation': 'Enter Presentation Mode',
     'workbench_show-quick-open': 'Show Quick Open',
     'workbench_toggle-outline': 'Show / Hide Outline',
+    'plugin_electron-zoom_zoom-in': 'Zoom In',
+    'plugin_electron-zoom_zoom-out': 'Zoom Out',
+    'plugin_electron-zoom_zoom-reset': 'Reset Zoom',
   },
   'keyboard-shortcuts': {
     'keyboard-shortcuts': 'Keyboard Shortcuts',

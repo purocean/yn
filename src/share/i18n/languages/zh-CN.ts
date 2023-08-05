@@ -679,6 +679,9 @@ const data: BaseLanguage = {
     'view_enter-presentation': '进入演示模式',
     'workbench_show-quick-open': '显示快速跳转',
     'workbench_toggle-outline': '显示/隐藏目录',
+    'plugin_electron-zoom_zoom-in': '放大',
+    'plugin_electron-zoom_zoom-out': '缩小',
+    'plugin_electron-zoom_zoom-reset': '重置缩放',
   },
   'keyboard-shortcuts': {
     'keyboard-shortcuts': '键盘快捷键',

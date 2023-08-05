@@ -32,18 +32,21 @@ export default {
       ctx.action.registerAction({
         name: zoomInId,
         keys: [ctx.command.CtrlCmd, '='],
+        description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-in'),
         handler: () => changeZoomFactor(true)
       })
 
       ctx.action.registerAction({
         name: zoomOutId,
         keys: [ctx.command.CtrlCmd, '-'],
+        description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-out'),
         handler: () => changeZoomFactor(false)
       })
 
       ctx.action.registerAction({
         name: zoomResetId,
         keys: [ctx.command.CtrlCmd, '0'],
+        description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-reset'),
         handler: () => setZoomFactor(1)
       })
 
