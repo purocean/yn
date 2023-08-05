@@ -1,3 +1,5 @@
+import { Language, translate } from './i18n'
+
 export const MARKDOWN_FILE_EXT = '.md'
 export const ENCRYPTED_MARKDOWN_FILE_EXT = '.c.md'
 
@@ -24,4 +26,19 @@ export function isMarkdownFile (path: string) {
 
 export function isEncryptedMarkdownFile (path: string) {
   return path.endsWith(ENCRYPTED_MARKDOWN_FILE_EXT)
+}
+
+export function getDefaultApplicationAccelerators (platform: NodeJS.Platform, lang: Language = 'en') {
+  return [
+    {
+      command: 'show-main-window',
+      accelerator: platform === 'darwin' ? 'Shift+Alt+M' : 'Meta+N',
+      description: translate(lang, 'app.tray.open-main-window')
+    },
+    {
+      command: 'open-in-browser',
+      accelerator: 'Meta+Shift+B',
+      description: translate(lang, 'app.tray.open-in-browser')
+    }
+  ] as {command: 'show-main-window' | 'open-in-browser', accelerator: string, description: string}[]
 }

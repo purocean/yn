@@ -5,7 +5,7 @@
         <h3>{{ $t('keyboard-shortcuts.keyboard-shortcuts') }}</h3>
         <group-tabs :tabs="tabs" v-model="tab" />
       </div>
-      <div v-if="tab === 'workbench'" class="list">
+      <div v-if="tab !== 'editor'" class="list">
         <table cellspacing="0">
           <thead>
             <tr>
@@ -70,12 +70,13 @@ import { Alt, Cmd, Ctrl, Meta, Shift, Win, disableShortcuts, enableShortcuts, ge
 import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { useModal } from '@fe/support/ui/modal'
 import { getSetting, setSetting } from '@fe/services/setting'
-import { useI18n } from '@fe/services/i18n'
+import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
 import type { Command, Keybinding } from '@fe/types'
 
 import XMask from '@fe/components/Mask.vue'
 import GroupTabs from '@fe/components/GroupTabs.vue'
+import { getDefaultApplicationAccelerators } from '@share/misc'
 
 type Item = {
   command: string,
@@ -86,6 +87,8 @@ type Item = {
 }
 
 type Tab = 'workbench' | 'editor' | 'application'
+
+type XCommand = Command & { type: Tab }
 
 const tabs: { label: string, value: Tab }[] = [
   { label: '工作台', value: 'workbench' },
@@ -100,7 +103,7 @@ const tab = ref<Tab>('workbench')
 const managerVisible = ref(false)
 const currentCommand = ref('')
 const shortcuts = shallowRef<string[] | null>(null)
-const commands = shallowRef<Command[]>([])
+const commands = shallowRef<XCommand[]>([])
 const keybindings = shallowRef<Keybinding[]>([])
 
 const currentTypeKeybindings = computed(() => {
@@ -109,8 +112,11 @@ const currentTypeKeybindings = computed(() => {
 
 const list = computed<Item[]>(() => {
   const bindings = keyBy(currentTypeKeybindings.value, 'command')
+  const _tab = tab.value
+  const _commands = commands.value
+  const _currentTypeKeybindings = currentTypeKeybindings.value
 
-  const data = commands.value.map((item) => {
+  const data = _commands.filter(x => x.type === _tab).map((item) => {
     const modified = !!bindings[item.id]
     const keys = modified ? (bindings[item.id].keys?.split('+') || []) || item.keys : item.keys
 
@@ -125,7 +131,7 @@ const list = computed<Item[]>(() => {
   // add unavailable commands
 
   const availableIds = data.map(x => x.command)
-  const unavailable = keybindings.value.filter(x => !availableIds.includes(x.command))
+  const unavailable = _currentTypeKeybindings.filter(x => !availableIds.includes(x.command))
 
   return data.concat(unavailable.map((item) => {
     return {
@@ -154,7 +160,18 @@ const conflictCommands = computed(() => {
 })
 
 function refresh () {
-  commands.value = getRawCommands().filter(x => x.configurable)
+  commands.value = [
+    ...getRawCommands().filter(x => x.configurable).map(x => ({ ...x, type: 'workbench' as Tab })),
+    ...getDefaultApplicationAccelerators(isMacOS ? 'darwin' : isWindows ? 'win32' : 'linux', getCurrentLanguage())
+      .map(x => ({
+        type: 'application' as Tab,
+        id: x.command,
+        keys: x.accelerator.split('+'),
+        description: x.description,
+        handler: null,
+      })),
+  ]
+
   keybindings.value = getSetting('keybindings', [])
 }
 
@@ -244,6 +261,8 @@ function recordKey (e: KeyboardEvent) {
       val = val.slice(5)
     } else if (val.startsWith('Numpad')) {
       val = val.slice(6)
+    } else if (val.startsWith('Arrow')) {
+      val = val.slice(5)
     } else if (val === 'Equal') { // avoid conflict with '+'
       val = '='
     } else if ('`-=[]\\;\',./{}|:"<>?~!@#$%^&*()_'.includes(e.key)) {

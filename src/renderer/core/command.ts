@@ -123,6 +123,7 @@ export function getKeyLabel (key: XKey | string | number) {
     ALT: isMacOS ? '⌥' : 'Alt',
     CTRL: isMacOS ? '⌃' : 'Ctrl',
     SHIFT: isMacOS ? '⇧' : 'Shift',
+    META: isMacOS ? '⌘' : isWindows ? 'Win' : 'Meta',
     BRACKETLEFT: '[',
     BRACKETRIGHT: ']',
     PERIOD: '.',
@@ -132,6 +133,10 @@ export function getKeyLabel (key: XKey | string | number) {
     ARROWDOWN: '↓',
     ARROWLEFT: '←',
     ARROWRIGHT: '→',
+    UP: '↑',
+    DOWN: '↓',
+    LEFT: '←',
+    RIGHT: '→',
   }[key.toString().toUpperCase()]
 
   return str || upperFirst(key.toString())
@@ -197,7 +202,8 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
             iKey !== eCode &&
             `KEY${iKey}` !== eCode &&
             `DIGIT${iKey}` !== eCode &&
-            `NUMPAD${iKey}` !== eCode
+            `NUMPAD${iKey}` !== eCode &&
+            `ARROW${iKey}` !== eCode
           ) return false
         } else {
           if (key !== e.button) return false
