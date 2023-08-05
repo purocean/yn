@@ -15,7 +15,7 @@ function isImageFile (doc?: Doc | null) {
     return false
   }
 
-  if (doc.name.toLocaleLowerCase().endsWith('.svg')) {
+  if (doc.name.toLowerCase().endsWith('.svg')) {
     return true
   }
 

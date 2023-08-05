@@ -13,7 +13,7 @@ const getShell = () => {
   // use full path
   // TODO better way.
   if (os.platform() === 'win32') {
-    if (shell.toLocaleLowerCase() === 'cmd.exe' || shell.toLocaleLowerCase() === 'wsl.exe') {
+    if (shell.toLowerCase() === 'cmd.exe' || shell.toLowerCase() === 'wsl.exe') {
       return `C:\\Windows\\System32\\${shell}`
     }
   }
