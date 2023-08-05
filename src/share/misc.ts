@@ -32,7 +32,7 @@ export function getDefaultApplicationAccelerators (platform: NodeJS.Platform, la
   return [
     {
       command: 'show-main-window',
-      accelerator: platform === 'darwin' ? 'Shift+Alt+M' : 'Meta+N',
+      accelerator: platform === 'darwin' ? 'Shift+Alt+M' : 'Meta+Alt+N',
       description: translate(lang, 'app.tray.open-main-window')
     },
     {
