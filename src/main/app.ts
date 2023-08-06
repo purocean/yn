@@ -31,6 +31,7 @@ const isLinux = os.platform() === 'linux'
 
 let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
 let skipBeforeUnloadCheck = false
+let mainWindowIsReady = false
 
 const trayEnabled = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || config.get('server.port', 3044)
@@ -234,11 +235,12 @@ const createWindow = () => {
   win && win.loadURL(getUrl())
   restoreWindowBounds()
   win.on('ready-to-show', () => {
-    if (config.get('hide-main-window-on-startup', false)) {
+    if (!mainWindowIsReady && config.get('hide-main-window-on-startup', false)) {
       hideWindow()
     } else {
       win!.show()
     }
+    mainWindowIsReady = true
     skipBeforeUnloadCheck = false
   })
 
