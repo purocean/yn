@@ -90,7 +90,7 @@
         </div>
         <div>
           <div>
-            <h4>{{$t('premium.activation.info')}}</h4>
+            <h4 @dblclick="copyLicenseId" :title="info.licenseId">{{$t('premium.activation.info')}}</h4>
             <ul>
               <li>{{$t('premium.activation.name', info.name)}}</li>
               <li>{{$t('premium.activation.email', info.email)}}</li>
@@ -151,6 +151,7 @@ import XMask from './Mask.vue'
 import SvgIcon from './SvgIcon.vue'
 import GroupTabs from './GroupTabs.vue'
 import { HOMEPAGE_URL } from '@share/misc'
+import { copyText } from '@fe/utils'
 
 const GET_LICENSE_URL = HOMEPAGE_URL + '/pricing'
 const RENEWAL_LICENSE_URL = HOMEPAGE_URL + '/renewal'
@@ -300,6 +301,13 @@ export default defineComponent({
       openWindow(RENEWAL_LICENSE_URL + '?uuid=' + info.value?.licenseId)
     }
 
+    function copyLicenseId () {
+      if (info.value) {
+        copyText(info.value.licenseId)
+        useToast().show('info', t('copied'))
+      }
+    }
+
     refreshStatus()
 
     registerAction({ name: 'premium.show', handler: showPurchase })
@@ -330,6 +338,7 @@ export default defineComponent({
       tokenIsStaleSoon,
       refreshStatus,
       renewal,
+      copyLicenseId,
     }
   },
 })

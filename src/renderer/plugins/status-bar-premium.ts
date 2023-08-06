@@ -1,11 +1,13 @@
 import type { Plugin } from '@fe/context'
 
+const id = 'status-bar-confetti'
+
 export default {
-  name: 'status-bar-confetti',
+  name: id,
   register: ctx => {
     ctx.statusBar.tapMenus(menus => {
-      menus['status-bar-confetti'] = {
-        id: 'status-bar-confetti',
+      menus[id] = {
+        id,
         position: 'right',
         icon: `<svg v-if="purchased" @click="doConfetti" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" viewBox="0 0 512 512" xml:space="preserve">
           <path style="fill:currentColor;" d="M367.178,314.667h-58.358c-9.223,0-16.697-7.474-16.697-16.697c0-9.223,7.474-16.697,16.697-16.697  h58.358c9.223,0,16.697,7.474,16.697,16.697C383.875,307.194,376.401,314.667,367.178,314.667z"/>
@@ -49,5 +51,15 @@ export default {
         list: []
       }
     })
+
+    ctx.theme.addStyles(`
+      html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="status-bar-confetti"] {
+        background: rgb(0 122 204 / 47%);
+      }
+
+      html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="status-bar-confetti"]:hover {
+        background: rgb(0 122 204 / 60%);
+      }
+    `)
   }
 } as Plugin

@@ -162,6 +162,7 @@ store.watch(() => store.state.currentFile, (val) => {
     document.documentElement.setAttribute('current-file-name', val?.name || '')
     document.documentElement.setAttribute('current-file-path', val?.path || '')
     document.documentElement.setAttribute('electron', String(isElectron))
+    document.documentElement.setAttribute('premium', String(getPurchased()))
   }
 
   view.getRenderIframe().then(iframe => {

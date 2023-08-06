@@ -12,9 +12,11 @@ const writeJson = (data: any) => {
   // save license to store
   if (data.license) {
     store.set('license', data.license)
-    delete data.license
+  } else {
+    store.delete('license')
   }
 
+  delete data.license
   fs.ensureFileSync(configFile)
   fs.writeJsonSync(configFile, data, { spaces: 2 })
 }
@@ -25,9 +27,7 @@ const readJson = () => {
 
     // get license from store
     const license = store.get('license', '')
-    if (license) {
-      result.license = license
-    }
+    result.license = license || result.license || ''
 
     return result
   } catch (error) {
