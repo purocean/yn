@@ -55,10 +55,23 @@ export default {
     ctx.theme.addStyles(`
       html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="status-bar-confetti"] {
         background: rgb(0 122 204 / 47%);
+        animation: blink-status-bar-confetti 1s 7;
       }
 
       html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="status-bar-confetti"]:hover {
-        background: rgb(0 122 204 / 60%);
+        background: rgb(0 122 204 / 100%);
+      }
+
+      @keyframes blink-status-bar-confetti {
+        0% {
+          background: rgb(0 122 204 / 47%);
+        }
+        50% {
+          background: rgb(0 122 204 / 100%);
+        }
+        100% {
+          background: rgb(0 122 204 / 47%);
+        }
       }
     `)
   }

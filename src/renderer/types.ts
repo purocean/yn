@@ -492,6 +492,7 @@ export type BuildInHookTypes = {
     type: 'before-render',
     payload: { latex: string, options: any }
   },
+  PREMIUM_STATUS_CHANGED: never
 }
 
 export type Previewer = {

@@ -68,6 +68,10 @@ function changeLanguage ({ settings }: { settings: Partial<BuildInSettings> }) {
   }
 }
 
+function syncDomPremiumFlag () {
+  document.documentElement.setAttribute('premium', String(getPurchased()))
+}
+
 function switchDefaultPreviewer () {
   const attributes: FrontMatterAttrs | undefined = view.getRenderEnv()?.attributes
   if (attributes?.defaultPreviewer && typeof attributes.defaultPreviewer === 'string') {
@@ -77,6 +81,8 @@ function switchDefaultPreviewer () {
   }
 }
 
+registerHook('STARTUP', syncDomPremiumFlag)
+registerHook('PREMIUM_STATUS_CHANGED', syncDomPremiumFlag)
 registerHook('I18N_CHANGE_LANGUAGE', view.refresh)
 registerHook('SETTING_FETCHED', changeLanguage)
 registerHook('SETTING_BEFORE_WRITE', changeLanguage)
@@ -162,7 +168,6 @@ store.watch(() => store.state.currentFile, (val) => {
     document.documentElement.setAttribute('current-file-name', val?.name || '')
     document.documentElement.setAttribute('current-file-path', val?.path || '')
     document.documentElement.setAttribute('electron', String(isElectron))
-    document.documentElement.setAttribute('premium', String(getPurchased()))
   }
 
   view.getRenderIframe().then(iframe => {
