@@ -152,9 +152,8 @@ export function getSettings () {
 export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T]): BuildInSettings[T]
 export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal?: null): BuildInSettings[T] | null
 export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T] | null = null): BuildInSettings[T] | null {
-  const settings = getSettings()
   if (typeof settings[key] !== 'undefined') {
-    return settings[key]
+    return cloneDeep(settings[key])
   }
 
   return defaultVal
