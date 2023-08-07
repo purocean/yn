@@ -690,6 +690,7 @@ const data = {
     'keyboard-shortcuts_show-manager': 'Show Keyboard Shortcuts',
     'plugin_image-localization_all': 'Download All Remote Images',
     'tree_refresh': 'Refresh File Tree',
+    'plugin_status-bar-theme_switch': 'Switch Theme',
   },
   'keyboard-shortcuts': {
     'keyboard-shortcuts': 'Keyboard Shortcuts',

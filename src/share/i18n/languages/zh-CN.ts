@@ -691,6 +691,7 @@ const data: BaseLanguage = {
     'keyboard-shortcuts_show-manager': '打开键盘快捷键管理器',
     'plugin_image-localization_all': '下载所有外链图片',
     'tree_refresh': '刷新文件树',
+    'plugin_status-bar-theme_switch': '切换主题',
   },
   'keyboard-shortcuts': {
     'keyboard-shortcuts': '键盘快捷键',
