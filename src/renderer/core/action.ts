@@ -9,10 +9,6 @@ const logger = getLogger('action')
 export type HookType = 'before-run' | 'after-run'
 
 const actions: { [id: string]: Action<string> } = {}
-const cache: {
-  actions: { [id: string]: Action<string> },
-  tappersVersion: number,
-} = { actions: {}, tappersVersion: 0 }
 
 /**
  * Get all actions
@@ -81,21 +77,11 @@ export function getActionHandler <T extends string> (name: T): ActionHandler<T> 
 export function getAction <T extends BuildInActionName> (name: T): Action<T> | undefined
 export function getAction <T extends string>(name: T): Action<T> | undefined
 export function getAction (name: string) {
-  const tappers = ioc.getRaw('ACTION_TAPPERS')
-
-  if (tappers?._version === cache.tappersVersion && cache.actions[name]) {
-    return cache.actions[name]
-  }
-
-  logger.debug('getAction', name, 'cache miss')
-  cache.tappersVersion = tappers?._version || 0
-
   const action = cloneDeep(actions[name])
   if (action) {
+    const tappers = ioc.getRaw('ACTION_TAPPERS')
     tappers?.forEach(tap => tap(action))
   }
-
-  cache.actions[name] = action
 
   return action
 }
