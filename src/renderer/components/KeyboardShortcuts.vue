@@ -6,7 +6,7 @@
         <group-tabs :tabs="tabs" v-model="tab" />
         <input v-model="filterStr" :placeholder="$t('keyboard-shortcuts.search')" />
       </div>
-      <div class="list">
+      <div class="list" ref="listRef">
         <table cellspacing="0">
           <thead>
             <tr>
@@ -17,7 +17,7 @@
             </tr>
           </thead>
           <tbody v-if="items.length">
-            <tr v-for="(item, i) in items" :key="item.command" class="item">
+            <tr v-for="(item, i) in items" :key="item.command" class="item" :data-id="item.command">
               <td><code>{{ i + 1 }}</code></td>
               <td :class="{unavailable: item.unavailable}">
                 <div v-if="item.description">{{ item.description }}</div>
@@ -106,6 +106,7 @@ const tabs: { label: string, value: Tab }[] = [
 const { $t, t } = useI18n()
 const logger = getLogger('keyboard-shortcuts')
 
+const listRef = ref<HTMLElement | null>(null)
 const tab = ref<Tab>('workbench')
 const managerVisible = ref(false)
 const currentCommand = ref('')
@@ -243,18 +244,29 @@ function hide () {
   keybindings.value = []
 }
 
+function revealCommand (commandId: string) {
+  filterStr.value = ''
+  const el = listRef.value?.querySelector(`[data-id="${commandId}"]`) as HTMLElement
+  if (el) {
+    el.style.background = '#ffeb3b'
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setTimeout(() => {
+      el.style.background = ''
+    }, 1500)
+  }
+}
+
 function viewConflict (keys: string[] | null) {
   if (!keys) {
     return
   }
 
   const commands = getConflictCommands(keys)
-  const message = commands.map(x => x.command).join('\n')
   useModal().alert({
     title: t('keyboard-shortcuts.conflict-title', getKeysLabel(keys)),
     component: h('div', [
       h('p', t('keyboard-shortcuts.conflict-commands')),
-      h('pre', { style: 'max-height: 300px; overflow-y: auto' }, message),
+      h('ol', commands.map(x => h('li', h('a', { href: 'javascript:void(0)', onClick: () => revealCommand(x.command) }, x.command)))),
     ]),
   })
 }

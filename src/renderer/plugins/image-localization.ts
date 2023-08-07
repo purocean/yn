@@ -85,7 +85,9 @@ export default {
   register: (ctx) => {
     ctx.action.registerAction({
       name: actionKeydown,
-      handler: transformAll
+      handler: transformAll,
+      description: ctx.i18n.t('command-desc.plugin_image-localization_all'),
+      forUser: true,
     })
 
     ctx.statusBar.tapMenus(menus => {
