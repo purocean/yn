@@ -3,7 +3,7 @@
 import { h } from 'vue'
 import Markdown from 'markdown-it'
 import StateInline from 'markdown-it/lib/rules_inline/state_inline'
-import { getKeyLabel } from '@fe/core/command'
+import { getKeyLabel } from '@fe/core/keybinding'
 import ctx, { Plugin } from '@fe/context'
 
 const slugify = (s: string) => String(s).trim().replace(/\s+/g, '-')

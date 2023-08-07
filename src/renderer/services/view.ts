@@ -1,5 +1,5 @@
 import juice from 'juice'
-import { Escape } from '@fe/core/command'
+import { Escape } from '@fe/core/keybinding'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import * as ioc from '@fe/core/ioc'

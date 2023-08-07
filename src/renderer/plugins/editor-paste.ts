@@ -7,7 +7,7 @@ import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
 import store from '@fe/support/store'
 import { encodeMarkdownLink, fileToBase64URL, path } from '@fe/utils'
-import { isKeydown } from '@fe/core/command'
+import { isKeydown } from '@fe/core/keybinding'
 
 const IMAGE_REG = /^image\/(png|jpg|jpeg|gif)$/i
 const HTML_REG = /^text\/html$/i

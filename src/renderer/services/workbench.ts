@@ -1,7 +1,7 @@
 import { debounce } from 'lodash-es'
 import * as ioc from '@fe/core/ioc'
 import { getActionHandler, registerAction } from '@fe/core/action'
-import { Alt, Shift } from '@fe/core/command'
+import { Alt, Shift } from '@fe/core/keybinding'
 import store from '@fe/support/store'
 import type { Components } from '@fe/types'
 import { t } from './i18n'

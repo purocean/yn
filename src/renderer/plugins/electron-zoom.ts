@@ -31,7 +31,7 @@ export default {
 
       ctx.action.registerAction({
         name: zoomInId,
-        keys: [ctx.command.CtrlCmd, '='],
+        keys: [ctx.keybinding.CtrlCmd, '='],
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-in'),
         forUser: true,
         handler: () => changeZoomFactor(true)
@@ -39,7 +39,7 @@ export default {
 
       ctx.action.registerAction({
         name: zoomOutId,
-        keys: [ctx.command.CtrlCmd, '-'],
+        keys: [ctx.keybinding.CtrlCmd, '-'],
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-out'),
         forUser: true,
         handler: () => changeZoomFactor(false)
@@ -47,7 +47,7 @@ export default {
 
       ctx.action.registerAction({
         name: zoomResetId,
-        keys: [ctx.command.CtrlCmd, '0'],
+        keys: [ctx.keybinding.CtrlCmd, '0'],
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-reset'),
         forUser: true,
         handler: () => setZoomFactor(1)
@@ -62,7 +62,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('electron-zoom.zoom-in'),
             disabled: factor >= 1.9,
-            subTitle: ctx.command.getKeysLabel(zoomInId),
+            subTitle: ctx.keybinding.getKeysLabel(zoomInId),
             onClick: () => ctx.action.getActionHandler(zoomInId)()
           },
           {
@@ -70,7 +70,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('electron-zoom.zoom-out'),
             disabled: factor < 0.25,
-            subTitle: ctx.command.getKeysLabel(zoomOutId),
+            subTitle: ctx.keybinding.getKeysLabel(zoomOutId),
             onClick: () => ctx.action.getActionHandler(zoomOutId)()
           },
           {
@@ -78,7 +78,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('electron-zoom.zoom-reset'),
             disabled: factor === 1,
-            subTitle: ctx.command.getKeysLabel(zoomResetId),
+            subTitle: ctx.keybinding.getKeysLabel(zoomResetId),
             onClick: () => ctx.action.getActionHandler(zoomResetId)()
           },
         )

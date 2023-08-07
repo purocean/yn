@@ -8,7 +8,7 @@
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import type { Doc } from '@fe/types'
 import { registerAction, removeAction } from '@fe/core/action'
-import { CtrlCmd } from '@fe/core/command'
+import { CtrlCmd } from '@fe/core/keybinding'
 import { switchDoc } from '@fe/services/document'
 import { t } from '@fe/services/i18n'
 import XMask from './Mask.vue'

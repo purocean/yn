@@ -174,17 +174,6 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
     modifiers.shiftKey === e.shiftKey
 }
 
-// /**
-//  * Determine whether the event shortcut key combination matches a command.
-//  * @param e
-//  * @param idOrCommand
-//  * @returns
-//  */
-// export function isCommand (e: KeyboardEvent | MouseEvent, idOrCommand: string | Command) {
-//   const command = typeof idOrCommand === 'string' ? getCommand(idOrCommand) : idOrCommand
-//   return !!(command && command.keys && matchKeys(e, command.keys))
-// }
-
 /**
  * Get shortcuts label.
  * @param idOrKeys command id or keys
@@ -197,12 +186,12 @@ export function getKeysLabel (idOrKeys: (string | number)[] | string): string {
   let keys = []
 
   if (typeof idOrKeys === 'string') {
-    const command = getAction(idOrKeys)
-    if (!command || !command.keys) {
+    const action = getAction(idOrKeys)
+    if (!action || !action.keys) {
       return ''
     }
 
-    keys = command.keys
+    keys = action.keys
   } else {
     keys = idOrKeys
   }

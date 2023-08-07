@@ -5,7 +5,7 @@ import { deleteLine, getEditor, getLineContent, getOneIndent, insert, replaceLin
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
-import { isKeydown } from '@fe/core/command'
+import { isKeydown } from '@fe/core/keybinding'
 
 function processCursorChange (source: string, position: Monaco.Position) {
   const isEnter = source === 'keyboard' && isKeydown('ENTER')
@@ -200,14 +200,14 @@ export default {
           id: idInsertTime,
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.insert-time'),
-          subTitle: ctx.command.getKeysLabel(ctx.editor.lookupKeybindingKeys(idInsertTime) || []),
+          subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idInsertTime) || []),
           onClick: insertTime,
         },
         {
           id: idInsertDate,
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.insert-date'),
-          subTitle: ctx.command.getKeysLabel(ctx.editor.lookupKeybindingKeys(idInsertDate) || []),
+          subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idInsertDate) || []),
           onClick: insertDate,
         },
       )
@@ -218,7 +218,7 @@ export default {
       description: ctx.i18n.t('command-desc.plugin_editor_focus-editor'),
       handler: focusEditor,
       forUser: true,
-      keys: [ctx.command.Shift, ctx.command.Alt, 'x']
+      keys: [ctx.keybinding.Shift, ctx.keybinding.Alt, 'x']
     })
   }
 } as Plugin

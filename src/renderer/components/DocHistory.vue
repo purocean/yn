@@ -60,7 +60,7 @@ import { ref, onMounted, onUnmounted, watch, toRef, computed, nextTick } from 'v
 import { DOC_HISTORY_MAX_CONTENT_LENGTH } from '@share/misc'
 import { removeAction, registerAction } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { Alt } from '@fe/core/command'
+import { Alt } from '@fe/core/keybinding'
 import { commentHistoryVersion, deleteHistoryVersion, fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
 import { getDefaultOptions, getMonaco, setValue, whenEditorReady } from '@fe/services/editor'
 import { isEncrypted, isSameFile } from '@fe/services/document'

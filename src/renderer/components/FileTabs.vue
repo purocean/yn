@@ -18,7 +18,7 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
-import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/command'
+import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/keybinding'
 import type { Components, Doc } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'

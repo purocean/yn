@@ -58,10 +58,10 @@ export default {
             checked: currentRepo && currentRepo.name === name && currentRepo.path === path,
             onClick: () => choose({ name, path }),
             subTitle: i === arr.length - 1
-              ? ctx.command.getKeysLabel([ctx.command.Alt, '0'])
+              ? ctx.keybinding.getKeysLabel([ctx.keybinding.Alt, '0'])
               : (
                   i < 9
-                    ? ctx.command.getKeysLabel([ctx.command.Alt, (i + 1).toString()])
+                    ? ctx.keybinding.getKeysLabel([ctx.keybinding.Alt, (i + 1).toString()])
                     : undefined
                 ),
           }

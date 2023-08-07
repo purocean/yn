@@ -125,7 +125,7 @@ import type { ISearchRange, ISerializedFileMatch, ISerializedSearchSuccess, ITex
 import { getLogger, sleep } from '@fe/utils'
 import { basename, dirname, join, relative } from '@fe/utils/path'
 import { registerAction, removeAction } from '@fe/core/action'
-import { CtrlCmd, Shift } from '@fe/core/command'
+import { CtrlCmd, Shift } from '@fe/core/keybinding'
 import { useLazyRef } from '@fe/utils/composable'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'

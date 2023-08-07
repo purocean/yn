@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, ref } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
-import { Alt, Escape, getKeysLabel } from '@fe/core/command'
+import { Alt, Escape, getKeysLabel } from '@fe/core/keybinding'
 import { ControlCenter, FileTabs } from '@fe/services/workbench'
 import { t } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
