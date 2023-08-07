@@ -684,6 +684,11 @@ const data = {
     'plugin_electron-zoom_zoom-in': 'Zoom In',
     'plugin_electron-zoom_zoom-out': 'Zoom Out',
     'plugin_electron-zoom_zoom-reset': 'Reset Zoom',
+    'view_refresh': 'Refresh Preview',
+    'extension_show-manager': 'Show Extension Manager',
+    'keyboard-shortcuts_show-manager': 'Show Keyboard Shortcuts',
+    'plugin_image-localization_all': 'Download All Remote Images',
+    'tree_refresh': 'Refresh File Tree',
   },
   'keyboard-shortcuts': {
     'keyboard-shortcuts': 'Keyboard Shortcuts',

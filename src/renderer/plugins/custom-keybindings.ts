@@ -250,14 +250,14 @@ export default {
       }
     }
 
-    ctx.command.tapCommand(command => {
+    ctx.action.tapAction(action => {
       const keybindings = ctx.lib.lodash.keyBy(
         ctx.setting.getSetting('keybindings', []).filter(x => x.type === 'workbench'),
         'command'
       )
 
-      if (keybindings[command.id]) {
-        command.keys = keybindings[command.id].keys?.split('+') || []
+      if (keybindings[action.name]) {
+        action.keys = keybindings[action.name].keys?.split('+') || []
       }
     })
 

@@ -507,6 +507,7 @@ registerAction({
   name: 'base.find-in-repository',
   keys: [CtrlCmd, Shift, 'f'],
   description: t('command-desc.base_find-in-repository'),
+  forUser: true,
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
 

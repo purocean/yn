@@ -1,5 +1,5 @@
 import juice from 'juice'
-import { CtrlCmd, Escape, registerCommand } from '@fe/core/command'
+import { Escape } from '@fe/core/command'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import * as ioc from '@fe/core/ioc'
@@ -10,7 +10,7 @@ import { sleep } from '@fe/utils'
 import type { BuildInHookTypes, Components, Previewer } from '@fe/types'
 import { t } from './i18n'
 import { emitResize } from './layout'
-import { isSameFile, switchDoc } from './document'
+import { isSameFile } from './document'
 
 export type MenuItem = Components.ContextMenu.Item
 export type BuildContextMenu = (items: MenuItem[], e: MouseEvent) => void
@@ -57,11 +57,6 @@ export function renderImmediately () {
  * Refresh view.
  */
 export async function refresh () {
-  if (store.state.currentFile) {
-    const { type, name, path, repo } = store.state.currentFile
-    await switchDoc({ type, name, path, repo }, true)
-  }
-
   getActionHandler('view.refresh')()
 }
 
@@ -461,6 +456,7 @@ registerHook('VIEW_RENDER_IFRAME_READY', ({ iframe }) => {
 
 registerAction({
   name: 'view.enter-presentation',
+  forUser: true,
   description: t('command-desc.view_enter-presentation'),
   handler: () => present(true),
   keys: ['F5']
@@ -468,7 +464,6 @@ registerAction({
 
 registerAction({
   name: 'view.exit-presentation',
-  configurable: false,
   handler: () => present(false),
   keys: [Escape],
   when: () => {
@@ -480,10 +475,4 @@ registerAction({
         .filter(x => x.tagName === 'DIV' && x.clientWidth > 10 && x.clientHeight > 10)
         .length < 2
   }
-})
-
-registerCommand({
-  id: 'view.refresh',
-  handler: refresh,
-  keys: [CtrlCmd, 'r']
 })

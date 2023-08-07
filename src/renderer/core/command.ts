@@ -1,11 +1,10 @@
-import { cloneDeep, orderBy, upperFirst } from 'lodash-es'
+import { upperFirst } from 'lodash-es'
 import { getLogger } from '@fe/utils'
 import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { FLAG_DISABLE_SHORTCUTS } from '@fe/support/args'
-import type { Command } from '@fe/types'
-import { getActionHandler } from './action'
+import type { BuildInActions } from '@fe/types'
+import { getAction, getActionHandler, getRawActions } from './action'
 import { triggerHook } from './hook'
-import * as ioc from './ioc'
 
 const logger = getLogger('command')
 
@@ -25,8 +24,6 @@ export const Tab = 'Tab'
 
 type XKey = typeof Ctrl | typeof CtrlCmd | typeof Alt | typeof Shift
 
-const commands: { [key: string]: Command } = {}
-
 let keys: Record<string, boolean> = {}
 
 let flagDisableShortcuts = false
@@ -41,22 +38,6 @@ function recordKeys (e: KeyboardEvent) {
 }
 
 /**
- * Register a command tapper.
- * @param tapper
- */
-export function tapCommand (tapper: (command: Command) => void) {
-  ioc.register('COMMAND_TAPPERS', tapper)
-}
-
-/**
- * Remove a command tapper.
- * @param tapper
- */
-export function removeCommandTapper (tapper: (command: Command) => void) {
-  ioc.remove('COMMAND_TAPPERS', tapper)
-}
-
-/**
  * Disable shortcuts
  */
 export function disableShortcuts () {
@@ -68,29 +49,6 @@ export function disableShortcuts () {
  */
 export function enableShortcuts () {
   flagDisableShortcuts = false
-}
-
-/**
- * Get all commands
- * @returns all commands
- */
-export function getRawCommands (): Command[] {
-  return orderBy(cloneDeep(Object.values(commands)), 'id')
-}
-
-/**
- * Get a command
- * @param id
- * @returns
- */
-export function getCommand (id: string): Command | undefined {
-  const command = cloneDeep(commands[id])
-  if (command) {
-    const tappers = ioc.get('COMMAND_TAPPERS')
-    tappers.forEach(tap => tap(command))
-  }
-
-  return command
 }
 
 /**
@@ -216,42 +174,30 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
     modifiers.shiftKey === e.shiftKey
 }
 
-/**
- * Determine whether the event shortcut key combination matches a command.
- * @param e
- * @param idOrCommand
- * @returns
- */
-export function isCommand (e: KeyboardEvent | MouseEvent, idOrCommand: string | Command) {
-  const command = typeof idOrCommand === 'string' ? getCommand(idOrCommand) : idOrCommand
-  return !!(command && command.keys && matchKeys(e, command.keys))
-}
-
-/**
- * Run a command
- * @param command
- * @returns
- */
-export function runCommand (command: Command) {
-  if (typeof command.handler === 'string') {
-    return getActionHandler(command.handler)()
-  } else {
-    return command.handler?.()
-  }
-}
+// /**
+//  * Determine whether the event shortcut key combination matches a command.
+//  * @param e
+//  * @param idOrCommand
+//  * @returns
+//  */
+// export function isCommand (e: KeyboardEvent | MouseEvent, idOrCommand: string | Command) {
+//   const command = typeof idOrCommand === 'string' ? getCommand(idOrCommand) : idOrCommand
+//   return !!(command && command.keys && matchKeys(e, command.keys))
+// }
 
 /**
  * Get shortcuts label.
  * @param idOrKeys command id or keys
  * @returns
  */
+export function getKeysLabel (id: keyof BuildInActions): string
 export function getKeysLabel (id: string): string
 export function getKeysLabel (keys: (string | number)[]): string
 export function getKeysLabel (idOrKeys: (string | number)[] | string): string {
   let keys = []
 
   if (typeof idOrKeys === 'string') {
-    const command = getCommand(idOrKeys)
+    const command = getAction(idOrKeys)
     if (!command || !command.keys) {
       return ''
     }
@@ -264,26 +210,6 @@ export function getKeysLabel (idOrKeys: (string | number)[] | string): string {
   return keys.map(getKeyLabel).join(isMacOS ? ' ' : '+')
 }
 
-/**
- * Register a command.
- * @param command
- * @returns
- */
-export function registerCommand (command: Command) {
-  logger.debug('registerCommand', command)
-  commands[command.id] = command
-  return command
-}
-
-/**
- * Remove a command
- * @param id
- */
-export function removeCommand (id: string) {
-  logger.debug('removeCommand', id)
-  delete commands[id]
-}
-
 export function keydownHandler (e: KeyboardEvent) {
   recordKeys(e)
 
@@ -294,16 +220,16 @@ export function keydownHandler (e: KeyboardEvent) {
 
   triggerHook('GLOBAL_KEYDOWN', e)
 
-  for (const item of getRawCommands()) {
-    const command = getCommand(item.id)
-    if (command && isCommand(e, command)) {
-      if (command.when && !command.when()) {
+  for (const item of getRawActions()) {
+    const action = getAction(item.name)
+    if (action && action.keys && matchKeys(e, action.keys)) {
+      if (action.when && !action.when()) {
         continue
       }
 
       e.stopPropagation()
       e.preventDefault()
-      runCommand(command)
+      getActionHandler(item.name)()
       break
     }
   }

@@ -217,6 +217,7 @@ export default {
       name: 'plugin.editor.focus-editor',
       description: ctx.i18n.t('command-desc.plugin_editor_focus-editor'),
       handler: focusEditor,
+      forUser: true,
       keys: [ctx.command.Shift, ctx.command.Alt, 'x']
     })
   }

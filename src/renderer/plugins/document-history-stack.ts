@@ -53,6 +53,7 @@ export default {
     ctx.action.registerAction({
       name: backId,
       description: ctx.i18n.t('command-desc.plugin_document-history-stack_back'),
+      forUser: true,
       handler: () => go(-1),
       keys: [ctx.command.Alt, ctx.command.BracketLeft],
     })
@@ -60,6 +61,7 @@ export default {
     ctx.action.registerAction({
       name: forwardId,
       description: ctx.i18n.t('command-desc.plugin_document-history-stack_forward'),
+      forUser: true,
       handler: () => go(1),
       keys: [ctx.command.Alt, ctx.command.BracketRight],
     })

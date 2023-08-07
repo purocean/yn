@@ -235,6 +235,7 @@ export default defineComponent({
         name: 'file-tabs.switch-left',
         description: t('command-desc.file-tabs_switch-left'),
         keys: [CtrlCmd, Alt, 'ArrowLeft'],
+        forUser: true,
         handler () {
           const prev = findTab(-1)
           prev && switchTab(prev)
@@ -244,6 +245,7 @@ export default defineComponent({
       registerAction({
         name: 'file-tabs.switch-right',
         description: t('command-desc.file-tabs_switch-right'),
+        forUser: true,
         handler () {
           const next = findTab(1)
           next && switchTab(next)
@@ -255,12 +257,14 @@ export default defineComponent({
         name: 'file-tabs.close-current',
         description: t('command-desc.file-tabs_close-current'),
         handler: closeCurrent,
+        forUser: true,
         keys: isElectron ? [CtrlCmd, 'w'] : [CtrlCmd, Alt, 'w']
       })
 
       registerAction({
         name: 'file-tabs.search-tabs',
         description: t('command-desc.file-tabs_search-tabs'),
+        forUser: true,
         handler () {
           refTabs.value?.showQuickFilter()
         },
@@ -270,6 +274,7 @@ export default defineComponent({
       registerAction({
         name: 'file-tabs.show-welcome',
         description: t('command-desc.file-tabs_show-welcome'),
+        forUser: true,
         handler () {
           switchDoc(null)
         },

@@ -366,6 +366,7 @@ onMounted(() => {
     name: 'doc.show-history',
     handler: show,
     keys: [Alt, 'h'],
+    forUser: true,
     description: t('command-desc.doc_show-history'),
   })
   registerAction({ name: 'doc.hide-history', handler: hide })

@@ -478,6 +478,7 @@ registerAction({
   name: 'editor.toggle-wrap',
   description: t('command-desc.editor_toggle-wrap'),
   handler: toggleWrap,
+  forUser: true,
   keys: [Alt, 'w']
 })
 

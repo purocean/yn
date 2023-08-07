@@ -22,6 +22,9 @@ import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 import ga from '@fe/support/ga'
+import { getLogger } from '@fe/utils'
+
+const logger = getLogger('startup')
 
 init(plugins, ctx)
 
@@ -155,6 +158,14 @@ registerHook('VIEW_PREVIEWER_CHANGE', ({ type }) => {
 
 registerHook('VIEW_FILE_CHANGE', () => {
   registerHook('VIEW_RENDER', switchDefaultPreviewer, true)
+})
+
+registerHook('VIEW_BEFORE_REFRESH', async () => {
+  if (store.state.currentFile) {
+    logger.debug('force reload document')
+    const { type, name, path, repo } = store.state.currentFile
+    await switchDoc({ type, name, path, repo }, true)
+  }
 })
 
 store.watch(() => store.state.currentRepo, (val) => {

@@ -685,6 +685,11 @@ const data: BaseLanguage = {
     'plugin_electron-zoom_zoom-in': '放大',
     'plugin_electron-zoom_zoom-out': '缩小',
     'plugin_electron-zoom_zoom-reset': '重置缩放',
+    'view_refresh': '刷新预览',
+    'extension_show-manager': '打开扩展管理器',
+    'keyboard-shortcuts_show-manager': '打开键盘快捷键管理器',
+    'plugin_image-localization_all': '下载所有外链图片',
+    'tree_refresh': '刷新文件树',
   },
   'keyboard-shortcuts': {
     'keyboard-shortcuts': '键盘快捷键',

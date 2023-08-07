@@ -71,15 +71,15 @@
 import { keyBy } from 'lodash-es'
 import { computed, h, onUnmounted, ref, shallowRef, watch, watchEffect } from 'vue'
 import { getDefaultApplicationAccelerators } from '@share/misc'
-import { registerAction, removeAction } from '@fe/core/action'
-import { Alt, Cmd, Ctrl, Meta, Shift, Win, disableShortcuts, enableShortcuts, getKeyLabel, getKeysLabel, getRawCommands } from '@fe/core/command'
+import { getRawActions, registerAction, removeAction } from '@fe/core/action'
+import { Alt, Cmd, Ctrl, Meta, Shift, Win, disableShortcuts, enableShortcuts, getKeyLabel, getKeysLabel } from '@fe/core/command'
 import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { useModal } from '@fe/support/ui/modal'
 import { getSetting, setSetting } from '@fe/services/setting'
 import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
 import { lookupKeybindingKeys, whenEditorReady } from '@fe/services/editor'
 import { getLogger } from '@fe/utils'
-import type { Command, Keybinding } from '@fe/types'
+import type { Action, Keybinding } from '@fe/types'
 
 import XMask from '@fe/components/Mask.vue'
 import GroupTabs from '@fe/components/GroupTabs.vue'
@@ -95,7 +95,7 @@ type Item = {
 
 type Tab = 'workbench' | 'editor' | 'application'
 
-type XCommand = Command & { type: Tab }
+type XCommand = Action & { type: Tab }
 
 const tabs: { label: string, value: Tab }[] = [
   { label: '工作台', value: 'workbench' },
@@ -125,11 +125,11 @@ const list = computed<Item[]>(() => {
   const _currentTypeKeybindings = currentTypeKeybindings.value
 
   const data = _commands.filter(x => x.type === _tab).map((item) => {
-    const modified = !!bindings[item.id]
-    const keys = modified ? (bindings[item.id].keys?.split('+') || []) || item.keys : item.keys
+    const modified = !!bindings[item.name]
+    const keys = modified ? (bindings[item.name].keys?.split('+') || []) || item.keys : item.keys
 
     return {
-      command: item.id,
+      command: item.name,
       description: item.description,
       keys: (keys || []).map(getKeyLabel),
       keybinding: keys?.join('+') || '',
@@ -198,7 +198,7 @@ const conflictCommands = computed(() => {
 
 async function refresh () {
   if (tab.value === 'workbench') {
-    commands.value = getRawCommands().filter(x => x.configurable).map(x => ({ ...x, type: 'workbench' as Tab }))
+    commands.value = getRawActions().filter(x => x.forUser).map(x => ({ ...x, type: 'workbench' as Tab }))
   } else if (tab.value === 'editor') {
     const { editor } = await whenEditorReady()
     commands.value = (editor as any).getActions().map((x: any) => {
@@ -206,7 +206,7 @@ async function refresh () {
 
       return {
         type: 'editor' as Tab,
-        id: x.id,
+        name: x.id,
         description: x.label,
         keys,
         handler: null,
@@ -216,10 +216,10 @@ async function refresh () {
     commands.value = getDefaultApplicationAccelerators(isMacOS ? 'darwin' : isWindows ? 'win32' : 'linux', getCurrentLanguage())
       .map(x => ({
         type: 'application' as Tab,
-        id: x.command,
+        name: x.command,
         keys: x.accelerator.split('+'),
         description: x.description,
-        handler: null,
+        handler: () => 0,
       }))
   }
 
@@ -350,7 +350,12 @@ watchEffect(() => {
   }
 })
 
-registerAction({ name: 'keyboard-shortcuts.show-manager', handler: show })
+registerAction({
+  name: 'keyboard-shortcuts.show-manager',
+  description: t('command-desc.keyboard-shortcuts_show-manager'),
+  handler: show,
+  forUser: true
+})
 
 onUnmounted(() => {
   removeAction('keyboard-shortcuts.show-manager')

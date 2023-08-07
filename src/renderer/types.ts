@@ -42,11 +42,13 @@ export type SettingSchema = {
   }[],
 }
 
-export interface Command<T = string> {
+export type ActionHandler<T extends string> = T extends BuildInActionName ? BuildInActions[T] : (...args: any[]) => any
+
+export interface Action<T extends string = string> {
   /**
-   * Command Id
+   * Name
    */
-  id: T,
+  name: T,
 
   /**
    * Description
@@ -54,19 +56,19 @@ export interface Command<T = string> {
   description?: string
 
   /**
-   * user can config it
+   * user can set keybinding or list in action manager
    */
-  configurable?: boolean
+  forUser?: boolean
 
   /**
    * Associate shortcuts
    */
-  keys: null | (string | number)[]
+  keys?: null | (string | number)[]
 
   /**
    * Handler
    */
-  handler: null | string | (() => void),
+  handler: ActionHandler<T>
 
   /**
    * When should execute handler
@@ -530,7 +532,7 @@ export interface CodeRunner {
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   TABS_ACTION_BTN_TAPPERS: (btns: Components.Tabs.ActionBtn[]) => void;
   TABS_TAB_CONTEXT_MENU_TAPPERS: (items: Components.ContextMenu.Item[], tab: Components.Tabs.Item) => void;
-  COMMAND_TAPPERS: (command: Command) => void;
+  ACTION_TAPPERS: (action: Action) => void;
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
   EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS: any;

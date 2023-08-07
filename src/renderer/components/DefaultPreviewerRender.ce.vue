@@ -14,11 +14,13 @@ import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
 import { triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
+import { CtrlCmd } from '@fe/core/command'
 import { toUri, isMarkdownFile } from '@fe/services/document'
 import { getContextMenuItems, getRenderIframe, scrollTopTo } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import { getLogger, sleep } from '@fe/utils'
+import { t } from '@fe/services/i18n'
 import type { RenderEnv } from '@fe/types'
 import type { AppState } from '@fe/support/store'
 
@@ -221,9 +223,9 @@ function getContentHtml (selected = false) {
   return refView.value?.outerHTML || ''
 }
 
-function refresh () {
+async function refresh () {
   logger.debug('refresh')
-  triggerHook('VIEW_BEFORE_REFRESH')
+  await triggerHook('VIEW_BEFORE_REFRESH', undefined, { breakable: true })
   renderDebounce()
   triggerHook('VIEW_AFTER_REFRESH')
 }
@@ -233,11 +235,19 @@ onMounted(() => {
   triggerHook('VIEW_MOUNTED')
   registerAction({ name: 'view.render-immediately', handler: render.bind(null, false) })
   registerAction({ name: 'view.render', handler: renderDebounce })
-  registerAction({ name: 'view.refresh', handler: refresh })
   registerAction({ name: 'view.reveal-line', handler: revealLine })
   registerAction({ name: 'view.get-content-html', handler: getContentHtml })
   registerAction({ name: 'view.get-view-dom', handler: getViewDom })
   registerAction({ name: 'view.get-render-env', handler: getRenderEnv })
+
+  registerAction({
+    name: 'view.refresh',
+    description: t('command-desc.view_refresh'),
+    handler: refresh,
+    keys: [CtrlCmd, 'r'],
+    forUser: true
+  })
+
   window.addEventListener('keydown', keydownHandler, true)
 })
 

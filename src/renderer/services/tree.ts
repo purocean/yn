@@ -4,6 +4,7 @@ import { getActionHandler, registerAction } from '@fe/core/action'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import * as api from '@fe/support/api'
+import { t } from './i18n'
 
 export type MenuItem = Components.ContextMenu.Item
 export type VueCtx = { localMarked: Ref<boolean | null> }
@@ -70,4 +71,9 @@ store.watch(state => state.treeSort, async () => {
   await nextTick()
   revealCurrentNode()
 })
-registerAction({ name: 'tree.refresh', handler: refreshTree })
+registerAction({
+  name: 'tree.refresh',
+  description: t('command-desc.tree_refresh'),
+  forUser: true,
+  handler: refreshTree,
+})

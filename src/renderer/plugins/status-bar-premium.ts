@@ -80,6 +80,7 @@ export default {
     ctx.action.registerAction({
       name: id,
       description: ctx.i18n.t('premium.confetti'),
+      forUser: true,
       handler
     })
   }

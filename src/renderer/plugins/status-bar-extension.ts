@@ -8,6 +8,7 @@ export default {
         id: 'extension-manager',
         type: 'normal',
         title: ctx.i18n.t('status-bar.extension.extension-manager'),
+        subTitle: ctx.command.getKeysLabel('extension.show-manager'),
         onClick: () => ctx.showExtensionManager(),
       })
 
@@ -15,7 +16,7 @@ export default {
         id: 'status-bar-extension',
         position: 'right',
         icon: 'puzzle-piece-solid',
-        tips: ctx.i18n.t('status-bar.extension.extension-manager'),
+        tips: ctx.i18n.t('status-bar.extension.extension-manager') + ' ' + ctx.command.getKeysLabel('extension.show-manager'),
         onClick: () => ctx.showExtensionManager(),
       }
     })

@@ -1,46 +1,38 @@
+import { cloneDeep, orderBy } from 'lodash-es'
 import { getLogger } from '@fe/utils'
-import { BuildInActions, BuildInActionName } from '@fe/types'
-import { registerCommand, removeCommand } from './command'
+import type { Action, ActionHandler, BuildInActionName } from '@fe/types'
 import { triggerHook } from './hook'
+import * as ioc from './ioc'
 
 const logger = getLogger('action')
 
-export type ActionHandler<T extends string> = T extends BuildInActionName ? BuildInActions[T] : (...args: any[]) => any
 export type HookType = 'before-run' | 'after-run'
 
-export interface Action<T extends string> {
-  /**
-   * Name
-   */
-  name: T,
+const actions: { [id: string]: Action<string> } = {}
 
-  /**
-   * Description
-   */
-  description?: string
-
-  /**
-   * user can config it
-   */
-  configurable?: boolean
-
-  /**
-   * Associate shortcuts
-   */
-  keys?: null | (string | number)[]
-
-  /**
-   * Handler
-   */
-  handler: ActionHandler<T>
-
-  /**
-   * When should execute handler
-   */
-  when?: () => boolean
+/**
+ * Get all actions
+ * @returns all actions
+ */
+export function getRawActions (): Action[] {
+  return orderBy(cloneDeep(Object.values(actions)), 'name')
 }
 
-const actions: { [id: string]: Action<string> } = {}
+/**
+ * Register a action tapper.
+ * @param tapper
+ */
+export function tapAction (tapper: (action: Action) => void) {
+  ioc.register('ACTION_TAPPERS', tapper)
+}
+
+/**
+ * Remove a action tapper.
+ * @param tapper
+ */
+export function removeActionTapper (tapper: (action: Action) => void) {
+  ioc.remove('ACTION_TAPPERS', tapper)
+}
 
 /**
  * Register an action.
@@ -50,16 +42,6 @@ const actions: { [id: string]: Action<string> } = {}
 export function registerAction<T extends string> (action: Action<T>) {
   logger.debug('registerAction', action.name)
   actions[action.name] = action
-  if (action.keys) {
-    registerCommand({
-      id: action.name,
-      description: action.description,
-      configurable: typeof action.configurable === 'boolean' ? action.configurable : true,
-      keys: action.keys,
-      handler: action.name,
-      when: action.when,
-    })
-  }
   return action
 }
 
@@ -96,7 +78,13 @@ export function getAction <T extends BuildInActionName> (name: T): Action<T> | u
 export function getAction <T extends string>(name: T): Action<T> | undefined
 export function getAction (name: string) {
   logger.debug('getAction', name)
-  return actions[name]
+  const action = cloneDeep(actions[name])
+  if (action) {
+    const tappers = ioc.get('ACTION_TAPPERS')
+    tappers.forEach(tap => tap(action))
+  }
+
+  return action
 }
 
 /**
@@ -109,10 +97,6 @@ export function removeAction (name: string) {
   logger.debug('removeAction', name)
   const action = getAction(name)
   if (action) {
-    if (action.keys) {
-      removeCommand(name)
-    }
-
     delete actions[name]
   }
 }

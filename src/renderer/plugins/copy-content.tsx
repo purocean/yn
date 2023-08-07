@@ -141,6 +141,7 @@ export default {
       name: id,
       description: ctx.i18n.t('command-desc.plugin_copy-content_copy-content'),
       handler: copyContent,
+      forUser: true,
       keys: [ctx.command.CtrlCmd, ctx.command.Shift, 'c'],
     })
 

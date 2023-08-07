@@ -33,6 +33,7 @@ export default {
         name: zoomInId,
         keys: [ctx.command.CtrlCmd, '='],
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-in'),
+        forUser: true,
         handler: () => changeZoomFactor(true)
       })
 
@@ -40,6 +41,7 @@ export default {
         name: zoomOutId,
         keys: [ctx.command.CtrlCmd, '-'],
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-out'),
+        forUser: true,
         handler: () => changeZoomFactor(false)
       })
 
@@ -47,6 +49,7 @@ export default {
         name: zoomResetId,
         keys: [ctx.command.CtrlCmd, '0'],
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-reset'),
+        forUser: true,
         handler: () => setZoomFactor(1)
       })
 

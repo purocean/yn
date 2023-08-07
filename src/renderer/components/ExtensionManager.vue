@@ -663,7 +663,12 @@ watch(autoUpgrade, debounce((val) => {
 
 onMounted(() => {
   autoUpgrade.value = setting.getSetting('extension.auto-upgrade', true)
-  registerAction({ name: 'extension.show-manager', handler: show })
+  registerAction({
+    name: 'extension.show-manager',
+    description: t('command-desc.extension_show-manager'),
+    handler: show,
+    forUser: true,
+  })
 })
 
 onUnmounted(() => {

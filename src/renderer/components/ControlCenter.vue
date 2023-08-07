@@ -44,13 +44,13 @@ registerAction({
 registerAction({
   name: 'control-center.toggle',
   description: t('command-desc.control-center_toggle'),
+  forUser: true,
   handler: toggle,
   keys: [Alt, 'c']
 })
 
 registerAction({
   name: 'control-center.hide',
-  configurable: false,
   handler: () => toggle(false),
   keys: [Escape],
   when: () => visible.value

@@ -17,6 +17,7 @@ export function toggleOutline (visible?: boolean) {
 registerAction({
   name: 'workbench.toggle-outline',
   description: t('command-desc.workbench_toggle-outline'),
+  forUser: true,
   handler: toggleOutline,
   keys: [Shift, Alt, 'o']
 })

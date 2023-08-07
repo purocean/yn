@@ -102,6 +102,7 @@ registerAction({
   name: 'layout.toggle-side',
   description: t('command-desc.layout_toggle-side'),
   handler: toggleSide,
+  forUser: true,
   keys: [Alt, 'e']
 })
 
@@ -109,6 +110,7 @@ registerAction({
   name: 'layout.toggle-editor',
   description: t('command-desc.layout_toggle-editor'),
   handler: toggleEditor,
+  forUser: true,
   keys: [Alt, 'x']
 })
 
@@ -116,6 +118,7 @@ registerAction({
   name: 'layout.toggle-view',
   description: t('command-desc.layout_toggle-view'),
   handler: toggleView,
+  forUser: true,
   keys: [Alt, 'v']
 })
 
@@ -123,5 +126,6 @@ registerAction({
   name: 'layout.toggle-xterm',
   description: t('command-desc.layout_toggle-xterm'),
   handler: toggleXterm,
+  forUser: true,
   keys: [Alt, 't']
 })

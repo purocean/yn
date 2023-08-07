@@ -50,6 +50,7 @@ export default defineComponent({
         name: 'workbench.show-quick-open',
         description: t('command-desc.workbench_show-quick-open'),
         handler: showQuickOpen,
+        forUser: true,
         keys: [CtrlCmd, 'p']
       })
       registerAction({ name: 'filter.choose-document', handler: chooseDocument })
