@@ -56,7 +56,7 @@ export function registerAction<T extends string> (action: Action<T>) {
       description: action.description,
       configurable: typeof action.configurable === 'boolean' ? action.configurable : true,
       keys: action.keys,
-      handler: getActionHandler(action.name),
+      handler: action.name,
       when: action.when,
     })
   }
