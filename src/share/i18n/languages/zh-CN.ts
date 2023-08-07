@@ -88,8 +88,9 @@ const data: BaseLanguage = {
     'preferences': '偏好设置',
     'close-window': '关闭窗口',
     'toggle-fullscreen': '切换全屏',
+    'hide-main-window': '隐藏主窗口',
     'tray': {
-      'open-main-window': '打开主界面',
+      'open-main-window': '打开主窗口',
       'open-in-browser': '浏览器中打开',
       'open-main-dir': '打开主目录',
       'preferences': '偏好设置',

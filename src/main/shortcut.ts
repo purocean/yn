@@ -12,10 +12,10 @@ type AcceleratorCommand = (typeof accelerators)[0]['command']
 
 let currentCommands: {[key in AcceleratorCommand]?: () => void}
 
-export const getAccelerator = (command: AcceleratorCommand) => {
+export const getAccelerator = (command: AcceleratorCommand): string | undefined => {
   const customKeybinding = config.get('keybindings', [])
     .filter((item: any) => item.type === 'application' && item.command === command)[0]
-  return customKeybinding?.keys || accelerators.find(a => a.command === command)!.accelerator
+  return (customKeybinding?.keys || accelerators.find(a => a.command === command)!.accelerator) || undefined
 }
 
 export const registerShortcut = (commands: typeof currentCommands) => {

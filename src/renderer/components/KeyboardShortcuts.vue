@@ -218,7 +218,7 @@ async function refresh () {
       .map(x => ({
         type: 'application' as Tab,
         name: x.command,
-        keys: x.accelerator.split('+'),
+        keys: x.accelerator?.split('+'),
         description: x.description,
         handler: () => 0,
       }))

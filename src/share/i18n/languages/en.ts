@@ -87,6 +87,7 @@ const data = {
     'preferences': 'Preferences',
     'close-window': 'Close Window',
     'toggle-fullscreen': 'Toggle Full Screen',
+    'hide-main-window': 'Hide Main Window',
     'tray': {
       'open-main-window': 'Open Main Window',
       'open-in-browser': 'Open in Browser',

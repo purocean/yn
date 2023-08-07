@@ -503,14 +503,13 @@ if (!gotTheLock) {
 
     registerShortcut({
       'show-main-window': showWindow,
+      'hide-main-window': hideWindow,
       'open-in-browser': openInBrowser
     })
   })
 
   app.on('activate', () => {
-    if (!win) {
-      showWindow(false)
-    }
+    showWindow(false)
   })
 
   app.on('web-contents-created', (_, webContents) => {

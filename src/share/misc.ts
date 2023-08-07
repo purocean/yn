@@ -36,9 +36,14 @@ export function getDefaultApplicationAccelerators (platform: NodeJS.Platform, la
       description: translate(lang, 'app.tray.open-main-window')
     },
     {
+      command: 'hide-main-window',
+      accelerator: null,
+      description: translate(lang, 'app.hide-main-window'),
+    },
+    {
       command: 'open-in-browser',
       accelerator: 'Meta+Shift+B',
       description: translate(lang, 'app.tray.open-in-browser')
     }
-  ] as {command: 'show-main-window' | 'open-in-browser', accelerator: string, description: string}[]
+  ] as {command: 'show-main-window' | 'hide-main-window' | 'open-in-browser', accelerator: string | null, description: string}[]
 }
