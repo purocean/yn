@@ -1,10 +1,23 @@
 import type { Plugin } from '@fe/context'
 
-const id = 'status-bar-confetti'
+const id = 'plugin.status-bar-confetti'
 
 export default {
   name: id,
   register: ctx => {
+    function handler () {
+      if (!ctx.getPremium()) {
+        ctx.showPremium()
+      } else {
+        ctx.lib.confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
+          zIndex: Number.MAX_SAFE_INTEGER,
+        })
+      }
+    }
+
     ctx.statusBar.tapMenus(menus => {
       menus[id] = {
         id,
@@ -36,33 +49,22 @@ export default {
           <path style="fill:currentColor;" d="M320.63,427.844c3.261,3.261,7.534,4.892,11.805,4.892s8.544-1.631,11.805-4.892  c6.522-6.516,6.522-17.093,0-23.611L226.174,286.168l-23.611,23.611L320.63,427.844z"/>
         </svg>`,
         title: ctx.getPremium() ? undefined : ctx.i18n.t('premium.upgrade'),
-        onClick: () => {
-          if (!ctx.getPremium()) {
-            ctx.showPremium()
-          } else {
-            ctx.lib.confetti({
-              particleCount: 150,
-              spread: 100,
-              origin: { y: 0.6 },
-              zIndex: Number.MAX_SAFE_INTEGER,
-            })
-          }
-        },
+        onClick: handler,
         list: []
       }
     })
 
     ctx.theme.addStyles(`
-      html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="status-bar-confetti"] {
+      html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="${id}"] {
         background: rgb(0 122 204 / 47%);
-        animation: blink-status-bar-confetti 1s 7;
+        animation: blink-${id} 1s 7;
       }
 
-      html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="status-bar-confetti"]:hover {
+      html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="${id}"]:hover {
         background: rgb(0 122 204 / 100%);
       }
 
-      @keyframes blink-status-bar-confetti {
+      @keyframes blink-${id} {
         0% {
           background: rgb(0 122 204 / 47%);
         }
@@ -74,5 +76,11 @@ export default {
         }
       }
     `)
+
+    ctx.action.registerAction({
+      name: id,
+      description: ctx.i18n.t('premium.confetti'),
+      handler
+    })
   }
 } as Plugin

@@ -38,6 +38,7 @@ const data: BaseLanguage = {
   'default': '默认',
   'print': '打印',
   'premium': {
+    'confetti': '彩色纸屑',
     'need-purchase': '[%s] 需要高级版',
     'buy-license': '立即购买',
     'free': '免费版',

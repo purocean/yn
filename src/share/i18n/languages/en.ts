@@ -37,6 +37,7 @@ const data = {
   'default': 'Default',
   'print': 'Print',
   'premium': {
+    'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
     'buy-license': 'Buy License',
     'free': 'Free',
