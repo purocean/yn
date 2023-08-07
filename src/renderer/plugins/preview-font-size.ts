@@ -40,7 +40,7 @@ export default {
               previewFontSize.value = parseInt(e.target.value)
             }
           }),
-          h('output', { style: 'margin-left: 8px; font-size: 14px; font-family: "Helvetica Neue"' }, previewFontSize.value),
+          h('output', { style: 'margin-left: 8px; font-size: 14px; font-variant-numeric: tabular-nums;' }, previewFontSize.value),
         ])
       }
     }

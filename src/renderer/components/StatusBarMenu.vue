@@ -101,6 +101,7 @@ export default defineComponent({
   z-index: 99999;
   position: relative;
   overflow-x: hidden;
+  font-variant-numeric: tabular-nums;
 }
 
 .status-bar-menu.hidden {
