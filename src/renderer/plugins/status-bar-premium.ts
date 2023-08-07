@@ -1,10 +1,11 @@
 import type { Plugin } from '@fe/context'
 
-const id = 'plugin.status-bar-confetti'
-
 export default {
-  name: id,
+  name: 'status-bar-confetti',
   register: ctx => {
+    const id = 'status-bar-confetti'
+    const actionName = 'plugin.status-bar-confetti.show'
+
     function handler () {
       if (!ctx.getPremium()) {
         ctx.showPremium()
@@ -78,7 +79,7 @@ export default {
     `)
 
     ctx.action.registerAction({
-      name: id,
+      name: actionName,
       description: ctx.i18n.t('premium.confetti'),
       forUser: true,
       handler
