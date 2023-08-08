@@ -693,7 +693,11 @@ const data = {
     'plugin_status-bar-theme_switch': 'Switch Theme',
   },
   'keyboard-shortcuts': {
+    'workbench': 'Workbench',
+    'editor': 'Editor',
+    'application': 'Application',
     'keyboard-shortcuts': 'Keyboard Shortcuts',
+    'unavailable': 'Unavailable',
     'command': 'Command',
     'keybinding': 'Keybinding',
     'not-set': 'Not Set',

@@ -97,13 +97,14 @@ type Tab = 'workbench' | 'editor' | 'application'
 
 type XCommand = Action & { type: Tab }
 
-const tabs: { label: string, value: Tab }[] = [
-  { label: '工作台', value: 'workbench' },
-  { label: '编辑器', value: 'editor' },
-  { label: '应用', value: 'application' },
-]
-
 const { $t, t } = useI18n()
+
+const tabs = computed<{ label: string, value: Tab }[]>(() => [
+  { label: $t.value('keyboard-shortcuts.workbench'), value: 'workbench' },
+  { label: $t.value('keyboard-shortcuts.editor'), value: 'editor' },
+  { label: $t.value('keyboard-shortcuts.application'), value: 'application' },
+])
+
 const logger = getLogger('keyboard-shortcuts')
 
 const listRef = ref<HTMLElement | null>(null)
@@ -146,7 +147,7 @@ const list = computed<Item[]>(() => {
   return data.concat(unavailable.map((item) => {
     return {
       command: item.command,
-      description: '不可用',
+      description: t('keyboard-shortcuts.unavailable'),
       keys: (item.keys?.split('+') || []).map(getKeyLabel),
       keybinding: item.keys || '',
       modified: true,

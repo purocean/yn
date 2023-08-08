@@ -694,7 +694,11 @@ const data: BaseLanguage = {
     'plugin_status-bar-theme_switch': '切换主题',
   },
   'keyboard-shortcuts': {
+    'workbench': '工作台',
+    'editor': '编辑器',
+    'application': '应用',
     'keyboard-shortcuts': '键盘快捷键',
+    'unavailable': '不可用',
     'command': '命令',
     'keybinding': '快捷键',
     'not-set': '未设置',
