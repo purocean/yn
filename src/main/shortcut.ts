@@ -20,7 +20,13 @@ export const getAccelerator = (command: AcceleratorCommand): string | undefined 
     const keys = customKeybinding.keys
 
     if (keys) {
-      return customKeybinding.keys.replace(/Arrow/ig, '')
+      return keys.replace(/(Arrow|Key|Digit)/ig, '')
+        .replace(/NumpadAdd/ig, 'numadd')
+        .replace(/NumpadSubtract/ig, 'numsub')
+        .replace(/NumpadMultiply/ig, 'nummult')
+        .replace(/NumpadDivide/ig, 'numdiv')
+        .replace(/NumpadDecimal/ig, 'numdec')
+        .replace(/Numpad/ig, 'num')
     } else {
       return undefined
     }

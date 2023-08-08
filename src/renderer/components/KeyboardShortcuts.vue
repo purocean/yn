@@ -331,6 +331,8 @@ function recordKey (e: KeyboardEvent) {
       val = val.slice(5)
     } else if (val.startsWith('Arrow')) {
       val = val.slice(5)
+    } else if (val.startsWith('Numpad')) {
+      val = e.code
     } else if (val === 'Equal') { // avoid conflict with '+'
       val = '='
     } else if ('`-=[]\\;\',./{}|:"<>?~!@#$%^&*()_'.includes(e.key)) {
