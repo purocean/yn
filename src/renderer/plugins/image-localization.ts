@@ -54,7 +54,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
   return null
 }
 
-const actionKeydown: BuildInActionName = 'plugin.image-localization.all'
+const actionKeydown: BuildInActionName = 'plugin.image-localization.download-all'
 const commandClick = 'plugin.image-localization.single-by-click'
 
 async function transformAll () {
