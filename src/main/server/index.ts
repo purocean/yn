@@ -440,7 +440,7 @@ const setting = async (ctx: any, next: any) => {
 
       getAction('proxy.reload')(data)
       getAction('envs.reload')(data)
-      getAction('shortcuts.reload')(data, changedKeys)
+      getAction('shortcuts.reload')(changedKeys)
 
       ctx.body = result('ok', 'success')
     }

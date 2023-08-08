@@ -14,8 +14,19 @@ let currentCommands: {[key in AcceleratorCommand]?: () => void}
 
 export const getAccelerator = (command: AcceleratorCommand): string | undefined => {
   const customKeybinding = config.get('keybindings', [])
-    .filter((item: any) => item.type === 'application' && item.command === command)[0]
-  return (customKeybinding?.keys || accelerators.find(a => a.command === command)!.accelerator) || undefined
+    .find((item: any) => item.type === 'application' && item.command === command)
+
+  if (customKeybinding) {
+    const keys = customKeybinding.keys
+
+    if (keys) {
+      return customKeybinding.keys.replace(/Arrow/ig, '')
+    } else {
+      return undefined
+    }
+  }
+
+  return accelerators.find(a => a.command === command)?.accelerator || undefined
 }
 
 export const registerShortcut = (commands: typeof currentCommands) => {
@@ -48,7 +59,7 @@ export const registerShortcut = (commands: typeof currentCommands) => {
   getAction('refresh-menus')()
 }
 
-function reload (config: any, changedKeys: string[]) {
+function reload (changedKeys: string[]) {
   if (changedKeys.includes('keybindings')) {
     console.log('reload keybindings')
     registerShortcut(currentCommands)
