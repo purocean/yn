@@ -76,17 +76,23 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.57.0](https://github.com/purocean/yn/releases/tag/v3.57.0) 2023-07-31
+### [v3.58.1](https://github.com/purocean/yn/releases/tag/v3.58.1) 2023-08-09
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-win-x64-3.57.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-mac-arm64-3.57.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-mac-x64-3.57.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-linux-x86_64-3.57.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-linux-amd64-3.57.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-win-x64-3.58.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-mac-arm64-3.58.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-mac-x64-3.58.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-linux-x86_64-3.58.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-linux-amd64-3.58.1.deb)
 
-1. feat: introducing the $seq method in the macro to generate sequential numbers like Figure-1, Figure-2.
-2. feat: added configuration to hide the main window upon startup.
-3. feat: implemented a configuration option to automatically add to-dos to the completion time.
-4. feat: implemented size restriction for generated historical version files.
-5. feat: enhanced scrolling behavior for the details tag when clicked.
-6. fix: resolved the issue of extra blank lines at the end of copied code blocks.
-
+1. feat: add custom shortcut key function
+2. feat: adjust the shortcut key to open the main window
+3. feat: the control center adds the function of adjusting the basic font size of the preview text
+4. feat: the editor automatically completes code snippets and adds language selection
+5. fix: when fixing multiple dialog boxes, pressing ESC will close the dialog box
+6. fix: upgrade monaco-editor to 0.41.0, fix the missing fragment completion problem
+7. feat(plugin): the control center supports adding custom Vue components and custom element order
+8. feat(plugin): add `ctx.action.getRawActions` method
+9. feat(plugin): add `ctx.action.tapAction` `ctx.action.removeActionTapper` methods
+10. feat(plugin): add `COMMAND_KEYBINDING_CHANGED` hook
+11. feat(plugin): add `ctx.ioc.getRaw` method
+12. feat(plugin): `ctx.action.registerAction` adds `description` and `forUser` fields
+13. refactor(plugin): remove `ctx.command` module, change to `ctx.keybinding` module
 [More release notes](https://github.com/purocean/yn/releases)
 
 ## Supports
