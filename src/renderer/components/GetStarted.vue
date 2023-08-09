@@ -41,7 +41,7 @@
               <a href="javascript:void(0);" @click="openHelpDoc('plugin')">{{$t('status-bar.help.plugin')}}</a>
             </div>
             <div class="item">
-              <a href="javascript:void(0);" @click="openHelpDoc('shortcuts')">{{$t('status-bar.help.shortcuts')}}</a>
+              <a href="javascript:void(0);" @click="openShortcutManager()">{{$t('status-bar.help.shortcuts')}}</a>
             </div>
             <div class="item">
               <a href="javascript:void(0);" @click="openFeedback()">{{$t('feedback')}}</a>
@@ -127,6 +127,10 @@ function openHelpDoc (name: string) {
 
 function openFeedback () {
   window.open(URL_GITHUB)
+}
+
+function openShortcutManager () {
+  getActionHandler('keyboard-shortcuts.show-manager')()
 }
 </script>
 
