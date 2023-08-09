@@ -76,16 +76,23 @@
 
 ## 更新日志
 
-### [v3.57.0](https://github.com/purocean/yn/releases/tag/v3.57.0) 2023-07-31
+### [v3.58.1](https://github.com/purocean/yn/releases/tag/v3.58.1) 2023-08-09
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-win-x64-3.57.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-mac-arm64-3.57.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-mac-x64-3.57.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-linux-x86_64-3.57.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.57.0/Yank-Note-linux-amd64-3.57.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-win-x64-3.58.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-mac-arm64-3.58.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-mac-x64-3.58.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-linux-x86_64-3.58.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.58.1/Yank-Note-linux-amd64-3.58.1.deb)
 
-1. feat: 宏增加 `$seq` 方法，用于生成如 `图-1`、`图-2` 这样的序号
-2. feat: 增加启动隐藏主窗口的配置
-3. feat: 增加勾选待办是否自动添加完成时间的配置
-4. feat: 限制生成历史版本文件的大小
-5. feat: 优化点击 `details` 标签时滚动行为
-6. fix: 修复拷贝代码块内容末尾有多余空行的问题
+1. feat: 增加自定义快捷键功能
+2. feat: 调整打开主窗口的快捷键
+3. feat: 控制中心增加调整预览文字基础字号功能
+4. feat: 编辑器自动补全代码片段增加语言选择
+5. fix: 修复多个对话框的时候，按下 ESC 会关闭对话框的问题
+6. fix: 升级 monaco-editor 到 0.41.0，修复片段补全丢失问题
+7. feat(plugin): 控制中心支持添加自定义 Vue 组件、自定元素顺序
+8. feat(plugin): 增加 `ctx.action.getRawActions` 方法
+9. feat(plugin): 增加 `ctx.action.tapAction` `ctx.action.removeActionTapper` 方法
+10. feat(plugin): 增加 `COMMAND_KEYBINDING_CHANGED` 钩子
+11. feat(plugin): 增加 `ctx.ioc.getRaw` 方法
+12. feat(plugin): `ctx.action.registerAction` 增加 `description` 和 `forUser` 字段
+13. refactor(plugin): 移除 `ctx.command` 模块，变更为 `ctx.keybinding` 模块
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
