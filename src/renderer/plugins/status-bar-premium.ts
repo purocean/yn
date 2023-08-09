@@ -3,9 +3,25 @@ import type { Plugin } from '@fe/context'
 export default {
   name: 'status-bar-confetti',
   register: ctx => {
+    const id = 'status-bar-confetti'
+    const actionName = 'plugin.status-bar-confetti.show'
+
+    function handler () {
+      if (!ctx.getPremium()) {
+        ctx.showPremium()
+      } else {
+        ctx.lib.confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
+          zIndex: Number.MAX_SAFE_INTEGER,
+        })
+      }
+    }
+
     ctx.statusBar.tapMenus(menus => {
-      menus['status-bar-confetti'] = {
-        id: 'status-bar-confetti',
+      menus[id] = {
+        id,
         position: 'right',
         icon: `<svg v-if="purchased" @click="doConfetti" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" viewBox="0 0 512 512" xml:space="preserve">
           <path style="fill:currentColor;" d="M367.178,314.667h-58.358c-9.223,0-16.697-7.474-16.697-16.697c0-9.223,7.474-16.697,16.697-16.697  h58.358c9.223,0,16.697,7.474,16.697,16.697C383.875,307.194,376.401,314.667,367.178,314.667z"/>
@@ -34,20 +50,39 @@ export default {
           <path style="fill:currentColor;" d="M320.63,427.844c3.261,3.261,7.534,4.892,11.805,4.892s8.544-1.631,11.805-4.892  c6.522-6.516,6.522-17.093,0-23.611L226.174,286.168l-23.611,23.611L320.63,427.844z"/>
         </svg>`,
         title: ctx.getPremium() ? undefined : ctx.i18n.t('premium.upgrade'),
-        onClick: () => {
-          if (!ctx.getPremium()) {
-            ctx.showPremium()
-          } else {
-            ctx.lib.confetti({
-              particleCount: 150,
-              spread: 100,
-              origin: { y: 0.6 },
-              zIndex: Number.MAX_SAFE_INTEGER,
-            })
-          }
-        },
+        onClick: handler,
         list: []
       }
+    })
+
+    ctx.theme.addStyles(`
+      html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="${id}"] {
+        background: rgb(0 122 204 / 47%);
+        animation: blink-${id} 1s 7;
+      }
+
+      html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="${id}"]:hover {
+        background: rgb(0 122 204 / 100%);
+      }
+
+      @keyframes blink-${id} {
+        0% {
+          background: rgb(0 122 204 / 47%);
+        }
+        50% {
+          background: rgb(0 122 204 / 100%);
+        }
+        100% {
+          background: rgb(0 122 204 / 47%);
+        }
+      }
+    `)
+
+    ctx.action.registerAction({
+      name: actionName,
+      description: ctx.i18n.t('premium.confetti'),
+      forUser: true,
+      handler
     })
   }
 } as Plugin

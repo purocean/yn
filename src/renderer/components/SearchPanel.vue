@@ -125,7 +125,7 @@ import type { ISearchRange, ISerializedFileMatch, ISerializedSearchSuccess, ITex
 import { getLogger, sleep } from '@fe/utils'
 import { basename, dirname, join, relative } from '@fe/utils/path'
 import { registerAction, removeAction } from '@fe/core/action'
-import { CtrlCmd, Shift } from '@fe/core/command'
+import { CtrlCmd, Shift } from '@fe/core/keybinding'
 import { useLazyRef } from '@fe/utils/composable'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
@@ -143,7 +143,7 @@ const SEARCH_LIMIT_SETTING_KEY = 'search.number-limit'
 
 const logger = getLogger('search-panel')
 const toast = useToast()
-useI18n()
+const { t } = useI18n()
 
 const patternInputRef = ref<HTMLInputElement>()
 const pattern = ref('')
@@ -506,6 +506,8 @@ function markText (text: string, ranges: ISearchRange[]) {
 registerAction({
   name: 'base.find-in-repository',
   keys: [CtrlCmd, Shift, 'f'],
+  description: t('command-desc.base_find-in-repository'),
+  forUser: true,
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
 

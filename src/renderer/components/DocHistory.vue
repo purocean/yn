@@ -60,7 +60,7 @@ import { ref, onMounted, onUnmounted, watch, toRef, computed, nextTick } from 'v
 import { DOC_HISTORY_MAX_CONTENT_LENGTH } from '@share/misc'
 import { removeAction, registerAction } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { Alt } from '@fe/core/command'
+import { Alt } from '@fe/core/keybinding'
 import { commentHistoryVersion, deleteHistoryVersion, fetchHistoryContent, fetchHistoryList } from '@fe/support/api'
 import { getDefaultOptions, getMonaco, setValue, whenEditorReady } from '@fe/services/editor'
 import { isEncrypted, isSameFile } from '@fe/services/document'
@@ -362,7 +362,13 @@ watch(currentVersion, async val => {
 watch([content, displayType, refEditor], updateEditor)
 
 onMounted(() => {
-  registerAction({ name: 'doc.show-history', handler: show, keys: [Alt, 'h'] })
+  registerAction({
+    name: 'doc.show-history',
+    handler: show,
+    keys: [Alt, 'h'],
+    forUser: true,
+    description: t('command-desc.doc_show-history'),
+  })
   registerAction({ name: 'doc.hide-history', handler: hide })
 
   registerHook('GLOBAL_RESIZE', layoutEditor)

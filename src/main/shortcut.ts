@@ -1,37 +1,75 @@
 import * as os from 'os'
-import { globalShortcut } from 'electron'
+import { dialog, globalShortcut } from 'electron'
 import { FLAG_DISABLE_SERVER } from './constant'
-import { getAction } from './action'
+import { getAction, registerAction } from './action'
+import config from './config'
+import { getDefaultApplicationAccelerators } from '../share/misc'
 
 const platform = os.platform()
 
-type AcceleratorType = 'show-main-window' | 'open-in-browser'
+const accelerators = getDefaultApplicationAccelerators(platform)
+type AcceleratorCommand = (typeof accelerators)[0]['command']
 
-const accelerators: Record<AcceleratorType, string> = {
-  'show-main-window': platform === 'darwin' ? 'Shift+Alt+M' : 'Super+N',
-  'open-in-browser': 'Super+Shift+B'
-}
+let currentCommands: {[key in AcceleratorCommand]?: () => void}
 
-export const getAccelerator = (type: AcceleratorType) => {
-  return accelerators[type]
-}
+export const getAccelerator = (command: AcceleratorCommand): string | undefined => {
+  const customKeybinding = config.get('keybindings', [])
+    .find((item: any) => item.type === 'application' && item.command === command)
 
-export const registerShortcut = (shortcuts: {[key in AcceleratorType]?: () => void}) => {
-  if (FLAG_DISABLE_SERVER) {
-    delete shortcuts['open-in-browser']
+  if (customKeybinding) {
+    const keys = customKeybinding.keys
+
+    if (keys) {
+      return keys.replace(/(Arrow|Key|Digit)/ig, '')
+        .replace(/NumpadAdd/ig, 'numadd')
+        .replace(/NumpadSubtract/ig, 'numsub')
+        .replace(/NumpadMultiply/ig, 'nummult')
+        .replace(/NumpadDivide/ig, 'numdiv')
+        .replace(/NumpadDecimal/ig, 'numdec')
+        .replace(/Numpad/ig, 'num')
+    } else {
+      return undefined
+    }
   }
 
-  (Object.keys(shortcuts) as AcceleratorType[]).forEach(key => {
+  return accelerators.find(a => a.command === command)?.accelerator || undefined
+}
+
+export const registerShortcut = (commands: typeof currentCommands) => {
+  currentCommands = { ...commands }
+
+  if (FLAG_DISABLE_SERVER) {
+    delete commands['open-in-browser']
+  }
+
+  globalShortcut.unregisterAll()
+
+  ;(Object.keys(commands) as AcceleratorCommand[]).forEach(key => {
     const accelerator = getAccelerator(key)
-    if (!accelerator || !shortcuts[key]) {
+    if (!accelerator || !commands[key]) {
       return
     }
 
-    globalShortcut.register(accelerator, shortcuts[key]!)
-
-    if (!globalShortcut.isRegistered(accelerator)) {
-      delete accelerators[key]
-      getAction('refresh-menus')()
+    try {
+      console.log('register shortcut', accelerator, key)
+      globalShortcut.register(accelerator, commands[key]!)
+      if (!globalShortcut.isRegistered(accelerator)) {
+        throw new Error('Failed to register shortcut')
+      }
+    } catch (error) {
+      console.error(error)
+      dialog.showErrorBox('Error', `Failed to register shortcut: ${accelerator}`)
     }
   })
+
+  getAction('refresh-menus')()
 }
+
+function reload (changedKeys: string[]) {
+  if (changedKeys.includes('keybindings')) {
+    console.log('reload keybindings')
+    registerShortcut(currentCommands)
+  }
+}
+
+registerAction('shortcuts.reload', reload)

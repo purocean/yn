@@ -1,6 +1,8 @@
 import * as os from 'os'
 import ip from 'ip'
 import * as fs from 'fs-extra'
+import uniq from 'lodash/uniq'
+import isEqual from 'lodash/isEqual'
 import * as path from 'path'
 import Koa from 'koa'
 import bodyParser from 'koa-body'
@@ -425,6 +427,9 @@ const setting = async (ctx: any, next: any) => {
       const data = { ...oldConfig, ...ctx.request.body }
       config.setAll(data)
 
+      const changedKeys = uniq([...Object.keys(oldConfig), ...Object.keys(data)])
+        .filter((key) => !isEqual(data[key], oldConfig[key]))
+
       if (oldConfig.language !== data.language) {
         getAction('i18n.change-language')(data.language)
       }
@@ -435,6 +440,7 @@ const setting = async (ctx: any, next: any) => {
 
       getAction('proxy.reload')(data)
       getAction('envs.reload')(data)
+      getAction('shortcuts.reload')(changedKeys)
 
       ctx.body = result('ok', 'success')
     }

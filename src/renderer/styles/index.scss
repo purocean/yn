@@ -1,4 +1,5 @@
-@import 'normalize.css';
+@import 'normalize.css' layer;
+
 @import './mixins.scss';
 
 @function hex2rgb($hex) {
@@ -107,83 +108,85 @@ a {
     color: var(--g-foreground-color);
   }
 
-  input[type=range] {
-    accent-color: var(--g-color-40);
-  }
-
-  input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select {
-    display: block;
-    width: 100%;
-    margin: 0;
-    border: 0;
-    font-size: 18px;
-    line-height: 1.4em;
-    padding: 6px;
-    box-sizing: border-box;
-    background: rgba(var(--g-color-0-rgb), 0.1);
-    color: var(--g-color-0);
-    transition: all .1s ease-in-out;
-    outline: none;
-    border-radius: var(--g-border-radius);
-
-    &:focus {
-      background: rgba(var(--g-color-0-rgb), 0.15);
-    }
-  }
-
-  select {
-    display: initial;
-    width: initial;
-
-    option {
-      background-color: var(--g-color-88);
-    }
-  }
-
-  button {
-    background-color: var(--g-color-80);
-    border: none;
-    padding: 5px 10px;
-    color: var(--g-color-0);
-    cursor: pointer;
-    border-radius: var(--g-border-radius);
-    transition: all .1s ease-in-out;
-    margin-left: 5px;
-    font-weight: 500;
-    outline: none;
-    user-select: none;
-
-    &.tr {
-      background-color: var(--g-color-active-a);
+  @layer global-screen {
+    input[type=range] {
+      accent-color: var(--g-color-40);
     }
 
-    &.primary {
-      background-color: var(--g-color-70);
+    input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select {
+      display: block;
+      width: 100%;
+      margin: 0;
+      border: 0;
+      font-size: 18px;
+      line-height: 1.4em;
+      padding: 6px;
+      box-sizing: border-box;
+      background: rgba(var(--g-color-0-rgb), 0.1);
+      color: var(--g-color-0);
+      transition: all .1s ease-in-out;
+      outline: none;
+      border-radius: var(--g-border-radius);
 
-      &.tr {
-        background-color: var(--g-color-active-d);
+      &:focus {
+        background: rgba(var(--g-color-0-rgb), 0.15);
       }
     }
 
-    &:hover {
-      background-color: var(--g-color-65);
+    select {
+      display: initial;
+      width: initial;
 
-      &.tr {
-        background-color: var(--g-color-active-c);
+      option {
+        background-color: var(--g-color-88);
       }
     }
 
-    &.small {
-      font-size: 14px;
-      padding: 3px 6px;
-      font-weight: normal;
-    }
+    button {
+      background-color: var(--g-color-80);
+      border: none;
+      padding: 5px 10px;
+      color: var(--g-color-0);
+      cursor: pointer;
+      border-radius: var(--g-border-radius);
+      transition: all .1s ease-in-out;
+      margin-left: 5px;
+      font-weight: 500;
+      outline: none;
+      user-select: none;
 
-    &[disabled] {
-      background-color: var(--g-color-90);
-      cursor: not-allowed;
       &.tr {
-        background-color: rgba(var(--g-color-40-rgb), 0.2);
+        background-color: var(--g-color-active-a);
+      }
+
+      &.primary {
+        background-color: var(--g-color-70);
+
+        &.tr {
+          background-color: var(--g-color-active-d);
+        }
+      }
+
+      &:hover {
+        background-color: var(--g-color-65);
+
+        &.tr {
+          background-color: var(--g-color-active-c);
+        }
+      }
+
+      &.small {
+        font-size: 14px;
+        padding: 3px 6px;
+        font-weight: normal;
+      }
+
+      &[disabled] {
+        background-color: var(--g-color-90);
+        cursor: not-allowed;
+        &.tr {
+          background-color: rgba(var(--g-color-40-rgb), 0.2);
+        }
       }
     }
   }

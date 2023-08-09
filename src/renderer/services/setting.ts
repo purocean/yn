@@ -82,7 +82,7 @@ export function getDefaultSetting () {
  * @returns settings
  */
 export async function fetchSettings () {
-  const oldSettings = cloneDeep(getSettings())
+  const oldSettings = getSettings()
   const data = transformSettings(await api.fetchSettings())
 
   Object.assign(settings, {
@@ -140,7 +140,7 @@ export async function writeSettings (settings: Record<string, any>) {
  * @returns settings
  */
 export function getSettings () {
-  return settings
+  return cloneDeep(settings)
 }
 
 /**
@@ -152,9 +152,8 @@ export function getSettings () {
 export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T]): BuildInSettings[T]
 export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal?: null): BuildInSettings[T] | null
 export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal: BuildInSettings[T] | null = null): BuildInSettings[T] | null {
-  const settings = getSettings()
   if (typeof settings[key] !== 'undefined') {
-    return settings[key]
+    return cloneDeep(settings[key])
   }
 
   return defaultVal

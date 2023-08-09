@@ -5,12 +5,13 @@ import { isElectron, isMacOS } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import * as ioc from '@fe/core/ioc'
-import { Alt } from '@fe/core/command'
+import { Alt } from '@fe/core/keybinding'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { sleep } from '@fe/utils'
 import { getColorScheme } from './theme'
 import { getSetting } from './setting'
+import { t } from './i18n'
 import { language as markdownLanguage } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
 import { CustomEditor } from '@fe/types'
 
@@ -162,6 +163,30 @@ export function whenEditorReady (): Promise<{ editor: typeof editor, monaco: typ
   return new Promise(resolve => {
     registerHook('EDITOR_READY', resolve, true)
   })
+}
+
+export function lookupKeybindingKeys (commandId: string): string[] | null {
+  if (!editor) {
+    return null
+  }
+
+  const service = (editor as any)._standaloneKeybindingService
+
+  const keybinding = service.lookupKeybinding(commandId) || service.lookupKeybinding(`vs.editor.ICodeEditor:1:${commandId}`)
+
+  let keys: string[] | null = null
+
+  if (keybinding) {
+    const electronAccelerator = keybinding.getElectronAccelerator()
+    const userSettingsLabel = keybinding.getUserSettingsLabel()
+    if (electronAccelerator) {
+      keys = electronAccelerator.split('+')
+    } else {
+      keys = userSettingsLabel?.split(' ')
+    }
+  }
+
+  return keys
 }
 
 /**
@@ -449,7 +474,13 @@ export function getIsDefault () {
   return isDefaultEditor
 }
 
-registerAction({ name: 'editor.toggle-wrap', handler: toggleWrap, keys: [Alt, 'w'] })
+registerAction({
+  name: 'editor.toggle-wrap',
+  description: t('command-desc.editor_toggle-wrap'),
+  handler: toggleWrap,
+  forUser: true,
+  keys: [Alt, 'w']
+})
 
 registerHook('EDITOR_CURRENT_EDITOR_CHANGE', ({ current }) => {
   isDefaultEditor = !current?.component

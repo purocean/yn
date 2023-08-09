@@ -155,7 +155,7 @@ export default {
         { label: '/ __ Bold', insertText: '__$1__' },
         { label: '/ ~~ Delete', insertText: '~~$1~~' },
         { label: '/ == Mark', insertText: '==$1==' },
-        { label: '/ ``` Fence', insertText: '```$1\n```\n' },
+        { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n' },
         { label: '/ ||| Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |' },
         { label: '/ ||| Small Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |\n{.small}' },
         { label: '/ --- Horizontal Line', insertText: '---\n' },

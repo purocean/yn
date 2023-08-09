@@ -5,7 +5,7 @@ import { deleteLine, getEditor, getLineContent, getOneIndent, insert, replaceLin
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
 import { getSetting } from '@fe/services/setting'
-import { isKeydown } from '@fe/core/command'
+import { isKeydown } from '@fe/core/keybinding'
 
 function processCursorChange (source: string, position: Monaco.Position) {
   const isEnter = source === 'keyboard' && isKeydown('ENTER')
@@ -109,12 +109,18 @@ export default {
       }
     }
 
+    const idInsertTime = 'plugin.editor.insert-time'
+    const idInsertDate = 'plugin.editor.insert-date'
+    const idRevealLineInPreview = 'plugin.editor.reveal-line-in-preview'
+    const idForceInsertNewLine = 'plugin.editor.force-insert-new-line'
+    const idForceInsertIndent = 'plugin.editor.force-insert-indent'
+
     whenEditorReady().then(({ editor, monaco }) => {
       const KM = monaco.KeyMod
       const KC = monaco.KeyCode
 
       editor.addAction({
-        id: 'plugin.editor.insert-date',
+        id: idInsertDate,
         label: t('editor.context-menu.insert-date'),
         contextMenuGroupId: 'modification',
         keybindings: [
@@ -124,7 +130,7 @@ export default {
       })
 
       editor.addAction({
-        id: 'plugin.editor.insert-time',
+        id: idInsertTime,
         label: t('editor.context-menu.insert-time'),
         contextMenuGroupId: 'modification',
         keybindings: [
@@ -134,19 +140,31 @@ export default {
       })
 
       editor.addAction({
-        id: 'plugin.editor.reveal-line-in-preview',
+        id: idRevealLineInPreview,
         label: t('editor.context-menu.reveal-line-in-preview'),
         contextMenuGroupId: 'other',
         keybindings: [KM.Alt | KC.KeyL],
         run: revealLineInPreview
       })
 
-      editor.addCommand(KM.Alt | KC.Enter, () => {
-        insert(editor.getModel()!.getEOL())
+      editor.addAction({
+        id: idForceInsertNewLine,
+        label: t('editor.context-menu.force-insert-new-line'),
+        contextMenuGroupId: 'modification',
+        keybindings: [KM.Alt | KC.Enter],
+        run: () => {
+          insert(editor.getModel()!.getEOL())
+        }
       })
 
-      editor.addCommand(KM.Shift | KC.Enter, () => {
-        insert(getOneIndent())
+      editor.addAction({
+        id: idForceInsertIndent,
+        label: t('editor.context-menu.force-insert-indent'),
+        contextMenuGroupId: 'modification',
+        keybindings: [KM.Shift | KC.Enter],
+        run: () => {
+          insert(getOneIndent())
+        }
       })
 
       editor.onDidChangeCursorPosition(e => {
@@ -154,13 +172,18 @@ export default {
         e.secondaryPositions.forEach(processCursorChange.bind(null, e.source))
       })
 
-      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyU), () => {
-        editor.getAction('editor.action.transformToUppercase')?.run()
-      })
-
-      editor.addCommand(KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyL), () => {
-        editor.getAction('editor.action.transformToLowercase')?.run()
-      })
+      monaco.editor.addKeybindingRules([
+        {
+          command: 'editor.action.transformToUppercase',
+          keybinding: KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyU),
+          when: 'editorTextFocus'
+        },
+        {
+          command: 'editor.action.transformToLowercase',
+          keybinding: KM.chord(KM.CtrlCmd | KC.KeyK, KM.CtrlCmd | KC.KeyL),
+          when: 'editorTextFocus'
+        }
+      ])
 
       editor.onDidCompositionStart(() => {
         ctx.store.commit('setInComposition', true)
@@ -174,17 +197,17 @@ export default {
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-insert']?.list?.push(
         {
-          id: 'plugin.editor.insert-time',
+          id: idInsertTime,
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.insert-time'),
-          subTitle: ctx.command.getKeysLabel([ctx.command.Shift, ctx.command.Alt, 't']),
+          subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idInsertTime) || []),
           onClick: insertTime,
         },
         {
-          id: 'plugin.editor.insert-date',
+          id: idInsertDate,
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.insert-date'),
-          subTitle: ctx.command.getKeysLabel([ctx.command.Shift, ctx.command.Alt, 'd']),
+          subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idInsertDate) || []),
           onClick: insertDate,
         },
       )
@@ -192,8 +215,10 @@ export default {
 
     ctx.action.registerAction({
       name: 'plugin.editor.focus-editor',
+      description: ctx.i18n.t('command-desc.plugin_editor_focus-editor'),
       handler: focusEditor,
-      keys: [ctx.command.Shift, ctx.command.Alt, 'x']
+      forUser: true,
+      keys: [ctx.keybinding.Shift, ctx.keybinding.Alt, 'x']
     })
   }
 } as Plugin

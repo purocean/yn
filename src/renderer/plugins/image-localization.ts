@@ -3,7 +3,6 @@ import * as api from '@fe/support/api'
 import { encodeMarkdownLink } from '@fe/utils'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import { CtrlCmd, isCommand, LeftClick, Shift } from '@fe/core/command'
 import { replaceValue } from '@fe/services/editor'
 import { refreshTree } from '@fe/services/tree'
 import { upload } from '@fe/services/base'
@@ -55,7 +54,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
   return null
 }
 
-const actionKeydown: BuildInActionName = 'plugin.image-localization.all'
+const actionKeydown: BuildInActionName = 'plugin.image-localization.download-all'
 const commandClick = 'plugin.image-localization.single-by-click'
 
 async function transformAll () {
@@ -81,44 +80,15 @@ async function transformAll () {
   refreshTree()
 }
 
-async function handleClick ({ e }: { e: MouseEvent }) {
-  const target = e.target as HTMLElement
-  if (target.tagName !== 'IMG') {
-    return false
-  }
-
-  const img = target as HTMLImageElement
-  if (isCommand(e, commandClick)) { // download image to local
-    const data = await transformImgOutLink(img)
-    if (data) {
-      replaceValue(data.oldLink, data.replacedLink)
-      refreshTree()
-    }
-  } else {
-    return false
-  }
-
-  e.stopPropagation()
-  e.preventDefault()
-
-  return true
-}
-
 export default {
   name: 'image-localization',
   register: (ctx) => {
     ctx.action.registerAction({
       name: actionKeydown,
-      handler: transformAll
+      handler: transformAll,
+      description: ctx.i18n.t('command-desc.plugin_image-localization_all'),
+      forUser: true,
     })
-
-    ctx.command.registerCommand({
-      id: commandClick,
-      keys: [CtrlCmd, Shift, LeftClick],
-      handler: null
-    })
-
-    ctx.registerHook('VIEW_ELEMENT_CLICK', handleClick)
 
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-tool']?.list?.push(

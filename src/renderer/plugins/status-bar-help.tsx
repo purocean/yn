@@ -21,12 +21,6 @@ export default {
       keys: null
     })
 
-    const showShortcutsAction = ctx.action.registerAction({
-      name: 'plugin.status-bar-help.show-shortcuts',
-      handler: () => ctx.doc.showHelp('SHORTCUTS.md'),
-      keys: null
-    })
-
     const showPluginAction = ctx.action.registerAction({
       name: 'plugin.status-bar-help.show-plugin',
       handler: () => ctx.doc.showHelp(getDoc('PLUGIN')),
@@ -63,7 +57,7 @@ export default {
             id: 'show-shortcuts',
             type: 'normal',
             title: ctx.i18n.t('status-bar.help.shortcuts'),
-            onClick: () => ctx.action.getActionHandler(showShortcutsAction.name)()
+            onClick: () => ctx.action.getActionHandler('keyboard-shortcuts.show-manager')()
           },
           {
             id: 'show-features',

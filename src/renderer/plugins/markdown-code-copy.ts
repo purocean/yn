@@ -73,7 +73,7 @@ export default {
       const codeInline = (fn: Function) => (tokens: any, idx: any, options: any, env: any, slf: any) => {
         if (tokens[idx].attrIndex('title') < 0) {
           tokens[idx].attrJoin('class', ctx.args.DOM_CLASS_NAME.COPY_INNER_TEXT)
-          tokens[idx].attrPush(['title', ctx.command.getKeyLabel('CtrlCmd') + ' + ' + ctx.i18n.t('click-to-copy')])
+          tokens[idx].attrPush(['title', ctx.keybinding.getKeyLabel('CtrlCmd') + ' + ' + ctx.i18n.t('click-to-copy')])
         }
 
         return (fn)(tokens, idx, options, env, slf)

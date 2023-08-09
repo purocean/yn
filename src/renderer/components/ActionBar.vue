@@ -21,7 +21,7 @@
     <div class="btns" v-if="navigation">
       <div v-for="(item, i) in navigation.items" :key="i">
         <div
-          v-if="item.showInActionBar && item.type === 'btn'"
+          v-if="item.type === 'btn' && item.showInActionBar"
           :class="{ btn: true, flat: item.flat, disabled: item.disabled, checked: item.checked }"
           :title="item.title"
           @click.stop="item.onClick"
@@ -42,9 +42,10 @@ import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
 import { toggleOutline, ControlCenter } from '@fe/services/workbench'
 import { findInRepository } from '@fe/services/base'
-import { getKeysLabel } from '@fe/core/command'
+import { getKeysLabel } from '@fe/core/keybinding'
 import type { FileSort, Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
+import { registerHook, removeHook } from '@fe/core/hook'
 
 const store = useStore<AppState>()
 const navigation = ref<Components.ControlCenter.Schema['navigation']>()
@@ -82,15 +83,16 @@ function showSortMenu () {
   ], { mouseX: x => x - 20, mouseY: y => y + 16 })
 }
 
-registerAction({
-  name: 'action-bar.refresh',
-  handler () {
-    navigation.value = ControlCenter.getSchema().navigation
-  }
-})
+function refresh () {
+  navigation.value = ControlCenter.getSchema().navigation
+}
+
+registerAction({ name: 'action-bar.refresh', handler: refresh })
+registerHook('COMMAND_KEYBINDING_CHANGED', refresh)
 
 onBeforeUnmount(() => {
   removeAction('action-bar.refresh')
+  removeHook('COMMAND_KEYBINDING_CHANGED', refresh)
 })
 </script>
 

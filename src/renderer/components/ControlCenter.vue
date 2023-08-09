@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: () => toggle(false) }">
+    <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: (byClickSelf: any) => !byClickSelf && toggle(false) }">
       <div v-for="(row, category) in schema" :key="category" class="row">
         <template v-for="(item, i) in row?.items" :key="i">
           <div
@@ -11,6 +11,7 @@
           >
             <svg-icon :name="item.icon" />
           </div>
+          <component v-if="item.type === 'custom'" :is="item.component" />
         </template>
       </div>
     </div>
@@ -20,7 +21,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, ref } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
-import { Alt, Escape, getKeysLabel } from '@fe/core/command'
+import { Alt, Escape, getKeysLabel } from '@fe/core/keybinding'
 import { ControlCenter, FileTabs } from '@fe/services/workbench'
 import { t } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
@@ -42,6 +43,8 @@ registerAction({
 
 registerAction({
   name: 'control-center.toggle',
+  description: t('command-desc.control-center_toggle'),
+  forUser: true,
   handler: toggle,
   keys: [Alt, 'c']
 })

@@ -42,6 +42,40 @@ export type SettingSchema = {
   }[],
 }
 
+export type ActionHandler<T extends string> = T extends BuildInActionName ? BuildInActions[T] : (...args: any[]) => any
+
+export interface Action<T extends string = string> {
+  /**
+   * Name
+   */
+  name: T,
+
+  /**
+   * Description
+   */
+  description?: string
+
+  /**
+   * user can set keybinding or list in action manager
+   */
+  forUser?: boolean
+
+  /**
+   * Associate shortcuts
+   */
+  keys?: null | (string | number)[]
+
+  /**
+   * Handler
+   */
+  handler: ActionHandler<T>
+
+  /**
+   * When should execute handler
+   */
+  when?: () => boolean
+}
+
 export type PremiumTab = 'intro' | 'activation'
 
 export interface PathItem {
@@ -194,6 +228,11 @@ export namespace Components {
       title: string,
       onClick?: () => void,
       showInActionBar?: boolean,
+      order?: number,
+    } | {
+      type: 'custom',
+      component: any,
+      order?: number,
     }
 
     export type SchemaItem = { items: Item[] }
@@ -215,6 +254,7 @@ export type LanguageName = 'system' | Language
 export type ExportType = 'print' | 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'macros' | 'render'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
+export type Keybinding = { type: 'workbench' | 'editor' | 'application', keys: string | null, command: string }
 
 export type PrintOpts = {
   landscape?: boolean,
@@ -283,6 +323,7 @@ export interface Extension {
 
 export interface BuildInSettings {
   'repos': Repo[],
+  'keybindings': Keybinding[],
   'macros': { match: string, replace: string }[],
   'theme': ThemeName,
   'language': LanguageName,
@@ -343,6 +384,7 @@ export type BuildInActions = {
   'doc.show-history': (doc?: Doc) => void
   'doc.hide-history': () => void,
   'extension.show-manager': (id?: string) => void,
+  'keyboard-shortcuts.show-manager': (id?: string) => void,
   'layout.toggle-view': (visible?: boolean) => void,
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
@@ -355,7 +397,7 @@ export type BuildInActions = {
   'editor.toggle-wrap': () => void,
   'editor.refresh-custom-editor': () => void,
   'editor.trigger-save': () => void,
-  'filter.show-quick-open': () => void,
+  'workbench.show-quick-open': () => void,
   'filter.choose-document': () => Promise<Doc>,
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
@@ -370,9 +412,8 @@ export type BuildInActions = {
   'plugin.image-hosting-picgo.upload': (file: File) => Promise<string | undefined>,
   'plugin.status-bar-help.show-readme': () => void,
   'plugin.status-bar-help.show-features': () => void,
-  'plugin.status-bar-help.show-shortcuts': () => void,
   'plugin.status-bar-help.show-plugin': () => void,
-  'plugin.image-localization.all': () => void,
+  'plugin.image-localization.download-all': () => void,
   'plugin.switch-todo.switch': (line?: number, checked?: boolean) => void,
   'plugin.electron-zoom.zoom-in': () => void,
   'plugin.electron-zoom.zoom-out': () => void,
@@ -446,12 +487,14 @@ export type BuildInHookTypes = {
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: Partial<BuildInSettings> },
   EXTENSION_READY: { extensions: Extension[] },
+  COMMAND_KEYBINDING_CHANGED: never,
   CODE_RUNNER_CHANGE: { type: 'register' | 'remove' },
   PLUGIN_HOOK: {
     plugin: 'markdown-katex',
     type: 'before-render',
     payload: { latex: string, options: any }
   },
+  PREMIUM_STATUS_CHANGED: never
 }
 
 export type Previewer = {
@@ -489,6 +532,7 @@ export interface CodeRunner {
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   TABS_ACTION_BTN_TAPPERS: (btns: Components.Tabs.ActionBtn[]) => void;
   TABS_TAB_CONTEXT_MENU_TAPPERS: (items: Components.ContextMenu.Item[], tab: Components.Tabs.Item) => void;
+  ACTION_TAPPERS: (action: Action) => void;
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
   EDITOR_SIMPLE_COMPLETION_ITEM_TAPPERS: any;

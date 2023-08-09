@@ -27,7 +27,7 @@ export default defineComponent({
     let timer: number | null = null
     const refEditor = ref<any>(null)
     const { currentFile, currentContent } = toRefs(store.state)
-    const nls = getCurrentLanguage().toLocaleLowerCase()
+    const nls = getCurrentLanguage().toLowerCase()
 
     const getMonacoEditor = () => refEditor.value
 

@@ -50,7 +50,6 @@ Yank Note has some concepts that are the basis for supporting the entire plug-in
 
 1. Hook
 1. Action
-1. Command
 
 ### Hook
 
@@ -81,9 +80,6 @@ For internal hook types, please refer to [Api Document](https://yn-api-doc.verce
 Yank Note has an Action Center [`ctx.action`](https://yn-api-doc.vercel.app/modules/renderer_core_action.html), which provides action management and operation。
 
 For internal action, please refer to [Api Document](https://yn-api-doc.vercel.app/modules/renderer_types.html#BuildInActions)
-
-### Command
-Yank Note has a Command Center [`ctx.command`](https://yn-api-doc.vercel.app/modules/renderer_core_command.html), which is mainly responsible for the management and operation of shortcut keys.
 
 ## Plug-In Capabilities
 

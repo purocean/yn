@@ -1,9 +1,10 @@
 import { debounce } from 'lodash-es'
 import * as ioc from '@fe/core/ioc'
 import { getActionHandler, registerAction } from '@fe/core/action'
-import { Alt, Shift } from '@fe/core/command'
+import { Alt, Shift } from '@fe/core/keybinding'
 import store from '@fe/support/store'
 import type { Components } from '@fe/types'
+import { t } from './i18n'
 
 /**
  * Toggle outline visible.
@@ -13,7 +14,13 @@ export function toggleOutline (visible?: boolean) {
   store.commit('setShowOutline', typeof visible === 'boolean' ? visible : !store.state.showOutline)
 }
 
-registerAction({ name: 'workbench.toggle-outline', handler: toggleOutline, keys: [Shift, Alt, 'o'] })
+registerAction({
+  name: 'workbench.toggle-outline',
+  description: t('command-desc.workbench_toggle-outline'),
+  forUser: true,
+  handler: toggleOutline,
+  keys: [Shift, Alt, 'o']
+})
 
 const _refreshTabsActionBtns = debounce(() => {
   getActionHandler('file-tabs.refresh-action-btns')()
@@ -115,6 +122,9 @@ export const ControlCenter = {
     const schema: Components.ControlCenter.Schema = { switch: { items: [] }, navigation: { items: [] } }
     const tappers: Components.ControlCenter.SchemaTapper[] = ioc.get('CONTROL_CENTER_SCHEMA_TAPPERS')
     tappers.forEach(tap => tap(schema))
+    const sortFun = (a: Components.ControlCenter.Item, b: Components.ControlCenter.Item) => (a.order || 256) - (b.order || 256)
+    schema.switch.items = schema.switch.items.sort(sortFun)
+    schema.navigation.items = schema.navigation.items.sort(sortFun)
     return schema
   },
 

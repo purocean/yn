@@ -2,9 +2,10 @@ import { nextTick } from 'vue'
 import { throttle } from 'lodash-es'
 import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
-import { Alt } from '@fe/core/command'
+import { Alt } from '@fe/core/keybinding'
 import store from '@fe/support/store'
 import * as view from './view'
+import { t } from './i18n'
 
 const emitResizeDebounce = throttle(() => {
   triggerHook('GLOBAL_RESIZE')
@@ -97,7 +98,34 @@ export function toggleEditorPreviewExclusive (exclusive?: boolean) {
   emitResize()
 }
 
-registerAction({ name: 'layout.toggle-side', handler: toggleSide, keys: [Alt, 'e'] })
-registerAction({ name: 'layout.toggle-editor', handler: toggleEditor, keys: [Alt, 'x'] })
-registerAction({ name: 'layout.toggle-view', handler: toggleView, keys: [Alt, 'v'] })
-registerAction({ name: 'layout.toggle-xterm', handler: toggleXterm, keys: [Alt, 't'] })
+registerAction({
+  name: 'layout.toggle-side',
+  description: t('command-desc.layout_toggle-side'),
+  handler: toggleSide,
+  forUser: true,
+  keys: [Alt, 'e']
+})
+
+registerAction({
+  name: 'layout.toggle-editor',
+  description: t('command-desc.layout_toggle-editor'),
+  handler: toggleEditor,
+  forUser: true,
+  keys: [Alt, 'x']
+})
+
+registerAction({
+  name: 'layout.toggle-view',
+  description: t('command-desc.layout_toggle-view'),
+  handler: toggleView,
+  forUser: true,
+  keys: [Alt, 'v']
+})
+
+registerAction({
+  name: 'layout.toggle-xterm',
+  description: t('command-desc.layout_toggle-xterm'),
+  handler: toggleXterm,
+  forUser: true,
+  keys: [Alt, 't']
+})

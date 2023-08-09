@@ -7,7 +7,7 @@ import { refresh } from '@fe/services/view'
 import { FLAG_DEMO, FLAG_MAS, MODE } from '@fe/support/args'
 import ga from '@fe/support/ga'
 import { getLogger, md5 } from '@fe/utils'
-import { registerHook } from '@fe/core/hook'
+import { registerHook, triggerHook } from '@fe/core/hook'
 import { useToast } from '@fe/support/ui/toast'
 import type { PremiumTab } from '@fe/types'
 import { getCurrentLanguage } from '@fe/services/i18n'
@@ -15,6 +15,7 @@ import { getCurrentLanguage } from '@fe/services/i18n'
 const tokenPrefix = 'ynkv2:'
 const logger = getLogger('premium')
 
+let lastPurchased: boolean | undefined
 let licenseToken: LicenseToken | null | undefined
 let upgradeTryCount = 0
 
@@ -106,8 +107,8 @@ async function upgradeV1License (oldLicense: string) {
   }
 }
 
-export function getPurchased (force = false) {
-  logger.debug('getPurchased', force)
+function _getPurchased (force = false) {
+  logger.debug('_getPurchased', force)
   if (FLAG_DEMO || MODE === 'share-preview') {
     return true
   }
@@ -118,6 +119,19 @@ export function getPurchased (force = false) {
   }
 
   return !!(token?.isAvailable)
+}
+
+export function getPurchased (force = false) {
+  const val = _getPurchased(force)
+
+  if (typeof lastPurchased === 'boolean' && val !== lastPurchased) {
+    lastPurchased = val
+    triggerHook('PREMIUM_STATUS_CHANGED')
+  } else {
+    lastPurchased = val
+  }
+
+  return val
 }
 
 export function showPremium (tab?: PremiumTab) {

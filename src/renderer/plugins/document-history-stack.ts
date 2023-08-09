@@ -52,14 +52,18 @@ export default {
 
     ctx.action.registerAction({
       name: backId,
+      description: ctx.i18n.t('command-desc.plugin_document-history-stack_back'),
+      forUser: true,
       handler: () => go(-1),
-      keys: [ctx.command.Alt, ctx.command.BracketLeft],
+      keys: [ctx.keybinding.Alt, ctx.keybinding.BracketLeft],
     })
 
     ctx.action.registerAction({
       name: forwardId,
+      description: ctx.i18n.t('command-desc.plugin_document-history-stack_forward'),
+      forUser: true,
       handler: () => go(1),
-      keys: [ctx.command.Alt, ctx.command.BracketRight],
+      keys: [ctx.keybinding.Alt, ctx.keybinding.BracketRight],
     })
 
     ctx.registerHook('STARTUP', () => {
@@ -70,7 +74,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('status-bar.nav.forward'),
             disabled: idx >= stack.length - 1,
-            subTitle: ctx.command.getKeysLabel(forwardId),
+            subTitle: ctx.keybinding.getKeysLabel(forwardId),
             onClick: () => ctx.action.getActionHandler(forwardId)()
           },
           {
@@ -78,7 +82,7 @@ export default {
             type: 'normal' as any,
             title: ctx.i18n.t('status-bar.nav.back'),
             disabled: idx <= 0,
-            subTitle: ctx.command.getKeysLabel(backId),
+            subTitle: ctx.keybinding.getKeysLabel(backId),
             onClick: () => ctx.action.getActionHandler(backId)()
           },
         )
@@ -91,7 +95,7 @@ export default {
           type: 'btn',
           icon: 'arrow-left-solid',
           flat: true,
-          title: ctx.i18n.t('control-center.navigation.back', ctx.command.getKeysLabel(backId)),
+          title: ctx.i18n.t('control-center.navigation.back', ctx.keybinding.getKeysLabel(backId)),
           disabled: idx <= 0,
           showInActionBar: true,
           onClick: () => ctx.action.getActionHandler(backId)()
@@ -100,7 +104,7 @@ export default {
           type: 'btn',
           icon: 'arrow-right-solid',
           flat: true,
-          title: ctx.i18n.t('control-center.navigation.forward', ctx.command.getKeysLabel(forwardId)),
+          title: ctx.i18n.t('control-center.navigation.forward', ctx.keybinding.getKeysLabel(forwardId)),
           disabled: idx >= stack.length - 1,
           showInActionBar: true,
           onClick: () => ctx.action.getActionHandler(forwardId)()

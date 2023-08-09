@@ -30,7 +30,9 @@ export default {
 
     ctx.action.registerAction({
       name: actionName,
-      keys: [ctx.command.Alt, 'o'],
+      description: ctx.i18n.t('command-desc.plugin_switch-todo_switch'),
+      keys: [ctx.keybinding.Alt, 'o'],
+      forUser: true,
       handler: (line?: number, checked?: boolean) => {
         if (line) {
           switchTodo(line, checked)

@@ -4,6 +4,7 @@
       :class="{'status-bar-menu': true, hidden: menu.hidden, 'custom-title': menu._customTitle}"
       v-for="menu in list.sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))"
       :key="menu.id"
+      :data-id="menu.id"
       @mousedown="menu.onMousedown && menu.onMousedown(menu)"
       @click="menu.onClick && menu.onClick(menu)">
       <div v-if="menu._customTitle" class="custom-title">
@@ -100,6 +101,7 @@ export default defineComponent({
   z-index: 99999;
   position: relative;
   overflow-x: hidden;
+  font-variant-numeric: tabular-nums;
 }
 
 .status-bar-menu.hidden {

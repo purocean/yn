@@ -45,7 +45,8 @@
             </div>
           </div>
           <div v-else class="list">
-            <div class="placeholder">{{ $t(registryExtensions ? 'extension.no-extension' : 'loading') }}</div>
+            <div v-if="!registryExtensions" class="placeholder">{{ $t('loading') }}</div>
+            <div v-else-if="registryExtensions.length === 0 && installedExtensions?.length === 0" class="placeholder">{{ $t('extension.no-extension') }}</div>
           </div>
         </div>
         <div class="detail">
@@ -663,7 +664,12 @@ watch(autoUpgrade, debounce((val) => {
 
 onMounted(() => {
   autoUpgrade.value = setting.getSetting('extension.auto-upgrade', true)
-  registerAction({ name: 'extension.show-manager', handler: show })
+  registerAction({
+    name: 'extension.show-manager',
+    description: t('command-desc.extension_show-manager'),
+    handler: show,
+    forUser: true,
+  })
 })
 
 onUnmounted(() => {

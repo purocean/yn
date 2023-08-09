@@ -41,7 +41,10 @@ export function removeHook<T extends HookType> (type: T, fun: HookFun<BuildInHoo
  * @returns
  */
 export async function triggerHook<T extends HookTypeWithoutPayload> (type: T): Promise<void>
-export async function triggerHook<T extends HookTypeWithPayload> (type: T, arg: BuildInHookTypes[T], options?: { breakable?: boolean, ignoreError?: boolean }): Promise<boolean>
+export async function triggerHook<T extends HookTypeWithoutPayload> (type: T, arg: undefined, options: { breakable: true }): Promise<void>
+export async function triggerHook<T extends HookTypeWithPayload> (type: T, arg: BuildInHookTypes[T]): Promise<void>
+export async function triggerHook<T extends HookTypeWithPayload> (type: T, arg: BuildInHookTypes[T], options: { breakable: true, ignoreError?: boolean }): Promise<boolean>
+export async function triggerHook<T extends HookTypeWithPayload> (type: T, arg: BuildInHookTypes[T], options?: { breakable?: false, ignoreError?: boolean }): Promise<void>
 export async function triggerHook<T extends HookType> (type: T, arg?: BuildInHookTypes[T], options?: { breakable?: boolean, ignoreError?: boolean }): Promise<boolean | void> {
   logger.debug('triggerHook', type, arg)
   const items: Hook<any>[] = ioc.get(type)

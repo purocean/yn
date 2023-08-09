@@ -22,6 +22,9 @@ import * as view from '@fe/services/view'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 import ga from '@fe/support/ga'
+import { getLogger } from '@fe/utils'
+
+const logger = getLogger('startup')
 
 init(plugins, ctx)
 
@@ -68,6 +71,10 @@ function changeLanguage ({ settings }: { settings: Partial<BuildInSettings> }) {
   }
 }
 
+function syncDomPremiumFlag () {
+  document.documentElement.setAttribute('premium', String(getPurchased()))
+}
+
 function switchDefaultPreviewer () {
   const attributes: FrontMatterAttrs | undefined = view.getRenderEnv()?.attributes
   if (attributes?.defaultPreviewer && typeof attributes.defaultPreviewer === 'string') {
@@ -77,6 +84,8 @@ function switchDefaultPreviewer () {
   }
 }
 
+registerHook('STARTUP', syncDomPremiumFlag)
+registerHook('PREMIUM_STATUS_CHANGED', syncDomPremiumFlag)
 registerHook('I18N_CHANGE_LANGUAGE', view.refresh)
 registerHook('SETTING_FETCHED', changeLanguage)
 registerHook('SETTING_BEFORE_WRITE', changeLanguage)
@@ -149,6 +158,14 @@ registerHook('VIEW_PREVIEWER_CHANGE', ({ type }) => {
 
 registerHook('VIEW_FILE_CHANGE', () => {
   registerHook('VIEW_RENDER', switchDefaultPreviewer, true)
+})
+
+registerHook('VIEW_BEFORE_REFRESH', async () => {
+  if (store.state.currentFile) {
+    logger.debug('force reload document')
+    const { type, name, path, repo } = store.state.currentFile
+    await switchDoc({ type, name, path, repo }, true)
+  }
 })
 
 store.watch(() => store.state.currentRepo, (val) => {

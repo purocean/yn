@@ -75,9 +75,14 @@ function addDocument (doc: Doc) {
 export default {
   name: 'editor-attachment',
   register: (ctx) => {
+    const idAddImage = 'plugin.editor.add-image'
+    const idAddFile = 'plugin.editor.add-file'
+    const idLinkDoc = 'plugin.editor.link-doc'
+    const idLinkFile = 'plugin.editor.link-file'
+
     whenEditorReady().then(({ editor, monaco }) => {
       editor.addAction({
-        id: 'plugin.editor.add-image',
+        id: idAddImage,
         contextMenuGroupId: 'modification',
         label: t('add-image'),
         keybindings: [
@@ -86,7 +91,7 @@ export default {
         run: () => addAttachment(true),
       })
       editor.addAction({
-        id: 'plugin.editor.add-file',
+        id: idAddFile,
         contextMenuGroupId: 'modification',
         label: t('editor.context-menu.add-attachment'),
         keybindings: [
@@ -95,7 +100,7 @@ export default {
         run: () => addAttachment(false),
       })
       editor.addAction({
-        id: 'plugin.editor.link-doc',
+        id: idLinkDoc,
         contextMenuGroupId: 'modification',
         label: t('editor.context-menu.link-doc'),
         keybindings: [
@@ -104,7 +109,7 @@ export default {
         run: () => getActionHandler('filter.choose-document')().then(addDocument),
       })
       editor.addAction({
-        id: 'plugin.editor.link-file',
+        id: idLinkFile,
         contextMenuGroupId: 'modification',
         label: t('editor.context-menu.link-file'),
         keybindings: [
@@ -117,31 +122,31 @@ export default {
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-insert']?.list?.push(
         {
-          id: 'plugin.editor.add-image',
+          id: idAddImage,
           type: 'normal',
           title: ctx.i18n.t('add-image'),
-          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'i']),
+          subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idAddImage) || []),
           onClick: () => addAttachment(true),
         },
         {
-          id: 'plugin.editor.add-file',
+          id: idAddFile,
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.add-attachment'),
-          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'f']),
+          subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idAddFile) || []),
           onClick: () => addAttachment(false),
         },
         {
-          id: 'plugin.editor.link-doc',
+          id: idLinkDoc,
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.link-doc'),
-          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, 'd']),
+          subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idLinkDoc) || []),
           onClick: () => getActionHandler('filter.choose-document')().then(addDocument),
         },
         {
-          id: 'plugin.editor.link-file',
+          id: idLinkFile,
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.link-file'),
-          subTitle: ctx.command.getKeysLabel([ctx.command.Alt, ctx.command.Shift, 'f']),
+          subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idLinkFile) || []),
           onClick: () => linkFile(),
         },
         { type: 'separator' },

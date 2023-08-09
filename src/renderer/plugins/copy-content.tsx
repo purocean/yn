@@ -139,8 +139,10 @@ export default {
 
     ctx.action.registerAction({
       name: id,
+      description: ctx.i18n.t('command-desc.plugin_copy-content_copy-content'),
       handler: copyContent,
-      keys: [ctx.command.CtrlCmd, ctx.command.Shift, 'c'],
+      forUser: true,
+      keys: [ctx.keybinding.CtrlCmd, ctx.keybinding.Shift, 'c'],
     })
 
     ctx.statusBar.tapMenus(menus => {
@@ -149,7 +151,7 @@ export default {
           id,
           type: 'normal',
           title: ctx.i18n.t('status-bar.tool.copy-content'),
-          subTitle: ctx.command.getKeysLabel(id),
+          subTitle: ctx.keybinding.getKeysLabel(id),
           onClick: () => copyContent(),
           order: 100,
         },

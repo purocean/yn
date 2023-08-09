@@ -13,8 +13,10 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { registerHook, removeHook } from '@fe/core/hook'
 
 let zIndex = 199998
+const maskStack: number[] = []
 
 export default defineComponent({
   name: 'x-mask',
@@ -49,9 +51,23 @@ export default defineComponent({
 
     function keydownHandler (e: KeyboardEvent) {
       if (e.key === 'Escape' && props.show) {
+        // close top mask
+        if (!maskStack.includes(zIndexRef.value) || Math.max(...maskStack) !== zIndexRef.value) {
+          return
+        }
+
         props.escCloseable && emit('close')
+        e.stopPropagation()
       }
     }
+
+    watch(() => props.show, (val) => {
+      if (val) {
+        maskStack.push(zIndexRef.value)
+      } else {
+        maskStack.splice(maskStack.indexOf(zIndexRef.value), 1)
+      }
+    }, { immediate: true, flush: 'post' })
 
     watch(() => props.show, (val) => {
       if (val) {
@@ -64,12 +80,13 @@ export default defineComponent({
 
     onMounted(() => {
       window.addEventListener('keypress', keypressHandler, true)
-      window.addEventListener('keydown', keydownHandler, true)
+      registerHook('GLOBAL_KEYDOWN', keydownHandler)
     })
 
     onBeforeUnmount(() => {
       window.removeEventListener('keypress', keypressHandler, true)
-      window.removeEventListener('keydown', keydownHandler, true)
+      removeHook('GLOBAL_KEYDOWN', keydownHandler)
+      maskStack.splice(maskStack.indexOf(zIndexRef.value), 1)
     })
 
     return { wrapperStyle }

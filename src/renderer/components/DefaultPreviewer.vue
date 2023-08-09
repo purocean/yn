@@ -188,7 +188,7 @@ const Progress = defineComponent({
     const offset = computed(() => 38 - (props.done / props.total) * 38)
     const percent = computed(() => ((props.done / props.total) * 100).toFixed(2) + '%')
 
-    return () => <div class="todo-progress" style={{ display: 'flex', margin: '0 4px', fontFamily: '"Helvetica Neue"' }} title={percent.value}>
+    return () => <div class="todo-progress" style={{ display: 'flex', margin: '0 4px', fontVariantNumeric: 'tabular-nums' }} title={percent.value}>
       <svg key="123" width="16" height="16" style={{ marginRight: '5px', transform: 'rotate(-90deg)' }}>
         <circle stroke="var(--g-color-70)" stroke-width="3" fill="transparent" cx="50%" cy="50%" r="6"></circle>
         <circle style="transition: stroke-dashoffset 0.35s; transform: rotate(7.105263157894736deg); transform-origin: center"
