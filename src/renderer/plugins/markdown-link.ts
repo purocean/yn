@@ -266,6 +266,23 @@ export default {
       return false
     })
 
+    ctx.registerHook('VIEW_AFTER_REFRESH', () => {
+      ctx.view.getRenderIframe().then(iframe => {
+        // reload all images
+        const images = iframe.contentDocument!.querySelectorAll('img')
+        for (let i = 0; i < images.length; i++) {
+          const img = images[i]
+
+          if (img.getAttribute(DOM_ATTR_NAME.LOCAL_IMAGE)) {
+            if (img.src) {
+              // add timestamp to force reload
+              img.src = img.src.includes('?') ? `${img.src}&_t=${Date.now()}` : `${img.src}?_t=${Date.now()}`
+            }
+          }
+        }
+      })
+    })
+
     ctx.markdown.registerPlugin(md => {
       md.core.ruler.push('convert_relative_path', convertLink)
       md.renderer.rules.link_open = (tokens, idx, options, _, slf) => {
