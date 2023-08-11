@@ -691,6 +691,7 @@ const data = {
     'plugin_image-localization_all': 'Download All Remote Images',
     'tree_refresh': 'Refresh File Tree',
     'plugin_status-bar-theme_switch': 'Switch Theme',
+    'editor_rotate-custom-editors': 'Rotate Custom Editors',
   },
   'keyboard-shortcuts': {
     'workbench': 'Workbench',

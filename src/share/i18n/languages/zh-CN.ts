@@ -692,6 +692,7 @@ const data: BaseLanguage = {
     'plugin_image-localization_all': '下载所有外链图片',
     'tree_refresh': '刷新文件树',
     'plugin_status-bar-theme_switch': '切换主题',
+    'editor_rotate-custom-editors': '轮换自定义编辑器',
   },
   'keyboard-shortcuts': {
     'workbench': '工作台',
