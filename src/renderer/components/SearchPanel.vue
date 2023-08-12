@@ -21,7 +21,7 @@
                   focus: $t('search-panel.placeholder-search') + ' ' + $t('search-panel.for-history')
                 }"
                 v-auto-resize="{ maxRows: 6, minRows: 1 }"
-                @keydown.enter.prevent="onKeydownEnter"
+                v-textarea-on-enter="search"
               />
               <div class="option-btns">
                 <div
@@ -52,7 +52,7 @@
               class="search-input"
               type="text"
               v-model="include"
-              @keydown.enter.prevent="onKeydownEnter"
+              v-textarea-on-enter="search"
               v-up-down-history
               v-placeholder="{
                 blur: '',
@@ -64,7 +64,7 @@
               class="search-input"
               type="text"
               v-model="exclude"
-              @keydown.enter.prevent="onKeydownEnter"
+              v-textarea-on-enter="search"
               v-up-down-history
               v-placeholder="{
                 blur: '',
@@ -390,28 +390,6 @@ async function chooseMatch (result: ISerializedFileMatch & { repo: string }, mat
   if (getIsDefault()) {
     await sleep(100)
     highlightLine(lines, true, 1000)
-  }
-}
-
-function onKeydownEnter (e: KeyboardEvent) {
-  if (e.isComposing) {
-    return
-  }
-
-  const target = e.target as HTMLInputElement
-
-  if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
-    const start = target.selectionStart
-    const end = target.selectionEnd
-    const content = target.value
-
-    if (start !== null && end !== null) {
-      target.value = content.slice(0, start) + '\n' + content.slice(end)
-      target.dispatchEvent(new Event('input'))
-      target.setSelectionRange(start + 1, start + 1)
-    }
-  } else {
-    search()
   }
 }
 
