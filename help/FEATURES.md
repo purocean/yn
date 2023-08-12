@@ -565,7 +565,7 @@ test 3
 
 ## OpenAI Auto Completion
 
-Yank Note integrates with [OpenAI](https://openai.com), press `[= $ctx.command.getKeysLabel('plugin.editor-openai.trigger') =]` to trigger intelligent completion (If text is selected, only the selected text is submitted to AI for calculation).
+Yank Note integrates with [OpenAI](https://openai.com), press `[= $ctx.keybinding.getKeysLabel('plugin.editor-openai.trigger') =]` to trigger intelligent completion (If text is selected, only the selected text is submitted to AI for calculation).
 
 Note: OpenAI API token needs to be obtained by yourself.
 
