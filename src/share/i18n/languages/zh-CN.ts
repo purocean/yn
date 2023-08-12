@@ -538,7 +538,7 @@ const data: BaseLanguage = {
       'sync-rendering': '同步渲染',
       'word-wrap': '编辑器换行 %s',
       'typewriter-mode': '打字机模式',
-      'find-in-preview': '在预览中查找',
+      'find-in-preview': '在预览中查找 %s',
     },
     'navigation': {
       'goto': '跳转 %s',

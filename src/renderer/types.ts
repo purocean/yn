@@ -229,10 +229,12 @@ export namespace Components {
       onClick?: () => void,
       showInActionBar?: boolean,
       order?: number,
+      hidden?: boolean,
     } | {
       type: 'custom',
       component: any,
       order?: number,
+      hidden?: boolean,
     }
 
     export type SchemaItem = { items: Item[] }

@@ -537,7 +537,7 @@ const data = {
       'sync-rendering': 'Synchronous Rendering',
       'word-wrap': 'Word Wrap %s',
       'typewriter-mode': 'Typewriter Mode',
-      'find-in-preview': 'Find in Preview',
+      'find-in-preview': 'Find in Preview %s',
     },
     'navigation': {
       'goto': 'Goto %s',
