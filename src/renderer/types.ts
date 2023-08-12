@@ -373,6 +373,7 @@ export interface BuildInSettings {
 
 export type BuildInActions = {
   'view.render-immediately': () => void,
+  'view.show-find-in-content': () => void,
   'view.render': () => void,
   'view.refresh': () => void,
   'view.reveal-line': (startLine: number) => Promise<HTMLElement | null>,
