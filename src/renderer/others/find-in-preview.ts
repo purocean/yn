@@ -5,14 +5,14 @@ interface Opts {
   regex?: boolean;
 }
 
-export interface IFindInContent {
+export interface IFindInPreview {
   exec(pattern: string, opts: Opts): void;
   getStats(): { count: number, current: number }
   next(): boolean;
   prev(): boolean;
 }
 
-export class BrowserFindInContent implements IFindInContent {
+export class BrowserFindInPreview implements IFindInPreview {
   private _matchCount = 0;
   private _win: Window;
   private _maxMatchCount: number;

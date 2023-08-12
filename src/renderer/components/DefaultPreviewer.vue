@@ -14,7 +14,7 @@
       </div>
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" @click="scrollToTop">TOP</div>
-    <FindInContent />
+    <FindInPreview />
     <XIFrame
       v-if="iframeVisible"
       global-style
@@ -47,7 +47,7 @@ import type { Components } from '@fe/types'
 import DefaultPreviewerRender from './DefaultPreviewerRender.ce.vue'
 import SvgIcon from './SvgIcon.vue'
 import Outline from './Outline.vue'
-import FindInContent from './FindInContent.vue'
+import FindInPreview from './FindInPreview.vue'
 import { FileTabs } from '@fe/services/workbench'
 import { isMarkdownFile } from '@fe/services/document'
 

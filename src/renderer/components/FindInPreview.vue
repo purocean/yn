@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'find-in-content': true, visible}">
+  <div :class="{'find-in-preview': true, visible}">
     <div class="input">
       <input
         class="search-input search-pattern"
@@ -34,16 +34,16 @@
       </div>
     </div>
     <div class="result" v-if="matches">
-      {{ $t('find-in-content.results', matches.count + (matches.exceed ? '+' : '')) }}
+      {{ $t('find-in-preview.results', matches.count + (matches.exceed ? '+' : '')) }}
     </div>
     <div class="action" @dblclick.capture.stop.prevent>
-      <div :class="{'action-btn': true, disabled: !(matches && matches.count > 0)}" :title="$t('find-in-content.action-tips.prev')">
+      <div :class="{'action-btn': true, disabled: !(matches && matches.count > 0)}" :title="$t('find-in-preview.action-tips.prev')">
         <svg-icon name="arrow-left-solid" width="14px" style="transform: rotate(90deg)" @click="search(true)" />
       </div>
-      <div :class="{'action-btn': true, disabled: !(matches && matches.count > 0)}" :title="$t('find-in-content.action-tips.next')" @click="search(false)">
+      <div :class="{'action-btn': true, disabled: !(matches && matches.count > 0)}" :title="$t('find-in-preview.action-tips.next')" @click="search(false)">
         <svg-icon name="arrow-left-solid" width="14px" style="transform: rotate(-90deg)" />
       </div>
-      <div class="action-btn" :title="$t('find-in-content.action-tips.close')" @click="close">
+      <div class="action-btn" :title="$t('find-in-preview.action-tips.close')" @click="close">
         <svg-icon name="times" width="14px" />
       </div>
     </div>
@@ -59,21 +59,21 @@ import { registerHook, removeHook } from '@fe/core/hook'
 import { CtrlCmd } from '@fe/core/keybinding'
 import { getRenderIframe } from '@fe/services/view'
 import { getEditor } from '@fe/services/editor'
-import { BrowserFindInContent } from '@fe/others/find-in-content'
+import { BrowserFindInPreview } from '@fe/others/find-in-preview'
 import store from '@fe/support/store'
 
 import SvgIcon from '@fe/components/SvgIcon.vue'
 
-const highlightClassName = 'find-in-content-highlight'
-const logger = getLogger('components:find-in-content')
+const highlightClassName = 'find-in-preview-highlight'
+const logger = getLogger('components:find-in-preview')
 const { $t, t } = useI18n()
 
-let findInContent: BrowserFindInContent | null = null
+let findInPreview: BrowserFindInPreview | null = null
 
 const patternInputRef = ref<HTMLInputElement>()
 const pattern = ref('')
 const visible = ref(false)
-const matches = ref<(ReturnType<BrowserFindInContent['getStats']> & { ended: boolean }) | null>(null)
+const matches = ref<(ReturnType<BrowserFindInPreview['getStats']> & { ended: boolean }) | null>(null)
 const option = reactive({
   isCaseSensitive: false,
   isRegExp: false
@@ -90,7 +90,7 @@ async function removeHighlight () {
   logger.debug('removeHighlight')
   const iframe = await getRenderIframe()
   const win = iframe.contentWindow!
-  win.document.body.classList.remove('find-in-content-highlight')
+  win.document.body.classList.remove('find-in-preview-highlight')
 }
 
 async function highlight () {
@@ -102,16 +102,16 @@ async function highlight () {
     return
   }
 
-  await sleep(0)
   win.document.body.classList.add(highlightClassName)
   await sleep(0)
+  win.document.body.classList.add(highlightClassName)
   win.document.addEventListener('selectionchange', removeHighlight, true)
 }
 
 function updateStats (ended: boolean) {
-  if (findInContent) {
+  if (findInPreview) {
     matches.value = {
-      ...findInContent.getStats(),
+      ...findInPreview.getStats(),
       ended,
     }
   } else {
@@ -133,11 +133,11 @@ function search (backward: boolean) {
     const key = JSON.stringify({ pattern: pattern.value, option })
     if (key !== cacheKey) {
       logger.debug('search: miss cache')
-      findInContent?.exec(pattern.value, { caseSensitive: option.isCaseSensitive, regex: option.isRegExp })
+      findInPreview?.exec(pattern.value, { caseSensitive: option.isCaseSensitive, regex: option.isRegExp })
       cacheKey = key
     }
 
-    const result = backward ? findInContent?.prev() : findInContent?.next()
+    const result = backward ? findInPreview?.prev() : findInPreview?.next()
     updateStats(!result)
 
     patternInputRef.value?.focus()
@@ -150,9 +150,9 @@ function search (backward: boolean) {
 function show () {
   visible.value = true
 
-  if (!findInContent) {
+  if (!findInPreview) {
     getRenderIframe().then(iframe => {
-      findInContent = new BrowserFindInContent(
+      findInPreview = new BrowserFindInPreview(
         iframe.contentWindow!,
         {
           maxMatchCount: 1000,
@@ -169,10 +169,11 @@ function show () {
   }, 0)
 }
 
-function close () {
+async function close () {
   visible.value = false
   patternInputRef.value?.blur()
-  highlight()
+  await sleep(0)
+  removeHighlight()
 }
 
 function toggleOption (key: keyof typeof option) {
@@ -187,8 +188,8 @@ function handleKeydown (e: KeyboardEvent) {
 }
 
 registerAction({
-  name: 'view.show-find-in-content',
-  description: t('command-desc.view_show-find-in-content-widget'),
+  name: 'view.show-find-in-preview',
+  description: t('command-desc.view_show-find-in-preview-widget'),
   keys: [CtrlCmd, 'f'],
   handler: show,
   forUser: true,
@@ -200,14 +201,14 @@ registerAction({
 registerHook('VIEW_RENDERED', cleanCache)
 
 onBeforeUnmount(() => {
-  removeAction('view.show-find-in-content')
+  removeAction('view.show-find-in-preview')
   removeHook('VIEW_RENDERED', cleanCache)
   removeHighlight()
 })
 </script>
 
 <style lang="scss" scoped>
-.find-in-content {
+.find-in-preview {
   position: fixed;
   right: 5em;
   top: 0.5em;

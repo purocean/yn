@@ -283,7 +283,7 @@ watch(fileUri, () => {
 <style lang="scss">
 @import '@fe/styles/mixins.scss';
 
-body.find-in-content-highlight ::selection {
+body.find-in-preview-highlight ::selection {
   background-color: #ffeb3b !important;
 }
 
