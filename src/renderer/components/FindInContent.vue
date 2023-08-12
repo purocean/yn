@@ -60,6 +60,7 @@ import { CtrlCmd } from '@fe/core/keybinding'
 import { getRenderIframe } from '@fe/services/view'
 import { getEditor } from '@fe/services/editor'
 import { BrowserFindInContent } from '@fe/others/find-in-content'
+import store from '@fe/support/store'
 
 import SvgIcon from '@fe/components/SvgIcon.vue'
 
@@ -138,6 +139,8 @@ function search (backward: boolean) {
 
     const result = backward ? findInContent?.prev() : findInContent?.next()
     updateStats(!result)
+
+    patternInputRef.value?.focus()
   } catch (error) {
     logger.error('search: error', error)
     matches.value = null
@@ -190,7 +193,7 @@ registerAction({
   handler: show,
   forUser: true,
   when: () => {
-    return !(getEditor()?.hasTextFocus())
+    return !(getEditor()?.hasTextFocus()) && store.state.showView
   }
 })
 
@@ -212,14 +215,19 @@ onBeforeUnmount(() => {
   backdrop-filter: var(--g-backdrop-filter);
   color: var(--g-color-10);
   font-size: 14px;
-  transition: .2s ease-in-out;
+  transition: transform .2s ease-in-out, box-shadow .1s ease-in-out;
   z-index: 500;
   border-radius: var(--g-border-radius);
   margin-top: 1em;
   display: flex;
   align-items: center;
-  box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 5px;
   transform: translateY(-200px);
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.25) 2px 2px 4px;
+
+  &:focus-within {
+    background: rgba(var(--g-color-86-rgb), 0.9);
+  }
 
   &.visible {
     transform: translateY(0);
@@ -248,7 +256,7 @@ onBeforeUnmount(() => {
     }
 
     &:focus {
-      background: var(--g-color-90);
+      background: transparent;
     }
   }
 

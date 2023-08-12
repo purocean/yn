@@ -284,7 +284,7 @@ watch(fileUri, () => {
 @import '@fe/styles/mixins.scss';
 
 body.find-in-content-highlight ::selection {
-  background-color: #ffeb3b;
+  background-color: #ffeb3b !important;
 }
 
 .markdown-view {

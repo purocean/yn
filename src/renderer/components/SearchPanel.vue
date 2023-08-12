@@ -362,6 +362,7 @@ async function search () {
 
 function toggleOption (key: keyof typeof option) {
   option[key] = !option[key]
+  patternInputRef.value?.focus()
   search()
 }
 
