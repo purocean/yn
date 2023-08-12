@@ -131,7 +131,8 @@ import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { switchDoc } from '@fe/services/document'
-import { getIsDefault, highlightLine } from '@fe/services/editor'
+import * as editor from '@fe/services/editor'
+import * as view from '@fe/services/view'
 import { useI18n } from '@fe/services/i18n'
 import { getSetting, showSettingPanel } from '@fe/services/setting'
 import { toggleSide } from '@fe/services/layout'
@@ -388,10 +389,13 @@ async function chooseMatch (result: ISerializedFileMatch & { repo: string }, mat
   logger.debug('chooseMatch', path, lines)
 
   await switchDoc({ type: 'file', path, repo, name: basename(path) })
-  if (getIsDefault()) {
-    await sleep(100)
-    highlightLine(lines, true, 1000)
+  await sleep(100)
+
+  if (editor.getIsDefault()) {
+    editor.highlightLine(lines, true, 1000)
   }
+
+  await view.highlightLine(lines[0], true, 1000)
 }
 
 function toggleExpandAll () {
