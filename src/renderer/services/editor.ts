@@ -86,6 +86,7 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
     enabled: false
   },
   lineNumbers: getSetting('editor.line-numbers', 'on'),
+  occurrencesHighlight: false,
   wordSeparators: '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?。？！，、；：“”‘’（）《》〈〉【】『』「」﹃﹄〔〕'
 })
 
@@ -511,6 +512,7 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
     colors: {
       'editor.background': '#ffffff',
       'minimap.background': '#f2f2f2',
+      'editor.lineHighlightBackground': '#0000000f',
     }
   })
 
@@ -521,6 +523,7 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
     colors: {
       'editor.background': '#131416',
       'minimap.background': '#101113',
+      'editor.lineHighlightBackground': '#ffffff13',
     }
   })
 })
