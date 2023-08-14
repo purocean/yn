@@ -387,6 +387,10 @@ body.find-in-preview-highlight ::selection {
 }
 
 @include dark-theme {
+  body.find-in-preview-highlight ::selection {
+    background-color: #bfb346 !important;
+  }
+
   .markdown-body {
     mark {
       background: #746900 !important;

@@ -148,10 +148,15 @@ function search (backward: boolean) {
 }
 
 function show () {
-  visible.value = true
+  getRenderIframe().then(iframe => {
+    // fill selected text
+    const selection = iframe.contentWindow!.getSelection()
+    if (selection?.toString()) {
+      pattern.value = selection.toString()
+    }
 
-  if (!findInPreview) {
-    getRenderIframe().then(iframe => {
+    // init findInPreview
+    if (!findInPreview) {
       findInPreview = new BrowserFindInPreview(
         iframe.contentWindow!,
         {
@@ -160,13 +165,15 @@ function show () {
           wrapAround: true,
         }
       )
-    })
-  }
+    }
 
-  setTimeout(() => {
-    patternInputRef.value?.focus()
-    patternInputRef.value?.select()
-  }, 0)
+    visible.value = true
+
+    setTimeout(() => {
+      patternInputRef.value?.focus()
+      patternInputRef.value?.select()
+    }, 0)
+  })
 }
 
 async function close () {
