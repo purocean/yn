@@ -26,7 +26,9 @@
                 </div>
                 <div class="description">{{ item.description }}</div>
                 <div class="bottom">
-                  <div v-if="item.origin === 'official'" class="author"><i>Yank Note</i></div>
+                  <div v-if="item.origin === 'official'" class="author">
+                    <i><svg-icon name="codicon-verified-filled" height="16px" />Yank Note</i>
+                  </div>
                   <div v-else class="author" >{{ item.author.name }}</div>
                   <div class="status-list">
                     <div v-if="!item.compatible.value" class="status">{{ $t('extension.incompatible') }}</div>
@@ -72,7 +74,10 @@
                   </div>
                   <div class="tag">
                     <span>{{ $t('extension.author') }}</span>
-                    <span v-if="currentExtension.origin === 'official'"><i>Yank Note</i></span>
+                    <span v-if="currentExtension.origin === 'official'">
+                      <svg-icon name="codicon-verified-filled" height="16px" style="margin-top: -4px;margin-bottom: -2px;" />
+                      <i>Yank Note</i>
+                    </span>
                     <span v-else>{{ currentExtension.author.name }}</span>
                   </div>
                   <div v-if="currentExtension.latestVersion" class="tag">
@@ -217,8 +222,6 @@ import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
 import { getLogger, sleep } from '@fe/utils'
 import * as api from '@fe/support/api'
 import { registerAction, removeAction } from '@fe/core/action'
-import XMask from '@fe/components/Mask.vue'
-import GroupTabs from '@fe/components/GroupTabs.vue'
 import * as extensionManager from '@fe/others/extension'
 import type { Extension, ExtensionCompatible } from '@fe/types'
 import { reloadMainWindow } from '@fe/services/base'
@@ -227,6 +230,10 @@ import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import { getPurchased, showPremium } from '@fe/others/premium'
 import { FLAG_DISABLE_XTERM, FLAG_MAS, URL_MAS_LIMITATION } from '@fe/support/args'
+
+import XMask from '@fe/components/Mask.vue'
+import GroupTabs from '@fe/components/GroupTabs.vue'
+import SvgIcon from '@fe/components/SvgIcon.vue'
 
 const markdownIt = Markdown({ linkify: true, breaks: true, html: false })
 
