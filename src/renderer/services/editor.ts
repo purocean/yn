@@ -57,6 +57,7 @@ function getFontFamily () {
  */
 export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstructionOptions => ({
   value: '',
+  accessibilitySupport: 'off', // prevent ime input flash
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: getSetting('editor.font-size', 16),
   wordWrap: store.state.wordWrap,
