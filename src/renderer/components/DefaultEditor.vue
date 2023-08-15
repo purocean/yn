@@ -129,14 +129,14 @@ export default defineComponent({
 
     onMounted(() => {
       registerHook('GLOBAL_RESIZE', resize)
-      registerHook('EDITOR_CHANGE', setCurrentValue)
+      registerHook('EDITOR_CONTENT_CHANGE', setCurrentValue)
       registerAction({ name: 'editor.trigger-save', handler: () => saveFile() })
       restartTimer()
     })
 
     onBeforeMount(() => {
       removeHook('GLOBAL_RESIZE', resize)
-      removeHook('EDITOR_CHANGE', setCurrentValue)
+      removeHook('EDITOR_CONTENT_CHANGE', setCurrentValue)
       removeAction('editor.trigger-save')
     })
 

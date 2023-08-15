@@ -36,7 +36,6 @@ export default defineComponent({
 
       model!.onDidChangeContent(() => {
         const value = model!.getValue()
-        triggerHook('MONACO_CHANGE_VALUE', { uri: uri.toString(), value })
       })
 
       model!.setValue(value)

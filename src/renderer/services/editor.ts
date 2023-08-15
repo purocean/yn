@@ -317,14 +317,16 @@ export function getValue () {
  */
 export function setValue (text: string) {
   const model = editor.getModel()
-  const maxLine = model!.getLineCount()
-  const endLineLength = model!.getLineLength(maxLine)
+
+  if (!model) {
+    return
+  }
 
   const viewState = editor.saveViewState()
 
   editor.executeEdits('', [
     {
-      range: new (getMonaco().Range)(1, 1, maxLine, endLineLength + 1),
+      range: model.getFullModelRange(),
       text,
       forceMoveMarkers: true
     }
@@ -535,10 +537,6 @@ registerHook('MONACO_READY', (payload) => {
   triggerHook('EDITOR_READY', payload)
 })
 
-registerHook('MONACO_CHANGE_VALUE', payload => {
-  triggerHook('EDITOR_CHANGE', payload)
-})
-
 registerHook('THEME_CHANGE', () => {
   monaco?.editor.setTheme(getColorScheme() === 'dark' ? 'vs-dark' : 'vs')
 })
@@ -558,6 +556,14 @@ whenEditorReady().then(({ editor }) => {
         editor.revealPositionInCenter(e.position)
       }
     }
+  })
+
+  editor.onDidChangeModelContent(() => {
+    const model = editor.getModel()!
+    const uri = model.uri.toString()
+    const value = model.getValue()
+
+    triggerHook('EDITOR_CONTENT_CHANGE', { uri, value })
   })
 })
 
