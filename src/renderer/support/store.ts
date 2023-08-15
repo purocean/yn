@@ -6,7 +6,7 @@ import type { Components, Doc, FileSort, Repo } from '@fe/types'
 export const initState = {
   tree: null as Components.Tree.Node[] | null,
   treeSort: storage.get<FileSort>('treeSort', { by: 'serial', order: 'asc' }),
-  wordWrap: storage.get<'off' | 'on'>('wordWrap', 'off'),
+  wordWrap: storage.get<'off' | 'on'>('wordWrap', 'on'),
   typewriterMode: storage.get<boolean>('typewriterMode', false),
   showSide: storage.get('showSide', true),
   showView: storage.get('showView', true),
