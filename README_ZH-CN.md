@@ -76,23 +76,18 @@
 
 ## 更新日志
 
-### [v3.58.2](https://github.com/purocean/yn/releases/tag/v3.58.2) 2023-08-09
+### [v3.59.1](https://github.com/purocean/yn/releases/tag/v3.59.1) 2023-08-15
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.58.2/Yank-Note-win-x64-3.58.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.58.2/Yank-Note-mac-arm64-3.58.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.58.2/Yank-Note-mac-x64-3.58.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.58.2/Yank-Note-linux-x86_64-3.58.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.58.2/Yank-Note-linux-amd64-3.58.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-win-x64-3.59.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-mac-arm64-3.59.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-mac-x64-3.59.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-linux-x86_64-3.59.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-linux-amd64-3.59.1.deb)
 
-1. feat: 增加自定义快捷键功能
-2. feat: 调整打开主窗口的快捷键
-3. feat: 控制中心增加调整预览文字基础字号功能
-4. feat: 编辑器自动补全代码片段增加语言选择
-5. fix: 修复多个对话框的时候，按下 ESC 会关闭对话框的问题
-6. fix: 升级 monaco-editor 到 0.41.0，修复片段补全丢失问题
-7. feat(plugin): 控制中心支持添加自定义 Vue 组件、自定元素顺序
-8. feat(plugin): 增加 `ctx.action.getRawActions` 方法
-9. feat(plugin): 增加 `ctx.action.tapAction` `ctx.action.removeActionTapper` 方法
-10. feat(plugin): 增加 `COMMAND_KEYBINDING_CHANGED` 钩子
-11. feat(plugin): 增加 `ctx.ioc.getRaw` 方法
-12. feat(plugin): `ctx.action.registerAction` 增加 `description` 和 `forUser` 字段
-13. refactor(plugin): 移除 `ctx.command` 模块，变更为 `ctx.keybinding` 模块
+1. feat: 增加“在预览中查找”功能
+2. feat: 切换已打开的文件时保留/恢复编辑器状态
+3. feat: 刷新文档的时候同时刷新图片
+4. feat: 增加轮换自定义编辑器快捷键
+5. feat: 扩展管理器中增加图标以标识官方扩展
+6. feat: 优化编辑器使用体验
+7. refactor(plugin): 移除 remove `MONACO_CHANGE_VALUE` Hook,
+8. refactor(plugin): `EDITOR_CHANGE` Hook 更名 `EDITOR_CONTENT_CHANGE`
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
