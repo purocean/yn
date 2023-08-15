@@ -76,10 +76,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.59.1](https://github.com/purocean/yn/releases/tag/v3.59.1) 2023-08-15
+### [v3.59.2](https://github.com/purocean/yn/releases/tag/v3.59.2) 2023-08-15
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-win-x64-3.59.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-mac-arm64-3.59.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-mac-x64-3.59.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-linux-x86_64-3.59.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-linux-amd64-3.59.1.deb)
-
+[Windows](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-win-x64-3.59.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-mac-arm64-3.59.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-mac-x64-3.59.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-linux-x86_64-3.59.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-linux-amd64-3.59.2.deb)
 
 1. feat: Add "Find in Preview" function
 2. feat: keep/restore editor state when switching open files
@@ -87,8 +86,9 @@ For more information on how to use the following functions, please see [characte
 4. feat: Add shortcut keys for rotating custom editors
 5. feat: Add icons in the extension manager to identify official extensions
 6. feat: optimize the editor experience
-7. refactor(plugin): remove remove `MONACO_CHANGE_VALUE` Hook,
-8. refactor(plugin): `EDITOR_CHANGE` Hook renamed to `EDITOR_CONTENT_CHANGE`
+7. fix: fix can't open file on Windows
+8. refactor(plugin): remove remove `MONACO_CHANGE_VALUE` Hook,
+9. refactor(plugin): `EDITOR_CHANGE` Hook renamed to `EDITOR_CONTENT_CHANGE`
 
 [More release notes](https://github.com/purocean/yn/releases)
 

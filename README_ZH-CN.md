@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.59.1](https://github.com/purocean/yn/releases/tag/v3.59.1) 2023-08-15
+### [v3.59.2](https://github.com/purocean/yn/releases/tag/v3.59.2) 2023-08-15
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-win-x64-3.59.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-mac-arm64-3.59.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-mac-x64-3.59.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-linux-x86_64-3.59.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.59.1/Yank-Note-linux-amd64-3.59.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-win-x64-3.59.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-mac-arm64-3.59.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-mac-x64-3.59.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-linux-x86_64-3.59.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-linux-amd64-3.59.2.deb)
 
 1. feat: 增加“在预览中查找”功能
 2. feat: 切换已打开的文件时保留/恢复编辑器状态
@@ -86,6 +86,7 @@
 4. feat: 增加轮换自定义编辑器快捷键
 5. feat: 扩展管理器中增加图标以标识官方扩展
 6. feat: 优化编辑器使用体验
+7. fix: 修复 Windows 上不能在系统中打开目录的问题
 7. refactor(plugin): 移除 remove `MONACO_CHANGE_VALUE` Hook,
 8. refactor(plugin): `EDITOR_CHANGE` Hook 更名 `EDITOR_CONTENT_CHANGE`
 
