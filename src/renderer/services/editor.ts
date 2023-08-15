@@ -57,6 +57,7 @@ function getFontFamily () {
  */
 export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstructionOptions => ({
   value: '',
+  accessibilitySupport: 'off', // prevent ime input flash
   theme: getColorScheme() === 'dark' ? 'vs-dark' : 'vs',
   fontSize: getSetting('editor.font-size', 16),
   wordWrap: store.state.wordWrap,
@@ -85,6 +86,8 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
     enabled: false
   },
   lineNumbers: getSetting('editor.line-numbers', 'on'),
+  occurrencesHighlight: false,
+  renderLineHighlight: 'all',
   wordSeparators: '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?。？！，、；：“”‘’（）《》〈〉【】『』「」﹃﹄〔〕'
 })
 
@@ -315,14 +318,16 @@ export function getValue () {
  */
 export function setValue (text: string) {
   const model = editor.getModel()
-  const maxLine = model!.getLineCount()
-  const endLineLength = model!.getLineLength(maxLine)
+
+  if (!model) {
+    return
+  }
 
   const viewState = editor.saveViewState()
 
   editor.executeEdits('', [
     {
-      range: new (getMonaco().Range)(1, 1, maxLine, endLineLength + 1),
+      range: model.getFullModelRange(),
       text,
       forceMoveMarkers: true
     }
@@ -510,6 +515,7 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
     colors: {
       'editor.background': '#ffffff',
       'minimap.background': '#f2f2f2',
+      'editor.lineHighlightBackground': '#0000000f',
     }
   })
 
@@ -520,6 +526,7 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
     colors: {
       'editor.background': '#131416',
       'minimap.background': '#101113',
+      'editor.lineHighlightBackground': '#ffffff13',
     }
   })
 })
@@ -529,10 +536,6 @@ registerHook('MONACO_READY', (payload) => {
   editor = payload.editor
 
   triggerHook('EDITOR_READY', payload)
-})
-
-registerHook('MONACO_CHANGE_VALUE', payload => {
-  triggerHook('EDITOR_CHANGE', payload)
 })
 
 registerHook('THEME_CHANGE', () => {
@@ -554,6 +557,14 @@ whenEditorReady().then(({ editor }) => {
         editor.revealPositionInCenter(e.position)
       }
     }
+  })
+
+  editor.onDidChangeModelContent(() => {
+    const model = editor.getModel()!
+    const uri = model.uri.toString()
+    const value = model.getValue()
+
+    triggerHook('EDITOR_CONTENT_CHANGE', { uri, value })
   })
 })
 

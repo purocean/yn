@@ -75,6 +75,15 @@ export default {
                 ctx.editor.toggleTypewriterMode()
               }
             },
+            {
+              type: 'btn',
+              icon: 'search-solid',
+              title: ctx.i18n.t('control-center.switch.find-in-preview', ctx.keybinding.getKeysLabel('view.show-find-in-preview')),
+              hidden: !ctx.store.state.showView || ctx.store.state.previewer !== 'default',
+              onClick: () => {
+                ctx.action.getActionHandler('view.show-find-in-preview')()
+              }
+            },
           )
         })
       } else {

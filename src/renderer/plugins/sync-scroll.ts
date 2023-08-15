@@ -3,61 +3,21 @@ import type { Plugin } from '@fe/context'
 export default {
   name: 'sync-scroll',
   register: (ctx) => {
-    type ScrollTop = { editor?: number, view?: number, updatedAt: number }
+    function syncScrollByEditor () {
+      const editor = ctx.editor.getEditor()
+      const visibleRange = editor.getVisibleRanges()[0]
+      const startLine = Math.max(1, visibleRange.startLineNumber - 1)
 
-    const STORAGE_KEY = 'plugin.scroll-position'
-
-    function saveScrollPosition (scrollTop: ScrollTop) {
-      const key = ctx.doc.toUri(ctx.store.state.currentFile)
-      const data: Record<string, ScrollTop> = ctx.storage.get(STORAGE_KEY, {})
-      data[key] = { ...data[key], ...scrollTop }
-
-      ctx.storage.set(STORAGE_KEY, Object.fromEntries(
-        ctx.lib.lodash.orderBy(Object.entries(data), x => x[1].updatedAt || 0, 'desc').slice(0, 100)
-      ))
+      if (ctx.view.getEnableSyncScroll()) {
+        ctx.view.revealLine(startLine)
+      }
     }
 
-    // restore scroll bar location after file switched.
-    ctx.registerHook('DOC_SWITCHED', async ({ doc }) => {
-      if (doc) {
-        await ctx.utils.sleep(0)
-
-        const key = ctx.doc.toUri(ctx.store.state.currentFile)
-        const data: Record<string, ScrollTop> = ctx.storage.get(STORAGE_KEY, {})
-        const position = data[key] || { editor: 0, view: 0 }
-
-        await ctx.editor.whenEditorReady()
-
-        ctx.view.disableSyncScrollAwhile(async () => {
-          ctx.editor.getEditor().setScrollTop(position.editor || 0)
-          if (typeof position.view === 'number') {
-            await ctx.utils.sleep(0)
-            ctx.view.scrollTopTo(position.view)
-          }
-        })
-      }
-    })
-
     ctx.editor.whenEditorReady().then(({ editor }) => {
-      const savePosition = ctx.lib.lodash.debounce(saveScrollPosition, 500)
-      editor.onDidScrollChange(() => {
-        const visibleRange = editor.getVisibleRanges()[0]
-        const startLine = Math.max(1, visibleRange.startLineNumber - 1)
-
-        const top = editor.getScrollTop()
-        if (ctx.view.getEnableSyncScroll()) {
-          ctx.view.revealLine(startLine)
-        }
-        savePosition({ editor: top, updatedAt: Date.now() })
+      editor.onDidScrollChange(syncScrollByEditor)
+      editor.onDidChangeModel(() => {
+        ctx.registerHook('VIEW_RENDERED', syncScrollByEditor, true)
       })
-    })
-
-    const savePosition = ctx.lib.lodash.debounce(saveScrollPosition, 500)
-    ctx.registerHook('VIEW_SCROLL', ({ e }) => {
-      if (ctx.store.state.currentFile?.status) {
-        const { scrollTop } = e.target as HTMLElement
-        savePosition({ view: scrollTop, updatedAt: Date.now() })
-      }
     })
 
     function clickScroll (e: MouseEvent) {

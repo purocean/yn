@@ -229,10 +229,12 @@ export namespace Components {
       onClick?: () => void,
       showInActionBar?: boolean,
       order?: number,
+      hidden?: boolean,
     } | {
       type: 'custom',
       component: any,
       order?: number,
+      hidden?: boolean,
     }
 
     export type SchemaItem = { items: Item[] }
@@ -373,6 +375,7 @@ export interface BuildInSettings {
 
 export type BuildInActions = {
   'view.render-immediately': () => void,
+  'view.show-find-in-preview': () => void,
   'view.render': () => void,
   'view.refresh': () => void,
   'view.reveal-line': (startLine: number) => Promise<HTMLElement | null>,
@@ -464,13 +467,12 @@ export type BuildInHookTypes = {
   },
   TREE_NODE_SELECT: { node: Components.Tree.Node },
   TREE_NODE_DBLCLICK: { node: Components.Tree.Node },
-  MONACO_CHANGE_VALUE : { uri: string, value: string },
   MONACO_BEFORE_INIT: { monaco: typeof Monaco },
   MONACO_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
   EDITOR_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
   EDITOR_CUSTOM_EDITOR_CHANGE: { type: 'register' | 'remove' | 'switch' },
   EDITOR_CURRENT_EDITOR_CHANGE: { current?: CustomEditor | null },
-  EDITOR_CHANGE: { uri: string, value: string },
+  EDITOR_CONTENT_CHANGE: { uri: string, value: string },
   DOC_CREATED: { doc: Doc },
   DOC_DELETED: { doc: Doc },
   DOC_MOVED: { oldDoc: Doc, newDoc: Doc },

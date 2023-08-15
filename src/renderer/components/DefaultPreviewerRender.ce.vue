@@ -283,6 +283,10 @@ watch(fileUri, () => {
 <style lang="scss">
 @import '@fe/styles/mixins.scss';
 
+body.find-in-preview-highlight ::selection {
+  background-color: #ffeb3b !important;
+}
+
 .markdown-view {
   padding: 40px;
   padding-top: 20px;
@@ -383,6 +387,10 @@ watch(fileUri, () => {
 }
 
 @include dark-theme {
+  body.find-in-preview-highlight ::selection {
+    background-color: #bfb346 !important;
+  }
+
   .markdown-body {
     mark {
       background: #746900 !important;

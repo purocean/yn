@@ -4,14 +4,14 @@
       <div v-for="(row, category) in schema" :key="category" class="row">
         <template v-for="(item, i) in row?.items" :key="i">
           <div
-            v-if="item.type === 'btn'"
+            v-if="!item.hidden && item.type === 'btn'"
             :class="{ btn: true, flat: item.flat, disabled: item.disabled, checked: item.checked }"
             :title="item.title"
             @click.stop="item.onClick"
           >
             <svg-icon :name="item.icon" />
           </div>
-          <component v-if="item.type === 'custom'" :is="item.component" />
+          <component v-if="!item.hidden && item.type === 'custom'" :is="item.component" />
         </template>
       </div>
     </div>

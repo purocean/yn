@@ -24,6 +24,7 @@ export default {
       return {
         type: 'custom',
         order: 1024,
+        hidden: !ctx.store.state.showView || ctx.store.state.previewer !== 'default',
         component: () => h('div', { style: 'width: 100%; display: flex; justify-content: center; align-items: center; height: 40px; padding: 0 10px;' }, [
           h('span', { style: 'margin-right: 8px; cursor: default', onClick: () => { previewFontSize.value = defaultFontSize } }, [
             'A',

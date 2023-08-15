@@ -21,7 +21,7 @@
                   focus: $t('search-panel.placeholder-search') + ' ' + $t('search-panel.for-history')
                 }"
                 v-auto-resize="{ maxRows: 6, minRows: 1 }"
-                @keydown.enter.prevent="onKeydownEnter"
+                v-textarea-on-enter="search"
               />
               <div class="option-btns">
                 <div
@@ -52,7 +52,7 @@
               class="search-input"
               type="text"
               v-model="include"
-              @keydown.enter.prevent="onKeydownEnter"
+              v-textarea-on-enter="search"
               v-up-down-history
               v-placeholder="{
                 blur: '',
@@ -64,7 +64,7 @@
               class="search-input"
               type="text"
               v-model="exclude"
-              @keydown.enter.prevent="onKeydownEnter"
+              v-textarea-on-enter="search"
               v-up-down-history
               v-placeholder="{
                 blur: '',
@@ -131,7 +131,8 @@ import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { switchDoc } from '@fe/services/document'
-import { getIsDefault, highlightLine } from '@fe/services/editor'
+import * as editor from '@fe/services/editor'
+import * as view from '@fe/services/view'
 import { useI18n } from '@fe/services/i18n'
 import { getSetting, showSettingPanel } from '@fe/services/setting'
 import { toggleSide } from '@fe/services/layout'
@@ -362,6 +363,7 @@ async function search () {
 
 function toggleOption (key: keyof typeof option) {
   option[key] = !option[key]
+  patternInputRef.value?.focus()
   search()
 }
 
@@ -387,32 +389,13 @@ async function chooseMatch (result: ISerializedFileMatch & { repo: string }, mat
   logger.debug('chooseMatch', path, lines)
 
   await switchDoc({ type: 'file', path, repo, name: basename(path) })
-  if (getIsDefault()) {
-    await sleep(100)
-    highlightLine(lines, true, 1000)
-  }
-}
+  await sleep(100)
 
-function onKeydownEnter (e: KeyboardEvent) {
-  if (e.isComposing) {
-    return
+  if (editor.getIsDefault()) {
+    editor.highlightLine(lines, true, 1000)
   }
 
-  const target = e.target as HTMLInputElement
-
-  if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
-    const start = target.selectionStart
-    const end = target.selectionEnd
-    const content = target.value
-
-    if (start !== null && end !== null) {
-      target.value = content.slice(0, start) + '\n' + content.slice(end)
-      target.dispatchEvent(new Event('input'))
-      target.setSelectionRange(start + 1, start + 1)
-    }
-  } else {
-    search()
-  }
+  await view.highlightLine(lines[0], true, 1000)
 }
 
 function toggleExpandAll () {

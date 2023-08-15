@@ -72,6 +72,18 @@ function refreshEditor () {
   changeEditor({ doc: store.state.currentFile })
 }
 
+function chooseEditor (key: string) {
+  switchEditor(key)
+
+  // sync default editor content
+  nextTick(() => {
+    const { currentContent } = store.state
+    if (getIsDefault() && getValue() !== currentContent) {
+      setValue(currentContent)
+    }
+  })
+}
+
 function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
   const order = 7000
   if (availableEditors.value.length > 1) {
@@ -90,15 +102,7 @@ function tabsActionBtnTapper (btns: Components.Tabs.ActionBtn[]) {
           list: availableEditors.value.map(x => ({ key: x.name, label: x.displayName || x.name })),
           current: currentEditor.value?.name || 'default',
           onChoose: ({ key }) => {
-            switchEditor(key)
-
-            // sync default editor content
-            nextTick(() => {
-              const { currentContent } = store.state
-              if (getIsDefault() && getValue() !== currentContent) {
-                setValue(currentContent)
-              }
-            })
+            chooseEditor(key)
           },
         })
       },
@@ -112,6 +116,19 @@ onMounted(() => {
     handler: refreshEditor,
   })
 
+  registerAction({
+    name: 'editor.rotate-custom-editors',
+    description: t('command-desc.editor_rotate-custom-editors'),
+    forUser: true,
+    handler: () => {
+      if (availableEditors.value.length > 1) {
+        const index = availableEditors.value.findIndex(x => x.name === store.state.editor)
+        const nextIndex = index === availableEditors.value.length - 1 ? 0 : index + 1
+        chooseEditor(availableEditors.value[nextIndex].name)
+      }
+    },
+  })
+
   registerHook('DOC_BEFORE_SWITCH', changeEditor)
   registerHook('DOC_SWITCH_FAILED', refreshEditor)
   registerHook('EDITOR_CUSTOM_EDITOR_CHANGE', refreshEditor)
@@ -122,6 +139,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   removeAction('editor.refresh-custom-editor')
+  removeAction('editor.rotate-custom-editors')
   removeHook('DOC_BEFORE_SWITCH', changeEditor)
   removeHook('DOC_SWITCH_FAILED', refreshEditor)
   removeHook('EDITOR_CUSTOM_EDITOR_CHANGE', refreshEditor)

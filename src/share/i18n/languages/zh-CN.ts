@@ -538,6 +538,7 @@ const data: BaseLanguage = {
       'sync-rendering': '同步渲染',
       'word-wrap': '编辑器换行 %s',
       'typewriter-mode': '打字机模式',
+      'find-in-preview': '在预览中查找 %s',
     },
     'navigation': {
       'goto': '跳转 %s',
@@ -692,6 +693,8 @@ const data: BaseLanguage = {
     'plugin_image-localization_all': '下载所有外链图片',
     'tree_refresh': '刷新文件树',
     'plugin_status-bar-theme_switch': '切换主题',
+    'editor_rotate-custom-editors': '轮换自定义编辑器',
+    'view_show-find-in-preview-widget': '显示在预览中查找',
   },
   'keyboard-shortcuts': {
     'workbench': '工作台',
@@ -714,6 +717,15 @@ const data: BaseLanguage = {
     'conflict': '冲突',
     'conflict-title': '冲突的快捷键 (%s)',
     'conflict-commands': '下面的命令使用了相同的快捷键：',
+  },
+  'find-in-preview': {
+    'action-tips': {
+      'prev': '上一个 (Shift + Enter)',
+      'next': '下一个 (Enter)',
+      'close': '关闭 (Esc)',
+    },
+    'toast-no-more': '没有更多',
+    'results': '%s 个匹配',
   },
 }
 

@@ -35,7 +35,7 @@ export const getAccelerator = (command: AcceleratorCommand): string | undefined 
   return accelerators.find(a => a.command === command)?.accelerator || undefined
 }
 
-export const registerShortcut = (commands: typeof currentCommands) => {
+export const registerShortcut = (commands: typeof currentCommands, showAlert = false) => {
   currentCommands = { ...commands }
 
   if (FLAG_DISABLE_SERVER) {
@@ -58,7 +58,9 @@ export const registerShortcut = (commands: typeof currentCommands) => {
       }
     } catch (error) {
       console.error(error)
-      dialog.showErrorBox('Error', `Failed to register shortcut: ${accelerator}`)
+      if (showAlert) {
+        dialog.showErrorBox('Error', `Failed to register shortcut: ${accelerator}`)
+      }
     }
   })
 
@@ -68,7 +70,7 @@ export const registerShortcut = (commands: typeof currentCommands) => {
 function reload (changedKeys: string[]) {
   if (changedKeys.includes('keybindings')) {
     console.log('reload keybindings')
-    registerShortcut(currentCommands)
+    registerShortcut(currentCommands, true)
   }
 }
 

@@ -564,7 +564,7 @@ test 3
 
 ## OpenAI 自动补全
 
-Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command.getKeysLabel('plugin.editor-openai.trigger') =]` 即可实现智能补全（如果选中了文字，则只将选中的文字提交给 AI 计算）。
+Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.keybinding.getKeysLabel('plugin.editor-openai.trigger') =]` 即可实现智能补全（如果选中了文字，则只将选中的文字提交给 AI 计算）。
 
 注：OpenAI API token 需要你自行获取。
 
