@@ -115,6 +115,10 @@ export async function openExternal (uri: string) {
  * @param path
  */
 export async function openPath (path: string) {
+  if (isWindows) {
+    path = path.replaceAll('/', '\\')
+  }
+
   await api.rpc(`require('electron').shell.openPath(${quote(path)})`)
 }
 
