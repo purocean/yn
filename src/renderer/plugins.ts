@@ -26,6 +26,7 @@ import editorMdSyntax from '@fe/plugins/editor-md-syntax'
 import editorWords from '@fe/plugins/editor-words'
 import editorPathCompletion from '@fe/plugins/editor-path-completion'
 import editorFolding from '@fe/plugins/editor-folding'
+import editorRestoreState from '@fe/plugins/editor-restore-state'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
@@ -94,6 +95,7 @@ export default [
   editorWords,
   editorPathCompletion,
   editorFolding,
+  editorRestoreState,
   copyText,
   switchTodo,
   imageViewer,

@@ -25,32 +25,31 @@ export default defineComponent({
 
     function createModel (uriString: string, value: string) {
       const monaco = getMonaco()
+      const editor = getEditor()
       const models: monaco.editor.ITextModel[] = monaco.editor.getModels()
       const uri: monaco.Uri = monaco.Uri.parse(uriString)
 
       let model = models.find(x => uri.toString() === x.uri.toString())
 
-      if (!model) {
-        model = getMonaco().editor.createModel(value, undefined, uri)
+      if (model) {
+        if (model.getValue() !== value) {
+          model.pushEditOperations(
+            null,
+            [
+              {
+                range: model.getFullModelRange(),
+                text: value,
+              },
+            ],
+            () => null
+          )
+        }
+      } else {
+        model = monaco.editor.createModel(value, undefined, uri)
+        model!.setValue(value)
       }
 
-      model!.onDidChangeContent(() => {
-        const value = model!.getValue()
-      })
-
-      model!.setValue(value)
-
-      getEditor().setModel(model!)
-
-      // clear all other models
-      // TODO cache model
-      setTimeout(() => {
-        monaco.editor.getModels().forEach((model: monaco.editor.ITextModel) => {
-          if (model.uri.toString() !== uri.toString()) {
-            model.dispose()
-          }
-        })
-      }, 0)
+      editor.setModel(model!)
     }
 
     function initMonaco () {
