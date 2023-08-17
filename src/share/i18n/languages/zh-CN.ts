@@ -695,6 +695,7 @@ const data: BaseLanguage = {
     'plugin_status-bar-theme_switch': '切换主题',
     'editor_rotate-custom-editors': '轮换自定义编辑器',
     'view_show-find-in-preview-widget': '显示在预览中查找',
+    'tree_reveal-current-node': '在文件树中显示当前文件',
   },
   'keyboard-shortcuts': {
     'workbench': '工作台',

@@ -694,6 +694,7 @@ const data = {
     'plugin_status-bar-theme_switch': 'Switch Theme',
     'editor_rotate-custom-editors': 'Rotate Custom Editors',
     'view_show-find-in-preview-widget': 'Show Find in Preview Widget',
+    'tree_reveal-current-node': 'Reveal Current Document in File Tree',
   },
   'keyboard-shortcuts': {
     'workbench': 'Workbench',
