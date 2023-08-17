@@ -344,6 +344,7 @@ export interface BuildInSettings {
   'editor.font-family': string,
   'editor.complete-emoji': boolean,
   'editor.todo-with-time': boolean,
+  'editor.fold-link-url': boolean,
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,

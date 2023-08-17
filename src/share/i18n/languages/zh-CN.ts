@@ -372,6 +372,7 @@ const data: BaseLanguage = {
         'font-family': '字体',
         'complete-emoji': '自动补全 Emoji - 输入 : 时显示 Emoji 列表',
         'todo-with-time': '勾选待办事项时自动添加时间',
+        'fold-link-url': '折叠图片/链接 URL',
       },
       'render': {
         'md-html': '启用 HTML',

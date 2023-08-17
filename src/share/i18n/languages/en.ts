@@ -381,6 +381,7 @@ const data = {
         'font-family': 'Font Family',
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
         'todo-with-time': 'Add time when checking todo',
+        'fold-link-url': 'Fold Image / Link URL',
       },
       'render': {
         'md-html': 'Enable HTML',
