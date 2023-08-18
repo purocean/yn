@@ -712,6 +712,7 @@ onBeforeUnmount(() => {
         margin-right: 4px;
         transform: rotate(-90deg);
         transition: transform 0.1s;
+        flex: none;
       }
 
       &:hover {
