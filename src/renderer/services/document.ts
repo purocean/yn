@@ -476,8 +476,9 @@ export async function saveDoc (doc: Doc, content: string): Promise<void> {
   return lock.acquire('saveDoc', async (done) => {
     try {
       await _saveDoc(doc, content)
-    } finally {
       done()
+    } catch (e: any) {
+      done(e)
     }
   })
 }
@@ -666,8 +667,9 @@ export async function switchDoc (doc: Doc | null, force = false): Promise<void> 
   return lock.acquire('switchDoc', async (done) => {
     try {
       await _switchDoc(doc, force)
-    } finally {
       done()
+    } catch (e: any) {
+      done(e)
     }
   })
 }
