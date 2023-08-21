@@ -583,6 +583,8 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
     return
   }
 
+  await triggerHook('DOC_PRE_SWITCH', { doc }, { breakable: true })
+
   await ensureCurrentFileSaved().catch(error => {
     if (force) {
       console.error(error)

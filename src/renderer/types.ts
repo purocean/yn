@@ -476,6 +476,7 @@ export type BuildInHookTypes = {
   DOC_CREATED: { doc: Doc },
   DOC_DELETED: { doc: Doc },
   DOC_MOVED: { oldDoc: Doc, newDoc: Doc },
+  DOC_PRE_SWITCH: { doc?: Doc | null },
   DOC_BEFORE_SAVE: { doc: Doc, content: string },
   DOC_SAVED: { doc: Doc },
   DOC_BEFORE_SWITCH: { doc?: Doc | null },
