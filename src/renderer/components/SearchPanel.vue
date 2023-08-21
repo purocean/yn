@@ -391,7 +391,7 @@ async function chooseMatch (result: ISerializedFileMatch & { repo: string }, mat
   await switchDoc({ type: 'file', path, repo, name: basename(path) })
   await sleep(100)
 
-  if (editor.getIsDefault()) {
+  if (editor.isDefault()) {
     editor.highlightLine(lines, true, 1000)
   }
 

@@ -6,7 +6,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'vue'
 import { useStore } from 'vuex'
-import { getAllCustomEditors, getIsDefault, getValue, setValue, switchEditor } from '@fe/services/editor'
+import { getAllCustomEditors, isDefault, getValue, setValue, switchEditor } from '@fe/services/editor'
 import { registerAction, removeAction } from '@fe/core/action'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { getLogger, storage } from '@fe/utils'
@@ -78,7 +78,7 @@ function chooseEditor (key: string) {
   // sync default editor content
   nextTick(() => {
     const { currentContent } = store.state
-    if (getIsDefault() && getValue() !== currentContent) {
+    if (isDefault() && getValue() !== currentContent) {
       setValue(currentContent)
     }
   })

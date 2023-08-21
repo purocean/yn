@@ -10,7 +10,7 @@ import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { isEncrypted, isSameFile, saveDoc, toUri } from '@fe/services/document'
-import { getEditor, getIsDefault, setValue, whenEditorReady } from '@fe/services/editor'
+import { getEditor, isDefault, setValue, whenEditorReady } from '@fe/services/editor'
 import { FLAG_READONLY, HELP_REPO_NAME } from '@fe/support/args'
 import { getSetting } from '@fe/services/setting'
 import { getCurrentLanguage } from '@fe/services/i18n'
@@ -32,7 +32,7 @@ export default defineComponent({
     const getMonacoEditor = () => refEditor.value
 
     function setCurrentValue ({ uri, value }: { uri: string; value: any}) {
-      if (toUri(currentFile.value) === uri && getIsDefault()) {
+      if (toUri(currentFile.value) === uri && isDefault()) {
         store.commit('setCurrentContent', value)
       }
     }
@@ -114,7 +114,7 @@ export default defineComponent({
         readOnly: FLAG_READONLY || !current || !current.plain
       })
 
-      if (getIsDefault()) {
+      if (isDefault()) {
         await nextTick()
         getEditor().focus()
       }
