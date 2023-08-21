@@ -487,6 +487,8 @@ export async function saveDoc (doc: Doc, content: string): Promise<void> {
  * Ensure current document is saved.
  */
 export async function ensureCurrentFileSaved () {
+  await triggerHook('DOC_PRE_ENSURE_CURRENT_FILE_SAVED', undefined, { breakable: true })
+
   const { currentFile, currentContent } = store.state
 
   // do not check if current file is not plain file.

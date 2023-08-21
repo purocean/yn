@@ -484,6 +484,7 @@ export type BuildInHookTypes = {
   DOC_SWITCHED: { doc: Doc | null },
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
+  DOC_PRE_ENSURE_CURRENT_FILE_SAVED: never,
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
   SETTING_CHANGED: { schema: SettingSchema, changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
