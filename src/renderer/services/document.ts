@@ -488,6 +488,11 @@ export async function saveDoc (doc: Doc, content: string): Promise<void> {
 export async function ensureCurrentFileSaved () {
   const { currentFile, currentContent } = store.state
 
+  // do not check if current file is not plain file.
+  if (currentFile && !extensions.supported(currentFile.name)) {
+    return
+  }
+
   // check blank file.
   if (!currentFile && currentContent.trim()) {
     const confirm = await useModal().confirm({
