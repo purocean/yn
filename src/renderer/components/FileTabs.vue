@@ -76,12 +76,15 @@ export default defineComponent({
     }
 
     async function removeTabs (items: {key: string}[]) {
-      if (items.find(x => x.key === current.value)) {
-        await ensureCurrentFileSaved()
+      const keys = items.map(x => x.key)
+      const rest = tabs.value.filter(x => keys.indexOf(x.key) === -1)
+
+      // if close current file, switch other first
+      if (items.some(x => x.key === current.value)) {
+        await switchDoc(rest.length > 0 ? rest[rest.length - 1].payload.file : null)
       }
 
-      const keys = items.map(x => x.key)
-      setTabs(tabs.value.filter(x => keys.indexOf(x.key) === -1))
+      setTabs(rest)
     }
 
     function addTab (item: Components.FileTabs.Item) {
