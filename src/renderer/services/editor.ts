@@ -484,6 +484,19 @@ export function isDefault () {
   return !currentEditor?.component
 }
 
+/**
+ * Get current editor is dirty or not.
+ * @returns
+ */
+export async function isDirty (): Promise<boolean> {
+  // default editor, check documentSaved. TODO refactor
+  if (isDefault()) {
+    return !window.documentSaved
+  }
+
+  return currentEditor?.getIsDirty ? (await currentEditor.getIsDirty()) : false
+}
+
 registerAction({
   name: 'editor.toggle-wrap',
   description: t('command-desc.editor_toggle-wrap'),

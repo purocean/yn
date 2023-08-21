@@ -516,6 +516,7 @@ export type CustomEditor = {
   hiddenPreview?: boolean,
   when: (ctx: CustomEditorCtx) => boolean | Promise<boolean>,
   component: any,
+  getIsDirty?: () => boolean | Promise<boolean>,
 }
 
 export interface CodeRunner {
