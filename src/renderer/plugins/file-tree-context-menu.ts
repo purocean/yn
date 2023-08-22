@@ -13,12 +13,29 @@ export default {
       }
     }
 
+    function addItem (node: Doc) {
+      const input = window.document.createElement('input')
+      input.type = 'file'
+      input.multiple = true
+      input.onchange = async () => {
+        for (let i = 0; i < input.files!.length; i++) {
+          const file = input.files![i]
+          const fileBase64Url = await ctx.utils.fileToBase64URL(file)
+          const filePath = ctx.utils.path.resolve(node.path, file.name)
+          await ctx.api.upload(node.repo, fileBase64Url, filePath)
+        }
+
+        ctx.tree.refreshTree()
+      }
+      input.click()
+    }
+
     function getItems (node: Doc, position: 'tabs' | 'tree'): Components.ContextMenu.Item[] {
       const t = ctx.i18n.t
       const isMarkdown = ctx.doc.isMarkdownFile(node)
 
       const disableItems = ctx.args.FLAG_READONLY
-        ? ['duplicate', 'duplicate', 'create-dir', 'create-doc', 'create-in-cd', 'rename', 'delete', 'open-in-terminal']
+        ? ['add-item', 'duplicate', 'duplicate', 'create-dir', 'create-doc', 'create-in-cd', 'rename', 'delete', 'open-in-terminal']
         : []
 
       if (position === 'tabs') {
@@ -31,7 +48,8 @@ export default {
         ] : []),
         ...(node.type === 'dir' ? [
           { id: 'create-doc', label: t('tree.context-menu.create-doc'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) },
-          { id: 'create-dir', label: t('tree.context-menu.create-dir'), onClick: () => ctx.doc.createDir({ repo: node.repo }, node) }
+          { id: 'create-dir', label: t('tree.context-menu.create-dir'), onClick: () => ctx.doc.createDir({ repo: node.repo }, node) },
+          { id: 'add-item', label: t('tree.context-menu.add-item'), onClick: () => addItem(node) },
         ] : []),
         ...(node.path !== '/' ? [
           { id: 'rename', label: t('tree.context-menu.rename'), onClick: () => ctx.doc.moveDoc(node) },

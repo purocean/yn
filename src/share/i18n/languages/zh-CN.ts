@@ -290,6 +290,7 @@ const data: BaseLanguage = {
       'duplicate': '重复文件',
       'create-doc': '创建文件',
       'create-dir': '创建文件夹',
+      'add-item': '添加文件',
       'rename': '重命名 / 移动',
       'delete': '删除',
       'open-in-os': '在系统中打开',

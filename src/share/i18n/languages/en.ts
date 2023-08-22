@@ -289,6 +289,7 @@ const data = {
       'duplicate': 'Duplicate',
       'create-doc': 'New File',
       'create-dir': 'New Folder',
+      'add-item': 'Add Item',
       'rename': 'Rename / Move',
       'delete': 'Delete',
       'open-in-os': 'Open in OS',
