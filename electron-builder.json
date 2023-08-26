@@ -8,14 +8,14 @@
     "help/**/*",
     "dist/main/resources/**/*",
     "node_modules/fsevents/**/*",
-    "node_modules/plantuml-pipe/**/*",
     "node_modules/node-pty/**/*",
     "node_modules/@vscode/ripgrep/**/*"
   ],
   "files": [
     "./bin/**",
     "./help/**",
-    "./dist/**"
+    "./dist/**",
+    "!node_modules/plantuml-pipe/vendor/*"
   ],
   "artifactName": "Yank-Note-${os}-${arch}-${version}.${ext}",
   "directories": {

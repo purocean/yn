@@ -41,6 +41,7 @@ jobs:
           yarn install
           yarn electron-rebuild
           node scripts/download-pandoc.js
+          node scripts/download-plantuml.js
 
       - name: Set env
         if: matrix.platform == 'mac'

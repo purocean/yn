@@ -4,10 +4,9 @@ import path from 'path'
 import pako from 'pako'
 import { PlantUmlPipe } from 'plantuml-pipe'
 import commandExists from 'command-exists'
-import { addDefaultsToOptions } from 'plantuml-pipe/dist/plantuml_pipe_options'
 import config from '../config'
 import { convertAppPath } from '../helper'
-import { ASSETS_DIR } from '../constant'
+import { ASSETS_DIR, BIN_DIR } from '../constant'
 import { getAction } from '../action'
 
 function plantumlBase64 (base64: string) {
@@ -30,12 +29,13 @@ export default async function (data: string): Promise<{ content: any, type: stri
 
     const format = api.split('-')[1] || 'png'
     const type = format === 'png' ? 'image/png' : 'image/svg+xml'
+    const jarPath = path.join(BIN_DIR, 'plantuml.jar')
 
     const puml = new PlantUmlPipe({
       split: format === 'svg',
       outputFormat: format as 'png' | 'svg',
       plantUmlArgs: ['-charset', 'UTF-8'],
-      jarPath: convertAppPath(addDefaultsToOptions({}).jarPath)
+      jarPath: convertAppPath(jarPath)
     })
 
     puml.in.write(code)
