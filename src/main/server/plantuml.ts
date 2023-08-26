@@ -35,7 +35,7 @@ export default async function (data: string): Promise<{ content: any, type: stri
       split: format === 'svg',
       outputFormat: format as 'png' | 'svg',
       plantUmlArgs: ['-charset', 'UTF-8'],
-      jarPath: convertAppPath(jarPath)
+      jarPath,
     })
 
     puml.in.write(code)
