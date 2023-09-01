@@ -21,9 +21,11 @@ let links = ''
 let mindMapId = 0
 const instances = new Map()
 let window: any // render iframe content window
+let document: any // render iframe content document
 
 async function processRenderWindow () {
   window = (await getRenderIframe()).contentWindow!
+  document = window.document
 
   // kityminder has memory leak at CustomEvent, make CustomEvent readonly
   const CustomEvent = window.CustomEvent
