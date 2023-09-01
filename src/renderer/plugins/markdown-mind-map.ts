@@ -2,7 +2,7 @@ import { defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } 
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context'
-import { downloadDataURL, getLogger, sleep, strToBase64 } from '@fe/utils'
+import { downloadDataURL, getLogger, strToBase64, waitCondition } from '@fe/utils'
 import { openWindow } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/support/embed'
@@ -52,6 +52,8 @@ async function processRenderWindow () {
 processRenderWindow()
 
 async function newMinder () {
+  await waitCondition(() => !!(window.kityminder?.Minder))
+
   // hack addEventListener, fix memory leak.
   const realAddEventListener = window.addEventListener.bind(window)
   const events: {type: string, listener: any}[] = []
@@ -61,12 +63,7 @@ async function newMinder () {
     realAddEventListener(type, listener)
   }
 
-  let kityminder = window.kityminder
-  if (!kityminder) {
-    await sleep(800)
-    kityminder = window.kityminder
-  }
-
+  const kityminder = window.kityminder
   const km = new kityminder.Minder()
 
   // restore addEventListener
