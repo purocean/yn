@@ -5,7 +5,6 @@ import pako from 'pako'
 import { PlantUmlPipe } from 'plantuml-pipe'
 import commandExists from 'command-exists'
 import config from '../config'
-import { convertAppPath } from '../helper'
 import { ASSETS_DIR, BIN_DIR } from '../constant'
 import { getAction } from '../action'
 
