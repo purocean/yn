@@ -34,7 +34,6 @@ const autoClosingPairs = [
   { open: '【', close: '】' },
   { open: '「', close: '」' },
   { open: '（', close: '）' },
-  { open: '“', close: '”' },
 ]
 
 class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvider {
