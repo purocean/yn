@@ -87,6 +87,8 @@ export default defineComponent({
 
     registerAction({
       name: 'tree.reveal-current-node',
+      description: t('command-desc.tree_reveal-current-node'),
+      forUser: true,
       handler: revealCurrentNode
     })
 

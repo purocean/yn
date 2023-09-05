@@ -6,10 +6,11 @@ import { DOM_ATTR_NAME } from '@fe/support/args'
 import type { Plugin } from '@fe/context'
 
 const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
+const attrEventReg = /^on/i
 const defaultRules = {} as any
 
 function validateAttrName (name: string) {
-  return attrNameReg.test(name) && !/^on/i.test(name)
+  return attrNameReg.test(name) && !attrEventReg.test(name)
 }
 
 function getLine (token: Token, env?: Record<string, any>) {
@@ -49,10 +50,7 @@ export function setSourceLine (token: Token, env?: Record<string, any>) {
 
       // transform array to object
       token.attrs?.forEach(([name, val]) => {
-        // filter attrs
-        if (validateAttrName(name)) {
-          token.meta.attrs[name] = val
-        }
+        token.meta.attrs[name] = val
       })
     }
   }

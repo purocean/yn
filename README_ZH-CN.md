@@ -76,19 +76,20 @@
 
 ## 更新日志
 
-### [v3.59.2](https://github.com/purocean/yn/releases/tag/v3.59.2) 2023-08-15
+### [v3.60.1](https://github.com/purocean/yn/releases/tag/v3.60.1) 2023-09-05
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-win-x64-3.59.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-mac-arm64-3.59.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-mac-x64-3.59.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-linux-x86_64-3.59.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-linux-amd64-3.59.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-win-x64-3.60.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-mac-arm64-3.60.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-mac-x64-3.60.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-linux-x86_64-3.60.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-linux-amd64-3.60.1.deb)
 
-1. feat: 增加“在预览中查找”功能
-2. feat: 切换已打开的文件时保留/恢复编辑器状态
-3. feat: 刷新文档的时候同时刷新图片
-4. feat: 增加轮换自定义编辑器快捷键
-5. feat: 扩展管理器中增加图标以标识官方扩展
-6. feat: 优化编辑器使用体验
-7. fix: 修复 Windows 上不能在系统中打开目录的问题
-7. refactor(plugin): 移除 remove `MONACO_CHANGE_VALUE` Hook,
-8. refactor(plugin): `EDITOR_CHANGE` Hook 更名 `EDITOR_CONTENT_CHANGE`
+1. feat: 增加双击侧栏标题聚焦当前打开文档功能
+2. feat: 优化编辑体验，调整编辑器自动包裹、符号配对等细节功能
+3. feat: 侧栏上下文菜单增加“添加文件”功能
+4. feat: 升级 PlantUML 到 v1.2023.10
+5. feat: 升级 markdown-it-multimd-table 到 4.2.3
+6. fix: 修复脑图内存泄露问题
+7. refactor(plugin): `ctx.editor.getIsDefault` 更名为 `ctx.editor.isDefault`
+8. refactor(plugin): 增加 `ctx.editor.isDirty` 方法
+9. feat(plugin): 增加 `DOC_PRE_ENSURE_CURRENT_FILE_SAVED`, `DOC_PRE_SWITCH` 钩子
+10. feat(plugin): 增加 `ctx.utils.waitCondition` 方法
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

@@ -1,3 +1,4 @@
+import { Fragment, h } from 'vue'
 import { init } from '@fe/core/plugin'
 import { getActionHandler } from '@fe/core/action'
 import { registerHook, triggerHook } from '@fe/core/hook'
@@ -19,6 +20,7 @@ import * as extension from '@fe/others/extension'
 import { setTheme } from '@fe/services/theme'
 import { toggleOutline } from '@fe/services/workbench'
 import * as view from '@fe/services/view'
+import * as editor from '@fe/services/editor'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 import ga from '@fe/support/ga'
@@ -165,6 +167,30 @@ registerHook('VIEW_BEFORE_REFRESH', async () => {
     logger.debug('force reload document')
     const { type, name, path, repo } = store.state.currentFile
     await switchDoc({ type, name, path, repo }, true)
+  }
+})
+
+registerHook('DOC_PRE_ENSURE_CURRENT_FILE_SAVED', async () => {
+  // check custom editor is dirty
+  if (store.state.currentFile && !editor.isDefault() && (await editor.isDirty())) {
+    const confirm = await useModal().confirm({
+      title: t('save-check-dialog.title'),
+      content: t('save-check-dialog.desc'),
+      action: h(Fragment, [
+        h('button', {
+          onClick: () => useModal().ok()
+        }, t('discard')),
+        h('button', {
+          onClick: () => useModal().cancel()
+        }, t('cancel')),
+      ])
+    })
+
+    if (confirm) {
+      logger.warn('discard save')
+    } else {
+      throw new Error('Current Editor is dirty')
+    }
   }
 })
 

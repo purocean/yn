@@ -476,8 +476,9 @@ export async function saveDoc (doc: Doc, content: string): Promise<void> {
   return lock.acquire('saveDoc', async (done) => {
     try {
       await _saveDoc(doc, content)
-    } finally {
       done()
+    } catch (e: any) {
+      done(e)
     }
   })
 }
@@ -486,7 +487,14 @@ export async function saveDoc (doc: Doc, content: string): Promise<void> {
  * Ensure current document is saved.
  */
 export async function ensureCurrentFileSaved () {
+  await triggerHook('DOC_PRE_ENSURE_CURRENT_FILE_SAVED', undefined, { breakable: true })
+
   const { currentFile, currentContent } = store.state
+
+  // do not check if current file is not plain file.
+  if (currentFile && !extensions.supported(currentFile.name)) {
+    return
+  }
 
   // check blank file.
   if (!currentFile && currentContent.trim()) {
@@ -583,6 +591,8 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
     return
   }
 
+  await triggerHook('DOC_PRE_SWITCH', { doc }, { breakable: true })
+
   await ensureCurrentFileSaved().catch(error => {
     if (force) {
       console.error(error)
@@ -659,8 +669,9 @@ export async function switchDoc (doc: Doc | null, force = false): Promise<void> 
   return lock.acquire('switchDoc', async (done) => {
     try {
       await _switchDoc(doc, force)
-    } finally {
       done()
+    } catch (e: any) {
+      done(e)
     }
   })
 }

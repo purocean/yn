@@ -18,10 +18,22 @@ const surroundingPairs = [
   { open: '#', close: '#' },
   { open: '$', close: '$' },
   { open: '《', close: '》' },
+  { open: '〈', close: '〉' },
   { open: '【', close: '】' },
   { open: '「', close: '」' },
   { open: '（', close: '）' },
   { open: '“', close: '”' },
+]
+
+const autoClosingPairs = [
+  { open: '{', close: '}' },
+  { open: '[', close: ']' },
+  { open: '(', close: ')' },
+  { open: '《', close: '》' },
+  { open: '〈', close: '〉' },
+  { open: '【', close: '】' },
+  { open: '「', close: '」' },
+  { open: '（', close: '）' },
 ]
 
 class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvider {
@@ -117,6 +129,7 @@ export default {
 
       monaco.languages.setLanguageConfiguration('markdown', {
         surroundingPairs,
+        autoClosingPairs,
         onEnterRules: [
           { beforeText: /^\s*> .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '> ' } },
           { beforeText: /^\s*\+ \[ \] .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '+ [ ] ' } },

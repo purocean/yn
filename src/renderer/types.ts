@@ -476,6 +476,7 @@ export type BuildInHookTypes = {
   DOC_CREATED: { doc: Doc },
   DOC_DELETED: { doc: Doc },
   DOC_MOVED: { oldDoc: Doc, newDoc: Doc },
+  DOC_PRE_SWITCH: { doc?: Doc | null },
   DOC_BEFORE_SAVE: { doc: Doc, content: string },
   DOC_SAVED: { doc: Doc },
   DOC_BEFORE_SWITCH: { doc?: Doc | null },
@@ -483,6 +484,7 @@ export type BuildInHookTypes = {
   DOC_SWITCHED: { doc: Doc | null },
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
   DOC_CHANGED: { doc: Doc },
+  DOC_PRE_ENSURE_CURRENT_FILE_SAVED: never,
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
   SETTING_CHANGED: { schema: SettingSchema, changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
@@ -515,6 +517,7 @@ export type CustomEditor = {
   hiddenPreview?: boolean,
   when: (ctx: CustomEditorCtx) => boolean | Promise<boolean>,
   component: any,
+  getIsDirty?: () => boolean | Promise<boolean>,
 }
 
 export interface CodeRunner {

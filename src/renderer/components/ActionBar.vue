@@ -17,7 +17,7 @@
         </div>
       </template>
     </div>
-    <div class="title">{{$t(showOutline ? 'outline' : 'files')}}</div>
+    <div class="title" @dblclick="onDblClickTitle">{{$t(showOutline ? 'outline' : 'files')}}</div>
     <div class="btns" v-if="navigation">
       <div v-for="(item, i) in navigation.items" :key="i">
         <div
@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, ref, toRef } from 'vue'
 import { useStore } from 'vuex'
-import { registerAction, removeAction } from '@fe/core/action'
+import { getActionHandler, registerAction, removeAction } from '@fe/core/action'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
@@ -85,6 +85,13 @@ function showSortMenu () {
 
 function refresh () {
   navigation.value = ControlCenter.getSchema().navigation
+}
+
+function onDblClickTitle () {
+  if (!showOutline.value) {
+    // reveal current file
+    getActionHandler('tree.reveal-current-node')()
+  }
 }
 
 registerAction({ name: 'action-bar.refresh', handler: refresh })

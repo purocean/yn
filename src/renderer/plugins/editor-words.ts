@@ -4,7 +4,7 @@ import type { Ctx, Plugin } from '@fe/context'
 function getWords (content: string) {
   const words = new Set<string>()
 
-  if (content.length > 50000) {
+  if (content.length > 102400) {
     return words
   }
 

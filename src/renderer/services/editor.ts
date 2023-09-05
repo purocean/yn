@@ -24,7 +24,7 @@ export type SimpleCompletionItem = {
 
 export type SimpleCompletionItemTappers = (items: SimpleCompletionItem[]) => void
 
-let isDefaultEditor = true
+let currentEditor: CustomEditor | null | undefined
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
 
@@ -442,6 +442,10 @@ export function switchEditor (name: string) {
  * @param editor Editor
  */
 export function registerCustomEditor (editor: CustomEditor) {
+  if (!editor.component) {
+    throw new Error('Editor component is required')
+  }
+
   ioc.register('EDITOR_CUSTOM_EDITOR', editor)
   triggerHook('EDITOR_CUSTOM_EDITOR_CHANGE', { type: 'register' })
 }
@@ -475,8 +479,22 @@ export function triggerSave () {
  * Get current editor is default or not.
  * @returns
  */
-export function getIsDefault () {
-  return isDefaultEditor
+export function isDefault () {
+  // default editor has no component
+  return !currentEditor?.component
+}
+
+/**
+ * Get current editor is dirty or not.
+ * @returns
+ */
+export async function isDirty (): Promise<boolean> {
+  // default editor, check documentSaved. TODO refactor
+  if (isDefault()) {
+    return !window.documentSaved
+  }
+
+  return currentEditor?.getIsDirty ? (await currentEditor.getIsDirty()) : false
 }
 
 registerAction({
@@ -488,7 +506,7 @@ registerAction({
 })
 
 registerHook('EDITOR_CURRENT_EDITOR_CHANGE', ({ current }) => {
-  isDefaultEditor = !current?.component
+  currentEditor = current
 })
 
 registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
