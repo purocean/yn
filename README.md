@@ -76,19 +76,20 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.59.2](https://github.com/purocean/yn/releases/tag/v3.59.2) 2023-08-15
+### [v3.60.1](https://github.com/purocean/yn/releases/tag/v3.60.1) 2023-09-05
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-win-x64-3.59.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-mac-arm64-3.59.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-mac-x64-3.59.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-linux-x86_64-3.59.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.59.2/Yank-Note-linux-amd64-3.59.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-win-x64-3.60.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-mac-arm64-3.60.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-mac-x64-3.60.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-linux-x86_64-3.60.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-linux-amd64-3.60.1.deb)
 
-1. feat: Add "Find in Preview" function
-2. feat: keep/restore editor state when switching open files
-3. feat: Refresh the picture at the same time when refreshing the document
-4. feat: Add shortcut keys for rotating custom editors
-5. feat: Add icons in the extension manager to identify official extensions
-6. feat: optimize the editor experience
-7. fix: fix can't open file on Windows
-8. refactor(plugin): remove remove `MONACO_CHANGE_VALUE` Hook,
-9. refactor(plugin): `EDITOR_CHANGE` Hook renamed to `EDITOR_CONTENT_CHANGE`
+1. feat: add double-click sidebar title to focus on the currently open document function
+2. feat: optimize editing experience, adjust editor automatic wrapping, symbol pairing and other details
+3. feat: add "Add File" function to the sidebar context menu
+4. feat: upgrade PlantUML to v1.2023.10
+5. feat: upgrade markdown-it-multimd-table to 4.2.3
+6. fix: fix mind map memory leak issue
+7. refactor(plugin): rename `ctx.editor.getIsDefault` to `ctx.editor.isDefault`
+8. refactor(plugin): add `ctx.editor.isDirty` method
+9. feat(plugin): add `DOC_PRE_ENSURE_CURRENT_FILE_SAVED`, `DOC_PRE_SWITCH` hooks
+10. feat(plugin): add `ctx.utils.waitCondition` method
 
 [More release notes](https://github.com/purocean/yn/releases)
 
