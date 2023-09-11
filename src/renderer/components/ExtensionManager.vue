@@ -723,12 +723,12 @@ onUnmounted(() => {
   width: 100%;
   box-sizing: border-box;
   font-size: 16px;
-  background-color: rgba(var(--g-color-0-rgb), 0.06);
+  padding-right: 5px;
 
   .item {
     cursor: pointer;
     position: relative;
-    border-bottom: 1px var(--g-color-70) solid;
+    border-bottom: 1px var(--g-color-82) solid;
     color: var(--g-color-20);
     display: flex;
     height: 77px;
