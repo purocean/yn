@@ -103,6 +103,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@fe/styles/mixins.scss';
+
 .menu {
   list-style: none;
   padding: 1px;
@@ -111,7 +113,7 @@ export default defineComponent({
   left: -99999px;
   top: -99999px;
   overflow-y: auto;
-  background: rgba(var(--g-color-77-rgb), 0.65);
+  background: rgba(var(--g-color-90-rgb), 0.65);
   backdrop-filter: var(--g-backdrop-filter);
   border: 1px var(--g-color-84) solid;
   border-left: 0;
@@ -120,14 +122,14 @@ export default defineComponent({
   color: var(--g-foreground-color);
   min-width: 9em;
   cursor: default;
-  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
+  box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 5px;
   border-radius: var(--g-border-radius);
   user-select: none;
 }
 
 .menu > li.separator {
   border-top: 1px rgba(var(--g-color-90-rgb), 0.7) solid;
-  border-bottom: 1px rgba(var(--g-color-70-rgb), 0.7) solid;
+  border-bottom: 1px rgba(var(--g-color-76-rgb), 0.7) solid;
   margin: 3px 6px;
 
   &:first-child,
@@ -152,6 +154,22 @@ export default defineComponent({
 }
 
 .menu > li.normal:hover {
-  background: var(--g-color-active-b);
+  background: var(--g-color-active-a);
+}
+
+@include dark-theme {
+  .menu {
+    background: rgba(var(--g-color-77-rgb), 0.65);
+    box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
+  }
+
+  .menu > li.normal:hover {
+    background: var(--g-color-active-b);
+  }
+
+  .menu > li.separator {
+    border-top: 1px rgba(var(--g-color-90-rgb), 0.7) solid;
+    border-bottom: 1px rgba(var(--g-color-70-rgb), 0.7) solid;
+  }
 }
 </style>
