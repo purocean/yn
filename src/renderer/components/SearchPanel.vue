@@ -189,14 +189,6 @@ const allResultCollapsed = computed(() => {
   return result.value.every(item => !item.open)
 })
 
-watchEffect(async () => {
-  if (visible.value) {
-    await nextTick()
-    patternInputRef.value?.focus()
-    patternInputRef.value?.select()
-  }
-})
-
 watch(() => store.state.currentRepo, () => {
   stop()
   result.value = []
@@ -514,6 +506,11 @@ registerAction({
         })
       }
     }
+
+    nextTick(() => {
+      patternInputRef.value?.focus()
+      patternInputRef.value?.select()
+    })
   },
 })
 
