@@ -430,7 +430,6 @@ summary > .item {
   align-content: center;
   justify-content: space-around;
   flex: none;
-  padding-right: 4px;
 }
 
 .item-action .icon {

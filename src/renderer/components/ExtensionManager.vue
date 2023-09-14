@@ -4,7 +4,7 @@
       <div class="body">
         <div class="side" ref="refSide">
           <group-tabs class="tabs" :tabs="listTypes" v-model="listType" />
-          <div v-if="extensions.length > 0" class="list auto-hide-scrollbar">
+          <div v-if="extensions.length > 0" class="list">
             <div
               v-for="item in extensions"
               :key="item.id"
@@ -718,12 +718,12 @@ onUnmounted(() => {
 }
 
 .list {
-  overflow-y: overlay;
+  overflow-y: auto;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
   font-size: 16px;
-  padding-right: 10px;
+  padding-right: 5px;
 
   .item {
     cursor: pointer;

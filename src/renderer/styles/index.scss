@@ -189,34 +189,6 @@ a {
       }
     }
   }
-
-  body, html, .auto-hide-scrollbar {
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-track:hover {
-      background: var(--scrollbar-track-background-color);
-    }
-
-    &:hover {
-      &::-webkit-scrollbar-track {
-        background: var(--scrollbar-track-background-color);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: var(--scrollbar-thumb-background-color);
-      }
-
-      &::-webkit-scrollbar-thumb:hover {
-        background: var(--scrollbar-thumb-hover-background-color);
-      }
-    }
-  }
 }
 
 .avoid-page-break {

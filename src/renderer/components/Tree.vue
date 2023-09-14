@@ -1,7 +1,7 @@
 <template>
   <aside
     v-if="hasRepo"
-    class="side auto-hide-scrollbar"
+    class="side"
     @contextmenu.exact.prevent="showContextMenu"
     @dblclick="refresh"
     ref="asideRef"
@@ -116,7 +116,7 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  overflow: overlay;
+  overflow: auto;
   padding-bottom: 20px;
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="outline-toc auto-hide-scrollbar">
+  <div ref="container" class="outline-toc">
     <input
       v-if="showFilter"
       ref="refInput"
@@ -218,7 +218,7 @@ input.search-input[type="text"] {
 }
 
 .outline-toc {
-  overflow-y: overlay;
+  overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 16px;
   user-select: none;
