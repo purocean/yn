@@ -422,6 +422,7 @@ summary > .item {
   text-overflow: ellipsis;
   word-break: break-all;
   height: 26px;
+  font-variant-numeric: tabular-nums;
 }
 
 .item-action {
@@ -429,6 +430,7 @@ summary > .item {
   align-content: center;
   justify-content: space-around;
   flex: none;
+  padding-right: 4px;
 }
 
 .item-action .icon {

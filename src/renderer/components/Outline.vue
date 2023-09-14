@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="outline-toc">
+  <div ref="container" class="outline-toc auto-hide-scrollbar">
     <input
       v-if="showFilter"
       ref="refInput"
@@ -209,6 +209,8 @@ input.search-input[type="text"] {
   backdrop-filter: var(--g-backdrop-filter);
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 2px;
 
+  margin-bottom: 6px;
+
   &:focus {
     background: rgba(var(--g-color-90-rgb), 0.75);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 4px;
@@ -216,7 +218,7 @@ input.search-input[type="text"] {
 }
 
 .outline-toc {
-  overflow-y: auto;
+  overflow-y: overlay;
   overflow-x: hidden;
   padding-bottom: 16px;
   user-select: none;
@@ -235,7 +237,6 @@ input.search-input[type="text"] {
     line-height: 18px;
     padding: 5px .5em;
     display: flex;
-    border-radius: var(--g-border-radius);
     cursor: pointer;
     overflow-wrap: break-word;
     color: var(--g-color-10);

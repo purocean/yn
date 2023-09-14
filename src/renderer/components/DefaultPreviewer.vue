@@ -9,7 +9,7 @@
           <SvgIcon style="width: 12px; height: 12px" name="thumbtack" />
         </div>
       </div>
-      <div class="catalog" :style="{maxHeight: `min(${(height - 120) + 'px'}, 70vh)`}">
+      <div class="catalog auto-hide-scrollbar" :style="{maxHeight: `min(${(height - 120) + 'px'}, 70vh)`}">
         <Outline />
       </div>
     </div>
@@ -303,7 +303,7 @@ async function scrollToTop () {
   .catalog {
     max-height: 70vh;
     cursor: pointer;
-    overflow: auto;
+    overflow: overlay;
     overflow-x: hidden;
   }
 
