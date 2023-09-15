@@ -347,6 +347,7 @@ export default defineComponent({
   padding: 2px 6px;
   user-select: none;
   border-radius: var(--g-border-radius);
+  font-variant-numeric: tabular-nums;
 }
 
 .result li.selected {
