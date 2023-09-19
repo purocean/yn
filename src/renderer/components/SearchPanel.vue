@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, Fragment, h, nextTick, onBeforeUnmount, reactive, ref, shallowRef, Text, watch, watchEffect } from 'vue'
+import { computed, Fragment, h, nextTick, onBeforeUnmount, reactive, ref, shallowRef, Text, watch } from 'vue'
 import type { ISearchRange, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery, ITextSearchMatch } from 'ripgrep-wrapper'
 import { getLogger, sleep } from '@fe/utils'
 import { basename, dirname, join, relative } from '@fe/utils/path'
