@@ -12,6 +12,7 @@ import { transformProtocolRequest } from './protocol'
 import startup from './startup'
 import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
+import { initJSONRPCClient, jsonRPCClient } from './jsonrpc'
 import { $t } from './i18n'
 import { getProxyAgent } from './proxy-agent'
 import config from './config'
@@ -270,6 +271,8 @@ const createWindow = () => {
     fullscreen = false
   })
 
+  initJSONRPCClient(win.webContents)
+
   win!.webContents.on('will-navigate', (e) => {
     e.preventDefault()
   })
@@ -378,7 +381,7 @@ const showSetting = (key?: string) => {
   }
 
   showWindow()
-  win.webContents.executeJavaScript(`window.ctx.setting.showSettingPanel(${key ? `'${key}'` : ''});`, true)
+  jsonRPCClient.call.ctx.setting.showSettingPanel(key)
 }
 
 const toggleFullscreen = () => {

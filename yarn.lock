@@ -6248,6 +6248,11 @@ jsonparse@^1.2.0:
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
+jsonrpc-bridge@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/jsonrpc-bridge/-/jsonrpc-bridge-0.0.4.tgz#5544a119e67713e264b6231d76c58e289b918009"
+  integrity sha512-bPGDpcuGyikpAij1KbtuHoMrCdap8O18t/vFEvAYAN0lFobFsFGIZfFIw/Nud8RUkmF1/NwYuKZgxJaq6Q+JXQ==
+
 jsonwebtoken@^9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-9.0.0.tgz#d0faf9ba1cc3a56255fe49c0961a67e520c1926d"
