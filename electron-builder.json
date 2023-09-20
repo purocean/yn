@@ -57,9 +57,12 @@
   "nsis": {
     "perMachine": false
   },
-  "fileAssociations": {
-    "ext": [
-      "md"
-    ]
-  }
+  "fileAssociations": [
+    {
+      "ext": "md",
+      "name": "Markdown File",
+      "description": "Markdown File",
+      "role": "Editor"
+    }
+  ]
 }
