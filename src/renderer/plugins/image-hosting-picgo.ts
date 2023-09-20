@@ -184,6 +184,7 @@ export default {
         id: addImageActionId,
         type: 'normal',
         title: ctx.i18n.t('add-image'),
+        ellipsis: true,
         subTitle: 'PicGo',
         onClick: addImage
       })
@@ -207,6 +208,7 @@ export default {
         items.push({
           id: 'plugin.image-hosting-picgo.upload-single-image',
           type: 'normal',
+          ellipsis: true,
           label: ctx.i18n.t('upload-image') + ' (PicGo)',
           onClick: async () => {
             try {

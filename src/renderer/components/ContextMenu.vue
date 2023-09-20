@@ -3,9 +3,9 @@
     <ul class="menu" ref="refMenu" @contextmenu.prevent>
       <template v-for="(item, i) in items">
         <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type" />
-        <li v-else :key="item.id" v-show="!item.hidden" @click="handleClick(item)" :class="item.type || 'normal'">
+        <li v-else :key="item.id" v-show="!item.hidden" @click="handleClick(item)" :class="{ [item.type || 'normal']: true, ellipsis: item.ellipsis }">
           <svg-icon class="checked-icon" v-if="item.checked" name="check-solid" />
-          <span v-if="(typeof item.label === 'string')">{{item.label}}</span>
+          <span class="label" v-if="(typeof item.label === 'string')">{{item.label}}</span>
           <component v-else :is="item.label" />
         </li>
       </template>
@@ -155,6 +155,10 @@ export default defineComponent({
 
 .menu > li.normal:hover {
   background: var(--g-color-active-a);
+}
+
+.menu > li.ellipsis > .label::after {
+  content: '...';
 }
 
 @include dark-theme {

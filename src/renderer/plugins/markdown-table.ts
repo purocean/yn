@@ -814,6 +814,7 @@ export default {
             id: 'plugin.table.cell-edit.edit',
             type: 'normal' as any,
             label: ctx.i18n.t('table-cell-edit.context-menu.edit'),
+            ellipsis: true,
             onClick: () => {
               handleClick(e, true)
             }

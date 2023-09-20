@@ -126,6 +126,7 @@ export default {
           type: 'normal',
           title: ctx.i18n.t('add-image'),
           subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idAddImage) || []),
+          ellipsis: true,
           onClick: () => addAttachment(true),
         },
         {
@@ -133,6 +134,7 @@ export default {
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.add-attachment'),
           subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idAddFile) || []),
+          ellipsis: true,
           onClick: () => addAttachment(false),
         },
         {
@@ -140,6 +142,7 @@ export default {
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.link-doc'),
           subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idLinkDoc) || []),
+          ellipsis: true,
           onClick: () => getActionHandler('filter.choose-document')().then(addDocument),
         },
         {
@@ -147,6 +150,7 @@ export default {
           type: 'normal',
           title: ctx.i18n.t('editor.context-menu.link-file'),
           subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idLinkFile) || []),
+          ellipsis: true,
           onClick: () => linkFile(),
         },
         { type: 'separator' },

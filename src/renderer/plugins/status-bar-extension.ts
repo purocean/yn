@@ -9,6 +9,7 @@ export default {
         type: 'normal',
         title: ctx.i18n.t('status-bar.extension.extension-manager'),
         subTitle: ctx.keybinding.getKeysLabel('extension.show-manager'),
+        ellipsis: true,
         onClick: () => ctx.showExtensionManager(),
       })
 

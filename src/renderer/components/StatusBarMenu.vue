@@ -19,7 +19,7 @@
           <li v-if="item.type === 'separator' && !item.hidden" :class="item.type"></li>
           <li
             v-else-if="item.type !== 'separator' && !item.hidden"
-            :class="{[item.type]: true, disabled: item.disabled}"
+            :class="{[item.type]: true, disabled: item.disabled, ellipsis: item.ellipsis}"
             :title="item.tips"
             @click="handleItemClick(item)">
             <svg-icon class="checked-icon" v-if="item.checked" name="check-solid" />
@@ -194,6 +194,14 @@ export default defineComponent({
 
     .menu-item-title {
       color: var(--g-color-50);
+    }
+  }
+
+  &.ellipsis {
+    .menu-item-title {
+      &::after {
+        content: '...';
+      }
     }
   }
 

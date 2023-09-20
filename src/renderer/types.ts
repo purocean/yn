@@ -152,6 +152,7 @@ export namespace Components {
       label: any; // support string or vue component
       hidden?: boolean;
       checked?: boolean;
+      ellipsis?: boolean;
       onClick: (item?: NormalItem) => void;
     }
 

@@ -38,6 +38,7 @@ export default {
             type: 'normal',
             title: ctx.i18n.t('premium.premium'),
             hidden: ctx.args.FLAG_DEMO,
+            ellipsis: true,
             onClick: () => ctx.showPremium()
           },
           { type: 'separator' },

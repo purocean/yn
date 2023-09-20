@@ -10,20 +10,20 @@
           <h2>{{$t('get-started.start')}}</h2>
           <div class="list">
             <div class="item" v-if="!hasRepo">
-              <a href="javascript:void(0);" @click="showSettingPanel()">{{$t('tree.add-repo')}}</a>
+              <a href="javascript:void(0);" @click="showSettingPanel()">{{$t('tree.add-repo')}}...</a>
             </div>
             <template v-else>
               <div class="item">
-                <a href="javascript:void(0);" @click="createFile()">{{$t('tree.context-menu.create-doc')}}</a>
+                <a href="javascript:void(0);" @click="createFile()">{{$t('tree.context-menu.create-doc')}}...</a>
               </div>
               <div class="item" v-if="!getPurchased()">
-                <a href="javascript:void(0);" @click="showPremium()">{{$t('premium.premium')}}</a>
+                <a href="javascript:void(0);" @click="showPremium()">{{$t('premium.premium')}}...</a>
               </div>
               <div class="item">
-                <a href="javascript:void(0);" @click="showExtensionManager()">{{$t('status-bar.extension.extension-manager')}}</a>
+                <a href="javascript:void(0);" @click="showExtensionManager()">{{$t('status-bar.extension.extension-manager')}}...</a>
               </div>
               <div class="item">
-                <a href="javascript:void(0);" @click="showSettingPanel()">{{$t('status-bar.setting')}}</a>
+                <a href="javascript:void(0);" @click="showSettingPanel()">{{$t('status-bar.setting')}}...</a>
               </div>
             </template>
           </div>
