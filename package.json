@@ -103,7 +103,7 @@
     "canvas-confetti": "^1.6.0",
     "crypto-js": "^3.3.0",
     "dom-to-image": "^2.6.0",
-    "electron": "22.3.21",
+    "electron": "22.3.24",
     "electron-builder": "^23.6.0",
     "electron-notarize": "^1.2.2",
     "eslint": "^7.11.0",
