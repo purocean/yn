@@ -157,13 +157,17 @@ export async function reloadMainWindow () {
   }
 }
 
+export function getAllRepos () {
+  return getSetting('repos', [])
+}
+
 /**
  * get repo by name
  * @param name
  * @returns
  */
 export function getRepo (name: string) {
-  return (getSetting('repos') || []).find(x => x.name === name)
+  return getAllRepos().find(x => x.name === name)
 }
 
 export async function readFromClipboard (): Promise<Record<string, any>>

@@ -49,7 +49,7 @@ export default {
         title: currentRepo
           ? ctx.i18n.t('status-bar.repo.repo', currentRepo.name.substring(0, 10))
           : ctx.i18n.t('status-bar.repo.no-data'),
-        list: ctx.setting.getSetting('repos', []).map(({ name, path }, i, arr) => {
+        list: ctx.base.getAllRepos().map(({ name, path }, i, arr) => {
           return {
             id: name,
             type: 'normal',
