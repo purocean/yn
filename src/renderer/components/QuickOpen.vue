@@ -333,7 +333,7 @@ export default defineComponent({
 }
 
 .result {
-  max-height: 300px;
+  max-height: min(calc(100vh - 260px), 300px);
   overflow-y: auto;
   list-style: none;
   padding: 0;
