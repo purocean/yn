@@ -1,7 +1,10 @@
 import type { Language, MsgPath } from '@share/i18n'
+import type { Doc, FileItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
+
+export * from '@share/types'
 
 export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
 
@@ -77,37 +80,6 @@ export interface Action<T extends string = string> {
 }
 
 export type PremiumTab = 'intro' | 'activation'
-
-export interface PathItem {
-  repo: string;
-  path: string;
-}
-
-export interface FileItem extends PathItem { name: string }
-
-export interface FileStat {
-  mtime: number,
-  birthtime: number,
-  size: number,
-}
-
-export interface Doc extends PathItem {
-  type: 'file' | 'dir';
-  name: string;
-  content?: string;
-  title?: string;
-  passwordHash?: string;
-  contentHash?: string;
-  stat?: FileStat,
-  status?: 'loaded' | 'save-failed' | 'saved';
-  absolutePath?: string,
-  plain?: boolean;
-}
-
-export interface Repo {
-  name: string;
-  path: string;
-}
 
 export namespace Components {
   export namespace Modal {
