@@ -3,6 +3,7 @@ import { protocol, app, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, scr
 import type TBrowserWindow from 'electron'
 import * as path from 'path'
 import * as os from 'os'
+import * as fs from 'fs-extra'
 import * as yargs from 'yargs'
 import httpServer from './server'
 import store from './storage'
@@ -487,9 +488,15 @@ if (!gotTheLock) {
     showWindow()
   })
 
-  app.on('open-file', (e) => {
-    win && dialog.showMessageBox(win, { message: 'Yank Note dose not support opening files directly.' })
+  app.on('open-file', (e, path) => {
     e.preventDefault()
+    fs.stat(path).then(stat => {
+      if (stat.isFile()) {
+        jsonRPCClient.call.ctx.doc.switchDocByPath(path)
+      } else {
+        win && dialog.showMessageBox(win, { message: 'Yank Note only support open file.' })
+      }
+    })
   })
 
   app.on('ready', () => {

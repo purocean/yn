@@ -56,5 +56,10 @@
   "afterSign": "scripts/notarize.js",
   "nsis": {
     "perMachine": false
+  },
+  "fileAssociations": {
+    "ext": [
+      "md"
+    ]
   }
 }

@@ -4,7 +4,10 @@ import { JSONRPCClient, JSONRPCClientChannel, JSONRPCError, JSONRPCRequest, JSON
 type Ctx = {
   setting: {
     showSettingPanel: (key?: string) => void
-  }
+  },
+  doc: {
+    switchDocByPath: (path: string) => Promise<void>
+  },
 }
 
 class ElectronMainClientChannel implements JSONRPCClientChannel {

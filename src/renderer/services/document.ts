@@ -10,13 +10,13 @@ import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import type { Doc, PathItem } from '@fe/types'
-import { basename, dirname, extname, isBelongTo, join, normalizeSep } from '@fe/utils/path'
+import { basename, dirname, extname, isBelongTo, join, normalizeSep, relative } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
 import { HELP_REPO_NAME } from '@fe/support/args'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
-import { getRepo, inputPassword, openPath, showItemInFolder } from './base'
+import { getAllRepos, getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
 
@@ -674,6 +674,26 @@ export async function switchDoc (doc: Doc | null, force = false): Promise<void> 
       done(e)
     }
   })
+}
+
+export async function switchDocByPath (path: string): Promise<void> {
+  logger.debug('switchDocByPath', path)
+
+  // find repo of path
+  const repo = getAllRepos().find(x => isBelongTo(normalizeSep(x.path), normalizeSep(path)))
+  if (repo) {
+    return switchDoc({
+      type: 'file',
+      repo: repo.name,
+      name: basename(path),
+      path: relative(repo.path, path)
+    })
+  } else {
+    useModal().alert({
+      title: 'Error',
+      content: `Could not find repo of path: ${path}`
+    })
+  }
 }
 
 /**
