@@ -34,6 +34,7 @@
   --g-color-accent: rgb(20, 112, 251);
   --g-color-anchor: #4c93e2;
 
+  --g-color-active-x: #{rgba(var(--g-color-0-rgb), 0.05)};
   --g-color-active-a: #{rgba(var(--g-color-0-rgb), 0.1)};
   --g-color-active-b: #{rgba(var(--g-color-0-rgb), 0.15)};
   --g-color-active-c: #{rgba(var(--g-color-0-rgb), 0.2)};

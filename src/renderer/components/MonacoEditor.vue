@@ -109,7 +109,9 @@ export default defineComponent({
 }
 </style>
 
-<style>
+<style lang="scss">
+@import '@fe/styles/mixins.scss';
+
 .monaco-editor .inputarea {
   display: unset;
   box-sizing: content-box;
@@ -119,5 +121,25 @@ export default defineComponent({
 
 .monaco-editor .margin-view-overlays {
   user-select: none;
+}
+
+.editor .monaco-editor .suggest-widget {
+  background-color: rgba(var(--g-color-98-rgb), 0.6);
+  backdrop-filter: var(--g-backdrop-filter);
+  border-radius: var(--g-border-radius);
+  box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 5px;
+  --vscode-editorSuggestWidget-selectedBackground: var(--g-color-active-a);
+  --vscode-list-hoverBackground: var(--g-color-active-x);
+  --vscode-editorSuggestWidget-selectedForeground: var(--g-color-0);
+  --vscode-editorSuggestWidget-focusHighlightForeground: var(--vscode-editorSuggestWidget-highlightForeground);
+}
+
+@include dark-theme {
+  .editor .monaco-editor .suggest-widget {
+    background: rgba(var(--g-color-86-rgb), 0.65);
+    box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
+    --vscode-editorSuggestWidget-selectedBackground: var(--g-color-active-b);
+    --vscode-list-hoverBackground: var(--g-color-active-a);
+  }
 }
 </style>
