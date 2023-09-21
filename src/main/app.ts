@@ -33,6 +33,7 @@ const isLinux = os.platform() === 'linux'
 
 let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
 let skipBeforeUnloadCheck = false
+let macOpenFilePath = ''
 
 const trayEnabled = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || config.get('server.port', 3044)
@@ -247,12 +248,15 @@ const createWindow = () => {
   restoreWindowBounds()
   win.once('ready-to-show', () => {
     // open file from argv
-    const filePath = getOpenFilePathFromArgv(process.argv)
+    const filePath = macOpenFilePath || getOpenFilePathFromArgv(process.argv)
     if (filePath) {
       win?.show()
       tryOpenFile(filePath)
       return
     }
+
+    // reset macOpenFilePath
+    macOpenFilePath = ''
 
     // hide window on startup
     if (!config.get('hide-main-window-on-startup', false)) {
@@ -528,7 +532,12 @@ if (!gotTheLock) {
 
   app.on('open-file', (e, path) => {
     e.preventDefault()
-    tryOpenFile(path)
+
+    if (!win || win.webContents.isLoading()) {
+      macOpenFilePath = path
+    } else {
+      tryOpenFile(path)
+    }
   })
 
   app.on('ready', () => {
