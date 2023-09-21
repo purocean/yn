@@ -12,7 +12,14 @@ export default {
     ctx.registerHook('DOC_SAVED', ({ doc }) => {
       setTimeout(() => {
         if (ctx.doc.isMarkdownFile(doc) && doc.absolutePath) {
-          ctx.env.getElectronRemote().app.addRecentDocument(doc.absolutePath)
+          let path = doc.absolutePath
+
+          // replace '/' to '\' on windows
+          if (ctx.env.isWindows) {
+            path = path.replaceAll('/', '\\')
+          }
+
+          ctx.env.getElectronRemote().app.addRecentDocument(path)
         }
       }, 0)
     })
