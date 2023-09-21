@@ -1,7 +1,7 @@
 import type { Plugin } from '@fe/context'
 
 export default {
-  name: 'drop-to-open-file.ts',
+  name: 'drop-to-open-file',
   register: (ctx) => {
     // only support electron
     if (!ctx.env.isElectron) {
