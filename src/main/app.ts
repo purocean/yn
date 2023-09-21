@@ -259,7 +259,7 @@ const createWindow = () => {
     macOpenFilePath = ''
 
     // hide window on startup
-    if (!config.get('hide-main-window-on-startup', false)) {
+    if (config.get('hide-main-window-on-startup', false)) {
       hideWindow()
     } else {
       win?.show()
