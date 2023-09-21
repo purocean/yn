@@ -373,6 +373,7 @@ const data: BaseLanguage = {
         'font-family': '字体',
         'complete-emoji': '自动补全 Emoji - 输入 : 时显示 Emoji 列表',
         'todo-with-time': '勾选待办事项时自动添加时间',
+        'suggest-on-trigger-characters': '输入时自动提示 - 如果禁用，仍可使用 Ctrl+Space (取决于快捷键配置) 触发',
       },
       'render': {
         'md-html': '启用 HTML',

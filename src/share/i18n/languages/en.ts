@@ -382,6 +382,7 @@ const data = {
         'font-family': 'Font Family',
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
         'todo-with-time': 'Add time when checking todo',
+        'suggest-on-trigger-characters': 'Suggest on trigger characters - You can also use Ctrl+Space (depending on the shortcuts) to trigger',
       },
       'render': {
         'md-html': 'Enable HTML',

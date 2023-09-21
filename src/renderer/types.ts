@@ -317,6 +317,7 @@ export interface BuildInSettings {
   'editor.font-family': string,
   'editor.complete-emoji': boolean,
   'editor.todo-with-time': boolean,
+  'editor.suggest-on-trigger-characters': boolean,
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,

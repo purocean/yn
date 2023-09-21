@@ -225,6 +225,14 @@ const schema: SettingSchema = ({
       group: 'editor',
       required: true,
     },
+    'editor.suggest-on-trigger-characters': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.suggest-on-trigger-characters',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
     'render.md-html': {
       defaultValue: true,
       title: 'T_setting-panel.schema.render.md-html',
