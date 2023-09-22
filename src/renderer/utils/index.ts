@@ -8,6 +8,8 @@ export * as storage from './storage'
 export * as crypto from './crypto'
 export * as composable from './composable'
 
+const MD_ESCAPE_CHARS_RE = /[*#/()[\]_`]/g
+
 /**
  * quote string
  * @param str
@@ -22,6 +24,10 @@ export function encodeMarkdownLink (path: string) {
     .replace(/\(/g, '%28')
     .replace(/\)/g, '%29')
     .replace(/ /g, '%20')
+}
+
+export function escapeMd (str: string) {
+  return str.replace(MD_ESCAPE_CHARS_RE, '\\$&')
 }
 
 export function removeQuery (url: string) {

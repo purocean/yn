@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import type { Doc } from '@fe/types'
-import { encodeMarkdownLink } from '@fe/utils'
+import { encodeMarkdownLink, escapeMd } from '@fe/utils'
 import { basename, dirname, isBelongTo, join, normalizeSep, relative } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import store from '@fe/support/store'
@@ -25,7 +25,7 @@ async function uploadFile (file: any, asImage: boolean) {
   if (asImage) {
     insert(`![Img](${encodeMarkdownLink(assetPath)})\n`)
   } else {
-    insert(`[${dayjs().format('YYYY-MM-DD HH:mm')}] [${file.name} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){.${DOM_CLASS_NAME.MARK_OPEN}}\n`)
+    insert(`[${dayjs().format('YYYY-MM-DD HH:mm')}] [${escapeMd(file.name)} (${(file.size / 1024).toFixed(2)}KiB)](${encodeMarkdownLink(assetPath)}){.${DOM_CLASS_NAME.MARK_OPEN}}\n`)
   }
 
   refreshTree()
@@ -48,8 +48,8 @@ async function linkFile () {
   const useList = filePaths.length > 1
   for (let path of filePaths) {
     path = normalizeSep(path)
-    const filename = basename(path).replace(/[[\]]/g, '')
-    insert(`${useList ? '- ' : ''}[${filename}](file://${encodeMarkdownLink(path)})\n`)
+    const filename = basename(path)
+    insert(`${useList ? '- ' : ''}[${escapeMd(filename)}](file://${encodeMarkdownLink(path)})\n`)
   }
 }
 
