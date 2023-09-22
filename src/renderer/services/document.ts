@@ -13,12 +13,13 @@ import type { Doc, PathItem } from '@fe/types'
 import { basename, dirname, extname, isBelongTo, join, normalizeSep, relative } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
-import { HELP_REPO_NAME } from '@fe/support/args'
+import { FLAG_MAS, HELP_REPO_NAME } from '@fe/support/args'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
 import { getAllRepos, getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
+import { isWindows } from '@fe/support/env'
 
 const logger = getLogger('document')
 const lock = new AsyncLock()
@@ -689,9 +690,25 @@ export async function switchDocByPath (path: string): Promise<void> {
       path: relative(repo.path, path)
     })
   } else {
-    useModal().alert({
-      title: 'Error',
-      content: `Could not find repo of path: ${path}`
+    if (FLAG_MAS) {
+      useModal().alert({ title: 'Error', content: `Could not find repo of path: ${path}` })
+      return
+    }
+
+    let root = '/'
+    if (isWindows) {
+      const regMatch = path.match(/^([a-zA-Z]:\\)/)
+      if (regMatch) {
+        root = regMatch[1]
+        path = path.replace(root, '/')
+      }
+    }
+
+    return switchDoc({
+      type: 'file',
+      repo: misc.ROOT_REPO_NAME_PREFIX + root,
+      name: basename(path),
+      path: normalizeSep(path)
     })
   }
 }

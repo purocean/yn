@@ -7,7 +7,7 @@ import * as crypto from 'crypto'
 import * as yargs from 'yargs'
 import AdmZip from 'adm-zip'
 import dayjs from 'dayjs'
-import { DEFAULT_EXCLUDE_REGEX, DOC_HISTORY_MAX_CONTENT_LENGTH, ENCRYPTED_MARKDOWN_FILE_EXT, isEncryptedMarkdownFile, isMarkdownFile, MARKDOWN_FILE_EXT } from '../../share/misc'
+import { DEFAULT_EXCLUDE_REGEX, DOC_HISTORY_MAX_CONTENT_LENGTH, ENCRYPTED_MARKDOWN_FILE_EXT, isEncryptedMarkdownFile, isMarkdownFile, MARKDOWN_FILE_EXT, ROOT_REPO_NAME_PREFIX } from '../../share/misc'
 import { createStreamResponse } from '../helper'
 import { HISTORY_DIR } from '../constant'
 import config from '../config'
@@ -41,7 +41,10 @@ function getExcludeRegex () {
 }
 
 function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath: string[]) => Promise<T>, ...target: string[]): Promise<T> {
-  const repoPath = repository.getPath(repo)
+  const repoPath = repo.startsWith(ROOT_REPO_NAME_PREFIX)
+    ? repo.substring(ROOT_REPO_NAME_PREFIX.length)
+    : repository.getPath(repo)
+
   if (!repoPath) {
     throw new Error(`repo ${repo} not exists.`)
   }

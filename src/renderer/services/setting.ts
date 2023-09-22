@@ -114,7 +114,7 @@ export async function writeSettings (settings: Record<string, any>) {
   if (data.repos) {
     const repositories: any = {}
     data.repos.forEach(({ name, path }: any) => {
-      name = name.trim()
+      name = name.trim().replace(/_{2,}/g, '_') // disallow consecutive underscores
       path = path.trim()
       if (name && path) {
         repositories[name] = path

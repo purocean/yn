@@ -31,6 +31,7 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
+import { ROOT_REPO_NAME_PREFIX } from '@share/misc'
 import { HELP_REPO_NAME } from '@fe/support/args'
 import { getElectronRemote, isElectron, isMacOS, nodeRequire } from '@fe/support/env'
 import { isEncrypted } from '@fe/services/document'
@@ -174,8 +175,12 @@ export default defineComponent({
           status = t('file-status.loading')
         }
 
+        const repoStr = file.repo.startsWith(ROOT_REPO_NAME_PREFIX)
+          ? ''
+          : `[${file.repo}]`
+
         if (file.path && file.repo) {
-          return `[${file.repo}] ${isSaved.value ? '' : '*'}${file.path}-${status}`
+          return `${repoStr} ${isSaved.value ? '' : '*'}${file.path}-${status}`
         } else {
           return file.name
         }
