@@ -139,6 +139,7 @@ export namespace Components {
       payload: any;
       fixed?: boolean;
       temporary?: boolean;
+      class?: string;
     }
 
     export type ActionBtn = {

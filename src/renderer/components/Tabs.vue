@@ -11,7 +11,7 @@
         v-for="item in tabList"
         :key="item.key"
         :data-id="item.key"
-        :class="{tab: true, current: item.key === value, fixed: item.fixed, temporary: item.temporary}"
+        :class="{tab: true, current: item.key === value, fixed: item.fixed, temporary: item.temporary, [item.class || '']: true}"
         :title="item.description"
         :data-key="item.key"
         @contextmenu.exact.prevent.stop="showContextMenu(item)"
