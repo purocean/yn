@@ -15,7 +15,7 @@ import { markdown } from '@fe/services/markdown'
 import { triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { CtrlCmd } from '@fe/core/keybinding'
-import { toUri, isMarkdownFile } from '@fe/services/document'
+import { toUri, isMarkdownFile, isOutOfRepo } from '@fe/services/document'
 import { getContextMenuItems, getRenderIframe, scrollTopTo } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { DOM_ATTR_NAME } from '@fe/support/args'
@@ -23,7 +23,6 @@ import { getLogger, sleep } from '@fe/utils'
 import { t } from '@fe/services/i18n'
 import type { RenderEnv } from '@fe/types'
 import type { AppState } from '@fe/support/store'
-import { ROOT_REPO_NAME_PREFIX } from '@share/misc'
 
 const logger = getLogger('preview')
 
@@ -91,7 +90,7 @@ async function render (checkInComposition = false) {
   }
 
   const file = currentFile.value || null
-  const safeMode = !!(file && file.repo.startsWith(ROOT_REPO_NAME_PREFIX)) // enable safe mode for root repo
+  const safeMode = isOutOfRepo(file) // enable safe mode for root repo
 
   const startTime = performance.now()
   renderEnv = { tokens: [], source: content, file, renderCount, safeMode }
