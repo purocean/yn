@@ -90,10 +90,27 @@ const checkPermission = (ctx: any, next: any) => {
   throw new Error('Forbidden')
 }
 
+const isAdmin = (ctx: any) => ctx.req.jwt && ctx.req.jwt.role === 'admin'
+
+const checkIsAdmin = (ctx: any) => {
+  if (!isAdmin(ctx)) {
+    throw new Error('Forbidden')
+  }
+}
+
+const checkPrivateRepo = (ctx: any, repo: string) => {
+  if (repo.startsWith('__')) {
+    checkIsAdmin(ctx)
+  }
+}
+
 const fileContent = async (ctx: any, next: any) => {
   if (ctx.path === '/api/file') {
     if (ctx.method === 'GET') {
       const { repo, path, asBase64 } = ctx.query
+
+      checkPrivateRepo(ctx, repo)
+
       const content = await file.read(repo, path)
 
       ctx.body = result('ok', 'success', {
@@ -180,8 +197,12 @@ const attachment = async (ctx: any, next: any) => {
       await file.upload(repo, buffer, path)
       ctx.body = result('ok', 'success', path)
     } else if (ctx.method === 'GET') {
-      ctx.type = mime.getType(ctx.query.path)
-      ctx.body = await file.read(ctx.query.repo, ctx.query.path)
+      const { repo, path } = ctx.query
+
+      checkPrivateRepo(ctx, repo)
+
+      ctx.type = mime.getType(path)
+      ctx.body = await file.read(repo, path)
     }
   } else {
     await next()
@@ -402,13 +423,20 @@ const setting = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/settings')) {
     if (ctx.method === 'GET') {
       const getSettings = () => {
-        if (ctx.req.jwt && ctx.req.jwt.role === 'admin') {
+        if (isAdmin(ctx)) {
           return config.getAll()
         } else {
           const data = { ...config.getAll() }
           data.repositories = {}
           data.mark = []
-          delete data['server.jwt-secret']
+
+          // remove sensitive data
+          Object.keys(data).forEach((key) => {
+            if (key.endsWith('-token') || key.endsWith('-secret')) {
+              delete data[key]
+            }
+          })
+
           delete data.license
           delete data.extensions
           return data

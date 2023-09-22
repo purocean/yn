@@ -381,10 +381,11 @@ export default {
         const list = menus['status-bar-tool']?.list
         if (list) {
           const id = 'plugin.markdown-macro.copy-markdown'
+          const env = ctx.view.getRenderEnv()
           const menu: MenuItem = {
             id,
             type: 'normal',
-            hidden: !(ctx.view.getRenderEnv()?.attributes?.enableMacro),
+            hidden: !(env?.attributes?.enableMacro) || env.safeMode,
             title: ctx.i18n.t('status-bar.tool.macro-copy-markdown'),
             onClick: () => {
               ctx.utils.copyText(ctx.view.getRenderEnv()?.source)

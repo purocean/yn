@@ -118,6 +118,7 @@ export default {
           type: 'normal',
           title: ctx.i18n.t('status-bar.tool.share-preview'),
           ellipsis: true,
+          hidden: ctx.view.getRenderEnv()?.safeMode,
           onClick: () => showOptionsPanel()
         },
       )
