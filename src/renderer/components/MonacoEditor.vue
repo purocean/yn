@@ -134,12 +134,26 @@ export default defineComponent({
   --vscode-editorSuggestWidget-focusHighlightForeground: var(--vscode-editorSuggestWidget-highlightForeground);
 }
 
+.editor .monaco-editor {
+  --vscode-menu-selectionForeground: var(--g-color-0);
+  --vscode-menu-selectionBackground: var(--g-color-active-a);
+  --vscode-quickInputList-focusBackground: var(--g-color-active-a);
+  --vscode-quickInputList-focusForeground: var(--g-color-0);
+}
+
 @include dark-theme {
   .editor .monaco-editor .suggest-widget {
     background: rgba(var(--g-color-86-rgb), 0.65);
     box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
     --vscode-editorSuggestWidget-selectedBackground: var(--g-color-active-b);
     --vscode-list-hoverBackground: var(--g-color-active-a);
+  }
+
+  .editor .monaco-editor {
+    --vscode-menu-selectionForeground: var(--g-color-0);
+    --vscode-menu-selectionBackground: var(--g-color-active-b);
+    --vscode-quickInputList-focusBackground: var(--g-color-active-b);
+    --vscode-quickInputList-focusForeground: var(--g-color-0);
   }
 }
 </style>
