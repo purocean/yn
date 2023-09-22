@@ -255,7 +255,8 @@ export type RenderEnv = {
   file: Doc | null,
   renderCount: number,
   attributes?: Record<string, any>,
-  tokens: Token[]
+  tokens: Token[],
+  safeMode?: boolean,
 }
 
 export type ExtensionCompatible = { value: boolean, reason: string }

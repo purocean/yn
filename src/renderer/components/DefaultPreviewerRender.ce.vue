@@ -23,6 +23,7 @@ import { getLogger, sleep } from '@fe/utils'
 import { t } from '@fe/services/i18n'
 import type { RenderEnv } from '@fe/types'
 import type { AppState } from '@fe/support/store'
+import { ROOT_REPO_NAME_PREFIX } from '@share/misc'
 
 const logger = getLogger('preview')
 
@@ -89,8 +90,11 @@ async function render (checkInComposition = false) {
     currentFile.value.name
   }
 
+  const file = currentFile.value || null
+  const safeMode = !!(file && file.repo.startsWith(ROOT_REPO_NAME_PREFIX)) // enable safe mode for root repo
+
   const startTime = performance.now()
-  renderEnv = { tokens: [], source: content, file: currentFile.value || null, renderCount: renderCount }
+  renderEnv = { tokens: [], source: content, file, renderCount, safeMode }
   try {
     renderContent.value = markdown.render(content, renderEnv)
   } catch (error: any) {
