@@ -108,7 +108,7 @@ export default {
     ctx.workbench.FileTabs.tapTabContextMenus((items, tab) => {
       const doc = tab.payload.file
 
-      if (!doc) {
+      if (!doc || ctx.doc.isOutOfRepo(doc)) {
         return
       }
 
