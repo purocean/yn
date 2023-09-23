@@ -52,6 +52,11 @@ function checkFilePath (path: string) {
  * @returns
  */
 export function getAbsolutePath (doc: Doc) {
+  if (isOutOfRepo(doc)) {
+    const repoPath = doc.repo.substring(misc.ROOT_REPO_NAME_PREFIX.length)
+    return normalizeSep(join(repoPath, doc.path))
+  }
+
   return normalizeSep(join(getRepo(doc.repo)?.path || '/', doc.path))
 }
 
