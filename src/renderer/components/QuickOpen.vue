@@ -333,7 +333,7 @@ export default defineComponent({
 }
 
 .result {
-  max-height: 300px;
+  max-height: min(calc(100vh - 260px), 300px);
   overflow-y: auto;
   list-style: none;
   padding: 0;
@@ -347,6 +347,7 @@ export default defineComponent({
   padding: 2px 6px;
   user-select: none;
   border-radius: var(--g-border-radius);
+  font-variant-numeric: tabular-nums;
 }
 
 .result li.selected {

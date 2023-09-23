@@ -115,7 +115,7 @@ export default createStore({
 
       storage.set('currentFile', pick(data, 'repo', 'path', 'type', 'name'))
 
-      if (data) {
+      if (data && !data.repo.startsWith('__')) { // record recent open time, except for repo starts with '__'
         const record: Record<string, number> = {
           ...(state.recentOpenTime || {}),
           [`${data.repo}|${data.path}`]: Date.now()

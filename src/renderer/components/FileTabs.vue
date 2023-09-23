@@ -22,7 +22,7 @@ import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/keybinding'
 import type { Components, Doc } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
-import { isEncrypted, isMarkdownFile, isSameFile, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
+import { isEncrypted, isMarkdownFile, isOutOfRepo, isSameFile, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
 import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
 import { FileTabs } from '@fe/services/workbench'
@@ -62,7 +62,9 @@ export default defineComponent({
 
     function setTabs (list: Components.FileTabs.Item[]) {
       store.commit('setTabs', list.map(item => {
-        item.payload.file = copyDoc(item.payload.file)
+        const file = item.payload.file
+        item.payload.file = copyDoc(file)
+        item.class = isOutOfRepo(file) ? 'out-of-repo' : ''
         return item
       }))
     }
@@ -385,5 +387,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 ::v-deep(.tabs div:only-child[data-key="yank-note://system/blank.md"] > .icon) {
   display: none;
+}
+
+::v-deep(.tabs .tab.out-of-repo) {
+  color: #569bd5;
 }
 </style>

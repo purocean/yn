@@ -4,6 +4,7 @@ import StateInline from 'markdown-it/lib/rules_inline/state_inline'
 import Token from 'markdown-it/lib/token'
 import ParserInline from 'markdown-it/lib/parser_inline'
 import MarkdownIt from 'markdown-it'
+import { RenderEnv } from '@fe/types'
 
 const unquoted = '[^"\'=<>`\\x00-\\x20]+'
 const singleQuoted = "'[^']*'"
@@ -22,6 +23,16 @@ const HTML_TAG_RE = new RegExp('^(?:' + comment + '|' + openTag + '|' + closeTag
 const HTML_SELF_CLOSE_TAG_RE = new RegExp('^' + selfCloseTag, 'i')
 const INVALID_HTML_TAG_NAME_RE = /script|style/i
 const INVALID_ATTR_NAME_RE = /^on|^xmlns$|^xml$|^aria-|^srcdoc$/i
+
+const SAFE_MODE_ALLOWED_TAGS = [
+  'br', 'b', 'i', 'strong', 'em', 'a', 'pre', 'code', 'img',
+  'tt', 'div', 'ins', 'del', 'sup', 'sub', 'p', 'ol', 'ul',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8',
+  'table', 'thead', 'tbody', 'tfoot', 'blockquote', 'dl', 'dt', 'dd', 'kbd',
+  'q', 'samp', 'var', 'hr', 'ruby', 'rt', 'rp', 'li', 'tr', 'td', 'th', 's',
+  'strike', 'summary', 'details', 'caption', 'figure', 'figcaption', 'abbr', 'bdo', 'cite',
+  'dfn', 'mark', 'small', 'span', 'time', 'wbr',
+]
 
 function isLetter (ch: number) {
   const lc = ch | 0x20 // to lower case
@@ -83,6 +94,10 @@ function htmlInline (state: StateInline, silent = false): boolean {
 
   const tag = (match[1] || match[2] || match[3] || match[4] || '')
   if (!tag) { return false }
+
+  if ((state.env as RenderEnv).safeMode && !SAFE_MODE_ALLOWED_TAGS.includes(tag.toLowerCase())) {
+    return false
+  }
 
   const content = state.src.slice(pos, pos + match[0].length)
 

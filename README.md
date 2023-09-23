@@ -76,20 +76,20 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.60.1](https://github.com/purocean/yn/releases/tag/v3.60.1) 2023-09-05
+### [v3.61.1](https://github.com/purocean/yn/releases/tag/v3.61.1) 2023-09-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-win-x64-3.60.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-mac-arm64-3.60.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-mac-x64-3.60.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-linux-x86_64-3.60.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.60.1/Yank-Note-linux-amd64-3.60.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.61.1/Yank-Note-win-x64-3.60.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.61.1/Yank-Note-mac-arm64-3.60.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.61.1/Yank-Note-mac-x64-3.60.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.61.1/Yank-Note-linux-x86_64-3.60.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.61.1/Yank-Note-linux-amd64-3.60.1.deb)
 
-1. feat: add double-click sidebar title to focus on the currently open document function
-2. feat: optimize editing experience, adjust editor automatic wrapping, symbol pairing and other details
-3. feat: add "Add File" function to the sidebar context menu
-4. feat: upgrade PlantUML to v1.2023.10
-5. feat: upgrade markdown-it-multimd-table to 4.2.3
-6. fix: fix mind map memory leak issue
-7. refactor(plugin): rename `ctx.editor.getIsDefault` to `ctx.editor.isDefault`
-8. refactor(plugin): add `ctx.editor.isDirty` method
-9. feat(plugin): add `DOC_PRE_ENSURE_CURRENT_FILE_SAVED`, `DOC_PRE_SWITCH` hooks
-10. feat(plugin): add `ctx.utils.waitCondition` method
+1. feat: application-associated Markdown files: supports opening files directly in the file manager and dragging them into the application to open files. Non-warehouse files will be rendered in safe mode
+2. feat: configuration items: The rendering configuration adds more configurations of the `markdown-it-multimd-table` plug-in; the editor adds a configuration to control whether to display suggestion prompts when typing.
+3. feat: editing experience optimization: when dragging a document or image from the sidebar into the editor, a document link or image link is automatically inserted; when a link is pasted after selecting text, the link is automatically inserted and the selected text is used as the link text.
+4. feat: optimize the speed of checking updates: the application will sometimes check for updates through yank-note.com
+5. feat: optimize the interface UI: adjust the context menu, optimize the rendering of external link icons so that they do not wrap separately, and align the numbers displayed in the sidebar and outline as much as possible, etc.
+6. feat: optimize interaction: when the search panel in the warehouse is displayed, the search box will be automatically focused and text selected;
+7. feat: the edited file will be added to the application icon context menu in the taskbar or Dock for quick opening.
+8. feat: upgrade Electron to 22.3.24
+9. fix: when inserting attachments or linked files, the file name containing special characters cannot be displayed as a Markdown link.
+10. feat(plugin): add `ctx.base.getAllRepos` `ctx.doc.getAllRepos` `ctx.doc.switchDocByPath` methods
 
 [More release notes](https://github.com/purocean/yn/releases)
 

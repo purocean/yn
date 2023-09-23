@@ -153,6 +153,7 @@ export default {
           title: ctx.i18n.t('status-bar.tool.copy-content'),
           subTitle: ctx.keybinding.getKeysLabel(id),
           onClick: () => copyContent(),
+          ellipsis: true,
           order: 100,
         },
       )

@@ -10,7 +10,7 @@ import { getLogger, md5 } from '@fe/utils'
 import SvgIcon from '@fe/components/SvgIcon.vue'
 import { getAllRunners } from '@fe/services/runner'
 import { registerHook, removeHook } from '@fe/core/hook'
-import type { CodeRunner } from '@fe/types'
+import type { CodeRunner, RenderEnv } from '@fe/types'
 
 const cache: Record<string, string> = {}
 
@@ -172,12 +172,12 @@ const RunCode = defineComponent({
 
 const RunPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
-  md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
+  md.renderer.rules.fence = (tokens, idx, options, env: RenderEnv, slf) => {
     const token = tokens[idx]
 
     const code = token.content.trim()
     const firstLine = code.split(/\n/)[0].trim()
-    if (!firstLine.includes('--run--') || !token.info) {
+    if (!firstLine.includes('--run--') || !token.info || env.safeMode) {
       return temp(tokens, idx, options, env, slf)
     }
 

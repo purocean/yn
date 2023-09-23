@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, Fragment, h, nextTick, onBeforeUnmount, reactive, ref, shallowRef, Text, watch, watchEffect } from 'vue'
+import { computed, Fragment, h, nextTick, onBeforeUnmount, reactive, ref, shallowRef, Text, watch } from 'vue'
 import type { ISearchRange, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery, ITextSearchMatch } from 'ripgrep-wrapper'
 import { getLogger, sleep } from '@fe/utils'
 import { basename, dirname, join, relative } from '@fe/utils/path'
@@ -187,14 +187,6 @@ const message = computed(() => {
 
 const allResultCollapsed = computed(() => {
   return result.value.every(item => !item.open)
-})
-
-watchEffect(async () => {
-  if (visible.value) {
-    await nextTick()
-    patternInputRef.value?.focus()
-    patternInputRef.value?.select()
-  }
 })
 
 watch(() => store.state.currentRepo, () => {
@@ -514,6 +506,11 @@ registerAction({
         })
       }
     }
+
+    nextTick(() => {
+      patternInputRef.value?.focus()
+      patternInputRef.value?.select()
+    })
   },
 })
 

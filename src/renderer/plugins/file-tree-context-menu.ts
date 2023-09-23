@@ -44,15 +44,15 @@ export default {
 
       return [
         ...(isMarkdown && !ctx.doc.isEncrypted(node) ? [
-          { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node) },
+          { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node), ellipsis: true },
         ] : []),
         ...(node.type === 'dir' ? [
-          { id: 'create-doc', label: t('tree.context-menu.create-doc'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) },
-          { id: 'create-dir', label: t('tree.context-menu.create-dir'), onClick: () => ctx.doc.createDir({ repo: node.repo }, node) },
-          { id: 'add-item', label: t('tree.context-menu.add-item'), onClick: () => addItem(node) },
+          { id: 'create-doc', label: t('tree.context-menu.create-doc'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node), ellipsis: true },
+          { id: 'create-dir', label: t('tree.context-menu.create-dir'), onClick: () => ctx.doc.createDir({ repo: node.repo }, node), ellipsis: true },
+          { id: 'add-item', label: t('tree.context-menu.add-item'), onClick: () => addItem(node), ellipsis: true },
         ] : []),
         ...(node.path !== '/' ? [
-          { id: 'rename', label: t('tree.context-menu.rename'), onClick: () => ctx.doc.moveDoc(node) },
+          { id: 'rename', label: t('tree.context-menu.rename'), onClick: () => ctx.doc.moveDoc(node), ellipsis: true },
           { id: 'delete', label: t('tree.context-menu.delete'), onClick: () => ctx.doc.deleteDoc(node) },
         ] : []),
         { type: 'separator' },
@@ -62,13 +62,13 @@ export default {
         ] : []),
         { id: 'refresh', label: t('tree.context-menu.refresh'), onClick: () => ctx.tree.refreshTree() },
         ...(node.type === 'dir' ? [
-          { id: 'find-in-folder', label: t('tree.context-menu.find-in-folder'), onClick: () => ctx.base.findInRepository({ include: node.path.replace(/^\//, '') + '/**/*.md' }) },
+          { id: 'find-in-folder', label: t('tree.context-menu.find-in-folder'), onClick: () => ctx.base.findInRepository({ include: node.path.replace(/^\//, '') + '/**/*.md' }), ellipsis: true },
         ] : []),
         ...(node.type === 'dir' && !FLAG_DISABLE_XTERM ? [
           { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: () => revealInXterminal(node) },
         ] : []),
         ...(isMarkdown ? [
-          { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node) }
+          { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node), ellipsis: true }
         ] : []),
         { type: 'separator' },
         { id: 'copy-name', label: t('tree.context-menu.copy-name'), onClick: () => ctx.utils.copyText(node.name) },
@@ -108,7 +108,7 @@ export default {
     ctx.workbench.FileTabs.tapTabContextMenus((items, tab) => {
       const doc = tab.payload.file
 
-      if (!doc) {
+      if (!doc || ctx.doc.isOutOfRepo(doc)) {
         return
       }
 

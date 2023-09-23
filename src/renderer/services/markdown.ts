@@ -98,7 +98,12 @@ markdown.use(MarkdownItSup)
 markdown.use(MarkdownItMark)
 markdown.use(MarkdownItAbbr)
 markdown.use(MarkdownItAttributes)
-markdown.use(MarkdownItMultimdTable, { multiline: true })
+markdown.use(MarkdownItMultimdTable, {
+  multiline: getSetting('render.multimd-multiline', true),
+  rowspan: getSetting('render.multimd-rowspan', false),
+  headerless: getSetting('render.multimd-headerless', false),
+  multibody: getSetting('render.multimd-multibody', false),
+})
 
 const tokenize = markdown.block.tokenize
 markdown.block.tokenize = function (state, startLine, endLine) {

@@ -65,11 +65,13 @@ export default defineComponent({
           {
             id: 'create-doc',
             label: t('tree.context-menu.create-doc'),
+            ellipsis: true,
             onClick: () => createDoc({ repo: currentRepo.value.name }, tree.value[0])
           },
           {
             id: 'create-dir',
             label: t('tree.context-menu.create-dir'),
+            ellipsis: true,
             onClick: () => createDir({ repo: currentRepo.value.name }, tree.value[0])
           }
         )

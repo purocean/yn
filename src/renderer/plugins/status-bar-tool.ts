@@ -17,6 +17,7 @@ export default {
             type: 'normal',
             title: ctx.i18n.t('status-bar.tool.print'),
             hidden: !printExportVisible,
+            ellipsis: true,
             onClick: () => {
               setTimeout(() => {
                 ctx.export.printCurrentDocument()
@@ -27,6 +28,7 @@ export default {
             id: 'export',
             type: 'normal',
             hidden: !printExportVisible,
+            ellipsis: true,
             title: ctx.i18n.t('status-bar.tool.export'),
             onClick: () => ctx.export.toggleExportPanel(),
           },

@@ -22,6 +22,28 @@ const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
 const disabled = isAppx || (process as any).mas
 
 class UpdateProvider extends GitHubProvider {
+  constructor (options: any, updater: any, runtimeOptions: any) {
+    super(options, updater, runtimeOptions)
+
+    const httpRequest = this.httpRequest.bind(this)
+    this.httpRequest = function (url: URL, headers?: any | null, cancellationToken?: any) {
+      if (!this.isGithub()) {
+        const _url = new URL(HOMEPAGE_URL)
+        if (url.pathname === '/purocean/yn/releases.atom') {
+          url.hostname = _url.hostname
+          url.pathname = '/api/update-info/releases.atom'
+        } else if (url.pathname === '/purocean/yn/releases/latest') {
+          url.hostname = _url.hostname
+          url.pathname = '/api/update-info/latest'
+        }
+
+        console.log('request', url.toString())
+      }
+
+      return httpRequest(url, headers, cancellationToken)
+    }
+  }
+
   private getSource (): Exclude<Source, 'auto'> {
     let source: Source = config.get('updater.source', 'auto')
 

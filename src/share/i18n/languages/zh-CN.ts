@@ -373,6 +373,7 @@ const data: BaseLanguage = {
         'font-family': '字体',
         'complete-emoji': '自动补全 Emoji - 输入 : 时显示 Emoji 列表',
         'todo-with-time': '勾选待办事项时自动添加时间',
+        'suggest-on-trigger-characters': '输入时自动提示 - 如果禁用，仍可使用 Ctrl+Space (取决于快捷键配置) 触发',
       },
       'render': {
         'md-html': '启用 HTML',
@@ -382,6 +383,10 @@ const data: BaseLanguage = {
         'md-sup': '启用上标语法: 29^th^',
         'md-sub': '启用下标语法: H~2~O',
         'md-emoji': '启用 Emoji 语法: :smile:',
+        'multimd-multiline': '[markdown-it-multimd-table]: 启用 multiline 语法',
+        'multimd-rowspan': '[markdown-it-multimd-table]: 启用 rowspan 语法',
+        'multimd-headerless': '[markdown-it-multimd-table]: 启用 headerless 语法',
+        'multimd-multibody': '[markdown-it-multimd-table]: 启用 multibody 语法',
       },
       'theme': '主题',
       'language': '语言',

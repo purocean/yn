@@ -117,6 +117,8 @@ export default {
           id: 'plugin.share-preview',
           type: 'normal',
           title: ctx.i18n.t('status-bar.tool.share-preview'),
+          ellipsis: true,
+          hidden: ctx.view.getRenderEnv()?.safeMode,
           onClick: () => showOptionsPanel()
         },
       )

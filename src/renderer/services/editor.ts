@@ -86,6 +86,7 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
     enabled: false
   },
   lineNumbers: getSetting('editor.line-numbers', 'on'),
+  suggestOnTriggerCharacters: getSetting('editor.suggest-on-trigger-characters', true),
   occurrencesHighlight: false,
   renderLineHighlight: 'all',
   wordSeparators: '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?。？！，、；：“”‘’（）《》〈〉【】『』「」﹃﹄〔〕'

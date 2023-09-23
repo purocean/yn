@@ -33,7 +33,7 @@ import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, wat
 import { useStore } from 'vuex'
 import { HELP_REPO_NAME } from '@fe/support/args'
 import { getElectronRemote, isElectron, isMacOS, nodeRequire } from '@fe/support/env'
-import { isEncrypted } from '@fe/services/document'
+import { isEncrypted, isOutOfRepo } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import SvgIcon from './SvgIcon.vue'
 import type { Doc } from '@fe/types'
@@ -174,8 +174,12 @@ export default defineComponent({
           status = t('file-status.loading')
         }
 
+        const repoStr = isOutOfRepo(file)
+          ? ''
+          : `[${file.repo}]`
+
         if (file.path && file.repo) {
-          return `[${file.repo}] ${isSaved.value ? '' : '*'}${file.path}-${status}`
+          return `${repoStr} ${isSaved.value ? '' : '*'}${file.path}-${status}`
         } else {
           return file.name
         }

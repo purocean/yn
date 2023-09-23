@@ -695,7 +695,7 @@ export default {
         padding: 0 2px !important;
         width: 3em !important;
         text-align: center !important;
-        background: rgba(var(--g-color-0-rgb), 0.2) !important;
+        background: rgba(var(--g-color-0-rgb), 0.1) !important;
         margin-top: -4px !important;
         margin-bottom: -4px !important;
       }
@@ -814,6 +814,7 @@ export default {
             id: 'plugin.table.cell-edit.edit',
             type: 'normal' as any,
             label: ctx.i18n.t('table-cell-edit.context-menu.edit'),
+            ellipsis: true,
             onClick: () => {
               handleClick(e, true)
             }

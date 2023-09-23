@@ -3,6 +3,7 @@ import { protocol, app, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, scr
 import type TBrowserWindow from 'electron'
 import * as path from 'path'
 import * as os from 'os'
+import * as fs from 'fs-extra'
 import * as yargs from 'yargs'
 import httpServer from './server'
 import store from './storage'
@@ -12,6 +13,7 @@ import { transformProtocolRequest } from './protocol'
 import startup from './startup'
 import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
+import { initJSONRPCClient, jsonRPCClient } from './jsonrpc'
 import { $t } from './i18n'
 import { getProxyAgent } from './proxy-agent'
 import config from './config'
@@ -31,7 +33,7 @@ const isLinux = os.platform() === 'linux'
 
 let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
 let skipBeforeUnloadCheck = false
-let mainWindowIsReady = false
+let macOpenFilePath = ''
 
 const trayEnabled = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || config.get('server.port', 3044)
@@ -54,6 +56,16 @@ Menu.setApplicationMenu(getMainMenus())
 let fullscreen = false
 let win: TBrowserWindow.BrowserWindow | null = null
 let tray: Tray | null = null
+
+const getOpenFilePathFromArgv = (argv: string[]) => {
+  const filePath = [...argv].reverse().find(x =>
+    x !== process.argv[0] &&
+    !x.startsWith('-') &&
+    !x.endsWith('app.js')
+  )
+
+  return filePath ? path.resolve(process.cwd(), filePath) : null
+}
 
 const getUrl = (mode?: typeof urlMode) => {
   mode = mode ?? urlMode
@@ -234,13 +246,27 @@ const createWindow = () => {
   win.setMenu(null)
   win && win.loadURL(getUrl())
   restoreWindowBounds()
-  win.on('ready-to-show', () => {
-    if (!mainWindowIsReady && config.get('hide-main-window-on-startup', false)) {
+  win.once('ready-to-show', () => {
+    // open file from argv
+    const filePath = macOpenFilePath || getOpenFilePathFromArgv(process.argv)
+    if (filePath) {
+      win?.show()
+      tryOpenFile(filePath)
+      return
+    }
+
+    // reset macOpenFilePath
+    macOpenFilePath = ''
+
+    // hide window on startup
+    if (config.get('hide-main-window-on-startup', false)) {
       hideWindow()
     } else {
-      win!.show()
+      win?.show()
     }
-    mainWindowIsReady = true
+  })
+
+  win.on('ready-to-show', () => {
     skipBeforeUnloadCheck = false
   })
 
@@ -270,11 +296,13 @@ const createWindow = () => {
     fullscreen = false
   })
 
-  win!.webContents.on('will-navigate', (e) => {
+  initJSONRPCClient(win.webContents)
+
+  win.webContents.on('will-navigate', (e) => {
     e.preventDefault()
   })
 
-  win!.webContents.on('will-prevent-unload', (e) => {
+  win.webContents.on('will-prevent-unload', (e) => {
     if (skipBeforeUnloadCheck) {
       e.preventDefault()
     }
@@ -378,7 +406,7 @@ const showSetting = (key?: string) => {
   }
 
   showWindow()
-  win.webContents.executeJavaScript(`window.ctx.setting.showSettingPanel(${key ? `'${key}'` : ''});`, true)
+  jsonRPCClient.call.ctx.setting.showSettingPanel(key)
 }
 
 const toggleFullscreen = () => {
@@ -458,6 +486,18 @@ function refreshMenus () {
   }
 }
 
+async function tryOpenFile (path: string) {
+  console.log('tryOpenFile', path)
+  const stat = await fs.stat(path)
+
+  if (stat.isFile()) {
+    jsonRPCClient.call.ctx.doc.switchDocByPath(path)
+    showWindow()
+  } else {
+    win && dialog.showMessageBox(win, { message: 'Yank Note only support open file.' })
+  }
+}
+
 registerAction('show-main-window', showWindow)
 registerAction('hide-main-window', hideWindow)
 registerAction('toggle-fullscreen', toggleFullscreen)
@@ -480,13 +520,24 @@ const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.exit()
 } else {
-  app.on('second-instance', () => {
+  app.on('second-instance', (e, argv) => {
+    // only check last param of argv.
+    const path = getOpenFilePathFromArgv([argv[argv.length - 1]])
+    if (path) {
+      tryOpenFile(path)
+    }
+
     showWindow()
   })
 
-  app.on('open-file', (e) => {
-    win && dialog.showMessageBox(win, { message: 'Yank Note dose not support opening files directly.' })
+  app.on('open-file', (e, path) => {
     e.preventDefault()
+
+    if (!win || win.webContents.isLoading()) {
+      macOpenFilePath = path
+    } else {
+      tryOpenFile(path)
+    }
   })
 
   app.on('ready', () => {

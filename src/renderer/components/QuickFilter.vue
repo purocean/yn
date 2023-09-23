@@ -191,6 +191,7 @@ watch(() => keyword.value, (val) => {
       color: var(--g-color-20);
       border-radius: var(--g-border-radius);
       font-size: 14px;
+      font-variant-numeric: tabular-nums;
 
       &.selected {
         background: var(--g-color-active-a);

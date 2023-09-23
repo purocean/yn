@@ -24,6 +24,7 @@ import * as editor from '@fe/services/editor'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 import ga from '@fe/support/ga'
+import * as jsonrpc from '@fe/support/jsonrpc'
 import { getLogger } from '@fe/utils'
 
 const logger = getLogger('startup')
@@ -218,6 +219,10 @@ fetchSettings()
 whenEditorReady().then(() => {
   setTimeout(extension.init, 0)
 })
+
+// json-rpc
+
+jsonrpc.init({ ctx })
 
 // google analytics
 

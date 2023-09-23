@@ -40,12 +40,20 @@ async function pasteImage (file: File, asBase64: boolean) {
   }
 }
 
+let selectedTextBeforePaste = ''
+
 function paste (e: ClipboardEvent) {
-  if (!getEditor().hasTextFocus()) {
+  selectedTextBeforePaste = ''
+  const editor = getEditor()
+  if (!editor.hasTextFocus()) {
     return
   }
 
-  const items = e.clipboardData!.items
+  if (e.clipboardData === null) {
+    return
+  }
+
+  const items = e.clipboardData.items
   if (isKeydown('D')) { // covert RFT to markdown
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.match(HTML_REG)) {
@@ -64,6 +72,15 @@ function paste (e: ClipboardEvent) {
         const asBase64 = isKeydown('B') // press key b, paste image as base64
         pasteImage(items[i].getAsFile()!, asBase64)
       }
+    }
+  }
+
+  // normal paste
+  // only one selection
+  if (editor.getSelections()?.length === 1) {
+    const selection = editor.getSelection()
+    if (selection && !selection.isEmpty()) {
+      selectedTextBeforePaste = editor.getModel()?.getValueInRange(selection) || ''
     }
   }
 }
@@ -148,6 +165,24 @@ export default {
         contextMenuGroupId: 'clipboard',
         contextMenuOrder: 3,
         run: pasteRtf,
+      })
+
+      editor.onDidPaste(({ range }) => {
+        const model = editor.getModel()
+        const languageId = model?.getLanguageId()
+
+        if (selectedTextBeforePaste && languageId === 'markdown' && !selectedTextBeforePaste.includes('\n')) {
+          const parsedText = model?.getValueInRange(range) || ''
+          // is link
+          if (parsedText && /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$/.test(parsedText)) {
+            const text = `[${
+              selectedTextBeforePaste.replace(/([[\]])/g, '\\$1')
+            }](${encodeMarkdownLink(parsedText)})`
+            editor.executeEdits('paste', [{ range, text }])
+          }
+        }
+
+        selectedTextBeforePaste = ''
       })
     })
   }

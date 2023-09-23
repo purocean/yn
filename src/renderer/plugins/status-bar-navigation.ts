@@ -14,6 +14,7 @@ export default {
             type: 'normal',
             title: ctx.i18n.t('status-bar.nav.goto'),
             subTitle: ctx.keybinding.getKeysLabel('workbench.show-quick-open'),
+            ellipsis: true,
             onClick: () => ctx.action.getActionHandler('workbench.show-quick-open')()
           },
           { type: 'separator' },

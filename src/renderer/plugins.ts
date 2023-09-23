@@ -65,6 +65,8 @@ import sharePreview from '@fe/plugins/share-preview'
 import codeRunners from '@fe/plugins/code-runners'
 import watchFileRefresh from '@fe/plugins/watch-file-refresh'
 import previewFontSize from '@fe/plugins/preview-font-size'
+import dropToOpenFile from '@fe/plugins/drop-to-open-file'
+import recordRecentDocument from '@fe/plugins/record-recent-document'
 
 export default [
   customStyles,
@@ -134,4 +136,6 @@ export default [
   codeRunners,
   watchFileRefresh,
   previewFontSize,
+  dropToOpenFile,
+  recordRecentDocument,
 ]

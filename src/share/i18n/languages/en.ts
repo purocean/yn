@@ -382,6 +382,7 @@ const data = {
         'font-family': 'Font Family',
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
         'todo-with-time': 'Add time when checking todo',
+        'suggest-on-trigger-characters': 'Suggest on trigger characters - You can also use Ctrl+Space (depending on the shortcuts) to trigger',
       },
       'render': {
         'md-html': 'Enable HTML',
@@ -391,6 +392,10 @@ const data = {
         'md-sup': 'Enable sup syntax: 29^th^',
         'md-sub': 'Enable sub syntax: H~2~O',
         'md-emoji': 'Enable emoji syntax: :smile:',
+        'multimd-multiline': '[markdown-it-multimd-table]: Enable multiline syntax',
+        'multimd-rowspan': '[markdown-it-multimd-table]: Enable rowspan syntax',
+        'multimd-headerless': '[markdown-it-multimd-table]: Enable headerless syntax',
+        'multimd-multibody': '[markdown-it-multimd-table]: Enable multibody syntax',
       },
       'theme': 'Theme',
       'language': 'Language',

@@ -1,9 +1,10 @@
 import { defineComponent, h, onBeforeUnmount, ref } from 'vue'
 import Markdown from 'markdown-it'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { Plugin } from '@fe/context'
 import { IFrame } from '@fe/support/embed'
 import { md5 } from '@fe/utils'
+import type { Plugin } from '@fe/context'
+import type { RenderEnv } from '@fe/types'
 
 const Applet = defineComponent({
   name: 'Applet',
@@ -54,12 +55,12 @@ const Applet = defineComponent({
 
 const MarkdownItPlugin = (md: Markdown) => {
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
-  md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
+  md.renderer.rules.fence = (tokens, idx, options, env: RenderEnv, slf) => {
     const token = tokens[idx]
 
     const code = token.content.trim()
     const firstLine = code.split(/\n/)[0].trim()
-    if (token.info !== 'html' || !firstLine.includes('--applet--')) {
+    if (token.info !== 'html' || !firstLine.includes('--applet--') || env.safeMode) {
       return temp(tokens, idx, options, env, slf)
     }
 

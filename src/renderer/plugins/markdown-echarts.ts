@@ -3,6 +3,7 @@ import type Markdown from 'markdown-it'
 import type { Plugin } from '@fe/context'
 import { getInitialized, getLoadStatus } from '@fe/others/extension'
 import { t } from '@fe/services/i18n'
+import { RenderEnv } from '@fe/types'
 
 const MarkdownItPlugin = (md: Markdown) => {
   const extensionId = '@yank-note/extension-echarts'
@@ -22,8 +23,8 @@ const MarkdownItPlugin = (md: Markdown) => {
   }
 
   const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
-  md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
-    if (checkExtensionLoaded()) {
+  md.renderer.rules.fence = (tokens, idx, options, env: RenderEnv, slf) => {
+    if (checkExtensionLoaded() || env.safeMode) {
       return temp(tokens, idx, options, env, slf)
     }
 
