@@ -5,6 +5,8 @@ import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import type { Plugin } from '@fe/context'
 
+const sensitiveUrlReg = /^javascript:|vbscript:|file:/i
+const sensitiveAttrReg = /^href|src|xlink:href|poster|srcset$/i
 const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
 const attrEventReg = /^on/i
 const defaultRules = {} as any
@@ -33,9 +35,22 @@ function getLine (token: Token, env?: Record<string, any>) {
   return [lineStart + sOffset, lineEnd + sOffset]
 }
 
-export function setSourceLine (token: Token, env?: Record<string, any>) {
+function processToken (token: Token, env?: Record<string, any>) {
   if (!token.meta) {
     token.meta = {}
+  }
+
+  if (env?.safeMode) {
+    token.attrs?.forEach(([name, val]) => {
+      name = name.toLowerCase()
+      if (sensitiveAttrReg.test(name) && sensitiveUrlReg.test(val)) {
+        token.attrSet(name, '')
+      }
+
+      if (name === 'href' && val.toLowerCase().startsWith('data:')) {
+        token.attrSet(name, '')
+      }
+    })
   }
 
   if (token.block) {
@@ -250,7 +265,7 @@ function render (this: Renderer, tokens: Token[], options: any, env: any) {
   const vNodeParents: VNode[] = []
 
   return tokens.map((token, i) => {
-    setSourceLine(token, env)
+    processToken(token, env)
     if (token.block) {
       token.attrSet(DOM_ATTR_NAME.TOKEN_IDX, i.toString())
     }
