@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.61.2](https://github.com/purocean/yn/releases/tag/v3.61.2) 2023-09-26
+### [v3.61.3](https://github.com/purocean/yn/releases/tag/v3.61.3) 2023-09-26
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-win-x64-3.61.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-mac-arm64-3.61.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-mac-x64-3.61.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-linux-x86_64-3.61.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-linux-amd64-3.61.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-win-x64-3.61.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-mac-arm64-3.61.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-mac-x64-3.61.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-linux-x86_64-3.61.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-linux-amd64-3.61.3.deb)
 
 1. feat: 应用关联 Markdown 文件：支持在文件管理器中直接打开、拖拽到应用内打开文件。非仓库文件将以安全模式渲染
 2. feat: 配置项：渲染配置增加 `markdown-it-multimd-table` 插件更多配置；编辑器增加控制是否键入时候展示建议提示的配置
