@@ -359,6 +359,10 @@ body.find-in-preview-highlight ::selection {
       margin-right: 3px;
     }
 
+    a[href=""] {
+      color: var(--g-color-40);
+    }
+
     a[href$=".md"],
     a[href*=".md#"] {
       &:after {

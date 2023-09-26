@@ -76,9 +76,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.61.2](https://github.com/purocean/yn/releases/tag/v3.61.2) 2023-09-26
+### [v3.61.3](https://github.com/purocean/yn/releases/tag/v3.61.3) 2023-09-26
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-win-x64-3.61.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-mac-arm64-3.61.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-mac-x64-3.61.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-linux-x86_64-3.61.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.61.2/Yank-Note-linux-amd64-3.61.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-win-x64-3.61.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-mac-arm64-3.61.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-mac-x64-3.61.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-linux-x86_64-3.61.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-linux-amd64-3.61.3.deb)
 
 1. feat: application-associated Markdown files: supports opening files directly in the file manager and dragging them into the application to open files. Non-warehouse files will be rendered in safe mode
 2. feat: configuration items: The rendering configuration adds more configurations of the `markdown-it-multimd-table` plug-in; the editor adds a configuration to control whether to display suggestion prompts when typing.
