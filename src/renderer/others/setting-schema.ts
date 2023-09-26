@@ -225,6 +225,14 @@ const schema: SettingSchema = ({
       group: 'editor',
       required: true,
     },
+    'editor.quick-suggestions': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.editor.quick-suggestions',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
     'editor.suggest-on-trigger-characters': {
       defaultValue: true,
       title: 'T_setting-panel.schema.editor.suggest-on-trigger-characters',
