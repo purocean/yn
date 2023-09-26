@@ -383,6 +383,7 @@ const data = {
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
         'todo-with-time': 'Add time when checking todo',
         'suggest-on-trigger-characters': 'Suggest on trigger characters - You can also use Ctrl+Space (depending on the shortcuts) to trigger',
+        'quick-suggestions': 'Quick Suggestions - Suggest as you type',
       },
       'render': {
         'md-html': 'Enable HTML',

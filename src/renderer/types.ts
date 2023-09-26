@@ -320,6 +320,7 @@ export interface BuildInSettings {
   'editor.complete-emoji': boolean,
   'editor.todo-with-time': boolean,
   'editor.suggest-on-trigger-characters': boolean,
+  'editor.quick-suggestions': boolean,
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,

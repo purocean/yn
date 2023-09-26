@@ -93,6 +93,11 @@ export function isMarkdownFile (doc: Doc) {
   return !!(doc && doc.type === 'file' && misc.isMarkdownFile(doc.path))
 }
 
+/**
+ * Check if the document is out of a repository.
+ * @param doc
+ * @returns
+ */
 export function isOutOfRepo (doc?: Doc | null) {
   return !!(doc && doc.repo.startsWith(misc.ROOT_REPO_NAME_PREFIX))
 }
