@@ -37,7 +37,7 @@ import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, s
 import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import type { AppState } from '@fe/support/store'
-import { highlightLine as editorHighlightLine } from '@fe/services/editor'
+import { highlightLine as editorHighlightLine, getEditor } from '@fe/services/editor'
 import { isSameFile } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import { getHeadings, getRenderEnv, Heading, highlightLine as viewHighlightLine } from '@fe/services/view'
@@ -95,6 +95,9 @@ export default defineComponent({
 
       if (isSameFile(getRenderEnv()?.file, store.state.currentFile)) {
         editorHighlightLine(line, scrollEditor, 1000)
+        const editor = getEditor()
+        const column = editor.getModel()?.getLineMaxColumn(line) || 1
+        editor.setPosition({ lineNumber: line, column })
         viewHighlightLine(line, scrollPreview, 1000)
       } else {
         viewHighlightLine(line, true, 1000)
