@@ -3,7 +3,7 @@ import Token from 'markdown-it/lib/token'
 import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { removeQuery, sleep } from '@fe/utils'
-import { isElectron } from '@fe/support/env'
+import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, resolve } from '@fe/utils/path'
@@ -63,9 +63,14 @@ function handleLink (link: HTMLAnchorElement): boolean {
   } else if (link.classList.contains(DOM_CLASS_NAME.MARK_OPEN)) {
     const path = link.getAttribute(DOM_ATTR_NAME.ORIGIN_HREF) || decodeURI(href)
 
-    const basePath = path.startsWith('/')
+    let basePath = path.startsWith('/')
       ? (getRepo(fileRepo)?.path || '/')
       : dirname(currentFile.absolutePath || '/')
+
+    // net drive path start with '\\' on Windows, so we need to replace '/' to '\\' to prevent `join` lost the first part.
+    if (isWindows) {
+      basePath = basePath.replaceAll('/', '\\')
+    }
 
     openPath(join(basePath, path))
     return true
