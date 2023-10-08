@@ -25,6 +25,7 @@ type Payload = {
   addDevice: { licenseId: string }
   fetchDevices: { licenseId: string }
   upgradeLicense: { oldLicense: string, locale: string }
+  checkDevice: { device: string }
   genDeviceString: {},
 }
 
@@ -142,7 +143,7 @@ export function showPremium (tab?: PremiumTab) {
   ga.logEvent('yn_premium_show', { purchased: getPurchased() })
 }
 
-export function getLicenseToken (throwError = false) {
+export function getLicenseToken () {
   logger.debug('getLicenseToken')
   try {
     const tokenStr = getSetting('license')
@@ -167,10 +168,6 @@ export function getLicenseToken (throwError = false) {
 
     return syncCacheLicenseToken(token)
   } catch (error) {
-    if (throwError) {
-      throw error
-    }
-
     logger.error('getLicenseToken', error)
   }
 
@@ -217,11 +214,21 @@ async function setLicense (licenseId: string) {
   }
 }
 
+async function checkDevice (device: string) {
+  try {
+    await requestApi('checkDevice', { device })
+  } catch (error) {
+    cleanLicense()
+    throw error
+  }
+}
+
 export async function refreshLicense (opts?: { throwError?: boolean }) {
   logger.debug('refreshLicense', opts)
   try {
     const token = getLicenseToken()
     if (token) {
+      await checkDevice(token.device)
       await setLicense(token.licenseId)
     }
   } catch (error) {
@@ -242,7 +249,12 @@ export async function activateLicense (licenseId: string) {
 export async function activateByTokenString (tokenString: string) {
   logger.debug('activateByToken', tokenString)
   await setSetting('license', tokenPrefix + tokenString)
-  getLicenseToken(true)
+  const token = getLicenseToken()
+  if (token) {
+    await checkDevice(token.device)
+  } else {
+    throw new Error('INVALID_LICENSE')
+  }
 }
 
 function checkLicenseStatus () {

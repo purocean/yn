@@ -116,7 +116,7 @@
         </div>
         <div class="offline-input-wrapper">
           <input readonly :value="machineCode" />
-          <button class="primary small input-copy-btn" @click="copyMachineCode">Copy</button>
+          <button v-if="machineCode" class="primary small input-copy-btn" @click="copyMachineCode">Copy</button>
         </div>
         <div class="code-label">
           Activation Token
@@ -226,7 +226,8 @@ export default defineComponent({
 
       devices.value = data.map(x => {
         const item = decodeDevice(x)
-        const isCurrent = token.device === x
+        const device = decodeDevice(token.device)
+        const isCurrent = device.id === item.id && device.platform === item.platform
         return {
           isCurrent,
           label: `[${item.platform}] ${item.hostname} ` +
@@ -368,6 +369,7 @@ export default defineComponent({
 
     watch(tab, () => {
       offline.value = false
+      activationToken.value = ''
     })
 
     watchEffect(async () => {
