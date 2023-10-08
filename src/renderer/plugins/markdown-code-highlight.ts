@@ -204,6 +204,7 @@ const extensionMap: Record<string, string> = {
   s: 'nasm',
   assembly: 'nasm',
   masm: 'nasm',
+  bat: 'batch',
   'c++': 'cpp',
 }
 

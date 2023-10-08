@@ -349,7 +349,7 @@ export async function watchFile (
   const result: Promise<string | null> = readReader(reader, onResult)
 
   result.catch(error => {
-    if (!error.message.includes('abort')) {
+    if (!error?.message?.includes('abort')) {
       onError(error)
     }
   })

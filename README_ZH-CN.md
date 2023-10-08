@@ -76,20 +76,15 @@
 
 ## 更新日志
 
-### [v3.61.3](https://github.com/purocean/yn/releases/tag/v3.61.3) 2023-09-26
+### [v3.62.0](https://github.com/purocean/yn/releases/tag/v3.62.0) 2023-10-08
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-win-x64-3.61.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-mac-arm64-3.61.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-mac-x64-3.61.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-linux-x86_64-3.61.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.61.3/Yank-Note-linux-amd64-3.61.3.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.62.0/Yank-Note-win-x64-3.62.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.62.0/Yank-Note-mac-arm64-3.62.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.62.0/Yank-Note-mac-x64-3.62.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.62.0/Yank-Note-linux-x86_64-3.62.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.62.0/Yank-Note-linux-amd64-3.62.0.deb)
 
-1. feat: 应用关联 Markdown 文件：支持在文件管理器中直接打开、拖拽到应用内打开文件。非仓库文件将以安全模式渲染
-2. feat: 配置项：渲染配置增加 `markdown-it-multimd-table` 插件更多配置；编辑器增加控制是否键入时候展示建议提示的配置
-3. feat: 编辑体验优化：从侧栏拖动文档或图片到编辑器中时，自动插入文档链接或图片链接；选中文本后粘贴链接时，自动插入链接并以选中文本作为链接文本
-4. feat: 优化检查更新速度：应用在一些时候会通过 yank-note.com 检查更新
-5. feat: 优化界面 UI：调整上下文菜单、优化渲染外链图标不单独换行、侧栏和大纲中的显示的数字尽量对齐等
-6. feat: 优化交互：仓库内搜索面板展示时自动聚焦搜索框并选中文本；
-7. feat: 编辑过的文件将添加到任务栏或 Dock 中应用图标上下文菜单中，方便快速打开
-8. feat: 升级 Electron 到 22.3.24
-9. fix: 修复插入附件或链接文件时，文件名中包含特殊字符不能展示为 Markdown 链接的问题
-10. feat(plugin): 增加 `ctx.base.getAllRepos` `ctx.doc.getAllRepos` `ctx.doc.switchDocByPath` 方法
+1. feat: 侧栏文档大纲支持折叠展开
+2. feat: 支持离线激活高级版
+3. feat: 选中文本后粘贴链接时，自动插入链接并以选中文本作为链接文本，支持带 # 的链接
+4. feat: 增加 `bat` 语言高亮
+5. fix: 修复 Windows 上仓库使用网络路径时候打开附件失败的问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

@@ -174,7 +174,7 @@ export default {
         if (selectedTextBeforePaste && languageId === 'markdown' && !selectedTextBeforePaste.includes('\n')) {
           const parsedText = model?.getValueInRange(range) || ''
           // is link
-          if (parsedText && /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=]*)?$/.test(parsedText)) {
+          if (parsedText && /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=#]*)?$/.test(parsedText)) {
             const text = `[${
               selectedTextBeforePaste.replace(/([[\]])/g, '\\$1')
             }](${encodeMarkdownLink(parsedText)})`

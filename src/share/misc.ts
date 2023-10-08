@@ -19,7 +19,7 @@ R1VuHglANFSi45+45PRHkGlpwjwnlFCTmj137h/djQ//NinJ73CeI3xHD6+Spppy
 DQIDAQAB
 -----END PUBLIC KEY-----`
 
-export const API_BASE_URL = 'https://api.yank-note.com'
+export const API_BASE_URL = 'https://yank-note.com'
 export const HOMEPAGE_URL = 'https://yank-note.com'
 
 export function isMarkdownFile (path: string) {

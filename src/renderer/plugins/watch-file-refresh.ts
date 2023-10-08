@@ -77,7 +77,13 @@ export default {
         },
         async error => {
           logger.error('startWatch error', error)
-          // retry watch
+
+          // ignore system error
+          if ((error as any)?.syscall) {
+            return
+          }
+
+          // retry watch then other error occurred
           await ctx.utils.sleep(2000)
           triggerWatchFile(ctx.store.state.currentFile)
         }
