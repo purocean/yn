@@ -1,4 +1,4 @@
-import { AppLicenseClient } from 'app-license'
+import { AppLicenseClient, decodeDevice } from 'app-license'
 import request from 'request'
 import { API_BASE_URL, PREMIUM_PUBLIC_KEY } from '../../share/misc'
 import { getAction } from '../action'
@@ -63,6 +63,14 @@ export function fetchDevices (payload: {licenseId: string}) {
 
 export function upgradeLicense (payload: {oldLicense: string, locale: string}) {
   return fetchApi('/upgrade-license', payload)
+}
+
+export async function checkDevice (payload: { device: string }) {
+  const device = decodeDevice(await genDeviceString())
+  const _device = decodeDevice(payload.device)
+  if (device.id !== _device.id || device.platform !== _device.platform) {
+    throw new Error('INVALID_LICENSE')
+  }
 }
 
 export function genDeviceString () {
