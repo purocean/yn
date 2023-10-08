@@ -166,7 +166,7 @@ import { decodeDevice, LicenseToken } from 'app-license'
 import { computed, defineComponent, onBeforeUnmount, ref, shallowRef, watch, watchEffect } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import { useI18n } from '@fe/services/i18n'
-import { activateByTokenString, activateLicense, cleanLicense, getLicenseToken, getPurchased, refreshLicense, requestApi, tokenAvailableDays, tokenIsExpiredSoon, tokenIsStaleSoon } from '@fe/others/premium'
+import { activateByTokenString, activateLicense, getLicenseToken, getPurchased, refreshLicense, requestApi, tokenAvailableDays, tokenIsExpiredSoon, tokenIsStaleSoon } from '@fe/others/premium'
 import { useToast } from '@fe/support/ui/toast'
 import { FLAG_DEMO } from '@fe/support/args'
 import { useModal } from '@fe/support/ui/modal'
@@ -249,7 +249,6 @@ export default defineComponent({
             throw error
           }
 
-          await cleanLicense()
           await refreshLicense()
           refreshStatus()
         }
