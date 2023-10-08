@@ -64,3 +64,7 @@ export function fetchDevices (payload: {licenseId: string}) {
 export function upgradeLicense (payload: {oldLicense: string, locale: string}) {
   return fetchApi('/upgrade-license', payload)
 }
+
+export function genDeviceString () {
+  return client.genDeviceString()
+}

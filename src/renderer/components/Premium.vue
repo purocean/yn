@@ -109,10 +109,29 @@
           </div>
         </div>
       </template>
+      <template v-else-if="offline">
+        <div class="code-label">
+          Machine Code
+          <a href="javascript: void(0)" @click="offline = false">{{ $t('premium.activation.online-activation') }}</a>
+        </div>
+        <div class="offline-input-wrapper">
+          <input readonly :value="machineCode" />
+          <button class="primary small input-copy-btn" @click="copyMachineCode">Copy</button>
+        </div>
+        <div class="code-label">
+          Activation Token
+          <a href="javascript: void(0)" @click="getActivationToken">{{ $t('premium.activation.get-activation-token') }}</a>
+          <img v-if="activationTokenQrcodeUrl" class="qrcode" :src="activationTokenQrcodeUrl" >
+        </div>
+        <textarea placeholder="Activation Token" v-model="activationToken" />
+      </template>
       <template v-else>
         <div class="code-label">
           {{ $t('premium.activation.placeholder') }}
-          <a href="javascript: void(0)" @click="buy">{{ $t('premium.activation.get-license') }}</a>
+          <span>
+            <a href="javascript: void(0)" @click="offline = true">{{ $t('premium.activation.offline-activation') }}</a> |
+            <a href="javascript: void(0)" @click="buy">{{ $t('premium.activation.get-license') }}</a>
+          </span>
         </div>
         <input v-model="license" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" maxlength="36" />
       </template>
@@ -124,7 +143,12 @@
         <img class="qrcode" src="~@fe/assets/qrcode-wechat.jpg" >
       </div>
     </div>
-    <div v-if="tab === 'activation' && !info" class="action">
+    <div v-if="tab === 'activation' && !info && offline" class="action">
+      <button class="btn tr" :disabled="activationToken.trim().length < 36 || loading" @click="activateOffline">
+        {{loading ? $t('premium.activation.activating') : $t('ok')}}
+      </button>
+    </div>
+    <div v-if="tab === 'activation' && !info && !offline" class="action">
       <div class="activation-tips" v-html="$t('premium.activation.activation-tips')" />
       <button class="btn tr" :disabled="license.trim().length < 36 || loading" @click="activate">
         {{loading ? $t('premium.activation.activating') : $t('ok')}}
@@ -135,13 +159,14 @@
 </template>
 
 <script lang="ts">
+import qrcode from 'qrcode'
 import confetti from 'canvas-confetti'
 import { debounce, random } from 'lodash-es'
 import { decodeDevice, LicenseToken } from 'app-license'
-import { computed, defineComponent, onBeforeUnmount, ref, shallowRef } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, ref, shallowRef, watch, watchEffect } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import { useI18n } from '@fe/services/i18n'
-import { activateLicense, getLicenseToken, getPurchased, refreshLicense, requestApi, tokenAvailableDays, tokenIsExpiredSoon, tokenIsStaleSoon } from '@fe/others/premium'
+import { activateByTokenString, activateLicense, cleanLicense, getLicenseToken, getPurchased, refreshLicense, requestApi, tokenAvailableDays, tokenIsExpiredSoon, tokenIsStaleSoon } from '@fe/others/premium'
 import { useToast } from '@fe/support/ui/toast'
 import { FLAG_DEMO } from '@fe/support/args'
 import { useModal } from '@fe/support/ui/modal'
@@ -155,6 +180,7 @@ import { copyText } from '@fe/utils'
 
 const GET_LICENSE_URL = HOMEPAGE_URL + '/pricing'
 const RENEWAL_LICENSE_URL = HOMEPAGE_URL + '/renewal'
+const GET_ACTIVATION_TOKEN_URL = HOMEPAGE_URL + '/gat'
 
 export default defineComponent({
   name: 'premium',
@@ -168,6 +194,10 @@ export default defineComponent({
     const license = ref('')
     const info = shallowRef<(LicenseToken & { devices: string[] }) | null>(null)
     const loading = ref(false)
+    const offline = ref(false)
+    const machineCode = ref('')
+    const activationToken = ref('')
+    const activationTokenQrcodeUrl = ref('')
 
     type XDevice = { label: string, id: string, isCurrent: boolean }
     const devices = shallowRef<XDevice[]>([])
@@ -219,6 +249,7 @@ export default defineComponent({
             throw error
           }
 
+          await cleanLicense()
           await refreshLicense()
           refreshStatus()
         }
@@ -237,6 +268,7 @@ export default defineComponent({
     async function showPurchase (_tab?: PremiumTab) {
       showPanel.value = true
       tab.value = _tab || 'intro'
+      offline.value = false
       refreshStatus()
       refreshLicense()
     }
@@ -262,6 +294,23 @@ export default defineComponent({
         loading.value = true
         useToast().show('info', t('premium.activation.activating'))
         await activateLicense(val)
+        useToast().show('info', t('premium.activation.success'))
+        refreshStatus()
+
+        doConfetti()
+      } catch (error: any) {
+        useToast().show('warning', error.message)
+      } finally {
+        loading.value = false
+      }
+    }
+
+    async function activateOffline () {
+      const val = activationToken.value.trim()
+      try {
+        loading.value = true
+        useToast().show('info', t('premium.activation.activating'))
+        await activateByTokenString(val)
         useToast().show('info', t('premium.activation.success'))
         refreshStatus()
 
@@ -308,6 +357,39 @@ export default defineComponent({
       }
     }
 
+    function copyMachineCode () {
+      copyText(machineCode.value)
+      useToast().show('info', t('copied'))
+    }
+
+    function getActivationToken () {
+      const url = GET_ACTIVATION_TOKEN_URL + '?machineCode=' + encodeURIComponent(machineCode.value)
+      openWindow(url)
+    }
+
+    watch(tab, () => {
+      offline.value = false
+    })
+
+    watchEffect(async () => {
+      if (offline.value) {
+        machineCode.value = await requestApi('genDeviceString', {})
+      } else {
+        machineCode.value = ''
+      }
+    })
+
+    watchEffect(() => {
+      if (machineCode.value) {
+        const url = GET_ACTIVATION_TOKEN_URL + '?machineCode=' + encodeURIComponent(machineCode.value)
+        qrcode.toDataURL(url).then(img => {
+          activationTokenQrcodeUrl.value = img
+        })
+      } else {
+        activationTokenQrcodeUrl.value = ''
+      }
+    })
+
     refreshStatus()
 
     registerAction({ name: 'premium.show', handler: showPurchase })
@@ -339,6 +421,13 @@ export default defineComponent({
       refreshStatus,
       renewal,
       copyLicenseId,
+      offline,
+      machineCode,
+      copyMachineCode,
+      activationToken,
+      activateOffline,
+      activationTokenQrcodeUrl,
+      getActivationToken,
     }
   },
 })
@@ -491,14 +580,24 @@ export default defineComponent({
 
     a {
       color: var(--g-color-50);
-
-      &:hover + img {
-        width: 200px;
-        margin-top: -220px;
-        margin-left: 220px;
-        display: block;
-      }
     }
+  }
+
+  .offline-input-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+    .input-copy-btn {
+      position: absolute;
+      right: 5px;
+      top: 8px;
+    }
+  }
+
+  a:hover + img.qrcode {
+    width: 200px;
+    margin-top: -210px;
+    margin-left: 268px;
+    display: block;
   }
 }
 

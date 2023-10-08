@@ -81,6 +81,9 @@ const data: BaseLanguage = {
       'tips': '如果您在激活过程中遇到问题，请联系我',
       'tips-wechat': '微信',
       'activation-tips': '激活前请确保您的网络可以正常访问到 <a href="https://yank-note.com" target="_blank">https://yank-note.com</a>',
+      'offline-activation': '离线激活',
+      'online-activation': '在线激活',
+      'get-activation-token': '获取离线激活码',
     },
   },
   'app': {
