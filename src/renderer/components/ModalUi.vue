@@ -115,7 +115,7 @@ export default defineComponent({
       inputHint.value = params.hint || ''
       inputReadonly.value = params.readonly || false
       modalWidth.value = params.modalWidth
-      component.value = undefined
+      component.value = params.component
       action.value = undefined
 
       show.value = true

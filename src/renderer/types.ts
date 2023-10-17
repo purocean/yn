@@ -86,18 +86,17 @@ export namespace Components {
     interface BaseParams {
       title?: string;
       content?: string;
+      component?: any;
       okText?: string;
       cancelText?: string;
       modalWidth?: string;
     }
 
     export interface ConfirmModalParams extends BaseParams {
-      component?: any;
       action?: any;
     }
 
     export interface AlertModalParams extends BaseParams {
-      component?: any;
       action?: any;
     }
 
