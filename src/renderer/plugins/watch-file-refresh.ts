@@ -50,7 +50,7 @@ export default {
             const currentFileSaved = ctx.store.getters.isSaved
 
             logger.debug('startWatch onResult', { remoteFileUpdated, currentFileSaved })
-            if (remoteFileUpdated) {
+            if (remoteFileUpdated && ctx.editor.isDefault()) {
               if (currentFileSaved) {
                 ctx.doc.switchDoc(currentFile, true)
               } else {
