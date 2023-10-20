@@ -158,6 +158,10 @@ export async function reloadMainWindow () {
   }
 }
 
+/**
+ * Get all repositories
+ * @returns
+ */
 export function getAllRepos () {
   return getSetting('repos', [])
 }
@@ -171,6 +175,11 @@ export function getRepo (name: string) {
   return getAllRepos().find(x => x.name === name)
 }
 
+/**
+ * Read content from clipboard
+ * @param callback
+ * @returns
+ */
 export async function readFromClipboard (): Promise<Record<string, any>>
 export async function readFromClipboard (callback: (type: string, getType: (type: string) => Promise<Blob>) => Promise<void>): Promise<void>
 export async function readFromClipboard (callback?: (type: string, getType: (type: string) => Promise<Blob>) => Promise<void>): Promise<void | Record<string, any>> {
@@ -201,6 +210,12 @@ export async function readFromClipboard (callback?: (type: string, getType: (typ
   return result
 }
 
+/**
+ * Write content to clipboard
+ * @param type
+ * @param value
+ * @returns
+ */
 export async function writeToClipboard (type: string, value: any) {
   const result = await navigator.permissions.query({ name: 'clipboard-write' as any })
 
