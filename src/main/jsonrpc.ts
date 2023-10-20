@@ -8,6 +8,9 @@ type Ctx = {
   doc: {
     switchDocByPath: (path: string) => Promise<void>
   },
+  base: {
+    triggerDeepLinkOpen: (url: string) => Promise<void>
+  }
 }
 
 class ElectronMainClientChannel implements JSONRPCClientChannel {

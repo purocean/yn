@@ -67,6 +67,15 @@ const getOpenFilePathFromArgv = (argv: string[]) => {
   return filePath ? path.resolve(process.cwd(), filePath) : null
 }
 
+const getDeepLinkFromArgv = (argv: string[]) => {
+  const lastArgv = argv[argv.length - 1]
+  if (lastArgv && lastArgv.startsWith(APP_NAME + '://')) {
+    return lastArgv
+  }
+
+  return null
+}
+
 const getUrl = (mode?: typeof urlMode) => {
   mode = mode ?? urlMode
 
@@ -498,6 +507,12 @@ async function tryOpenFile (path: string) {
   }
 }
 
+async function tryHandleDeepLink (url: string) {
+  if (url) {
+    jsonRPCClient.call.ctx.base.triggerDeepLinkOpen(url)
+  }
+}
+
 registerAction('show-main-window', showWindow)
 registerAction('hide-main-window', hideWindow)
 registerAction('toggle-fullscreen', toggleFullscreen)
@@ -516,18 +531,32 @@ registerAction('get-proxy-agent', getProxyAgent)
 
 powerMonitor.on('shutdown', quit)
 
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient(APP_NAME, process.execPath, [path.resolve(process.argv[1])])
+  }
+} else {
+  app.setAsDefaultProtocolClient(APP_NAME)
+}
+
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.exit()
 } else {
   app.on('second-instance', (e, argv) => {
+    console.log('second-instance', argv)
+    showWindow()
+
     // only check last param of argv.
     const path = getOpenFilePathFromArgv([argv[argv.length - 1]])
     if (path) {
       tryOpenFile(path)
     }
 
-    showWindow()
+    const url = getDeepLinkFromArgv(argv)
+    if (url) {
+      tryHandleDeepLink(url)
+    }
   })
 
   app.on('open-file', (e, path) => {
@@ -538,6 +567,11 @@ if (!gotTheLock) {
     } else {
       tryOpenFile(path)
     }
+  })
+
+  app.on('open-url', (e, url) => {
+    e.preventDefault()
+    tryHandleDeepLink(url)
   })
 
   app.on('ready', () => {

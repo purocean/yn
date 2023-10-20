@@ -413,6 +413,7 @@ export type BuildInHookTypes = {
   GLOBAL_RESIZE: never,
   GLOBAL_KEYDOWN: KeyboardEvent,
   GLOBAL_KEYUP: KeyboardEvent,
+  DEEP_LINK_OPEN: { url: string },
   ACTION_BEFORE_RUN: { name: string },
   ACTION_AFTER_RUN: { name: string }
   THEME_CHANGE: { name: ThemeName },
