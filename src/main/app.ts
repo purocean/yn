@@ -547,15 +547,16 @@ if (!gotTheLock) {
     console.log('second-instance', argv)
     showWindow()
 
+    const url = getDeepLinkFromArgv(argv)
+    if (url) {
+      tryHandleDeepLink(url)
+      return
+    }
+
     // only check last param of argv.
     const path = getOpenFilePathFromArgv([argv[argv.length - 1]])
     if (path) {
       tryOpenFile(path)
-    }
-
-    const url = getDeepLinkFromArgv(argv)
-    if (url) {
-      tryHandleDeepLink(url)
     }
   })
 
