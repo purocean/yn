@@ -34,9 +34,8 @@
 <script lang="ts">
 import { throttle } from 'lodash-es'
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
-import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
-import type { AppState } from '@fe/support/store'
+import store from '@fe/support/store'
 import { highlightLine as editorHighlightLine, getEditor } from '@fe/services/editor'
 import { isSameFile } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
@@ -64,7 +63,6 @@ export default defineComponent({
   setup (props) {
     const container = ref<HTMLElement>()
     const _heads = shallowRef<Heading[] | null>(null)
-    const store = useStore<AppState>()
     const keyword = ref('')
     const activatedLine = ref(-1)
     const refInput = ref<HTMLInputElement>()

@@ -30,23 +30,21 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
-import { useStore } from 'vuex'
 import { HELP_REPO_NAME } from '@fe/support/args'
 import { getElectronRemote, isElectron, isMacOS, nodeRequire } from '@fe/support/env'
 import { isEncrypted, isOutOfRepo } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
+import store from '@fe/support/store'
 import SvgIcon from './SvgIcon.vue'
-import type { Doc } from '@fe/types'
 
 export default defineComponent({
   name: 'title-bar',
   components: { SvgIcon },
   setup () {
-    const store = useStore()
     const { t } = useI18n()
 
     const { currentFile } = toRefs(store.state)
-    const isSaved = computed(() => store.getters.isSaved)
+    const isSaved = store.getters.isSaved
 
     let win: any = null
 
@@ -56,11 +54,11 @@ export default defineComponent({
     const isFocused = ref(false)
 
     function handleFullscreenEnter () {
-      store.commit('setIsFullscreen', true)
+      store.state.isFullscreen = true
     }
 
     function handleFullscreenLeave () {
-      store.commit('setIsFullscreen', false)
+      store.state.isFullscreen = false
     }
 
     function updateWindowStatus () {
@@ -114,6 +112,8 @@ export default defineComponent({
         }
       }
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       if (isElectron && nodeRequire) {
         win = getElectronRemote().getCurrentWindow()
         hasWin.value = true
@@ -155,7 +155,7 @@ export default defineComponent({
     const statusText = computed(() => {
       let status = ''
 
-      const file: Doc = currentFile.value
+      const file = currentFile.value
 
       if (file) {
         if (file.repo === HELP_REPO_NAME) {

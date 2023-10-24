@@ -53,7 +53,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, h, nextTick, PropType, ref, watch } from 'vue'
-import { useStore } from 'vuex'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems } from '@fe/services/tree'
@@ -64,7 +63,7 @@ import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
 import { useToast } from '@fe/support/ui/toast'
 import { FLAG_READONLY } from '@fe/support/args'
 import { encodeMarkdownLink, escapeMd } from '@fe/utils'
-import type { AppState } from '@fe/support/store'
+import store from '@fe/support/store'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -79,7 +78,6 @@ export default defineComponent({
   setup (props) {
     const { t } = useI18n()
 
-    const store = useStore<AppState>()
     const toast = useToast()
 
     const refFile = ref<any>(null)

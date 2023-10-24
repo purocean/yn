@@ -12,7 +12,6 @@
 </template>
 
 <script lang="ts">
-import { useStore } from 'vuex'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 import * as api from '@fe/support/api'
@@ -26,6 +25,7 @@ import { getPurchased, showPremium } from '@fe/others/premium'
 import GroupTabs from '@fe/components/GroupTabs.vue'
 import { BuildInSettings, SettingGroup } from '@fe/types'
 import { getActionHandler } from '@fe/core/action'
+import store from '@fe/support/store'
 
 JSONEditor.defaults.language = 'en'
 
@@ -33,7 +33,6 @@ export default defineComponent({
   name: 'x-filter',
   components: { GroupTabs },
   setup (_, { emit }) {
-    const store = useStore()
     const { t } = useI18n()
     const toast = useToast()
     const refEditor = ref<HTMLElement>()

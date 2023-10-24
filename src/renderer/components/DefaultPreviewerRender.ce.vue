@@ -8,7 +8,6 @@
 
 <script lang="ts" setup>
 import { debounce } from 'lodash-es'
-import { useStore } from 'vuex'
 import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
@@ -21,8 +20,8 @@ import { useContextMenu } from '@fe/support/ui/context-menu'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import { getLogger, sleep } from '@fe/utils'
 import { t } from '@fe/services/i18n'
+import store from '@fe/support/store'
 import type { RenderEnv } from '@fe/types'
-import type { AppState } from '@fe/support/store'
 
 const logger = getLogger('preview')
 
@@ -44,7 +43,6 @@ const Render = defineComponent({
   },
 })
 
-const store = useStore<AppState>()
 const presentation = computed(() => store.state.presentation)
 const inComposition = computed(() => store.state.inComposition)
 const autoPreview = computed(() => store.state.autoPreview)

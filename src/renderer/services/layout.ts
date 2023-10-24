@@ -23,7 +23,7 @@ export function emitResize () {
  * @param visible
  */
 export function toggleSide (visible?: boolean) {
-  store.commit('setShowSide', typeof visible === 'boolean' ? visible : !store.state.showSide)
+  store.state.showSide = typeof visible === 'boolean' ? visible : !store.state.showSide
   emitResize()
 }
 
@@ -35,12 +35,12 @@ export function toggleView (visible?: boolean) {
   const val = typeof visible === 'boolean' ? visible : !store.state.showView
   val && nextTick(view.render)
 
-  store.commit('setShowView', val)
+  store.state.showView = val
 
   if (store.state.editorPreviewExclusive && store.state.showEditor) {
-    store.commit('setShowEditor', false)
+    store.state.showEditor = false
   } else {
-    store.commit('setShowEditor', true)
+    store.state.showEditor = true
   }
 
   emitResize()
@@ -52,12 +52,12 @@ export function toggleView (visible?: boolean) {
  */
 export function toggleEditor (visible?: boolean) {
   const val = typeof visible === 'boolean' ? visible : !store.state.showEditor
-  store.commit('setShowEditor', val)
+  store.state.showEditor = val
 
   if (store.state.editorPreviewExclusive && store.state.showView) {
-    store.commit('setShowView', false)
+    store.state.showView = false
   } else {
-    store.commit('setShowView', true)
+    store.state.showView = true
   }
 
   emitResize()
@@ -71,7 +71,7 @@ export function toggleXterm (visible?: boolean) {
   const showXterm = store.state.showXterm
   const show = typeof visible === 'boolean' ? visible : !showXterm
 
-  store.commit('setShowXterm', show)
+  store.state.showXterm = show
 
   nextTick(() => {
     emitResize()
@@ -89,10 +89,10 @@ export function toggleXterm (visible?: boolean) {
 export function toggleEditorPreviewExclusive (exclusive?: boolean) {
   const val = typeof exclusive === 'boolean' ? exclusive : !store.state.editorPreviewExclusive
 
-  store.commit('setEditorPreviewExclusive', val)
+  store.state.editorPreviewExclusive = val
 
   if (val && store.state.showEditor && store.state.showView) {
-    store.commit('setShowView', false)
+    store.state.showView = false
   }
 
   emitResize()

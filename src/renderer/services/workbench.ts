@@ -11,7 +11,7 @@ import { t } from './i18n'
  * @param visible
  */
 export function toggleOutline (visible?: boolean) {
-  store.commit('setShowOutline', typeof visible === 'boolean' ? visible : !store.state.showOutline)
+  store.state.showOutline = typeof visible === 'boolean' ? visible : !store.state.showOutline
 }
 
 registerAction({

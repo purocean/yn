@@ -5,7 +5,6 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'vue'
-import { useStore } from 'vuex'
 import { getAllCustomEditors, isDefault, getValue, setValue, switchEditor } from '@fe/services/editor'
 import { registerAction, removeAction } from '@fe/core/action'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
@@ -14,7 +13,7 @@ import { FileTabs } from '@fe/services/workbench'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
 import { isMarkdownFile } from '@fe/services/document'
 import { t } from '@fe/services/i18n'
-import type { AppState } from '@fe/support/store'
+import store from '@fe/support/store'
 import type { Components, CustomEditor, Doc } from '@fe/types'
 import DefaultEditor from './DefaultEditor.vue'
 
@@ -29,7 +28,6 @@ const defaultEditor: CustomEditor = {
   }
 }
 
-const store = useStore<AppState>()
 const logger = getLogger('main-editor')
 const editorLastUsageTime = storage.get<Record<string, number>>(EDITOR_LAST_USAGE_TIME_KEY, {})
 

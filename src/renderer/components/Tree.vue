@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, ref, watch } from 'vue'
-import { useStore } from 'vuex'
 import { useLazyRef } from '@fe/utils/composable'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { refreshTree } from '@fe/services/tree'
@@ -29,6 +28,7 @@ import { fetchSettings, showSettingPanel } from '@fe/services/setting'
 import { registerAction, removeAction } from '@fe/core/action'
 import { useI18n } from '@fe/services/i18n'
 import { createDir, createDoc } from '@fe/services/document'
+import store from '@fe/support/store'
 import type { Components } from '@fe/types'
 import TreeNode from './TreeNode.vue'
 
@@ -37,7 +37,6 @@ export default defineComponent({
   components: { TreeNode },
   setup () {
     const { t } = useI18n()
-    const store = useStore()
     const contextMenu = useContextMenu()
     const asideRef = ref<HTMLElement>()
 
@@ -66,13 +65,13 @@ export default defineComponent({
             id: 'create-doc',
             label: t('tree.context-menu.create-doc'),
             ellipsis: true,
-            onClick: () => createDoc({ repo: currentRepo.value.name }, tree.value[0])
+            onClick: () => createDoc({ repo: currentRepo.value!.name }, tree.value![0])
           },
           {
             id: 'create-dir',
             label: t('tree.context-menu.create-dir'),
             ellipsis: true,
-            onClick: () => createDir({ repo: currentRepo.value.name }, tree.value[0])
+            onClick: () => createDir({ repo: currentRepo.value!.name }, tree.value![0])
           }
         )
       }

@@ -51,7 +51,7 @@ export default {
 
             logger.debug('startWatch onResult', { remoteFileUpdated, currentFileSaved })
             if (remoteFileUpdated && ctx.editor.isDefault()) {
-              if (currentFileSaved) {
+              if (currentFileSaved.value) {
                 ctx.doc.switchDoc(currentFile, true)
               } else {
                 ctx.api.readFile(currentFile).then(({ hash }) => {

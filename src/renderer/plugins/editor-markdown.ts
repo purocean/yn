@@ -186,11 +186,11 @@ export default {
       ])
 
       editor.onDidCompositionStart(() => {
-        ctx.store.commit('setInComposition', true)
+        ctx.store.state.inComposition = true
       })
 
       editor.onDidCompositionEnd(() => {
-        ctx.store.commit('setInComposition', false)
+        ctx.store.state.inComposition = false
       })
     })
 

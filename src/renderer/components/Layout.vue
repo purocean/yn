@@ -35,20 +35,17 @@
 
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watchPostEffect } from 'vue'
-import { useStore } from 'vuex'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { emitResize, toggleEditor, toggleSide, toggleView, toggleXterm } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
-import type { AppState } from '@fe/support/store'
+import store from '@fe/support/store'
 
 let resizeOrigin: any = null
 
 export default defineComponent({
   name: 'layout',
   setup () {
-    const store = useStore()
-
-    const { showView, showXterm, showSide, showEditor, presentation, isFullscreen } = toRefs<AppState>(store.state)
+    const { showView, showXterm, showSide, showEditor, presentation, isFullscreen } = toRefs(store.state)
 
     const aside = ref<HTMLElement | null>(null)
     const editor = ref<HTMLElement | null>(null)

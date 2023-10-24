@@ -382,14 +382,14 @@ export function toggleWrap () {
     return
   }
 
-  store.commit('setWordWrap', (isWrapping ? 'off' : 'on'))
+  store.state.wordWrap = isWrapping ? 'off' : 'on'
 }
 
 /**
  * Toggle typewriter mode.
  */
 export function toggleTypewriterMode () {
-  store.commit('setTypewriterMode', !store.state.typewriterMode)
+  store.state.typewriterMode = !store.state.typewriterMode
 }
 
 /**
@@ -436,7 +436,7 @@ export function getMarkdownMonarchLanguage () {
  * @param name Editor name
  */
 export function switchEditor (name: string) {
-  store.commit('setEditor', name)
+  store.state.editor = name
 }
 
 /**
@@ -562,7 +562,7 @@ registerHook('THEME_CHANGE', () => {
   monaco?.editor.setTheme(getColorScheme() === 'dark' ? 'vs-dark' : 'vs')
 })
 
-store.watch(state => state.wordWrap, (wordWrap) => {
+store.watch(() => store.state.wordWrap, (wordWrap) => {
   whenEditorReady().then(({ editor }) => {
     editor.updateOptions({ wordWrap })
   })

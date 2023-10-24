@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, onBeforeMount, onMounted, ref, toRefs, watch } from 'vue'
-import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { isEncrypted, isSameFile, saveDoc, toUri } from '@fe/services/document'
@@ -14,6 +13,7 @@ import { getEditor, isDefault, setValue, whenEditorReady } from '@fe/services/ed
 import { FLAG_READONLY, HELP_REPO_NAME } from '@fe/support/args'
 import { getSetting } from '@fe/services/setting'
 import { getCurrentLanguage } from '@fe/services/i18n'
+import store from '@fe/support/store'
 import type { Doc } from '@fe/types'
 import MonacoEditor from './MonacoEditor.vue'
 
@@ -22,7 +22,6 @@ export default defineComponent({
   components: { MonacoEditor },
   setup () {
     let editorIsReady = false
-    const store = useStore()
 
     let timer: number | null = null
     const refEditor = ref<any>(null)
@@ -33,7 +32,7 @@ export default defineComponent({
 
     function setCurrentValue ({ uri, value }: { uri: string; value: any}) {
       if (toUri(currentFile.value) === uri && isDefault()) {
-        store.commit('setCurrentContent', value)
+        store.state.currentContent = value
       }
     }
 
@@ -45,7 +44,7 @@ export default defineComponent({
     }
 
     async function saveFile (f: Doc | null = null) {
-      const file: Doc = f || currentFile.value
+      const file = f || currentFile.value
 
       if (!(file && file.repo && file.path && file.status)) {
         return

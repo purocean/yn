@@ -53,7 +53,7 @@ export async function refreshTree () {
       tree[0].name = repo.name
     }
 
-    store.commit('setTree', tree)
+    store.state.tree = tree
   } catch (error: any) {
     useToast().show('warning', error.message)
   }
@@ -66,7 +66,7 @@ export function revealCurrentNode () {
   getActionHandler('tree.reveal-current-node')()
 }
 
-store.watch(state => state.treeSort, async () => {
+store.watch(() => store.state.treeSort, async () => {
   await refreshTree()
   await nextTick()
   revealCurrentNode()

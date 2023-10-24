@@ -55,7 +55,6 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import type * as Monaco from 'monaco-editor'
-import { useStore } from 'vuex'
 import { ref, onMounted, onUnmounted, watch, toRef, computed, nextTick } from 'vue'
 import { DOC_HISTORY_MAX_CONTENT_LENGTH } from '@share/misc'
 import { removeAction, registerAction } from '@fe/core/action'
@@ -73,6 +72,7 @@ import { getLogger } from '@fe/utils'
 import type { Doc } from '@fe/types'
 import { decrypt } from '@fe/utils/crypto'
 import { getPurchased, showPremium } from '@fe/others/premium'
+import store from '@fe/support/store'
 import SvgIcon from '@fe/components/SvgIcon.vue'
 import XMask from './Mask.vue'
 import GroupTabs from './GroupTabs.vue'
@@ -84,8 +84,6 @@ const MARKED = '--marked--'
 const logger = getLogger('doc-history-component')
 
 const { t } = useI18n()
-
-const store = useStore()
 
 const getDisplayTypes = () => [
   { label: t('doc-history.content'), value: 'content' },

@@ -79,11 +79,10 @@
 </template>
 
 <script lang="ts">
-import { useStore } from 'vuex'
 import { computed, defineComponent, reactive, watch } from 'vue'
 import { MARKDOWN_FILE_EXT } from '@share/misc'
 import type { ExportType } from '@fe/types'
-import type { AppState } from '@fe/support/store'
+import store from '@fe/support/store'
 import { isElectron } from '@fe/support/env'
 import { FLAG_DEMO } from '@fe/support/args'
 import { useToast } from '@fe/support/ui/toast'
@@ -99,7 +98,6 @@ export default defineComponent({
   setup () {
     const { t } = useI18n()
 
-    const store = useStore<AppState>()
     const showExport = computed(() => store.state.showExport)
     const currentFile = computed(() => store.state.currentFile)
     const fileName = computed(() => basename(currentFile.value?.name || 'export.md', MARKDOWN_FILE_EXT))

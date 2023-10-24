@@ -70,10 +70,9 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { computed } from 'vue'
-import { useStore } from 'vuex'
 import { FLAG_READONLY, URL_GITHUB } from '@fe/support/args'
 import { useI18n } from '@fe/services/i18n'
-import type { AppState } from '@fe/support/store'
+import store from '@fe/support/store'
 import { showManager as showExtensionManager } from '@fe/others/extension'
 import { showPremium, getPurchased } from '@fe/others/premium'
 import { showSettingPanel } from '@fe/services/setting'
@@ -81,7 +80,6 @@ import { createDoc, isMarkdownFile, switchDoc } from '@fe/services/document'
 import { getActionHandler } from '@fe/core/action'
 
 useI18n()
-const store = useStore<AppState>()
 
 const hasRepo = computed(() => !!store.state.currentRepo)
 

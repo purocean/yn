@@ -537,7 +537,7 @@ export async function ensureCurrentFileSaved () {
     return
   }
 
-  const unsaved = !store.getters.isSaved && currentFile.repo !== HELP_REPO_NAME
+  const unsaved = !store.getters.isSaved.value && currentFile.repo !== HELP_REPO_NAME
 
   if (!unsaved) {
     return
@@ -625,8 +625,8 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
 
   try {
     if (!doc) {
-      store.commit('setCurrentFile', null)
-      store.commit('setCurrentContent', '')
+      store.state.currentFile = null
+      store.state.currentContent = ''
       triggerHook('DOC_SWITCHED', { doc: null })
       return
     }
@@ -636,8 +636,8 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
     let stat
     if (doc.plain) {
       const timer = setTimeout(() => {
-        store.commit('setCurrentFile', { ...doc, status: undefined })
-        store.commit('setCurrentContent', doc?.content || '')
+        store.state.currentFile = { ...doc!, status: undefined }
+        store.state.currentContent = doc?.content || ''
       }, 150)
 
       const res = await api.readFile(doc)
@@ -657,16 +657,16 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
       passwordHash = decrypted.passwordHash
     }
 
-    store.commit('setCurrentFile', {
+    store.state.currentFile = {
       ...doc,
       stat,
       content,
       passwordHash,
       contentHash: hash,
       status: 'loaded'
-    })
+    }
 
-    store.commit('setCurrentContent', content)
+    store.state.currentContent = content
     triggerHook('DOC_SWITCHED', { doc: store.state.currentFile || null })
   } catch (error: any) {
     triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message })

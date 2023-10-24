@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import { useStore } from 'vuex'
 import { computed, defineComponent } from 'vue'
+import store from '@fe/support/store'
 import XMask from './Mask.vue'
 import Setting from './Setting.vue'
 
@@ -14,10 +14,11 @@ export default defineComponent({
   name: 'setting-panel',
   components: { XMask, Setting },
   setup () {
-    const store = useStore()
     const showPanel = computed(() => store.state.showSetting)
 
-    const close = () => store.commit('setShowSetting', false)
+    const close = () => {
+      store.state.showSetting = false
+    }
 
     return { showPanel, close }
   },
