@@ -37,7 +37,7 @@ const state = reactive(initState)
 export default {
   state,
   watch,
-  subscribe: watchEffect,
+  watchEffect,
   getters: {
     isSaved: computed(() => {
       if (!state.currentFile?.status) {
