@@ -44,6 +44,10 @@ export default {
         return true
       }
 
+      if (state.currentFile.status === 'unsaved') {
+        return false
+      }
+
       return state.currentContent === state.currentFile?.content
     })
   }
