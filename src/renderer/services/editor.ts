@@ -207,6 +207,7 @@ export function insert (text: string) {
       forceMoveMarkers: true
     }
   ])
+  editor.pushUndoStop()
   getEditor().focus()
 }
 
@@ -224,6 +225,7 @@ export function insertAt (position: Monaco.Position, text: string) {
       forceMoveMarkers: true
     }
   ])
+  editor.pushUndoStop()
   editor.setPosition(position)
   editor.focus()
 }
@@ -245,6 +247,7 @@ export function replaceLine (line: number, text: string) {
       forceMoveMarkers: true
     }
   ])
+  editor.pushUndoStop()
   editor.setPosition(new monaco.Position(line, text.length + 1))
   editor.focus()
 }
@@ -267,6 +270,7 @@ export function replaceLines (lineStart: number, lineEnd: number, text: string) 
       forceMoveMarkers: true
     }
   ])
+  editor.pushUndoStop()
   editor.setPosition(new monaco.Position(lineEnd, lineEndPos))
   editor.focus()
 }
@@ -279,6 +283,7 @@ export function deleteLine (line: number) {
       text: null
     }
   ])
+  editor.pushUndoStop()
   editor.setPosition(new (getMonaco().Position)(line, 1))
   editor.focus()
 }
@@ -334,6 +339,7 @@ export function setValue (text: string) {
       forceMoveMarkers: true
     }
   ])
+  editor.pushUndoStop()
 
   editor.restoreViewState(viewState)
   editor.focus()
