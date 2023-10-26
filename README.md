@@ -51,9 +51,9 @@ For more information on how to use the following functions, please see [characte
 - **Embedded Applets:** document supports embedded HTML Applets
 - **Embed PlantUML graphics:** document supports embedded plantUML graphics
 - **Embed drawio graphics:** document supports embedded drawio graphics
-- **Embed ECharts graphics:** document supports embeded Echarts graphics
-- **Embed Mermaid graphics:** document supports embeded Mermaid graphics
-- **Embed Luckysheet tables:** document supports embeded Luckysheet tables
+- **Embed ECharts graphics:** document supports embedded Echarts graphics
+- **Embed Mermaid graphics:** document supports embedded Mermaid graphics
+- **Embed Luckysheet tables:** document supports embedded Luckysheet tables
 - **Mind map:** nested list can be displayed in the form of a mind map
 - **Element attribute writing:** any attribute of an element can be customized
 - **Table enhancement:** support table title with multiple lines of text, list and other features
