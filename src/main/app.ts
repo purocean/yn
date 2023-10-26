@@ -430,7 +430,7 @@ const serve = () => {
       server.on('error', (e: Error) => {
         console.error(e)
 
-        if (e.message.includes('EADDRINUSE')) {
+        if (e.message.includes('EADDRINUSE') || e.message.includes('EACCES')) {
           // wait for electron app ready.
           setTimeout(async () => {
             await dialog.showMessageBox({
