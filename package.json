@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@electron/remote": "^2.0.10",
-    "@vscode/ripgrep": "^1.14.2",
+    "@vscode/ripgrep": "^1.15.6",
     "adm-zip": "^0.5.9",
     "app-license": "^0.3.0",
     "async-lock": "^1.4.0",
