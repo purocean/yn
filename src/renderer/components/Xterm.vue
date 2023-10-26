@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import io from 'socket.io-client'
+import io, { Socket } from 'socket.io-client'
 import { defineComponent, nextTick, onBeforeMount, onBeforeUnmount, ref } from 'vue'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
@@ -37,7 +37,7 @@ export default defineComponent({
 
     let xterm: Terminal | null = null
     // eslint-disable-next-line no-undef
-    let socket: SocketIOClient.Socket | null = null
+    let socket: Socket | null = null
 
     const fitAddon = new FitAddon()
 
