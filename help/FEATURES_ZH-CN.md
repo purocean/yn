@@ -207,7 +207,14 @@ a -> b
 此功能使用 [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) 实现
 支持在表格中使用多行文本和列表。支持表格说明渲染
 
-您可以双击/右键单元格快捷编辑单元格内容
+您可以双击/右键单元格快捷编辑单元格内容，相关快捷键：
+- `DBLClick`: 编辑单元格
+- `Escape`: 退出编辑
+- `Enter`: 确认编辑并编辑下一行
+- `Shift + Enter`: 确认编辑并编辑上一行
+- `Cmd/Ctrl + Shift + Enter`: 确认编辑并插入下一行
+- `Tab`: 确认编辑并编辑下一列
+- `Shift + Tab`: 确认编辑并编辑上一列
 
 First header | Second header
 -------------|---------------
