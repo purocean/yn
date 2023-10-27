@@ -206,7 +206,15 @@ a -> b
 This feature is implemented using [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table).
 Support the use of multiple lines of text and lists in tables. Support table description rendering.
 
-You can double click / right click table cell to quickly edit table cell content.
+You can double-click or right-click on a cell to quickly edit its content. Here are the related shortcuts:
+
+- `DBLClick`: Edit cell
+- `Escape`: Exit editing
+- `Enter`: Confirm editing and move to the next row
+- `Shift + Enter`: Confirm editing and move to the previous row
+- `Cmd/Ctrl + Shift + Enter`: Confirm editing and insert a new row below
+- `Tab`: Confirm editing and move to the next column
+- `Shift + Tab`: Confirm editing and move to the previous column
 
 First header | Second header
 -------------|---------------

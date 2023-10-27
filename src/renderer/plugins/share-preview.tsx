@@ -6,9 +6,9 @@ export default {
   register: (ctx) => {
     ctx.registerHook('STARTUP', () => {
       if (ctx.args.MODE === 'share-preview') {
-        ctx.store.watch(state => state.presentation, val => {
+        ctx.store.watch(() => ctx.store.state.presentation, val => {
           if (!val) {
-            ctx.store.commit('setPresentation', true)
+            ctx.store.state.presentation = true
           }
         }, { immediate: true })
       }

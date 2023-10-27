@@ -5,18 +5,15 @@
 
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
 import { getAllPreviewers, switchPreviewer } from '@fe/services/view'
 import { FileTabs } from '@fe/services/workbench'
 import { t } from '@fe/services/i18n'
 import { HELP_REPO_NAME } from '@fe/support/args'
-import type { AppState } from '@fe/support/store'
+import store from '@fe/support/store'
 import type { Components } from '@fe/types'
 import DefaultPreviewer from './DefaultPreviewer.vue'
-
-const store = useStore<AppState>()
 
 const previewer = computed(() => {
   const { previewer } = store.state

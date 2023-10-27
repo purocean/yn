@@ -35,19 +35,17 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, ref, toRef } from 'vue'
-import { useStore } from 'vuex'
 import { getActionHandler, registerAction, removeAction } from '@fe/core/action'
 import { useContextMenu } from '@fe/support/ui/context-menu'
-import type { AppState } from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
 import { toggleOutline, ControlCenter } from '@fe/services/workbench'
 import { findInRepository } from '@fe/services/base'
 import { getKeysLabel } from '@fe/core/keybinding'
+import { registerHook, removeHook } from '@fe/core/hook'
+import store from '@fe/support/store'
 import type { FileSort, Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
-import { registerHook, removeHook } from '@fe/core/hook'
 
-const store = useStore<AppState>()
 const navigation = ref<Components.ControlCenter.Schema['navigation']>()
 const showOutline = toRef(store.state, 'showOutline')
 const treeSort = toRef(store.state, 'treeSort')
@@ -63,7 +61,7 @@ function showSortMenu () {
       label: t(('tree.sort.by-' + by) as any, t(('tree.sort.' + order) as any)),
       checked: sort.by === by && sort.order === order,
       onClick: () => {
-        store.commit('setTreeSort', { by, order })
+        store.state.treeSort = { by, order }
       },
     }
   }

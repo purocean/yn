@@ -38,7 +38,7 @@ function buildHtml (title: string, body: string, options: { includeStyle: boolea
  * @param visible
  */
 export function toggleExportPanel (visible?: boolean) {
-  store.commit('setShowExport', typeof visible === 'boolean' ? visible : !store.state.showExport)
+  store.state.showExport = typeof visible === 'boolean' ? visible : !store.state.showExport
 }
 
 /**

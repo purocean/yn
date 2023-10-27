@@ -53,7 +53,7 @@ function processCursorChange (source: string, position: Monaco.Position) {
 
     if (
       eolNumber === position.column &&
-      /^\s*(?:[*+->]|\d+[.)])/.test(content)
+      /^\s*(?:[*+\->]|\d+[.)])/.test(content)
     ) {
       const indent = getOneIndent()
       const val = content.trimEnd()
@@ -69,9 +69,9 @@ function processCursorChange (source: string, position: Monaco.Position) {
     const content = getLineContent(line)
     const prevContent = getLineContent(line - 1)
     const nextContent = getLineContent(line + 1)
-    const emptyItemReg = /^\s*(?:[*+->]|\d+[.)]|[*+-] \[ \])\s*$/
+    const emptyItemReg = /^\s*(?:[*+\->]|\d+[.)]|[*+-] \[ \])\s*$/
     if (
-      /^\s*(?:[*+->]|\d+[.)])/.test(prevContent) && // previous content must a item
+      /^\s*(?:[*+\->]|\d+[.)])/.test(prevContent) && // previous content must a item
       emptyItemReg.test(content) && // current line content must a empty item
       emptyItemReg.test(nextContent) // next line content must a empty item
     ) {
@@ -186,11 +186,11 @@ export default {
       ])
 
       editor.onDidCompositionStart(() => {
-        ctx.store.commit('setInComposition', true)
+        ctx.store.state.inComposition = true
       })
 
       editor.onDidCompositionEnd(() => {
-        ctx.store.commit('setInComposition', false)
+        ctx.store.state.inComposition = false
       })
     })
 

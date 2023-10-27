@@ -96,6 +96,12 @@ export async function install (id: string, url: string) {
         const extract = tar.extract()
 
         extract.on('entry', (header, stream, next) => {
+          if (header.name.includes('..')) {
+            console.log('[extension] invalid file name', header.name)
+            next()
+            return
+          }
+
           const filePath = path.join(extensionPath, header.name.replace(/^package/, ''))
           console.log('[extension] write', header.type, filePath)
 

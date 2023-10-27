@@ -33,7 +33,7 @@ function present (flag: boolean) {
   if (flag) {
     useToast().show('info', t('exit-presentation-msg'))
   }
-  store.commit('setPresentation', flag)
+  store.state.presentation = flag
   setTimeout(() => {
     emitResize()
   }, 0)
@@ -282,7 +282,7 @@ export function exitPresent () {
  * @param flag
  */
 export function toggleAutoPreview (flag?: boolean) {
-  store.commit('setAutoPreview', typeof flag === 'boolean' ? flag : !store.state.autoPreview)
+  store.state.autoPreview = typeof flag === 'boolean' ? flag : !store.state.autoPreview
 }
 
 /**
@@ -290,7 +290,7 @@ export function toggleAutoPreview (flag?: boolean) {
  * @param flag
  */
 export function toggleSyncScroll (flag?: boolean) {
-  store.commit('setSyncScroll', typeof flag === 'boolean' ? flag : !store.state.syncScroll)
+  store.state.syncScroll = typeof flag === 'boolean' ? flag : !store.state.syncScroll
 }
 
 /**
@@ -308,9 +308,9 @@ export function tapContextMenus (fun: BuildContextMenu) {
 export function switchPreviewer (name: string) {
   const oldPreviewer = store.state.previewer
   if (ioc.get('VIEW_PREVIEWER').some((item) => item.name === name)) {
-    store.commit('setPreviewer', name)
+    store.state.previewer = name
   } else {
-    store.commit('setPreviewer', 'default')
+    store.state.previewer = 'default'
   }
 
   if (oldPreviewer !== store.state.previewer) {

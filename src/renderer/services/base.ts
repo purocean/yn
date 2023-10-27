@@ -2,7 +2,6 @@ import { slugify } from 'transliteration'
 import filenamify from 'filenamify/browser'
 import type { Doc, FindInRepositoryQuery } from '@fe/types'
 import * as api from '@fe/support/api'
-import { getSetting } from './setting'
 import { FLAG_DEMO, HELP_REPO_NAME } from '@fe/support/args'
 import { binMd5, quote, fileToBase64URL, getLogger, removeQuery } from '@fe/utils'
 import { basename, resolve, extname, dirname, relative, isBelongTo } from '@fe/utils/path'
@@ -10,8 +9,10 @@ import { dayjs } from '@fe/context/lib'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import { isElectron, isWindows } from '@fe/support/env'
-import { t } from './i18n'
 import { getActionHandler } from '@fe/core/action'
+import { triggerHook } from '@fe/core/hook'
+import { getSetting } from './setting'
+import { t } from './i18n'
 
 const logger = getLogger('service-base')
 
@@ -157,6 +158,10 @@ export async function reloadMainWindow () {
   }
 }
 
+/**
+ * Get all repositories
+ * @returns
+ */
 export function getAllRepos () {
   return getSetting('repos', [])
 }
@@ -170,6 +175,11 @@ export function getRepo (name: string) {
   return getAllRepos().find(x => x.name === name)
 }
 
+/**
+ * Read content from clipboard
+ * @param callback
+ * @returns
+ */
 export async function readFromClipboard (): Promise<Record<string, any>>
 export async function readFromClipboard (callback: (type: string, getType: (type: string) => Promise<Blob>) => Promise<void>): Promise<void>
 export async function readFromClipboard (callback?: (type: string, getType: (type: string) => Promise<Blob>) => Promise<void>): Promise<void | Record<string, any>> {
@@ -200,6 +210,12 @@ export async function readFromClipboard (callback?: (type: string, getType: (typ
   return result
 }
 
+/**
+ * Write content to clipboard
+ * @param type
+ * @param value
+ * @returns
+ */
 export async function writeToClipboard (type: string, value: any) {
   const result = await navigator.permissions.query({ name: 'clipboard-write' as any })
 
@@ -228,4 +244,12 @@ export async function getServerTimestamp () {
  */
 export function findInRepository (query?: FindInRepositoryQuery) {
   getActionHandler('base.find-in-repository')(query)
+}
+
+/**
+ * Trigger deep link open
+ * @param url
+ */
+export function triggerDeepLinkOpen (url: string) {
+  return triggerHook('DEEP_LINK_OPEN', { url }, { breakable: true })
 }

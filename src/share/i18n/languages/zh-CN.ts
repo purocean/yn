@@ -144,7 +144,7 @@ const data: BaseLanguage = {
       }
     },
     'error': {
-      'EADDRINUSE': '端口 (%s) 已被使用，请在设置中配置一个其他端口',
+      'EADDRINUSE': '端口 (%s) 已被使用或无权限监听，请在设置中配置一个其他端口',
     }
   },
   'quit-check-dialog': {

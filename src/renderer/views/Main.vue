@@ -40,12 +40,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
 import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { FLAG_DISABLE_XTERM, MODE } from '@fe/support/args'
-import type { AppState } from '@fe/support/store'
+import store from '@fe/support/store'
 import type { CustomEditor } from '@fe/types'
 import { emitResize } from '@fe/services/layout'
 import { exitPresent } from '@fe/services/view'
@@ -96,7 +95,6 @@ export default defineComponent({
     KeyboardShortcuts,
   },
   setup () {
-    const store = useStore<AppState>()
     const showOutline = computed(() => store.state.showOutline)
     const presentationExitVisible = computed(() => MODE === 'normal' && store.state.presentation)
 

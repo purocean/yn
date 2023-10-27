@@ -214,6 +214,11 @@ store.watch(() => store.state.currentFile, (val) => {
   })
 }, { immediate: true })
 
+store.watch(store.state, () => {
+  ctx.workbench.ControlCenter.refresh()
+  ctx.statusBar.refreshMenu()
+})
+
 fetchSettings()
 
 whenEditorReady().then(() => {

@@ -30,7 +30,6 @@
 </template>
 
 <script lang="tsx" setup>
-import { useStore } from 'vuex'
 import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { IFrame as XIFrame } from '@fe/support/embed'
 import { getLogger } from '@fe/utils'
@@ -39,17 +38,17 @@ import { disableSyncScrollAwhile, getHeadings, getViewDom, Heading, scrollTopTo 
 import { printCurrentDocument, toggleExportPanel } from '@fe/services/export'
 import { useI18n } from '@fe/services/i18n'
 import { getEditor } from '@fe/services/editor'
-import type { AppState } from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import { isElectron } from '@fe/support/env'
+import { FileTabs } from '@fe/services/workbench'
+import { isMarkdownFile } from '@fe/services/document'
+import store from '@fe/support/store'
 import type { Components } from '@fe/types'
 
 import DefaultPreviewerRender from './DefaultPreviewerRender.ce.vue'
 import SvgIcon from './SvgIcon.vue'
 import Outline from './Outline.vue'
 import FindInPreview from './FindInPreview.vue'
-import { FileTabs } from '@fe/services/workbench'
-import { isMarkdownFile } from '@fe/services/document'
 
 const { t } = useI18n()
 
@@ -62,8 +61,6 @@ const iframeProps = {
 }
 
 const initHTML = '<div id="app">Loading……</div>'
-
-const store = useStore<AppState>()
 
 const filePath = computed(() => store.state.currentFile?.path)
 

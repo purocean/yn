@@ -143,7 +143,7 @@ const data = {
       }
     },
     'error': {
-      'EADDRINUSE': 'Port (%s) is in use, please configure another port in the settings',
+      'EADDRINUSE': 'Port (%s) is in use or insufficient permissions, please configure another port in the settings',
     },
   },
   'quit-check-dialog': {

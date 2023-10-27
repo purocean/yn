@@ -1,5 +1,5 @@
 <template>
-  <div class="status-bar-menu-wrapper" @contextmenu.prevent>
+  <div class="status-bar-menu-wrapper" @contextmenu.prevent @click.capture="onMenuClick">
     <div
       :class="{'status-bar-menu': true, hidden: menu.hidden, 'custom-title': menu._customTitle}"
       v-for="menu in list.sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))"
@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeUnmount, ref, shallowRef } from 'vue'
-import { getMenus, MenuItem } from '@fe/services/status-bar'
+import { getMenus, MenuItem, refreshMenu } from '@fe/services/status-bar'
 import { registerHook, removeHook } from '@fe/core/hook'
 import type { BuildInActionName } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
@@ -78,6 +78,10 @@ export default defineComponent({
       return false
     }
 
+    const onMenuClick = () => {
+      setTimeout(refreshMenu, 50)
+    }
+
     registerHook('ACTION_BEFORE_RUN', updateMenu as any)
     registerHook('I18N_CHANGE_LANGUAGE', updateMenu as any)
     onBeforeUnmount(() => {
@@ -88,7 +92,8 @@ export default defineComponent({
     return {
       list,
       showList,
-      handleItemClick
+      handleItemClick,
+      onMenuClick
     }
   },
 })

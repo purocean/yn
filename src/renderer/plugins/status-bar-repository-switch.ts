@@ -12,7 +12,7 @@ export default {
     function choose (repo: Repo) {
       const { currentRepo } = store.state
       if (repo.name !== currentRepo?.name) {
-        store.commit('setCurrentRepo', repo)
+        store.state.currentRepo = repo
       }
     }
 
@@ -71,7 +71,7 @@ export default {
 
     whenEditorReady().then(initRepo)
 
-    store.watch(() => store.state.currentRepo, ctx.statusBar.refreshMenu)
+    ctx.lib.vue.watch(() => store.state.currentRepo, ctx.statusBar.refreshMenu)
 
     ctx.registerHook('SETTING_FETCHED', ({ settings }) => {
       const { currentRepo } = store.state
@@ -79,9 +79,9 @@ export default {
 
       if (!currentRepo || !repos.some(x => x.name === currentRepo.name && x.path === currentRepo.path)) {
         if (repos.length > 0) {
-          store.commit('setCurrentRepo', { ...repos[0] })
+          store.state.currentRepo = { ...repos[0] }
         } else {
-          store.commit('setCurrentRepo', undefined)
+          store.state.currentRepo = undefined
         }
       } else {
         ctx.statusBar.refreshMenu()
