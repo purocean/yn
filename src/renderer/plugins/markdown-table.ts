@@ -228,13 +228,14 @@ async function editTableCell (start: number, end: number, cellIndex: number, inp
             const startPos = input.selectionStart
             const endPos = input.selectionEnd
             input.value = input.value.substring(0, startPos) + '\n' + input.value.substring(endPos)
-          } else if (e.shiftKey && !e.altKey) {
+          } else if (hasCtrlCmd(e) && e.shiftKey) {
+            const td = input.parentElement as HTMLTableCellElement
+            ok()
+            addRow(td, 1)
+            nextAction = 'edit-bellow-cell'
+          } else if (e.shiftKey) {
             ok()
             nextAction = 'edit-above-cell'
-          } else if (e.shiftKey && hasCtrlCmd(e)) {
-            ok()
-            addRow(input.parentElement as HTMLTableCellElement, 1)
-            nextAction = 'edit-bellow-cell'
           } else {
             ok()
             nextAction = 'edit-bellow-cell'
