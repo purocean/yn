@@ -76,15 +76,24 @@
 
 ## 更新日志
 
-### [v3.62.2](https://github.com/purocean/yn/releases/tag/v3.62.2) 2023-10-08
+### [v3.63.2](https://github.com/purocean/yn/releases/tag/v3.63.2) 2023-10-08
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-win-x64-3.62.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-mac-arm64-3.62.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-mac-x64-3.62.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-linux-x86_64-3.62.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-linux-amd64-3.62.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-win-x64-3.63.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-mac-arm64-3.63.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-mac-x64-3.63.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-linux-x86_64-3.63.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-linux-amd64-3.63.2.deb)
 
-1. feat: 侧栏文档大纲支持折叠展开
-2. feat: 支持离线激活高级版
-3. feat: 选中文本后粘贴链接时，自动插入链接并以选中文本作为链接文本，支持带 # 的链接
-4. feat: 增加 `bat` 语言高亮
-5. fix: 修复 Windows 上仓库使用网络路径时候打开附件失败的问题
+1. feat: 粘贴 tab 分割的表格时候自动转化为 markdown 格式表格
+2. feat: 表格编辑编辑单元格时支持快捷键
+    - `DBLClick`: 编辑单元格
+    - `Escape`: 退出编辑
+    - `Enter`: 确认编辑并编辑下一行
+    - `Shift + Enter`: 确认编辑并编辑上一行
+    - `Cmd/Ctrl + Shift + Enter`: 确认编辑并插入下一行
+    - `Tab`: 确认编辑并编辑下一列
+    - `Shift + Tab`: 确认编辑并编辑上一列
+3. feat: 其他使用体验提升
+4. fix: 修复渲染透明背景 PlantUML 图形时显示异常的问题
+5. chore: 升级依赖：`@vscode/ripgrep` `socket.io`
+6. refactor: 不再使用 vuex
+7. feat(plugin): 支持 `yank-note://` [Deep Link](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app)
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

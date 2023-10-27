@@ -76,15 +76,24 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.62.2](https://github.com/purocean/yn/releases/tag/v3.62.2) 2023-10-08
+### [v3.63.2](https://github.com/purocean/yn/releases/tag/v3.63.2) 2023-10-08
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-win-x64-3.62.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-mac-arm64-3.62.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-mac-x64-3.62.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-linux-x86_64-3.62.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.62.2/Yank-Note-linux-amd64-3.62.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-win-x64-3.63.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-mac-arm64-3.63.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-mac-x64-3.63.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-linux-x86_64-3.63.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-linux-amd64-3.63.2.deb)
 
-1. feat: sidebar document outline supports folding and expansion
-2. feat: supports offline activation of premium version
-3. feat: When pasting a link after selecting text, the link will be automatically inserted and the selected text will be used as the link text. Links with # are supported.
-4. feat: Add `bat` language highlighting
-5. fix: Fixed the problem of failure to open attachments when the warehouse uses a network path on Windows
+1. feat: Automatically convert tab-separated tables to markdown format when pasting.
+2. feat: Table cell editing now supports keyboard shortcuts:
+    - `DBLClick`: Edit cell
+    - `Escape`: Exit editing
+    - `Enter`: Confirm editing and edit the next row
+    - `Shift + Enter`: Confirm editing and edit the previous row
+    - `Cmd/Ctrl + Shift + Enter`: Confirm editing and insert a new row below
+    - `Tab`: Confirm editing and edit the next column
+    - `Shift + Tab`: Confirm editing and edit the previous column
+3. feat: Other user experience improvements.
+4. fix: Fixed the issue with abnormal rendering of transparent background PlantUML diagrams.
+5. chore: Dependency upgrades: `@vscode/ripgrep` and `socket.io`.
+6. refactor: No longer using Vuex.
+7. feat(plugin): Added support for `yank-note://` [Deep Link](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app).
 
 [More release notes](https://github.com/purocean/yn/releases)
 
