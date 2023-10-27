@@ -170,15 +170,39 @@ export default {
       editor.onDidPaste(({ range }) => {
         const model = editor.getModel()
         const languageId = model?.getLanguageId()
+        const parsedText = model?.getValueInRange(range) || ''
 
+        // paste link as markdown link
         if (selectedTextBeforePaste && languageId === 'markdown' && !selectedTextBeforePaste.includes('\n')) {
-          const parsedText = model?.getValueInRange(range) || ''
           // is link
           if (parsedText && /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=#]*)?$/.test(parsedText)) {
             const text = `[${
               selectedTextBeforePaste.replace(/([[\]])/g, '\\$1')
             }](${encodeMarkdownLink(parsedText)})`
             editor.executeEdits('paste', [{ range, text }])
+          }
+        }
+
+        // paste splitted by tab as table
+        if (languageId === 'markdown') {
+          const lines = parsedText.replace(/^\n+|\n+$/g, '').split('\n')
+          if (lines.length > 2) {
+            let rows = []
+            for (const line of lines) {
+              const columns = line.split('\t')
+              if (columns.length >= 2) {
+                rows.push(`| ${columns.join(' | ')} |`)
+              } else {
+                rows = []
+                break
+              }
+            }
+
+            if (rows.length > 1) {
+              // add header
+              rows.splice(1, 0, rows[0].replace(/[^|]+/g, ' -- '))
+              editor.executeEdits('paste', [{ range, text: rows.join('\n') }])
+            }
           }
         }
 
