@@ -15,8 +15,8 @@ English | [中文说明](./README_ZH-CN.md)
 - **Easy to use:** Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
 - **Powerful:** Support version control; Applets, runnable code blocks, tables, PlantUML, Drawio, macro replacements, etc., can be embedded in the document; support for [OpenAI](https://openai.com) auto completion.
 - **High compatibility:** Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
-- **Plug-in extension:** Support users to write their own plug-ins to expand the functionality of the editor.
-- **Encryption supported:** Use encryption to save private files such as account number, and the password can be set separately for each file.
+- **Plug-in extension:** Support users to write their own plugins to expand the functionality of the editor.
+- **Encryption support:** Use encryption to save private files such as account number, and the password can be set separately for each file.
 
 ## Attention
 
@@ -63,7 +63,7 @@ For more information on how to use the following functions, please see [characte
 - **Macro replacement:** support for embedded JavaScript expressions to dynamically replace document content
 - **Image hosting service:** support [PicGo](https://picgo.github.io/PicGo-Doc/) image hosting service
 - **OpenAI:** support for [OpenAI](https://openai.com) auto completion
-- **Custom plug-ins:** support writing JavaScript plug-ins to expand editor functionality. The plug-in is placed in the `home directory/plugins`. Refer to [plug-in Development Guide](./help/PLUGIN.md)
+- **Custom plugins:** support writing JavaScript plugins to expand editor functionality. The plug-in is placed in the `home directory/plugins`. Refer to [plug-in Development Guide](./help/PLUGIN.md)
 
 ## Screenshots
 
@@ -74,7 +74,7 @@ For more information on how to use the following functions, please see [characte
 ![Screenshot](./help/4.png)
 ![Screenshot](./help/5.png)
 
-## Changelogs
+## Change logs
 
 ### [v3.63.2](https://github.com/purocean/yn/releases/tag/v3.63.2) 2023-10-08
 
