@@ -22,18 +22,24 @@ const convert = async (source: string, fromType: string, toType: string, resourc
         '--reference-doc', docxTplPath
       ]
       console.log(binPath, args)
-      const process = spawn(binPath, args)
+      const ps = spawn(binPath, args, {
+        env: {
+          ...process.env,
+          LANG: 'en_US.UTF-8',
+          LC_ALL: 'en_US.UTF-8'
+        }
+      })
 
       let errorMsg = ''
-      process.stderr.on('data', (val) => {
+      ps.stderr.on('data', (val) => {
         errorMsg += val
       })
 
-      process.stderr.on('data', (val) => {
+      ps.stderr.on('data', (val) => {
         errorMsg += val
       })
 
-      process.on('close', async (code) => {
+      ps.on('close', async (code) => {
         if (code) {
           reject(new Error(errorMsg))
           return
@@ -48,12 +54,12 @@ const convert = async (source: string, fromType: string, toType: string, resourc
         }
       })
 
-      process.on('error', error => {
+      ps.on('error', error => {
         reject(error)
       })
 
-      process.stdin.write(source)
-      process.stdin.end()
+      ps.stdin.write(source)
+      ps.stdin.end()
     })
   } catch (e: any) {
     return e.message

@@ -83,6 +83,11 @@ const runCode = async (cmd: { cmd: string, args: string[] } | string, code: stri
         if (env.PATH && env.PATH.indexOf(extPath) < 0) {
           env.PATH = `${extPath}:${env.PATH}`
         }
+
+        if (!env.LANG && !env.LC_ALL) {
+          env.LANG = 'en_US.UTF-8'
+          env.LC_ALL = 'en_US.UTF-8'
+        }
       }
 
       return execFile(
