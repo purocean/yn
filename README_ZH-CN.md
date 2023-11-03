@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.63.2](https://github.com/purocean/yn/releases/tag/v3.63.2) 2023-10-08
+### [v3.63.3](https://github.com/purocean/yn/releases/tag/v3.63.3) 2023-11-03
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-win-x64-3.63.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-mac-arm64-3.63.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-mac-x64-3.63.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-linux-x86_64-3.63.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.63.2/Yank-Note-linux-amd64-3.63.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-win-x64-3.63.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-mac-arm64-3.63.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-mac-x64-3.63.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-linux-x86_64-3.63.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-linux-amd64-3.63.3.deb)
 
 1. feat: 粘贴 tab 分割的表格时候自动转化为 markdown 格式表格
 2. feat: 表格编辑编辑单元格时支持快捷键
