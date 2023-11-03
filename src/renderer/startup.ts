@@ -214,7 +214,20 @@ store.watch(() => store.state.currentFile, (val) => {
   })
 }, { immediate: true })
 
-store.watch(store.state, () => {
+store.watch(() => [
+  store.state.wordWrap,
+  store.state.typewriterMode,
+  store.state.showSide,
+  store.state.showView,
+  store.state.showEditor,
+  store.state.editorPreviewExclusive,
+  store.state.showXterm,
+  store.state.showOutline,
+  store.state.autoPreview,
+  store.state.syncScroll,
+  store.state.currentRepo,
+  store.state.editor,
+], () => {
   ctx.workbench.ControlCenter.refresh()
   ctx.statusBar.refreshMenu()
 })
