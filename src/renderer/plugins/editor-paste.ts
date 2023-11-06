@@ -174,12 +174,20 @@ export default {
 
         // paste link as markdown link
         if (selectedTextBeforePaste && languageId === 'markdown' && !selectedTextBeforePaste.includes('\n')) {
+          const isLink = (str: string) => /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=#]*)?$/.test(str)
           // is link
-          if (parsedText && /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=#]*)?$/.test(parsedText)) {
+          if (parsedText && isLink(parsedText)) {
             const text = `[${
               selectedTextBeforePaste.replace(/([[\]])/g, '\\$1')
             }](${encodeMarkdownLink(parsedText)})`
             editor.executeEdits('paste', [{ range, text }])
+            return
+          } else if (isLink(selectedTextBeforePaste)) {
+            const text = `[${
+              parsedText.replace(/([[\]])/g, '\\$1')
+            }](${encodeMarkdownLink(selectedTextBeforePaste)})`
+            editor.executeEdits('paste', [{ range, text }])
+            return
           }
         }
 
