@@ -10,6 +10,7 @@ exports.default = async function notarizing(context) {
   }
 
   return await notarize({
+    tool: 'notarytool',
     appBundleId: 'yank.note',
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLEID,
