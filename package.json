@@ -66,6 +66,7 @@
   "devDependencies": {
     "@commitlint/cli": "^16.2.4",
     "@commitlint/config-conventional": "^16.2.4",
+    "@electron/notarize": "^2.1.0",
     "@electron/rebuild": "^3.2.13",
     "@json-editor/json-editor": "^2.5.4",
     "@types/adm-zip": "^0.4.34",
@@ -107,7 +108,6 @@
     "dom-to-image": "^2.6.0",
     "electron": "22.3.25",
     "electron-builder": "^23.6.0",
-    "electron-notarize": "^1.2.2",
     "eslint": "^7.11.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
