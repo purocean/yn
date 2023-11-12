@@ -66,6 +66,12 @@ jobs:
           yarn run electron-builder --${{ matrix.platform }} -p never | sed 's/identityName=.*$//'
           if (!(Test-Path out/win-unpacked/resources/app.asar.unpacked/node_modules/node-pty/build/Release/pty.node)) { throw 'node-pty not exist' }
 
+      - name: Setup Xcode
+        if: matrix.platform == 'mac'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
       - name: Electron-Mac
         if: matrix.platform == 'mac'
         run: |
