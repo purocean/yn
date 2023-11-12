@@ -34,7 +34,7 @@ jobs:
       - name: Setup Python environment
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10' 
+          python-version: '3.10'
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
@@ -53,6 +53,7 @@ jobs:
         run: |
           echo "APPLEID=${{ secrets.APPLEID }}" >> $GITHUB_ENV
           echo "APPLEIDPASS=${{ secrets.APPLEIDPASS }}" >> $GITHUB_ENV
+          echo "TEAMID=${{ secrets.TEAMID }}" >> $GITHUB_ENV
           echo "CSC_LINK=${{ secrets.CSC_LINK }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.CSC_KEY_PASSWORD }}" >> $GITHUB_ENV
 
