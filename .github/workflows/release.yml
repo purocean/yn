@@ -70,7 +70,6 @@ jobs:
       - name: Electron-Mac
         if: matrix.platform == 'mac'
         run: |
-          export DEBUG=electron-notarize*
           sh ./scripts/download-ripgrep.sh
           yarn run electron-builder --${{ matrix.platform }} --x64 -p never | sed 's/identityName=.*$//'
           find ./out -regex '.*app.asar.unpacked/node_modules/node-pty/build/Release/pty.node$' | grep pty.node
@@ -108,7 +107,7 @@ jobs:
           python-version: '3.9'
 
       - name: Install coscmd
-        if: matrix.platform != 'win'
+        if: matrix.platform != 'win' && contains(github.ref_name, '-next-') != true
         env:
           COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
           COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
@@ -118,7 +117,7 @@ jobs:
           coscmd config -a $COS_SECRET_ID -s $COS_SECRET_KEY -b $COS_BUCKET -e cos.accelerate.myqcloud.com
 
       - name: Install coscmd for Windows
-        if: matrix.platform == 'win'
+        if: matrix.platform == 'win' && contains(github.ref_name, '-next-') != true
         shell: cmd
         env:
           COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
