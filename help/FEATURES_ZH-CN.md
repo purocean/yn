@@ -492,7 +492,7 @@ chart.setOption(option, true)
 
 `type` 是必需的， `title` 和 `content` 是可选的。
 
-支持的 `type` 有：`tip` `warning` `danger` `details` `group` `group-item`
+支持的 `type` 有：tip, warning, danger, details, group, group-item, row, col, section, div
 
 **示例**
 
