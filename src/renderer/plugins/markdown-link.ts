@@ -207,21 +207,19 @@ function convertLink (state: StateCore) {
 export default {
   name: 'markdown-link',
   register: (ctx) => {
-    let baseUrl = location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/'
-
-    // replace localhost to ip, somtimes resolve localhost take too much time on windows.
-    if (/^(http|https):\/\/localhost/i.test(baseUrl)) {
-      baseUrl = baseUrl.replace(/localhost/i, '127.0.0.1')
-    }
-
     ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', async ({ node, options }) => {
       // local image
-      const srcAttr = node.getAttribute('src')
-      if (srcAttr && node.getAttribute(DOM_ATTR_NAME.LOCAL_IMAGE)) {
+      const src = (node as any).src
+      if (src && node.getAttribute(DOM_ATTR_NAME.LOCAL_IMAGE)) {
+        if (options.useRemoteSrcOfLocalImage) {
+          node.setAttribute('src', src)
+          return
+        }
+
         if (options.inlineLocalImage || options.uploadLocalImage) {
           try {
             const originSrc = node.getAttribute(DOM_ATTR_NAME.ORIGIN_SRC)
-            const res: Response = await ctx.api.fetchHttp(srcAttr)
+            const res: Response = await ctx.api.fetchHttp(src)
             const fileName = originSrc ? ctx.utils.path.basename(removeQuery(originSrc)) : 'img'
             const file = new File(
               [await res.blob()],
@@ -244,7 +242,7 @@ export default {
             console.log(error)
           }
         } else {
-          node.setAttribute('src', `${baseUrl}${srcAttr}`)
+          node.setAttribute('src', src)
         }
       }
 
