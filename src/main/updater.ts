@@ -1,3 +1,4 @@
+import type { RequestOptions } from 'http'
 import { dialog, app, shell } from 'electron'
 import { autoUpdater, CancellationToken, UpdateInfo } from 'electron-updater'
 import { resolveFiles } from 'electron-updater/out/providers/Provider'
@@ -25,22 +26,25 @@ class UpdateProvider extends GitHubProvider {
   constructor (options: any, updater: any, runtimeOptions: any) {
     super(options, updater, runtimeOptions)
 
-    const httpRequest = this.httpRequest.bind(this)
-    this.httpRequest = function (url: URL, headers?: any | null, cancellationToken?: any) {
+    const request = this.executor.request.bind(this.executor)
+    this.executor.request = (options: RequestOptions, ...args: any[]) => {
       if (!this.isGithub()) {
         const _url = new URL(HOMEPAGE_URL)
-        if (url.pathname === '/purocean/yn/releases.atom') {
-          url.hostname = _url.hostname
-          url.pathname = '/api/update-info/releases.atom'
-        } else if (url.pathname === '/purocean/yn/releases/latest') {
-          url.hostname = _url.hostname
-          url.pathname = '/api/update-info/latest'
+        if (options.path === '/purocean/yn/releases.atom') {
+          options.hostname = _url.hostname
+          options.path = '/api/update-info/releases.atom'
+        } else if (options.path === '/purocean/yn/releases/latest') {
+          options.hostname = _url.hostname
+          options.path = '/api/update-info/latest'
+        } else if (options.path?.startsWith('/purocean/yn/releases/download')) {
+          options.hostname = _url.hostname
+          options.path = options.path.replace(/\/purocean\/yn\/releases\/download\/v[^/]+\//, '/download/')
         }
 
-        console.log('request', url.toString())
+        console.log('request', options.protocol + '//' + options.hostname + options.path)
       }
 
-      return httpRequest(url, headers, cancellationToken)
+      return request(options, ...args)
     }
   }
 
