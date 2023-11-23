@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.64.1](https://github.com/purocean/yn/releases/tag/v3.64.1) 2023-11-23
+### [v3.64.2](https://github.com/purocean/yn/releases/tag/v3.64.2) 2023-11-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-win-x64-3.64.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-mac-arm64-3.64.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-mac-x64-3.64.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-linux-x86_64-3.64.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-linux-amd64-3.64.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-win-x64-3.64.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-mac-arm64-3.64.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-mac-x64-3.64.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-linux-x86_64-3.64.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-linux-amd64-3.64.2.deb)
 
 1. feat: 为 PlantUML 增加渲染缓存
 1. feat: 自定义容器增加 `div` 类型
