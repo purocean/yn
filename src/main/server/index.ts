@@ -111,6 +111,13 @@ const fileContent = async (ctx: any, next: any) => {
 
       checkPrivateRepo(ctx, repo)
 
+      const stat = await file.stat(repo, path)
+
+      // limit 30mb
+      if (stat.size > 30 * 1024 * 1024) {
+        throw new Error('File is too large.')
+      }
+
       const content = await file.read(repo, path)
 
       ctx.body = result('ok', 'success', {
@@ -360,9 +367,9 @@ const userPlugin = async (ctx: any, next: any) => {
     let code = ''
     for (const x of await fs.readdir(USER_PLUGIN_DIR, { withFileTypes: true })) {
       if (x.isFile() && x.name.endsWith('.js')) {
-        code += `// ===== ${x.name} =====\n` +
+        code += `;(async function () {; // ===== ${x.name} =====\n` +
           (await fs.readFile(path.join(USER_PLUGIN_DIR, x.name))) +
-          '\n// ===== end =====\n\n'
+          '\n;})(); // ===== end =====\n\n'
       }
     }
 
@@ -595,9 +602,9 @@ const server = (port = 3000) => {
 
   app.use(bodyParser({
     multipart: true,
-    formLimit: '20mb',
-    jsonLimit: '20mb',
-    textLimit: '20mb',
+    formLimit: '50mb',
+    jsonLimit: '50mb',
+    textLimit: '50mb',
     formidable: {
       maxFieldsSize: 268435456
     }

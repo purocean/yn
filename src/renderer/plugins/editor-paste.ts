@@ -174,12 +174,41 @@ export default {
 
         // paste link as markdown link
         if (selectedTextBeforePaste && languageId === 'markdown' && !selectedTextBeforePaste.includes('\n')) {
+          const isLink = (str: string) => {
+            if (!/^https?:\/\//i.test(str)) {
+              return false
+            }
+
+            try {
+              // eslint-disable-next-line no-new
+              new URL(str)
+              return true
+            } catch (_) {
+              return false
+            }
+          }
+
+          const parsedTextIsLink = isLink(parsedText)
+          const selectedTextBeforePasteIsLink = isLink(selectedTextBeforePaste)
+
+          // both are link, do nothing
+          if (parsedTextIsLink && selectedTextBeforePasteIsLink) {
+            return
+          }
+
           // is link
-          if (parsedText && /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-./?%&=#]*)?$/.test(parsedText)) {
+          if (parsedText && parsedTextIsLink) {
             const text = `[${
               selectedTextBeforePaste.replace(/([[\]])/g, '\\$1')
             }](${encodeMarkdownLink(parsedText)})`
             editor.executeEdits('paste', [{ range, text }])
+            return
+          } else if (selectedTextBeforePasteIsLink) {
+            const text = `[${
+              parsedText.replace(/([[\]])/g, '\\$1').trim()
+            }](${encodeMarkdownLink(selectedTextBeforePaste)})`
+            editor.executeEdits('paste', [{ range, text }])
+            return
           }
         }
 

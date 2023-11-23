@@ -111,7 +111,7 @@ function transform (
   _vars.define = define
   const keys = Object.keys(define)
   if (keys.length) {
-    const reg = new RegExp(keys.map(escapeRegExp).join('|'), 'g')
+    const reg = new RegExp(keys.filter(Boolean).map(escapeRegExp).join('|'), 'g')
     src = src.replace(reg, match => {
       const val = define[match]
       // only support single line macro expression

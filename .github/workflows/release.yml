@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
+          - os: macos-13
             platform: 'mac'
           - os: windows-2019
             platform: 'win'
@@ -31,10 +31,15 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11.5'
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Install
         run: |
@@ -48,6 +53,7 @@ jobs:
         run: |
           echo "APPLEID=${{ secrets.APPLEID }}" >> $GITHUB_ENV
           echo "APPLEIDPASS=${{ secrets.APPLEIDPASS }}" >> $GITHUB_ENV
+          echo "TEAMID=${{ secrets.TEAMID }}" >> $GITHUB_ENV
           echo "CSC_LINK=${{ secrets.CSC_LINK }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.CSC_KEY_PASSWORD }}" >> $GITHUB_ENV
 
@@ -101,7 +107,7 @@ jobs:
           python-version: '3.9'
 
       - name: Install coscmd
-        if: matrix.platform != 'win'
+        if: matrix.platform != 'win' && contains(github.ref_name, '-next-') != true
         env:
           COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
           COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
@@ -111,7 +117,7 @@ jobs:
           coscmd config -a $COS_SECRET_ID -s $COS_SECRET_KEY -b $COS_BUCKET -e cos.accelerate.myqcloud.com
 
       - name: Install coscmd for Windows
-        if: matrix.platform == 'win'
+        if: matrix.platform == 'win' && contains(github.ref_name, '-next-') != true
         shell: cmd
         env:
           COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}

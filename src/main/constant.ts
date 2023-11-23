@@ -23,6 +23,8 @@ export const USER_DATA = path.join(USER_DIR, './data')
 export const BIN_DIR = convertAppPath(path.join(__dirname, '../../bin'))
 export const RESOURCES_DIR = convertAppPath(path.join(__dirname, 'resources'))
 
+export const CACHE_DIR = path.join(os.tmpdir(), APP_NAME)
+
 export const BUILD_IN_STYLES = ['github.css']
 
 export const PANDOC_REFERENCE_FILE = 'pandoc-reference.docx'

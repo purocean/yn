@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { notarize } = require('electron-notarize');
+const { notarize } = require('@electron/notarize');
 
 exports.default = async function notarizing(context) {
   const { electronPlatformName, appOutDir } = context;
@@ -10,9 +10,11 @@ exports.default = async function notarizing(context) {
   }
 
   return await notarize({
+    tool: 'notarytool',
     appBundleId: 'yank.note',
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLEID,
     appleIdPassword: process.env.APPLEIDPASS,
+    teamId: process.env.TEAMID,
   });
 };

@@ -268,6 +268,12 @@ export default {
       }
     })
 
-    ctx.editor.whenEditorReady().then(updateEditorKeybindings)
+    ctx.editor.whenEditorReady().then(() => {
+      updateEditorKeybindings()
+
+      // recheck keybindings, for conflict with other keybindings
+      setTimeout(updateEditorKeybindings, 2000)
+      setTimeout(updateEditorKeybindings, 5000)
+    })
   }
 } as Plugin
