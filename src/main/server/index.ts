@@ -367,9 +367,9 @@ const userPlugin = async (ctx: any, next: any) => {
     let code = ''
     for (const x of await fs.readdir(USER_PLUGIN_DIR, { withFileTypes: true })) {
       if (x.isFile() && x.name.endsWith('.js')) {
-        code += `// ===== ${x.name} =====\n` +
+        code += `;(async function () {; // ===== ${x.name} =====\n` +
           (await fs.readFile(path.join(USER_PLUGIN_DIR, x.name))) +
-          '\n// ===== end =====\n\n'
+          '\n;})(); // ===== end =====\n\n'
       }
     }
 
