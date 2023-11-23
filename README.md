@@ -76,24 +76,17 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.63.3](https://github.com/purocean/yn/releases/tag/v3.63.3) 2023-10-03
+### [v3.64.1](https://github.com/purocean/yn/releases/tag/v3.64.1) 2023-11-03
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-win-x64-3.63.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-mac-arm64-3.63.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-mac-x64-3.63.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-linux-x86_64-3.63.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.63.3/Yank-Note-linux-amd64-3.63.3.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-win-x64-3.64.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-mac-arm64-3.64.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-mac-x64-3.64.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-linux-x86_64-3.64.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.64.1/Yank-Note-linux-amd64-3.64.1.deb)
 
-1. feat: Automatically convert tab-separated tables to markdown format when pasting.
-2. feat: Table cell editing now supports keyboard shortcuts:
-    - `DBLClick`: Edit cell
-    - `Escape`: Exit editing
-    - `Enter`: Confirm editing and edit the next row
-    - `Shift + Enter`: Confirm editing and edit the previous row
-    - `Cmd/Ctrl + Shift + Enter`: Confirm editing and insert a new row below
-    - `Tab`: Confirm editing and edit the next column
-    - `Shift + Tab`: Confirm editing and edit the previous column
-3. feat: Other user experience improvements.
-4. fix: Fixed the issue with abnormal rendering of transparent background PlantUML diagrams.
-5. chore: Dependency upgrades: `@vscode/ripgrep` and `socket.io`.
-6. refactor: No longer using Vuex.
-7. feat(plugin): Added support for `yank-note://` [Deep Link](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app).
+1. feat: Added rendering cache for PlantUML
+1. feat: Added `div` type to custom containers
+1. feat: Added support for top-level `await` keyword in user-defined plugin scripts
+1. feat: Optimized link pasting behavior
+1. fix: Fixed an issue where custom editor shortcuts would become ineffective after restart
+1. fix: Fixed rendering issues caused by empty key values in macro definitions
+7. feat(plugin): Added `useRemoteSrcOfLocalImage` option to `ctx.view.getContentHtml` method for preserving remote URLs of local images
 
 [More release notes](https://github.com/purocean/yn/releases)
 
