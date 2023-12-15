@@ -157,7 +157,7 @@ const RunCode = defineComponent({
             onClick: runInXterm
           }),
         ]),
-        h('div', { class: 'p-mcr-run-code-result skip-export', style: 'padding: .5em 0 0 0', key: runResult, innerHTML: runResult }),
+        h('div', { class: 'p-mcr-run-code-result skip-export', key: runResult, innerHTML: runResult }),
         h('div', { class: 'p-mcr-clear-btn-wrapper skip-print' }, h(
           h(
             'div',
@@ -244,6 +244,15 @@ export default {
         float: right;
       }
 
+      .markdown-view .markdown-body .p-mcr-run-code-result {
+        position: sticky;
+        left: 0;
+        padding: .5em 0 0 0;
+        max-width: 100%;
+        max-height: 300px;
+        overflow: auto;
+      }
+
       .markdown-view .markdown-body .p-mcr-clear-btn {
         width: 20px;
         height: 20px;
@@ -255,11 +264,12 @@ export default {
         transition: opacity 200ms;
         display: flex;
         align-items: center;
-        color: var(--g-color-30)
+        color: var(--g-color-20);
+        background: var(--g-color-86);
       }
 
       .markdown-view .markdown-body .p-mcr-clear-btn:hover {
-        background: var(--g-color-80);
+        background: var(--g-color-76);
       }
     `)
 
