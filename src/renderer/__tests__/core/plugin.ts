@@ -19,4 +19,11 @@ test('plugin usage', () => {
   }, 123)
 
   expect(fn).toHaveBeenCalledTimes(1)
+
+  plugin.register({
+    name: 'test2',
+    register: () => '12345',
+  }, 123)
+
+  expect(plugin.getApi('test2')).toBe('12345')
 })
