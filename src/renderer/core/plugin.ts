@@ -4,10 +4,11 @@ const logger = getLogger('plugin')
 
 export interface Plugin<Ctx = any> {
   name: string;
-  register?: (ctx: Ctx) => void;
+  register?: (ctx: Ctx) => any;
 }
 
 const plugins: {[name: string]: Plugin} = {}
+const apis: {[name: string]: any} = {}
 
 /**
  * Register a plugin.
@@ -23,7 +24,16 @@ export function register <Ctx> (plugin: Plugin<Ctx>, ctx: Ctx) {
   }
 
   plugins[plugin.name] = plugin
-  plugin.register && plugin.register(ctx)
+  apis[plugin.name] = plugin.register && plugin.register(ctx)
+}
+
+/**
+ * Get a plugin exported api.
+ * @param name
+ * @returns
+ */
+export function getApi <T = any> (name: string): T {
+  return apis[name]
 }
 
 /**

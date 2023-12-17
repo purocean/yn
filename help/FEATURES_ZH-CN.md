@@ -569,15 +569,13 @@ test 3
 :::
 ::::
 
-## OpenAI 自动补全
+## AI Copilot 人工智能写作助手
 
-Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.keybinding.getKeysLabel('plugin.editor-openai.trigger') =]` 即可实现智能补全（如果选中了文字，则只将选中的文字提交给 AI 计算）。
+Yank Note 接入了 [OpenAI](https://openai.com)、[Google AI](https://ai.google.dev/) 等人工智能平台，可以使用人工智能进行智能补全、文本重写等功能
 
-注：OpenAI API token 需要你自行获取。
+注：相关 API token 需要你自行获取。
 
-> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-openai')">需要安装并启用 OpenAI 扩展</a>*
-
-<video src="./openai.mp4" height="200" controls></video>
+> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-ai-copilot')">需要安装并启用 AI Copilot 扩展</a>*
 
 ## Front Matter
 

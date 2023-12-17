@@ -322,7 +322,9 @@ const proxy = async (ctx: any, next: any) => {
     const data = ctx.method === 'POST' ? ctx.request.body : ctx.query
     const url = data.url
     const options = typeof data.options === 'string' ? JSON.parse(ctx.query.options) : data.options
-    const agent = await getAction('get-proxy-agent')(url)
+    const agent = options.proxyUrl
+      ? getAction('new-proxy-agent')(options.proxyUrl)
+      : await getAction('get-proxy-agent')(url)
     await new Promise<void>((resolve, reject) => {
       request({ url, agent, encoding: null, ...options }, function (err: any, response: any, body: any) {
         if (err) {

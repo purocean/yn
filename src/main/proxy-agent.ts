@@ -4,6 +4,16 @@ const SocksProxyAgent = require('socks-proxy-agent')
 const HttpsProxyAgent = require('https-proxy-agent')
 const HttpProxyAgent = require('http-proxy-agent')
 
+export function newProxyAgent (proxyUrl: string) {
+  if (proxyUrl.toLowerCase().startsWith('socks://')) {
+    return new SocksProxyAgent(proxyUrl)
+  } else if (proxyUrl.toLowerCase().startsWith('https://')) {
+    return new HttpProxyAgent(proxyUrl)
+  } else {
+    return new HttpsProxyAgent(proxyUrl)
+  }
+}
+
 export async function getProxyAgent (url: string) {
   const proxy = await session.defaultSession.resolveProxy(url)
   if (!proxy) {
