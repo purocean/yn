@@ -76,17 +76,13 @@
 
 ## 更新日志
 
-### [v3.64.2](https://github.com/purocean/yn/releases/tag/v3.64.2) 2023-11-23
+### [v3.65.0](https://github.com/purocean/yn/releases/tag/v3.65.0) 2023-12-17
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-win-x64-3.64.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-mac-arm64-3.64.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-mac-x64-3.64.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-linux-x86_64-3.64.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-linux-amd64-3.64.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-win-x64-3.65.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-mac-arm64-3.65.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-mac-x64-3.65.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-linux-x86_64-3.65.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-linux-amd64-3.65.0.deb)
 
-1. feat: 为 PlantUML 增加渲染缓存
-1. feat: 自定义容器增加 `div` 类型
-1. feat: 用户自定义插件脚本支持顶层 `await` 关键字
-1. feat: 优化链接粘贴行为
-1. fix: 修复某些时候自定义编辑器快捷键重启后失效的问题
-1. fix: 修复宏定义使用空键值时候导致页面渲染异常的问题
-7. feat(plugin): `ctx.view.getContentHtml` 方法增加 `useRemoteSrcOfLocalImage` 选项，用于保留本地图片的远程地址
+1. feat: 运行代码块限制最大高度，优化显示效果
+2. feat(plugin): `ctx.api.proxyRequest` 方法支持指定 http 代理
+3. feat(plugin): 增加 `ctx.getPluginApi` 方法，插件支持暴露接口给其他插件使用
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
