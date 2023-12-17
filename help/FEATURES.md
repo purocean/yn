@@ -571,15 +571,13 @@ test 3
 :::
 ::::
 
-## OpenAI Auto Completion
+## AI Copilot
 
-Yank Note integrates with [OpenAI](https://openai.com), press `[= $ctx.keybinding.getKeysLabel('plugin.editor-openai.trigger') =]` to trigger intelligent completion (If text is selected, only the selected text is submitted to AI for calculation).
+Yank Note integrates with artificial intelligence platforms such as [OpenAI](https://openai.com) and [Google AI](https://ai.google.dev/), enabling features like intelligent autocompletion and text rewriting.
 
-Note: OpenAI API token needs to be obtained by yourself.
+Note: You need to obtain the relevant API tokens yourself.
 
-> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-openai')">Requires OpenAI extension installed and enabled</a>*
-
-<video src="./openai.mp4" height="200" controls></video>
+> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-openai')">Requires AI Copilot extension installed and enabled</a>*
 
 ## Front Matter
 
