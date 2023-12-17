@@ -76,17 +76,13 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.64.2](https://github.com/purocean/yn/releases/tag/v3.64.2) 2023-11-23
+### [v3.65.0](https://github.com/purocean/yn/releases/tag/v3.65.0) 2023-12-17
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-win-x64-3.64.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-mac-arm64-3.64.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-mac-x64-3.64.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-linux-x86_64-3.64.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.64.2/Yank-Note-linux-amd64-3.64.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-win-x64-3.65.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-mac-arm64-3.65.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-mac-x64-3.65.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-linux-x86_64-3.65.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-linux-amd64-3.65.0.deb)
 
-1. feat: Added rendering cache for PlantUML
-1. feat: Added `div` type to custom containers
-1. feat: Added support for top-level `await` keyword in user-defined plugin scripts
-1. feat: Optimized link pasting behavior
-1. fix: Fixed an issue where custom editor shortcuts would become ineffective after restart
-1. fix: Fixed rendering issues caused by empty key values in macro definitions
-7. feat(plugin): Added `useRemoteSrcOfLocalImage` option to `ctx.view.getContentHtml` method for preserving remote URLs of local images
+1. feat: Limit the maximum height of code blocks and optimize display effects
+2. feat(plugin): Add support for specifying HTTP proxy in `ctx.api.proxyRequest` method
+3. feat(plugin): Add `ctx.getPluginApi` method to allow plugins to expose interfaces for other plugins to use
 
 [More release notes](https://github.com/purocean/yn/releases)
 
