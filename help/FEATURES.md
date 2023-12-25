@@ -70,6 +70,25 @@ Type '/' in the editor to get prompts
     *[W3C]:  World Wide Web Consortium
     The HTML specification is maintained by the W3C.
 
+## Github Alerts
+
+This feature is implemented using [markdown-it-github-alerts](https://github.com/antfu/markdown-it-github-alerts), providing support for [GitHub-style alert prompts](https://github.com/orgs/community/discussions/16925).
+
+> [!NOTE]Note
+> Highlights information that users should take into account, even when skimming.
+
+> [!TIP]
+> Optional information to help a user be more successful.
+
+> [!IMPORTANT]
+> Crucial information necessary for users to succeed.
+
+> [!WARNING]
+> Critical content demanding immediate user attention due to potential risks.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+
 ### Element Attribute
 
 This feature is implemented using [markdown-it-attributes](https://github.com/purocean/markdown-it-attributes).
