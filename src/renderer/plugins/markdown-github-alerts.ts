@@ -24,7 +24,7 @@ export default {
     ctx.view.addStyles(baseCss as unknown as string)
     ctx.view.addStyles(lightCss as unknown as string)
 
-    const darkVars = (darkCss as unknown as string).replace('.dark ', '')
+    const darkVars = (darkCss as unknown as string).replace('.dark', '')
     ctx.view.addStyles(`
       @media screen { html[app-theme=dark] ${darkVars} }
       @media (prefers-color-scheme: dark) { html[app-theme=system] ${darkVars} }
