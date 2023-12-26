@@ -9,7 +9,7 @@ export default {
   name: 'markdown-github-alerts',
   register: ctx => {
     ctx.markdown.markdown.use(md => {
-      MarkdownItGithubAlerts(md)
+      MarkdownItGithubAlerts(md, { matchCaseSensitive: false })
       md.renderer.rules.alert_open = function (tokens, idx) {
         const { title, type, icon } = tokens[idx].meta
         return ctx.lib.vue.h('div', { class: `markdown-alert markdown-alert-${type}` }, [
