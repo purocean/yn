@@ -16,7 +16,7 @@ import katex from 'katex'
 import { h } from 'vue'
 import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
-import styles from 'katex/dist/katex.min.css'
+import styles from 'katex/dist/katex.min.css?inline'
 import monacoLatex from '@fe/others/monaco-latex'
 import { getRenderCache } from '@fe/services/markdown'
 import { triggerHook } from '@fe/core/hook'
@@ -43,8 +43,8 @@ function isValidDelim (state: any, pos: number) {
   }
 
   return {
-    can_open: can_open,
-    can_close: can_close
+    can_open,
+    can_close
   }
 }
 

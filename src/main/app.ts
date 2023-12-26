@@ -456,6 +456,7 @@ const serve = () => {
       ;(req as any)._protocol = true
 
       await handler(req, res)
+      // eslint-disable-next-line n/no-callback-literal
       callback({
         headers: res.getHeaders() as any,
         statusCode: res.statusCode,

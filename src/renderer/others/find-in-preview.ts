@@ -13,10 +13,10 @@ export interface IFindInPreview {
 }
 
 export class BrowserFindInPreview implements IFindInPreview {
-  private _matchCount = 0;
-  private _win: Window;
-  private _maxMatchCount: number;
-  private _maxMatchTime: number;
+  private _matchCount = 0
+  private _win: Window
+  private _maxMatchCount: number
+  private _maxMatchTime: number
   private _wrapAround = false
   private _matches: string[] = []
   private _currentMatchIndex = 0

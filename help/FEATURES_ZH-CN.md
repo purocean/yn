@@ -75,19 +75,19 @@ define:
 
 此功能使用 [markdown-it-github-alerts](https://github.com/antfu/markdown-it-github-alerts) 实现，支持 [Github 风格的警告提示](https://github.com/orgs/community/discussions/16925)。
 
-> [!NOTE]注意
+> [!NOTE] 注意
 突出强调用户在浏览时应该注意的信息。
 
-> [!TIP]提示
+> [!TIP] 提示
 > 提供可选的信息以帮助用户更加成功。
 
-> [!IMPORTANT]重要
+> [!IMPORTANT] 重要
 > 对于用户成功至关重要的关键信息。
 
-> [!WARNING]警告
+> [!WARNING] 警告
 > 由于潜在风险，需要立即引起用户的注意的关键内容。
 
-> [!CAUTION]注意
+> [!CAUTION] 注意
 > 行动的负面潜在后果。
 
 ### 元素属性书写

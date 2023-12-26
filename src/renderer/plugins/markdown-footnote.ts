@@ -131,7 +131,7 @@ function footnote_plugin (md) {
     state.env.footnotes.refs[':' + label] = -1
 
     token = new state.Token('footnote_reference_open', '', 1)
-    token.meta = { label: label }
+    token.meta = { label }
     token.level = state.level++
     state.tokens.push(token)
 
@@ -225,7 +225,7 @@ function footnote_plugin (md) {
 
       state.env.footnotes.list[footnoteId] = {
         content: state.src.slice(labelStart, labelEnd),
-        tokens: tokens
+        tokens
       }
     }
 
@@ -271,7 +271,7 @@ function footnote_plugin (md) {
 
       if (state.env.footnotes.refs[':' + label] < 0) {
         footnoteId = state.env.footnotes.list.length
-        state.env.footnotes.list[footnoteId] = { label: label, count: 0 }
+        state.env.footnotes.list[footnoteId] = { label, count: 0 }
         state.env.footnotes.refs[':' + label] = footnoteId
       } else {
         footnoteId = state.env.footnotes.refs[':' + label]
@@ -281,7 +281,7 @@ function footnote_plugin (md) {
       state.env.footnotes.list[footnoteId].count++
 
       token = state.push('footnote_ref', '', 0)
-      token.meta = { id: footnoteId, subId: footnoteSubId, label: label }
+      token.meta = { id: footnoteId, subId: footnoteSubId, label }
     }
 
     state.pos = pos

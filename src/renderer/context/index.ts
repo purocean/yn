@@ -66,7 +66,7 @@ const ctx = Object.freeze({
   registerHook: hook.registerHook,
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,
-  showPremium: showPremium,
+  showPremium,
   getPremium: () => getPurchased(),
   showExtensionManager: extension.showManager,
   getExtensionLoadStatus: extension.getLoadStatus,

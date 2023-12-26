@@ -1,12 +1,13 @@
 import type { Plugin } from '@fe/context'
 import { sleep } from '@fe/utils'
+import type { ReadableStreamDefaultReadResult } from 'stream/web'
 
 class JavascriptExecutor implements ReadableStreamDefaultReader<string> {
-  private code: string;
-  private _readResolve: (value: string) => void = () => 0;
+  private code: string
+  private _readResolve: (value: string) => void = () => 0
 
-  closed: Promise<undefined>;
-  _state: 'pending' | 'done' | 'error';
+  closed: Promise<undefined>
+  _state: 'pending' | 'done' | 'error'
 
   constructor (code: string) {
     this.code = code

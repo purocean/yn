@@ -74,7 +74,7 @@ Type '/' in the editor to get prompts
 
 This feature is implemented using [markdown-it-github-alerts](https://github.com/antfu/markdown-it-github-alerts), providing support for [GitHub-style alert prompts](https://github.com/orgs/community/discussions/16925).
 
-> [!NOTE]Note
+> [!NOTE] Note
 > Highlights information that users should take into account, even when skimming.
 
 > [!TIP]

@@ -265,10 +265,10 @@ async function travels (
       }
 
       files.push({
-        name: name,
+        name,
         path: getRelativePath(basePath, p),
         type: 'file',
-        repo: repo,
+        repo,
         birthtime: stat.birthtimeMs,
         mtime: stat.mtimeMs,
         level: data.level + 1,
@@ -279,10 +279,10 @@ async function travels (
       }
 
       const dir: TreeItem = {
-        name: name,
+        name,
         path: getRelativePath(basePath, p),
         type: 'dir',
-        repo: repo,
+        repo,
         children: [],
         birthtime: stat.birthtimeMs,
         mtime: stat.mtimeMs,
@@ -316,7 +316,7 @@ export async function tree (repo: string, order: Order): Promise<TreeItem[]> {
     name: '/',
     type: 'dir',
     path: '/',
-    repo: repo,
+    repo,
     children: [],
     level: 1,
   }]
@@ -374,7 +374,7 @@ export async function search (repo: string, str: string) {
             name: x.name,
             path: getRelativePath(basePath, p),
             type: 'file',
-            level: level,
+            level,
           })
         }
       }

@@ -1,5 +1,5 @@
 <template>
-  <Mask transparent :show="items && items.length > 0" @close="hide" :style="{ zIndex: 2147483646 }">
+  <XMask transparent :show="items && items.length > 0" @close="hide" :style="{ zIndex: 2147483646 }">
     <ul class="menu" ref="refMenu" @contextmenu.prevent>
       <template v-for="(item, i) in items">
         <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type" />
@@ -10,18 +10,18 @@
         </li>
       </template>
     </ul>
-  </Mask>
+  </XMask>
 </template>
 
 <script lang="ts">
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { Components } from '@fe/types'
-import Mask from './Mask.vue'
+import XMask from './Mask.vue'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
   name: 'context-menu',
-  components: { SvgIcon, Mask },
+  components: { SvgIcon, XMask },
   setup () {
     const refMenu = ref<HTMLUListElement | null>(null)
     const items = ref<Components.ContextMenu.Item[]>([])

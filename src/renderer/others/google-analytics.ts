@@ -113,16 +113,16 @@ export interface FirebaseAnalyticsJSOptions {
  * that follows the Firebase Analytics JS SDK.
  */
 export class FirebaseAnalyticsJS {
-  public readonly url: string;
-  private enabled: boolean;
-  public readonly config: FirebaseAnalyticsJSConfig;
-  private userId?: string;
-  private userProperties?: { [key: string]: any };
-  private screenName?: string;
-  private eventQueue = new Set<FirebaseAnalyticsJSCodedEvent>();
-  private options: FirebaseAnalyticsJSOptions;
-  private flushEventsPromise: Promise<void> = Promise.resolve();
-  private flushEventsTimer: any;
+  public readonly url: string
+  private enabled: boolean
+  public readonly config: FirebaseAnalyticsJSConfig
+  private userId?: string
+  private userProperties?: { [key: string]: any }
+  private screenName?: string
+  private eventQueue = new Set<FirebaseAnalyticsJSCodedEvent>()
+  private options: FirebaseAnalyticsJSOptions
+  private flushEventsPromise: Promise<void> = Promise.resolve()
+  private flushEventsTimer: any
 
   constructor (config: FirebaseAnalyticsJSConfig, options: FirebaseAnalyticsJSOptions) {
     // Verify the measurement- & client Ids

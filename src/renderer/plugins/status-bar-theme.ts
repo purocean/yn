@@ -37,7 +37,7 @@ export default {
       }[theme]
 
       menus[id] = {
-        id: id,
+        id,
         position: 'right',
         tips: ctx.i18n.t('status-bar.theme.tips', ctx.i18n.t(`status-bar.theme.${theme}`)) + ' ' + ctx.keybinding.getKeysLabel(actionName),
         icon,

@@ -56,7 +56,7 @@ export async function proxyRequest (url: string, reqOptions: Record<string, any>
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
       body: JSON.stringify({
-        url: url,
+        url,
         options: reqOptions
       })
     })
@@ -133,7 +133,7 @@ export async function moveFile (file: FileItem, newPath: string): Promise<ApiRes
   return fetchHttp('/api/file', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ repo: repo, oldPath: path, newPath })
+    body: JSON.stringify({ repo, oldPath: path, newPath })
   })
 }
 
@@ -148,7 +148,7 @@ export async function copyFile (file: FileItem, newPath: string): Promise<ApiRes
   return fetchHttp('/api/file', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ repo: repo, oldPath: path, newPath })
+    body: JSON.stringify({ repo, oldPath: path, newPath })
   })
 }
 
