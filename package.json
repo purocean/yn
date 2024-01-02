@@ -82,7 +82,7 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/koa": "^2.0.49",
     "@types/lodash-es": "^4.17.4",
-    "@types/markdown-it": "^12.2.3",
+    "@types/markdown-it": "^13.0.7",
     "@types/mime": "^2.0.3",
     "@types/node": "^18.11.9",
     "@types/pako": "^1.0.3",
