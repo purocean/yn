@@ -21,11 +21,10 @@ export default {
       }
     })
 
-    ctx.view.addStyles(baseCss as unknown as string)
-    ctx.view.addStyles(lightCss as unknown as string)
-
     const darkVars = (darkCss as unknown as string).replace('.dark', '')
     ctx.view.addStyles(`
+      ${baseCss}
+      ${lightCss}
       @media screen { html[app-theme=dark] ${darkVars} }
       @media (prefers-color-scheme: dark) { html[app-theme=system] ${darkVars} }
     `)
@@ -33,7 +32,7 @@ export default {
     ctx.editor.tapSimpleCompletionItems(items => {
       /* eslint-disable no-template-curly-in-string */
       items.push(
-        { label: '/ > Github Alerts', insertText: '> [!${1|NOTE,TIP,IMPORTANT,WARNING,CAUTION|}]${2}\n> ${3:Content}\n\n' },
+        { label: '/ > Github Alerts', insertText: '> [!${1|NOTE,TIP,IMPORTANT,WARNING,CAUTION|}]${2}\n> ${3:Content}\n' },
       )
     })
   }
