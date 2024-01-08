@@ -1,9 +1,9 @@
 import prism from 'prismjs'
-import defaultStyle from 'prismjs/themes/prism.css'
+import defaultStyle from 'prismjs/themes/prism.css?inline'
 import { escape } from 'lodash-es'
 import type { Plugin, Ctx } from '@fe/context'
 import { getLogger } from '@fe/utils'
-import styles from '@fe/others/prism-style.scss'
+import styles from '@fe/others/prism-style.scss?inline'
 import '@fe/others/prism-languages-all'
 
 const logger = getLogger('markdown-code-highlight')
