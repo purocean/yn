@@ -76,13 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.65.0](https://github.com/purocean/yn/releases/tag/v3.65.0) 2023-12-17
+### [v3.66.0](https://github.com/purocean/yn/releases/tag/v3.66.0) 2024-01-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-win-x64-3.65.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-mac-arm64-3.65.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-mac-x64-3.65.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-linux-x86_64-3.65.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-linux-amd64-3.65.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-win-x64-3.66.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-mac-arm64-3.66.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-mac-x64-3.66.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-linux-x86_64-3.66.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-linux-amd64-3.66.0.deb)
 
-1. feat: Limit the maximum height of code blocks and optimize display effects
-2. feat(plugin): Add support for specifying HTTP proxy in `ctx.api.proxyRequest` method
-3. feat(plugin): Add `ctx.getPluginApi` method to allow plugins to expose interfaces for other plugins to use
+1. feat: Support [Github-style warning prompts](https://github.com/orgs/community/discussions/16925)
+2. feat: Support displaying open windows in the Dock menu on macOS
+3. feat: Support rendering PlantUML using code blocks
+4. fix: Fix the issue of abnormal line number display when the code block exceeds 100 lines
+5. fix: Fix the issue of not being able to jump to the corresponding position in the preview area after selecting text in the editor
+6. feat(plugin): Custom editor supports defining using classes
 
 [More release notes](https://github.com/purocean/yn/releases)
 
