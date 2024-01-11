@@ -45,7 +45,8 @@ async function changeEditor ({ doc }: { doc?: Doc | null, name?: string }) {
   availableEditors.value = (await Promise.allSettled(
     getAllCustomEditors().concat([defaultEditor]).map(async val => {
       if (await val.when({ doc })) {
-        return { ...val, _lastUsageAt: editorLastUsageTime[val.name] || 0 }
+        (val as any)._lastUsageAt = editorLastUsageTime[val.name] || 0
+        return val
       }
 
       return null
