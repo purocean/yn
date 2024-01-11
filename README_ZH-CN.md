@@ -76,13 +76,16 @@
 
 ## 更新日志
 
-### [v3.65.0](https://github.com/purocean/yn/releases/tag/v3.65.0) 2023-12-17
+### [v3.66.0](https://github.com/purocean/yn/releases/tag/v3.66.0) 2024-01-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-win-x64-3.65.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-mac-arm64-3.65.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-mac-x64-3.65.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-linux-x86_64-3.65.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.65.0/Yank-Note-linux-amd64-3.65.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-win-x64-3.66.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-mac-arm64-3.66.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-mac-x64-3.66.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-linux-x86_64-3.66.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.66.0/Yank-Note-linux-amd64-3.66.0.deb)
 
-1. feat: 运行代码块限制最大高度，优化显示效果
-2. feat(plugin): `ctx.api.proxyRequest` 方法支持指定 http 代理
-3. feat(plugin): 增加 `ctx.getPluginApi` 方法，插件支持暴露接口给其他插件使用
+1. feat: 支持 [Github 风格的警告提示](https://github.com/orgs/community/discussions/16925)
+2. feat: 在 macOS 上支持在 Dock 菜单中显示打开的窗口
+3. feat: 支持使用代码块的方式渲染 PlantUML
+4. fix: 修复代码块超过 100 行后，行号显示异常问题
+5. fix: 修复编辑器选中文字后，点击预览区不能跳转到对应位置的问题
+6. feat(plugin): 自定义编辑器支持使用类的方式定义
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
