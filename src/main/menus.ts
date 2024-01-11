@@ -27,7 +27,10 @@ export const getMainMenus = () => process.platform === 'darwin' ? Menu.buildFrom
     ]
   },
   // support multiple window
-  { role: 'window', submenu: [] },
+  {
+    role: 'window',
+    submenu: [{ role: 'minimize' }, { role: 'close' }]
+  },
 ]) : null
 
 export const getTrayMenus = () => Menu.buildFromTemplate([
