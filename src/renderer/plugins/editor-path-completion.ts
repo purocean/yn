@@ -149,17 +149,17 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
   }
 
   /// [...](...|
-  private readonly linkStartPattern = /\[([^\]]*?)\]\(\s*([^\s()]*)$/;
+  private readonly linkStartPattern = /\[([^\]]*?)\]\(\s*([^\s()]*)$/
 
   /// [...|
-  private readonly referenceLinkStartPattern = /\[\s*([^\s[\]]*)$/;
+  private readonly referenceLinkStartPattern = /\[\s*([^\s[\]]*)$/
 
   /// [id]: |
-  private readonly definitionPattern = /^\s*\[[\w-]+\]:\s*([^\s]*)$/m;
+  private readonly definitionPattern = /^\s*\[[\w-]+\]:\s*([^\s]*)$/m
 
-  private readonly defPattern = /^([\t ]*\[(?!\^)((?:\\\]|[^\]])+)\]:\s*)([^<]\S*|<[^>]+>)/gm;
+  private readonly defPattern = /^([\t ]*\[(?!\^)((?:\\\]|[^\]])+)\]:\s*)([^<]\S*|<[^>]+>)/gm
 
-  private readonly angleBracketLinkRe = /^<(.*)>$/;
+  private readonly angleBracketLinkRe = /^<(.*)>$/
 
   private getPathCompletionContext (model: Monaco.editor.IModel, position: Monaco.Position): CompletionContext | undefined {
     const line = model.getLineContent(position.lineNumber)
@@ -273,7 +273,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
       const isDir = item.type === 'dir'
       const label = isDir ? item.name + '/' : item.name
       yield {
-        label: label,
+        label,
         insertText: this.ctx.utils.encodeMarkdownLink(label),
         kind: isDir ? this.monaco.languages.CompletionItemKind.Folder : this.monaco.languages.CompletionItemKind.File,
         range: {
@@ -385,7 +385,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
         })
       } else {
         out.set(reference, {
-          link: link,
+          link,
         })
       }
     }

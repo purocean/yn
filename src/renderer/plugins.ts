@@ -56,6 +56,7 @@ import markdownDrawio from '@fe/plugins/markdown-drawio'
 import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
 import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
+import markdownGithubAlerts from '@fe/plugins/markdown-github-alerts'
 import markdownMisc from '@fe/plugins/misc'
 import syncScroll from '@fe/plugins/sync-scroll'
 import imageLocalization from '@fe/plugins/image-localization'
@@ -138,4 +139,5 @@ export default [
   previewFontSize,
   dropToOpenFile,
   recordRecentDocument,
+  markdownGithubAlerts,
 ]

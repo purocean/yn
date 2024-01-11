@@ -159,6 +159,7 @@ export default {
         { label: '/ ###### Head 6', insertText: '###### $1' },
         { label: '/ + List', insertText: '+ ' },
         { label: '/ - List', insertText: '- ' },
+        { label: '/ > Blockquote', insertText: '> ' },
         { label: '/ ` Code', insertText: '`$1`' },
         { label: '/ * Italic', insertText: '*$1*' },
         { label: '/ _ Italic', insertText: '_$1_' },

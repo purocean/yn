@@ -28,12 +28,12 @@ define:
 1. 配置文件 `<home>/yank-note/config.json`
 1. 导出 docx 参考文档 `<home>/yank-note/pandoc-reference.docx`
 1. 文档历史版本 `<home>/yank-note/histories`
-    ::: tip
-    如果您不小心丢失了您的文档数据，您可以到此文件夹尝试找回。
-    :::
-    ::: danger
-    出于性能的考虑，超过 *102400* 个字符的文档将不会储存历史记录。因此请谨慎在文档中嵌入 Base64 图片。
-    :::
+    > [!TIP]
+    > 如果您不小心丢失了您的文档数据，您可以到此文件夹尝试找回。
+
+    > [!CAUTION]
+    > 出于性能的考虑，超过 *102400* 个字符的文档将不会储存历史记录。因此请谨慎在文档中嵌入 Base64 图片。
+
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
 1. 扩展 `<home>/yank-note/extensions`
@@ -71,9 +71,28 @@ define:
     *[W3C]:  World Wide Web Consortium
     The HTML specification is maintained by the W3C.
 
+## Github Alerts
+
+此功能使用 [markdown-it-github-alerts](https://github.com/antfu/markdown-it-github-alerts) 实现，支持 [Github 风格的警告提示](https://github.com/orgs/community/discussions/16925)。
+
+> [!NOTE] 注意
+突出强调用户在浏览时应该注意的信息。
+
+> [!TIP] 提示
+> 提供可选的信息以帮助用户更加成功。
+
+> [!IMPORTANT] 重要
+> 对于用户成功至关重要的关键信息。
+
+> [!WARNING] 警告
+> 由于潜在风险，需要立即引起用户的注意的关键内容。
+
+> [!CAUTION] 小心
+> 行动的负面潜在后果。
+
 ### 元素属性书写
 
-此功能使用 [markdown-it-attributes](https://github.com/purocean/markdown-it-attributes) 实现
+此功能使用 [markdown-it-attributes](https://github.com/purocean/markdown-it-attributes) 实现。
 
 - 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}
@@ -189,12 +208,11 @@ journey
 
 ## PlantUML 图形
 
-您可以在“设置”中配置使用本地端点或 PlantUML 在线端点来生成图形。
+您可以在 *<a href="javascript: ctx.setting.showSettingPanel('plantuml-api')">设置</a>* 中配置使用本地端点或 PlantUML 在线端点来生成图形。
 
-::: warning
-如果使用本地端点，则系统需要有 Java 环境，并安装有 Graphviz
+> [!IMPORTANT]
+> 如果使用本地端点，则系统需要有 Java 环境，并安装有 Graphviz
 如果提示 `Cannot find Graphviz`，请参考 [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
-:::
 
 示例如下
 
@@ -472,9 +490,8 @@ chart.setOption(option, true)
 
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
-::: warning
-现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。
-:::
+> [!WARNING]
+> 现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。
 
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
 
@@ -573,9 +590,8 @@ test 3
 
 Yank Note 接入了 [OpenAI](https://openai.com)、[Google AI](https://ai.google.dev/) 等人工智能平台，可以使用人工智能进行智能补全、文本重写等功能
 
-注：相关 API token 需要你自行获取。
-
-> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-ai-copilot')">需要安装并启用 AI Copilot 扩展</a>*
+> [!NOTE]
+> 相关 API token 需要你自行获取。且需要 *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-ai-copilot')">安装并启用 AI Copilot 扩展</a>*
 
 ## Front Matter
 
@@ -599,26 +615,23 @@ Yank Note 接入了 [OpenAI](https://openai.com)、[Google AI](https://ai.google
 
 ## 宏替换
 
-> *<a href="javascript: ctx.showPremium()">高级版可用</a>*
+> [!NOTE]
+> 此功能 *<a href="javascript: ctx.showPremium()">高级版可用</a>*
 
 Yank Note 允许你在页面中嵌入宏，用以动态地替换文档。
 
-::: tip
-使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`。
-:::
+> [!IMPORTANT]
+> 使用前需要先在 Front Matter 开启宏替换，定义 `enableMacro: true`。
 
-::: warning
-使用宏替换可能会导致源码和预览行号对应不准确，Yank Note 已经尽可能处理，但某些情况可能仍然会出现同步滚动异常。
-:::
-
+> [!WARNING]
+> 使用宏替换可能会导致源码和预览行号对应不准确，Yank Note 已经尽可能处理，但某些情况可能仍然会出现同步滚动异常。
 
 ### 文本替换
 
 Front Matter 中的 `define` 字段可以定义一些文本替换映射。支持在另一个文件定义，支持宏表达式。具体可参考本文件顶部 Front Matter 部分。
 
-::: tip
-你还可以在设置中配置 *<a href="javascript: ctx.setting.showSettingPanel('macros')">全局宏替换</a>* ，这样所有文档都可以使用。不过，你仍然需要在 Front Matter 中定义 `enableMacro: true`。
-:::
+> [!TIP]
+> 你还可以在设置中配置 *<a href="javascript: ctx.setting.showSettingPanel('macros')">全局宏替换</a>* ，这样所有文档都可以使用。不过，你仍然需要在 Front Matter 中定义 `enableMacro: true`。
 
 - 应用名: --APP_NAME--
 - 应用版本: --APP_VERSION--

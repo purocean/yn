@@ -15,7 +15,7 @@ function parseNextNumber (str: any, pos: any, max: any) {
   let start = pos
   let result = {
     ok: false,
-    pos: pos,
+    pos,
     value: ''
   }
 

@@ -4,7 +4,7 @@ import en, { BaseLanguage } from './languages/en'
 import zhCN from './languages/zh-CN'
 
 const languages = {
-  en: en,
+  en,
   'zh-CN': zhCN
 }
 

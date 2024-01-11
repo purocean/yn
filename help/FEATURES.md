@@ -28,12 +28,12 @@ Directory description
 1. configuration file `<home>/yank-note/config.json`
 1. export docx reference doc `<home>/yank-note/pandoc-reference.docx`
 1. document versions `<home>/yank-note/histories`
-    ::: tip
-    If you accidentally lost your document content, you can check this folder and try to recovery it.
-    :::
-    ::: danger
-    For performance reasons, documents with more than *102400* characters will not store history. Therefore, please be careful when embedding Base64 images in documents.
-    :::
+    > [!TIP]
+    > If you accidentally lost your document content, you can check this folder and try to recovery it.
+
+    > [!CAUTION]
+    > For performance reasons, documents with more than *102400* characters will not store history. Therefore, please be careful when embedding Base64 images in documents.
+
 1. plug-ins `<home>/yank-note/plugins`
 1. themes `<home>/yank-note/themes`
 1. extensions `<home>/yank-note/extensions`
@@ -69,6 +69,25 @@ Type '/' in the editor to get prompts
     *[HTML]: Hyper Text Markup Language
     *[W3C]:  World Wide Web Consortium
     The HTML specification is maintained by the W3C.
+
+## Github Alerts
+
+This feature is implemented using [markdown-it-github-alerts](https://github.com/antfu/markdown-it-github-alerts), providing support for [GitHub-style alert prompts](https://github.com/orgs/community/discussions/16925).
+
+> [!NOTE] Note
+> Highlights information that users should take into account, even when skimming.
+
+> [!TIP]
+> Optional information to help a user be more successful.
+
+> [!IMPORTANT]
+> Crucial information necessary for users to succeed.
+
+> [!WARNING]
+> Critical content demanding immediate user attention due to potential risks.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
 
 ### Element Attribute
 
@@ -187,13 +206,12 @@ journey
 
 ## PlantUML
 
-You can configure the use of local endpoint or PlantUML online endpoint to generate graph in Settings.
+You can *<a href="javascript: ctx.setting.showSettingPanel('plantuml-api')">configure</a>* the use of local endpoint or PlantUML online endpoint to generate graph in Settings.
 
-::: warning
-If you are use local endpoint, the system needs to have a Java environment with Graphviz installed.
+> [!IMPORTANT]
+> If you are use local endpoint, the system needs to have a Java environment with Graphviz installed.
 If it prompts an error `Cannot find Graphviz`,
 Please refer to [Test your GraphViz installation](https://plantuml.com/graphviz-dot)
-:::
 
 The example is as follows
 
@@ -474,9 +492,8 @@ The value of the link attribute `link-type` needs to be a `drawio` string. The u
 
 The value of the link attribute `link-type` needs to be a `luckysheet` string. The use of the link format will not affect other Markdown resolver resolving.
 
-::: warning
-[Luckysheet](https://github.com/mengshukeji/Luckysheet) has many bugs and should be used with caution.
-:::
+> [!WARNING]
+> [Luckysheet](https://github.com/mengshukeji/Luckysheet) has many bugs and should be used with caution.
 
 [luckysheet](./test.luckysheet){link-type="luckysheet"}
 
@@ -575,9 +592,8 @@ test 3
 
 Yank Note integrates with artificial intelligence platforms such as [OpenAI](https://openai.com) and [Google AI](https://ai.google.dev/), enabling features like intelligent autocompletion and text rewriting.
 
-Note: You need to obtain the relevant API tokens yourself.
-
-> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-openai')">Requires AI Copilot extension installed and enabled</a>*
+> [!NOTE]
+> You need to obtain the relevant API tokens yourself. *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-openai')">Requires AI Copilot extension installed and enabled</a>*.
 
 ## Front Matter
 
@@ -600,26 +616,23 @@ variable name | type | description
 `katex` | `Record<string, any>` | [Katex Options](https://katex.org/docs/options.html)
 
 ## Macro Replacement
-
-> *<a href="javascript: ctx.showPremium()">available in premium version</a>*
+> [!NOTE]
+> *<a href="javascript: ctx.showPremium()">Available in premium version</a>*
 
 Yank Note allows you to embed macros in the page to dynamically replace the document.
 
-::: tip
-Before using, you need to enable macro replacement in Front Matter and define `enableMacro: true`.
-:::
+> [!IMPORTANT]
+> Before using, you need to enable macro replacement in Front Matter and define `enableMacro: true`.
 
-::: warning
-Using macro replacement may lead to inaccurate correspondence between source code and preview line numbers. Yank Note has dealt with it as much as possible, but some cases may still cause synchronous scrolling exceptions.
-:::
+> [!WARNING]
+> Using macro replacement may lead to inaccurate correspondence between source code and preview line numbers. Yank Note has dealt with it as much as possible, but some cases may still cause synchronous scrolling exceptions.
 
 ### Definition
 
 The `define` field can define some text replacement mappings. Supports definition in another file, supports macro expressions. For details, please refer to the Front Matter at the top of this document.
 
-::: tip
-You can define global macros in the <a href="javascript: ctx.setting.showSettingPanel('macros')">settings</a>. But you still need to define `enableMacro: true` in Front Matter.
-:::
+> [!TIP]
+> You can define global macros in the <a href="javascript: ctx.setting.showSettingPanel('macros')">settings</a>. But you still need to define `enableMacro: true` in Front Matter.
 
 - App Name: --APP_NAME--
 - App Version: --APP_VERSION--

@@ -92,7 +92,7 @@ const files = computed(() => {
       if (isMarkdownFile(node)) {
         const time = map[`${node.repo}|${node.path}`]
         if (time) {
-          tmp.push({ node: node, time })
+          tmp.push({ node, time })
         }
       }
 

@@ -7,7 +7,7 @@ import type { Plugin } from '@fe/context'
 import type { RenderEnv } from '@fe/types'
 
 const Applet = defineComponent({
-  name: 'Applet',
+  name: 'XApplet',
   props: {
     appletId: String,
     html: String,

@@ -31,8 +31,8 @@ export default {
       if (
         target &&
         ctx.store.state.showEditor &&
-        !ctx.store.state.presentation &&
-        window.getSelection()!.toString().length < 1
+        !ctx.store.state.presentation && // not in presentation mode
+        !(target.ownerDocument?.defaultView?.getSelection()?.toString()?.length) // not select text
       ) {
         ctx.view.disableSyncScrollAwhile(() => {
           const line = parseInt(target!.dataset.sourceLine || '0')

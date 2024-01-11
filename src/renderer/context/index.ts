@@ -30,12 +30,14 @@ import * as setting from '@fe/services/setting'
 import * as i18n from '@fe/services/i18n'
 import * as runner from '@fe/services/runner'
 import * as exportDoc from '@fe/services/export'
+import * as directives from '@fe/directives/index'
 import * as lib from './lib'
 import * as components from './components'
 
 const ctx = Object.freeze({
   lib,
   components,
+  directives,
   ioc,
   base,
   api,
@@ -64,7 +66,7 @@ const ctx = Object.freeze({
   registerHook: hook.registerHook,
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,
-  showPremium: showPremium,
+  showPremium,
   getPremium: () => getPurchased(),
   showExtensionManager: extension.showManager,
   getExtensionLoadStatus: extension.getLoadStatus,

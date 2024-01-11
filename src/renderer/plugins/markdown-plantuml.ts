@@ -152,6 +152,17 @@ const MarkdownItPlugin = function umlPlugin (md: Markdown, options: any) {
     alt: ['paragraph', 'reference', 'blockquote', 'list']
   })
   md.renderer.rules.uml_diagram = render
+
+  const temp = md.renderer.rules.fence!.bind(md.renderer.rules)
+  md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
+    const token = tokens[idx]
+    if (token.info !== 'plantuml') {
+      return temp(tokens, idx, options, env, slf)
+    }
+
+    const src = generateSourceDefault(token.content)
+    return h(Plantuml, { attrs: token.meta?.attrs, src, idx }) as any
+  }
 }
 
 const Plantuml = defineComponent({
@@ -284,6 +295,7 @@ export default {
       /* eslint-disable no-template-curly-in-string */
 
       items.push(
+        { label: '/ ``` PlantUML', insertText: '```plantuml\n@startuml\n${1:a -> b}\n@enduml\n```\n' },
         { label: '/ @startuml PlantUML', insertText: '@startuml\n${1:a -> b}\n@enduml\n' },
         { label: '/ @startsalt PlantUML Salt', insertText: '@startsalt\n{\n  Just plain text\n  [This is my button]\n  ()  Unchecked radio\n  (X) Checked radio\n  []  Unchecked box\n  [X] Checked box\n  "Enter text here   "\n  ^This is a droplist^\n}\n@endsalt\n' },
         { label: '/ @startmindmap PlantUML Mindmap', insertText: '@startmindmap\n* Debian\n** Ubuntu\n*** Linux Mint\n*** Kubuntu\n*** Lubuntu\n*** KDE Neon\n** LMDE\n** SolydXK\n** SteamOS\n** Raspbian with a very long name\n*** <s>Raspmbc</s> => OSMC\n*** <s>Raspyfi</s> => Volumio\n@endmindmap\n' },

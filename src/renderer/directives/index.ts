@@ -6,6 +6,8 @@ import * as upDownHistory from './up-down-history'
 import * as fixedFloat from './fixed-float'
 import * as textareaOnEnter from './textarea-on-enter'
 
+export { autoFocus, autoResize, placeholder, upDownHistory, fixedFloat, textareaOnEnter }
+
 export default function (app: App) {
   autoFocus.install(app)
   autoResize.install(app)

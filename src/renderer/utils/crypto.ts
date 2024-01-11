@@ -17,7 +17,7 @@ export function encrypt (content: any, password: string) {
   iv = CryptoJS.enc.Utf8.parse(iv)
 
   const encrypted = CryptoJS.AES.encrypt(content, key, {
-    iv: iv,
+    iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7
   })
@@ -34,7 +34,7 @@ export function decrypt (content: any, password: string) {
   iv = CryptoJS.enc.Utf8.parse(iv)
 
   const decrypted = CryptoJS.AES.decrypt(content.trim(), key, {
-    iv: iv,
+    iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7
   })
