@@ -208,6 +208,7 @@ const attachment = async (ctx: any, next: any) => {
 
       checkPrivateRepo(ctx, repo)
 
+      noCache(ctx)
       ctx.type = mime.getType(path)
       ctx.body = await file.read(repo, path)
     }
