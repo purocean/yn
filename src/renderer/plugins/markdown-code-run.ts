@@ -261,7 +261,7 @@ const RunPlugin = (md: Markdown) => {
 
     const code = token.content.trim()
     const firstLine = code.split(/\n/)[0].trim()
-    if (!firstLine.includes('--run--') || !token.info || env.safeMode) {
+    if (!token.info || env.safeMode || (!firstLine.includes('--run--') && ['bat', 'bash', 'shell', 'sh', 'php', 'python', 'node', 'javascript', 'js', 'html'].indexOf(token.info) === -1)) {
       return temp(tokens, idx, options, env, slf)
     }
 

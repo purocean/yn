@@ -20,7 +20,10 @@
     "test": "yarn run jest --coverage --coverage-reporters=text --silent",
     "api-doc": "yarn run typedoc --options .typedoc.json",
     "prepare": "husky install",
-    "rebuild-pty": "electron-rebuild -f -w node-pty"
+    "rebuild-pty": "electron-rebuild -f -w node-pty",
+    "dist-win64": "electron-builder --win --x64",
+    "dist-mac": "electron-builder --mac --dir=outMac",
+    "dist-linux": "electron-builder --linux --x64"
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
