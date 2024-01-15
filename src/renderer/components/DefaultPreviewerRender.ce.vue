@@ -9,7 +9,6 @@
 <script lang="ts" setup>
 import { debounce } from 'lodash-es'
 import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { isElectron } from '@fe/support/env'
 import { markdown } from '@fe/services/markdown'
 import { triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
@@ -132,25 +131,21 @@ function handleClick (e: MouseEvent) {
 }
 
 function handleContextMenu (e: MouseEvent) {
-  const tagName = (e.target as HTMLElement).tagName
-  const allowTags = ['TD', 'TH']
-  if (isElectron || e.altKey || allowTags.includes(tagName)) {
-    const contextMenuItems = getContextMenuItems(e)
-    if (contextMenuItems.length > 0) {
-      e.stopPropagation()
-      e.preventDefault()
+  const contextMenuItems = getContextMenuItems(e)
+  if (contextMenuItems.length > 0) {
+    e.stopPropagation()
+    e.preventDefault()
 
-      const clientX = e.clientX
-      const clientY = e.clientY
+    const clientX = e.clientX
+    const clientY = e.clientY
 
-      getRenderIframe().then((iframe) => {
-        const iframeRect = iframe.getBoundingClientRect()
-        useContextMenu().show(contextMenuItems, {
-          mouseX: iframeRect.left + clientX,
-          mouseY: iframeRect.top + clientY,
-        })
+    getRenderIframe().then((iframe) => {
+      const iframeRect = iframe.getBoundingClientRect()
+      useContextMenu().show(contextMenuItems, {
+        mouseX: iframeRect.left + clientX,
+        mouseY: iframeRect.top + clientY,
       })
-    }
+    })
   }
 }
 
