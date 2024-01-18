@@ -527,6 +527,8 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
       lang.aliases?.push('node')
     } else if (lang.id === 'shell') {
       lang.aliases?.push('bash')
+    } else if (lang.id === 'html') {
+      lang.aliases?.push('vue')
     }
   })
 
