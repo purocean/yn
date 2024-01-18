@@ -397,6 +397,8 @@ function run (type) {
 <button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">HELLO</button>
 ```
 
+你也可以 *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-repl')">安装并启用 Vue Repl 扩展</a>*，使用 Vue SFC 来编写小工具。
+
 ## ECharts 图形
 
 Js 代码块第一行包含以 `--echarts--` 字符串会被解析成 ECharts 图形，示例如下
