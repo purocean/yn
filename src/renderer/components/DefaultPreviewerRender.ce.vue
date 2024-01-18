@@ -259,7 +259,13 @@ onBeforeUnmount(() => {
 })
 
 watch([currentContent, fileUri, inComposition], () => {
-  autoPreview.value && updateRender()
+  if (autoPreview.value) {
+    if (renderCount === 0) {
+      render()
+    } else {
+      updateRender()
+    }
+  }
 }, { flush: 'post' })
 
 watch(fileUri, () => {
