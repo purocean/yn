@@ -145,7 +145,7 @@ onBeforeUnmount(() => {
   FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
 
-watch(() => store.state.editor, () => {
+watch(() => currentEditor.value?.name, () => {
   triggerHook('EDITOR_CURRENT_EDITOR_CHANGE', { current: currentEditor.value })
   FileTabs.refreshActionBtns()
   recordEditorUsageTime(currentEditor.value?.name || 'default')
