@@ -135,7 +135,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
 }
 
 function convertLink (state: StateCore) {
-  const tags = ['audio', 'img', 'source', 'video', 'track', 'a', 'iframe']
+  const tags = ['audio', 'img', 'source', 'video', 'track', 'a', 'iframe', 'embed']
 
   const { repo, path, name } = state.env.file || {}
   if (!repo || !path || !name) {
