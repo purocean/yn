@@ -114,6 +114,9 @@ export default defineComponent({
         })
       }
 
+      // force trigger resize event
+      xterm.resize(xterm.cols, xterm.cols)
+
       if (!socket.connected) {
         socket.io.opts.query = query
         socket.connect()
