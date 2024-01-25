@@ -406,6 +406,7 @@ async function fetchContent (type: 'readme' | 'changelog', extension: Extension)
     })
 
     contentMap.value[type][extension.id] = `
+      <base target="_blank" />
       <link rel="stylesheet" href="${location.origin}/github.css">
       <div style="padding: 12px" class="markdown-body">
         ${markdownIt.render(markdown.replaceAll(/<small>([^<]+)<\/small>/g, '**$1**'))}
