@@ -151,7 +151,7 @@ export default defineComponent({
       }
 
       cmd.code.split('\n').forEach(x => {
-        input(x.trim())
+        input(x)
         input(eol)
       })
 
