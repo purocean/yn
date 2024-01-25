@@ -44,6 +44,7 @@ import { FileTabs } from '@fe/services/workbench'
 import { isMarkdownFile } from '@fe/services/document'
 import store from '@fe/support/store'
 import type { Components } from '@fe/types'
+import { CSS_VAR_NAME } from '@fe/support/args'
 
 import DefaultPreviewerRender from './DefaultPreviewerRender.ce.vue'
 import SvgIcon from './SvgIcon.vue'
@@ -262,6 +263,12 @@ onBeforeUnmount(() => {
   removeHook('GLOBAL_RESIZE', handleResize)
   removeHook('VIEW_RENDERED', handleRendered)
   FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
+})
+
+watch([container, height], () => {
+  if (container.value) {
+    container.value.ownerDocument.documentElement.style.setProperty(CSS_VAR_NAME.PREVIEWER_HEIGHT, height.value + 'px')
+  }
 })
 
 async function scrollToTop () {

@@ -28,5 +28,16 @@ export default {
         return ctx.markdown.markdown.render(src, env)
       },
     })
+
+    ctx.renderer.registerRenderer({
+      name: 'html',
+      when (env) {
+        return !!(env.file && !env.safeMode && env.file.path.toLowerCase().endsWith('.html'))
+      },
+      render (src) {
+        const iframeProps = { style: `background: #fff; position: fixed; left: 0; top: 0; height: var(${ctx.args.CSS_VAR_NAME.PREVIEWER_HEIGHT})` }
+        return ctx.lib.vue.h(ctx.embed.IFrame, { html: src, triggerParentKeyBoardEvent: true, iframeProps })
+      },
+    })
   }
 } as Plugin
