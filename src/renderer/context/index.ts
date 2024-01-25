@@ -29,6 +29,7 @@ import * as theme from '@fe/services/theme'
 import * as setting from '@fe/services/setting'
 import * as i18n from '@fe/services/i18n'
 import * as runner from '@fe/services/runner'
+import * as renderer from '@fe/services/renderer'
 import * as exportDoc from '@fe/services/export'
 import * as directives from '@fe/directives/index'
 import * as lib from './lib'
@@ -51,6 +52,7 @@ const ctx = Object.freeze({
   markdown,
   statusBar,
   runner,
+  renderer,
   layout,
   editor,
   view,

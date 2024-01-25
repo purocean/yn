@@ -1,3 +1,4 @@
+import type { VNode } from 'vue'
 import type { Language, MsgPath } from '@share/i18n'
 import type { Doc, FileItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
@@ -502,6 +503,13 @@ export type CustomEditor = {
   getIsDirty?: () => boolean | Promise<boolean>,
 }
 
+export type Renderer = {
+  name: string,
+  order?: number,
+  when: (env: RenderEnv) => boolean | Promise<boolean>,
+  render (src: string, env: RenderEnv): string | VNode | VNode[]
+}
+
 export interface CodeRunner {
   name: string;
   order?: number;
@@ -527,6 +535,7 @@ export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   THEME_STYLES: any;
   VIEW_PREVIEWER: Previewer;
   EDITOR_CUSTOM_EDITOR: CustomEditor,
+  RENDERERS: Renderer,
   CODE_RUNNER: CodeRunner;
 }
 
