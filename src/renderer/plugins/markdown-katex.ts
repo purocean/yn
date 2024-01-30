@@ -18,7 +18,7 @@ import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
 import styles from 'katex/dist/katex.min.css?inline'
 import monacoLatex from '@fe/others/monaco-latex'
-import { getRenderCache } from '@fe/services/markdown'
+import { getRenderCache } from '@fe/services/renderer'
 import { triggerHook } from '@fe/core/hook'
 
 // Test if potential opening or closing delimieter

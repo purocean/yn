@@ -76,16 +76,23 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.66.1](https://github.com/purocean/yn/releases/tag/v3.66.1) 2024-01-11
+### [v3.67.0](https://github.com/purocean/yn/releases/tag/v3.67.0) 2024-01-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-win-x64-3.66.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-mac-arm64-3.66.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-mac-x64-3.66.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-linux-x86_64-3.66.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-linux-amd64-3.66.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-win-x64-3.67.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-mac-arm64-3.67.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-mac-x64-3.67.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-linux-x86_64-3.67.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-linux-amd64-3.67.0.deb)
 
-1. feat: Support [Github-style warning prompts](https://github.com/orgs/community/discussions/16925)
-2. feat: Support displaying open windows in the Dock menu on macOS
-3. feat: Support rendering PlantUML using code blocks
-4. fix: Fix the issue of abnormal line number display when the code block exceeds 100 lines
-5. fix: Fix the issue of not being able to jump to the corresponding position in the preview area after selecting text in the editor
-6. feat(plugin): Custom editor supports defining using classes
+1. feat: Add "Services" menu on macOS
+2. feat: Add HTML file preview functionality
+3. feat: Allow parsing of Markdown `style` tags
+4. feat: Support Vue code block highlighting in the editor (HTML mode)
+5. fix: Fix slight performance degradation in Markdown rendering after introducing custom editor
+6. fix: Fix caching issue with updated images
+7. fix: Fix potential unresponsiveness of built-in terminal to window size changes
+8. fix: Fix incorrect indentation of Python code in terminal execution
+9. fix: Fix editor loading issue when opening files supported by custom editor
+10. fix: Fix correct path retrieval when opening files from the system
+11. feat(plugin): Support registering custom renderer `ctx.renderer.registerRenderer`
+12. refactor(plugin): Rename `ctx.api.watchFile` to `ctx.api.watchFs`
+13. refactor(plugin): Rename `ctx.markdown.getRenderCache` to `ctx.renderer.getRenderCache`
 
 [More release notes](https://github.com/purocean/yn/releases)
 

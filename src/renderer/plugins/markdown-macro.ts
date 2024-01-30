@@ -309,7 +309,7 @@ export default {
           return false
         }
 
-        const cache = ctx.markdown.getRenderCache('plugin-macro', 'cache', { $define: {} } as CacheItem)
+        const cache = ctx.renderer.getRenderCache('plugin-macro', 'cache', { $define: {} } as CacheItem)
 
         const options = {
           purchased: getPurchased() || file.repo === ctx.args.HELP_REPO_NAME,

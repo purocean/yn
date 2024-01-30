@@ -324,16 +324,16 @@ export async function search (controller: AbortController, query: ITextQuery): P
 }
 
 /**
- * Watch a file.
+ * Watch file or dir.
  * @param controller
  * @param query
  * @returns
  */
-export async function watchFile (
+export async function watchFs (
   repo: string,
   path: string,
   options: WatchOptions,
-  onResult: (result: { eventName: 'add' | 'change' | 'unlink', path: string, stats?: Stats }) => void,
+  onResult: (result: { eventName: 'add' | 'change' | 'unlink' | 'addDir' | 'unlinkDir', path: string, stats?: Stats }) => void,
   onError: (error: Error) => void
 ) {
   const controller: AbortController = new AbortController()

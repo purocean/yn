@@ -15,7 +15,7 @@ export default {
     const lock = new AsyncLock()
 
     type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
-    let handler: Awaited<ReturnType<typeof ctx.api.watchFile>> | null = null
+    let handler: Awaited<ReturnType<typeof ctx.api.watchFs>> | null = null
 
     function stopWatch () {
       logger.debug('stopWatch', !!handler)
@@ -33,7 +33,7 @@ export default {
 
       const { repo, path } = doc
       logger.debug('startWatch', repo, path)
-      const watchHandler = await ctx.api.watchFile(
+      const watchHandler = await ctx.api.watchFs(
         repo,
         path,
         { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true },

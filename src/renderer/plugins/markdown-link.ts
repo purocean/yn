@@ -10,6 +10,8 @@ import { basename, dirname, join, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/base'
 import { getRenderIframe } from '@fe/services/view'
+import { getAllCustomEditors } from '@fe/services/editor'
+import type { Doc } from '@share/types'
 
 async function getElement (id: string) {
   id = id.replaceAll('%28', '(').replaceAll('%29', ')')
@@ -88,20 +90,20 @@ function handleLink (link: HTMLAnchorElement): boolean {
       el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
     }
 
-    if (/(\.md$|\.md#)/.test(href)) { // markdown file
-      const tmp = decodeURI(href).split('#')
+    const tmp = decodeURI(href).split('#')
 
-      let path = tmp[0]
-      if (!path.startsWith('/')) { // to absolute path
-        path = join(dirname(filePath || ''), path)
-      }
+    let path = tmp[0]
+    if (!path.startsWith('/')) { // to absolute path
+      path = join(dirname(filePath || ''), path)
+    }
 
-      switchDoc({
-        path,
-        name: basename(path),
-        repo: fileRepo,
-        type: 'file'
-      }).then(async () => {
+    const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
+
+    const isMarkdownFile = /(\.md$|\.md#)/.test(href)
+    const supportOpenDirectly = isMarkdownFile || getAllCustomEditors().some(x => x.when?.({ doc: file }))
+
+    if (supportOpenDirectly) {
+      switchDoc(file).then(async () => {
         const hash = tmp.slice(1).join('#')
         // jump anchor
         if (hash) {
@@ -133,7 +135,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
 }
 
 function convertLink (state: StateCore) {
-  const tags = ['audio', 'img', 'source', 'video', 'track', 'a', 'iframe']
+  const tags = ['audio', 'img', 'source', 'video', 'track', 'a', 'iframe', 'embed']
 
   const { repo, path, name } = state.env.file || {}
   if (!repo || !path || !name) {
@@ -163,6 +165,12 @@ function convertLink (state: StateCore) {
 
       // keep anchor hash.
       if (attrVal.indexOf('#') > -1) {
+        return
+      }
+
+      // support custom editor
+      const file: Doc = { path: resolve(basePath, attrVal), type: 'file', name: fileName, repo }
+      if (getAllCustomEditors().some(x => x.when?.({ doc: file }))) {
         return
       }
 

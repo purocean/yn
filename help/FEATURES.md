@@ -399,6 +399,8 @@ If there is no title, there will be no outer border decoration
 <button onclick="ctx.ui.useToast().show(`info`, `HELLOWORLD!`)">HELLO</button>
 ```
 
+You can also *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-repl')">install and activate the Vue Repl extension</a>* to write applet using Vue SFC.
+
 ## ECharts
 
 The string containing `--echarts--` in the first line of the Js code block will be resolved into ECharts graphics, the example is as follows

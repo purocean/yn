@@ -208,7 +208,7 @@ export default {
         items.push({
           id: 'plugin.image-hosting-picgo.upload-single-image',
           type: 'normal',
-          ellipsis: true,
+          ellipsis: false,
           label: ctx.i18n.t('upload-image') + ' (PicGo)',
           onClick: async () => {
             try {

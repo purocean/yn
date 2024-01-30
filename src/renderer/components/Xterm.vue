@@ -114,6 +114,9 @@ export default defineComponent({
         })
       }
 
+      // force trigger resize event
+      xterm.resize(xterm.cols, xterm.cols)
+
       if (!socket.connected) {
         socket.io.opts.query = query
         socket.connect()
@@ -148,7 +151,7 @@ export default defineComponent({
       }
 
       cmd.code.split('\n').forEach(x => {
-        input(x.trim())
+        input(x)
         input(eol)
       })
 

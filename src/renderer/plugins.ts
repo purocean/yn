@@ -1,3 +1,4 @@
+import buildInRenderers from '@fe/plugins/build-in-renderers'
 import customStyles from '@fe/plugins/custom-styles'
 import customKeybindings from '@fe/plugins/custom-keybindings'
 import electronZoom from '@fe/plugins/electron-zoom'
@@ -70,6 +71,7 @@ import dropToOpenFile from '@fe/plugins/drop-to-open-file'
 import recordRecentDocument from '@fe/plugins/record-recent-document'
 
 export default [
+  buildInRenderers,
   customStyles,
   customKeybindings,
   electronZoom,

@@ -9,12 +9,11 @@
 <script lang="ts" setup>
 import { debounce } from 'lodash-es'
 import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { isElectron } from '@fe/support/env'
-import { markdown } from '@fe/services/markdown'
 import { triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { CtrlCmd } from '@fe/core/keybinding'
-import { toUri, isMarkdownFile, isOutOfRepo } from '@fe/services/document'
+import { toUri, isOutOfRepo } from '@fe/services/document'
+import * as renderer from '@fe/services/renderer'
 import { getContextMenuItems, getRenderIframe, scrollTopTo } from '@fe/services/view'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { DOM_ATTR_NAME } from '@fe/support/args'
@@ -80,12 +79,7 @@ async function render (checkInComposition = false) {
     updateRender = debounce(render, 25)
   }
 
-  let content = currentContent.value
-
-  if (currentFile.value && !isMarkdownFile(currentFile.value)) {
-    content = `## ${currentFile.value.name} \n *Not a markdown file.*`
-    currentFile.value.name
-  }
+  const content = currentContent.value
 
   const file = currentFile.value || null
   const safeMode = isOutOfRepo(file) // enable safe mode for root repo
@@ -93,7 +87,7 @@ async function render (checkInComposition = false) {
   const startTime = performance.now()
   renderEnv = { tokens: [], source: content, file, renderCount, safeMode }
   try {
-    renderContent.value = markdown.render(content, renderEnv)
+    renderContent.value = renderer.render(content, renderEnv)
   } catch (error: any) {
     logger.error('render', error)
     renderContent.value = h('div', [
@@ -132,25 +126,21 @@ function handleClick (e: MouseEvent) {
 }
 
 function handleContextMenu (e: MouseEvent) {
-  const tagName = (e.target as HTMLElement).tagName
-  const allowTags = ['TD', 'TH']
-  if (isElectron || e.altKey || allowTags.includes(tagName)) {
-    const contextMenuItems = getContextMenuItems(e)
-    if (contextMenuItems.length > 0) {
-      e.stopPropagation()
-      e.preventDefault()
+  const contextMenuItems = getContextMenuItems(e)
+  if (contextMenuItems.length > 0) {
+    e.stopPropagation()
+    e.preventDefault()
 
-      const clientX = e.clientX
-      const clientY = e.clientY
+    const clientX = e.clientX
+    const clientY = e.clientY
 
-      getRenderIframe().then((iframe) => {
-        const iframeRect = iframe.getBoundingClientRect()
-        useContextMenu().show(contextMenuItems, {
-          mouseX: iframeRect.left + clientX,
-          mouseY: iframeRect.top + clientY,
-        })
+    getRenderIframe().then((iframe) => {
+      const iframeRect = iframe.getBoundingClientRect()
+      useContextMenu().show(contextMenuItems, {
+        mouseX: iframeRect.left + clientX,
+        mouseY: iframeRect.top + clientY,
       })
-    }
+    })
   }
 }
 
@@ -264,7 +254,13 @@ onBeforeUnmount(() => {
 })
 
 watch([currentContent, fileUri, inComposition], () => {
-  autoPreview.value && updateRender()
+  if (autoPreview.value) {
+    if (renderCount === 0) {
+      render()
+    } else {
+      updateRender()
+    }
+  }
 }, { flush: 'post' })
 
 watch(fileUri, () => {

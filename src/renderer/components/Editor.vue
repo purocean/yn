@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watchEffect } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { getAllCustomEditors, isDefault, getValue, setValue, switchEditor } from '@fe/services/editor'
 import { registerAction, removeAction } from '@fe/core/action'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
@@ -145,7 +145,7 @@ onBeforeUnmount(() => {
   FileTabs.removeActionBtnTapper(tabsActionBtnTapper)
 })
 
-watchEffect(() => {
+watch(() => currentEditor.value?.name, () => {
   triggerHook('EDITOR_CURRENT_EDITOR_CHANGE', { current: currentEditor.value })
   FileTabs.refreshActionBtns()
   recordEditorUsageTime(currentEditor.value?.name || 'default')

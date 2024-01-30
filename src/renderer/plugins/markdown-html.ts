@@ -21,7 +21,7 @@ const comment = '(?:<!(--)|(--)>)'
 
 const HTML_TAG_RE = new RegExp('^(?:' + comment + '|' + openTag + '|' + closeTag + ')')
 const HTML_SELF_CLOSE_TAG_RE = new RegExp('^' + selfCloseTag, 'i')
-const INVALID_HTML_TAG_NAME_RE = /script|style/i
+const INVALID_HTML_TAG_NAME_RE = /script/i
 const INVALID_ATTR_NAME_RE = /^on|^xmlns$|^xml$|^aria-|^srcdoc$/i
 
 const SAFE_MODE_ALLOWED_TAGS = [
