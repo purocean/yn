@@ -76,16 +76,23 @@
 
 ## 更新日志
 
-### [v3.66.1](https://github.com/purocean/yn/releases/tag/v3.66.1) 2024-01-11
+### [v3.67.0](https://github.com/purocean/yn/releases/tag/v3.67.0) 2024-01-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-win-x64-3.66.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-mac-arm64-3.66.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-mac-x64-3.66.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-linux-x86_64-3.66.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.66.1/Yank-Note-linux-amd64-3.66.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-win-x64-3.67.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-mac-arm64-3.67.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-mac-x64-3.67.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-linux-x86_64-3.67.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.67.0/Yank-Note-linux-amd64-3.67.0.deb)
 
-1. feat: 支持 [Github 风格的警告提示](https://github.com/orgs/community/discussions/16925)
-2. feat: 在 macOS 上支持在 Dock 菜单中显示打开的窗口
-3. feat: 支持使用代码块的方式渲染 PlantUML
-4. fix: 修复代码块超过 100 行后，行号显示异常问题
-5. fix: 修复编辑器选中文字后，点击预览区不能跳转到对应位置的问题
-6. feat(plugin): 自定义编辑器支持使用类的方式定义
+1. feat: 在 macOS 上增加“服务”菜单
+2. feat: 增加 HTML 文件预览功能
+3. feat: 放开 Markdown `style` 标签解析
+4. feat: 编辑器中支持 Vue 代码块高亮（HTML模式）
+5. fix: 修复引入自定义编辑器后 Markdown 渲染性能轻微退化
+6. fix: 修复图片更新后，图片被缓存的问题
+7. fix: 修复内置终端可能不能响应窗口尺寸变化问题
+8. fix: 修复终端运行 python 代码缩进不正确问题
+9. fix: 修复打开自定义编辑器支持的文件，可能编辑器加载异常问题
+10. fix: 修复从系统中打开文件，路径获取正确问题
+11. feat(plugin): 支持注册自定义渲染器 `ctx.renderer.registerRenderer`
+12. refactor(plugin): `ctx.api.watchFile` 被命名为 `ctx.api.watchFs`
+13. refactor(plugin): `ctx.markdown.getRenderCache` 被命名为 `ctx.renderer.getRenderCache`
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
