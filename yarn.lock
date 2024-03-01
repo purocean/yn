@@ -6977,10 +6977,10 @@ modify-filename@^1.1.0:
   resolved "https://registry.yarnpkg.com/modify-filename/-/modify-filename-1.1.0.tgz#9a2dec83806fbb2d975f22beec859ca26b393aa1"
   integrity sha1-mi3sg4Bvuy2XXyK+7IWcoms5OqE=
 
-monaco-editor@^0.41.0:
-  version "0.41.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.41.0.tgz#2ba31e5af7e3ae93ac5d7467ec2772ef9b3d967f"
-  integrity sha512-1o4olnZJsiLmv5pwLEAmzHTE/5geLKQ07BrGxlF4Ri/AXAc2yyDGZwHjiTqD8D/ROKUZmwMA28A+yEowLNOEcA==
+monaco-editor@^0.46.0:
+  version "0.46.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.46.0.tgz#013e453fd2408997e4fe0bf67b36a80a24bc7bcc"
+  integrity sha512-ADwtLIIww+9FKybWscd7OCfm9odsFYHImBRI1v9AviGce55QY8raT+9ihH8jX/E/e6QVSGM+pKj4jSUSRmALNQ==
 
 ms@2.0.0:
   version "2.0.0"
