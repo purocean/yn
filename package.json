@@ -40,7 +40,7 @@
     "glob": "^8.0.3",
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.0",
-    "ip": "^1.1.5",
+    "ip": "^1.1.9",
     "jsonrpc-bridge": "^0.0.4",
     "jsonwebtoken": "^9.0.0",
     "koa": "^2.13.1",
