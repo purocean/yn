@@ -121,7 +121,7 @@
     "jest-extended": "^1.2.0",
     "js-untar": "^2.0.0",
     "juice": "^8.0.0",
-    "katex": "^0.16.4",
+    "katex": "^0.16.10",
     "lodash-es": "^4.17.21",
     "markdown-it": "^13.0.1",
     "markdown-it-abbr": "^1.0.4",
