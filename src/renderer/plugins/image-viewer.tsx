@@ -129,7 +129,7 @@ export default {
 
     ctx.theme.addStyles(`
       body .viewer-backdrop {
-        background: rgba(239, 239, 239, 0.98);
+        background: rgba(var(--g-color-90-rgb), 0.98);
       }
 
       body .viewer-title {
