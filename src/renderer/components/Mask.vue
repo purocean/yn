@@ -127,4 +127,9 @@ export default defineComponent({
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
+
+.content {
+  position: relative;
+  z-index: 1;
+}
 </style>
