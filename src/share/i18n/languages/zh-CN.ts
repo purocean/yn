@@ -231,6 +231,7 @@ const data: BaseLanguage = {
     'nav': {
       'nav': '导航',
       'goto': '快速跳转',
+      'reveal-current-file-in-sidebar': '在侧栏中显示当前文件',
       'forward': '前进',
       'back': '后退',
     },

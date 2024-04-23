@@ -7,6 +7,7 @@
       :open="open"
       :data-count="itemNode.children?.length"
       :data-level="itemNode.level"
+      :data-should-open="shouldOpen"
       @toggle="(e: any) => open = e.target.open"
       @dragenter="onDragEnter"
       @dragover="onDragOver"
@@ -309,7 +310,12 @@ export default defineComponent({
     })
 
     const shouldOpen = computed(() => {
-      return itemNode.value.type === 'dir' && currentFile.value && currentFile.value.path.startsWith(itemNode.value.path + '/') && currentFile.value.repo === itemNode.value.repo
+      if (itemNode.value.type === 'dir' && currentFile.value) {
+        // open the folder when the file is in the folder
+        return itemNode.value.path === '/' || (currentFile.value.path.startsWith(itemNode.value.path + '/') && currentFile.value.repo === itemNode.value.repo)
+      }
+
+      return false
     })
 
     const marked = computed(() => localMarked.value ?? itemNode.value.marked)
@@ -354,6 +360,7 @@ export default defineComponent({
       onDragExit,
       onDrop,
       onDragStart,
+      shouldOpen,
       isMarkdownFile,
       FLAG_READONLY,
     }

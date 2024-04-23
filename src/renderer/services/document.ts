@@ -559,36 +559,45 @@ export async function ensureCurrentFileSaved () {
   try {
     const autoSave = !isEncrypted(currentFile) && getSetting('auto-save', 2000)
     if (autoSave) {
-      await saveContent()
-    } else {
-      const confirm = await useModal().confirm({
-        title: t('save-check-dialog.title'),
-        content: t('save-check-dialog.desc'),
-        action: h(Fragment, [
-          h('button', {
-            onClick: async () => {
-              await saveContent()
-              useModal().ok()
-            }
-          }, t('save')),
-          h('button', {
-            onClick: () => useModal().ok()
-          }, t('discard')),
-          h('button', {
-            onClick: () => useModal().cancel()
-          }, t('cancel')),
-        ])
-      })
-
-      checkFile()
-
-      if (confirm) {
-        if (!store.getters.isSaved && currentFile.content) {
-          store.state.currentContent = currentFile.content!
-        }
-      } else {
-        throw new Error('Document not saved')
+      try {
+        await saveContent()
+        return
+      } catch (error: any) {
+        useToast().show('warning', error.message)
       }
+    }
+
+    const confirm = await useModal().confirm({
+      title: t('save-check-dialog.title'),
+      content: t('save-check-dialog.desc'),
+      action: h(Fragment, [
+        h('button', {
+          onClick: async () => {
+            await saveContent().catch(error => {
+              useToast().show('warning', error.message)
+              throw error
+            })
+
+            useModal().ok()
+          }
+        }, t('save')),
+        h('button', {
+          onClick: () => useModal().ok()
+        }, t('discard')),
+        h('button', {
+          onClick: () => useModal().cancel()
+        }, t('cancel')),
+      ])
+    })
+
+    checkFile()
+
+    if (confirm) {
+      if (!store.getters.isSaved && currentFile.content) {
+        store.state.currentContent = currentFile.content!
+      }
+    } else {
+      throw new Error('Document not saved')
     }
   } catch (error: any) {
     useToast().show('warning', error.message)

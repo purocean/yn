@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useLazyRef } from '@fe/utils/composable'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { refreshTree } from '@fe/services/tree'
@@ -80,8 +80,14 @@ export default defineComponent({
     }
 
     function revealCurrentNode () {
-      const currentNode = asideRef.value?.querySelector('.tree-node > .name.selected')
-      currentNode?.scrollIntoView({ block: 'center' })
+      asideRef.value?.querySelectorAll('details[data-should-open="true"]').forEach((el: any) => {
+        el.open = true
+      })
+
+      nextTick(() => {
+        const currentNode = asideRef.value?.querySelector('.tree-node > .name.selected')
+        currentNode?.scrollIntoView({ block: 'center' })
+      })
     }
 
     watch(currentRepo, refreshTree, { immediate: true })

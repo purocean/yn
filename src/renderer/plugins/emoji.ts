@@ -1,6 +1,6 @@
 import type * as Monaco from 'monaco-editor'
-import MarkdownItEmoji from 'markdown-it-emoji'
-import emoji from 'markdown-it-emoji/lib/data/full.json'
+import MarkdownItEmoji from 'markdown-it-emoji/dist/full.cjs.js'
+import emoji from 'markdown-it-emoji/lib/data/full.mjs'
 import type { Ctx, Plugin } from '@fe/context'
 
 const triggerCharacter = ':'
