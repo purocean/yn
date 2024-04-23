@@ -76,23 +76,18 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.67.1](https://github.com/purocean/yn/releases/tag/v3.67.1) 2024-01-30
+### [v3.68.0](https://github.com/purocean/yn/releases/tag/v3.68.0) 2024-04-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.67.1/Yank-Note-win-x64-3.67.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.67.1/Yank-Note-mac-arm64-3.67.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.67.1/Yank-Note-mac-x64-3.67.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.67.1/Yank-Note-linux-x86_64-3.67.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.67.1/Yank-Note-linux-amd64-3.67.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-win-x64-3.68.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-mac-arm64-3.68.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-mac-x64-3.68.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-linux-x86_64-3.68.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-linux-amd64-3.68.0.deb)
 
-1. feat: Add "Services" menu on macOS
-2. feat: Add HTML file preview functionality
-3. feat: Allow parsing of Markdown `style` tags
-4. feat: Support Vue code block highlighting in the editor (HTML mode)
-5. fix: Fix slight performance degradation in Markdown rendering after introducing custom editor
-6. fix: Fix caching issue with updated images
-7. fix: Fix potential unresponsiveness of built-in terminal to window size changes
-8. fix: Fix incorrect indentation of Python code in terminal execution
-9. fix: Fix editor loading issue when opening files supported by custom editor
-10. fix: Fix correct path retrieval when opening files from the system
-11. feat(plugin): Support registering custom renderer `ctx.renderer.registerRenderer`
-12. refactor(plugin): Rename `ctx.api.watchFile` to `ctx.api.watchFs`
-13. refactor(plugin): Rename `ctx.markdown.getRenderCache` to `ctx.renderer.getRenderCache`
+1. feat: Added the feature to focus on the currently open document in the sidebar
+2. feat: Optimized the background color for dark theme image previews
+3. fix: Fixed the issue where the Luckysheet editing dialog could not be operated
+4. fix: Fixed the issue where the document may not be closed after enabling auto-save
+5. chore: Upgraded markdown-it to 14.1.0
+6. chore: Upgraded Monaco editor to 0.47.0
+7. chore: Upgraded viewerjs to 1.11.6
+8. chore: Upgraded katex to 0.16.10
 
 [More release notes](https://github.com/purocean/yn/releases)
 
