@@ -230,6 +230,7 @@ const data = {
     'nav': {
       'nav': 'Navigation',
       'goto': 'Goto',
+      'reveal-current-file-in-sidebar': 'Reveal Current File in Sidebar',
       'forward': 'Forward',
       'back': 'Back',
     },
