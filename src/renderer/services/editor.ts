@@ -90,6 +90,7 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
   suggestOnTriggerCharacters: getSetting('editor.suggest-on-trigger-characters', true),
   occurrencesHighlight: 'off',
   renderLineHighlight: 'all',
+  stickyScroll: { enabled: getSetting('editor.sticky-scroll-enabled', true) },
   wordSeparators: '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?。？！，、；：“”‘’（）《》〈〉【】『』「」﹃﹄〔〕'
 })
 

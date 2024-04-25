@@ -387,6 +387,7 @@ const data = {
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
         'todo-with-time': 'Add time when checking todo',
         'suggest-on-trigger-characters': 'Suggest on trigger characters - You can also use Ctrl+Space (depending on the shortcuts) to trigger',
+        'sticky-scroll-enabled': 'Enable Sticky Scroll - When the editor scrolls, the document title is fixed',
         'quick-suggestions': 'Quick Suggestions - Suggest as you type',
       },
       'render': {

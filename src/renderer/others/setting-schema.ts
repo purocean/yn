@@ -241,6 +241,14 @@ const schema: SettingSchema = ({
       group: 'editor',
       required: true,
     },
+    'editor.sticky-scroll-enabled': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.sticky-scroll-enabled',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
     'render.md-html': {
       defaultValue: true,
       title: 'T_setting-panel.schema.render.md-html',
