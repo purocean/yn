@@ -326,6 +326,14 @@ const proxy = async (ctx: any, next: any) => {
     const agent = options.proxyUrl
       ? getAction('new-proxy-agent')(options.proxyUrl)
       : await getAction('get-proxy-agent')(url)
+    const sse = options.sse
+
+    if (sse) {
+      ctx.set('content-type', 'text/event-stream')
+      ctx.body = request({ url, agent, encoding: null, ...options })
+      return
+    }
+
     await new Promise<void>((resolve, reject) => {
       request({ url, agent, encoding: null, ...options }, function (err: any, response: any, body: any) {
         if (err) {

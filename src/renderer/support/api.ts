@@ -47,12 +47,19 @@ export async function fetchHttp (input: RequestInfo, init?: RequestInit) {
  * @param url URL
  * @param reqOptions
  * @param usePost
+ * @param abortSignal
  * @returns
  */
-export async function proxyRequest (url: string, reqOptions: Record<string, any> = {}, usePost = false) {
+export async function proxyRequest (
+  url: string,
+  reqOptions: { sse?: boolean; proxyUrl?: string; [key: string]: any } = {},
+  usePost = false,
+  abortSignal?: AbortSignal
+) {
   let res: Response
   if (usePost) {
     res = await fetch('/api/proxy', {
+      signal: abortSignal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
       body: JSON.stringify({
@@ -63,6 +70,7 @@ export async function proxyRequest (url: string, reqOptions: Record<string, any>
   } else {
     const options = encodeURIComponent(JSON.stringify(reqOptions))
     res = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&options=${options}`, {
+      signal: abortSignal,
       headers: getAuthHeader()
     })
   }
