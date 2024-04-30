@@ -23,7 +23,7 @@ export const FLAG_DEBUG = import.meta.env.MODE === 'development' || $args().get(
 
 export const HELP_REPO_NAME = '__help__'
 
-export const MONACO_EDITOR_NLS = { de: 'Deutsch', es: 'Español', fr: 'Français', it: 'Italiano', ja: '日本語', ko: '한국어', ru: 'Русский', 'zh-cn': '简体中文' }
+export const MONACO_EDITOR_NLS = { de: 'Deutsch', es: 'Español', fr: 'Français', it: 'Italiano', ja: '日本語', ko: '한국어', ru: 'Русский', 'zh-cn': '简体中文', 'zh-tw': '繁體中文' }
 
 export const CSS_VAR_NAME = {
   PREVIEWER_HEIGHT: '--previewer-height'

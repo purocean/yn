@@ -56,7 +56,7 @@ class UpdateProvider extends GitHubProvider {
     }
 
     if (source === 'auto') {
-      if (app.getLocale().toLowerCase().includes('zh')) {
+      if (app.getLocale().toLowerCase().includes('zh-cn')) {
         source = 'yank-note'
       } else {
         source = 'github'

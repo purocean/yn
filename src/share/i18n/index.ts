@@ -2,10 +2,12 @@ import get from 'lodash/get'
 import merge from 'lodash/merge'
 import en, { BaseLanguage } from './languages/en'
 import zhCN from './languages/zh-CN'
+import zhTW from './languages/zh-TW'
 
 const languages = {
   en,
-  'zh-CN': zhCN
+  'zh-CN': zhCN,
+  'zh-TW': zhTW
 }
 
 export type Flat<T extends Record<string, any>, P extends string = ''> =(
