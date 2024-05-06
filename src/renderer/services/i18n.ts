@@ -87,12 +87,16 @@ export function useI18n () {
  * @param defaultLanguage - default language
  * @returns
  */
-export function createI18n <T extends Record<string, any>> (data: { [lang in Language]: T }, defaultLanguage: Language = 'en') {
+export function createI18n <T extends Record<string, any>> (data: { [lang in Language]?: T }, defaultLanguage: Language = 'en') {
   type _MsgPath = keyof Flat<T>
 
   const _t = (path: _MsgPath, ...args: string[]) => {
     const language = data[getCurrentLanguage()] || data[defaultLanguage]
-    return getText(language, path as any, ...args)
+    if (language) {
+      return getText(language, path as any, ...args)
+    } else {
+      return path
+    }
   }
 
   const $t = ref(_t.bind(null))
