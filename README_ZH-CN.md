@@ -76,18 +76,14 @@
 
 ## 更新日志
 
-### [v3.68.0](https://github.com/purocean/yn/releases/tag/v3.68.0) 2024-04-23
+### [v3.69.1](https://github.com/purocean/yn/releases/tag/v3.69.1) 2024-05-06
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-win-x64-3.68.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-mac-arm64-3.68.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-mac-x64-3.68.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-linux-x86_64-3.68.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-linux-amd64-3.68.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-win-x64-3.69.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-mac-arm64-3.69.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-mac-x64-3.69.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-linux-x86_64-3.69.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-linux-amd64-3.69.1.deb)
 
-1. feat: 增加在侧栏中聚焦当前打开文档的功能
-2. feat: 优化暗色主题图片预览背景色
-3. fix: 修复 Luckysheet 编辑弹窗无法操作问题
-4. fix: 修复开启自动保存后，可能不能关闭文档的问题
-5. chore: 升级 markdown-it 到 14.1.0
-6. chore: 升级 Monaco editor 到 0.47.0
-7. chore: 升级 viewerjs 到 1.11.6
-8. chore: 升级 katex 到 0.16.10
+1. feat: 增加繁体中文语言支持
+2. feat: 增加配置项支持禁用编辑器粘性滚动
+3. fix: 修复更改预览器后，未刷新控制面板的问题
+4. feat(plugin): `ctx.api.proxyRequest` 方法增加 `abortSignal` 参数用以取消请求；支持 `sse` 参数用以接收服务器推送事件
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

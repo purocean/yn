@@ -53,9 +53,9 @@ const schema: SettingSchema = ({
       defaultValue: 'system',
       title: 'T_setting-panel.schema.language',
       type: 'string',
-      enum: ['system', 'en', 'zh-CN'],
+      enum: ['system', 'en', 'zh-CN', 'zh-TW'],
       options: {
-        enum_titles: ['System', 'English', '简体中文'],
+        enum_titles: ['System', 'English', '简体中文', '繁體中文'],
       },
       group: 'appearance',
       required: true,
@@ -236,6 +236,14 @@ const schema: SettingSchema = ({
     'editor.suggest-on-trigger-characters': {
       defaultValue: true,
       title: 'T_setting-panel.schema.editor.suggest-on-trigger-characters',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
+    'editor.sticky-scroll-enabled': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.sticky-scroll-enabled',
       type: 'boolean',
       format: 'checkbox',
       group: 'editor',

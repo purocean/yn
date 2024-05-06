@@ -227,6 +227,7 @@ store.watch(() => [
   store.state.syncScroll,
   store.state.currentRepo,
   store.state.editor,
+  store.state.previewer,
 ], () => {
   ctx.workbench.ControlCenter.refresh()
   ctx.statusBar.refreshMenu()

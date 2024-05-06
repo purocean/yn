@@ -321,6 +321,7 @@ export interface BuildInSettings {
   'editor.todo-with-time': boolean,
   'editor.suggest-on-trigger-characters': boolean,
   'editor.quick-suggestions': boolean,
+  'editor.sticky-scroll-enabled': boolean,
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,
