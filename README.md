@@ -76,18 +76,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.68.0](https://github.com/purocean/yn/releases/tag/v3.68.0) 2024-04-23
+### [v3.69.1](https://github.com/purocean/yn/releases/tag/v3.69.1) 2024-05-06
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-win-x64-3.68.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-mac-arm64-3.68.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-mac-x64-3.68.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-linux-x86_64-3.68.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.68.0/Yank-Note-linux-amd64-3.68.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-win-x64-3.69.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-mac-arm64-3.69.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-mac-x64-3.69.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-linux-x86_64-3.69.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-linux-amd64-3.69.1.deb)
 
-1. feat: Added the feature to focus on the currently open document in the sidebar
-2. feat: Optimized the background color for dark theme image previews
-3. fix: Fixed the issue where the Luckysheet editing dialog could not be operated
-4. fix: Fixed the issue where the document may not be closed after enabling auto-save
-5. chore: Upgraded markdown-it to 14.1.0
-6. chore: Upgraded Monaco editor to 0.47.0
-7. chore: Upgraded viewerjs to 1.11.6
-8. chore: Upgraded katex to 0.16.10
+1. feat: Added support for Traditional Chinese language
+2. feat: Added support for disabling editor sticky scrolling through configuration option
+3. fix: Fixed issue where control panel was not refreshed after changing previewer
+4. feat(plugin): Added `abortSignal` parameter to `ctx.api.proxyRequest` method for canceling requests; added support for `sse` parameter for receiving server-sent events
 
 [More release notes](https://github.com/purocean/yn/releases)
 
