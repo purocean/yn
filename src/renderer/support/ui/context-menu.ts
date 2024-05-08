@@ -4,6 +4,7 @@ import Modal from '@fe/components/ContextMenu.vue'
 
 export interface Instance extends ComponentPublicInstance {
   show: (menuItems: Components.ContextMenu.Item[], opts?: Components.ContextMenu.ShowOpts) => void;
+  hide: () => void;
 }
 
 let instance: Instance
