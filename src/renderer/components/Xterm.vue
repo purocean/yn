@@ -94,6 +94,10 @@ export default defineComponent({
         }
       }
 
+      if (FLAG_DEMO) {
+        return
+      }
+
       const query = {
         cwd: opts?.cwd || store.state.currentRepo?.path || ''
       }
