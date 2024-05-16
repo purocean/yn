@@ -1,6 +1,6 @@
 <template>
   <XMask transparent :show="items && items.length > 0" @close="hide" :style="{ zIndex: 2147483646 }">
-    <ul :class="{menu: true, 'item-focus': itemFocus}" ref="refMenu" @contextmenu.prevent>
+    <ul :class="{menu: true, 'item-focus': itemFocus}" ref="refMenu" @contextmenu.prevent tabindex="-1" v-auto-focus>
       <template v-for="(item, i) in items">
         <li v-if="item.type === 'separator'" v-show="!item.hidden" :key="i" :class="item.type" />
         <li
@@ -182,6 +182,10 @@ export default defineComponent({
   box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 5px;
   border-radius: var(--g-border-radius);
   user-select: none;
+}
+
+.menu:focus {
+  outline: none;
 }
 
 .menu > li.separator {
