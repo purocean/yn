@@ -39,15 +39,9 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-  emits: ['close', 'key-enter'],
+  emits: ['close'],
   setup (props, { emit }) {
     const zIndexRef = ref(zIndex++)
-
-    function keypressHandler (e: KeyboardEvent) {
-      if (e.key === 'Enter' && props.show) {
-        emit('key-enter')
-      }
-    }
 
     function keydownHandler (e: KeyboardEvent) {
       if (e.key === 'Escape' && props.show) {
@@ -79,12 +73,10 @@ export default defineComponent({
     const wrapperStyle = computed(() => (typeof props.style === 'string' ? props.style : { zIndex: zIndexRef.value, ...props.style }))
 
     onMounted(() => {
-      window.addEventListener('keypress', keypressHandler, true)
       registerHook('GLOBAL_KEYDOWN', keydownHandler)
     })
 
     onBeforeUnmount(() => {
-      window.removeEventListener('keypress', keypressHandler, true)
       removeHook('GLOBAL_KEYDOWN', keydownHandler)
       maskStack.splice(maskStack.indexOf(zIndexRef.value), 1)
     })
