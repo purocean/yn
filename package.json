@@ -56,9 +56,11 @@
     "ripgrep-wrapper": "^1.1.1",
     "safe-buffer": "^5.2.1",
     "socket.io": "^4.7.2",
+    "socks": "^2.8.3",
     "socks-proxy-agent": "^6.1.1",
     "tar-stream": "^2.2.0",
     "transliteration": "^2.2.0",
+    "undici": "^6.16.1",
     "uuid": "^9.0.0",
     "yaml": "^2.2.2",
     "yargs": "^15.3.1"

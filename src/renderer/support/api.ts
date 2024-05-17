@@ -84,6 +84,23 @@ export async function proxyRequest (
 }
 
 /**
+ * Proxy fetch.
+ * @param url string
+ * @param init RequestInit
+ * @returns
+ */
+export async function proxyFetch (url: string, init?: RequestInit) {
+  const res: Response = await fetch(`/api/proxy-fetch/${url}`, init)
+
+  if (res.headers.get('x-yank-note-api-status') === 'error') {
+    const msg = res.headers.get('x-yank-note-api-message') || 'error'
+    throw new Error(decodeURIComponent(msg))
+  }
+
+  return res
+}
+
+/**
  * Fetch help file content.
  * @param docName
  * @returns

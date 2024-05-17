@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { session } from 'electron'
+import { Dispatcher, ProxyAgent } from 'undici'
+import { socksDispatcher } from './undici-socket-agent'
 const SocksProxyAgent = require('socks-proxy-agent')
 const HttpsProxyAgent = require('https-proxy-agent')
 const HttpProxyAgent = require('http-proxy-agent')
@@ -12,6 +14,19 @@ export function newProxyAgent (proxyUrl: string) {
   } else {
     return new HttpsProxyAgent(proxyUrl)
   }
+}
+
+export function newProxyDispatcher (proxyUrl: string): Dispatcher {
+  if (proxyUrl.toLowerCase().startsWith('socks://') || proxyUrl.toLowerCase().startsWith('socks5://')) {
+    const url = new URL(proxyUrl)
+    return socksDispatcher({
+      type: 5,
+      host: url.hostname,
+      port: +url.port
+    })
+  }
+
+  return new ProxyAgent(proxyUrl)
 }
 
 export async function getProxyAgent (url: string) {
@@ -40,4 +55,28 @@ export async function getProxyAgent (url: string) {
   }
 
   return undefined
+}
+
+export async function getProxyDispatcher (url: string): Promise<Dispatcher | undefined> {
+  const proxy = await session.defaultSession.resolveProxy(url)
+  if (!proxy) {
+    return undefined
+  }
+
+  const proxies = String(proxy).trim().split(/\s*;\s*/g).filter(Boolean)
+  const first = proxies[0]
+  const parts = first.split(/\s+/)
+  const type = parts[0]
+
+  let proxyUrl = ''
+  if (type === 'SOCKS' || type === 'SOCKS5') {
+    // use a SOCKS proxy
+    proxyUrl = 'socks://' + parts[1]
+  } else if (type === 'PROXY' || type === 'HTTPS') {
+    proxyUrl = (type === 'HTTPS' ? 'https' : 'http') + '://' + parts[1]
+  } else {
+    return undefined
+  }
+
+  return newProxyDispatcher(proxyUrl)
 }

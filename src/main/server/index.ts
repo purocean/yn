@@ -8,6 +8,7 @@ import Koa from 'koa'
 import bodyParser from 'koa-body'
 import * as mime from 'mime'
 import request from 'request'
+import * as undici from 'undici'
 import { promisify } from 'util'
 import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES, USER_EXTENSION_DIR, USER_DATA } from '../constant'
 import * as file from './file'
@@ -37,6 +38,10 @@ const noCache = (ctx: any) => {
 }
 
 const checkPermission = (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/proxy-fetch')) {
+    return next()
+  }
+
   const token = ctx.query._token || (ctx.headers.authorization || '').replace('Bearer ', '')
 
   if (ctx.req._protocol || (!token && isLocalhost(ctx.request.ip))) {
@@ -319,7 +324,45 @@ const userFile = async (ctx: any, next: any) => {
 }
 
 const proxy = async (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/proxy')) {
+  if (ctx.path.startsWith('/api/proxy-fetch/')) {
+    const url = ctx.originalUrl.replace(/^.*\/api\/proxy-fetch\//, '')
+
+    // TODO ssrf
+    // const _url = new URL(url)
+    // if (
+    //   _url.hostname === 'localhost' ||
+    //   (
+    //     (ip.isV4Format(_url.hostname) || ip.isV6Format(_url.hostname)) &&
+    //     ip.isPrivate(_url.hostname)
+    //   )
+    // ) {
+    //   throw new Error('Invalid URL')
+    // }
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { 'x-proxy-url': proxyUrl, host, ...headers } = ctx.headers
+
+      const dispatcher = proxyUrl
+        ? getAction('new-proxy-dispatcher')(proxyUrl)
+        : await getAction('get-proxy-dispatcher')(url)
+
+      const response = await undici.request(url, {
+        dispatcher,
+        method: ctx.method,
+        headers,
+        body: ctx.req,
+      })
+
+      // Set the response status, headers, and body
+      ctx.status = response.statusCode
+      ctx.set(response.headers)
+      ctx.body = response.body
+    } catch (error: any) {
+      ctx.status = 500
+      throw error
+    }
+  } else if (ctx.path.startsWith('/api/proxy')) {
     const data = ctx.method === 'POST' ? ctx.request.body : ctx.query
     const url = data.url
     const options = typeof data.options === 'string' ? JSON.parse(ctx.query.options) : data.options
