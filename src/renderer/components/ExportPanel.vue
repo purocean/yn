@@ -115,7 +115,7 @@ export default defineComponent({
       },
       pdfOptions: {
         landscape: '',
-        pageSize: 'A4',
+        pageSize: 'A4' as 'A4' | 'A3' | 'A5' | 'Legal' | 'Letter' | 'Tabloid',
         scaleFactor: '100',
         printBackground: true,
       }
