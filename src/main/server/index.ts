@@ -7,7 +7,6 @@ import * as path from 'path'
 import Koa from 'koa'
 import bodyParser from 'koa-body'
 import * as mime from 'mime'
-import request from 'request'
 import * as undici from 'undici'
 import { promisify } from 'util'
 import { STATIC_DIR, HOME_DIR, HELP_DIR, USER_PLUGIN_DIR, FLAG_DISABLE_SERVER, APP_NAME, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYLES, USER_EXTENSION_DIR, USER_DATA } from '../constant'
@@ -38,10 +37,6 @@ const noCache = (ctx: any) => {
 }
 
 const checkPermission = (ctx: any, next: any) => {
-  if (ctx.path.startsWith('/api/proxy-fetch')) {
-    return next()
-  }
-
   const token = ctx.query._token || (ctx.headers.authorization || '').replace('Bearer ', '')
 
   if (ctx.req._protocol || (!token && isLocalhost(ctx.request.ip))) {
@@ -339,61 +334,47 @@ const proxy = async (ctx: any, next: any) => {
     //   throw new Error('Invalid URL')
     // }
 
+    let signal: AbortSignal | undefined
+    let timeoutTimer: NodeJS.Timeout | undefined
+
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { 'x-proxy-url': proxyUrl, host, ...headers } = ctx.headers
+      const { 'x-proxy-url': proxyUrl, 'x-proxy-timeout': proxyTimeout, host, ...headers } = ctx.headers
 
       const dispatcher = proxyUrl
         ? getAction('new-proxy-dispatcher')(proxyUrl)
         : await getAction('get-proxy-dispatcher')(url)
+
+      if (proxyTimeout) {
+        const controller = new AbortController()
+        signal = controller.signal
+        timeoutTimer = setTimeout(() => {
+          controller.abort()
+          timeoutTimer = undefined
+        }, Number(proxyTimeout))
+      }
 
       const response = await undici.request(url, {
         dispatcher,
         method: ctx.method,
         headers,
         body: ctx.req,
+        signal
       })
 
       // Set the response status, headers, and body
       ctx.status = response.statusCode
       ctx.set(response.headers)
       ctx.body = response.body
+
+      response.body.once('close', () => {
+        timeoutTimer && clearTimeout(timeoutTimer)
+      })
     } catch (error: any) {
       ctx.status = 500
+      timeoutTimer && clearTimeout(timeoutTimer)
       throw error
     }
-  } else if (ctx.path.startsWith('/api/proxy')) {
-    const data = ctx.method === 'POST' ? ctx.request.body : ctx.query
-    const url = data.url
-    const options = typeof data.options === 'string' ? JSON.parse(ctx.query.options) : data.options
-    const agent = options.proxyUrl
-      ? getAction('new-proxy-agent')(options.proxyUrl)
-      : await getAction('get-proxy-agent')(url)
-    const sse = options.sse
-
-    if (sse) {
-      ctx.set('content-type', 'text/event-stream')
-      ctx.body = request({ url, agent, encoding: null, ...options })
-      return
-    }
-
-    await new Promise<void>((resolve, reject) => {
-      request({ url, agent, encoding: null, ...options }, function (err: any, response: any, body: any) {
-        if (err) {
-          reject(err)
-        } else {
-          ctx.status = response.statusCode
-          ctx.set('content-type', response.headers['content-type'])
-
-          Object.keys(response.headers).forEach((key) => {
-            ctx.set(`x-origin-${key}`, response.headers[key])
-          })
-
-          ctx.body = body
-          resolve()
-        }
-      })
-    })
   } else {
     await next()
   }
@@ -654,6 +635,8 @@ const wrapper = async (ctx: any, next: any, fun: any) => {
 const server = (port = 3000) => {
   const app = new Koa()
 
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
+
   app.use(bodyParser({
     multipart: true,
     formLimit: '50mb',
@@ -671,7 +654,6 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, runCode))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, convertFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, searchFile))
-  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, readme))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userPlugin))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, customCss))

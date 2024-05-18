@@ -142,11 +142,11 @@ export async function getRegistryExtensions (registry: RegistryHostname = 'regis
   logger.debug('getRegistryExtensions', registry)
 
   const registryUrl = `https://${registry}/yank-note-registry`
-  const registryJson = await api.proxyRequest(registryUrl, { timeout: 5000 }).then(r => r.json())
+  const registryJson = await api.proxyFetch(registryUrl, { timeout: 5000 }).then(r => r.json())
   const latest = registryJson['dist-tags'].latest
   const tarballUrl = changeRegistryOrigin(registry, registryJson.versions[latest].dist.tarball)
 
-  const extensions = await api.proxyRequest(tarballUrl, { timeout: 5000 })
+  const extensions = await api.proxyFetch(tarballUrl, { timeout: 5000 })
     .then(r => r.arrayBuffer())
     .then(data => pako.inflate(new Uint8Array(data)))
     .then(arr => arr.buffer)

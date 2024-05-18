@@ -395,7 +395,7 @@ async function fetchContent (type: 'readme' | 'changelog', extension: Extension)
 
   try {
     const url = type === 'readme' ? extension.readmeUrl : extension.changelogUrl
-    const xfetch = /https?:\/\//.test(url) ? api.proxyRequest : window.fetch
+    const xfetch = /https?:\/\//.test(url) ? api.proxyFetch : window.fetch
     const markdown = await xfetch(url).then(r => {
       if (r.ok === false) {
         logger.warn('fetchContent', r.statusText)

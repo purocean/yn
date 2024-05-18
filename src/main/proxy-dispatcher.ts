@@ -1,7 +1,9 @@
-// https://github.com/Kaciras/fetch-socks/blob/master/index.ts
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { session } from 'electron'
+import { Dispatcher, ProxyAgent, Agent, buildConnector } from 'undici'
 
+// https://github.com/Kaciras/fetch-socks/blob/master/index.ts
 import { SocksClient, SocksProxy } from 'socks'
-import { Agent, buildConnector } from 'undici'
 import Connector = buildConnector.connector;
 import TLSOptions = buildConnector.BuildOptions;
 
@@ -97,4 +99,41 @@ export interface SocksDispatcherOptions extends Agent.Options {
 export function socksDispatcher (proxies: SocksProxies, options: SocksDispatcherOptions = {}) {
   const { connect, ...rest } = options
   return new Agent({ ...rest, connect: socksConnector(proxies, connect) })
+}
+
+export function newProxyDispatcher (proxyUrl: string): Dispatcher {
+  if (proxyUrl.toLowerCase().startsWith('socks://') || proxyUrl.toLowerCase().startsWith('socks5://')) {
+    const url = new URL(proxyUrl)
+    return socksDispatcher({
+      type: 5,
+      host: url.hostname,
+      port: +url.port
+    })
+  }
+
+  return new ProxyAgent(proxyUrl)
+}
+
+export async function getProxyDispatcher (url: string): Promise<Dispatcher | undefined> {
+  const proxy = await session.defaultSession.resolveProxy(url)
+  if (!proxy) {
+    return undefined
+  }
+
+  const proxies = String(proxy).trim().split(/\s*;\s*/g).filter(Boolean)
+  const first = proxies[0]
+  const parts = first.split(/\s+/)
+  const type = parts[0]
+
+  let proxyUrl = ''
+  if (type === 'SOCKS' || type === 'SOCKS5') {
+    // use a SOCKS proxy
+    proxyUrl = 'socks://' + parts[1]
+  } else if (type === 'PROXY' || type === 'HTTPS') {
+    proxyUrl = (type === 'HTTPS' ? 'https' : 'http') + '://' + parts[1]
+  } else {
+    return undefined
+  }
+
+  return newProxyDispatcher(proxyUrl)
 }

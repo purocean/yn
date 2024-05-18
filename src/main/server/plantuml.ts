@@ -1,4 +1,3 @@
-import request from 'request'
 import * as crypto from 'crypto'
 import fs from 'fs-extra'
 import path from 'path'
@@ -8,6 +7,7 @@ import commandExists from 'command-exists'
 import config from '../config'
 import { ASSETS_DIR, BIN_DIR, CACHE_DIR } from '../constant'
 import { getAction } from '../action'
+import { request } from 'undici'
 
 function plantumlBase64 (base64: string) {
   // eslint-disable-next-line quote-props
@@ -98,21 +98,14 @@ export default async function (data: string): Promise<{ content: any, type: stri
     return { content, type }
   } else {
     const url = api.replace('{data}', plantumlBase64(data))
-    const agent = await getAction('get-proxy-agent')(url)
+    const dispatcher = await getAction('get-proxy-dispatcher')(url)
     let type = ''
 
     const cacheKey = getCacheKey(api, type, data)
     const content = await getCacheData(cacheKey, async () => {
-      return new Promise((resolve, reject) => {
-        request({ agent, url, encoding: null }, function (err: any, res: any) {
-          if (err) {
-            reject(err)
-          } else {
-            type = res.headers['content-type']
-            resolve(res.body)
-          }
-        })
-      })
+      const res = await request(url, { dispatcher })
+      type = res.headers['content-type'] as string
+      return res.body
     })
 
     return { content, type }

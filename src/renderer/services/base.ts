@@ -234,7 +234,7 @@ export async function writeToClipboard (type: string, value: any) {
  * @returns timestamp in ms
  */
 export async function getServerTimestamp () {
-  const date = (await api.proxyRequest('https://www.baidu.com/')).headers.get('x-origin-date')
+  const date = (await api.proxyFetch('https://www.baidu.com/')).headers.get('x-origin-date')
   return dayjs(date || undefined).valueOf()
 }
 

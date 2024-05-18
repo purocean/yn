@@ -59,12 +59,12 @@ export default {
           const { data: { path } } = await ctx.api.writeTmpFile(tmpFileName, await ctx.utils.fileToBase64URL(file), true)
           logger.debug('tmp file', path)
 
-          const { result } = await ctx.api.proxyRequest(
+          const { result } = await ctx.api.proxyFetch(
             url,
             {
               method: 'post',
-              body: JSON.stringify({ list: [path] }),
-              headers: { 'Content-Type': 'application/json' }
+              body: { list: [path] },
+              jsonBody: true,
             },
           ).then(r => r.json())
 

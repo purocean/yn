@@ -43,53 +43,25 @@ export async function fetchHttp (input: RequestInfo, init?: RequestInit) {
 }
 
 /**
- * Proxy request.
- * @param url URL
- * @param reqOptions
- * @param usePost
- * @param abortSignal
- * @returns
- */
-export async function proxyRequest (
-  url: string,
-  reqOptions: { sse?: boolean; proxyUrl?: string; [key: string]: any } = {},
-  usePost = false,
-  abortSignal?: AbortSignal
-) {
-  let res: Response
-  if (usePost) {
-    res = await fetch('/api/proxy', {
-      signal: abortSignal,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
-      body: JSON.stringify({
-        url,
-        options: reqOptions
-      })
-    })
-  } else {
-    const options = encodeURIComponent(JSON.stringify(reqOptions))
-    res = await fetch(`/api/proxy?url=${encodeURIComponent(url)}&options=${options}`, {
-      signal: abortSignal,
-      headers: getAuthHeader()
-    })
-  }
-
-  if (res.headers.get('x-yank-note-api-status') === 'error') {
-    const msg = res.headers.get('x-yank-note-api-message') || 'error'
-    throw new Error(decodeURIComponent(msg))
-  }
-
-  return res
-}
-
-/**
  * Proxy fetch.
  * @param url string
  * @param init RequestInit
  * @returns
  */
-export async function proxyFetch (url: string, init?: RequestInit) {
+export async function proxyFetch (url: string, init?: Omit<RequestInit, 'body'> & { body?: any, timeout?: number, proxy?: string, jsonBody?: boolean }) {
+  if (init?.timeout) {
+    init.headers = { ...init.headers, 'x-proxy-timeout': String(init.timeout) }
+  }
+
+  if (init?.proxy) {
+    init.headers = { ...init.headers, 'x-proxy-url': init.proxy }
+  }
+
+  if (init?.jsonBody) {
+    init.headers = { ...init.headers, 'Content-Type': 'application/json' }
+    init.body = JSON.stringify(init.body)
+  }
+
   const res: Response = await fetch(`/api/proxy-fetch/${url}`, init)
 
   if (res.headers.get('x-yank-note-api-status') === 'error') {

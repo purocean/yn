@@ -1,40 +1,31 @@
 import { AppLicenseClient, decodeDevice } from 'app-license'
-import request from 'request'
+import { request } from 'undici'
 import { API_BASE_URL, PREMIUM_PUBLIC_KEY } from '../../share/misc'
 import { getAction } from '../action'
 
 const SERVER_BASE_URL = API_BASE_URL + '/api/premium'
 
 export async function fetchApi (url: string, payload: any) {
-  const agent = await getAction('get-proxy-agent')(url)
-  return new Promise((resolve, reject) => {
-    request(
-      {
-        agent,
-        url: SERVER_BASE_URL + url,
-        method: 'POST',
-        json: true,
-        body: payload,
-      },
-      (err, _res, body) => {
-        if (err) {
-          reject(err)
-        } else {
-          if (!body || !body.status) {
-            reject(new Error('Invalid response'))
-            return
-          }
-
-          const { data, message, status } = body
-          if (status !== 'ok') {
-            reject(new Error(message))
-          } else {
-            resolve(data)
-          }
-        }
-      }
-    )
+  const dispatcher = await getAction('get-proxy-dispatcher')(url)
+  const res = await request(SERVER_BASE_URL + url, {
+    dispatcher,
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: { 'Content-Type': 'application/json' },
   })
+
+  const body: any = await res.body.json()
+
+  if (!body || !body.status) {
+    throw new Error('Invalid response')
+  }
+
+  const { data, message, status } = body
+  if (status !== 'ok') {
+    throw new Error(message)
+  }
+
+  return data
 }
 
 const client = new AppLicenseClient({
