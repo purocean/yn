@@ -49,17 +49,23 @@ export async function fetchHttp (input: RequestInfo, init?: RequestInit) {
  * @returns
  */
 export async function proxyFetch (url: string, init?: Omit<RequestInit, 'body'> & { body?: any, timeout?: number, proxy?: string, jsonBody?: boolean }) {
-  if (init?.timeout) {
+  init ??= {}
+
+  if (init.timeout) {
     init.headers = { ...init.headers, 'x-proxy-timeout': String(init.timeout) }
   }
 
-  if (init?.proxy) {
+  if (init.proxy) {
     init.headers = { ...init.headers, 'x-proxy-url': init.proxy }
   }
 
-  if (init?.jsonBody) {
+  if (init.jsonBody) {
     init.headers = { ...init.headers, 'Content-Type': 'application/json' }
     init.body = JSON.stringify(init.body)
+  }
+
+  if (JWT_TOKEN) {
+    init.headers = { ...init.headers, 'x-yn-authorization': 'Bearer ' + JWT_TOKEN }
   }
 
   const res: Response = await fetch(`/api/proxy-fetch/${url}`, init)

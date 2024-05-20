@@ -37,7 +37,7 @@ const noCache = (ctx: any) => {
 }
 
 const checkPermission = (ctx: any, next: any) => {
-  const token = ctx.query._token || (ctx.headers.authorization || '').replace('Bearer ', '')
+  const token = ctx.query._token || (ctx.headers['x-yn-authorization'] || ctx.headers.authorization || '').replace('Bearer ', '')
 
   if (ctx.req._protocol || (!token && isLocalhost(ctx.request.ip))) {
     ctx.req.jwt = { role: 'admin' }
@@ -62,6 +62,7 @@ const checkPermission = (ctx: any, next: any) => {
     guest: [
       '/api/file',
       '/api/settings',
+      '/api/proxy-fetch'
     ]
   }
 
@@ -635,6 +636,7 @@ const wrapper = async (ctx: any, next: any, fun: any) => {
 const server = (port = 3000) => {
   const app = new Koa()
 
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, checkPermission))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
 
   app.use(bodyParser({
@@ -647,7 +649,6 @@ const server = (port = 3000) => {
     }
   }))
 
-  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, checkPermission))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, fileContent))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, attachment))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, plantumlGen))
