@@ -76,16 +76,17 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.70.1](https://github.com/purocean/yn/releases/tag/v3.70.1) 2024-05-20
+### [v3.70.2](https://github.com/purocean/yn/releases/tag/v3.70.2) 2024-05-20
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-win-x64-3.70.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-mac-arm64-3.70.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-mac-x64-3.70.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-linux-x86_64-3.70.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-linux-amd64-3.70.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-win-x64-3.70.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-mac-arm64-3.70.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-mac-x64-3.70.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-linux-x86_64-3.70.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-linux-amd64-3.70.2.deb)
 
-1. feat: Support keyboard navigation in context menu
-2. feat: Optimize keyboard accessibility in dialogs
-3. perf: Hide image navigation bar in image previewer when there are too many images in the document
-4. refactor: Replace `request` library with `undici`
-5. refactor(plugin): Add `ctx.api.proxyFetch` method, remove `ctx.api.proxyRequest` method for better SSE support
-6. chore: Upgrade Electron to 28.3.1
+1. feat: Support pasting rich text as Markdown with table support
+2. feat: Support keyboard navigation in context menu
+3. feat: Optimize keyboard accessibility in dialogs
+4. perf: Hide image navigation bar in image previewer when there are too many images in the document
+5. refactor: Replace `request` library with `undici`
+6. refactor(plugin): Add `ctx.api.proxyFetch` method, remove `ctx.api.proxyRequest` method for better SSE support
+7. chore: Upgrade Electron to 28.3.1
 
 [More release notes](https://github.com/purocean/yn/releases)
 

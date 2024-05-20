@@ -76,16 +76,17 @@
 
 ## 更新日志
 
-### [v3.70.1](https://github.com/purocean/yn/releases/tag/v3.70.1) 2024-05-20
+### [v3.70.2](https://github.com/purocean/yn/releases/tag/v3.70.2) 2024-05-20
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-win-x64-3.70.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-mac-arm64-3.70.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-mac-x64-3.70.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-linux-x86_64-3.70.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-linux-amd64-3.70.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-win-x64-3.70.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-mac-arm64-3.70.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-mac-x64-3.70.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-linux-x86_64-3.70.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.70.2/Yank-Note-linux-amd64-3.70.2.deb)
 
-1. feat: 上下文菜单支持使用键盘导航
-2. feat: 优化对话框键盘访问
-3. perf: 当文档图片过多时，图片预览器不再显示图片导航栏
-4. refactor: 使用 `undici` 代替 `request` 库
-5. refactor(plugin): 增加 `ctx.api.proxyFetch` 方法，移除 `ctx.api.proxyRequest` 方法，更好的支持 SSE
-6. chore: 升级 Electron 到 28.3.1
+1. feat: 富文本粘贴为 Markdown 支持表格
+2. feat: 上下文菜单支持使用键盘导航
+3. feat: 优化对话框键盘访问
+4. perf: 当文档图片过多时，图片预览器不再显示图片导航栏
+5. refactor: 使用 `undici` 代替 `request` 库
+6. refactor(plugin): 增加 `ctx.api.proxyFetch` 方法，移除 `ctx.api.proxyRequest` 方法，更好的支持 SSE
+7. chore: 升级 Electron 到 28.3.1
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
