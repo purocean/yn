@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import TurndownService from 'turndown'
+import { gfm } from 'joplin-turndown-plugin-gfm'
 import { getEditor, insert } from '@fe/services/editor'
 import { Plugin } from '@fe/context'
 import { triggerHook } from '@fe/core/hook'
@@ -13,7 +14,9 @@ const IMAGE_REG = /^image\/(png|jpg|jpeg|gif)$/i
 const HTML_REG = /^text\/html$/i
 
 async function pasteHtml (html: string) {
-  const md = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', bulletListMarker: '+' }).turndown(html)
+  const td = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', bulletListMarker: '+' })
+  td.use(gfm)
+  const md = td.turndown(html)
   insert(md + '\n')
 }
 
