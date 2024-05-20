@@ -76,14 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.69.1](https://github.com/purocean/yn/releases/tag/v3.69.1) 2024-05-06
+### [v3.70.1](https://github.com/purocean/yn/releases/tag/v3.70.1) 2024-05-20
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-win-x64-3.69.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-mac-arm64-3.69.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-mac-x64-3.69.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-linux-x86_64-3.69.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-linux-amd64-3.69.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-win-x64-3.70.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-mac-arm64-3.70.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-mac-x64-3.70.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-linux-x86_64-3.70.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-linux-amd64-3.70.1.deb)
 
-1. feat: Added support for Traditional Chinese language
-2. feat: Added support for disabling editor sticky scrolling through configuration option
-3. fix: Fixed issue where control panel was not refreshed after changing previewer
-4. feat(plugin): Added `abortSignal` parameter to `ctx.api.proxyRequest` method for canceling requests; added support for `sse` parameter for receiving server-sent events
+1. feat: Support keyboard navigation in context menu
+2. feat: Optimize keyboard accessibility in dialogs
+3. perf: Hide image navigation bar in image previewer when there are too many images in the document
+4. refactor: Replace `request` library with `undici`
+5. refactor(plugin): Add `ctx.api.proxyFetch` method, remove `ctx.api.proxyRequest` method for better SSE support
+6. chore: Upgrade Electron to 28.3.1
 
 [More release notes](https://github.com/purocean/yn/releases)
 
