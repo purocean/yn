@@ -15,7 +15,7 @@ import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
 import { initJSONRPCClient, jsonRPCClient } from './jsonrpc'
 import { $t } from './i18n'
-import { getProxyAgent, newProxyAgent } from './proxy-agent'
+import { getProxyDispatcher, newProxyDispatcher } from './proxy-dispatcher'
 import config from './config'
 import { initProxy } from './proxy'
 import { initEnvs } from './envs'
@@ -528,8 +528,8 @@ registerAction('open-in-browser', openInBrowser)
 registerAction('quit', quit)
 registerAction('show-open-dialog', showOpenDialog)
 registerAction('refresh-menus', refreshMenus)
-registerAction('get-proxy-agent', getProxyAgent)
-registerAction('new-proxy-agent', newProxyAgent)
+registerAction('get-proxy-dispatcher', getProxyDispatcher)
+registerAction('new-proxy-dispatcher', newProxyDispatcher)
 
 powerMonitor.on('shutdown', quit)
 

@@ -327,7 +327,7 @@ export default {
           onClick: async () => {
             try {
               ctx.ui.useToast().show('info', 'Loading……', 0)
-              const res = await ctx.api.proxyRequest(target.href, { timeout: 10000 }).then(r => r.text())
+              const res = await ctx.api.proxyFetch(target.href, { timeout: 10000 }).then(r => r.text())
               const match = res.match(/<title[^>]*>([^<]*)<\/title>/si) || []
               const title = ctx.lib.lodash.unescape(match[1] || '').trim()
 

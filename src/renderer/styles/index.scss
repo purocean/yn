@@ -188,6 +188,11 @@ a {
           background-color: rgba(var(--g-color-40-rgb), 0.2);
         }
       }
+
+      &:focus {
+        outline: 1px var(--g-color-accent) dashed;
+        outline-offset: -1px;
+      }
     }
   }
 }

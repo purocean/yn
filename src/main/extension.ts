@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
-import request from 'request'
+import { request } from 'undici'
 import { unzip } from 'zlib'
 import tar from 'tar-stream'
 import { USER_EXTENSION_DIR } from './constant'
@@ -12,7 +12,7 @@ const RE_EXTENSION_ID = /^[@$a-z0-9-_]+$/
 
 const configKey = 'extensions'
 
-let installRequest: request.Request | null = null
+let abortcontroller: AbortController | null = null
 
 function getExtensionPath (id: string) {
   const dir = id.replace(/\//g, '$')
@@ -64,7 +64,7 @@ export async function list () {
 export async function install (id: string, url: string) {
   console.log('[extension] install', id, url)
 
-  if (installRequest) {
+  if (abortcontroller) {
     throw new Error('Another extension is being installed')
   }
 
@@ -78,15 +78,13 @@ export async function install (id: string, url: string) {
     }
   }
 
-  const agent = await getAction('get-proxy-agent')(url)
+  const dispatcher = await getAction('get-proxy-dispatcher')(url)
+  try {
+    abortcontroller = new AbortController()
+    const res = await request(url, { dispatcher, signal: abortcontroller.signal })
+    const body = await res.body.arrayBuffer()
 
-  return new Promise((resolve, reject) => {
-    installRequest = request({ url, agent, encoding: null }, (err, _, body) => {
-      if (err) {
-        reject(err)
-        return
-      }
-
+    await new Promise((resolve, reject) => {
       unzip(body, (err, data) => {
         if (err) {
           reject(err)
@@ -125,21 +123,17 @@ export async function install (id: string, url: string) {
         Readable.from(data).on('error', reject).pipe(extract)
       })
     })
-
-    installRequest.on('abort', () => {
-      reject(new Error('Install request aborted'))
-    })
-  }).finally(() => {
-    installRequest = null
-  })
+  } finally {
+    abortcontroller = null
+  }
 }
 
 export async function abortInstallation () {
   console.log('[extension] abort installation')
 
-  if (installRequest) {
-    installRequest.abort()
-    installRequest = null
+  if (abortcontroller) {
+    abortcontroller.abort()
+    abortcontroller = null
   }
 }
 

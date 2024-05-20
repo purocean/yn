@@ -24,22 +24,22 @@ export default defineConfig({
     port: 8066,
     proxy: {
       '/static': {
-        target: 'http://localhost:3044'
+        target: 'http://127.0.0.1:3044'
       },
       '/custom-css': {
-        target: 'http://localhost:3044'
+        target: 'http://127.0.0.1:3044'
       },
       '/extension': {
-        target: 'http://localhost:3044'
+        target: 'http://127.0.0.1:3044'
       },
       '/github.css': {
-        target: 'http://localhost:3044'
+        target: 'http://127.0.0.1:3044'
       },
       '/api': {
-        target: 'http://localhost:3044'
+        target: 'http://127.0.0.1:3044'
       },
       '/ws': {
-        target: 'http://localhost:3044',
+        target: 'http://127.0.0.1:3044',
         ws: true
       }
     }

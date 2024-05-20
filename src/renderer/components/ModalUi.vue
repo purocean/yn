@@ -1,18 +1,18 @@
 <template>
-  <XMask :show="show" @close="cancel" @key-enter="inputType !== 'textarea' && ok()" :mask-closeable="false" esc-closeable>
-    <div class="wrapper" :style="{width: modalWidth}" @click.stop>
+  <XMask :show="show" @close="cancel" :mask-closeable="false" esc-closeable>
+    <div class="wrapper" :style="{width: modalWidth}" @click.stop @keypress.enter.self.stop.prevent="ok" tabindex="1" v-auto-focus>
       <h4>{{title}}</h4>
       <component v-if="component" :is="component" />
       <p class="content" v-if="content">{{content}}</p>
       <template v-if="type === 'input'">
-        <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue"></textarea>
-        <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue">
+        <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue" tabindex="2" />
+        <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue" @keypress.enter.stop.prevent="ok" tabindex="2" />
       </template>
       <div class="action">
         <component v-if="action" :is="action" />
         <template v-else>
-          <button v-if="type !== 'alert'" class="btn tr" @click="cancel">{{ cancelText }}</button>
-          <button class="btn primary tr" @click="ok">{{ okText }}</button>
+          <button v-if="type !== 'alert'" class="btn tr" tabindex="4" @click="cancel">{{ cancelText }}</button>
+          <button class="btn primary tr" tabindex="3" @click="ok">{{ okText }}</button>
         </template>
       </div>
     </div>
@@ -171,6 +171,7 @@ export default defineComponent({
   box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
   overflow-wrap: break-word;
+  outline: none;
 }
 
 textarea {

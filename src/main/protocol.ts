@@ -48,6 +48,8 @@ export async function transformProtocolRequest (request: ProtocolRequest) {
   if (body) {
     req.headers['content-length'] = body.length.toString()
     req._read = Readable.from(body)._read
+  } else {
+    req._read = () => req.push(null)
   }
 
   const out = new Transform({

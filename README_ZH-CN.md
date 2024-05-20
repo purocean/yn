@@ -76,14 +76,16 @@
 
 ## 更新日志
 
-### [v3.69.1](https://github.com/purocean/yn/releases/tag/v3.69.1) 2024-05-06
+### [v3.70.1](https://github.com/purocean/yn/releases/tag/v3.70.1) 2024-05-20
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-win-x64-3.69.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-mac-arm64-3.69.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-mac-x64-3.69.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-linux-x86_64-3.69.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.69.1/Yank-Note-linux-amd64-3.69.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-win-x64-3.70.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-mac-arm64-3.70.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-mac-x64-3.70.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-linux-x86_64-3.70.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.70.1/Yank-Note-linux-amd64-3.70.1.deb)
 
-1. feat: 增加繁体中文语言支持
-2. feat: 增加配置项支持禁用编辑器粘性滚动
-3. fix: 修复更改预览器后，未刷新控制面板的问题
-4. feat(plugin): `ctx.api.proxyRequest` 方法增加 `abortSignal` 参数用以取消请求；支持 `sse` 参数用以接收服务器推送事件
+1. feat: 上下文菜单支持使用键盘导航
+2. feat: 优化对话框键盘访问
+3. perf: 当文档图片过多时，图片预览器不再显示图片导航栏
+4. refactor: 使用 `undici` 代替 `request` 库
+5. refactor(plugin): 增加 `ctx.api.proxyFetch` 方法，移除 `ctx.api.proxyRequest` 方法，更好的支持 SSE
+6. chore: 升级 Electron 到 28.3.1
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
