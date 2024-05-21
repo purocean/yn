@@ -339,8 +339,14 @@ const proxy = async (ctx: any, next: any) => {
     let timeoutTimer: NodeJS.Timeout | undefined
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { 'x-proxy-url': proxyUrl, 'x-proxy-timeout': proxyTimeout, host, ...headers } = ctx.headers
+      const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        host,
+        'x-proxy-url': proxyUrl,
+        'x-proxy-timeout': proxyTimeout,
+        'x-proxy-max-redirections': maxRedirections = '3',
+        ...headers
+      } = ctx.headers
 
       const dispatcher = proxyUrl
         ? getAction('new-proxy-dispatcher')(proxyUrl)
@@ -360,7 +366,8 @@ const proxy = async (ctx: any, next: any) => {
         method: ctx.method,
         headers,
         body: ctx.req,
-        signal
+        signal,
+        maxRedirections: Number(maxRedirections)
       })
 
       // Set the response status, headers, and body

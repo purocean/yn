@@ -48,15 +48,24 @@ export async function fetchHttp (input: RequestInfo, init?: RequestInit) {
  * @param init RequestInit
  * @returns
  */
-export async function proxyFetch (url: string, init?: Omit<RequestInit, 'body'> & { body?: any, timeout?: number, proxy?: string, jsonBody?: boolean }) {
+export async function proxyFetch (url: string, init?: Omit<RequestInit, 'body'> & {
+  body?: any,
+  timeout?: number,
+  proxy?: string,
+  jsonBody?: boolean,
+}) {
   init ??= {}
 
-  if (init.timeout) {
+  if (typeof init.timeout === 'number') {
     init.headers = { ...init.headers, 'x-proxy-timeout': String(init.timeout) }
   }
 
   if (init.proxy) {
     init.headers = { ...init.headers, 'x-proxy-url': init.proxy }
+  }
+
+  if (init.redirect === 'error' || init.redirect === 'manual') {
+    init.headers = { ...init.headers, 'x-proxy-max-redirections': '0' }
   }
 
   if (init.jsonBody) {
