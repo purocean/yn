@@ -91,6 +91,7 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
   occurrencesHighlight: 'off',
   renderLineHighlight: 'all',
   stickyScroll: { enabled: getSetting('editor.sticky-scroll-enabled', true) },
+  lightbulb: { enabled: 'on' as any },
   wordSeparators: '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?。？！，、；：“”‘’（）《》〈〉【】『』「」﹃﹄〔〕'
 })
 
