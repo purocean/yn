@@ -81,7 +81,7 @@ export async function install (id: string, url: string) {
   const dispatcher = await getAction('get-proxy-dispatcher')(url)
   try {
     abortcontroller = new AbortController()
-    const res = await request(url, { dispatcher, signal: abortcontroller.signal })
+    const res = await request(url, { dispatcher, signal: abortcontroller.signal, maxRedirections: 3 })
     const body = await res.body.arrayBuffer()
 
     await new Promise((resolve, reject) => {
