@@ -141,7 +141,12 @@ const extensions = [
   '.azcli',
   '.cls',
   '.graphql',
-  '.gql'
+  '.gql',
+  '.bib',
+  '.plantuml',
+  '.dot',
+  '.gv',
+  '.puml',
 ]
 
 const supported = (name: string) => {
