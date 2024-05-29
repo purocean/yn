@@ -2,6 +2,7 @@ import * as os from 'os'
 import ip from 'ip'
 import * as fs from 'fs-extra'
 import uniq from 'lodash/uniq'
+import type NodePty from 'node-pty'
 import isEqual from 'lodash/isEqual'
 import * as path from 'path'
 import Koa from 'koa'
@@ -693,7 +694,14 @@ const server = (port = 3000) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const io = require('socket.io')(server, { path: '/ws' })
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const pty = require('node-pty')
+
+  let pty: typeof NodePty | null = null
+
+  try {
+    pty = require('node-pty')
+  } catch (error) {
+    console.error(error)
+  }
 
   io.on('connection', (socket: any) => {
     if (!isLocalhost(socket.client.conn.remoteAddress)) {
@@ -701,25 +709,29 @@ const server = (port = 3000) => {
       return
     }
 
-    const ptyProcess = pty.spawn(shell.getShell(), [], {
-      name: 'xterm-color',
-      cols: 80,
-      rows: 24,
-      cwd: socket.handshake.query.cwd || HOME_DIR,
-      env: process.env,
-      useConpty: false,
-    })
-    ptyProcess.onData((data: any) => socket.emit('output', data))
-    ptyProcess.onExit(() => socket.disconnect())
-    socket.on('input', (data: any) => {
-      if (data.startsWith(shell.CD_COMMAND_PREFIX)) {
-        ptyProcess.write(shell.transformCdCommand(data.toString()))
-      } else {
-        ptyProcess.write(data)
-      }
-    })
-    socket.on('resize', (size: any) => ptyProcess.resize(size[0], size[1]))
-    socket.on('disconnect', () => ptyProcess.kill())
+    if (pty) {
+      const ptyProcess = pty.spawn(shell.getShell(), [], {
+        name: 'xterm-color',
+        cols: 80,
+        rows: 24,
+        cwd: socket.handshake.query.cwd || HOME_DIR,
+        env: process.env,
+        useConpty: false,
+      })
+      ptyProcess.onData((data: any) => socket.emit('output', data))
+      ptyProcess.onExit(() => socket.disconnect())
+      socket.on('input', (data: any) => {
+        if (data.startsWith(shell.CD_COMMAND_PREFIX)) {
+          ptyProcess.write(shell.transformCdCommand(data.toString()))
+        } else {
+          ptyProcess.write(data)
+        }
+      })
+      socket.on('resize', (size: any) => ptyProcess.resize(size[0], size[1]))
+      socket.on('disconnect', () => ptyProcess.kill())
+    } else {
+      socket.emit('output', 'node-pty is not compatible with this platform. Please install another version from GitHub https://github.com/purocean/yn/releases')
+    }
   })
 
   const host = config.get('server.host', 'localhost')
