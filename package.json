@@ -105,7 +105,7 @@
     "canvas-confetti": "^1.6.0",
     "crypto-js": "^4.2.0",
     "dom-to-image": "^2.6.0",
-    "electron": "28.3.1",
+    "electron": "28.3.3",
     "electron-builder": "^23.6.0",
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.1",
