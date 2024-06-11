@@ -133,7 +133,7 @@ jobs:
           coscmd upload -r out / --include out/Yank-Note*.*,out/latest*.yml
 
       - name: GH Release
-        uses: softprops/action-gh-release@v0.1.5
+        uses: softprops/action-gh-release@v2.0.5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
