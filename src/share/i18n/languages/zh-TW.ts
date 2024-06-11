@@ -375,6 +375,7 @@ const data: BaseLanguage = {
         'line-numbers': '行號',
         'enable-preview': '開啟預覽 - 開啟新檔案使用暫存標籤，雙擊標籤以變更',
         'font-family': '字體',
+        'font-ligatures': '字體連字',
         'complete-emoji': '自動補全 Emoji - 輸入 : 時顯示 Emoji 清單',
         'todo-with-time': '勾選待辦事項時自動加入時間',
         'suggest-on-trigger-characters': '自動提示 - 輸入提示符號時顯示提示。若停用，仍可使用 Ctrl+Space (依據快速鍵設定) 觸發',

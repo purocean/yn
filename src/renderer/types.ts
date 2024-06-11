@@ -311,6 +311,7 @@ export interface BuildInSettings {
   'envs': string,
   'editor.mouse-wheel-zoom': boolean,
   'editor.font-size': number,
+  'editor.font-ligatures': boolean,
   'editor.tab-size': 2 | 4,
   'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
   'editor.minimap': boolean,
