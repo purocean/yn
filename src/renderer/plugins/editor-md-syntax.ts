@@ -76,7 +76,37 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     return 0
   }
 
+  private async provideSelectionCompletionItems (selection: Monaco.Selection): Promise<Monaco.languages.CompletionList | undefined> {
+    const items = this.ctx.editor.getSimpleCompletionItems().filter(item => item.insertText.includes('${TM_SELECTED_TEXT}'))
+
+    const result: Monaco.languages.CompletionItem[] = items.map((item, i) => {
+      const range = new this.monaco.Range(
+        selection.startLineNumber,
+        selection.startColumn,
+        selection.endLineNumber,
+        selection.endColumn,
+      )
+
+      return {
+        label: { label: item.label },
+        kind: item.kind || this.monaco.languages.CompletionItemKind.Keyword,
+        insertText: item.insertText,
+        insertTextRules: this.monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+        range,
+        sortText: i.toString().padStart(7),
+        detail: item.detail,
+      }
+    })
+
+    return { suggestions: result }
+  }
+
   public async provideCompletionItems (model: Monaco.editor.IModel, position: Monaco.Position): Promise<Monaco.languages.CompletionList | undefined> {
+    const selection = this.ctx.editor.getEditor().getSelection()!
+    if (!selection.isEmpty()) {
+      return this.provideSelectionCompletionItems(selection)
+    }
+
     const line = model.getLineContent(position.lineNumber)
     const cursor = position.column - 1
     const linePrefixText = line.slice(0, cursor)
