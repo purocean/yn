@@ -100,7 +100,7 @@ markdown.linkify.add('[[', {
       match.url = `${path}.md${hashStr}`
     } else {
       match.url = hashStr
-      match.text = name || hash || url
+      match.text = parts[1] || hash || url
     }
   }
 })
