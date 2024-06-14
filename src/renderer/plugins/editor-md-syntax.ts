@@ -199,6 +199,7 @@ export default {
         { label: '/ __ Bold', insertText: '__$1__' },
         { label: '/ ~~ Delete', insertText: '~~$1~~' },
         { label: '/ == Mark', insertText: '==$1==' },
+        { label: '/ [[]] Wiki Link', insertText: '[[$1]]' },
         { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n' },
         { label: '/ ||| Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |' },
         { label: '/ ||| Small Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |\n{.small}' },
@@ -211,6 +212,7 @@ export default {
     ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
       mdLanguage.tokenizer.root.unshift(
         [/==\S.*\S?==/, 'keyword'],
+        [/\[\[[^[\]]+\]\]/, 'string'],
         [/~\S[^~]*\S?~/, 'string'],
         [/\^\S[^^]*\S?\^/, 'string'],
       )

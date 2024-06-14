@@ -73,3 +73,34 @@ markdown.core.ruler.after('normalize', 'after_normalize', state => {
   state.env.tokens = state.tokens
   return true
 })
+
+markdown.linkify.add('[[', {
+  validate: /^\s*([^[\]]+)\s*\]\]/,
+  normalize: (match) => {
+    const parts = match.raw.slice(2, -2).split('|')
+    const url = parts[0].trim()
+
+    // external link
+    if (/^[a-zA-Z]{1,8}:\/\/.*/.test(url)) {
+      match.url = url
+      match.text = parts[1] || url
+      return
+    }
+
+    const [path, hash] = url.split('#')
+    const hashStr = hash ? `#${hash}` : ''
+
+    const name = parts[1] || (path.split('/').pop() + hashStr)
+    match.text = name || url
+
+    // has extension name
+    if (/\.[^/]+$/.test(path)) {
+      match.url = url
+    } else if (path) {
+      match.url = `${path}.md${hashStr}`
+    } else {
+      match.url = hashStr
+      match.text = name || hash || url
+    }
+  }
+})
