@@ -1,7 +1,7 @@
 import { Plugin } from '@fe/context'
 import type StateInline from 'markdown-it/lib/rules_inline/state_inline'
 
-const reMatch = /^\s*([^[#|]+)(?:#([^|]*))?(?:\|([^\]]*))?\s*$/
+const reMatch = /^\s*([^[#|]*)?(?:#([^|]*))?(?:\|([^\]]*))?\s*$/
 const reExternalLink = /^[a-zA-Z]{1,8}:\/\/.*/
 const reExtName = /\.[^/]+$/
 
@@ -22,7 +22,7 @@ function wikiLinks (state: StateInline, silent?: boolean) {
     return false
   }
 
-  const link = parts[1].trim()
+  const link = (parts[1] || '').trim()
   const hash = parts[2] || ''
   const label = parts[3] || ''
 
