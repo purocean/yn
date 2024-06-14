@@ -212,7 +212,7 @@ export default {
     ctx.editor.tapMarkdownMonarchLanguage(mdLanguage => {
       mdLanguage.tokenizer.root.unshift(
         [/==\S.*\S?==/, 'keyword'],
-        [/\[\[[^[\]]+\]\]/, 'string'],
+        [/(\[\[)([^[\]]+)(\]\])/, ['keyword.predefined', 'string', 'keyword.predefined']],
         [/~\S[^~]*\S?~/, 'string'],
         [/\^\S[^^]*\S?\^/, 'string'],
       )
