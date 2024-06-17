@@ -1,4 +1,4 @@
-import { Plugin } from '@fe/context'
+import ctx, { Plugin } from '@fe/context'
 import type StateInline from 'markdown-it/lib/rules_inline/state_inline'
 
 const reMatch = /^\s*([^[#|]*)?(?:#([^|]*))?(?:\|([^\]]*))?\s*$/
@@ -46,7 +46,7 @@ function wikiLinks (state: StateInline, silent?: boolean) {
   }
 
   if (!silent) {
-    state.push('link_open', 'a', 1).attrs = [['href', url]]
+    state.push('link_open', 'a', 1).attrs = [['href', url], [ctx.args.DOM_ATTR_NAME.WIKI_LINK, 'true']]
     state.push('text', '', 0).content = text
     state.push('link_close', 'a', -1)
   }

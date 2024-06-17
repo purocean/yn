@@ -155,7 +155,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
   private readonly linkStartPattern = /\[([^\]]*?)\]\(\s*([^\s()]*)$/
 
   /// [[...|
-  private readonly wikiLinkStartPattern = /\[\[\s*([^\s[\]]*)$/
+  private readonly wikiLinkStartPattern = /\[\[\s*([^[\]]*)$/
 
   /// [...|
   private readonly referenceLinkStartPattern = /\[\s*([^\s[\]]*)$/
@@ -297,10 +297,18 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
     for (const item of items) {
       i++
       const isDir = item.type === 'dir'
-      const label = isDir ? item.name + '/' : item.name
+      let label = isDir ? item.name + '/' : item.name
+      let insertText = this.ctx.utils.encodeMarkdownLink(label)
+
+      // Remove extension for wiki links
+      if (context.kind === CompletionContextKind.WikiLink) {
+        label = label.replace(/\.(md|markdown)$/, '')
+        insertText = label.replaceAll(']', '&#93;').replaceAll('[', '&#91;')
+      }
+
       yield {
         label,
-        insertText: this.ctx.utils.encodeMarkdownLink(label),
+        insertText,
         kind: isDir ? this.monaco.languages.CompletionItemKind.Folder : this.monaco.languages.CompletionItemKind.File,
         range: {
           insert: insertRange,

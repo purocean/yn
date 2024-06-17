@@ -326,6 +326,7 @@ export interface BuildInSettings {
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,
+  'render.md-wiki-links': boolean,
   'render.md-typographer': boolean,
   'render.md-emoji': boolean,
   'render.md-sub': boolean,

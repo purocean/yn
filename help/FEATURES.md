@@ -69,6 +69,7 @@ Type '/' in the editor to get prompts
     *[HTML]: Hyper Text Markup Language
     *[W3C]:  World Wide Web Consortium
     The HTML specification is maintained by the W3C.
++ Wiki Link: Supports using `[[filename#anchor|display text]]` syntax to link documents, such as [[README#Highlights|Highlights]]
 
 ## Github Alerts
 

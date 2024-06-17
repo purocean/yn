@@ -280,6 +280,14 @@ const schema: SettingSchema = ({
       group: 'render',
       required: true,
     },
+    'render.md-wiki-links': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.render.md-wiki-links',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'render',
+      required: true,
+    },
     'render.md-typographer': {
       defaultValue: false,
       title: 'T_setting-panel.schema.render.md-typographer',

@@ -6,12 +6,14 @@ import { removeQuery, sleep } from '@fe/utils'
 import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
-import { basename, dirname, join, resolve } from '@fe/utils/path'
+import { basename, dirname, join, normalizeSep, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/base'
 import { getRenderIframe } from '@fe/services/view'
 import { getAllCustomEditors } from '@fe/services/editor'
+import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
+import type { Components } from '@fe/types'
 
 async function getElement (id: string) {
   id = id.replaceAll('%28', '(').replaceAll('%29', ')')
@@ -26,6 +28,55 @@ async function getElement (id: string) {
     document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
 
   return _find(id) || _find(id.toUpperCase())
+}
+
+async function getFirstMatchPath (repo: string, dir: string, path: string) {
+  if (path.includes('/')) {
+    return path
+  }
+
+  const findInDir = (items: Components.Tree.Node[]): string | null => {
+    for (const item of items) {
+      const p = normalizeSep(item.path)
+      if (
+        item.type === 'file' &&
+          (p === normalizeSep(join(dir, path)) ||
+          p === normalizeSep(join(dir, `${path}.md`)))
+      ) {
+        return item.path
+      }
+
+      if (item.children) {
+        const found = findInDir(item.children)
+        if (found) {
+          return found
+        }
+      }
+    }
+
+    return null
+  }
+
+  const findByName = (items: Components.Tree.Node[]): string | null => {
+    for (const item of items) {
+      if (item.type === 'file' && (item.name === path || item.name === `${path}.md`)) {
+        return item.path
+      }
+
+      if (item.children) {
+        const found = findByName(item.children)
+        if (found) {
+          return found
+        }
+      }
+    }
+
+    return null
+  }
+
+  const tree = await fetchTree(repo, { by: 'mtime', order: 'desc' })
+
+  return findInDir(tree) || findByName(tree)
 }
 
 function getAnchorElement (target: HTMLElement) {
@@ -92,18 +143,33 @@ function handleLink (link: HTMLAnchorElement): boolean {
 
     const tmp = decodeURI(href).split('#')
 
-    let path = tmp[0]
-    if (!path.startsWith('/')) { // to absolute path
-      path = join(dirname(filePath || ''), path)
+    const _switchDoc = async () => {
+      let path = normalizeSep(tmp[0])
+
+      const dir = dirname(filePath || '')
+
+      // wiki link
+      if (link.getAttribute(DOM_ATTR_NAME.WIKI_LINK)) {
+        path = (await getFirstMatchPath(fileRepo, dir, path)) || path
+      }
+
+      if (!path.startsWith('/')) { // to absolute path
+        path = join(dir, path)
+      }
+
+      const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
+
+      return switchDoc(file)
     }
 
+    const path = normalizeSep(tmp[0])
     const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
 
     const isMarkdownFile = /(\.md$|\.md#)/.test(href)
     const supportOpenDirectly = isMarkdownFile || getAllCustomEditors().some(x => x.when?.({ doc: file }))
 
     if (supportOpenDirectly) {
-      switchDoc(file).then(async () => {
+      _switchDoc().then(async () => {
         const hash = tmp.slice(1).join('#')
         // jump anchor
         if (hash) {

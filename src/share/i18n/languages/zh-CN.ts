@@ -386,6 +386,7 @@ const data: BaseLanguage = {
         'md-html': '启用 HTML',
         'md-breaks': '将 \\n 转换为 &lt;br&gt;',
         'md-linkify': '自动将类似 URL 的文本转换为链接',
+        'md-wiki-links': '启用 Wiki 链接 - [[link]]',
         'md-typographer': '启用排版美化，如 (c) -> ©',
         'md-sup': '启用上标语法: 29^th^',
         'md-sub': '启用下标语法: H~2~O',
