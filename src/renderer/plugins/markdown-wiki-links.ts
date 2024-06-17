@@ -1,9 +1,10 @@
 import ctx, { Plugin } from '@fe/context'
 import type StateInline from 'markdown-it/lib/rules_inline/state_inline'
 
-const reMatch = /^\s*([^[#|]*)?(?:#([^|]*))?(?:\|([^\]]*))?\s*$/
+const reMatch = /^([^[#|]*)?(?:#([^#|]*))?(?:\|([^\]]*))?$/
 const reExternalLink = /^[a-zA-Z]{1,8}:\/\/.*/
 const reExtName = /\.[^/]+$/
+const rePos = /(:\d{1,6},?\d{0,6})$/
 
 function wikiLinks (state: StateInline, silent?: boolean) {
   // check [[
@@ -22,7 +23,7 @@ function wikiLinks (state: StateInline, silent?: boolean) {
     return false
   }
 
-  const link = (parts[1] || '').trim()
+  let link = (parts[1] || '').trim()
   const hash = parts[2] || ''
   const label = parts[3] || ''
 
@@ -33,14 +34,21 @@ function wikiLinks (state: StateInline, silent?: boolean) {
 
   // internal link
   if (!reExternalLink.test(link)) {
+    let posStr = ''
+    const posMatch = link.match(rePos)
+    if (posMatch) {
+      link = link.replace(rePos, '')
+      posStr = posMatch[1]
+    }
+
     const fileName = link.split('/').pop()
-    text = label || (fileName ? fileName + hashStr : url)
+    text = label || (fileName ? (fileName + posStr + hashStr) : url)
 
     // no extension name
     if (link && !reExtName.test(link)) {
-      url = `${link}.md${hashStr}`
+      url = `${link}.md${posStr}${hashStr}`
     } else if (!link) {
-      url = hashStr
+      url = posStr + hashStr
       text = label || hash || url
     }
   }

@@ -1,6 +1,6 @@
 import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
-import { Plugin } from '@fe/context'
+import ctx, { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { removeQuery, sleep } from '@fe/utils'
 import { isElectron, isWindows } from '@fe/support/env'
@@ -142,10 +142,33 @@ function handleLink (link: HTMLAnchorElement): boolean {
     }
 
     const tmp = decodeURI(href).split('#')
+    const rePos = /:([0-9]+),?([0-9]+)?$/
+
+    const setPosition = (line: number, column: number) => {
+      ctx.view.disableSyncScrollAwhile(() => {
+        if (ctx.editor.isDefault()) {
+          ctx.editor.highlightLine(line, true, 1000)
+          ctx.editor.getEditor().setPosition({ lineNumber: line, column })
+          ctx.editor.getEditor().focus()
+        }
+
+        ctx.view.highlightLine(line, true, 1000)
+      })
+    }
+
+    const parsePathPos = (path: string): {pos: [number, number] | null, path: string} => {
+      const match = path.match(rePos)
+      let pos: [number, number] | null = null
+      if (match) {
+        path = path.replace(rePos, '')
+        pos = [parseInt(match[1]), match[2] ? parseInt(match[2]) : 1]
+      }
+
+      return { pos, path }
+    }
 
     const _switchDoc = async () => {
-      let path = normalizeSep(tmp[0])
-
+      let { path, pos } = parsePathPos(normalizeSep(tmp[0]))
       const dir = dirname(filePath || '')
 
       // wiki link
@@ -159,13 +182,15 @@ function handleLink (link: HTMLAnchorElement): boolean {
 
       const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
 
-      return switchDoc(file)
+      return switchDoc(file).then(() => {
+        pos && setPosition(pos[0], pos[1])
+      })
     }
 
     const path = normalizeSep(tmp[0])
     const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
 
-    const isMarkdownFile = /(\.md$|\.md#)/.test(href)
+    const isMarkdownFile = /(\.md$|\.md#|\.md:)/.test(href)
     const supportOpenDirectly = isMarkdownFile || getAllCustomEditors().some(x => x.when?.({ doc: file }))
 
     if (supportOpenDirectly) {
@@ -193,6 +218,10 @@ function handleLink (link: HTMLAnchorElement): boolean {
       getElement(href.replace(/^#/, '')).then(el => {
         el && scrollIntoView(el)
       })
+      return true
+    } else if (href && href.startsWith(':') && rePos.test(href)) { // for pos
+      const { pos } = parsePathPos(href)
+      pos && setPosition(pos[0], pos[1])
       return true
     } else {
       return false

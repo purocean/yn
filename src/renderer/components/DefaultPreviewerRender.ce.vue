@@ -358,6 +358,7 @@ body.find-in-preview-highlight ::selection {
     }
 
     a[href$=".md"],
+    a[href*=".md:"],
     a[href*=".md#"] {
       &:after {
         content: '\200D\2002';
