@@ -74,7 +74,7 @@ async function getFirstMatchPath (repo: string, dir: string, path: string) {
     return null
   }
 
-  const tree = await fetchTree(repo, { by: 'mtime', order: 'desc' })
+  const tree = await fetchTree(repo, { by: 'mtime', order: 'desc' }).catch(() => [])
 
   return findInDir(tree) || findByName(tree)
 }
