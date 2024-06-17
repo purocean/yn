@@ -125,7 +125,7 @@
     "lodash-es": "^4.17.21",
     "markdown-it": "^14.1.0",
     "markdown-it-abbr": "^2.0.0",
-    "markdown-it-attributes": "^1.1.1",
+    "markdown-it-attributes": "^1.2.0",
     "markdown-it-container": "^4.0.0",
     "markdown-it-emoji": "^3.0.0",
     "markdown-it-github-alerts": "^0.3.0",
