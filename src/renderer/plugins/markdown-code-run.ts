@@ -166,6 +166,7 @@ const RunCode = defineComponent({
 
     onBeforeUnmount(() => {
       appendLog = undefined
+      abort()
       removeHook('CODE_RUNNER_CHANGE', refreshRunner)
     })
 
@@ -214,6 +215,7 @@ const RunPlugin = (md: Markdown) => {
 
     if (codeNode && Array.isArray(codeNode.children)) {
       codeNode.children.push(h(RunCode, {
+        key: code,
         code,
         firstLine,
         language: token.info,
