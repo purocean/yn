@@ -72,5 +72,9 @@ export async function transformProtocolRequest (request: ProtocolRequest) {
     },
   })
 
+  res.on('close', () => {
+    res.emit('finish')
+  })
+
   return { req, res, out }
 }
