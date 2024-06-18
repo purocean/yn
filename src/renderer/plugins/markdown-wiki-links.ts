@@ -3,7 +3,6 @@ import type StateInline from 'markdown-it/lib/rules_inline/state_inline'
 
 const reMatch = /^([^[#|]*)?(?:#([^#|]*))?(?:\|([^\]]*))?$/
 const reExternalLink = /^[a-zA-Z]{1,8}:\/\/.*/
-const reExtName = /\.[^/]+$/
 const rePos = /(:\d{1,6},?\d{0,6})$/
 
 function wikiLinks (state: StateInline, silent?: boolean) {
@@ -31,6 +30,7 @@ function wikiLinks (state: StateInline, silent?: boolean) {
 
   let url = link + hashStr
   let text = label || url
+  let isAnchor = false
 
   // internal link
   if (!reExternalLink.test(link)) {
@@ -44,17 +44,24 @@ function wikiLinks (state: StateInline, silent?: boolean) {
     const fileName = link.split('/').pop()
     text = label || (fileName ? (fileName + posStr + hashStr) : url)
 
-    // no extension name
-    if (link && !reExtName.test(link)) {
-      url = `${link}.md${posStr}${hashStr}`
-    } else if (!link) {
+    if (!link) {
       url = posStr + hashStr
       text = label || hash || url
+      isAnchor = true
     }
   }
 
   if (!silent) {
-    state.push('link_open', 'a', 1).attrs = [['href', url], [ctx.args.DOM_ATTR_NAME.WIKI_LINK, 'true']]
+    const attrs: [string, string][] = [
+      ['href', url],
+      [ctx.args.DOM_ATTR_NAME.WIKI_LINK, 'true'],
+    ]
+
+    if (isAnchor) {
+      attrs.push([ctx.args.DOM_ATTR_NAME.IS_ANCHOR, 'true'])
+    }
+
+    state.push('link_open', 'a', 1).attrs = attrs
     state.push('text', '', 0).content = text
     state.push('link_close', 'a', -1)
   }

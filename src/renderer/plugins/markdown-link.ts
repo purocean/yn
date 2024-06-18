@@ -30,9 +30,9 @@ async function getElement (id: string) {
   return _find(id) || _find(id.toUpperCase())
 }
 
-async function getFirstMatchPath (repo: string, dir: string, path: string) {
-  if (path.includes('/')) {
-    return path
+async function getFirstMatchPath (repo: string, dir: string, fileName: string) {
+  if (fileName.includes('/')) {
+    return fileName
   }
 
   const findInDir = (items: Components.Tree.Node[]): string | null => {
@@ -40,8 +40,8 @@ async function getFirstMatchPath (repo: string, dir: string, path: string) {
       const p = normalizeSep(item.path)
       if (
         item.type === 'file' &&
-          (p === normalizeSep(join(dir, path)) ||
-          p === normalizeSep(join(dir, `${path}.md`)))
+          (p === normalizeSep(join(dir, fileName)) ||
+          p === normalizeSep(join(dir, `${fileName}.md`)))
       ) {
         return item.path
       }
@@ -59,7 +59,7 @@ async function getFirstMatchPath (repo: string, dir: string, path: string) {
 
   const findByName = (items: Components.Tree.Node[]): string | null => {
     for (const item of items) {
-      if (item.type === 'file' && (item.name === path || item.name === `${path}.md`)) {
+      if (item.type === 'file' && (item.name === fileName || item.name === `${fileName}.md`)) {
         return item.path
       }
 
@@ -167,13 +167,17 @@ function handleLink (link: HTMLAnchorElement): boolean {
       return { pos, path }
     }
 
+    const isWikiLink = !!link.getAttribute(DOM_ATTR_NAME.WIKI_LINK)
+
     const _switchDoc = async () => {
       let { path, pos } = parsePathPos(normalizeSep(tmp[0]))
       const dir = dirname(filePath || '')
 
-      // wiki link
-      if (link.getAttribute(DOM_ATTR_NAME.WIKI_LINK)) {
-        path = (await getFirstMatchPath(fileRepo, dir, path)) || path
+      if (isWikiLink) {
+        path = normalizeSep(path)
+        path = path.replace(/:/g, '/') // replace all ':' to '/'
+        path = await getFirstMatchPath(fileRepo, dir, path) || path
+        path = path.endsWith('.md') ? path : `${path}.md`
       }
 
       if (!path.startsWith('/')) { // to absolute path
@@ -184,17 +188,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
 
       return switchDoc(file).then(() => {
         pos && setPosition(pos[0], pos[1])
-      })
-    }
-
-    const path = normalizeSep(tmp[0])
-    const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
-
-    const isMarkdownFile = /(\.md$|\.md#|\.md:)/.test(href)
-    const supportOpenDirectly = isMarkdownFile || getAllCustomEditors().some(x => x.when?.({ doc: file }))
-
-    if (supportOpenDirectly) {
-      _switchDoc().then(async () => {
+      }).then(async () => {
         const hash = tmp.slice(1).join('#')
         // jump anchor
         if (hash) {
@@ -212,7 +206,16 @@ function handleLink (link: HTMLAnchorElement): boolean {
           }
         }
       })
+    }
 
+    const path = normalizeSep(tmp[0])
+    const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
+
+    const isMarkdownFile = /(\.md$|\.md#|\.md:)/.test(href)
+    const supportOpenDirectly = isMarkdownFile || getAllCustomEditors().some(x => x.when?.({ doc: file }))
+
+    if (supportOpenDirectly) {
+      _switchDoc()
       return true
     } else if (href && href.startsWith('#')) { // for anchor
       getElement(href.replace(/^#/, '')).then(el => {
@@ -222,6 +225,9 @@ function handleLink (link: HTMLAnchorElement): boolean {
     } else if (href && href.startsWith(':') && rePos.test(href)) { // for pos
       const { pos } = parsePathPos(href)
       pos && setPosition(pos[0], pos[1])
+      return true
+    } else if (isWikiLink) {
+      _switchDoc()
       return true
     } else {
       return false
@@ -238,6 +244,10 @@ function convertLink (state: StateCore) {
   }
 
   const link = (token: Token) => {
+    if (token.attrGet(DOM_ATTR_NAME.WIKI_LINK)) {
+      return
+    }
+
     const isAnchor = token.tag === 'a'
     const attrName = isAnchor ? 'href' : 'src'
     const attrVal = decodeURIComponent(token.attrGet(attrName) || '')

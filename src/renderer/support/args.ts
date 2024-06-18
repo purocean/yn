@@ -39,6 +39,7 @@ export const DOM_ATTR_NAME = {
   TOKEN_IDX: 'data-token-idx',
   DISPLAY_NONE: 'display-none',
   WIKI_LINK: 'wiki-link',
+  IS_ANCHOR: 'is-anchor',
 }
 
 export const DOM_CLASS_NAME = {
