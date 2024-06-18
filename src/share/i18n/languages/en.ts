@@ -493,6 +493,7 @@ const data = {
   },
   'code-run': {
     'run': 'Run',
+    'stop': 'Stop',
     'run-in-xterm-tips': 'Run code in terminal, %s + click do not exit',
     'run-in-xterm': 'Run in terminal',
     'running': 'Running...',

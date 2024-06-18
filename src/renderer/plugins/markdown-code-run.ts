@@ -1,4 +1,4 @@
-import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref, VNode, watch, watchEffect } from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref, shallowRef, VNode, watch, watchEffect } from 'vue'
 import Markdown from 'markdown-it'
 import { escape } from 'lodash-es'
 import { Plugin } from '@fe/context'
@@ -30,8 +30,10 @@ const RunCode = defineComponent({
     const { t } = useI18n()
     const instance = getCurrentInstance()
     const result = ref('')
+    const abortController = shallowRef<AbortController>()
     const hash = computed(() => md5(props.language + props.code))
     const runner = ref<CodeRunner>()
+    const status = computed(() => runner.value?.nonInterruptible ? 'idle' : (abortController.value ? 'running' : 'idle'))
     const getTerminalCmd = computed(() => runner.value?.getTerminalCmd(props.language!, props.firstLine!))
 
     let hasResult = false
@@ -51,7 +53,22 @@ const RunCode = defineComponent({
       cache[hash.value] = result.value
     }
 
+    const abort = () => {
+      if (abortController.value && !abortController.value.signal.aborted) {
+        abortController.value.abort()
+        abortController.value = undefined
+        if (!hasResult) {
+          result.value = ''
+        }
+      }
+    }
+
     const run = async () => {
+      if (status.value === 'running') {
+        abort()
+        return
+      }
+
       const { code, language } = props
 
       hasResult = false
@@ -64,7 +81,11 @@ const RunCode = defineComponent({
       result.value = t('code-run.running')
 
       try {
-        const { type, value: val } = await runner.value.run(language!, code)
+        if (!runner.value.nonInterruptible) {
+          abortController.value = new AbortController()
+        }
+
+        const { type, value: val } = await runner.value.run(language!, code, { signal: abortController.value?.signal })
 
         if (typeof val === 'string') {
           appendLog?.(type, val)
@@ -73,6 +94,10 @@ const RunCode = defineComponent({
 
         // read stream
         while (true) {
+          if (abortController.value && abortController.value.signal.aborted) {
+            break
+          }
+
           const { done, value } = await val.read()
           if (done) {
             logger.debug('run code done >', value)
@@ -99,7 +124,11 @@ const RunCode = defineComponent({
           appendLog(type, valStr)
         }
       } catch (error: any) {
-        result.value = error.message
+        if (error.name !== 'AbortError') {
+          appendLog?.('plain', error.message)
+        }
+      } finally {
+        abort()
       }
     }
 
@@ -146,8 +175,8 @@ const RunCode = defineComponent({
       return [
         h('div', { class: 'p-mcr-run-code-action skip-export' }, [
           h('div', {
-            title: t('code-run.run'),
-            class: 'p-mcr-run-btn',
+            title: status.value !== 'running' ? t('code-run.run') : t('code-run.stop'),
+            class: 'p-mcr-run-btn' + (status.value === 'running' ? ' p-mcr-run-btn-stop' : ''),
             onClick: run
           }),
           h('div', {
@@ -218,6 +247,18 @@ export default {
         background: rgba(0, 0, 0, 0);
         cursor: pointer;
         outline: none;
+      }
+
+      .markdown-view .markdown-body .p-mcr-run-btn.p-mcr-run-btn-stop {
+        border: .56em #b7b3b3 solid;
+        border-radius: 4px;
+        animation: p-mcr-run-btn-stop 1.5s infinite;
+      }
+
+      @keyframes p-mcr-run-btn-stop {
+        0% { border-color: #b7b3b3; }
+        50% { border-color: #b7c3f3; }
+        100% { border-color: #b7b3b3; }
       }
 
       .markdown-view .markdown-body .p-mcr-run-xterm-btn {

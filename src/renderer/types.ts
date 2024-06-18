@@ -516,12 +516,13 @@ export type Renderer = {
 export interface CodeRunner {
   name: string;
   order?: number;
+  nonInterruptible?: boolean
   match: (language: string, magicComment: string) => boolean;
   getTerminalCmd: (language: string, magicComment: string) => {
     start: string,
     exit: string,
   } | null;
-  run: (language: string, code: string) => Promise<{
+  run: (language: string, code: string, opts?: { signal?: AbortSignal }) => Promise<{
     type: 'html' | 'plain',
     value: ReadableStreamDefaultReader | string,
   }>;

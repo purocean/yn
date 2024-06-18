@@ -494,6 +494,7 @@ const data: BaseLanguage = {
   },
   'code-run': {
     'run': '运行',
+    'stop': '停止',
     'run-in-xterm-tips': '在终端中运行代码，%s + 单击不退出解释器',
     'run-in-xterm': '终端中运行',
     'running': '运行中……',

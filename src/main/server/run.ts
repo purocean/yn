@@ -17,17 +17,38 @@ function execFile (file: string, args: string[], options?: cp.ExecFileOptions) {
     })
 
     process.on('spawn', () => {
-      const output = [process.stdout, process.stderr].filter(Boolean) as NodeJS.ReadableStream[]
-      resolve(mergeStreams(output))
+      const output = mergeStreams([process.stdout, process.stderr].filter(Boolean) as NodeJS.ReadableStream[])
+
+      output.on('close', () => {
+        console.log('execFile process closed')
+        process.kill()
+      })
+
+      resolve(output)
     })
   })
 }
 
 function execCmd (cmd: string, options?: cp.ExecOptions, onComplete?: () => void) {
-  const process = cp.exec(cmd, { timeout: 300 * 1000, ...options })
-  onComplete && process.on('close', onComplete)
-  const output = [process.stdout, process.stderr].filter(Boolean) as NodeJS.ReadableStream[]
-  return mergeStreams(output)
+  return new Promise<string | NodeJS.ReadableStream>((resolve) => {
+    const process = cp.exec(cmd, { timeout: 300 * 1000, ...options })
+
+    process.on('error', error => {
+      resolve(error.message)
+    })
+
+    process.on('spawn', () => {
+      const output = mergeStreams([process.stdout, process.stderr].filter(Boolean) as NodeJS.ReadableStream[])
+
+      output.on('close', () => {
+        console.log('execCmd process closed')
+        onComplete && onComplete()
+        process.kill()
+      })
+
+      resolve(output)
+    })
+  })
 }
 
 const runCode = async (cmd: { cmd: string, args: string[] } | string, code: string): Promise<string | NodeJS.ReadableStream> => {

@@ -111,6 +111,7 @@ export default {
     ctx.runner.registerRunner({
       name: 'javascript',
       order: 100,
+      nonInterruptible: true,
       match (language) {
         return ['js', 'javascript'].includes(language.toLowerCase())
       },
