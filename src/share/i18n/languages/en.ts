@@ -177,6 +177,7 @@ const data = {
   },
   'document': {
     'current-path': 'Current Path: %s',
+    'invalid-filename': 'File name cannot contain the following characters: %s',
     'password-create': '[Create] Please enter a password',
     'password-save': '[Save] Please enter password of the file',
     'password-open': '[Open] Please enter password of the file',

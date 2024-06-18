@@ -178,6 +178,7 @@ const data: BaseLanguage = {
   },
   'document': {
     'current-path': '当前路径: %s',
+    'invalid-filename': '文件名不能包含以下字符: %s',
     'password-create': '[创建] 请输入密码',
     'password-save': '[保存] 请输入密码',
     'password-open': '[打开] 请输入密码',

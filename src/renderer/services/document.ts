@@ -41,8 +41,10 @@ function encrypt (content: any, password: string) {
 }
 
 function checkFilePath (path: string) {
-  if (path.includes('#')) {
-    throw new Error('Path should not contain #')
+  // check filename is valid
+  const filename = basename(path)
+  if (/[<>:"|?*#]/.test(filename)) {
+    throw new Error(t('document.invalid-filename', '< > : " / \\ | ? * #'))
   }
 }
 
