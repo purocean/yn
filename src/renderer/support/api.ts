@@ -484,9 +484,9 @@ export async function convertFile (
  * @param opts
  * @returns result
  */
-export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, opts?: { stream?: false, signal?: AbortSignal }): Promise<ReadableStreamDefaultReader>
-export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, opts?: { stream?: false, signal?: AbortSignal }): Promise<string>
-export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, opts?: { stream?: false, signal?: AbortSignal }): Promise<ReadableStreamDefaultReader | string> {
+export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, opts?: { stream?: boolean, signal?: AbortSignal }): Promise<ReadableStreamDefaultReader>
+export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, opts?: { stream?: boolean, signal?: AbortSignal }): Promise<string>
+export async function runCode (cmd: string | { cmd: string, args: string[] }, code: string, opts?: { stream?: boolean, signal?: AbortSignal }): Promise<ReadableStreamDefaultReader | string> {
   const response = await fetchHttp('/api/run', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
