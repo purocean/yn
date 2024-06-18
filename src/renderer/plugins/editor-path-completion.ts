@@ -62,7 +62,7 @@ interface CompletionContext {
 }
 
 class CompletionProvider implements Monaco.languages.CompletionItemProvider {
-  triggerCharacters = ['/', '#', '[']
+  triggerCharacters = ['/', ':', '#', '[']
 
   private readonly monaco: typeof Monaco
   private readonly ctx: Ctx
@@ -263,17 +263,24 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
   }
 
   private async * providePathSuggestions (position: Monaco.Position, context: CompletionContext): AsyncIterable<Monaco.languages.CompletionItem> {
-    const valueBeforeLastSlash = context.linkPrefix.substring(0, context.linkPrefix.lastIndexOf('/') + 1) // keep the last slash
+    let idx = context.linkPrefix.lastIndexOf('/')
+
+    if (context.kind === CompletionContextKind.WikiLink) {
+      idx = Math.max(context.linkPrefix.lastIndexOf(':'), idx)
+    }
+
+    const valueBeforeLastSlash = context.linkPrefix.substring(0, idx + 1) // keep the last slash
 
     const currentFile = this.ctx.store.state.currentFile
     if (!currentFile) {
       return
     }
 
-    const parentDir = this.ctx.utils.path.resolve(
-      this.ctx.utils.path.dirname(currentFile.path),
-      valueBeforeLastSlash || '.'
-    )
+    const basePath = this.ctx.utils.path.dirname(currentFile.path)
+
+    const parentDir = context.kind === CompletionContextKind.WikiLink
+      ? this.ctx.utils.path.resolve(basePath, valueBeforeLastSlash.replace(/:/g, '/') || '.')
+      : this.ctx.utils.path.resolve(basePath, valueBeforeLastSlash || '.')
 
     const pathSegmentStart = position.delta(0, valueBeforeLastSlash.length - context.linkPrefix.length)
     const insertRange = new this.monaco.Range(
