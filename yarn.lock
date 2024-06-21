@@ -2821,11 +2821,11 @@ brace-expansion@^2.0.1:
     balanced-match "^1.0.0"
 
 braces@^3.0.1, braces@~3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/braces/-/braces-3.0.2.tgz#3454e1a462ee8d599e236df336cd9ea4f8afe107"
-  integrity sha512-b8um+L1RzM3WDSzvhm6gIz1yfTbBt6YTlcEKAvsmqCZZFw46z626lVj9j1yEPW33H5H+lBQpZMP1k8l+78Ha0A==
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/braces/-/braces-3.0.3.tgz#490332f40919452272d55a8480adc0c441358789"
+  integrity sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==
   dependencies:
-    fill-range "^7.0.1"
+    fill-range "^7.1.1"
 
 browserslist@^4.17.5:
   version "4.19.1"
@@ -4021,10 +4021,10 @@ electron-updater@^6.1.1:
     semver "^7.3.8"
     typed-emitter "^2.1.0"
 
-electron@28.3.1:
-  version "28.3.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-28.3.1.tgz#babb3ff8e246336e9cd1c1966f16a55ba723ea06"
-  integrity sha512-aF9fONuhVDJlctJS7YOw76ynxVAQdfIWmlhRMKits24tDcdSL0eMHUS0wWYiRfGWbQnUKB6V49Rf17o32f4/fg==
+electron@28.3.3:
+  version "28.3.3"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-28.3.3.tgz#2df898f653c4f77b66b4cf3eeba79d8bea6d03c0"
+  integrity sha512-ObKMLSPNhomtCOBAxFS8P2DW/4umkh72ouZUlUKzXGtYuPzgr1SYhskhFWgzAsPtUzhL2CzyV2sfbHcEW4CXqw==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^18.11.18"
@@ -4683,10 +4683,10 @@ filenamify@^5.1.0:
     strip-outer "^2.0.0"
     trim-repeated "^2.0.0"
 
-fill-range@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/fill-range/-/fill-range-7.0.1.tgz#1919a6a7c75fe38b2c7c77e5198535da9acdda40"
-  integrity sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==
+fill-range@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/fill-range/-/fill-range-7.1.1.tgz#44265d3cac07e3ea7dc247516380643754a05292"
+  integrity sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==
   dependencies:
     to-regex-range "^5.0.1"
 
@@ -6700,10 +6700,10 @@ markdown-it-abbr@^2.0.0:
   resolved "https://registry.yarnpkg.com/markdown-it-abbr/-/markdown-it-abbr-2.0.0.tgz#aa01d8ff23ebf672f9a7db02a974e59254ce7acb"
   integrity sha512-of7C8pXSjXjDojW4neNP+jD7inUYH/DO0Ca+K/4FUEccg0oHAEX/nfscw0jfz66PJbYWOAT9U8mjO21X5p6aAw==
 
-markdown-it-attributes@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/markdown-it-attributes/-/markdown-it-attributes-1.1.1.tgz#b52cc6bbc7c2a8d1700c8eb11a6c0e56a7443fcb"
-  integrity sha512-oiOH6eb3WIXQ4XF+uyiMjP+scV0inkTIl+fGTXrXfDSD8cn1UJV+ZGVtN/ytukJ576MZssZUXCBRaL6SEQMxDQ==
+markdown-it-attributes@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/markdown-it-attributes/-/markdown-it-attributes-1.2.0.tgz#1f3403fb7bd510c6ca4eeaa58c4106313f643234"
+  integrity sha512-FDdqndq26KbWrO9ymFz7JyhnxXMP4vmPek7iAMNuQlfvgxO7zeAU8JfARzqcUYBiqsTc+H7wa9ybhIZVKAAWug==
 
 markdown-it-container@^4.0.0:
   version "4.0.0"

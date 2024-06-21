@@ -178,6 +178,7 @@ const data: BaseLanguage = {
   },
   'document': {
     'current-path': '當前路徑： %s',
+    'invalid-filename': '檔案名不能包含以下字符: %s',
     'password-create': '[創建] 請輸入密碼',
     'password-save': '[保存] 請輸入密碼',
     'password-open': '[打開] 請輸入密碼',
@@ -375,6 +376,7 @@ const data: BaseLanguage = {
         'line-numbers': '行號',
         'enable-preview': '開啟預覽 - 開啟新檔案使用暫存標籤，雙擊標籤以變更',
         'font-family': '字體',
+        'font-ligatures': '字體連字',
         'complete-emoji': '自動補全 Emoji - 輸入 : 時顯示 Emoji 清單',
         'todo-with-time': '勾選待辦事項時自動加入時間',
         'suggest-on-trigger-characters': '自動提示 - 輸入提示符號時顯示提示。若停用，仍可使用 Ctrl+Space (依據快速鍵設定) 觸發',
@@ -385,6 +387,7 @@ const data: BaseLanguage = {
         'md-html': '啟用 HTML',
         'md-breaks': '將 \\n 轉換為 &lt;br&gt;',
         'md-linkify': '自動將類似 URL 的文字轉換為連結',
+        'md-wiki-links': '啟用 Wiki 連結 - [[link]]',
         'md-typographer': '啟用排版美化，如 (c) -> ©',
         'md-sup': '啟用上標語法: 29^th^',
         'md-sub': '啟用下標語法: H~2~O',
@@ -492,6 +495,7 @@ const data: BaseLanguage = {
   },
   'code-run': {
     'run': '執行',
+    'stop': '停止',
     'run-in-xterm-tips': '在終端中執行程式碼，%s + 點擊不退出解釋器',
     'run-in-xterm': '終端中執行',
     'running': '執行中……',

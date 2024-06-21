@@ -9,6 +9,8 @@ import type Token from 'markdown-it/lib/token'
 enum CompletionContextKind {
   Link, // [...](|)
 
+  WikiLink, // [[|]]
+
   ReferenceLink, // [...][|]
 
   LinkDefinition, // []: | // TODO: not implemented
@@ -60,7 +62,7 @@ interface CompletionContext {
 }
 
 class CompletionProvider implements Monaco.languages.CompletionItemProvider {
-  triggerCharacters = ['/', '#', '[']
+  triggerCharacters = ['/', ':', '#', '[']
 
   private readonly monaco: typeof Monaco
   private readonly ctx: Ctx
@@ -89,6 +91,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
       }
 
       case CompletionContextKind.LinkDefinition:
+      case CompletionContextKind.WikiLink:
       case CompletionContextKind.Link: {
         const items: Monaco.languages.CompletionItem[] = []
 
@@ -151,6 +154,9 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
   /// [...](...|
   private readonly linkStartPattern = /\[([^\]]*?)\]\(\s*([^\s()]*)$/
 
+  /// [[...|
+  private readonly wikiLinkStartPattern = /\[\[\s*([^[\]]*)$/
+
   /// [...|
   private readonly referenceLinkStartPattern = /\[\s*([^\s[\]]*)$/
 
@@ -179,6 +185,19 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
 
       return {
         kind: CompletionContextKind.Link,
+        linkPrefix: prefix,
+        linkTextStartPosition: position.delta(0, -prefix.length),
+        linkSuffix: suffix ? suffix[0] : '',
+        anchorInfo: this.getAnchorContext(prefix),
+      }
+    }
+
+    const wikiLinkPrefixMatch = linePrefixText.match(this.wikiLinkStartPattern)
+    if (wikiLinkPrefixMatch) {
+      const prefix = wikiLinkPrefixMatch[1]
+      const suffix = lineSuffixText.match(/^[^\]]*/)
+      return {
+        kind: CompletionContextKind.WikiLink,
         linkPrefix: prefix,
         linkTextStartPosition: position.delta(0, -prefix.length),
         linkSuffix: suffix ? suffix[0] : '',
@@ -230,24 +249,38 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
     if (!anchorMatch) {
       return undefined
     }
+
+    let beforeAnchor = anchorMatch[1]
+
+    if (anchorMatch[1] && !this.ctx.utils.path.extname(beforeAnchor)) {
+      beforeAnchor += '.md'
+    }
+
     return {
-      beforeAnchor: anchorMatch[1],
+      beforeAnchor,
       anchorPrefix: anchorMatch[2],
     }
   }
 
   private async * providePathSuggestions (position: Monaco.Position, context: CompletionContext): AsyncIterable<Monaco.languages.CompletionItem> {
-    const valueBeforeLastSlash = context.linkPrefix.substring(0, context.linkPrefix.lastIndexOf('/') + 1) || '.' // keep the last slash
+    let idx = context.linkPrefix.lastIndexOf('/')
+
+    if (context.kind === CompletionContextKind.WikiLink) {
+      idx = Math.max(context.linkPrefix.lastIndexOf(':'), idx)
+    }
+
+    const valueBeforeLastSlash = context.linkPrefix.substring(0, idx + 1) // keep the last slash
 
     const currentFile = this.ctx.store.state.currentFile
     if (!currentFile) {
       return
     }
 
-    const parentDir = this.ctx.utils.path.resolve(
-      this.ctx.utils.path.dirname(currentFile.path),
-      valueBeforeLastSlash
-    )
+    const basePath = this.ctx.utils.path.dirname(currentFile.path)
+
+    const parentDir = context.kind === CompletionContextKind.WikiLink
+      ? this.ctx.utils.path.resolve(basePath, valueBeforeLastSlash.replace(/:/g, '/') || '.')
+      : this.ctx.utils.path.resolve(basePath, valueBeforeLastSlash || '.')
 
     const pathSegmentStart = position.delta(0, valueBeforeLastSlash.length - context.linkPrefix.length)
     const insertRange = new this.monaco.Range(
@@ -271,10 +304,18 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
     for (const item of items) {
       i++
       const isDir = item.type === 'dir'
-      const label = isDir ? item.name + '/' : item.name
+      let label = isDir ? item.name + '/' : item.name
+      let insertText = this.ctx.utils.encodeMarkdownLink(label)
+
+      // Remove extension for wiki links
+      if (context.kind === CompletionContextKind.WikiLink) {
+        label = label.replace(/\.(md|markdown)$/, '')
+        insertText = label.replaceAll(']', '&#93;').replaceAll('[', '&#91;')
+      }
+
       yield {
         label,
-        insertText: this.ctx.utils.encodeMarkdownLink(label),
+        insertText,
         kind: isDir ? this.monaco.languages.CompletionItemKind.Folder : this.monaco.languages.CompletionItemKind.File,
         range: {
           insert: insertRange,

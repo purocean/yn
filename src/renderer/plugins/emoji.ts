@@ -25,6 +25,11 @@ class EmojiCompletionProvider implements Monaco.languages.CompletionItemProvider
     const cursor = position.column - 1
     const linePrefixText = line.slice(0, cursor)
 
+    // Check if the cursor is in a wiki link
+    if (linePrefixText.lastIndexOf('[[') > linePrefixText.lastIndexOf(']]')) {
+      return { suggestions: [] }
+    }
+
     const match = linePrefixText.match(/:[a-zA-Z0-9]*$/)
     if (!match || linePrefixText.charAt(linePrefixText.length - match[0].length - 1) === ':') {
       return { suggestions: [] }

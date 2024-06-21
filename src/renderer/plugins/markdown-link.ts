@@ -1,17 +1,19 @@
 import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
-import { Plugin } from '@fe/context'
+import ctx, { Plugin } from '@fe/context'
 import store from '@fe/support/store'
 import { removeQuery, sleep } from '@fe/utils'
 import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
-import { basename, dirname, join, resolve } from '@fe/utils/path'
+import { basename, dirname, join, normalizeSep, resolve } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/base'
 import { getRenderIframe } from '@fe/services/view'
 import { getAllCustomEditors } from '@fe/services/editor'
+import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
+import type { Components } from '@fe/types'
 
 async function getElement (id: string) {
   id = id.replaceAll('%28', '(').replaceAll('%29', ')')
@@ -26,6 +28,55 @@ async function getElement (id: string) {
     document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
 
   return _find(id) || _find(id.toUpperCase())
+}
+
+async function getFirstMatchPath (repo: string, dir: string, fileName: string) {
+  if (fileName.includes('/')) {
+    return fileName
+  }
+
+  const findInDir = (items: Components.Tree.Node[]): string | null => {
+    for (const item of items) {
+      const p = normalizeSep(item.path)
+      if (
+        item.type === 'file' &&
+          (p === normalizeSep(join(dir, fileName)) ||
+          p === normalizeSep(join(dir, `${fileName}.md`)))
+      ) {
+        return item.path
+      }
+
+      if (item.children) {
+        const found = findInDir(item.children)
+        if (found) {
+          return found
+        }
+      }
+    }
+
+    return null
+  }
+
+  const findByName = (items: Components.Tree.Node[]): string | null => {
+    for (const item of items) {
+      if (item.type === 'file' && (item.name === fileName || item.name === `${fileName}.md`)) {
+        return item.path
+      }
+
+      if (item.children) {
+        const found = findByName(item.children)
+        if (found) {
+          return found
+        }
+      }
+    }
+
+    return null
+  }
+
+  const tree = await fetchTree(repo, { by: 'mtime', order: 'desc' }).catch(() => [])
+
+  return findInDir(tree) || findByName(tree)
 }
 
 function getAnchorElement (target: HTMLElement) {
@@ -91,19 +142,53 @@ function handleLink (link: HTMLAnchorElement): boolean {
     }
 
     const tmp = decodeURI(href).split('#')
+    const rePos = /:([0-9]+),?([0-9]+)?$/
 
-    let path = tmp[0]
-    if (!path.startsWith('/')) { // to absolute path
-      path = join(dirname(filePath || ''), path)
+    const setPosition = (line: number, column: number) => {
+      ctx.view.disableSyncScrollAwhile(() => {
+        if (ctx.editor.isDefault()) {
+          ctx.editor.highlightLine(line, true, 1000)
+          ctx.editor.getEditor().setPosition({ lineNumber: line, column })
+          ctx.editor.getEditor().focus()
+        }
+
+        ctx.view.highlightLine(line, true, 1000)
+      })
     }
 
-    const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
+    const parsePathPos = (path: string): {pos: [number, number] | null, path: string} => {
+      const match = path.match(rePos)
+      let pos: [number, number] | null = null
+      if (match) {
+        path = path.replace(rePos, '')
+        pos = [parseInt(match[1]), match[2] ? parseInt(match[2]) : 1]
+      }
 
-    const isMarkdownFile = /(\.md$|\.md#)/.test(href)
-    const supportOpenDirectly = isMarkdownFile || getAllCustomEditors().some(x => x.when?.({ doc: file }))
+      return { pos, path }
+    }
 
-    if (supportOpenDirectly) {
-      switchDoc(file).then(async () => {
+    const isWikiLink = !!link.getAttribute(DOM_ATTR_NAME.WIKI_LINK)
+
+    const _switchDoc = async () => {
+      let { path, pos } = parsePathPos(normalizeSep(tmp[0]))
+      const dir = dirname(filePath || '')
+
+      if (isWikiLink) {
+        path = normalizeSep(path)
+        path = path.replace(/:/g, '/') // replace all ':' to '/'
+        path = await getFirstMatchPath(fileRepo, dir, path) || path
+        path = path.endsWith('.md') ? path : `${path}.md`
+      }
+
+      if (!path.startsWith('/')) { // to absolute path
+        path = join(dir, path)
+      }
+
+      const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
+
+      return switchDoc(file).then(() => {
+        pos && setPosition(pos[0], pos[1])
+      }).then(async () => {
         const hash = tmp.slice(1).join('#')
         // jump anchor
         if (hash) {
@@ -121,12 +206,28 @@ function handleLink (link: HTMLAnchorElement): boolean {
           }
         }
       })
+    }
 
+    const path = normalizeSep(tmp[0])
+    const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
+
+    const isMarkdownFile = /(\.md$|\.md#|\.md:)/.test(href)
+    const supportOpenDirectly = isMarkdownFile || getAllCustomEditors().some(x => x.when?.({ doc: file }))
+
+    if (supportOpenDirectly) {
+      _switchDoc()
       return true
     } else if (href && href.startsWith('#')) { // for anchor
       getElement(href.replace(/^#/, '')).then(el => {
         el && scrollIntoView(el)
       })
+      return true
+    } else if (href && href.startsWith(':') && rePos.test(href)) { // for pos
+      const { pos } = parsePathPos(href)
+      pos && setPosition(pos[0], pos[1])
+      return true
+    } else if (isWikiLink) {
+      _switchDoc()
       return true
     } else {
       return false
@@ -143,6 +244,10 @@ function convertLink (state: StateCore) {
   }
 
   const link = (token: Token) => {
+    if (token.attrGet(DOM_ATTR_NAME.WIKI_LINK)) {
+      return
+    }
+
     const isAnchor = token.tag === 'a'
     const attrName = isAnchor ? 'href' : 'src'
     const attrVal = decodeURIComponent(token.attrGet(attrName) || '')

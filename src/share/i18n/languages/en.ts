@@ -177,6 +177,7 @@ const data = {
   },
   'document': {
     'current-path': 'Current Path: %s',
+    'invalid-filename': 'File name cannot contain the following characters: %s',
     'password-create': '[Create] Please enter a password',
     'password-save': '[Save] Please enter password of the file',
     'password-open': '[Open] Please enter password of the file',
@@ -384,6 +385,7 @@ const data = {
         'line-numbers': 'Line Numbers',
         'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
         'font-family': 'Font Family',
+        'font-ligatures': 'Font Ligatures',
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
         'todo-with-time': 'Add time when checking todo',
         'suggest-on-trigger-characters': 'Suggest on trigger characters - You can also use Ctrl+Space (depending on the shortcuts) to trigger',
@@ -394,6 +396,7 @@ const data = {
         'md-html': 'Enable HTML',
         'md-breaks': 'Convert \\n to &lt;br&gt;',
         'md-linkify': 'Auto convert URL-like text to links',
+        'md-wiki-links': 'Enable Wiki Links - [[link]]',
         'md-typographer': 'Enable some language-neutral replacement + quotes beautification',
         'md-sup': 'Enable sup syntax: 29^th^',
         'md-sub': 'Enable sub syntax: H~2~O',
@@ -491,6 +494,7 @@ const data = {
   },
   'code-run': {
     'run': 'Run',
+    'stop': 'Stop',
     'run-in-xterm-tips': 'Run code in terminal, %s + click do not exit',
     'run-in-xterm': 'Run in terminal',
     'running': 'Running...',

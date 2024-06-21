@@ -200,6 +200,14 @@ const schema: SettingSchema = ({
         inputAttributes: { placeholder: 'e.g., \'Courier New\', monospace' }
       },
     },
+    'editor.font-ligatures': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.editor.font-ligatures',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
     'editor.mouse-wheel-zoom': {
       defaultValue: true,
       title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',
@@ -267,6 +275,14 @@ const schema: SettingSchema = ({
     'render.md-linkify': {
       defaultValue: true,
       title: 'T_setting-panel.schema.render.md-linkify',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'render',
+      required: true,
+    },
+    'render.md-wiki-links': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.render.md-wiki-links',
       type: 'boolean',
       format: 'checkbox',
       group: 'render',

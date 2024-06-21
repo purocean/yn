@@ -33,6 +33,7 @@ import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
 import emoji from '@fe/plugins/emoji'
 import getStarted from '@fe/plugins/get-started'
+import markdownWikiLinks from '@fe/plugins/markdown-wiki-links'
 import markdownHtml from '@fe/plugins/markdown-html'
 import markdownRenderVnode from '@fe/plugins/markdown-render-vnode'
 import markdownMacro from '@fe/plugins/markdown-macro'
@@ -106,6 +107,7 @@ export default [
   imageViewer,
   emoji,
   getStarted,
+  markdownWikiLinks,
   markdownHtml,
   markdownRenderVnode,
   markdownMacro,

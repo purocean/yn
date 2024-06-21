@@ -311,6 +311,7 @@ export interface BuildInSettings {
   'envs': string,
   'editor.mouse-wheel-zoom': boolean,
   'editor.font-size': number,
+  'editor.font-ligatures': boolean,
   'editor.tab-size': 2 | 4,
   'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
   'editor.minimap': boolean,
@@ -325,6 +326,7 @@ export interface BuildInSettings {
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,
+  'render.md-wiki-links': boolean,
   'render.md-typographer': boolean,
   'render.md-emoji': boolean,
   'render.md-sub': boolean,
@@ -514,12 +516,13 @@ export type Renderer = {
 export interface CodeRunner {
   name: string;
   order?: number;
+  nonInterruptible?: boolean
   match: (language: string, magicComment: string) => boolean;
   getTerminalCmd: (language: string, magicComment: string) => {
     start: string,
     exit: string,
   } | null;
-  run: (language: string, code: string) => Promise<{
+  run: (language: string, code: string, opts?: { signal?: AbortSignal }) => Promise<{
     type: 'html' | 'plain',
     value: ReadableStreamDefaultReader | string,
   }>;

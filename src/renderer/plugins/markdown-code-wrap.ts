@@ -11,6 +11,11 @@ export default {
         overflow-wrap: anywhere;
       }
 
+      .markdown-view .markdown-body pre > code.${ctx.args.DOM_CLASS_NAME.AVOID_PAGE_BREAK} {
+        page-break-inside: avoid;
+        display: block;
+      }
+
       @media print {
         .markdown-view .markdown-body pre > code,
         .markdown-view .markdown-body .p-mcr-run-code-result {

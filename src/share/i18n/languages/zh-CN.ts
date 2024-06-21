@@ -178,6 +178,7 @@ const data: BaseLanguage = {
   },
   'document': {
     'current-path': '当前路径: %s',
+    'invalid-filename': '文件名不能包含以下字符: %s',
     'password-create': '[创建] 请输入密码',
     'password-save': '[保存] 请输入密码',
     'password-open': '[打开] 请输入密码',
@@ -375,6 +376,7 @@ const data: BaseLanguage = {
         'line-numbers': '行号',
         'enable-preview': '开启预览 - 打开新文件使用临时标签，双击标签以更改',
         'font-family': '字体',
+        'font-ligatures': '字体连字',
         'complete-emoji': '自动补全 Emoji - 输入 : 时显示 Emoji 列表',
         'todo-with-time': '勾选待办事项时自动添加时间',
         'suggest-on-trigger-characters': '自动提示 - 输入提示符时显示提示。如果禁用，仍可使用 Ctrl+Space (取决于快捷键配置) 触发',
@@ -385,6 +387,7 @@ const data: BaseLanguage = {
         'md-html': '启用 HTML',
         'md-breaks': '将 \\n 转换为 &lt;br&gt;',
         'md-linkify': '自动将类似 URL 的文本转换为链接',
+        'md-wiki-links': '启用 Wiki 链接 - [[link]]',
         'md-typographer': '启用排版美化，如 (c) -> ©',
         'md-sup': '启用上标语法: 29^th^',
         'md-sub': '启用下标语法: H~2~O',
@@ -492,6 +495,7 @@ const data: BaseLanguage = {
   },
   'code-run': {
     'run': '运行',
+    'stop': '停止',
     'run-in-xterm-tips': '在终端中运行代码，%s + 单击不退出解释器',
     'run-in-xterm': '终端中运行',
     'running': '运行中……',

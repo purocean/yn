@@ -340,7 +340,8 @@ body.find-in-preview-highlight ::selection {
       }
     }
 
-    a:not([href^="#fn"])[href^="#"]:after {
+    a:not([href^="#fn"])[href^="#"]:after,
+    a[is-anchor]:after {
       content: '\200D\2002';
       padding: 2px;
       background-repeat: no-repeat;
@@ -358,7 +359,9 @@ body.find-in-preview-highlight ::selection {
     }
 
     a[href$=".md"],
-    a[href*=".md#"] {
+    a[href*=".md:"],
+    a[href*=".md#"],
+    a:not([is-anchor])[wiki-link] {
       &:after {
         content: '\200D\2002';
         padding: 1px;
