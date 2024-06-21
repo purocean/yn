@@ -76,17 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.70.4](https://github.com/purocean/yn/releases/tag/v3.70.4) 2024-05-21
+### [v3.71.1](https://github.com/purocean/yn/releases/tag/v3.71.1) 2024-06-19
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.70.4/Yank-Note-win-x64-3.70.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.70.4/Yank-Note-mac-arm64-3.70.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.70.4/Yank-Note-mac-x64-3.70.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.70.4/Yank-Note-linux-x86_64-3.70.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.70.4/Yank-Note-linux-amd64-3.70.4.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.71.1/Yank-Note-win-x64-3.71.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.71.1/Yank-Note-mac-arm64-3.71.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.71.1/Yank-Note-mac-x64-3.71.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.71.1/Yank-Note-linux-x86_64-3.71.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.71.1/Yank-Note-linux-amd64-3.71.1.deb)
 
-1. feat: Support pasting rich text as Markdown with table support
-2. feat: Support keyboard navigation in context menu
-3. feat: Optimize keyboard accessibility in dialogs
-4. perf: Hide image navigation bar in image previewer when there are too many images in the document
-5. refactor: Replace `request` library with `undici`
-6. refactor(plugin): Add `ctx.api.proxyFetch` method, remove `ctx.api.proxyRequest` method for better SSE support
-7. chore: Upgrade Electron to 28.3.1
+1. feat: support for linking documents using the syntax `[[filename#anchor|display text]]` or `[[filename:line,column|display text]]`.
+2. feat: running shell code now supports stopping the execution.
+3. feat: files with extensions `.bib`, `.plantuml`, `.dot`, `.gv`, `.puml` are considered as text files and are editable.
+4. feat: editor configuration now supports ligatures for fonts.
+5. fix: fixed an issue where code blocks did not adhere to the `.avoid-page-break` style, causing incorrect pagination during printing.
+6. chore: upgraded Electron to version 28.3.3.
 
 [More release notes](https://github.com/purocean/yn/releases)
 
