@@ -21,6 +21,12 @@ export type SimpleCompletionItem = {
   insertText: string,
   detail?: string,
   block?: boolean, // block completion
+  command?: {
+    id: string;
+    title: string;
+    tooltip?: string;
+    arguments?: any[];
+  }
 }
 
 export type SimpleCompletionItemTappers = (items: SimpleCompletionItem[]) => void

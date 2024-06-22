@@ -144,6 +144,7 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
         range,
         sortText: i.toString().padStart(7),
         detail: item.detail,
+        command: item.command,
       }
     })
 
@@ -224,7 +225,6 @@ export default {
         { label: '/ __ Bold', insertText: '__$1__' },
         { label: '/ ~~ Delete', insertText: '~~$1~~' },
         { label: '/ == Mark', insertText: '==$1==' },
-        { label: '/ [[]] Wiki Link', insertText: '[[$1]]' },
         { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n', block: true },
         ...buildTableCompletionItems(),
         { label: '/ --- Horizontal Line', insertText: '---\n', block: true },
