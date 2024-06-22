@@ -1,6 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import type * as Monaco from 'monaco-editor'
 import type { Ctx, Plugin } from '@fe/context'
+import type { SimpleCompletionItem } from '@fe/services/editor'
 
 const surroundingPairs = [
   { open: '{', close: '}' },
@@ -177,6 +178,28 @@ export default {
       })
     })
 
+    function buildTableCompletionItems (): SimpleCompletionItem[] {
+      const editor = ctx.editor.getEditor()
+      const position = editor.getPosition()
+      const prev2Lines = ((position && position.lineNumber > 2) ? ctx.editor.getLinesContent(position.lineNumber - 2, position.lineNumber - 1) : '').split('\n')
+      const tableCols = prev2Lines.reduce((acc, line) => {
+        const cols = line.split('|').length
+        return acc > 0 ? (acc === cols ? cols : -1) : cols
+      }, 0)
+
+      const currentLine = position ? ctx.editor.getLineContent(position.lineNumber) : ''
+
+      let i = 1
+      return /\|[^|]+/.test(currentLine) ? [] : tableCols > 1
+        ? [
+            { label: '/ ||| Table Row', insertText: prev2Lines[0].replace(/[^|]+/g, () => ` \${${i++}:--} `).trim() + '\n' }
+          ]
+        : [
+            { label: '/ ||| Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |' },
+            { label: '/ ||| Small Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |\n{.small}' },
+          ]
+    }
+
     ctx.editor.tapSimpleCompletionItems(items => {
       items.unshift(
         { label: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
@@ -201,8 +224,7 @@ export default {
         { label: '/ == Mark', insertText: '==$1==' },
         { label: '/ [[]] Wiki Link', insertText: '[[$1]]' },
         { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n' },
-        { label: '/ ||| Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |' },
-        { label: '/ ||| Small Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |\n{.small}' },
+        ...buildTableCompletionItems(),
         { label: '/ --- Horizontal Line', insertText: '---\n' },
         { label: '/ + [ ] TODO List', insertText: '+ [ ] ' },
         { label: '/ - [ ] TODO List', insertText: '- [ ] ' },
