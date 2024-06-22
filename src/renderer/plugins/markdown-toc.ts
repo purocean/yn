@@ -234,7 +234,7 @@ export default {
       /* eslint-disable no-template-curly-in-string */
 
       items.push(
-        { label: '/ [toc] Table of content', insertText: '[toc]{type: "${1|ul,ol|}", level: [2,3]}' },
+        { label: '/ [toc] Table of content', insertText: '[toc]{type: "${1|ul,ol|}", level: [2,3]}', block: true },
       )
     })
   }

@@ -20,6 +20,7 @@ export type SimpleCompletionItem = {
   kind?: Monaco.languages.CompletionItemKind,
   insertText: string,
   detail?: string,
+  block?: boolean, // block completion
 }
 
 export type SimpleCompletionItemTappers = (items: SimpleCompletionItem[]) => void

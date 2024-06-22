@@ -250,7 +250,7 @@ export default {
       items.push(
         { label: '/ \\begin KaTeX Environment', insertText: '\\begin{$1}\n\\end{$1}' },
         { label: '/ $ Inline KaTeX', insertText: '$$1$' },
-        { label: '/ $$ Block KaTeX', insertText: '$$$1$$\n' },
+        { label: '/ $$ Block KaTeX', insertText: '$$$1$$\n', block: true },
       )
     })
 
