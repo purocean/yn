@@ -128,5 +128,7 @@ export default {
         { label: '/ [[]] Wiki Link', insertText: '[[$1]]', command: { id: 'editor.action.triggerSuggest', title: '' } },
       )
     })
+
+    return { mdRuleWikiLinks: wikiLinks }
   }
 } satisfies Plugin

@@ -456,5 +456,7 @@ export default {
         })
       }
     })
+
+    return { mdRuleConvertLink: convertLink, htmlHandleLink: handleLink }
   }
 } as Plugin
