@@ -104,6 +104,8 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       return
     }
 
+    const indent = match[1]
+
     // if press space key, only auto complete empty item
     if (isSpace && !emptyItemReg.test(currentLine)) {
       return
@@ -118,8 +120,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       const content = model.getLineContent(startLine)
 
       const m = content.match(reg)
-      // check previous line is a ordered list item and is the same level
-      if (!m || m[1] !== match[1]) {
+      if (!m || m[1].length < indent.length) {
         break
       }
 
@@ -133,8 +134,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       const content = model.getLineContent(endLine)
 
       const m = content.match(reg)
-      // check next line is a ordered list item and is the same level
-      if (!m || m[1] !== match[1]) {
+      if (!m || m[1].length < indent.length) {
         break
       }
 
@@ -161,9 +161,14 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
     }
 
     const changedLines: number[] = []
+    let seq = 0
     const text = [...prevLines, currentLine, ...nextLines].map((line, i) => {
-      const replaced = line.replace(reg, (_match, p1, p2, p3, p4) => {
-        const num = shouldInc ? i + startNum : startNum
+      const replaced = line.replace(reg, (s, p1, p2, p3, p4) => {
+        if (p1 !== indent) {
+          return s
+        }
+
+        const num = shouldInc ? (seq++) + startNum : startNum
         return `${p1}${num}${p3}${p4}`
       })
 
@@ -188,39 +193,35 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
     }
   }
 
-  const processCursor = (position: Monaco.Position) => {
-    const strAfterPosition = model.getValueInRange({
-      startLineNumber: position.lineNumber,
-      startColumn: position.column,
-      endLineNumber: position.lineNumber,
-      endColumn: model.getLineMaxColumn(position.lineNumber)
-    })
+  const doEdits = (position: Monaco.Position) => {
+    const edits: Monaco.editor.IIdentifiedSingleEditOperation[] = [position].map(p => {
+      const result = processOrderedList(p)
+      if (!result) {
+        return null
+      }
 
-    if (strAfterPosition.trim().length) {
-      return null
-    } else {
-      return new monaco.Position(position.lineNumber, model.getLineMaxColumn(position.lineNumber))
+      return {
+        range: new monaco.Range(result.startLine, 1, result.endLine, model.getLineMaxColumn(result.endLine)),
+        text: result.text.join(model.getEOL()),
+      } satisfies Monaco.editor.IIdentifiedSingleEditOperation
+    }).filter(Boolean) as Monaco.editor.IIdentifiedSingleEditOperation[]
+
+    // apply edits
+    if (edits.length) {
+      const cursorAtEnd = model.getLineMaxColumn(position.lineNumber) === position.column
+      editor.executeEdits(source, edits)
+      if (cursorAtEnd) {
+        // force set position to the end of line
+        editor.setPosition(new monaco.Position(position.lineNumber, model.getLineMaxColumn(position.lineNumber)))
+      }
     }
   }
 
-  const edits: Monaco.editor.IIdentifiedSingleEditOperation[] = [e.position].map(p => {
-    const result = processOrderedList(p)
-    if (!result) {
-      return null
-    }
+  doEdits(e.position)
 
-    return {
-      range: new monaco.Range(result.startLine, 1, result.endLine, model.getLineMaxColumn(result.endLine)),
-      text: result.text.join(model.getEOL()),
-    } satisfies Monaco.editor.IIdentifiedSingleEditOperation
-  }).filter(Boolean) as Monaco.editor.IIdentifiedSingleEditOperation[]
-
-  if (edits.length) {
-    editor.executeEdits(source, edits)
-    const newPosition = processCursor(e.position)
-    if (newPosition) {
-      editor.setPosition(newPosition)
-    }
+  // if press tab key, auto complete the next line
+  if (isTab && model.getLineCount() > e.position.lineNumber) {
+    doEdits(new monaco.Position(e.position.lineNumber + 1, 1))
   }
 }
 
