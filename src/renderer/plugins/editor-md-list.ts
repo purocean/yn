@@ -13,10 +13,11 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   const source = 'list-completion'
   const emptyItemReg = /^\s*(?:[*+\->]|\d+[.)]|[*+-] \[ \])\s*$/
   const isTab = e.source === 'tab'
+  const isDeleteLeft = e.source === 'deleteLeft'
   const isEnter = e.source === 'keyboard' && isKeydown('ENTER')
   const isSpace = e.source === 'keyboard' && isKeydown(' ')
 
-  if (!isTab && !isEnter && !isSpace) {
+  if (!isTab && !isDeleteLeft && !isEnter && !isSpace && e.source !== 'outdent') {
     return false
   }
 
@@ -77,6 +78,11 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   }
 
   const orderedListCompletion = getSetting('editor.ordered-list-completion', 'auto')
+
+  if (orderedListCompletion === 'off') {
+    return
+  }
+
   const maxLineCount = model.getLineCount()
   const reg = /^(\s*)(\d+)([.)])(\s)/
 
@@ -100,6 +106,11 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
 
     // if press space key, only auto complete empty item
     if (isSpace && !emptyItemReg.test(currentLine)) {
+      return
+    }
+
+    // if pres delete left key, only auto complete when cursor at the end of line
+    if (isDeleteLeft && model.getLineMaxColumn(line) !== position.column) {
       return
     }
 
@@ -133,31 +144,48 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
 
     endLine--
 
-    const prevLine = prevLines[prevLines.length - 1]
+    // if orderedListCompletion is auto, only auto complete when previous 2 lines are ordered list item
+    if (orderedListCompletion === 'auto' && prevLines.length < 2) {
+      return
+    }
 
-    const prevMatch = prevLine ? prevLine.match(reg) : null
+    const firstLine = prevLines[0]
+    const firstMatch = firstLine ? firstLine.match(reg) : null
+    const startNum = firstMatch ? parseInt(firstMatch[2]) : 1
+    let shouldInc = orderedListCompletion === 'increase'
 
-    const shouldInc = orderedListCompletion === 'increase' || (orderedListCompletion === 'auto' && prevMatch && parseInt(prevMatch[2]) > 1)
+    if (orderedListCompletion === 'auto') {
+      const secondLine = prevLines[1]
+      const secondMatch = secondLine ? secondLine.match(reg) : null
+      shouldInc = secondMatch ? parseInt(secondMatch[2]) > 1 : false
+    }
 
-    let needUpdate = false
+    const changedLines: number[] = []
     const text = [...prevLines, currentLine, ...nextLines].map((line, i) => {
       const replaced = line.replace(reg, (_match, p1, p2, p3, p4) => {
-        const num = shouldInc ? i + 1 : 1
+        const num = shouldInc ? i + startNum : startNum
         return `${p1}${num}${p3}${p4}`
       })
 
       if (replaced !== line) {
-        needUpdate = true
+        changedLines.push(i)
       }
 
       return replaced
     })
 
-    if (!needUpdate) {
+    if (!changedLines.length) {
       return
     }
 
-    return { text, startLine, endLine }
+    const changedLineStart = changedLines[0]
+    const changedLineEnd = changedLines[changedLines.length - 1]
+
+    return {
+      text: text.slice(changedLineStart, changedLineEnd + 1),
+      startLine: startLine + changedLineStart,
+      endLine: startLine + changedLineEnd
+    }
   }
 
   const processCursor = (position: Monaco.Position) => {

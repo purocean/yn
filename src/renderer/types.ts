@@ -313,7 +313,7 @@ export interface BuildInSettings {
   'editor.font-size': number,
   'editor.font-ligatures': boolean,
   'editor.tab-size': 2 | 4,
-  'editor.ordered-list-completion': 'auto' | 'increase' | 'one',
+  'editor.ordered-list-completion': 'auto' | 'increase' | 'one' | 'off',
   'editor.minimap': boolean,
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'editor.enable-preview': boolean,
