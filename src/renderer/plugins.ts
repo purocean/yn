@@ -24,6 +24,7 @@ import editorPaste from '@fe/plugins/editor-paste'
 import editorAttachment from '@fe/plugins/editor-attachment'
 import editorMarkdown from '@fe/plugins/editor-markdown'
 import editorMdSyntax from '@fe/plugins/editor-md-syntax'
+import editorMdList from '@fe/plugins/editor-md-list'
 import editorWords from '@fe/plugins/editor-words'
 import editorPathCompletion from '@fe/plugins/editor-path-completion'
 import editorFolding from '@fe/plugins/editor-folding'
@@ -98,6 +99,7 @@ export default [
   editorAttachment,
   editorMarkdown,
   editorMdSyntax,
+  editorMdList,
   editorWords,
   editorPathCompletion,
   editorFolding,
