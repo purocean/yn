@@ -27,6 +27,10 @@ export default {
       ${lightCss}
       @media screen { html[app-theme=dark] ${darkVars} }
       @media (prefers-color-scheme: dark) { html[app-theme=system] ${darkVars} }
+
+      .markdown-alert {
+        avoid-break-inside: avoid;
+      }
     `)
 
     ctx.editor.tapSimpleCompletionItems(items => {
