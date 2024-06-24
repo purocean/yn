@@ -4,6 +4,8 @@ import type { Plugin } from '@fe/context'
 import { getSetting } from '@fe/services/setting'
 import { isKeydown } from '@fe/core/keybinding'
 
+let ignoreTabProcess = false
+
 function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco, e: Monaco.editor.ICursorPositionChangedEvent) {
   const model = editor.getModel()
   if (e.reason !== 0 || !model) {
@@ -13,11 +15,12 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   const source = 'list-completion'
   const emptyItemReg = /^\s*(?:[*+\->]|\d+[.)]|[*+-] \[ \])\s*$/
   const isTab = e.source === 'tab'
+  const isOutdent = e.source === 'outdent'
   const isDeleteLeft = e.source === 'deleteLeft'
   const isEnter = e.source === 'keyboard' && isKeydown('ENTER')
   const isSpace = e.source === 'keyboard' && isKeydown(' ')
 
-  if (!isTab && !isDeleteLeft && !isEnter && !isSpace && e.source !== 'outdent') {
+  if (!isTab && !isDeleteLeft && !isEnter && !isSpace && !isOutdent) {
     return false
   }
 
@@ -36,6 +39,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       const indent = getOneIndent()
       const val = currentLine.trimEnd()
       const end = /[-+*\].>)]$/.test(val) ? ' ' : ''
+      editor.pushUndoStop()
       editor.executeEdits(source, [
         {
           range: new monaco.Range(position.lineNumber, 1, position.lineNumber, eolNumber),
@@ -58,6 +62,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       emptyItemReg.test(content) && // current line content must a empty item
       emptyItemReg.test(prevContent) // next line content must a empty item
     ) {
+      editor.pushUndoStop()
       editor.executeEdits(source, [
         {
           range: new monaco.Range(line - 1, 1, line, model.getLineMaxColumn(line)),
@@ -70,7 +75,9 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   }
 
   if (isTab) {
-    processTab(e.position)
+    if (!ignoreTabProcess) {
+      processTab(e.position)
+    }
   } else if (isEnter) {
     if (processEnter(e.position)) {
       return // skip auto ordered list completion
@@ -209,6 +216,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
     // apply edits
     if (edits.length) {
       const cursorAtEnd = model.getLineMaxColumn(position.lineNumber) === position.column
+      editor.pushUndoStop()
       editor.executeEdits(source, edits)
       if (cursorAtEnd) {
         // force set position to the end of line
@@ -220,7 +228,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   doEdits(e.position)
 
   // if press tab key, auto complete the next line
-  if (isTab && model.getLineCount() > e.position.lineNumber) {
+  if ((isTab || isOutdent) && model.getLineCount() > e.position.lineNumber) {
     doEdits(new monaco.Position(e.position.lineNumber + 1, 1))
   }
 }
@@ -231,6 +239,29 @@ export default {
     ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
       editor.onDidChangeCursorPosition(e => {
         processCursorChange(editor, monaco, e)
+      })
+
+      // ignore tab process when cursor at the start of line
+      editor.onKeyDown(e => {
+        ignoreTabProcess = false
+        if (e.keyCode === monaco.KeyCode.Tab && !e.shiftKey && !e.altKey) {
+          const position = editor.getPosition()
+          const model = editor.getModel()
+
+          if (position && model) {
+            // get before cursor content
+            const line = model.getValueInRange({
+              startLineNumber: position.lineNumber,
+              startColumn: 1,
+              endLineNumber: position.lineNumber,
+              endColumn: position.column
+            })
+
+            if (line.trim() === '') {
+              ignoreTabProcess = true
+            }
+          }
+        }
       })
     })
   }
