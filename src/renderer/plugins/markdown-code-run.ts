@@ -33,6 +33,7 @@ const RunCode = defineComponent({
     const abortController = shallowRef<AbortController>()
     const hash = computed(() => md5(props.language + props.code))
     const runner = ref<CodeRunner>()
+    const resultRef = ref<HTMLElement>()
     const status = computed(() => runner.value?.nonInterruptible ? 'idle' : (abortController.value ? 'running' : 'idle'))
     const getTerminalCmd = computed(() => runner.value?.getTerminalCmd(props.language!, props.firstLine!))
 
@@ -51,6 +52,15 @@ const RunCode = defineComponent({
       }
 
       cache[hash.value] = result.value
+
+      setTimeout(() => {
+        if (resultRef.value) {
+          // scroll to bottom if near the bottom
+          if (resultRef.value.scrollHeight - resultRef.value.scrollTop - resultRef.value.clientHeight < 50) {
+            resultRef.value?.scrollTo(0, resultRef.value.scrollHeight)
+          }
+        }
+      }, 0)
     }
 
     const abort = () => {
@@ -187,7 +197,7 @@ const RunCode = defineComponent({
             onClick: runInXterm
           }),
         ]),
-        h('div', { class: 'p-mcr-run-code-result skip-export', key: runResult, innerHTML: runResult }),
+        h('div', { class: 'p-mcr-run-code-result skip-export', ref: resultRef }, h('output', { key: runResult, innerHTML: runResult })),
         h('div', { class: 'p-mcr-clear-btn-wrapper skip-print' }, h(
           h(
             'div',
