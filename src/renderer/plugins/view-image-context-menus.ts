@@ -9,56 +9,75 @@ export default {
         return
       }
 
-      if (!ctx.env.isElectron && !target.getAttribute(ctx.args.DOM_ATTR_NAME.LOCAL_IMAGE)) {
-        return
+      const isLocalImage = !!target.getAttribute(ctx.args.DOM_ATTR_NAME.LOCAL_IMAGE)
+      const repo = target.getAttribute(ctx.args.DOM_ATTR_NAME.TARGET_REPO)
+      const path = target.getAttribute(ctx.args.DOM_ATTR_NAME.TARGET_PATH)
+      const originSrc = target.getAttribute(ctx.args.DOM_ATTR_NAME.ORIGIN_SRC)
+
+      if (ctx.env.isElectron || isLocalImage) {
+        menus.push({
+          id: 'view-image-context-menus-copy-image',
+          label: ctx.i18n.t('view-context-menu.copy-image'),
+          type: 'normal',
+          onClick: () => {
+            if (ctx.env.isElectron) {
+              setTimeout(() => {
+                ctx.view.getRenderIframe().then((iframe) => {
+                  const iframeRect = iframe.getBoundingClientRect()
+                  const mouseX = Math.round(iframeRect.left + e.clientX)
+                  const mouseY = Math.round(iframeRect.top + e.clientY)
+                  const remote = ctx.env.getElectronRemote()
+                  remote.getCurrentWebContents().copyImageAt(mouseX, mouseY)
+                  console.log('xxx', [e.pageX, e.pageY], { mouseX, mouseY })
+                })
+              }, 500)
+            } else {
+              window.fetch(target.src).then(async (res) => {
+                const blob = await res.blob()
+                const reader = new FileReader()
+                reader.onload = () => {
+                  const dataUrl = reader.result as string
+                  const img = new Image()
+                  img.src = dataUrl
+                  img.onload = () => {
+                    const canvas = document.createElement('canvas')
+                    canvas.width = img.width
+                    canvas.height = img.height
+                    const ctx = canvas.getContext('2d')!
+                    ctx.drawImage(img, 0, 0)
+                    canvas.toBlob((blob) => {
+                      if (blob) {
+                        navigator.clipboard.write([
+                          new ClipboardItem({
+                            'image/png': blob
+                          })
+                        ])
+                      }
+                    })
+                  }
+                }
+                reader.readAsDataURL(blob)
+              })
+            }
+          }
+        })
       }
 
-      menus.push({
-        id: 'view-image-context-menus-copy-image',
-        label: '复制图片',
-        type: 'normal',
-        onClick: () => {
-          if (ctx.env.isElectron) {
-            setTimeout(() => {
-              ctx.view.getRenderIframe().then((iframe) => {
-                const iframeRect = iframe.getBoundingClientRect()
-                const mouseX = Math.round(iframeRect.left + e.clientX)
-                const mouseY = Math.round(iframeRect.top + e.clientY)
-                const remote = ctx.env.getElectronRemote()
-                remote.getCurrentWebContents().copyImageAt(mouseX, mouseY)
-                console.log('xxx', [e.pageX, e.pageY], { mouseX, mouseY })
-              })
-            }, 500)
-          } else {
-            window.fetch(target.src).then(async (res) => {
-              const blob = await res.blob()
-              const reader = new FileReader()
-              reader.onload = () => {
-                const dataUrl = reader.result as string
-                const img = new Image()
-                img.src = dataUrl
-                img.onload = () => {
-                  const canvas = document.createElement('canvas')
-                  canvas.width = img.width
-                  canvas.height = img.height
-                  const ctx = canvas.getContext('2d')!
-                  ctx.drawImage(img, 0, 0)
-                  canvas.toBlob((blob) => {
-                    if (blob) {
-                      navigator.clipboard.write([
-                        new ClipboardItem({
-                          'image/png': blob
-                        })
-                      ])
-                    }
-                  })
-                }
-              }
-              reader.readAsDataURL(blob)
-            })
+      if (isLocalImage && repo && path && originSrc) {
+        menus.push({
+          id: 'view-image-context-menus-delete-image',
+          label: ctx.i18n.t('view-context-menu.delete-image'),
+          ellipsis: true,
+          type: 'normal',
+          onClick: async () => {
+            await ctx.doc.deleteDoc({ repo, path })
+            ctx.editor.replaceValue(
+              new RegExp(`!\\[[^\\]]*\\]\\(${ctx.lib.lodash.escapeRegExp(originSrc)}[^\\)\\]]*\\)`, 'g'),
+              ''
+            )
           }
-        }
-      })
+        })
+      }
     })
   }
 } as Plugin

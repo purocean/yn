@@ -262,6 +262,10 @@ function convertLink (state: StateCore) {
     const basePath = dirname(path)
     const fileName = basename(removeQuery(attrVal))
 
+    const originAttr = isAnchor ? DOM_ATTR_NAME.ORIGIN_HREF : DOM_ATTR_NAME.ORIGIN_SRC
+    const originPath = removeQuery(attrVal)
+    const filePath = resolve(basePath, originPath)
+
     if (isAnchor) {
       // keep markdown file.
       if (fileName.endsWith('.md')) {
@@ -285,18 +289,16 @@ function convertLink (state: StateCore) {
       token.attrSet(DOM_ATTR_NAME.LOCAL_IMAGE, 'true')
     }
 
-    const originAttr = isAnchor ? DOM_ATTR_NAME.ORIGIN_HREF : DOM_ATTR_NAME.ORIGIN_SRC
-    token.attrSet(originAttr, attrVal)
-
-    const originPath = removeQuery(attrVal)
-
     const targetUri = getAttachmentURL({
       type: 'file',
       repo,
-      path: resolve(basePath, originPath),
+      path: filePath,
       name: fileName,
     })
 
+    token.attrSet(DOM_ATTR_NAME.TARGET_PATH, filePath)
+    token.attrSet(DOM_ATTR_NAME.TARGET_REPO, repo)
+    token.attrSet(originAttr, attrVal)
     token.attrSet(attrName, targetUri)
   }
 
