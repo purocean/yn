@@ -63,6 +63,7 @@ import markdownGithubAlerts from '@fe/plugins/markdown-github-alerts'
 import markdownMisc from '@fe/plugins/misc'
 import syncScroll from '@fe/plugins/sync-scroll'
 import imageLocalization from '@fe/plugins/image-localization'
+import viewImageContextMenus from '@fe/plugins/view-image-context-menus'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
 import copyContent from '@fe/plugins/copy-content'
 import sharePreview from '@fe/plugins/share-preview'
@@ -137,6 +138,7 @@ export default [
   markdownMisc,
   syncScroll,
   imageLocalization,
+  viewImageContextMenus,
   imageHostingPicgo,
   copyContent,
   sharePreview,
