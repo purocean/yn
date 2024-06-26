@@ -357,16 +357,18 @@ export async function deleteDoc (doc: PathItem, skipConfirm = false) {
     content: t('document.delete-dialog.content', doc.path),
   })
 
-  if (confirm) {
-    try {
-      await api.deleteFile(doc)
-    } catch (error: any) {
-      useToast().show('warning', error.message)
-      throw error
-    }
-
-    triggerHook('DOC_DELETED', { doc })
+  if (!confirm) {
+    throw new Error('User cancel')
   }
+
+  try {
+    await api.deleteFile(doc)
+  } catch (error: any) {
+    useToast().show('warning', error.message)
+    throw error
+  }
+
+  triggerHook('DOC_DELETED', { doc })
 }
 
 /**
