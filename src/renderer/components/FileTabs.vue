@@ -18,7 +18,7 @@
 <script lang="ts">
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, toRefs, watch } from 'vue'
 import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/keybinding'
-import type { Components, Doc } from '@fe/types'
+import type { Components, Doc, PathItem } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { isEncrypted, isMarkdownFile, isOutOfRepo, isSameFile, isSubOrSameFile, switchDoc, toUri } from '@fe/services/document'
@@ -125,7 +125,7 @@ export default defineComponent({
       return list[index]
     }
 
-    function removeFile (doc?: Doc | null) {
+    function removeFile (doc?: PathItem | null) {
       const files = tabs.value.filter((x: Components.FileTabs.Item) => isSubOrSameFile(doc, x.payload.file))
 
       if (files.length > 0) {
@@ -167,7 +167,7 @@ export default defineComponent({
       }
     }
 
-    function handleDocDeleted ({ doc }: { doc: Doc | null }) {
+    function handleDocDeleted ({ doc }: { doc: PathItem | null }) {
       removeFile(doc)
     }
 

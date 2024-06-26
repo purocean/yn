@@ -1,6 +1,6 @@
 import type { VNode } from 'vue'
 import type { Language, MsgPath } from '@share/i18n'
-import type { Doc, FileItem, Repo } from '@share/types'
+import type { Doc, FileItem, PathItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
@@ -460,7 +460,7 @@ export type BuildInHookTypes = {
   EDITOR_CURRENT_EDITOR_CHANGE: { current?: CustomEditor | null },
   EDITOR_CONTENT_CHANGE: { uri: string, value: string },
   DOC_CREATED: { doc: Doc },
-  DOC_DELETED: { doc: Doc },
+  DOC_DELETED: { doc: PathItem },
   DOC_MOVED: { oldDoc: Doc, newDoc: Doc },
   DOC_PRE_SWITCH: { doc?: Doc | null },
   DOC_BEFORE_SAVE: { doc: Doc, content: string },

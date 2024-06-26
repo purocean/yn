@@ -1,5 +1,5 @@
 import type { Plugin, Ctx } from '@fe/context'
-import type { Doc } from '@fe/types'
+import type { Doc, PathItem } from '@fe/types'
 
 export default {
   name: 'document-history-stack',
@@ -30,7 +30,7 @@ export default {
       refresh()
     }
 
-    function removeFromStack (doc?: Doc) {
+    function removeFromStack (doc?: PathItem) {
       stack = stack.filter(x => !ctx.doc.isSubOrSameFile(doc, x))
       idx = stack.length - 1
       refresh()

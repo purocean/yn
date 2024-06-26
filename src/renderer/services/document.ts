@@ -129,7 +129,7 @@ export function isSameRepo (docA?: Doc | null, docB?: Doc | null) {
  * @param docB
  * @returns
  */
-export function isSameFile (docA?: Doc | null, docB?: Doc | null) {
+export function isSameFile (docA?: PathItem | null, docB?: PathItem | null) {
   return docA && docB && docA.repo === docB.repo && docA.path === docB.path
 }
 
@@ -139,7 +139,7 @@ export function isSameFile (docA?: Doc | null, docB?: Doc | null) {
  * @param docB
  * @returns
  */
-export function isSubOrSameFile (docA?: Doc | null, docB?: Doc | null) {
+export function isSubOrSameFile (docA?: PathItem | null, docB?: PathItem | null) {
   return docA && docB && docA.repo === docB.repo &&
   (
     isBelongTo(docA.path, docB.path) ||
@@ -342,7 +342,7 @@ export async function duplicateDoc (originDoc: Doc, newPath?: string) {
  * @param doc
  * @param skipConfirm
  */
-export async function deleteDoc (doc: Doc, skipConfirm = false) {
+export async function deleteDoc (doc: PathItem, skipConfirm = false) {
   if (doc.path === '/') {
     throw new Error('Could\'t delete root dir.')
   }
