@@ -778,7 +778,7 @@ export function isMarked (doc: PathItem & { type?: Doc['type'] }) {
  * @param doc
  * @param reveal
  */
-export async function openInOS (doc: Doc, reveal?: boolean) {
+export async function openInOS (doc: PathItem, reveal?: boolean) {
   const repo = getRepo(doc.repo)
   if (repo) {
     const path = join(repo.path, doc.path)

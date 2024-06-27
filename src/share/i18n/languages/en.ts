@@ -746,6 +746,7 @@ const data = {
   'view-context-menu': {
     'copy-image': 'Copy Image',
     'delete-image': 'Delete Image',
+    'open-in-new-tab': 'Open in New Tab',
   },
 }
 

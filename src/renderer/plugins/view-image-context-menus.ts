@@ -64,19 +64,44 @@ export default {
       }
 
       if (isLocalImage && repo && path && originSrc) {
-        menus.push({
-          id: 'view-image-context-menus-delete-image',
-          label: ctx.i18n.t('view-context-menu.delete-image'),
-          ellipsis: true,
-          type: 'normal',
-          onClick: async () => {
-            await ctx.doc.deleteDoc({ repo, path })
-            ctx.editor.replaceValue(
-              new RegExp(`!\\[[^\\]]*\\]\\(${ctx.lib.lodash.escapeRegExp(originSrc)}[^\\)\\]]*\\)`, 'g'),
-              ''
-            )
-          }
-        })
+        menus.push(
+          {
+            id: 'view-image-context-menus-open-in-new-tab',
+            label: ctx.i18n.t('view-context-menu.open-in-new-tab'),
+            type: 'normal',
+            onClick: () => {
+              ctx.doc.switchDoc({ repo, path, type: 'file', name: ctx.utils.path.basename(path) })
+            }
+          },
+          { type: 'separator' },
+          {
+            id: 'view-image-context-menus-delete-image',
+            label: ctx.i18n.t('view-context-menu.delete-image'),
+            ellipsis: true,
+            type: 'normal',
+            onClick: async () => {
+              await ctx.doc.deleteDoc({ repo, path })
+              ctx.editor.replaceValue(
+                new RegExp(`!\\[[^\\]]*\\]\\(${ctx.lib.lodash.escapeRegExp(originSrc)}[^\\)\\]]*\\)`, 'g'),
+                ''
+              )
+            }
+          },
+          { type: 'separator' },
+          {
+            id: 'view-image-context-menu-reveal-in-os',
+            label: ctx.i18n.t('tree.context-menu.reveal-in-os'),
+            type: 'normal',
+            onClick: () => ctx.doc.openInOS({ repo, path }, true)
+          },
+          {
+            id: 'view-image-context-menu-open-in-os',
+            label: ctx.i18n.t('tree.context-menu.open-in-os'),
+            type: 'normal',
+            onClick: () => ctx.doc.openInOS({ repo, path })
+          },
+          { type: 'separator' },
+        )
       }
     })
   }

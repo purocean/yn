@@ -747,6 +747,7 @@ const data: BaseLanguage = {
   'view-context-menu': {
     'copy-image': '复制图片',
     'delete-image': '删除图片',
+    'open-in-new-tab': '在新标签页中打开',
   },
 }
 
