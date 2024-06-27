@@ -63,6 +63,10 @@ export default {
         })
       }
 
+      if (repo === ctx.args.HELP_REPO_NAME) {
+        return
+      }
+
       if (isLocalImage && repo && path && originSrc) {
         menus.push(
           {
