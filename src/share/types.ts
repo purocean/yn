@@ -28,3 +28,5 @@ export interface Repo {
   name: string;
   path: string;
 }
+
+export type PositionState = { editorScrollTop?: number, viewScrollTop?: number }

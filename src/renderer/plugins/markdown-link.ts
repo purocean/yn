@@ -7,28 +7,12 @@ import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, normalizeSep, resolve } from '@fe/utils/path'
-import { switchDoc } from '@fe/services/document'
 import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/base'
 import { getRenderIframe } from '@fe/services/view'
 import { getAllCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
 import type { Components } from '@fe/types'
-
-async function getElement (id: string) {
-  id = id.replaceAll('%28', '(').replaceAll('%29', ')')
-
-  const document = (await getRenderIframe()).contentDocument!
-
-  const _find = (id: string) => document.getElementById(id) ||
-    document.getElementById(decodeURIComponent(id)) ||
-    document.getElementById(encodeURIComponent(id)) ||
-    document.getElementById(id.replace(/^h-/, '')) ||
-    document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
-    document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
-
-  return _find(id) || _find(id.toUpperCase())
-}
 
 async function getFirstMatchPath (repo: string, dir: string, fileName: string) {
   if (fileName.includes('/')) {
@@ -144,18 +128,6 @@ function handleLink (link: HTMLAnchorElement): boolean {
     const tmp = decodeURI(href).split('#')
     const rePos = /:([0-9]+),?([0-9]+)?$/
 
-    const setPosition = (line: number, column: number) => {
-      ctx.view.disableSyncScrollAwhile(() => {
-        if (ctx.editor.isDefault()) {
-          ctx.editor.highlightLine(line, true, 1000)
-          ctx.editor.getEditor().setPosition({ lineNumber: line, column })
-          ctx.editor.getEditor().focus()
-        }
-
-        ctx.view.highlightLine(line, true, 1000)
-      })
-    }
-
     const parsePathPos = (path: string): {pos: [number, number] | null, path: string} => {
       const match = path.match(rePos)
       let pos: [number, number] | null = null
@@ -186,26 +158,14 @@ function handleLink (link: HTMLAnchorElement): boolean {
 
       const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
 
-      return switchDoc(file).then(() => {
-        pos && setPosition(pos[0], pos[1])
-      }).then(async () => {
-        const hash = tmp.slice(1).join('#')
-        // jump anchor
-        if (hash) {
-          await sleep(50)
-          const el = await getElement(hash)
-
-          if (el) {
-            await sleep(0)
-            scrollIntoView(el)
-
-            // reveal editor lint when click heading
-            if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
-              el.click()
-            }
-          }
-        }
-      })
+      const hash = tmp.slice(1).join('#')
+      if (pos) {
+        ctx.workbench.navigateTo(file, { line: pos[0], column: pos[1] })
+      } else if (hash) {
+        ctx.workbench.navigateTo(file, { anchor: hash })
+      } else {
+        ctx.workbench.navigateTo(file)
+      }
     }
 
     const path = normalizeSep(tmp[0])
@@ -218,13 +178,13 @@ function handleLink (link: HTMLAnchorElement): boolean {
       _switchDoc()
       return true
     } else if (href && href.startsWith('#')) { // for anchor
-      getElement(href.replace(/^#/, '')).then(el => {
-        el && scrollIntoView(el)
-      })
+      ctx.workbench.navigateTo(null, { anchor: href.replace(/^#/, '') })
       return true
     } else if (href && href.startsWith(':') && rePos.test(href)) { // for pos
       const { pos } = parsePathPos(href)
-      pos && setPosition(pos[0], pos[1])
+      if (pos) {
+        ctx.workbench.navigateTo(null, { line: pos[0], column: pos[1] })
+      }
       return true
     } else if (isWikiLink) {
       _switchDoc()

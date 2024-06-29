@@ -3,8 +3,13 @@ import * as ioc from '@fe/core/ioc'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import { Alt, Shift } from '@fe/core/keybinding'
 import store from '@fe/support/store'
-import type { Components } from '@fe/types'
+import type { Components, Doc, PositionState } from '@fe/types'
+import { sleep } from '@fe/utils'
 import { t } from './i18n'
+import { switchDoc } from './document'
+import * as view from './view'
+import * as editor from './editor'
+import { DOM_ATTR_NAME } from '@fe/support/args'
 
 /**
  * Toggle outline visible.
@@ -135,4 +140,67 @@ export const ControlCenter = {
   toggle (visible?: boolean) {
     getActionHandler('control-center.toggle')(visible)
   },
+}
+
+/**
+ * Navigate to
+ */
+export async function navigateTo (
+  doc?: Doc | null,
+  position?: { anchor: string } | { line: number, column?: number } | PositionState
+) {
+  if (!doc && !position) {
+    throw new Error('doc or position must be provided')
+  }
+
+  if (doc) {
+    await switchDoc(doc)
+  }
+
+  if (!position) {
+    return
+  }
+
+  if ('anchor' in position) {
+    await sleep(50)
+    const el = await view.highlightAnchor(position.anchor, true)
+    if (el) {
+      // reveal editor line when click heading
+      if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
+        if (editor.isDefault() && store.state.showEditor) {
+          view.disableSyncScrollAwhile(() => {
+            const line = parseInt(el.getAttribute(DOM_ATTR_NAME.SOURCE_LINE_START) || '0')
+            const lineEnd = parseInt(el.getAttribute(DOM_ATTR_NAME.SOURCE_LINE_END) || '0')
+            editor.highlightLine(lineEnd ? [line, lineEnd - 1] : line, true, 1000)
+          })
+        }
+        el.click()
+      }
+    }
+
+    return
+  }
+
+  if ('line' in position) {
+    view.disableSyncScrollAwhile(async () => {
+      if (editor.isDefault()) {
+        editor.highlightLine(position.line, true)
+        editor.getEditor().setPosition({ lineNumber: position.line, column: position.column || 1 })
+        editor.getEditor().focus()
+      }
+
+      await sleep(50)
+      view.highlightLine(position.line, true)
+    })
+    return
+  }
+
+  if ('editorScrollTop' in position && position.editorScrollTop && editor.isDefault()) {
+    editor.getEditor().setScrollTop(position.editorScrollTop)
+  }
+
+  if ('viewScrollTop' in position && position.viewScrollTop) {
+    await sleep(50)
+    view.scrollTopTo(position.viewScrollTop)
+  }
 }

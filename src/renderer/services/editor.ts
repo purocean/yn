@@ -126,9 +126,7 @@ export function getEditor () {
  * @param duration
  * @returns dispose function
  */
-export function highlightLine (line: number | [number, number], reveal: boolean, duration: number): Promise<void>
-export function highlightLine (line: number | [number, number], reveal?: boolean, duration?: number): (() => void) | Promise<void>
-export function highlightLine (line: number | [number, number], reveal?: boolean, duration?: number): (() => void) | Promise<void> {
+export function highlightLine (line: number | [number, number], reveal?: boolean, duration: number = 1000): (() => void) | Promise<void> {
   const lines = Array.isArray(line) ? line : [line, line]
 
   const decorations = getEditor().createDecorationsCollection([

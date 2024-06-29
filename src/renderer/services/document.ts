@@ -614,6 +614,10 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
 
   logger.debug('switchDoc', doc)
 
+  if (doc?.type !== 'file') {
+    throw new Error('Invalid document type')
+  }
+
   if (!force && toUri(doc) === toUri(store.state.currentFile) && store.state.currentFile !== undefined) {
     logger.debug('skip switch', doc)
     return
