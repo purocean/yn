@@ -106,7 +106,7 @@ export async function highlightLine (line: number, reveal: boolean, duration = 1
     el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
     if (duration) {
       sleep(duration).then(() => {
-        el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+        el!.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
       })
     }
   }
