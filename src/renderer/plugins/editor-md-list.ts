@@ -104,6 +104,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
     const prevLines = []
     const nextLines = []
     const currentLine = model.getLineContent(line)
+    const prefix = currentLine.slice(0, position.column - 1)
 
     // check current line is a ordered list item
     const match = currentLine.match(reg)
@@ -113,8 +114,8 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
 
     const indent = match[1]
 
-    // if press space key, only auto complete empty item
-    if (isSpace && !emptyItemReg.test(currentLine)) {
+    // if press space key, only auto complete when cursor at the start of line
+    if (isSpace && !emptyItemReg.test(prefix)) {
       return
     }
 
