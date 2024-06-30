@@ -2,13 +2,12 @@ import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
 import ctx, { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import { removeQuery, sleep } from '@fe/utils'
+import { removeQuery } from '@fe/utils'
 import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, normalizeSep, resolve } from '@fe/utils/path'
 import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/base'
-import { getRenderIframe } from '@fe/services/view'
 import { getAllCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
@@ -112,19 +111,6 @@ function handleLink (link: HTMLAnchorElement): boolean {
     openPath(join(basePath, path))
     return true
   } else { // relative link
-    // better scrollIntoView
-    const scrollIntoView = async (el: HTMLElement) => {
-      el.scrollIntoView()
-      // retain 60 px for better view.
-      const contentWindow = (await getRenderIframe()).contentWindow!
-      contentWindow.scrollBy(0, -60)
-
-      // highlight element
-      el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
-      await sleep(1000)
-      el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
-    }
-
     const tmp = decodeURI(href).split('#')
     const rePos = /:([0-9]+),?([0-9]+)?$/
 
