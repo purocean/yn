@@ -145,12 +145,11 @@ function handleLink (link: HTMLAnchorElement): boolean {
       const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
 
       const hash = tmp.slice(1).join('#')
+      await ctx.doc.switchDoc(file)
       if (pos) {
-        ctx.workbench.navigateTo(file, { line: pos[0], column: pos[1] })
+        ctx.routines.changePosition({ line: pos[0], column: pos[1] })
       } else if (hash) {
-        ctx.workbench.navigateTo(file, { anchor: hash })
-      } else {
-        ctx.workbench.navigateTo(file)
+        ctx.routines.changePosition({ anchor: hash })
       }
     }
 
@@ -164,12 +163,12 @@ function handleLink (link: HTMLAnchorElement): boolean {
       _switchDoc()
       return true
     } else if (href && href.startsWith('#')) { // for anchor
-      ctx.workbench.navigateTo(null, { anchor: href.replace(/^#/, '') })
+      ctx.routines.changePosition({ anchor: href.replace(/^#/, '') })
       return true
     } else if (href && href.startsWith(':') && rePos.test(href)) { // for pos
       const { pos } = parsePathPos(href)
       if (pos) {
-        ctx.workbench.navigateTo(null, { line: pos[0], column: pos[1] })
+        ctx.routines.changePosition({ line: pos[0], column: pos[1] })
       }
       return true
     } else if (isWikiLink) {
