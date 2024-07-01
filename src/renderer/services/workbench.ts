@@ -147,7 +147,7 @@ export const ControlCenter = {
  */
 export async function navigateTo (
   doc?: Doc | null,
-  position?: { anchor: string } | { line: number, column?: number } | PositionState
+  position?: PositionState
 ) {
   if (!doc && !position) {
     throw new Error('doc or position must be provided')
@@ -161,7 +161,34 @@ export async function navigateTo (
     return
   }
 
-  if ('anchor' in position) {
+  if (
+    'editorScrollTop' in position &&
+    'viewScrollTop' in position &&
+    typeof position.editorScrollTop === 'number' &&
+    typeof position.viewScrollTop === 'number'
+  ) {
+    view.disableSyncScrollAwhile(async () => {
+      editor.getEditor().setScrollTop(position.editorScrollTop!)
+      view.scrollTopTo(position.viewScrollTop!)
+      await sleep(50)
+      view.scrollTopTo(position.viewScrollTop!)
+    })
+  } else if ('editorScrollTop' in position && typeof position.editorScrollTop === 'number') {
+    editor.getEditor().setScrollTop(position.editorScrollTop)
+  } else if ('viewScrollTop' in position && typeof position.viewScrollTop === 'number') {
+    view.scrollTopTo(position.viewScrollTop)
+    await sleep(50)
+    view.scrollTopTo(position.viewScrollTop)
+  } else if ('line' in position) {
+    view.disableSyncScrollAwhile(async () => {
+      editor.highlightLine(position.line, true)
+      editor.getEditor().setPosition({ lineNumber: position.line, column: position.column || 1 })
+      editor.getEditor().focus()
+
+      await sleep(50)
+      view.highlightLine(position.line, true)
+    })
+  } else if ('anchor' in position) {
     await sleep(50)
     const el = await view.highlightAnchor(position.anchor, true)
     if (el) {
@@ -177,30 +204,5 @@ export async function navigateTo (
         el.click()
       }
     }
-
-    return
-  }
-
-  if ('line' in position) {
-    view.disableSyncScrollAwhile(async () => {
-      if (editor.isDefault()) {
-        editor.highlightLine(position.line, true)
-        editor.getEditor().setPosition({ lineNumber: position.line, column: position.column || 1 })
-        editor.getEditor().focus()
-      }
-
-      await sleep(50)
-      view.highlightLine(position.line, true)
-    })
-    return
-  }
-
-  if ('editorScrollTop' in position && position.editorScrollTop && editor.isDefault()) {
-    editor.getEditor().setScrollTop(position.editorScrollTop)
-  }
-
-  if ('viewScrollTop' in position && position.viewScrollTop) {
-    await sleep(50)
-    view.scrollTopTo(position.viewScrollTop)
   }
 }
