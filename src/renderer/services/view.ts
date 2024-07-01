@@ -155,6 +155,12 @@ export async function scrollTopTo (top: number) {
   iframe.contentWindow?.scrollTo(0, top)
 }
 
+export function getScrollTop () {
+  if (renderIframe) {
+    return renderIframe.contentWindow?.scrollY
+  }
+}
+
 export function getPreviewStyles () {
   let styles = `article.${DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY} { max-width: 1024px; margin: 20px auto; }`
   Array.prototype.forEach.call(renderIframe.contentDocument!.styleSheets, item => {

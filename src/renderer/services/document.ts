@@ -119,7 +119,7 @@ export function isEncrypted (doc?: Pick<Doc, 'path' | 'type'> | null): boolean {
  * @param docB
  * @returns
  */
-export function isSameRepo (docA?: Doc | null, docB?: Doc | null) {
+export function isSameRepo (docA: Doc | null | undefined, docB: Doc | null | undefined) {
   return docA && docB && docA.repo === docB.repo
 }
 
@@ -129,7 +129,7 @@ export function isSameRepo (docA?: Doc | null, docB?: Doc | null) {
  * @param docB
  * @returns
  */
-export function isSameFile (docA?: PathItem | null, docB?: PathItem | null) {
+export function isSameFile (docA: PathItem | null | undefined, docB: PathItem | null | undefined) {
   return docA && docB && docA.repo === docB.repo && docA.path === docB.path
 }
 
@@ -139,7 +139,7 @@ export function isSameFile (docA?: PathItem | null, docB?: PathItem | null) {
  * @param docB
  * @returns
  */
-export function isSubOrSameFile (docA?: PathItem | null, docB?: PathItem | null) {
+export function isSubOrSameFile (docA: PathItem | null | undefined, docB?: PathItem | null | undefined) {
   return docA && docB && docA.repo === docB.repo &&
   (
     isBelongTo(docA.path, docB.path) ||
