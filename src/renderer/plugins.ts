@@ -2,7 +2,7 @@ import buildInRenderers from '@fe/plugins/build-in-renderers'
 import customStyles from '@fe/plugins/custom-styles'
 import customKeybindings from '@fe/plugins/custom-keybindings'
 import electronZoom from '@fe/plugins/electron-zoom'
-import documentHistoryStack from '@fe/plugins/document-history-stack'
+import historyStack from '@fe/plugins/history-stack'
 import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
 import statusBarRepositorySwitch from '@fe/plugins/status-bar-repository-switch'
@@ -79,7 +79,7 @@ export default [
   customStyles,
   customKeybindings,
   electronZoom,
-  documentHistoryStack,
+  historyStack,
   fileTreeContextMenu,
   statusBarSetting,
   statusBarRepositorySwitch,

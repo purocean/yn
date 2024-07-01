@@ -2,7 +2,7 @@ import type { Plugin, Ctx } from '@fe/context'
 import type { Doc, PathItem } from '@fe/types'
 
 export default {
-  name: 'document-history-stack',
+  name: 'history-stack',
   register: (ctx: Ctx) => {
     let stack: Doc[] = []
     let idx = -1
