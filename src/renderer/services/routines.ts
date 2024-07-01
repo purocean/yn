@@ -17,19 +17,23 @@ export async function changePosition (position: PositionState) {
     typeof position.viewScrollTop === 'number'
   ) {
     view.disableSyncScrollAwhile(async () => {
+      await Promise.resolve()
       editor.getEditor().setScrollTop(position.editorScrollTop!)
       view.scrollTopTo(position.viewScrollTop!)
       await sleep(50)
       view.scrollTopTo(position.viewScrollTop!)
     })
   } else if ('editorScrollTop' in position && typeof position.editorScrollTop === 'number') {
-    editor.getEditor().setScrollTop(position.editorScrollTop)
+    await Promise.resolve()
+    editor.getEditor().setScrollTop(position.editorScrollTop!)
   } else if ('viewScrollTop' in position && typeof position.viewScrollTop === 'number') {
+    await Promise.resolve()
     view.scrollTopTo(position.viewScrollTop)
     await sleep(50)
     view.scrollTopTo(position.viewScrollTop)
   } else if ('line' in position) {
     view.disableSyncScrollAwhile(async () => {
+      await Promise.resolve()
       editor.highlightLine(position.line, true)
       editor.getEditor().setPosition({ lineNumber: position.line, column: position.column || 1 })
       editor.getEditor().focus()
