@@ -152,7 +152,7 @@ export function isSubOrSameFile (docA: PathItem | null | undefined, docB?: PathI
  * @param doc
  * @returns
  */
-export function toUri (doc?: Doc | null): string {
+export function toUri (doc?: PathItem | null): string {
   if (doc && doc.repo && doc.path) {
     return URI.parse(`yank-note://${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
   } else {

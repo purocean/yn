@@ -11,7 +11,7 @@ import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/
 import { getAllCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
-import type { Components } from '@fe/types'
+import type { Components, PositionState } from '@fe/types'
 
 async function getFirstMatchPath (repo: string, dir: string, fileName: string) {
   if (fileName.includes('/')) {
@@ -145,11 +145,11 @@ function handleLink (link: HTMLAnchorElement): boolean {
       const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
 
       const hash = tmp.slice(1).join('#')
+      const position: PositionState | null = pos ? { line: pos[0], column: pos[1] } : hash ? { anchor: hash } : null
+      ctx.triggerHook('PLUGIN_HOOK', { plugin: 'markdown-link', type: 'before-switch-doc', payload: { doc: file, position } })
       await ctx.doc.switchDoc(file)
-      if (pos) {
-        ctx.routines.changePosition({ line: pos[0], column: pos[1] })
-      } else if (hash) {
-        ctx.routines.changePosition({ anchor: hash })
+      if (position) {
+        ctx.routines.changePosition(position)
       }
     }
 

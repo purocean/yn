@@ -487,6 +487,14 @@ export type BuildInHookTypes = {
     plugin: 'markdown-katex',
     type: 'before-render',
     payload: { latex: string, options: any }
+  } | {
+    plugin: 'markdown-link',
+    type: 'before-switch-doc',
+    payload: { doc: Doc, position?: PositionState | null }
+  } | {
+    plugin: 'history-stack',
+    type: 'before-switch-doc',
+    payload: { doc: Doc, position?: PositionState | null }
   },
   PREMIUM_STATUS_CHANGED: never
 }
