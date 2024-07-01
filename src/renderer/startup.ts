@@ -167,7 +167,7 @@ registerHook('VIEW_BEFORE_REFRESH', async () => {
   if (store.state.currentFile) {
     logger.debug('force reload document')
     const { type, name, path, repo } = store.state.currentFile
-    await switchDoc({ type, name, path, repo }, true)
+    await switchDoc({ type, name, path, repo }, { force: true })
   }
 })
 

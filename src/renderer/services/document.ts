@@ -9,7 +9,7 @@ import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import type { Doc, PathItem } from '@fe/types'
+import type { Doc, PathItem, SwitchDocOpts } from '@fe/types'
 import { basename, dirname, extname, isBelongTo, join, normalizeSep, relative, resolve } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
@@ -609,7 +609,7 @@ export async function ensureCurrentFileSaved () {
   }
 }
 
-async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
+async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void> {
   doc = doc ? cloneDeep(doc) : null
 
   logger.debug('switchDoc', doc)
@@ -618,12 +618,15 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
     throw new Error('Invalid document type')
   }
 
+  const force = opts?.force
+
   if (!force && toUri(doc) === toUri(store.state.currentFile) && store.state.currentFile !== undefined) {
     logger.debug('skip switch', doc)
+    triggerHook('DOC_SWITCH_SKIPPED', { doc, opts })
     return
   }
 
-  await triggerHook('DOC_PRE_SWITCH', { doc }, { breakable: true })
+  await triggerHook('DOC_PRE_SWITCH', { doc, opts }, { breakable: true })
 
   await ensureCurrentFileSaved().catch(error => {
     if (force) {
@@ -638,13 +641,13 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
     doc.absolutePath = getAbsolutePath(doc)
   }
 
-  await triggerHook('DOC_BEFORE_SWITCH', { doc }, { breakable: true, ignoreError: true })
+  await triggerHook('DOC_BEFORE_SWITCH', { doc, opts }, { breakable: true, ignoreError: true })
 
   try {
     if (!doc) {
       store.state.currentFile = null
       store.state.currentContent = ''
-      triggerHook('DOC_SWITCHED', { doc: null })
+      triggerHook('DOC_SWITCHED', { doc: null, opts })
       return
     }
 
@@ -684,9 +687,9 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
     }
 
     store.state.currentContent = content
-    triggerHook('DOC_SWITCHED', { doc: store.state.currentFile || null })
+    triggerHook('DOC_SWITCHED', { doc: store.state.currentFile || null, opts })
   } catch (error: any) {
-    triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message })
+    triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message, opts })
     useToast().show('warning', error.message.includes('Malformed') ? t('document.wrong-password') : error.message)
     throw error
   }
@@ -695,12 +698,12 @@ async function _switchDoc (doc: Doc | null, force = false): Promise<void> {
 /**
  * Switch document.
  * @param doc
- * @param force
+ * @param opts
  */
-export async function switchDoc (doc: Doc | null, force = false): Promise<void> {
+export async function switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void> {
   return lock.acquire('switchDoc', async (done) => {
     try {
-      await _switchDoc(doc, force)
+      await _switchDoc(doc, opts)
       done()
     } catch (e: any) {
       done(e)

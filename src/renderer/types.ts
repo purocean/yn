@@ -10,6 +10,8 @@ export * from '@share/types'
 export type PositionScrollState = { editorScrollTop?: number, viewScrollTop?: number }
 export type PositionState = { line: number, column?: number } | { anchor: string } | PositionScrollState
 
+export type SwitchDocOpts = { force?: boolean, source?: 'markdown-link' | 'history-stack', ext?: { position?: PositionState | null } }
+
 export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
 
 export type SettingSchema = {
@@ -466,13 +468,14 @@ export type BuildInHookTypes = {
   DOC_CREATED: { doc: Doc },
   DOC_DELETED: { doc: PathItem },
   DOC_MOVED: { oldDoc: Doc, newDoc: Doc },
-  DOC_PRE_SWITCH: { doc?: Doc | null },
+  DOC_PRE_SWITCH: { doc?: Doc | null, opts?: SwitchDocOpts },
   DOC_BEFORE_SAVE: { doc: Doc, content: string },
   DOC_SAVED: { doc: Doc },
-  DOC_BEFORE_SWITCH: { doc?: Doc | null },
-  DOC_SWITCHING: { doc?: Doc | null },
-  DOC_SWITCHED: { doc: Doc | null },
-  DOC_SWITCH_FAILED: { doc?: Doc | null, message: string },
+  DOC_BEFORE_SWITCH: { doc?: Doc | null, opts?: SwitchDocOpts },
+  DOC_SWITCHING: { doc?: Doc | null, opts?: SwitchDocOpts },
+  DOC_SWITCHED: { doc: Doc | null, opts?: SwitchDocOpts },
+  DOC_SWITCH_FAILED: { doc?: Doc | null, message: string, opts?: SwitchDocOpts },
+  DOC_SWITCH_SKIPPED: { doc?: Doc | null, opts?: SwitchDocOpts },
   DOC_CHANGED: { doc: Doc },
   DOC_PRE_ENSURE_CURRENT_FILE_SAVED: never,
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
@@ -489,12 +492,8 @@ export type BuildInHookTypes = {
     payload: { latex: string, options: any }
   } | {
     plugin: 'markdown-link',
-    type: 'before-switch-doc',
-    payload: { doc: Doc, position?: PositionState | null }
-  } | {
-    plugin: 'history-stack',
-    type: 'before-switch-doc',
-    payload: { doc: Doc, position?: PositionState | null }
+    type: 'after-change-position-only' | 'before-change-position-only',
+    payload: { position: PositionState }
   },
   PREMIUM_STATUS_CHANGED: never
 }

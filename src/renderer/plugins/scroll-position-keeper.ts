@@ -1,12 +1,11 @@
 import type { Plugin } from '@fe/context'
-import type { PositionScrollState } from '@fe/types'
+import type { Doc, PositionScrollState, SwitchDocOpts } from '@fe/types'
 
 export default {
   name: 'scroll-position-keeper',
   register: (ctx) => {
     const maxLength = 100
     const positions = new Map<string, { time: number, value: PositionScrollState }>()
-    let skip = false
 
     const clean = ctx.lib.lodash.debounce(() => {
       const entries = Array.from(positions.entries()).sort((a, b) => a[1].time - b[1].time)
@@ -20,14 +19,7 @@ export default {
       }
     }, 1000)
 
-    ctx.registerHook('PLUGIN_HOOK', ({ plugin, type, payload }) => {
-      skip = false
-      if (plugin === 'markdown-link' && type === 'before-switch-doc' && payload.position) {
-        skip = true
-      }
-    })
-
-    ctx.registerHook('DOC_PRE_SWITCH', () => {
+    function savePosition () {
       const doc = ctx.store.state.currentFile
       if (!doc) {
         return
@@ -44,11 +36,11 @@ export default {
         value: { viewScrollTop, editorScrollTop },
         time: Date.now()
       })
-    })
+    }
 
-    ctx.registerHook('DOC_SWITCHED', ({ doc }) => {
-      if (skip) {
-        skip = false
+    function restorePosition ({ doc, opts }: { doc?: Doc | null, opts?: SwitchDocOpts }) {
+      // do not restore position when switching doc by markdown link
+      if (!doc || opts?.ext?.position) {
         return
       }
 
@@ -59,6 +51,16 @@ export default {
       }
 
       clean()
+    }
+
+    ctx.registerHook('DOC_PRE_SWITCH', savePosition)
+    ctx.registerHook('DOC_SWITCHED', restorePosition)
+    ctx.registerHook('DOC_SWITCH_SKIPPED', restorePosition)
+
+    ctx.registerHook('PLUGIN_HOOK', ({ plugin, type }) => {
+      if (plugin === 'markdown-link' && type === 'before-change-position-only') {
+        savePosition()
+      }
     })
   }
 } as Plugin
