@@ -7,6 +7,9 @@ import type * as Monaco from 'monaco-editor'
 
 export * from '@share/types'
 
+export type PositionScrollState = { editorScrollTop?: number, viewScrollTop?: number }
+export type PositionState = { line: number, column?: number } | { anchor: string } | PositionScrollState
+
 export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
 
 export type SettingSchema = {
