@@ -681,8 +681,8 @@ export default {
         }
 
         .markdown-view .markdown-body .table-wrapper > table tr:hover {
-          outline: 2px #b3833b dashed;
-          outline-offset: -2px;
+          outline: 1px #b3833b dashed;
+          outline-offset: -1px;
         }
 
         .markdown-view .markdown-body .table-wrapper > table tbody {
