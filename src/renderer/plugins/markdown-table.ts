@@ -387,7 +387,7 @@ function addRow (td: HTMLTableCellElement, num: number) {
 
   const refText = getLineContent(hr.start)
   const cols = escapedSplit(refText)
-  const columns = cols.map(() => ' -- ')
+  const columns = cols.map((str) => str.replace(/\S/g, '-'))
 
   const str = columnsToStr(columns, refText)
 
