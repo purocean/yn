@@ -146,10 +146,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
 
       const hash = tmp.slice(1).join('#')
       const position: PositionState | null = pos ? { line: pos[0], column: pos[1] } : hash ? { anchor: hash } : null
-      await ctx.doc.switchDoc(file, { source: 'markdown-link', ext: { position } })
-      if (position) {
-        await ctx.routines.changePosition(position)
-      }
+      await ctx.doc.switchDoc(file, { source: 'markdown-link', position })
     }
 
     const path = normalizeSep(tmp[0])
@@ -163,17 +160,13 @@ function handleLink (link: HTMLAnchorElement): boolean {
       return true
     } else if (href && href.startsWith('#')) { // for anchor
       const position: PositionState = { anchor: href.replace(/^#/, '') }
-      ctx.triggerHook('PLUGIN_HOOK', { plugin: 'markdown-link', type: 'before-change-position-only', payload: { position } })
-      ctx.routines.changePosition(position)
-      ctx.triggerHook('PLUGIN_HOOK', { plugin: 'markdown-link', type: 'after-change-position-only', payload: { position } })
+      ctx.doc.switchDoc(ctx.store.state.currentFile!, { source: 'markdown-link', position })
       return true
     } else if (href && href.startsWith(':') && rePos.test(href)) { // for pos
       const { pos } = parsePathPos(href)
       if (pos) {
         const position = { line: pos[0], column: pos[1] }
-        ctx.triggerHook('PLUGIN_HOOK', { plugin: 'markdown-link', type: 'before-change-position-only', payload: { position } })
-        ctx.routines.changePosition(position)
-        ctx.triggerHook('PLUGIN_HOOK', { plugin: 'markdown-link', type: 'after-change-position-only', payload: { position } })
+        ctx.doc.switchDoc(ctx.store.state.currentFile!, { source: 'markdown-link', position })
       }
       return true
     } else if (isWikiLink) {

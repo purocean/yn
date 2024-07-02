@@ -28,7 +28,6 @@ export default {
                   const mouseY = Math.round(iframeRect.top + e.clientY)
                   const remote = ctx.env.getElectronRemote()
                   remote.getCurrentWebContents().copyImageAt(mouseX, mouseY)
-                  console.log('xxx', [e.pageX, e.pageY], { mouseX, mouseY })
                 })
               }, 500)
             } else {

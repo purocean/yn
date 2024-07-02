@@ -1,5 +1,5 @@
 import type { Plugin, Ctx } from '@fe/context'
-import type { Doc, PathItem, PositionState, SwitchDocOpts } from '@fe/types'
+import type { Doc, PathItem, PositionState } from '@fe/types'
 
 type State = { doc: Doc, position?: PositionState | null}
 
@@ -9,6 +9,7 @@ export default {
     const maxLength = 100
     let stack: State[] = []
     let idx = -1
+    const logger = ctx.utils.getLogger('plugin:history-stack')
 
     const backId = 'plugin.document-history-stack.back'
     const forwardId = 'plugin.document-history-stack.forward'
@@ -16,6 +17,8 @@ export default {
     function refresh () {
       ctx.workbench.ControlCenter.refresh()
       ctx.statusBar.refreshMenu()
+
+      logger.debug('refresh', stack, idx, stack[idx])
     }
 
     function go (offset: number) {
@@ -26,11 +29,7 @@ export default {
 
       const nextState = stack[index]
 
-      ctx.doc.switchDoc(nextState.doc, { source: 'history-stack', ext: { position: nextState.position } }).then(() => {
-        if (nextState.position) {
-          ctx.routines.changePosition(nextState.position)
-        }
-      })
+      ctx.doc.switchDoc(nextState.doc, { source: 'history-stack', position: nextState.position })
 
       idx = index
       refresh()
@@ -42,12 +41,8 @@ export default {
       refresh()
     }
 
-    function record (doc: Doc | null | undefined, opts: SwitchDocOpts | null | undefined) {
-      if (!doc) {
-        return
-      }
-
-      const newState: State = { doc: { type: doc.type, repo: doc.repo, name: doc.name, path: doc.path }, position: opts?.ext?.position }
+    function record (doc: Doc, position: PositionState | null) {
+      const newState: State = { doc: { type: doc.type, repo: doc.repo, name: doc.name, path: doc.path }, position }
 
       if (ctx.lib.lodash.isEqual(newState, stack[idx])) {
         return
@@ -64,13 +59,62 @@ export default {
       refresh()
     }
 
-    ctx.registerHook('PLUGIN_HOOK', ({ plugin, type, payload }) => {
-      if (plugin === 'markdown-link' && type === 'after-change-position-only') {
-        record(ctx.store.state.currentFile, { ext: { position: payload.position } })
+    function isScrollPosition (position: PositionState | undefined | null) {
+      return position && ('editorScrollTop' in position || 'viewScrollTop' in position)
+    }
+
+    function savePosition () {
+      const currentState = stack[idx]
+      const currentDoc = ctx.store.state.currentFile
+      if (!currentState || !currentDoc) {
+        return
+      }
+
+      // update scroll position when switching doc
+      if ((!currentState.position || isScrollPosition(currentState.position)) && ctx.doc.isSubOrSameFile(currentDoc, currentState.doc)) {
+        const viewScrollTop = ctx.view.getScrollTop() || 0
+        const editorScrollTop = ctx.editor.getEditor().getScrollTop()
+        currentState.position = { viewScrollTop, editorScrollTop }
+      }
+    }
+
+    ctx.registerHook('DOC_PRE_SWITCH', () => {
+      savePosition()
+    })
+
+    ctx.registerHook('DOC_SWITCHED', ({ doc, opts }) => {
+      // do not record position when switching doc by history stack
+      if (opts?.source === 'history-stack') {
+        return
+      }
+
+      const _doc = doc || ctx.store.state.currentFile
+      if (!_doc) {
+        return
+      }
+
+      const position = opts?.position || stack.findLast(x => {
+        return isScrollPosition(x.position) && ctx.doc.isSubOrSameFile(_doc, x.doc)
+      })?.position
+
+      if (!opts?.position && position) {
+        ctx.routines.changePosition(position)
+      }
+
+      record(_doc, null) // do not record cross doc position
+    })
+
+    ctx.registerHook('DOC_SWITCH_SKIPPED', ({ doc, opts }) => {
+      if (opts?.source === 'history-stack') {
+        return
+      }
+
+      // record in page navigation
+      if (doc && opts?.position) {
+        record(doc, opts?.position)
       }
     })
 
-    ctx.registerHook('DOC_SWITCHED', ({ doc, opts }) => record(doc, opts))
     ctx.registerHook('DOC_DELETED', ({ doc }) => removeFromStack(doc))
     ctx.registerHook('DOC_MOVED', ({ oldDoc }) => removeFromStack(oldDoc))
 

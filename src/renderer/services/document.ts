@@ -16,10 +16,11 @@ import { triggerHook } from '@fe/core/hook'
 import { FLAG_MAS, HELP_REPO_NAME } from '@fe/support/args'
 import * as api from '@fe/support/api'
 import { getLogger } from '@fe/utils'
+import { isWindows } from '@fe/support/env'
 import { getAllRepos, getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
-import { isWindows } from '@fe/support/env'
+import { changePosition } from './routines'
 
 const logger = getLogger('document')
 const lock = new AsyncLock()
@@ -614,19 +615,23 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
 
   logger.debug('switchDoc', doc)
 
-  if (doc?.type !== 'file') {
+  if (doc && doc.type !== 'file') {
     throw new Error('Invalid document type')
   }
 
+  await triggerHook('DOC_PRE_SWITCH', { doc, opts }, { breakable: true })
+
   const force = opts?.force
 
-  if (!force && toUri(doc) === toUri(store.state.currentFile) && store.state.currentFile !== undefined) {
+  if (!force && store.state.currentFile !== undefined && isSameFile(doc, store.state.currentFile)) {
     logger.debug('skip switch', doc)
     triggerHook('DOC_SWITCH_SKIPPED', { doc, opts })
+
+    if (opts?.position) {
+      changePosition(opts.position)
+    }
     return
   }
-
-  await triggerHook('DOC_PRE_SWITCH', { doc, opts }, { breakable: true })
 
   await ensureCurrentFileSaved().catch(error => {
     if (force) {
@@ -688,6 +693,10 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
 
     store.state.currentContent = content
     triggerHook('DOC_SWITCHED', { doc: store.state.currentFile || null, opts })
+
+    if (opts?.position) {
+      changePosition(opts.position)
+    }
   } catch (error: any) {
     triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message, opts })
     useToast().show('warning', error.message.includes('Malformed') ? t('document.wrong-password') : error.message)

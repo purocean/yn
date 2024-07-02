@@ -10,7 +10,11 @@ export * from '@share/types'
 export type PositionScrollState = { editorScrollTop?: number, viewScrollTop?: number }
 export type PositionState = { line: number, column?: number } | { anchor: string } | PositionScrollState
 
-export type SwitchDocOpts = { force?: boolean, source?: 'markdown-link' | 'history-stack', ext?: { position?: PositionState | null } }
+export type SwitchDocOpts = {
+  force?: boolean,
+  source?: 'markdown-link' | 'history-stack',
+  position?: PositionState | null
+}
 
 export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
 
@@ -490,10 +494,6 @@ export type BuildInHookTypes = {
     plugin: 'markdown-katex',
     type: 'before-render',
     payload: { latex: string, options: any }
-  } | {
-    plugin: 'markdown-link',
-    type: 'after-change-position-only' | 'before-change-position-only',
-    payload: { position: PositionState }
   },
   PREMIUM_STATUS_CHANGED: never
 }

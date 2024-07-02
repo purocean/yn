@@ -62,7 +62,6 @@ import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
 import markdownGithubAlerts from '@fe/plugins/markdown-github-alerts'
 import markdownMisc from '@fe/plugins/misc'
 import syncScroll from '@fe/plugins/sync-scroll'
-import scrollPositionKeeper from '@fe/plugins/scroll-position-keeper'
 import imageLocalization from '@fe/plugins/image-localization'
 import viewImageContextMenus from '@fe/plugins/view-image-context-menus'
 import imageHostingPicgo from '@fe/plugins/image-hosting-picgo'
@@ -138,7 +137,6 @@ export default [
   markdownHeadingNumber,
   markdownMisc,
   syncScroll,
-  scrollPositionKeeper,
   imageLocalization,
   viewImageContextMenus,
   imageHostingPicgo,
