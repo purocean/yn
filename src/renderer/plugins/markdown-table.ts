@@ -423,6 +423,21 @@ function processColumns (td: HTMLTableCellElement, process: (columns: string[]) 
 
   const refText = getLineContent(hr.start)
 
+  const _editor = editor.getEditor()
+  const monaco = editor.getMonaco()
+
+  const _replaceLine = editWrapper((line: number, text: string) => {
+    const length = editor.getEditor().getModel()!.getLineLength(line)
+    _editor.executeEdits('', [
+      {
+        range: new (monaco.Range)(line, 1, line, length + 1),
+        text,
+        forceMoveMarkers: true
+      }
+    ])
+    _editor.setPosition(new monaco.Position(line, text.length + 1))
+  })
+
   rows.forEach((row) => {
     const { start } = row
 
@@ -431,8 +446,10 @@ function processColumns (td: HTMLTableCellElement, process: (columns: string[]) 
 
     process(columns)
 
-    replaceLine(start, columnsToStr(columns, refText))
+    _replaceLine(start, columnsToStr(columns, refText))
   })
+
+  _editor.focus()
 }
 
 function alignCol (td: HTMLTableCellElement, type: 'left' | 'center' | 'right' | 'normal') {
