@@ -93,7 +93,7 @@ export default {
         return
       }
 
-      const position = opts?.position || stack.findLast(x => {
+      const position = opts?.position || (stack as any).findLast((x: State) => {
         return isScrollPosition(x.position) && ctx.doc.isSubOrSameFile(_doc, x.doc)
       })?.position
 
