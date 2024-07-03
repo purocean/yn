@@ -6,6 +6,7 @@ import { Alt } from '@fe/core/keybinding'
 import store from '@fe/support/store'
 import * as view from './view'
 import { t } from './i18n'
+import { getEditor } from './editor'
 
 const emitResizeDebounce = throttle(() => {
   triggerHook('GLOBAL_RESIZE')
@@ -58,6 +59,12 @@ export function toggleEditor (visible?: boolean) {
     store.state.showView = false
   } else {
     store.state.showView = true
+  }
+
+  if (val) {
+    Promise.resolve().then(() => {
+      getEditor().focus()
+    })
   }
 
   emitResize()
