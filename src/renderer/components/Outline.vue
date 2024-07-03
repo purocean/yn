@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" :class="{'outline-toc': true, 'enable-collapse': !disableCollapse}" @click.capture="focusInput">
+  <div ref="container" :class="{'outline-toc': true, 'enable-collapse': !disableCollapse}">
     <input
       v-if="showFilter"
       ref="refInput"
@@ -39,7 +39,7 @@ import store from '@fe/support/store'
 import { highlightLine as editorHighlightLine, getEditor } from '@fe/services/editor'
 import { isSameFile } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
-import { getHeadings, getRenderEnv, Heading, highlightLine as viewHighlightLine } from '@fe/services/view'
+import { disableSyncScrollAwhile, getHeadings, getRenderEnv, Heading, highlightLine as viewHighlightLine } from '@fe/services/view'
 import SvgIcon from './SvgIcon.vue'
 
 type RenderHeading = Heading & {
@@ -74,7 +74,6 @@ export default defineComponent({
     let disableRefresh: any = null
 
     function handleClickItem (heading: Heading, index: number) {
-      focusInput()
       setCurrentIdx(-index - 10)
 
       activatedLine.value = heading.sourceLine
@@ -88,15 +87,16 @@ export default defineComponent({
       }, 1000)
 
       const line = heading.sourceLine
-      const scrollEditor = store.state.showEditor && !store.state.presentation
-      const scrollPreview = !scrollEditor || !store.state.syncScroll
 
       if (isSameFile(getRenderEnv()?.file, store.state.currentFile)) {
-        editorHighlightLine(line, scrollEditor, 1000)
-        const editor = getEditor()
-        const column = editor.getModel()?.getLineMaxColumn(line) || 1
-        editor.setPosition({ lineNumber: line, column })
-        viewHighlightLine(line, scrollPreview, 1000)
+        disableSyncScrollAwhile(() => {
+          editorHighlightLine(line, true)
+          const editor = getEditor()
+          const column = editor.getModel()?.getLineMaxColumn(line) || 1
+          editor.setPosition({ lineNumber: line, column })
+          editor.focus()
+          viewHighlightLine(line, true)
+        })
       } else {
         viewHighlightLine(line, true, 1000)
       }
@@ -176,10 +176,6 @@ export default defineComponent({
       }
 
       handleClickItem(heads.value[currentIdx.value], currentIdx.value)
-    }
-
-    function focusInput () {
-      refInput.value?.focus({ preventScroll: true })
     }
 
     function toggleExpand (head?: RenderHeading, val?: boolean) {
@@ -276,7 +272,7 @@ export default defineComponent({
       removeHook('DOC_SWITCHED', clear)
     })
 
-    return { refInput, keyword, container, heads, activatedLine, currentIdx, handleClickItem, setCurrentIdx, changeCurrentIdx, chooseCurrentItem, disableCollapse, toggleExpand, focusInput }
+    return { refInput, keyword, container, heads, activatedLine, currentIdx, handleClickItem, setCurrentIdx, changeCurrentIdx, chooseCurrentItem, disableCollapse, toggleExpand }
   },
 })
 </script>
