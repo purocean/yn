@@ -29,15 +29,18 @@ export default {
 
       const nextState = stack[index]
 
-      ctx.doc.switchDoc(nextState.doc, { source: 'history-stack', position: nextState.position })
-
-      idx = index
-      refresh()
+      ctx.doc.switchDoc(nextState.doc, { source: 'history-stack', position: nextState.position }).then(() => {
+        idx = index
+        refresh()
+      })
     }
 
     function removeFromStack (doc?: PathItem) {
       stack = stack.filter(x => !ctx.doc.isSubOrSameFile(doc, x.doc))
-      idx = stack.length - 1
+      if (idx >= stack.length) {
+        idx = stack.length - 1
+      }
+
       refresh()
     }
 
@@ -117,6 +120,7 @@ export default {
 
     ctx.registerHook('DOC_DELETED', ({ doc }) => removeFromStack(doc))
     ctx.registerHook('DOC_MOVED', ({ oldDoc }) => removeFromStack(oldDoc))
+    ctx.registerHook('DOC_SWITCH_FAILED', ({ doc }) => { doc && removeFromStack(doc) })
 
     ctx.action.registerAction({
       name: backId,
