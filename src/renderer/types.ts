@@ -468,7 +468,6 @@ export type BuildInHookTypes = {
   EDITOR_CUSTOM_EDITOR_CHANGE: { type: 'register' | 'remove' | 'switch' },
   EDITOR_CURRENT_EDITOR_CHANGE: { current?: CustomEditor | null },
   EDITOR_CONTENT_CHANGE: { uri: string, value: string },
-  NAVIGATION_BEFORE_NAVIGATE: { path: string },
   DOC_CREATED: { doc: Doc },
   DOC_DELETED: { doc: PathItem },
   DOC_MOVED: { oldDoc: Doc, newDoc: Doc },
