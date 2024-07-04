@@ -20,7 +20,6 @@ import { isWindows } from '@fe/support/env'
 import { getAllRepos, getRepo, inputPassword, openPath, showItemInFolder } from './base'
 import { t } from './i18n'
 import { getSetting, setSetting } from './setting'
-import { changePosition } from './routines'
 
 const logger = getLogger('document')
 const lock = new AsyncLock()
@@ -626,10 +625,6 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
   if (!force && store.state.currentFile !== undefined && isSameFile(doc, store.state.currentFile)) {
     logger.debug('skip switch', doc)
     triggerHook('DOC_SWITCH_SKIPPED', { doc, opts })
-
-    if (opts?.position) {
-      changePosition(opts.position)
-    }
     return
   }
 
@@ -693,10 +688,6 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
 
     store.state.currentContent = content
     triggerHook('DOC_SWITCHED', { doc: store.state.currentFile || null, opts })
-
-    if (opts?.position) {
-      changePosition(opts.position)
-    }
   } catch (error: any) {
     triggerHook('DOC_SWITCH_FAILED', { doc, message: error.message, opts })
     useToast().show('warning', error.message.includes('Malformed') ? t('document.wrong-password') : error.message)

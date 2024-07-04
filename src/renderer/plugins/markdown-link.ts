@@ -344,6 +344,18 @@ export default {
       })
     })
 
+    ctx.registerHook('DOC_SWITCH_SKIPPED', ({ opts }) => {
+      if (opts?.position) {
+        ctx.routines.changePosition(opts.position)
+      }
+    })
+
+    ctx.registerHook('DOC_SWITCHED', ({ doc, opts }) => {
+      if (doc && opts?.position) {
+        ctx.routines.changePosition(opts.position)
+      }
+    })
+
     ctx.markdown.registerPlugin(md => {
       md.core.ruler.push('convert_relative_path', convertLink)
       md.renderer.rules.link_open = (tokens, idx, options, _, slf) => {
