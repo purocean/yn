@@ -88,7 +88,7 @@
 6. feat: 代码运行支持自动滚动到底部
 7. feat: 输入 `【【` 时自动触发 Wiki 链接建议
 8. feat: 其他交互体验优化和问题修复
-9. dix: Windows zip 版本禁用自动更新，避免反复升级失败问题
+9. fix: Windows zip 版本禁用自动更新，避免反复升级失败问题
 10. feat(plugin): `markdown-link` 插件暴露 `mdRuleConvertLink`, `htmlHandleLink` 方法
 11. feat(plugin): `ctx.doc.switchDoc` 增加更多参数，支持跳转到指定位置
 12. feat(plugin): 增加 `ctx.routines.changePosition` 方法，用以跳转到当前文档的指定位置

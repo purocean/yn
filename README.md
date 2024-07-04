@@ -88,7 +88,7 @@ For more information on how to use the following functions, please see [characte
 6. feat: Support automatic scrolling to the bottom when running code.
 7. feat: Automatically trigger Wiki link suggestions when typing `【【`.
 8. feat: Other interaction experience optimizations and bug fixes.
-9. dix: Disable automatic updates for the Windows zip version to avoid repeated upgrade failure issues.
+9. fix: Disable automatic updates for the Windows zip version to avoid repeated upgrade failure issues.
 10. feat(plugin): The `markdown-link` plugin exposes the `mdRuleConvertLink`, `htmlHandleLink` methods.
 11. feat(plugin): `ctx.doc.switchDoc` adds more parameters, supporting jumping to a specified location.
 12. feat(plugin): Add the `ctx.routines.changePosition` method to jump to a specified location in the current document.
