@@ -39,6 +39,21 @@ function present (flag: boolean) {
   }, 0)
 }
 
+async function getElement (id: string) {
+  id = id.replaceAll('%28', '(').replaceAll('%29', ')')
+
+  const document = (await getRenderIframe()).contentDocument!
+
+  const _find = (id: string) => document.getElementById(id) ||
+    document.getElementById(decodeURIComponent(id)) ||
+    document.getElementById(encodeURIComponent(id)) ||
+    document.getElementById(id.replace(/^h-/, '')) ||
+    document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
+    document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
+
+  return _find(id) || _find(id.toUpperCase())
+}
+
 /**
  * Rerender view.
  */
@@ -89,9 +104,46 @@ export async function highlightLine (line: number, reveal: boolean, duration = 1
 
   if (el) {
     el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
-    await sleep(duration)
-    el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+    if (duration) {
+      sleep(duration).then(() => {
+        el!.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+      })
+    }
   }
+
+  return el
+}
+
+/**
+ * Highlight anchor.
+ * @param anchor
+ * @param reveal
+ * @param duration
+ */
+export async function highlightAnchor (anchor: string, reveal: boolean, duration = 1000) {
+  const el = await getElement(anchor)
+  if (!el) {
+    return null
+  }
+
+  if (reveal) {
+    el.scrollIntoView()
+
+    // retain 60 px for better view.
+    const contentWindow = (await getRenderIframe()).contentWindow!
+    contentWindow.scrollBy(0, -60)
+  }
+
+  // highlight element
+  el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+
+  if (duration) {
+    sleep(duration).then(() => {
+      el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
+    })
+  }
+
+  return el
 }
 
 /**
@@ -101,6 +153,12 @@ export async function highlightLine (line: number, reveal: boolean, duration = 1
 export async function scrollTopTo (top: number) {
   const iframe = await getRenderIframe()
   iframe.contentWindow?.scrollTo(0, top)
+}
+
+export function getScrollTop () {
+  if (renderIframe) {
+    return renderIframe.contentWindow?.scrollY
+  }
 }
 
 export function getPreviewStyles () {

@@ -744,6 +744,11 @@ const data: BaseLanguage = {
     'toast-no-more': '沒有更多',
     'results': '%s 個匹配',
   },
+  'view-context-menu': {
+    'copy-image': '複製圖片',
+    'delete-image': '刪除圖片',
+    'open-in-new-tab': '在新標籤中打開',
+  },
 }
 
 export default data

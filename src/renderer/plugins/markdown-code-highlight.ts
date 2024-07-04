@@ -248,7 +248,7 @@ export default {
         supportedLanguages = Object.keys(prism.languages).concat(Object.keys(extensionMap)).sort().join(',').replace('DFS,', '')
       }
 
-      items.push({ label: '/ ``` Code', insertText: '```${1|' + supportedLanguages + '|}\n$2\n```\n' })
+      items.push({ label: '/ ``` Code', insertText: '```${1|' + supportedLanguages + '|}\n$2\n```\n', block: true })
     })
 
     const exportStyles = `

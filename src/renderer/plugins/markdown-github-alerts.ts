@@ -27,12 +27,16 @@ export default {
       ${lightCss}
       @media screen { html[app-theme=dark] ${darkVars} }
       @media (prefers-color-scheme: dark) { html[app-theme=system] ${darkVars} }
+
+      .markdown-alert {
+        avoid-break-inside: avoid;
+      }
     `)
 
     ctx.editor.tapSimpleCompletionItems(items => {
       /* eslint-disable no-template-curly-in-string */
       items.push(
-        { label: '/ > Github Alerts', insertText: '> [!${1|NOTE,TIP,IMPORTANT,WARNING,CAUTION|}]${2}\n> ${3:Content}\n' },
+        { label: '/ > Github Alerts', insertText: '> [!${1|NOTE,TIP,IMPORTANT,WARNING,CAUTION|}]${2}\n> ${3:Content}\n', block: true },
       )
     })
   }

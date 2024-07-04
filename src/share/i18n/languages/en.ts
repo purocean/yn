@@ -743,6 +743,11 @@ const data = {
     'results': '%s matches',
     'toast-no-more': 'No more matches',
   },
+  'view-context-menu': {
+    'copy-image': 'Copy Image',
+    'delete-image': 'Delete Image',
+    'open-in-new-tab': 'Open in New Tab',
+  },
 }
 
 export type BaseLanguage = typeof data

@@ -1,6 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import type * as Monaco from 'monaco-editor'
 import type { Ctx, Plugin } from '@fe/context'
+import type { SimpleCompletionItem } from '@fe/services/editor'
 
 const surroundingPairs = [
   { open: '{', close: '}' },
@@ -117,7 +118,9 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
       startColumn = 0
     }
 
-    const items = this.ctx.editor.getSimpleCompletionItems()
+    const items = this.ctx.editor.getSimpleCompletionItems().filter((item) => {
+      return !item.block || startColumn === 1
+    })
 
     const result: Monaco.languages.CompletionItem[] = items.map((item, i) => {
       let columnOffset = this.getRangeColumnOffset('suffix', lineSuffixText, item.insertText)
@@ -141,6 +144,7 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
         range,
         sortText: i.toString().padStart(7),
         detail: item.detail,
+        command: item.command,
       }
     })
 
@@ -177,16 +181,38 @@ export default {
       })
     })
 
+    function buildTableCompletionItems (): SimpleCompletionItem[] {
+      const editor = ctx.editor.getEditor()
+      const position = editor.getPosition()
+      const prev2Lines = ((position && position.lineNumber > 2) ? ctx.editor.getLinesContent(position.lineNumber - 2, position.lineNumber - 1) : '').split('\n')
+      const tableCols = prev2Lines.reduce((acc, line) => {
+        const cols = line.split('|').length
+        return acc > 0 ? (acc === cols ? cols : -1) : cols
+      }, 0)
+
+      const currentLine = position ? ctx.editor.getLineContent(position.lineNumber) : ''
+
+      let i = 1
+      return /\|[^|]+/.test(currentLine) ? [] : tableCols > 1
+        ? [
+            { label: '/ ||| Table Row', insertText: prev2Lines[0].replace(/[^|]+/g, () => ` \${${i++}:--} `).trim() + '\n', block: true }
+          ]
+        : [
+            { label: '/ ||| Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |', block: true },
+            { label: '/ ||| Small Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |\n{.small}', block: true },
+          ]
+    }
+
     ctx.editor.tapSimpleCompletionItems(items => {
       items.unshift(
         { label: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
         { label: '/ []() Link', insertText: '[${2:Link}]($1)' },
-        { label: '/ # Head 1', insertText: '# $1' },
-        { label: '/ ## Head 2', insertText: '## $1' },
-        { label: '/ ### Head 3', insertText: '### $1' },
-        { label: '/ #### Head 4', insertText: '#### $1' },
-        { label: '/ ##### Head 5', insertText: '##### $1' },
-        { label: '/ ###### Head 6', insertText: '###### $1' },
+        { label: '/ # Head 1', insertText: '# $1', block: true },
+        { label: '/ ## Head 2', insertText: '## $1', block: true },
+        { label: '/ ### Head 3', insertText: '### $1', block: true },
+        { label: '/ #### Head 4', insertText: '#### $1', block: true },
+        { label: '/ ##### Head 5', insertText: '##### $1', block: true },
+        { label: '/ ###### Head 6', insertText: '###### $1', block: true },
         { label: '/ + List', insertText: '+ ' },
         { label: '/ - List', insertText: '- ' },
         { label: '/ > Blockquote', insertText: '> ' },
@@ -199,11 +225,9 @@ export default {
         { label: '/ __ Bold', insertText: '__$1__' },
         { label: '/ ~~ Delete', insertText: '~~$1~~' },
         { label: '/ == Mark', insertText: '==$1==' },
-        { label: '/ [[]] Wiki Link', insertText: '[[$1]]' },
-        { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n' },
-        { label: '/ ||| Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |' },
-        { label: '/ ||| Small Table', insertText: '| ${1:TH} | ${2:TH} | ${3:TH} |\n| -- | -- | -- |\n| TD | TD | TD |\n{.small}' },
-        { label: '/ --- Horizontal Line', insertText: '---\n' },
+        { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n', block: true },
+        ...buildTableCompletionItems(),
+        { label: '/ --- Horizontal Line', insertText: '---\n', block: true },
         { label: '/ + [ ] TODO List', insertText: '+ [ ] ' },
         { label: '/ - [ ] TODO List', insertText: '- [ ] ' },
       )

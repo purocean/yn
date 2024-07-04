@@ -52,7 +52,7 @@ export default {
             logger.debug('startWatch onResult', { remoteFileUpdated, currentFileSaved })
             if (remoteFileUpdated && ctx.editor.isDefault()) {
               if (currentFileSaved.value) {
-                ctx.doc.switchDoc(currentFile, true)
+                ctx.doc.switchDoc(currentFile, { force: true })
               } else {
                 ctx.api.readFile(currentFile).then(({ hash }) => {
                   if (ctx.store.state.currentFile === currentFile && hash !== currentFile.contentHash) {
@@ -63,7 +63,7 @@ export default {
                     }).then((ok) => {
                       if (ok && ctx.store.state.currentFile === currentFile) {
                         ctx.store.state.currentContent = currentFile.content || '' // reset content
-                        ctx.doc.switchDoc(currentFile, true)
+                        ctx.doc.switchDoc(currentFile, { force: true })
                       }
                     })
                   }

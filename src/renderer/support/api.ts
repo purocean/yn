@@ -169,7 +169,7 @@ export async function copyFile (file: FileItem, newPath: string): Promise<ApiRes
  * @param file
  * @returns
  */
-export async function deleteFile (file: FileItem): Promise<ApiResult<any>> {
+export async function deleteFile (file: PathItem): Promise<ApiResult<any>> {
   const { path, repo } = file
   return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`, { method: 'DELETE' })
 }

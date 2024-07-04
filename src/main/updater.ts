@@ -1,5 +1,7 @@
 import type { RequestOptions } from 'http'
 import { dialog, app, shell } from 'electron'
+import { dirname } from 'path'
+import { readdirSync } from 'fs'
 import { autoUpdater, CancellationToken, UpdateInfo } from 'electron-updater'
 import { resolveFiles } from 'electron-updater/out/providers/Provider'
 import { GitHubProvider } from 'electron-updater/out/providers/GitHubProvider'
@@ -20,7 +22,7 @@ autoUpdater.logger = logger
 let progressBar: any = null
 
 const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
-const disabled = isAppx || (process as any).mas
+let disabled = isAppx || (process as any).mas
 
 class UpdateProvider extends GitHubProvider {
   constructor (options: any, updater: any, runtimeOptions: any) {
@@ -85,6 +87,16 @@ class UpdateProvider extends GitHubProvider {
 const init = (call?: () => void) => {
   if (disabled) {
     return
+  }
+
+  if (process.platform === 'win32') {
+    const fileList = readdirSync(dirname(app.getPath('exe')))
+    const hasUninstall = fileList.some(x => x.includes('Uninstall'))
+    if (!hasUninstall) {
+      disabled = true
+      console.log('updater >', 'No uninstaller found, updater disabled')
+      return
+    }
   }
 
   autoUpdater.setFeedURL({ provider: 'custom', owner: 'purocean', repo: 'yn', updateProvider: UpdateProvider as any })

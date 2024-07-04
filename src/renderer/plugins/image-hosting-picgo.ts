@@ -205,6 +205,11 @@ export default {
         el.tagName === 'IMG' &&
         el.getAttribute(DOM_ATTR_NAME.LOCAL_IMAGE)
       ) {
+        const repo = el.getAttribute(DOM_ATTR_NAME.TARGET_REPO)
+        if (repo === ctx.args.HELP_REPO_NAME) {
+          return
+        }
+
         items.push({
           id: 'plugin.image-hosting-picgo.upload-single-image',
           type: 'normal',

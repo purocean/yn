@@ -167,9 +167,9 @@ const schema: SettingSchema = ({
       defaultValue: 'increase',
       title: 'T_setting-panel.schema.editor.ordered-list-completion',
       type: 'string',
-      enum: ['auto', 'increase', 'one'],
+      enum: ['auto', 'increase', 'one', 'off'],
       options: {
-        enum_titles: ['Auto', '1. ···, 2. ···, 3. ···', '1. ···, 1. ···, 1. ···'],
+        enum_titles: ['Auto', '1. ···, 2. ···, 3. ···', '1. ···, 1. ···, 1. ···', 'Off'],
       },
       group: 'editor',
       required: true,

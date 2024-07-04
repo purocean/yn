@@ -77,5 +77,58 @@ export default {
     ctx.markdown.registerPlugin(md => {
       md.inline.ruler.after('link', 'wiki-links', wikiLinks)
     })
+
+    ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
+      editor.onDidChangeCursorPosition(e => {
+        if (e.source === 'keyboard' && e.reason === 0) {
+          const prevStr = editor.getModel()!.getValueInRange({
+            startLineNumber: e.position.lineNumber,
+            startColumn: e.position.column - 2,
+            endLineNumber: e.position.lineNumber,
+            endColumn: e.position.column,
+          })
+
+          const nextStr = editor.getModel()!.getValueInRange({
+            startLineNumber: e.position.lineNumber,
+            startColumn: e.position.column,
+            endLineNumber: e.position.lineNumber,
+            endColumn: e.position.column + 2,
+          })
+
+          if (prevStr === '【【') {
+            // replace 【【 to [[]]
+            editor.pushUndoStop()
+            editor.executeEdits('wiki-links', [{
+              range: {
+                startLineNumber: e.position.lineNumber,
+                startColumn: e.position.column - 2,
+                endLineNumber: e.position.lineNumber,
+                endColumn: e.position.column + (nextStr === '】】' ? 2 : 0),
+              },
+              text: '[[]]',
+            }], [
+              new monaco.Selection(
+                e.position.lineNumber,
+                e.position.column,
+                e.position.lineNumber,
+                e.position.column,
+              ),
+            ])
+            editor.pushUndoStop()
+
+            // trigger completion
+            editor.trigger('wiki-links', 'editor.action.triggerSuggest', {})
+          }
+        }
+      })
+    })
+
+    ctx.editor.tapSimpleCompletionItems(items => {
+      items.push(
+        { label: '/ [[]] Wiki Link', insertText: '[[$1]]', command: { id: 'editor.action.triggerSuggest', title: '' } },
+      )
+    })
+
+    return { mdRuleWikiLinks: wikiLinks }
   }
 } satisfies Plugin

@@ -2,33 +2,16 @@ import StateCore from 'markdown-it/lib/rules_core/state_core'
 import Token from 'markdown-it/lib/token'
 import ctx, { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import { removeQuery, sleep } from '@fe/utils'
+import { removeQuery } from '@fe/utils'
 import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, dirname, join, normalizeSep, resolve } from '@fe/utils/path'
-import { switchDoc } from '@fe/services/document'
 import { getAttachmentURL, getRepo, openExternal, openPath } from '@fe/services/base'
-import { getRenderIframe } from '@fe/services/view'
 import { getAllCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
-import type { Components } from '@fe/types'
-
-async function getElement (id: string) {
-  id = id.replaceAll('%28', '(').replaceAll('%29', ')')
-
-  const document = (await getRenderIframe()).contentDocument!
-
-  const _find = (id: string) => document.getElementById(id) ||
-    document.getElementById(decodeURIComponent(id)) ||
-    document.getElementById(encodeURIComponent(id)) ||
-    document.getElementById(id.replace(/^h-/, '')) ||
-    document.getElementById(decodeURIComponent(id.replace(/^h-/, ''))) ||
-    document.getElementById(encodeURIComponent(id.replace(/^h-/, '')))
-
-  return _find(id) || _find(id.toUpperCase())
-}
+import type { Components, PositionState } from '@fe/types'
 
 async function getFirstMatchPath (repo: string, dir: string, fileName: string) {
   if (fileName.includes('/')) {
@@ -128,33 +111,8 @@ function handleLink (link: HTMLAnchorElement): boolean {
     openPath(join(basePath, path))
     return true
   } else { // relative link
-    // better scrollIntoView
-    const scrollIntoView = async (el: HTMLElement) => {
-      el.scrollIntoView()
-      // retain 60 px for better view.
-      const contentWindow = (await getRenderIframe()).contentWindow!
-      contentWindow.scrollBy(0, -60)
-
-      // highlight element
-      el.classList.add(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
-      await sleep(1000)
-      el.classList.remove(DOM_CLASS_NAME.PREVIEW_HIGHLIGHT)
-    }
-
     const tmp = decodeURI(href).split('#')
     const rePos = /:([0-9]+),?([0-9]+)?$/
-
-    const setPosition = (line: number, column: number) => {
-      ctx.view.disableSyncScrollAwhile(() => {
-        if (ctx.editor.isDefault()) {
-          ctx.editor.highlightLine(line, true, 1000)
-          ctx.editor.getEditor().setPosition({ lineNumber: line, column })
-          ctx.editor.getEditor().focus()
-        }
-
-        ctx.view.highlightLine(line, true, 1000)
-      })
-    }
 
     const parsePathPos = (path: string): {pos: [number, number] | null, path: string} => {
       const match = path.match(rePos)
@@ -186,26 +144,9 @@ function handleLink (link: HTMLAnchorElement): boolean {
 
       const file: Doc = { path, type: 'file', name: basename(path), repo: fileRepo }
 
-      return switchDoc(file).then(() => {
-        pos && setPosition(pos[0], pos[1])
-      }).then(async () => {
-        const hash = tmp.slice(1).join('#')
-        // jump anchor
-        if (hash) {
-          await sleep(50)
-          const el = await getElement(hash)
-
-          if (el) {
-            await sleep(0)
-            scrollIntoView(el)
-
-            // reveal editor lint when click heading
-            if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
-              el.click()
-            }
-          }
-        }
-      })
+      const hash = tmp.slice(1).join('#')
+      const position: PositionState | null = pos ? { line: pos[0], column: pos[1] } : hash ? { anchor: hash } : null
+      await ctx.doc.switchDoc(file, { source: 'markdown-link', position })
     }
 
     const path = normalizeSep(tmp[0])
@@ -218,13 +159,15 @@ function handleLink (link: HTMLAnchorElement): boolean {
       _switchDoc()
       return true
     } else if (href && href.startsWith('#')) { // for anchor
-      getElement(href.replace(/^#/, '')).then(el => {
-        el && scrollIntoView(el)
-      })
+      const position: PositionState = { anchor: href.replace(/^#/, '') }
+      ctx.doc.switchDoc(ctx.store.state.currentFile!, { source: 'markdown-link', position })
       return true
     } else if (href && href.startsWith(':') && rePos.test(href)) { // for pos
       const { pos } = parsePathPos(href)
-      pos && setPosition(pos[0], pos[1])
+      if (pos) {
+        const position = { line: pos[0], column: pos[1] }
+        ctx.doc.switchDoc(ctx.store.state.currentFile!, { source: 'markdown-link', position })
+      }
       return true
     } else if (isWikiLink) {
       _switchDoc()
@@ -262,6 +205,10 @@ function convertLink (state: StateCore) {
     const basePath = dirname(path)
     const fileName = basename(removeQuery(attrVal))
 
+    const originAttr = isAnchor ? DOM_ATTR_NAME.ORIGIN_HREF : DOM_ATTR_NAME.ORIGIN_SRC
+    const originPath = removeQuery(attrVal)
+    const filePath = resolve(basePath, originPath)
+
     if (isAnchor) {
       // keep markdown file.
       if (fileName.endsWith('.md')) {
@@ -285,18 +232,16 @@ function convertLink (state: StateCore) {
       token.attrSet(DOM_ATTR_NAME.LOCAL_IMAGE, 'true')
     }
 
-    const originAttr = isAnchor ? DOM_ATTR_NAME.ORIGIN_HREF : DOM_ATTR_NAME.ORIGIN_SRC
-    token.attrSet(originAttr, attrVal)
-
-    const originPath = removeQuery(attrVal)
-
     const targetUri = getAttachmentURL({
       type: 'file',
       repo,
-      path: resolve(basePath, originPath),
+      path: filePath,
       name: fileName,
     })
 
+    token.attrSet(DOM_ATTR_NAME.TARGET_PATH, filePath)
+    token.attrSet(DOM_ATTR_NAME.TARGET_REPO, repo)
+    token.attrSet(originAttr, attrVal)
     token.attrSet(attrName, targetUri)
   }
 
@@ -399,6 +344,18 @@ export default {
       })
     })
 
+    ctx.registerHook('DOC_SWITCH_SKIPPED', ({ opts }) => {
+      if (opts?.position) {
+        ctx.routines.changePosition(opts.position)
+      }
+    })
+
+    ctx.registerHook('DOC_SWITCHED', ({ doc, opts }) => {
+      if (doc && opts?.position) {
+        ctx.routines.changePosition(opts.position)
+      }
+    })
+
     ctx.markdown.registerPlugin(md => {
       md.core.ruler.push('convert_relative_path', convertLink)
       md.renderer.rules.link_open = (tokens, idx, options, _, slf) => {
@@ -456,5 +413,7 @@ export default {
         })
       }
     })
+
+    return { mdRuleConvertLink: convertLink, htmlHandleLink: handleLink }
   }
 } as Plugin
