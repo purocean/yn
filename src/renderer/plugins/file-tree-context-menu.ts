@@ -32,7 +32,6 @@ export default {
 
     function getItems (node: Doc, position: 'tabs' | 'tree'): Components.ContextMenu.Item[] {
       const t = ctx.i18n.t
-      const isMarkdown = ctx.doc.isMarkdownFile(node)
 
       const disableItems = ctx.args.FLAG_READONLY
         ? ['add-item', 'duplicate', 'duplicate', 'create-dir', 'create-doc', 'create-in-cd', 'rename', 'delete', 'open-in-terminal']
@@ -67,9 +66,7 @@ export default {
         ...(node.type === 'dir' && !FLAG_DISABLE_XTERM ? [
           { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: () => revealInXterminal(node) },
         ] : []),
-        ...(isMarkdown ? [
-          { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node), ellipsis: true }
-        ] : []),
+        { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node), ellipsis: true },
         { type: 'separator' },
         { id: 'copy-name', label: t('tree.context-menu.copy-name'), onClick: () => ctx.utils.copyText(node.name) },
         { id: 'copy-path', label: t('tree.context-menu.copy-path'), onClick: () => ctx.utils.copyText(node.path) }
