@@ -39,5 +39,21 @@ export default {
         return ctx.lib.vue.h(ctx.embed.IFrame, { html: src, triggerParentKeyBoardEvent: true, iframeProps })
       },
     })
+
+    ctx.renderer.registerRenderer({
+      name: 'plain-text',
+      when (env) {
+        return !!(env.file && env.file.path.toLowerCase().endsWith('.txt'))
+      },
+      render (src) {
+        return ctx.lib.vue.h('div', {
+          style: {
+            padding: '20px',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-all',
+          },
+        }, src)
+      },
+    })
   }
 } as Plugin
