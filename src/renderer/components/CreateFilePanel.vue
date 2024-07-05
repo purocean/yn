@@ -1,17 +1,19 @@
 <template>
   <div class="create-file-panel">
-    <div class="category" v-for="category in xCategories" :key="category.category">
-      <div v-if="categories.length > 1" class="category-title">{{ category.displayName }}</div>
-      <div class="category-list">
-        <template v-for="item in category.types" :key="item.id">
-          <div
-            class="category-item"
-            @click="emits('updateDocType', item)"
-          >
-            <input type="radio" :checked="item.id === docType?.id" />
-            {{ item.displayName }}({{ item.extension[0] }})
-          </div>
-        </template>
+    <div class="category-list-wrapper">
+      <div class="category" v-for="category in xCategories" :key="category.category">
+        <div v-if="categories.length > 1" class="category-title">{{ category.displayName }}</div>
+        <div class="category-list">
+          <template v-for="item in category.types" :key="item.id">
+            <div
+              class="category-item"
+              @click="emits('updateDocType', item)"
+            >
+              <input type="radio" :checked="item.id === docType?.id" />
+              {{ item.displayName }}({{ item.extension[0] }})
+            </div>
+          </template>
+        </div>
       </div>
     </div>
     <div class="current-path">{{ $t('document.current-path', currentPath) }}</div>
@@ -44,6 +46,11 @@ const xCategories = computed(() => props.categories.map(x => ({
 
 <style lang="scss" scoped>
 .create-file-panel {
+  .category-list-wrapper {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto
+  }
+
   .category {
     padding-left: 8px;
     margin-bottom: 4px;
@@ -66,6 +73,7 @@ const xCategories = computed(() => props.categories.map(x => ({
       align-items: center;
       margin-right: 10px;
       margin-bottom: 10px;
+      font-size: 14px;
 
       input {
         cursor: pointer;
