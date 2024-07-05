@@ -43,7 +43,7 @@ export default {
       }
 
       return [
-        ...(isMarkdown && !ctx.doc.isEncrypted(node) ? [
+        ...(!ctx.doc.isEncrypted(node) ? [
           { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node), ellipsis: true },
         ] : []),
         ...(node.type === 'dir' ? [
