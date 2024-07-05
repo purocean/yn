@@ -5,6 +5,7 @@ import type * as Monaco from 'monaco-editor'
 import type { Ctx, Plugin } from '@fe/context'
 import type { Components } from '@fe/types'
 import type Token from 'markdown-it/lib/token'
+import { MARKDOWN_FILE_EXT } from '@share/misc'
 
 enum CompletionContextKind {
   Link, // [...](|)
@@ -116,7 +117,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
         if (!isAnchorInCurrentDoc) {
           if (context.anchorInfo) { // Anchor to a different document
             const currentFile = this.ctx.store.state.currentFile
-            if (!currentFile || !context.anchorInfo.beforeAnchor.endsWith('.md')) {
+            if (!currentFile || !context.anchorInfo.beforeAnchor.endsWith(MARKDOWN_FILE_EXT)) {
               return { suggestions: [] }
             }
 
@@ -253,7 +254,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
     let beforeAnchor = anchorMatch[1]
 
     if (anchorMatch[1] && !this.ctx.utils.path.extname(beforeAnchor)) {
-      beforeAnchor += '.md'
+      beforeAnchor += MARKDOWN_FILE_EXT
     }
 
     return {

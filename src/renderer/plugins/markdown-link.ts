@@ -12,6 +12,7 @@ import { getAllCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
 import type { Components, PositionState } from '@fe/types'
+import { MARKDOWN_FILE_EXT } from '@share/misc'
 
 async function getFirstMatchPath (repo: string, dir: string, fileName: string) {
   if (fileName.includes('/')) {
@@ -24,7 +25,7 @@ async function getFirstMatchPath (repo: string, dir: string, fileName: string) {
       if (
         item.type === 'file' &&
           (p === normalizeSep(join(dir, fileName)) ||
-          p === normalizeSep(join(dir, `${fileName}.md`)))
+          p === normalizeSep(join(dir, fileName + MARKDOWN_FILE_EXT)))
       ) {
         return item.path
       }
@@ -42,7 +43,7 @@ async function getFirstMatchPath (repo: string, dir: string, fileName: string) {
 
   const findByName = (items: Components.Tree.Node[]): string | null => {
     for (const item of items) {
-      if (item.type === 'file' && (item.name === fileName || item.name === `${fileName}.md`)) {
+      if (item.type === 'file' && (item.name === fileName || item.name === `${fileName}${MARKDOWN_FILE_EXT}`)) {
         return item.path
       }
 
@@ -135,7 +136,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
         path = normalizeSep(path)
         path = path.replace(/:/g, '/') // replace all ':' to '/'
         path = await getFirstMatchPath(fileRepo, dir, path) || path
-        path = path.endsWith('.md') ? path : `${path}.md`
+        path = path.endsWith(MARKDOWN_FILE_EXT) ? path : `${path}${MARKDOWN_FILE_EXT}`
       }
 
       if (!path.startsWith('/')) { // to absolute path
@@ -211,7 +212,7 @@ function convertLink (state: StateCore) {
 
     if (isAnchor) {
       // keep markdown file.
-      if (fileName.endsWith('.md')) {
+      if (fileName.endsWith(MARKDOWN_FILE_EXT)) {
         return
       }
 
