@@ -89,12 +89,10 @@ export default {
         node.marked = vueCtx.localMarked.value
       }
 
-      const isMarkdown = ctx.doc.isMarkdownFile(node)
-
       const t = ctx.i18n.t
 
       items.push(...[
-        ...(isMarkdown ? [
+        ...(ctx.doc.supported(node) ? [
           {
             id: 'mark',
             label: node.marked ? t('tree.context-menu.unmark') : t('tree.context-menu.mark'),

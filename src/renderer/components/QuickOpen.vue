@@ -50,7 +50,7 @@ import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } fr
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
-import { isMarkdownFile, isMarked } from '@fe/services/document'
+import { isMarked, supported } from '@fe/services/document'
 import store from '@fe/support/store'
 import { PathItem } from '@fe/types'
 
@@ -101,7 +101,7 @@ export default defineComponent({
         let tmp: any[] = []
 
         tree.forEach((node: any) => {
-          if (isMarkdownFile(node)) {
+          if (supported(node)) {
             tmp.push(node)
           }
 

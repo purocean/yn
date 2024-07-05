@@ -76,7 +76,7 @@ import store from '@fe/support/store'
 import { showManager as showExtensionManager } from '@fe/others/extension'
 import { showPremium, getPurchased } from '@fe/others/premium'
 import { showSettingPanel } from '@fe/services/setting'
-import { createDoc, isMarkdownFile, switchDoc } from '@fe/services/document'
+import { createDoc, supported, switchDoc } from '@fe/services/document'
 import { getActionHandler } from '@fe/core/action'
 
 useI18n()
@@ -89,7 +89,7 @@ const files = computed(() => {
     let tmp: any[] = []
 
     tree.forEach((node: any) => {
-      if (isMarkdownFile(node)) {
+      if (supported(node)) {
         const time = map[`${node.repo}|${node.path}`]
         if (time) {
           tmp.push({ node, time })
