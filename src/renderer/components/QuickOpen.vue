@@ -340,7 +340,7 @@ export default defineComponent({
 }
 
 .result li {
-  color: var(--g-color-40);
+  color: var(--g-color-20);
   line-height: 1.5em;
   font-size: 18px;
   padding: 2px 6px;
@@ -351,7 +351,7 @@ export default defineComponent({
 
 .result li.selected {
   background: var(--g-color-active-a);
-  color: var(--g-color-10);
+  color: var(--g-color-2);
 }
 
 .result li.marked::after {
@@ -399,7 +399,7 @@ export default defineComponent({
   background: var(--g-color-active-d);;
   cursor: pointer;
   transition: all .1s ease-in-out;
-  color: var(--g-color-10);
+  color: var(--g-color-0);
   border-right: 1px var(--g-color-80) solid;
 }
 

@@ -373,7 +373,7 @@ export default defineComponent({
   font-size: 15px;
   line-height: 26px;
   cursor: default;
-  color: var(--g-color-5);
+  color: var(--g-color-2);
 }
 
 .tree-node * {
