@@ -52,7 +52,7 @@ export default {
         ] : []),
         ...(node.path !== '/' ? [
           { id: 'rename', label: t('tree.context-menu.rename'), onClick: () => ctx.doc.moveDoc(node), ellipsis: true },
-          { id: 'delete', label: t('tree.context-menu.delete'), onClick: () => ctx.doc.deleteDoc(node) },
+          { id: 'delete', label: t('tree.context-menu.delete'), onClick: () => ctx.doc.deleteDoc(node), ellipsis: true },
         ] : []),
         { type: 'separator' },
         { id: 'open-in-os', label: t('tree.context-menu.open-in-os'), onClick: () => ctx.doc.openInOS(node) },
