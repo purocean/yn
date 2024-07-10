@@ -1,6 +1,7 @@
 import { nextTick, Ref } from 'vue'
 import type { Components } from '@fe/types'
 import { getActionHandler, registerAction } from '@fe/core/action'
+import * as ioc from '@fe/core/ioc'
 import store from '@fe/support/store'
 import { useToast } from '@fe/support/ui/toast'
 import * as api from '@fe/support/api'
@@ -34,6 +35,31 @@ export function getContextMenuItems (node: Components.Tree.Node, vueCtx: VueCtx)
   })
 
   return items
+}
+
+/**
+ * Add a node action buttons processor.
+ * @param fun
+ */
+export function tapNodeActionButtons (fun: (
+  btns: Components.Tree.NodeActionBtn[],
+  currentNode: Components.Tree.Node,
+) => void) {
+  ioc.register('TREE_NODE_ACTION_BTN_TAPPERS', fun)
+}
+
+/**
+ * Get node action buttons.
+ */
+export function getNodeActionButtons (currentNode: Components.Tree.Node) {
+  const btns: Components.Tree.NodeActionBtn[] = []
+
+  const tappers = ioc.get('TREE_NODE_ACTION_BTN_TAPPERS')
+  tappers.forEach((tapper) => {
+    tapper(btns, currentNode)
+  })
+
+  return btns
 }
 
 /**

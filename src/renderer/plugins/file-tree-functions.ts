@@ -109,5 +109,34 @@ export default {
 
       items.push(...getItems(doc, 'tabs'))
     })
+
+    async function createFile (node: Components.Tree.Node) {
+      await ctx.doc.createDoc({ repo: node.repo }, node)
+    }
+
+    async function createFolder (node: Components.Tree.Node) {
+      await ctx.doc.createDir({ repo: node.repo }, node)
+    }
+
+    ctx.tree.tapNodeActionButtons((btns, node) => {
+      if (node.type !== 'dir') {
+        return
+      }
+
+      btns.push(
+        {
+          id: 'create-folder',
+          title: ctx.i18n.t('tree.context-menu.create-dir'),
+          icon: 'folder-plus-solid',
+          onClick: () => createFolder(node)
+        },
+        {
+          id: 'create-file',
+          title: ctx.i18n.t('tree.context-menu.create-doc'),
+          icon: 'plus',
+          onClick: () => createFile(node)
+        }
+      )
+    })
   }
 } as Plugin

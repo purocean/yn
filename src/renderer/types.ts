@@ -181,6 +181,13 @@ export namespace Components {
       children?: Node[];
       level: number;
     }
+
+    export type NodeActionBtn = {
+      id: string,
+      icon: string,
+      title: string,
+      onClick: (e: MouseEvent) => void,
+    }
   }
 
   export namespace QuickFilter {
@@ -567,7 +574,8 @@ export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   EDITOR_CUSTOM_EDITOR: CustomEditor,
   RENDERERS: Renderer,
   CODE_RUNNER: CodeRunner;
-  DOC_CATEGORIES: DocCategory
+  DOC_CATEGORIES: DocCategory;
+  TREE_NODE_ACTION_BTN_TAPPERS: (btns: Components.Tree.NodeActionBtn[], currentNode: Components.Tree.Node) => void;
 }
 
 export type FrontMatterAttrs = {
