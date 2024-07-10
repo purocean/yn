@@ -1,5 +1,5 @@
 <template>
-  <div class="tree-node" @mouseenter.self="onMouseEnter" @mouseleave="onMouseLeave">
+  <div class="tree-node">
     <details
       v-if="itemNode.type === 'dir'"
       :class="{name: true, 'drag-over': dragOver}"
@@ -19,11 +19,11 @@
         :class="{folder: true, 'folder-selected': selected}"
         :style="`padding-left: ${itemNode.level}em`"
         @contextmenu.exact.prevent.stop="showContextMenu(itemNode)">
-        <div class="item">
+        <div class="item" @mouseenter.self="onMouseEnter" @mouseleave.self="onMouseLeave">
           <div class="item-label" draggable="true" @dragstart="onDragStart">
             {{ itemNode.name }} <span class="count">({{itemNode.children ? itemNode.children.length : 0}})</span>
           </div>
-          <div v-if="!FLAG_READONLY" class="item-action">
+          <div class="item-action">
             <svg-icon v-for="btn in actions" :key="btn.id" class="icon" :name="btn.icon" @click.exact.stop.prevent="btn.onClick" :title="btn.title" />
           </div>
         </div>
@@ -57,7 +57,7 @@ import { useContextMenu } from '@fe/support/ui/context-menu'
 import { triggerHook } from '@fe/core/hook'
 import { getContextMenuItems, getNodeActionButtons } from '@fe/services/tree'
 import type { Components } from '@fe/types'
-import { createDir, createDoc, deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, switchDoc } from '@fe/services/document'
+import { deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, switchDoc } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
 import { useToast } from '@fe/support/ui/toast'
@@ -95,9 +95,7 @@ export default defineComponent({
     const currentFile = computed(() => store.state.currentFile)
 
     function onMouseEnter () {
-      if (props.item.type === 'dir') {
-        actions.value = getNodeActionButtons(props.item)
-      }
+      actions.value = getNodeActionButtons(props.item)
     }
 
     function onMouseLeave () {

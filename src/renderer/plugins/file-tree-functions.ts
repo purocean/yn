@@ -119,7 +119,7 @@ export default {
     }
 
     ctx.tree.tapNodeActionButtons((btns, node) => {
-      if (node.type !== 'dir') {
+      if (ctx.args.FLAG_READONLY || node.type !== 'dir') {
         return
       }
 
