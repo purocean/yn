@@ -211,7 +211,7 @@ const attachment = async (ctx: any, next: any) => {
       if (!repo || !path) {
         const filePath = ctx.path.replace('/api/attachment', '')
         const arr = filePath.split('/')
-        repo = arr[1]
+        repo = decodeURIComponent(arr[1] || '')
         path = decodeURI(arr.slice(2).join('/'))
       }
 
