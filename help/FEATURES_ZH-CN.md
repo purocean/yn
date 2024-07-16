@@ -512,7 +512,7 @@ chart.setOption(option, true)
 
 `type` 是必需的， `title` 和 `content` 是可选的。
 
-支持的 `type` 有：tip, warning, danger, details, group, group-item, row, col, section, div
+支持的 `type` 有：tip, warning, danger, details, code-group, group, group-item, row, col, section, div
 
 **示例**
 
@@ -554,6 +554,16 @@ test 2
 test 3
 :::
 ::::
+
+::: code-group
+```js [test.js]
+let a = 1
+```
+
+```ts [test.ts]
+let a: number = 1
+```
+:::
 
 ::::: row 分列示例
 :::: col TODO

@@ -20,6 +20,7 @@ import * as extension from '@fe/others/extension'
 import { setTheme } from '@fe/services/theme'
 import { toggleOutline } from '@fe/services/workbench'
 import * as view from '@fe/services/view'
+import * as tree from '@fe/services/tree'
 import * as editor from '@fe/services/editor'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
@@ -146,6 +147,10 @@ registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
         reloadMainWindow()
       }
     })
+  }
+
+  if (changedKeys.includes('tree.exclude')) {
+    tree.refreshTree()
   }
 })
 

@@ -514,7 +514,7 @@ Support functions similiar to [VuePress Container Block](https://v2.vuepress.vue
 
 `type` is required, `title` and `content` are optional.
 
-The supported `types` are: tip, warning, danger, details, group, group-item, row, col, section, div
+The supported `types` are: tip, warning, danger, details, code-group, group, group-item, row, col, section, div
 
 **Example**
 
@@ -556,6 +556,17 @@ Title starts with `*` mean that this tab is activated by default
 test 3
 :::
 ::::
+
+::: code-group
+```js [test.js]
+let a = 1
+```
+
+```ts [test.ts]
+let a: number = 1
+```
+:::
+
 
 ::::: row Columns
 :::: col TODO

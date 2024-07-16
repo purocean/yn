@@ -2,6 +2,7 @@ import { escapeRegExp, merge, omit } from 'lodash-es'
 import frontMatter from 'front-matter'
 import type { Plugin } from '@fe/context'
 import type { BuildInSettings, Doc } from '@fe/types'
+import { MARKDOWN_FILE_EXT } from '@share/misc'
 import type { MenuItem } from '@fe/services/status-bar'
 import { render } from '@fe/services/view'
 import { t } from '@fe/services/i18n'
@@ -207,7 +208,7 @@ async function include (
     return { __macroResult: true, value: 'Error: $include maximum call stack size exceeded [3]' }
   }
 
-  if (!path.endsWith('.md')) {
+  if (!path.endsWith(MARKDOWN_FILE_EXT)) {
     return { __macroResult: true, value: 'Error: $include markdown file only' }
   }
 

@@ -32,7 +32,6 @@ export default {
 
     function getItems (node: Doc, position: 'tabs' | 'tree'): Components.ContextMenu.Item[] {
       const t = ctx.i18n.t
-      const isMarkdown = ctx.doc.isMarkdownFile(node)
 
       const disableItems = ctx.args.FLAG_READONLY
         ? ['add-item', 'duplicate', 'duplicate', 'create-dir', 'create-doc', 'create-in-cd', 'rename', 'delete', 'open-in-terminal']
@@ -43,7 +42,7 @@ export default {
       }
 
       return [
-        ...(isMarkdown && !ctx.doc.isEncrypted(node) ? [
+        ...(!ctx.doc.isEncrypted(node) ? [
           { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node), ellipsis: true },
         ] : []),
         ...(node.type === 'dir' ? [
@@ -53,7 +52,7 @@ export default {
         ] : []),
         ...(node.path !== '/' ? [
           { id: 'rename', label: t('tree.context-menu.rename'), onClick: () => ctx.doc.moveDoc(node), ellipsis: true },
-          { id: 'delete', label: t('tree.context-menu.delete'), onClick: () => ctx.doc.deleteDoc(node) },
+          { id: 'delete', label: t('tree.context-menu.delete'), onClick: () => ctx.doc.deleteDoc(node), ellipsis: true },
         ] : []),
         { type: 'separator' },
         { id: 'open-in-os', label: t('tree.context-menu.open-in-os'), onClick: () => ctx.doc.openInOS(node) },
@@ -67,9 +66,7 @@ export default {
         ...(node.type === 'dir' && !FLAG_DISABLE_XTERM ? [
           { id: 'open-in-terminal', label: t('tree.context-menu.open-in-terminal'), onClick: () => revealInXterminal(node) },
         ] : []),
-        ...(isMarkdown ? [
-          { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node), ellipsis: true }
-        ] : []),
+        { id: 'create-in-cd', label: t('tree.context-menu.create-in-cd'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node), ellipsis: true },
         { type: 'separator' },
         { id: 'copy-name', label: t('tree.context-menu.copy-name'), onClick: () => ctx.utils.copyText(node.name) },
         { id: 'copy-path', label: t('tree.context-menu.copy-path'), onClick: () => ctx.utils.copyText(node.path) }
@@ -89,12 +86,10 @@ export default {
         node.marked = vueCtx.localMarked.value
       }
 
-      const isMarkdown = ctx.doc.isMarkdownFile(node)
-
       const t = ctx.i18n.t
 
       items.push(...[
-        ...(isMarkdown ? [
+        ...(ctx.doc.supported(node) ? [
           {
             id: 'mark',
             label: node.marked ? t('tree.context-menu.unmark') : t('tree.context-menu.mark'),
@@ -113,6 +108,35 @@ export default {
       }
 
       items.push(...getItems(doc, 'tabs'))
+    })
+
+    async function createFile (node: Components.Tree.Node) {
+      await ctx.doc.createDoc({ repo: node.repo }, node)
+    }
+
+    async function createFolder (node: Components.Tree.Node) {
+      await ctx.doc.createDir({ repo: node.repo }, node)
+    }
+
+    ctx.tree.tapNodeActionButtons((btns, node) => {
+      if (ctx.args.FLAG_READONLY || node.type !== 'dir') {
+        return
+      }
+
+      btns.push(
+        {
+          id: 'create-folder',
+          title: ctx.i18n.t('tree.context-menu.create-dir'),
+          icon: 'folder-plus-solid',
+          onClick: () => createFolder(node)
+        },
+        {
+          id: 'create-file',
+          title: ctx.i18n.t('tree.context-menu.create-doc'),
+          icon: 'plus',
+          onClick: () => createFile(node)
+        }
+      )
     })
   }
 } as Plugin

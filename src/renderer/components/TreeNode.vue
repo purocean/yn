@@ -19,13 +19,12 @@
         :class="{folder: true, 'folder-selected': selected}"
         :style="`padding-left: ${itemNode.level}em`"
         @contextmenu.exact.prevent.stop="showContextMenu(itemNode)">
-        <div class="item">
+        <div class="item" @mouseenter.self="onMouseEnter" @mouseleave.self="onMouseLeave">
           <div class="item-label" draggable="true" @dragstart="onDragStart">
             {{ itemNode.name }} <span class="count">({{itemNode.children ? itemNode.children.length : 0}})</span>
           </div>
-          <div v-if="!FLAG_READONLY" class="item-action">
-            <svg-icon class="icon" name="folder-plus-solid" @click.exact.stop.prevent="createFolder()" :title="$t('tree.context-menu.create-dir')"></svg-icon>
-            <svg-icon class="icon" name="plus" @click.exact.stop.prevent="createFile()" :title="$t('tree.context-menu.create-doc')"></svg-icon>
+          <div class="item-action">
+            <svg-icon v-for="btn in actions" :key="btn.id" class="icon" :name="btn.icon" @click.exact.stop.prevent="btn.onClick" :title="btn.title" />
           </div>
         </div>
       </summary>
@@ -53,12 +52,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, h, nextTick, PropType, ref, watch } from 'vue'
+import { computed, defineComponent, h, nextTick, PropType, ref, shallowRef, watch } from 'vue'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { triggerHook } from '@fe/core/hook'
-import { getContextMenuItems } from '@fe/services/tree'
+import { getContextMenuItems, getNodeActionButtons } from '@fe/services/tree'
 import type { Components } from '@fe/types'
-import { createDir, createDoc, deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, switchDoc } from '@fe/services/document'
+import { deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, switchDoc } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
 import { useToast } from '@fe/support/ui/toast'
@@ -84,6 +83,7 @@ export default defineComponent({
     const refFile = ref<any>(null)
     const localMarked = ref<boolean | null>(null)
     const dragOver = ref<boolean>(false)
+    const actions = shallowRef<Components.Tree.NodeActionBtn[]>([])
 
     const itemNode = computed(() => ({ ...props.item, marked: isMarked(props.item) }))
     const open = ref(itemNode.value.path === '/')
@@ -94,12 +94,12 @@ export default defineComponent({
 
     const currentFile = computed(() => store.state.currentFile)
 
-    async function createFile () {
-      await createDoc({ repo: props.item.repo }, props.item)
+    function onMouseEnter () {
+      actions.value = getNodeActionButtons(props.item)
     }
 
-    async function createFolder () {
-      await createDir({ repo: props.item.repo }, props.item)
+    function onMouseLeave () {
+      actions.value = []
     }
 
     function onTreeNodeDblClick (node: Components.Tree.Node) {
@@ -347,12 +347,11 @@ export default defineComponent({
       refFile,
       fileTitle,
       selected,
+      actions,
       onTreeNodeDblClick,
       marked,
       showContextMenu,
       select,
-      createFile,
-      createFolder,
       dragOver,
       onDragEnter,
       onDragOver,
@@ -360,6 +359,8 @@ export default defineComponent({
       onDragExit,
       onDrop,
       onDragStart,
+      onMouseEnter,
+      onMouseLeave,
       shouldOpen,
       isMarkdownFile,
       FLAG_READONLY,
@@ -373,7 +374,7 @@ export default defineComponent({
   font-size: 15px;
   line-height: 26px;
   cursor: default;
-  color: var(--g-color-5);
+  color: var(--g-color-2);
 }
 
 .tree-node * {
@@ -456,12 +457,12 @@ summary > .item {
   height: 20px;
   width: 20px;
   border-radius: 50%;
-  color: var(--g-color-45);
+  color: var(--g-color-30);
 }
 
 .item-action .icon:hover {
   background: var(--g-color-70);
-  color: var(--g-color-25);
+  color: var(--g-color-20);
 }
 
 .item:hover .item-action {

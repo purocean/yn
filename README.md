@@ -76,25 +76,21 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.72.2](https://github.com/purocean/yn/releases/tag/v3.72.2) 2024-07-04
+### [v3.73.1](https://github.com/purocean/yn/releases/tag/v3.73.1) 2024-07-16
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-win-x64-3.72.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-mac-arm64-3.72.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-mac-x64-3.72.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-linux-x86_64-3.72.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-linux-amd64-3.72.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-win-x64-3.73.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-mac-arm64-3.73.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-mac-x64-3.73.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-linux-x86_64-3.73.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-linux-amd64-3.73.1.deb)
 
-1. feat: Optimize the experience of using automatic numbering for ordered lists, and support disabling automatic numbering in configuration options.
-2. feat: Use the table of contents outline to jump/automatically focus on the editor after displaying the editor.
-3. feat: Optimize syntax suggestion completion, distinguish between inline elements and block elements, and support quickly adding table rows.
-4. feat: Add a right-click context menu for images in the preview area, supporting operations such as copying images and opening images.
-5. feat: Optimize the navigation stack, supporting anchor positioning and maintaining scroll position.
-6. feat: Support automatic scrolling to the bottom when running code.
-7. feat: Automatically trigger Wiki link suggestions when typing `【【`.
-8. feat: Other interaction experience optimizations and bug fixes.
-9. dix: Disable automatic updates for the Windows zip version to avoid repeated upgrade failure issues.
-10. feat(plugin): The `markdown-link` plugin exposes the `mdRuleConvertLink`, `htmlHandleLink` methods.
-11. feat(plugin): `ctx.doc.switchDoc` adds more parameters, supporting jumping to a specified location.
-12. feat(plugin): Add the `ctx.routines.changePosition` method to jump to a specified location in the current document.
-13. feat(plugin): Add the `ctx.view.highlightAnchor` method to highlight/jump to a specified anchor in the current preview area.
-14. feat(plugin): Add the `ctx.view.getScrollTop` method to get the current scroll position of the preview area.
-15. feat(plugin): Add the `DOC_SWITCH_SKIPPED` Hook, which is triggered when attempting to switch to the current document.
+4. feat: Optimize file creation feature, add file type selection
+5. feat: Quick jump/recent documents function supports more file types
+6. feat: Add support for the `code-group` container block compatible with [VitePress](https://vitepress.dev/zh/guide/markdown#code-groups) style
+7. feat: Support for customizing the repository switch shortcut key. If your keyboard layout is not US, you can clear or change the shortcut key to avoid input interference
+8. feat: Optimize the selection of text in the code execution result, now you can select all the output content by double-clicking the execution result area
+9. feat: Optimize the function of opening HTML files
+10. feat: Support editing `.mjs`, `.mts`, '.cjs', `.cts` files
+11. feat: Optimize navigation history
+12. fix: Fix the issue of not being able to display directories ending with `git`, such as `testgit`
+13. feat(plugin): Add API related to file type registration, such as `ctx.doc.registerDocCategory`
+14. feat(plugin): Add API for changing directory tree operation buttons `ctx.tree.tapNodeActionButtons`
 
 [More release notes](https://github.com/purocean/yn/releases)
 

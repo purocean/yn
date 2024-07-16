@@ -3,7 +3,7 @@ import customStyles from '@fe/plugins/custom-styles'
 import customKeybindings from '@fe/plugins/custom-keybindings'
 import electronZoom from '@fe/plugins/electron-zoom'
 import historyStack from '@fe/plugins/history-stack'
-import fileTreeContextMenu from '@fe/plugins/file-tree-context-menu'
+import fileTreeFunctions from '@fe/plugins/file-tree-functions'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
 import statusBarRepositorySwitch from '@fe/plugins/status-bar-repository-switch'
 import statusBarView from '@fe/plugins/status-bar-view'
@@ -79,7 +79,7 @@ export default [
   customKeybindings,
   electronZoom,
   historyStack,
-  fileTreeContextMenu,
+  fileTreeFunctions,
   statusBarSetting,
   statusBarRepositorySwitch,
   statusBarView,

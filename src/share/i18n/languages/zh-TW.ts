@@ -37,6 +37,10 @@ const data: BaseLanguage = {
   'learn-more': '了解更多',
   'default': '預設',
   'print': '列印',
+  'markdown-file': 'Markdown 檔案',
+  'encrypted-markdown-file': '加密 Markdown 檔案',
+  'switch-repo-n': '切換到仓库 %s',
+  'switch-the-last-repo': '切換到最後一個仓库',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',
@@ -185,7 +189,7 @@ const data: BaseLanguage = {
     'wrong-password': '密碼錯誤',
     'file-transform-error': '加密文件和非加密文件不能互相轉換',
     'create-dialog': {
-      'title': '創建文件（加密文件以 .c.md 結尾）',
+      'title': '創建文件',
       'hint': '文件名',
     },
     'create-dir-dialog': {

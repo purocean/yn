@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.72.2",
+  "version": "3.73.1",
   "description": "Yank Note: A highly extensible Markdown editor, designed for productivity.",
   "main": "dist/main/app.js",
   "license": "AGPL-3.0",
@@ -57,7 +57,7 @@
     "socks": "^2.8.3",
     "tar-stream": "^2.2.0",
     "transliteration": "^2.2.0",
-    "undici": "^6.16.1",
+    "undici": "^6.19.2",
     "uuid": "^9.0.0",
     "yaml": "^2.2.2",
     "yargs": "^15.3.1"
@@ -133,7 +133,7 @@
     "markdown-it-multimd-table": "^4.2.3",
     "markdown-it-sub": "^2.0.0",
     "markdown-it-sup": "^2.0.0",
-    "monaco-editor": "^0.47.0",
+    "monaco-editor": "^0.50.0",
     "normalize.css": "^8.0.1",
     "parse-author": "^2.0.0",
     "path-browserify": "^1.0.1",

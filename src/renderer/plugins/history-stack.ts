@@ -47,8 +47,19 @@ export default {
     function record (doc: Doc, position: PositionState | null) {
       const newState: State = { doc: { type: doc.type, repo: doc.repo, name: doc.name, path: doc.path }, position }
 
-      if (ctx.lib.lodash.isEqual(newState, stack[idx])) {
-        return
+      // check same doc
+      if (stack[idx] && ctx.doc.isSameFile(doc, stack[idx].doc)) {
+        if (position) {
+          // check same position
+          if (ctx.lib.lodash.isEqual(position, stack[idx].position)) {
+            return
+          }
+        } else {
+          // not special position, check if already has position
+          if (isScrollPosition(stack[idx].position)) {
+            return
+          }
+        }
       }
 
       stack.splice(idx + 1, stack.length)
@@ -88,6 +99,10 @@ export default {
     ctx.registerHook('DOC_SWITCHED', ({ doc, opts }) => {
       // do not record position when switching doc by history stack
       if (opts?.source === 'history-stack') {
+        return
+      }
+
+      if (!doc && !opts?.position) {
         return
       }
 

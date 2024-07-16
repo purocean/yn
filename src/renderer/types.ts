@@ -181,6 +181,13 @@ export namespace Components {
       children?: Node[];
       level: number;
     }
+
+    export type NodeActionBtn = {
+      id: string,
+      icon: string,
+      title: string,
+      onClick: (e: MouseEvent) => void,
+    }
   }
 
   export namespace QuickFilter {
@@ -416,6 +423,16 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-reset': () => void,
   'premium.show': (tab?: PremiumTab) => void,
   'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
+  'base.switch-repository-1': () => void,
+  'base.switch-repository-2': () => void,
+  'base.switch-repository-3': () => void,
+  'base.switch-repository-4': () => void,
+  'base.switch-repository-5': () => void,
+  'base.switch-repository-6': () => void,
+  'base.switch-repository-7': () => void,
+  'base.switch-repository-8': () => void,
+  'base.switch-repository-9': () => void,
+  'base.switch-repository-0': () => void,
   'workbench.toggle-outline': (visible?: boolean) => void,
 }
 
@@ -523,6 +540,22 @@ export type Renderer = {
   render (src: string, env: RenderEnv): string | VNode | VNode[]
 }
 
+type BuildNewContentResult = string | Blob | { base64Content: string }
+
+export type DocType = {
+  id: string,
+  extension: [string, ...string[]],
+  displayName: string,
+  plain?: boolean,
+  buildNewContent?: (filename: string) => Promise<BuildNewContentResult> | BuildNewContentResult,
+}
+
+export type DocCategory = {
+  category: string,
+  displayName: string,
+  types: DocType[],
+}
+
 export interface CodeRunner {
   name: string;
   order?: number;
@@ -551,6 +584,8 @@ export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   EDITOR_CUSTOM_EDITOR: CustomEditor,
   RENDERERS: Renderer,
   CODE_RUNNER: CodeRunner;
+  DOC_CATEGORIES: DocCategory;
+  TREE_NODE_ACTION_BTN_TAPPERS: (btns: Components.Tree.NodeActionBtn[], currentNode: Components.Tree.Node) => void;
 }
 
 export type FrontMatterAttrs = {

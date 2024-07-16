@@ -25,6 +25,19 @@ export function t (path: MsgPath, ...args: string[]) {
 }
 
 /**
+ * Dynamic translate
+ * @param path
+ * @param args
+ * @returns
+ */
+export function $$t (path: MsgPath, ...args: string[]): string {
+  return Object.freeze({
+    toString: () => t(path, ...args),
+    toJson: () => JSON.stringify(t(path, ...args))
+  }) as any
+}
+
+/**
  * Get language
  * @returns
  */

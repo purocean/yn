@@ -206,13 +206,34 @@ const attachment = async (ctx: any, next: any) => {
       await file.upload(repo, buffer, path)
       ctx.body = result('ok', 'success', path)
     } else if (ctx.method === 'GET') {
-      const { repo, path } = ctx.query
+      let { repo, path } = ctx.query
+
+      if (!repo || !path) {
+        const filePath = ctx.path.replace('/api/attachment', '')
+        const arr = filePath.split('/')
+        repo = decodeURIComponent(arr[1] || '')
+        path = decodeURI(arr.slice(2).join('/'))
+      }
+
+      if (!repo || !path) {
+        throw new Error('Invalid path.')
+      }
 
       checkPrivateRepo(ctx, repo)
 
       noCache(ctx)
-      ctx.type = mime.getType(path)
-      ctx.body = await file.read(repo, path)
+
+      try {
+        ctx.body = await file.read(repo, path)
+        ctx.type = mime.getType(path)
+      } catch (error: any) {
+        if (error.code === 'ENOENT') {
+          ctx.status = 404
+          ctx.body = result('error', 'Not found')
+        } else {
+          throw error
+        }
+      }
     }
   } else {
     await next()

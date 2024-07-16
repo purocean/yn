@@ -50,7 +50,7 @@ import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } fr
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
-import { isMarkdownFile, isMarked } from '@fe/services/document'
+import { isMarked, supported } from '@fe/services/document'
 import store from '@fe/support/store'
 import { PathItem } from '@fe/types'
 
@@ -101,7 +101,7 @@ export default defineComponent({
         let tmp: any[] = []
 
         tree.forEach((node: any) => {
-          if (isMarkdownFile(node)) {
+          if (supported(node)) {
             tmp.push(node)
           }
 
@@ -340,7 +340,7 @@ export default defineComponent({
 }
 
 .result li {
-  color: var(--g-color-40);
+  color: var(--g-color-20);
   line-height: 1.5em;
   font-size: 18px;
   padding: 2px 6px;
@@ -351,7 +351,7 @@ export default defineComponent({
 
 .result li.selected {
   background: var(--g-color-active-a);
-  color: var(--g-color-10);
+  color: var(--g-color-2);
 }
 
 .result li.marked::after {
@@ -399,7 +399,7 @@ export default defineComponent({
   background: var(--g-color-active-d);;
   cursor: pointer;
   transition: all .1s ease-in-out;
-  color: var(--g-color-10);
+  color: var(--g-color-0);
   border-right: 1px var(--g-color-80) solid;
 }
 

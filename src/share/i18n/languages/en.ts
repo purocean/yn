@@ -36,6 +36,10 @@ const data = {
   'learn-more': 'Learn More',
   'default': 'Default',
   'print': 'Print',
+  'markdown-file': 'Markdown File',
+  'encrypted-markdown-file': 'Encrypted Markdown File',
+  'switch-repo-n': 'Switch to the repository [%s]',
+  'switch-the-last-repo': 'Switch to the last repository',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
@@ -184,7 +188,7 @@ const data = {
     'wrong-password': 'Wrong Password',
     'file-transform-error': 'Encrypted and unencrypted files cannot be converted to each other',
     'create-dialog': {
-      'title': 'Create a file (encrypted file ends with .c.md)',
+      'title': 'Create a file',
       'hint': 'File name',
     },
     'create-dir-dialog': {
