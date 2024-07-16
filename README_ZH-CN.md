@@ -76,25 +76,21 @@
 
 ## 更新日志
 
-### [v3.72.2](https://github.com/purocean/yn/releases/tag/v3.72.2) 2024-07-04
+### [v3.73.1](https://github.com/purocean/yn/releases/tag/v3.73.1) 2024-07-16
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-win-x64-3.72.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-mac-arm64-3.72.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-mac-x64-3.72.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-linux-x86_64-3.72.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.72.2/Yank-Note-linux-amd64-3.72.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-win-x64-3.73.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-mac-arm64-3.73.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-mac-x64-3.73.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-linux-x86_64-3.73.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-linux-amd64-3.73.1.deb)
 
-1. feat: 优化有序列表自动编号使用体验，配置项支持禁用自动编号
-2. feat: 使用目录大纲跳转/显示编辑器后自动聚焦编辑器
-3. feat: 优化语法建议补全，区分行内元素和块元素，支持快速新增表格行
-4. feat: 预览区图片增加右键上下文菜单，支持复制图片、打开图片等操作
-5. feat: 优化导航堆栈，支持锚点定位和滚动位置保持
-6. feat: 代码运行支持自动滚动到底部
-7. feat: 输入 `【【` 时自动触发 Wiki 链接建议
-8. feat: 其他交互体验优化和问题修复
-9. fix: Windows zip 版本禁用自动更新，避免反复升级失败问题
-10. feat(plugin): `markdown-link` 插件暴露 `mdRuleConvertLink`, `htmlHandleLink` 方法
-11. feat(plugin): `ctx.doc.switchDoc` 增加更多参数，支持跳转到指定位置
-12. feat(plugin): 增加 `ctx.routines.changePosition` 方法，用以跳转到当前文档的指定位置
-13. feat(plugin): 增加 `ctx.view.highlightAnchor` 方法，用以高亮/跳转到当前预览区的指定锚点
-14. feat(plugin): 增加 `ctx.view.getScrollTop` 方法，用以获取当前预览区的滚动位置
-15. feat(plugin): 增加 `DOC_SWITCH_SKIPPED` Hook，尝试切换到当前文档时触发
+4. feat: 优化文件创建功能，增加文件类型选择
+5. feat: 快速跳转/最近打开文档功能支持更多文件类型
+6. feat: 增加兼容[VitePress](https://vitepress.dev/zh/guide/markdown#code-groups) 风格的 `code-group` 容器块
+7. feat: 支持自定义切换仓库快捷键。如果你的键盘布局不是 US，可以清除或更改快捷键避免干扰输入
+8. feat: 优化运行代码结果文本选择，现在双击运行结果区域即可选中所有的输出内容
+9. feat: 优化打开 HTML 文件功能
+10. feat: 支持编辑 `.mjs`, `.mts`, '.cjs', `.cts` 文件
+11. feat: 优化导航历史记录
+12. fix: 修复不能显示 `git` 结尾的目录问题如 `testgit`
+13. feat(plugin): 增加注册文件类型相关 Api 如 `ctx.doc.registerDocCategory`
+14. feat(plugin): 增加更改目录树操作按钮 Api `ctx.tree.tapNodeActionButtons`
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
