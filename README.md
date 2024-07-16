@@ -80,17 +80,17 @@ For more information on how to use the following functions, please see [characte
 
 [Windows](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-win-x64-3.73.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-mac-arm64-3.73.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-mac-x64-3.73.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-linux-x86_64-3.73.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-linux-amd64-3.73.1.deb)
 
-4. feat: Optimize file creation feature, add file type selection
-5. feat: Quick jump/recent documents function supports more file types
-6. feat: Add support for the `code-group` container block compatible with [VitePress](https://vitepress.dev/zh/guide/markdown#code-groups) style
-7. feat: Support for customizing the repository switch shortcut key. If your keyboard layout is not US, you can clear or change the shortcut key to avoid input interference
-8. feat: Optimize the selection of text in the code execution result, now you can select all the output content by double-clicking the execution result area
-9. feat: Optimize the function of opening HTML files
-10. feat: Support editing `.mjs`, `.mts`, '.cjs', `.cts` files
-11. feat: Optimize navigation history
-12. fix: Fix the issue of not being able to display directories ending with `git`, such as `testgit`
-13. feat(plugin): Add API related to file type registration, such as `ctx.doc.registerDocCategory`
-14. feat(plugin): Add API for changing directory tree operation buttons `ctx.tree.tapNodeActionButtons`
+1. feat: Optimize file creation feature, add file type selection
+2. feat: Quick jump/recent documents function supports more file types
+3. feat: Add support for the `code-group` container block compatible with [VitePress](https://vitepress.dev/zh/guide/markdown#code-groups) style
+4. feat: Support for customizing the repository switch shortcut key. If your keyboard layout is not US, you can clear or change the shortcut key to avoid input interference
+5. feat: Optimize the selection of text in the code execution result, now you can select all the output content by double-clicking the execution result area
+6. feat: Optimize the function of opening HTML files
+7. feat: Support editing `.mjs`, `.mts`, '.cjs', `.cts` files
+8. feat: Optimize navigation history
+9. fix: Fix the issue of not being able to display directories ending with `git`, such as `testgit`
+10. feat(plugin): Add API related to file type registration, such as `ctx.doc.registerDocCategory`
+11. feat(plugin): Add API for changing directory tree operation buttons `ctx.tree.tapNodeActionButtons`
 
 [More release notes](https://github.com/purocean/yn/releases)
 
