@@ -38,6 +38,8 @@ const data = {
   'print': 'Print',
   'markdown-file': 'Markdown File',
   'encrypted-markdown-file': 'Encrypted Markdown File',
+  'switch-repo-n': 'Switch to the repository [%s]',
+  'switch-the-last-repo': 'Switch to the last repository',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',

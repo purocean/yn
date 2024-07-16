@@ -39,6 +39,8 @@ const data: BaseLanguage = {
   'print': '打印',
   'markdown-file': 'Markdown 文件',
   'encrypted-markdown-file': '加密的 Markdown 文件',
+  'switch-repo-n': '切换到仓库 %s',
+  'switch-the-last-repo': '切换到最后一个仓库',
   'premium': {
     'confetti': '彩色纸屑',
     'need-purchase': '[%s] 需要高级版',

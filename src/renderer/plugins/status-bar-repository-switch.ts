@@ -58,10 +58,10 @@ export default {
             checked: currentRepo && currentRepo.name === name && currentRepo.path === path,
             onClick: () => choose({ name, path }),
             subTitle: i === arr.length - 1
-              ? ctx.keybinding.getKeysLabel([ctx.keybinding.Alt, '0'])
+              ? ctx.keybinding.getKeysLabel('base.switch-repository-0')
               : (
                   i < 9
-                    ? ctx.keybinding.getKeysLabel([ctx.keybinding.Alt, (i + 1).toString()])
+                    ? ctx.keybinding.getKeysLabel(`base.switch-repository-${i + 1}`)
                     : undefined
                 ),
           }
@@ -88,19 +88,21 @@ export default {
       }
     })
 
-    ctx.registerHook('GLOBAL_KEYDOWN', e => {
-      if (e.altKey && !e.ctrlKey && !e.metaKey && e.code.startsWith('Digit')) {
-        const repoIndex = Number(e.code.substring(5)) - 1
-        const repos = ctx.setting.getSetting('repos', [])
-
-        const repo = repos[repoIndex === -1 ? repos.length - 1 : repoIndex]
-        if (repo) {
-          choose({ name: repo.name, path: repo.path })
-        }
-
-        e.preventDefault()
-        e.stopPropagation()
-      }
-    })
+    for (let i = 0; i <= 9; i++) {
+      ctx.action.registerAction({
+        name: `base.switch-repository-${i}`,
+        description: i === 0 ? ctx.i18n.t('switch-the-last-repo') : ctx.i18n.t('switch-repo-n', String(i)),
+        forUser: true,
+        keys: [ctx.keybinding.Alt, String(i)],
+        handler: () => {
+          const repos = ctx.setting.getSetting('repos', [])
+          const idx = i === 0 ? repos.length - 1 : i - 1
+          const repo = repos[idx]
+          if (repo) {
+            choose({ name: repo.name, path: repo.path })
+          }
+        },
+      })
+    }
   }
 } as Plugin

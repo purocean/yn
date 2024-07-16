@@ -423,6 +423,16 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-reset': () => void,
   'premium.show': (tab?: PremiumTab) => void,
   'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
+  'base.switch-repository-1': () => void,
+  'base.switch-repository-2': () => void,
+  'base.switch-repository-3': () => void,
+  'base.switch-repository-4': () => void,
+  'base.switch-repository-5': () => void,
+  'base.switch-repository-6': () => void,
+  'base.switch-repository-7': () => void,
+  'base.switch-repository-8': () => void,
+  'base.switch-repository-9': () => void,
+  'base.switch-repository-0': () => void,
   'workbench.toggle-outline': (visible?: boolean) => void,
 }
 
