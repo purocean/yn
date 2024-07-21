@@ -367,6 +367,7 @@ const schema: SettingSchema = ({
       title: 'T_setting-panel.schema.server.port',
       description: 'T_setting-panel.schema.server.port-desc',
       type: 'number',
+      format: 'number',
       group: 'other',
       required: true,
       minimum: 10,
