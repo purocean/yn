@@ -285,12 +285,25 @@ Support to run `JavaScript` `PHP` `nodejs` `Python` `bash` `bat` code.
 This function is implemented by executing external commands, so the corresponding environment needs to be installed.
 
 The first line of the code block needs to contain the string `--run--`, an example is as follows
+
+The JS code runs in a Web Worker by default. If you need to run it in the main thread, you can add the `--no-worker--` parameter after the code block.
+
 ```js
 // --run--
+await new Promise(r => setTimeout(r, 500))
+console.log('HELLOWORLD')
+```
+
+The code running in the main thread supports accessing the editor API using the `ctx` object, as shown in the following example.
+
+```js
+// --run-- --no-worker--
 await new Promise(r => setTimeout(r, 500))
 ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log('HELLOWORLD')
 ```
+
+If HTML output is required, the `--output-html--` parameter can be added after the code block.
 
 ```js
 // --run-- --output-html--
