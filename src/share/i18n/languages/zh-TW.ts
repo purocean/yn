@@ -401,6 +401,10 @@ const data: BaseLanguage = {
         'multimd-headerless': '[markdown-it-multimd-table]: 啟用 headerless 語法',
         'multimd-multibody': '[markdown-it-multimd-table]: 啟用 multibody 語法',
       },
+      'view': {
+        'default-previewer-max-width': '預覽區最大寬度',
+        'default-previewer-max-width-desc': '≤ 100 為百分比，> 100 為像素',
+      },
       'theme': '主題',
       'language': '語言',
       'custom-css': '自訂 CSS',
