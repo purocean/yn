@@ -91,9 +91,11 @@ const RunCode = defineComponent({
       result.value = t('code-run.running')
 
       try {
-        if (!runner.value.nonInterruptible) {
-          abortController.value = new AbortController()
+        if (abortController.value) {
+          abort()
         }
+
+        abortController.value = new AbortController()
 
         const { type, value: val } = await runner.value.run(language!, code, { signal: abortController.value?.signal })
 

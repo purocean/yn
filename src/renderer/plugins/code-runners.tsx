@@ -35,13 +35,15 @@ let javascriptWorker: Worker | null = null
 
 class JavascriptIframeExecutor implements ReadableStreamDefaultReader<string> {
   private code: string
+  private signal?: AbortSignal
   private _readResolve: (value: string) => void = () => 0
 
   closed: Promise<undefined>
   _state: 'pending' | 'done' | 'error'
 
-  constructor (code: string) {
+  constructor (code: string, opts?: { signal?: AbortSignal }) {
     this.code = code
+    this.signal = opts?.signal
     this._state = 'pending'
     this.closed = this.runCode()
 
@@ -54,7 +56,7 @@ class JavascriptIframeExecutor implements ReadableStreamDefaultReader<string> {
     })
   }
 
-  private getIframeWindow () {
+  private getIframe () {
     const id = 'code-runner-javascript-vm'
 
     // clean up
@@ -64,15 +66,21 @@ class JavascriptIframeExecutor implements ReadableStreamDefaultReader<string> {
     iframe.id = id
     iframe.style.display = 'none'
     document.body.appendChild(iframe)
-    const iframeWindow = iframe.contentWindow! as Window & typeof globalThis
 
+    const iframeWindow = iframe.contentWindow! as Window & typeof globalThis
     iframeWindow.ctx = window.ctx
 
-    return iframeWindow
+    return iframe
   }
 
   private async runCode (): Promise<undefined> {
-    const iframeWindow = this.getIframeWindow()
+    const iframe = this.getIframe()
+    const iframeWindow = iframe.contentWindow! as Window & typeof globalThis
+
+    this.signal?.addEventListener('abort', () => {
+      iframe.remove()
+    })
+
     const xConsole = getConsole(iframeWindow.console, val => this._readResolve(val))
 
     const AsyncFunction = iframeWindow.eval('(async function(){}).constructor')
@@ -113,6 +121,7 @@ class JavascriptIframeExecutor implements ReadableStreamDefaultReader<string> {
 
 class JavascriptWorkerExecutor implements ReadableStreamDefaultReader<string> {
   private code: string
+  private signal?: AbortSignal
   private _readResolve: (value: string) => void = () => 0
   private workerScript = `
     const getConsole = ${getConsole.toString()}
@@ -134,8 +143,9 @@ class JavascriptWorkerExecutor implements ReadableStreamDefaultReader<string> {
   closed: Promise<undefined>
   _state: 'pending' | 'done' | 'error'
 
-  constructor (code: string) {
+  constructor (code: string, opts?: { signal?: AbortSignal }) {
     this.code = code
+    this.signal = opts?.signal
     this._state = 'pending'
     this.closed = this.runCode()
 
@@ -177,6 +187,11 @@ class JavascriptWorkerExecutor implements ReadableStreamDefaultReader<string> {
       }
 
       worker.postMessage({ code: this.code })
+
+      this.signal?.addEventListener('abort', () => {
+        worker.terminate()
+        resolve()
+      })
     })
 
     await sleep(0)
@@ -224,13 +239,13 @@ export default {
       getTerminalCmd () {
         return null
       },
-      async run (_, code) {
+      async run (_, code, opts) {
         const firstLine = code.split('\n')[0].trim()
         const noWorker = firstLine.includes('--no-worker--')
         const outputHtml = firstLine.includes('--output-html--')
         return {
           type: outputHtml ? 'html' : 'plain',
-          value: noWorker ? new JavascriptIframeExecutor(code) : new JavascriptWorkerExecutor(code)
+          value: noWorker ? new JavascriptIframeExecutor(code, opts) : new JavascriptWorkerExecutor(code, opts)
         }
       },
     })
