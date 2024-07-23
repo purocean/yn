@@ -76,21 +76,14 @@
 
 ## 更新日志
 
-### [v3.73.1](https://github.com/purocean/yn/releases/tag/v3.73.1) 2024-07-16
+### [v3.74.0](https://github.com/purocean/yn/releases/tag/v3.74.0) 2024-07-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-win-x64-3.73.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-mac-arm64-3.73.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-mac-x64-3.73.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-linux-x86_64-3.73.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.73.1/Yank-Note-linux-amd64-3.73.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-win-x64-3.74.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-mac-arm64-3.74.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-mac-x64-3.74.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-linux-x86_64-3.74.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-linux-amd64-3.74.0.deb)
 
-1. feat: 优化文件创建功能，增加文件类型选择
-2. feat: 快速跳转/最近打开文档功能支持更多文件类型
-3. feat: 增加兼容[VitePress](https://vitepress.dev/zh/guide/markdown#code-groups) 风格的 `code-group` 容器块
-4. feat: 支持自定义切换仓库快捷键。如果你的键盘布局不是 US，可以清除或更改快捷键避免干扰输入
-5. feat: 优化运行代码结果文本选择，现在双击运行结果区域即可选中所有的输出内容
-6. feat: 优化打开 HTML 文件功能
-7. feat: 支持编辑 `.mjs`, `.mts`, '.cjs', `.cts` 文件
-8. feat: 优化导航历史记录
-9. fix: 修复不能显示 `git` 结尾的目录问题如 `testgit`
-10. feat(plugin): 增加注册文件类型相关 Api 如 `ctx.doc.registerDocCategory`
-11. feat(plugin): 增加更改目录树操作按钮 Api `ctx.tree.tapNodeActionButtons`
+1. feat: 支持在设置中配置预览区域内容显示最大宽度
+2. refactor: 默认在 Web Worker 中运行 JavaScript 代码，切换文档时候中止执行
+3. fix: 修复终端 shell 配置空字符串时候报错问题
+4. fix: 修复升级 Monaco 编辑器后不能补全待办列表问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
