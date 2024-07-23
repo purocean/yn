@@ -410,6 +410,10 @@ const data = {
         'multimd-headerless': '[markdown-it-multimd-table]: Enable headerless syntax',
         'multimd-multibody': '[markdown-it-multimd-table]: Enable multibody syntax',
       },
+      'view': {
+        'default-previewer-max-width': 'Previewer Max Width',
+        'default-previewer-max-width-desc': '≤ 100 means percentage, > 100 means pixels',
+      },
       'theme': 'Theme',
       'language': 'Language',
       'custom-css': 'Custom CSS',

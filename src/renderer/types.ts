@@ -351,6 +351,7 @@ export interface BuildInSettings {
   'render.multimd-rowspan': boolean,
   'render.multimd-headerless': boolean,
   'render.multimd-multibody': boolean,
+  'view.default-previewer-max-width': number,
   'assets.path-type': 'relative' | 'absolute' | 'auto',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,

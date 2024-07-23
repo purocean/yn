@@ -285,12 +285,25 @@ $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\p
 此功能执行外部命令实现，所以需要安装相应环境。
 
 代码块第一行需要包含以 `--run--` 字符串，示例如下
+
+Js 代码默认在 Web Worker 中运行，如果需要在主线程中运行，可以在代码块后面加上 `--no-worker--` 参数
+
 ```js
 // --run--
+await new Promise(r => setTimeout(r, 500))
+console.log('HELLOWORLD')
+```
+
+主线程中运行的代码支持使用 `ctx` 对象访问编辑器 API，示例如下
+
+```js
+// --run-- --no-worker--
 await new Promise(r => setTimeout(r, 500))
 ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log('HELLOWORLD')
 ```
+
+如果需要输出 HTML，可以在代码块后面加上 `--output-html--` 参数
 
 ```js
 // --run-- --output-html--

@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'markdown-view': true, presentation}">
+  <div :class="{'markdown-view': true, presentation}" :style="{'--markdown-body-max-width': markdownBodyMaxWidth}">
     <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick" @contextmenu.capture="handleContextMenu">
       <Render :content="renderContent" />
     </article>
@@ -9,12 +9,13 @@
 <script lang="ts" setup>
 import { debounce } from 'lodash-es'
 import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { triggerHook } from '@fe/core/hook'
+import { triggerHook, registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { CtrlCmd } from '@fe/core/keybinding'
 import { toUri, isOutOfRepo } from '@fe/services/document'
 import * as renderer from '@fe/services/renderer'
 import { getContextMenuItems, getRenderIframe, scrollTopTo } from '@fe/services/view'
+import { getSetting } from '@fe/services/setting'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import { getLogger, sleep } from '@fe/utils'
@@ -51,6 +52,8 @@ const fileUri = computed(() => toUri(currentFile.value))
 
 const refView = ref<HTMLElement | null>(null)
 const renderContent = ref()
+
+const markdownBodyMaxWidth = ref(getMarkdownBodyMaxWidth())
 
 let renderCount = 0
 let renderEnv: RenderEnv | null = null
@@ -221,6 +224,23 @@ async function refresh () {
   triggerHook('VIEW_AFTER_REFRESH')
 }
 
+function getMarkdownBodyMaxWidth () {
+  const val = getSetting('view.default-previewer-max-width', 1024)
+  if (val < 10) {
+    return '1024px'
+  }
+
+  if (val <= 100) {
+    return `${val}%`
+  }
+
+  return `${val}px`
+}
+
+function updateMarkdownBodyMaxWidth () {
+  markdownBodyMaxWidth.value = getMarkdownBodyMaxWidth()
+}
+
 onMounted(() => {
   nextTick(renderDebounce)
   triggerHook('VIEW_MOUNTED')
@@ -239,6 +259,8 @@ onMounted(() => {
     forUser: true
   })
 
+  registerHook('SETTING_CHANGED', updateMarkdownBodyMaxWidth)
+
   window.addEventListener('keydown', keydownHandler, true)
 })
 
@@ -250,6 +272,7 @@ onBeforeUnmount(() => {
   removeAction('view.get-content-html')
   removeAction('view.get-view-dom')
   removeAction('view.get-render-env')
+  removeHook('SETTING_CHANGED', updateMarkdownBodyMaxWidth)
   window.removeEventListener('keydown', keydownHandler, true)
 })
 
@@ -423,7 +446,7 @@ body.find-in-preview-highlight ::selection {
 
 @media screen {
   .markdown-view  .markdown-body {
-    max-width: 1024px;
+    max-width: var(--markdown-body-max-width, 1024px);
     margin: 0 auto;
     color: var(--g-color-0);
     margin-top: 1em;
