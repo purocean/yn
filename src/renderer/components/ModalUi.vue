@@ -5,8 +5,8 @@
       <component v-if="component" :is="component" />
       <p class="content" v-if="content">{{content}}</p>
       <template v-if="type === 'input'">
-        <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue" tabindex="2" />
-        <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue" @keypress.enter.stop.prevent="ok" tabindex="2" />
+        <textarea class="textarea" v-if="inputType === 'textarea'" ref="refInput" rows="5" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue" tabindex="2" :maxlength="inputMaxLength > 0 ? inputMaxLength : undefined" />
+        <input class="input" v-else ref="refInput" :type="inputType" :placeholder="inputHint" :readonly="inputReadonly" v-model="inputValue" @keypress.enter.stop.prevent="ok" tabindex="2" :maxlength="inputMaxLength > 0 ? inputMaxLength : undefined" />
       </template>
       <div class="action">
         <component v-if="action" :is="action" />
@@ -47,6 +47,7 @@ export default defineComponent({
     const inputValue = ref('')
     const inputHint = ref('')
     const inputReadonly = ref(false)
+    const inputMaxLength = ref(0)
     const modalWidth = ref<string | undefined>(undefined)
 
     let resolveFun: Function | null = null
@@ -113,6 +114,7 @@ export default defineComponent({
       inputType.value = params.type || 'text'
       inputValue.value = params.value || ''
       inputHint.value = params.hint || ''
+      inputMaxLength.value = params.maxlength || 0
       inputReadonly.value = params.readonly || false
       modalWidth.value = params.modalWidth
       component.value = params.component
@@ -155,6 +157,7 @@ export default defineComponent({
       inputValue,
       inputHint,
       inputReadonly,
+      inputMaxLength,
       modalWidth,
     }
   },

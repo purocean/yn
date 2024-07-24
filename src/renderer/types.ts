@@ -112,6 +112,7 @@ export namespace Components {
 
     export interface InputModalParams extends BaseParams {
       type?: string;
+      maxlength?: number;
       value?: string;
       hint?: string;
       readonly?: boolean;
