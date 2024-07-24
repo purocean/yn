@@ -205,6 +205,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
           }
         }),
         value: newFilename,
+        maxlength: 255,
         select: true,
       })
 
