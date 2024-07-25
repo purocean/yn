@@ -73,9 +73,7 @@ export async function proxyFetch (url: string, init?: Omit<RequestInit, 'body'> 
     init.body = JSON.stringify(init.body)
   }
 
-  if (JWT_TOKEN) {
-    init.headers = { ...init.headers, 'x-yn-authorization': 'Bearer ' + JWT_TOKEN }
-  }
+  init.headers = { ...init.headers, 'x-yn-authorization': 'Bearer ' + JWT_TOKEN }
 
   const res: Response = await fetch(`/api/proxy-fetch/${url}`, init)
 

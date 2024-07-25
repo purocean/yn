@@ -38,7 +38,7 @@ const noCache = (ctx: any) => {
 }
 
 const checkPermission = (ctx: any, next: any) => {
-  const token = ctx.query._token || (ctx.headers['x-yn-authorization'] || ctx.headers.authorization || '').replace('Bearer ', '')
+  const token = ctx.query._token || (ctx.headers['x-yn-authorization'] ?? (ctx.headers.authorization || '')).replace('Bearer', '').trim()
 
   if (ctx.req._protocol || (!token && isLocalhost(ctx.request.ip))) {
     ctx.req.jwt = { role: 'admin' }
