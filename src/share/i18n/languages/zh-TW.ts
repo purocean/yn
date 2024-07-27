@@ -41,6 +41,7 @@ const data: BaseLanguage = {
   'encrypted-markdown-file': '加密 Markdown 檔案',
   'switch-repo-n': '切換到仓库 %s',
   'switch-the-last-repo': '切換到最後一個仓库',
+  'edit-or-generate-text-using-ai': '使用 AI Copilot 編輯或生成文本',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',

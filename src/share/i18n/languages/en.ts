@@ -40,6 +40,7 @@ const data = {
   'encrypted-markdown-file': 'Encrypted Markdown File',
   'switch-repo-n': 'Switch to the repository [%s]',
   'switch-the-last-repo': 'Switch to the last repository',
+  'edit-or-generate-text-using-ai': 'Edit or generate text using AI',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
