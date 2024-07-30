@@ -164,6 +164,21 @@ export function stat (repo: string, p: string) {
   }, p)
 }
 
+export function checkWriteable (repo: string, p: string) {
+  return withRepo(repo, async (_, targetPath) => {
+    if (readonly) {
+      return false
+    }
+
+    try {
+      await fs.access(targetPath, fs.constants.W_OK)
+      return true
+    } catch (error) {
+      return false
+    }
+  }, p)
+}
+
 export function write (repo: string, p: string, content: any): Promise<string> {
   if (readonly) throw new Error('Readonly')
 

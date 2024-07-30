@@ -22,6 +22,7 @@ import config from '../config'
 import * as jwt from '../jwt'
 import { getAction } from '../action'
 import * as extension from '../extension'
+import type { FileReadResult } from '../../share/types'
 
 const isLocalhost = (address: string) => {
   return ip.isEqual(address, '127.0.0.1') || ip.isEqual(address, '::1')
@@ -122,11 +123,14 @@ const fileContent = async (ctx: any, next: any) => {
 
       const content = await file.read(repo, path)
 
-      ctx.body = result('ok', 'success', {
+      const data: FileReadResult = {
         content: content.toString(asBase64 ? 'base64' : undefined),
         hash: await file.hash(repo, path),
-        stat: await file.stat(repo, path)
-      })
+        stat: await file.stat(repo, path),
+        writeable: await file.checkWriteable(repo, path),
+      }
+
+      ctx.body = result('ok', 'success', data)
     } else if (ctx.method === 'POST') {
       const { oldHash, content, asBase64, repo, path } = ctx.request.body
 

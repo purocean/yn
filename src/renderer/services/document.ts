@@ -10,7 +10,7 @@ import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import { DocType, type Doc, type DocCategory, type PathItem, type SwitchDocOpts } from '@fe/types'
+import type { DocType, FileStat, Doc, DocCategory, PathItem, SwitchDocOpts } from '@fe/types'
 import { basename, dirname, extname, isBelongTo, join, normalizeSep, relative, resolve } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
@@ -717,7 +717,8 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
 
     let content = ''
     let hash = ''
-    let stat
+    let stat: FileStat | undefined
+    let writeable: boolean | undefined
     if (doc.plain) {
       const timer = setTimeout(() => {
         store.state.currentFile = { ...doc!, status: undefined }
@@ -730,6 +731,7 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
       content = res.content
       hash = res.hash
       stat = res.stat
+      writeable = res.writeable
     }
 
     // decrypt content.
@@ -744,6 +746,7 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
     store.state.currentFile = {
       ...doc,
       stat,
+      writeable,
       content,
       passwordHash,
       contentHash: hash,

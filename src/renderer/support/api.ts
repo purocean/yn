@@ -1,7 +1,7 @@
 import type { Stats } from 'fs'
 import type { WatchOptions } from 'chokidar'
 import type { IProgressMessage, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery } from 'ripgrep-wrapper'
-import type { Components, Doc, ExportType, FileItem, FileSort, FileStat, PathItem } from '@fe/types'
+import type { Components, Doc, ExportType, FileItem, FileReadResult, FileSort, FileStat, PathItem } from '@fe/types'
 import { isElectron } from '@fe/support/env'
 import { HELP_REPO_NAME, JWT_TOKEN } from './args'
 
@@ -92,7 +92,7 @@ export async function proxyFetch (url: string, init?: Omit<RequestInit, 'body'> 
  */
 async function fetchHelpContent (docName: string) {
   const result = await fetchHttp('/api/help?doc=' + docName)
-  return { content: result.data.content, hash: '', stat: { mtime: 0, birthtime: 0, size: 0 } }
+  return { content: result.data.content, hash: '', stat: { mtime: 0, birthtime: 0, size: 0 }, writeable: true }
 }
 
 /**
@@ -101,7 +101,7 @@ async function fetchHelpContent (docName: string) {
  * @param asBase64
  * @returns
  */
-export async function readFile (file: PathItem, asBase64 = false): Promise<{content: string, hash: string, stat: FileStat}> {
+export async function readFile (file: PathItem, asBase64 = false): Promise<FileReadResult> {
   const { path, repo } = file
 
   if (repo === HELP_REPO_NAME) {

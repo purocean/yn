@@ -41,6 +41,9 @@ const data = {
   'switch-repo-n': 'Switch to the repository [%s]',
   'switch-the-last-repo': 'Switch to the last repository',
   'edit-or-generate-text-using-ai': 'Edit or generate text using AI',
+  'file-readonly-desc': 'The file is read-only. You can [change to writable](%s) in the system and then [refresh](%s) the document to edit.',
+  'can-not-edit-this-file-type': 'Cannot edit this file type',
+  'read-only-mode-desc': 'The application is currently in read-only mode and cannot be edited.',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
@@ -484,6 +487,10 @@ const data = {
     },
     'switch-editor': 'Switch Editor',
     'default-editor': 'Default Editor',
+    'action-label': {
+      'reveal-current-file-in-os': 'Reveal Current File in OS',
+      'refresh-current-document': 'Refresh Current Document',
+    },
   },
   'previewer': {
     'default-previewer': 'Default Previewer',

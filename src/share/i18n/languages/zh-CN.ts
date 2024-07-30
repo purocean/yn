@@ -42,6 +42,9 @@ const data: BaseLanguage = {
   'switch-repo-n': '切换到仓库 %s',
   'switch-the-last-repo': '切换到最后一个仓库',
   'edit-or-generate-text-using-ai': '使用 AI Copilot 编辑或生成文字',
+  'file-readonly-desc': '当前文件只读，如需编辑请先在系统中[改为可写](%s)，然后[刷新](%s)当前文档。',
+  'can-not-edit-this-file-type': '不能编辑此类型文件',
+  'read-only-mode-desc': '当前是只读模式，不可编辑',
   'premium': {
     'confetti': '彩色纸屑',
     'need-purchase': '[%s] 需要高级版',
@@ -485,6 +488,10 @@ const data: BaseLanguage = {
     },
     'switch-editor': '切换编辑器',
     'default-editor': '默认编辑器',
+    'action-label': {
+      'reveal-current-file-in-os': '在系统中显示当前文件',
+      'refresh-current-document': '刷新当前文档',
+    },
   },
   'previewer': {
     'default-previewer': '默认预览器',

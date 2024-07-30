@@ -42,6 +42,9 @@ const data: BaseLanguage = {
   'switch-repo-n': '切換到仓库 %s',
   'switch-the-last-repo': '切換到最後一個仓库',
   'edit-or-generate-text-using-ai': '使用 AI Copilot 編輯或生成文本',
+  'file-readonly-desc': '當前文件是唯讀的。如需編輯，請先在系統中[更改為可寫](%s)，然後[刷新](%s)當前文檔。',
+  'can-not-edit-this-file-type': '不能編輯此類型的文件',
+  'read-only-mode-desc': '當前應用處於唯讀模式，不可編輯',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',
@@ -485,6 +488,10 @@ const data: BaseLanguage = {
     },
     'switch-editor': '切換編輯器',
     'default-editor': '默認編輯器',
+    'action-label': {
+      'reveal-current-file-in-os': '在系統中顯示當前文件',
+      'refresh-current-document': '刷新當前文件',
+    }
   },
   'previewer': {
     'default-previewer': '預設預覽器',
