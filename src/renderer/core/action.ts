@@ -61,7 +61,7 @@ export function getActionHandler <T extends string> (name: T): ActionHandler<T> 
     const action = getAction(name)
     if (action) {
       if (!(action.when && !action.when())) {
-        result = (action.handler)?.(...args)
+        result = (action.handler)?.apply(null, args)
       }
     }
 
