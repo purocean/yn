@@ -12,6 +12,7 @@ const data: BaseLanguage = {
   'demo-tips': 'DEMO 模式下某些功能不可用',
   'more': '更多',
   'copied': '已複製',
+  'others': '其他',
   'insert-different-repo-doc': '不能插入不同倉庫的文檔',
   'need-clipboard-permission': '請授予剪貼簿權限',
   'click-to-copy': '點擊複製',
@@ -192,6 +193,7 @@ const data: BaseLanguage = {
     'password-open': '[打開] 請輸入密碼',
     'wrong-password': '密碼錯誤',
     'file-transform-error': '加密文件和非加密文件不能互相轉換',
+    'custom-extension': '自訂擴展名',
     'create-dialog': {
       'title': '創建文件',
       'hint': '文件名',

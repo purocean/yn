@@ -12,6 +12,7 @@ const data: BaseLanguage = {
   'demo-tips': 'DEMO 模式下一些功能不可用',
   'more': '更多',
   'copied': '已复制',
+  'others': '其他',
   'insert-different-repo-doc': '不能插入不同仓库的文档',
   'need-clipboard-permission': '请授予剪切板权限',
   'click-to-copy': '单击复制',
@@ -192,6 +193,7 @@ const data: BaseLanguage = {
     'password-open': '[打开] 请输入密码',
     'wrong-password': '密码错误',
     'file-transform-error': '加密文件和非加密文件不能互相转换',
+    'custom-extension': '自定义扩展名',
     'create-dialog': {
       'title': '创建文件',
       'hint': '文件名',
