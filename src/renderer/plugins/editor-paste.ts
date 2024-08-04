@@ -10,7 +10,7 @@ import store from '@fe/support/store'
 import { encodeMarkdownLink, fileToBase64URL, path } from '@fe/utils'
 import { isKeydown } from '@fe/core/keybinding'
 
-const IMAGE_REG = /^image\/(png|jpg|jpeg|gif)$/i
+const IMAGE_REG = /^image\//i
 const HTML_REG = /^text\/html$/i
 
 async function pasteHtml (html: string) {
@@ -69,7 +69,7 @@ function paste (e: ClipboardEvent) {
   } else {
     for (let i = 0; i < items.length; i++) {
       const fileType = items[i].type
-      if (fileType.match(IMAGE_REG)) {
+      if (IMAGE_REG.test(fileType)) {
         e.preventDefault()
         e.stopPropagation()
         const asBase64 = isKeydown('B') // press key b, paste image as base64
@@ -98,9 +98,9 @@ export default {
 
     const pasteImageFromClipboard = async (asBase64: boolean) => {
       ctx.base.readFromClipboard(async (type, getType) => {
-        const match = type.match(IMAGE_REG)
-        if (match) {
-          const file = new File([await getType(type)], 'image.' + match[1], { type })
+        if (IMAGE_REG.test(type)) {
+          const ext = ctx.lib.mime.getExtension(type)
+          const file = new File([await getType(type)], 'image.' + ext, { type })
           await pasteImage(file, asBase64)
           const { editor } = await ctx.editor.whenEditorReady()
           editor.focus()
