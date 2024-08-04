@@ -10,7 +10,8 @@
               @click="emits('updateDocType', item)"
             >
               <input type="radio" :checked="item.id === docType?.id" />
-              {{ item.displayName }}({{ item.extension[0] }})
+              <span>{{ item.displayName }}</span>
+              <span v-if="item.extension.join(',')">({{ item.extension.join(',') }})</span>
             </div>
           </template>
         </div>
@@ -48,7 +49,8 @@ const xCategories = computed(() => props.categories.map(x => ({
 .create-file-panel {
   .category-list-wrapper {
     max-height: calc(100vh - 300px);
-    overflow-y: auto
+    overflow-y: auto;
+    margin-bottom: 10px;
   }
 
   .category {

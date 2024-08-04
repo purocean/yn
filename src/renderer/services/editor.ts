@@ -1,6 +1,5 @@
 import type * as Monaco from 'monaco-editor'
 import { cloneDeep, debounce } from 'lodash-es'
-import { FLAG_READONLY } from '@fe/support/args'
 import { isElectron, isMacOS } from '@fe/support/env'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
@@ -79,7 +78,6 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
     vertical: 'hidden',
     verticalScrollbarSize: 0
   } : undefined,
-  readOnly: FLAG_READONLY,
   acceptSuggestionOnEnter: 'smart',
   unicodeHighlight: {
     ambiguousCharacters: false,

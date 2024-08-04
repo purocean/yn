@@ -110,7 +110,7 @@ export default defineComponent({
 
       await nextTick()
       getEditor().updateOptions({
-        readOnly: FLAG_READONLY || !current || !current.plain
+        readOnly: FLAG_READONLY || !current || !current.plain || current.writeable === false
       })
 
       if (isDefault()) {

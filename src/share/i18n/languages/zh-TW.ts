@@ -12,6 +12,7 @@ const data: BaseLanguage = {
   'demo-tips': 'DEMO 模式下某些功能不可用',
   'more': '更多',
   'copied': '已複製',
+  'others': '其他',
   'insert-different-repo-doc': '不能插入不同倉庫的文檔',
   'need-clipboard-permission': '請授予剪貼簿權限',
   'click-to-copy': '點擊複製',
@@ -41,6 +42,10 @@ const data: BaseLanguage = {
   'encrypted-markdown-file': '加密 Markdown 檔案',
   'switch-repo-n': '切換到仓库 %s',
   'switch-the-last-repo': '切換到最後一個仓库',
+  'edit-or-generate-text-using-ai': '使用 AI Copilot 編輯或生成文本',
+  'file-readonly-desc': '當前文件是唯讀的。如需編輯，請先在系統中[更改為可寫](%s)，然後[刷新](%s)當前文檔。',
+  'can-not-edit-this-file-type': '不能編輯此類型的文件',
+  'read-only-mode-desc': '當前應用處於唯讀模式，不可編輯',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',
@@ -188,6 +193,7 @@ const data: BaseLanguage = {
     'password-open': '[打開] 請輸入密碼',
     'wrong-password': '密碼錯誤',
     'file-transform-error': '加密文件和非加密文件不能互相轉換',
+    'custom-extension': '自訂擴展名',
     'create-dialog': {
       'title': '創建文件',
       'hint': '文件名',
@@ -484,6 +490,10 @@ const data: BaseLanguage = {
     },
     'switch-editor': '切換編輯器',
     'default-editor': '默認編輯器',
+    'action-label': {
+      'reveal-current-file-in-os': '在系統中顯示當前文件',
+      'refresh-current-document': '刷新當前文件',
+    }
   },
   'previewer': {
     'default-previewer': '預設預覽器',

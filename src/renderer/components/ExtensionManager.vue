@@ -705,8 +705,7 @@ onUnmounted(() => {
 
 .body {
   display: flex;
-  height: calc(100vh - 7vh - 50px);
-  max-height: 900px;
+  height: calc(100vh - 7vh - 100px);
 }
 
 .side {

@@ -338,11 +338,13 @@ export default defineComponent({
 
     const fileTabs = computed(() => (tabs.value as Components.FileTabs.Item[]).map(tab => {
       if (currentFile.value && tab.key === toUri(currentFile.value)) {
-        const status = currentFile.value.status
+        const { status, writeable } = currentFile.value
 
         let mark = ''
         if (!isSaved.value) {
           mark = '*'
+        } else if (writeable === false) {
+          mark = '🔒'
         } else if (status === 'saved') {
           mark = ''
         } else if (status === 'save-failed') {

@@ -382,7 +382,7 @@ onUnmounted(() => {
 
 .wrapper {
   width: 90vw;
-  max-width: 900px;
+  max-width: 1024px;
   background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);
   margin: auto;

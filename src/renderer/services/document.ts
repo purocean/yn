@@ -10,7 +10,7 @@ import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import { DocType, type Doc, type DocCategory, type PathItem, type SwitchDocOpts } from '@fe/types'
+import type { DocType, FileStat, Doc, DocCategory, PathItem, SwitchDocOpts } from '@fe/types'
 import { basename, dirname, extname, isBelongTo, join, normalizeSep, relative, resolve } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
@@ -182,11 +182,25 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
 export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc) {
   const docType = shallowRef<DocType | null | undefined>(null)
 
+  const othersDocCategoryName = '__others__'
+
   if (!doc.path) {
     if (baseDoc) {
       const currentPath = baseDoc.type === 'dir' ? baseDoc.path : dirname(baseDoc.path)
 
-      const categories = getAllDocCategories()
+      const categories = getAllDocCategories().concat({
+        category: othersDocCategoryName,
+        displayName: t('others'),
+        types: [
+          {
+            id: 'custom',
+            displayName: t('document.custom-extension'),
+            extension: [''],
+            plain: true,
+            buildNewContent: () => ''
+          }
+        ]
+      })
       const markdownCategory = categories.find(x => x.category === 'markdown')
       const mdType = markdownCategory?.types.find(x => x.extension.includes(misc.MARKDOWN_FILE_EXT))
       docType.value = mdType
@@ -205,6 +219,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
           }
         }),
         value: newFilename,
+        maxlength: 255,
         select: true,
       })
 
@@ -216,11 +231,12 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
         throw new Error('Need doc type')
       }
 
-      const ext = docType.value.extension[0] || ''
+      const supportedExts = docType.value.extension
 
       filename = filename.replace(/\/$/, '')
-      if (!filename.endsWith(ext)) {
-        filename += ext
+      const ext = extname(filename)
+      if (!supportedExts.includes(ext)) {
+        filename += (docType.value.extension[0] || '')
       }
 
       doc.path = join(currentPath, normalizeSep(filename))
@@ -281,7 +297,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
 
     checkFilePath(file.path)
 
-    if (!content) {
+    if (typeof content !== 'string') {
       throw new Error('Could not get content')
     }
 
@@ -716,7 +732,8 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
 
     let content = ''
     let hash = ''
-    let stat
+    let stat: FileStat | undefined
+    let writeable: boolean | undefined
     if (doc.plain) {
       const timer = setTimeout(() => {
         store.state.currentFile = { ...doc!, status: undefined }
@@ -729,6 +746,7 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
       content = res.content
       hash = res.hash
       stat = res.stat
+      writeable = res.writeable
     }
 
     // decrypt content.
@@ -743,6 +761,7 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
     store.state.currentFile = {
       ...doc,
       stat,
+      writeable,
       content,
       passwordHash,
       contentHash: hash,

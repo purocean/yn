@@ -42,9 +42,6 @@ export default {
       }
 
       return [
-        ...(!ctx.doc.isEncrypted(node) ? [
-          { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node), ellipsis: true },
-        ] : []),
         ...(node.type === 'dir' ? [
           { id: 'create-doc', label: t('tree.context-menu.create-doc'), onClick: () => ctx.doc.createDoc({ repo: node.repo }, node), ellipsis: true },
           { id: 'create-dir', label: t('tree.context-menu.create-dir'), onClick: () => ctx.doc.createDir({ repo: node.repo }, node), ellipsis: true },
@@ -53,6 +50,9 @@ export default {
         ...(node.path !== '/' ? [
           { id: 'rename', label: t('tree.context-menu.rename'), onClick: () => ctx.doc.moveDoc(node), ellipsis: true },
           { id: 'delete', label: t('tree.context-menu.delete'), onClick: () => ctx.doc.deleteDoc(node), ellipsis: true },
+        ] : []),
+        ...(!ctx.doc.isEncrypted(node) ? [
+          { id: 'duplicate', label: t('tree.context-menu.duplicate'), onClick: () => ctx.doc.duplicateDoc(node), ellipsis: true },
         ] : []),
         { type: 'separator' },
         { id: 'open-in-os', label: t('tree.context-menu.open-in-os'), onClick: () => ctx.doc.openInOS(node) },

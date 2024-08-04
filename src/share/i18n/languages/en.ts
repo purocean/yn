@@ -11,6 +11,7 @@ const data = {
   'demo-tips': 'Some features are not available in DEMO mode.',
   'more': 'More',
   'copied': 'Copied',
+  'others': 'Others',
   'insert-different-repo-doc': 'Documents from different repository cannot be inserted',
   'need-clipboard-permission': 'Please grant clipboard permissions',
   'click-to-copy': 'Click to copy',
@@ -40,6 +41,10 @@ const data = {
   'encrypted-markdown-file': 'Encrypted Markdown File',
   'switch-repo-n': 'Switch to the repository [%s]',
   'switch-the-last-repo': 'Switch to the last repository',
+  'edit-or-generate-text-using-ai': 'Edit or generate text using AI',
+  'file-readonly-desc': 'The file is read-only. You can [change to writable](%s) in the system and then [refresh](%s) the document to edit.',
+  'can-not-edit-this-file-type': 'Cannot edit this file type',
+  'read-only-mode-desc': 'The application is currently in read-only mode and cannot be edited.',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
@@ -187,6 +192,7 @@ const data = {
     'password-open': '[Open] Please enter password of the file',
     'wrong-password': 'Wrong Password',
     'file-transform-error': 'Encrypted and unencrypted files cannot be converted to each other',
+    'custom-extension': 'Custom Extension',
     'create-dialog': {
       'title': 'Create a file',
       'hint': 'File name',
@@ -483,6 +489,10 @@ const data = {
     },
     'switch-editor': 'Switch Editor',
     'default-editor': 'Default Editor',
+    'action-label': {
+      'reveal-current-file-in-os': 'Reveal Current File in OS',
+      'refresh-current-document': 'Refresh Current Document',
+    },
   },
   'previewer': {
     'default-previewer': 'Default Previewer',

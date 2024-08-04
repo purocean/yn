@@ -72,6 +72,7 @@ import watchFileRefresh from '@fe/plugins/watch-file-refresh'
 import previewFontSize from '@fe/plugins/preview-font-size'
 import dropToOpenFile from '@fe/plugins/drop-to-open-file'
 import recordRecentDocument from '@fe/plugins/record-recent-document'
+import aiCopilot from '@fe/plugins/ai-copilot'
 
 export default [
   buildInRenderers,
@@ -148,4 +149,5 @@ export default [
   dropToOpenFile,
   recordRecentDocument,
   markdownGithubAlerts,
+  aiCopilot,
 ]

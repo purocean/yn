@@ -76,14 +76,16 @@
 
 ## 更新日志
 
-### [v3.74.0](https://github.com/purocean/yn/releases/tag/v3.74.0) 2024-07-23
+### [v3.75.1](https://github.com/purocean/yn/releases/tag/v3.75.1) 2024-07-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-win-x64-3.74.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-mac-arm64-3.74.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-mac-x64-3.74.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-linux-x86_64-3.74.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.74.0/Yank-Note-linux-amd64-3.74.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-win-x64-3.75.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-mac-arm64-3.75.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-mac-x64-3.75.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-linux-x86_64-3.75.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-linux-amd64-3.75.1.deb)
 
-1. feat: 支持在设置中配置预览区域内容显示最大宽度
-2. refactor: 默认在 Web Worker 中运行 JavaScript 代码，切换文档时候中止执行
-3. fix: 修复终端 shell 配置空字符串时候报错问题
-4. fix: 修复升级 Monaco 编辑器后不能补全待办列表问题
+1. feat: 创建文件面板增加创建自定义扩展名选项
+2. feat: 支持编辑 `.gitignore` 文件
+3. feat: 支持粘贴 webp 图片
+4. feat: 体验优化，增加只读文件编辑提示
+5. feat: 体验优化，调整“重复文件”菜单位置
+6. fix(plugin): 修复 `ctx.api.proxyFetch` 对 `Request` 对象的处理
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
