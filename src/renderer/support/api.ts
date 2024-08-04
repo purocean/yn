@@ -44,38 +44,57 @@ export async function fetchHttp (input: RequestInfo, init?: RequestInit) {
 
 /**
  * Proxy fetch.
- * @param url string
+ * @param url RequestInfo | URL
  * @param init RequestInit
  * @returns
  */
-export async function proxyFetch (url: string, init?: Omit<RequestInit, 'body'> & {
+export async function proxyFetch (url: RequestInfo | URL, init?: Omit<RequestInit, 'body'> & {
   body?: any,
   timeout?: number,
   proxy?: string,
   jsonBody?: boolean,
 }) {
-  init ??= {}
-
-  if (typeof init.timeout === 'number') {
-    init.headers = { ...init.headers, 'x-proxy-timeout': String(init.timeout) }
+  if (!url) {
+    throw new Error('url is required')
   }
 
-  if (init.proxy) {
-    init.headers = { ...init.headers, 'x-proxy-url': init.proxy }
+  const _init: typeof init = { ...init }
+  let _headers = init?.headers
+  let _url: RequestInfo | URL
+
+  const prefix = '/api/proxy-fetch/'
+
+  if (typeof url === 'string') {
+    _url = `${prefix}${url}`
+  } else if ('href' in url) { // same as URL. we do not use instanceof URL because of the compatibility with cross iframe
+    _url = new URL(`${prefix}${url.href}`)
+  } else { // Request
+    _url = new Request(`${prefix}${(url as Request).url}`, url)
+    _headers = _url.headers
   }
 
-  if (init.redirect === 'error' || init.redirect === 'manual') {
-    init.headers = { ...init.headers, 'x-proxy-max-redirections': '0' }
+  const headers = new Headers(_headers)
+
+  if (typeof _init.timeout === 'number') {
+    headers.set('x-proxy-timeout', String(_init.timeout))
   }
 
-  if (init.jsonBody) {
-    init.headers = { ...init.headers, 'Content-Type': 'application/json' }
-    init.body = JSON.stringify(init.body)
+  if (_init.proxy) {
+    headers.set('x-proxy-url', _init.proxy)
   }
 
-  init.headers = { ...init.headers, 'x-yn-authorization': 'Bearer ' + JWT_TOKEN }
+  if (_init.redirect === 'error' || _init.redirect === 'manual') {
+    headers.set('x-proxy-max-redirections', '0')
+  }
 
-  const res: Response = await fetch(`/api/proxy-fetch/${url}`, init)
+  if (_init.jsonBody) {
+    headers.set('Content-Type', 'application/json')
+    _init.body = JSON.stringify(_init.body)
+  }
+
+  headers.set('x-yn-authorization', 'Bearer ' + JWT_TOKEN)
+
+  const res: Response = await fetch(_url, { ..._init, headers })
 
   if (res.headers.get('x-yank-note-api-status') === 'error') {
     const msg = res.headers.get('x-yank-note-api-message') || 'error'
