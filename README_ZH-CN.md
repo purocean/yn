@@ -76,16 +76,11 @@
 
 ## 更新日志
 
-### [v3.75.1](https://github.com/purocean/yn/releases/tag/v3.75.1) 2024-07-23
+### [v3.75.2](https://github.com/purocean/yn/releases/tag/v3.75.2) 2024-08-05
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-win-x64-3.75.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-mac-arm64-3.75.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-mac-x64-3.75.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-linux-x86_64-3.75.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-linux-amd64-3.75.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-win-x64-3.75.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-mac-arm64-3.75.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-mac-x64-3.75.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-linux-x86_64-3.75.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-linux-amd64-3.75.2.deb)
 
-1. feat: 创建文件面板增加创建自定义扩展名选项
-2. feat: 支持编辑 `.gitignore` 文件
-3. feat: 支持粘贴 webp 图片
-4. feat: 体验优化，增加只读文件编辑提示
-5. feat: 体验优化，调整“重复文件”菜单位置
-6. fix(plugin): 修复 `ctx.api.proxyFetch` 对 `Request` 对象的处理
+1. feat: 支持关闭编辑器的 AI Copilot 灯泡提示
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

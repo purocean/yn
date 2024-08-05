@@ -76,16 +76,11 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.75.1](https://github.com/purocean/yn/releases/tag/v3.75.1) 2024-07-23
+### [v3.75.2](https://github.com/purocean/yn/releases/tag/v3.75.2) 2024-08-05
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-win-x64-3.75.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-mac-arm64-3.75.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-mac-x64-3.75.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-linux-x86_64-3.75.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.1/Yank-Note-linux-amd64-3.75.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-win-x64-3.75.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-mac-arm64-3.75.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-mac-x64-3.75.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-linux-x86_64-3.75.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-linux-amd64-3.75.2.deb)
 
-1. feat: Add option to create custom file extensions in the file panel creation
-2. feat: Support for editing `.gitignore` files
-3. feat: Support for pasting webp images
-4. feat: Experience optimization, add prompt for editing read-only files
-5. feat: Experience optimization, adjust the position of the "Duplicate Files" menu
-6. fix(plugin): Fix the handling of the `Request` object in `ctx.api.proxyFetch`
+1. feat: support disabling AI Copilot lightbulb suggestions in the editor
 
 [More release notes](https://github.com/purocean/yn/releases)
 

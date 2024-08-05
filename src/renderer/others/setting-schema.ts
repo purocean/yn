@@ -267,6 +267,14 @@ const schema: SettingSchema = ({
       group: 'editor',
       required: true,
     },
+    'editor.enable-ai-copilot-action': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.enable-ai-copilot-action',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
     'render.md-html': {
       defaultValue: true,
       title: 'T_setting-panel.schema.render.md-html',

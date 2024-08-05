@@ -392,6 +392,7 @@ const data: BaseLanguage = {
         'suggest-on-trigger-characters': '自动提示 - 输入提示符时显示提示。如果禁用，仍可使用 Ctrl+Space (取决于快捷键配置) 触发',
         'sticky-scroll-enabled': '启用粘性滚动 - 当编辑器滚动时，固定显示文档标题等',
         'quick-suggestions': '快速提示 - 在输入文本时显示提示',
+        'enable-ai-copilot-action': '启用 AI Copilot 操作 - 当可用时显示 AI Copilot 操作灯泡',
       },
       'render': {
         'md-html': '启用 HTML',
