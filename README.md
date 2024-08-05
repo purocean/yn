@@ -76,9 +76,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.75.2](https://github.com/purocean/yn/releases/tag/v3.75.2) 2024-08-05
+### [v3.75.3](https://github.com/purocean/yn/releases/tag/v3.75.3) 2024-08-05
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-win-x64-3.75.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-mac-arm64-3.75.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-mac-x64-3.75.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-linux-x86_64-3.75.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.2/Yank-Note-linux-amd64-3.75.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.75.3/Yank-Note-win-x64-3.75.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.3/Yank-Note-mac-arm64-3.75.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.3/Yank-Note-mac-x64-3.75.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.3/Yank-Note-linux-x86_64-3.75.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/
 
 1. feat: support disabling AI Copilot lightbulb suggestions in the editor
 
