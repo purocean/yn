@@ -334,6 +334,7 @@ export interface BuildInSettings {
   'editor.minimap': boolean,
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'editor.enable-preview': boolean,
+  'editor.enable-ai-copilot-action': boolean,
   'editor.font-family': string,
   'editor.complete-emoji': boolean,
   'editor.todo-with-time': boolean,

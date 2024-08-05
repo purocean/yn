@@ -392,6 +392,7 @@ const data: BaseLanguage = {
         'suggest-on-trigger-characters': '自動提示 - 輸入提示符號時顯示提示。若停用，仍可使用 Ctrl+Space (依據快速鍵設定) 觸發',
         'sticky-scroll-enabled': '啟用黏性捲動 - 當編輯器捲動時，固定顯示文件標題等',
         'quick-suggestions': '快速提示 - 在輸入文字時顯示提示',
+        'enable-ai-copilot-action': '啟用 AI Copilot 操作 - 當可用時顯示 AI Copilot 操作燈泡',
       },
       'render': {
         'md-html': '啟用 HTML',
