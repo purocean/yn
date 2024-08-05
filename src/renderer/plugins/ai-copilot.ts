@@ -14,7 +14,7 @@ export default {
         provideCodeActions (): languages.CodeActionList {
           const actionTitle = ctx.i18n.t('edit-or-generate-text-using-ai')
 
-          const enabled = ctx.setting.getSetting('editor.enable-ai-copilot-action')
+          const enabled = ctx.setting.getSetting('editor.enable-ai-copilot-action', true)
           if (!getInitialized() || checkExtensionLoaded() || !enabled) {
             return { dispose: () => 0, actions: [] }
           }
