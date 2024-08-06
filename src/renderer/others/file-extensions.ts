@@ -155,7 +155,7 @@ const extensions = [
 
 const supported = (name: string) => {
   name = name.toLowerCase()
-  const ext = extname(name) || name.startsWith('.') ? name : ''
+  const ext = extname(name) || (name.startsWith('.') ? name : '')
   return ext ? extensions.includes(ext) : false
 }
 
