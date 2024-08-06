@@ -76,11 +76,12 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.75.3](https://github.com/purocean/yn/releases/tag/v3.75.3) 2024-08-05
+### [v3.75.4](https://github.com/purocean/yn/releases/tag/v3.75.4) 2024-08-06
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.75.3/Yank-Note-win-x64-3.75.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.3/Yank-Note-mac-arm64-3.75.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.3/Yank-Note-mac-x64-3.75.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.3/Yank-Note-linux-x86_64-3.75.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/
+[Windows](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-win-x64-3.75.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-mac-arm64-3.75.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-mac-x64-3.75.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-linux-x86_64-3.75.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-linux-amd64-3.75.4.deb)
 
-1. feat: support disabling AI Copilot lightbulb suggestions in the editor
+1. fix: Correct the error in detecting supported file types.
+2. fix: Resolve the issue where the shortcut key triggers an accent key and inserts additional characters in the editor on macOS.
 
 [More release notes](https://github.com/purocean/yn/releases)
 
