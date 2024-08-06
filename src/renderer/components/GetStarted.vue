@@ -32,13 +32,13 @@
           <h2>{{$t('get-started.help')}}</h2>
           <div class="list">
             <div class="item">
+              <a :href="GUIDE_URL" target="_blank">{{$t('status-bar.help.guide')}}</a>
+            </div>
+            <div class="item">
               <a href="javascript:void(0);" @click="openHelpDoc('readme')">{{$t('status-bar.help.readme')}}</a>
             </div>
             <div class="item">
               <a href="javascript:void(0);" @click="openHelpDoc('features')">{{$t('status-bar.help.features')}}</a>
-            </div>
-            <div class="item">
-              <a href="javascript:void(0);" @click="openHelpDoc('plugin')">{{$t('status-bar.help.plugin')}}</a>
             </div>
             <div class="item">
               <a href="javascript:void(0);" @click="openShortcutManager()">{{$t('status-bar.help.shortcuts')}}</a>
@@ -78,6 +78,7 @@ import { showPremium, getPurchased } from '@fe/others/premium'
 import { showSettingPanel } from '@fe/services/setting'
 import { createDoc, supported, switchDoc } from '@fe/services/document'
 import { getActionHandler } from '@fe/core/action'
+import { GUIDE_URL } from '@share/misc'
 
 useI18n()
 
