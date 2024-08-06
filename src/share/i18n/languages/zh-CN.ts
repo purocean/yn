@@ -272,6 +272,7 @@ const data: BaseLanguage = {
       'readme': '应用介绍',
       'features': '特色功能说明',
       'shortcuts': '快捷键',
+      'guide': '使用指引',
       'plugin': '插件开发'
     },
     'terminal': '终端',

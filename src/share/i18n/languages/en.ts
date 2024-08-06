@@ -271,6 +271,7 @@ const data = {
       'readme': 'Introduction',
       'features': 'Features',
       'shortcuts': 'Shortcuts',
+      'guide': 'Guide',
       'plugin': 'Create Plugin'
     },
     'terminal': 'Terminal',
