@@ -216,6 +216,14 @@ export function keydownHandler (e: KeyboardEvent) {
         continue
       }
 
+      // if user press `Option + E` in macOS, the `Dead` key will be triggered and insert `´`. so we need to blur and focus the input element to prevent this.s
+      if (isMacOS && e.key === 'Dead' && e.target && 'focus' in e.target && 'blur' in e.target) {
+        (e.target as any).blur()
+        setTimeout(() => {
+          (e.target as any).focus()
+        }, 0)
+      }
+
       e.stopPropagation()
       e.preventDefault()
       getActionHandler(item.name)()
