@@ -16,7 +16,7 @@
           <div class="editor" ref="editor" v-show="showEditor">
             <slot name="editor"></slot>
           </div>
-          <div class="preview" v-show="showView">
+          <div :class="{preview: true, 'preview-hidden': !presentation && !showView}">
             <div v-if="showView && showEditor" class="sash-left" @dblclick="resetSize('right', 'editor')" @mousedown="initEditorResize"></div>
             <slot name="preview"></slot>
           </div>
@@ -391,6 +391,12 @@ export default defineComponent({
   min-width: 0;
   box-sizing: border-box;
   position: relative;
+
+  &.preview-hidden {
+    visibility: hidden;
+    width: 0;
+    flex: none;
+  }
 }
 
 .footer {
