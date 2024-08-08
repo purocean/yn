@@ -488,7 +488,21 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
 
 export async function watchFile (repo: string, p: string, options: chokidar.WatchOptions) {
   return withRepo(repo, async (_, filePath) => {
+    try {
+      const ignoredRegexStr = options.ignored as string
+      if (ignoredRegexStr && typeof ignoredRegexStr === 'string') {
+        const ignoredRegex = new RegExp(ignoredRegexStr)
+        options.ignored = (str: string) => {
+          return str.split(path.sep)
+            .some((x, i, arr) => ignoredRegex.test(i === arr.length - 1 ? x : x + '/'))
+        }
+      }
+    } catch (error) {
+      console.error('watchFile', filePath, 'ignored error', error)
+    }
+
     const watcher = chokidar.watch(filePath, options)
+
     const { response, enqueue, close } = createStreamResponse()
 
     watcher.on('all', (eventName, path, stats) => {
