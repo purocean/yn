@@ -281,14 +281,14 @@ export async function choosePath (options: Record<string, any>): Promise<{ cance
 }
 
 type SearchReturn = (
-  onResult: (result: ISerializedFileMatch[]) => void,
-  onMessage?: (message: IProgressMessage) => void
+  onResult: (result: ISerializedFileMatch[]) => void | Promise<void>,
+  onMessage?: (message: IProgressMessage) => void | Promise<void>
 ) => Promise<ISerializedSearchSuccess | null>
 
 async function readReader<R = any, S = any, M = any> (
   reader: ReadableStreamDefaultReader,
-  onResult: (result: R) => void,
-  onMessage?: (message: M) => void
+  onResult: (result: R) => void | Promise<void>,
+  onMessage?: (message: M) => void | Promise<void>
 ): Promise<S | null> {
   let val = ''
 
@@ -314,10 +314,10 @@ async function readReader<R = any, S = any, M = any> (
 
       switch (data.type) {
         case 'result':
-          onResult(data.payload)
+          await onResult(data.payload)
           break
         case 'message':
-          onMessage?.(data.payload)
+          await onMessage?.(data.payload)
           break
         case 'done':
           return data.payload
