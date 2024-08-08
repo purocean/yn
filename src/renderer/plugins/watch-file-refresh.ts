@@ -39,6 +39,10 @@ export default {
         { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true },
         payload => {
           logger.debug('startWatch onResult', payload)
+          if (payload.eventName === 'ready') {
+            return
+          }
+
           const currentFile = ctx.store.state.currentFile
           if (
             currentFile &&

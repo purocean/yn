@@ -509,6 +509,10 @@ export async function watchFile (repo: string, p: string, options: chokidar.Watc
       enqueue('result', { eventName, path, stats })
     })
 
+    watcher.on('ready', () => {
+      enqueue('result', { eventName: 'ready' })
+    })
+
     const _close = () => {
       close()
       watcher.close()
