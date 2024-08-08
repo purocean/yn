@@ -1,10 +1,11 @@
 import type Remote from '@electron/remote/index'
 
-const _window = window as any
+export const inWebWorker = !!((globalThis as any).WorkerGlobalScope)
+const _window: any = inWebWorker ? undefined : window
 
-export const nodeProcess: NodeJS.Process = window && (window.process || _window.nodeProcess)
-export const nodeModule = window && (window.module || _window.nodeModule)
-export const nodeRequire = window && (window.require || _window.nodeRequire)
+export const nodeProcess: NodeJS.Process = _window && (_window.process || _window.nodeProcess)
+export const nodeModule = _window && (_window.module || _window.nodeModule)
+export const nodeRequire = _window && (_window.require || _window.nodeRequire)
 
 export const isElectron = !!(nodeProcess?.versions?.electron)
 export const isMacOS = /macintosh|mac os x/i.test(navigator.userAgent)

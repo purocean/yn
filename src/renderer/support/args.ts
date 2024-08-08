@@ -3,6 +3,11 @@
  * @returns params
  */
 export function $args () {
+  if (!globalThis.window) {
+    // in web worker
+    return new URLSearchParams(self.location.search)
+  }
+
   const win = window.opener || window.parent || window
   return new URLSearchParams(win.location.search)
 }
