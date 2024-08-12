@@ -85,8 +85,9 @@ class JavascriptIframeExecutor implements ReadableStreamDefaultReader<string> {
 
     const AsyncFunction = iframeWindow.eval('(async function(){}).constructor')
     const fn = new AsyncFunction('console', 'ctx', this.code)
-    await fn.call(iframeWindow, xConsole, window.ctx)
 
+    await sleep(0)
+    await fn.call(iframeWindow, xConsole, window.ctx)
     await sleep(0)
     this._readResolve('')
 
