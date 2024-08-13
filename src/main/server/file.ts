@@ -506,7 +506,15 @@ export async function watchFile (repo: string, p: string, options: chokidar.Watc
     const { response, enqueue, close } = createStreamResponse()
 
     watcher.on('all', (eventName, path, stats) => {
-      enqueue('result', { eventName, path, stats })
+      enqueue('result', {
+        eventName,
+        path,
+        stats: stats ? {
+          ...stats,
+          isFile: stats?.isFile(),
+          isDirectory: stats.isDirectory(),
+        } : undefined
+      })
     })
 
     watcher.on('ready', () => {
