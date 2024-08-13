@@ -49,14 +49,15 @@ export default {
         title: currentRepo
           ? ctx.i18n.t('status-bar.repo.repo', currentRepo.name.substring(0, 10))
           : ctx.i18n.t('status-bar.repo.no-data'),
-        list: ctx.base.getAllRepos().map(({ name, path }, i, arr) => {
+        list: ctx.base.getAllRepos().map((repo, i, arr) => {
+          const { name, path } = repo
           return {
             id: name,
             type: 'normal',
             title: name,
             tips: path,
             checked: currentRepo && currentRepo.name === name && currentRepo.path === path,
-            onClick: () => choose({ name, path }),
+            onClick: () => choose({ ...repo }),
             subTitle: i === arr.length - 1
               ? ctx.keybinding.getKeysLabel('base.switch-repository-0')
               : (
@@ -95,11 +96,11 @@ export default {
         forUser: true,
         keys: [ctx.keybinding.Alt, String(i)],
         handler: () => {
-          const repos = ctx.setting.getSetting('repos', [])
+          const repos = ctx.base.getAllRepos()
           const idx = i === 0 ? repos.length - 1 : i - 1
           const repo = repos[idx]
           if (repo) {
-            choose({ name: repo.name, path: repo.path })
+            choose({ ...repo })
           }
         },
       })

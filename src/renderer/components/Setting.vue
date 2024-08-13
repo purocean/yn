@@ -308,6 +308,21 @@ export default defineComponent({
       width: 100px;
     }
 
+    tr > th:nth-child(3),
+    tr > td:nth-child(3) {
+      width: 55px;
+      font-size: 12px;
+      text-align: center;
+
+      & > .form-control {
+        display: inline-block;
+
+        & > input[type=checkbox] {
+          margin-right: 0;
+        }
+      }
+    }
+
     tr > td:last-child {
       width: 120px;
       text-align: left !important;

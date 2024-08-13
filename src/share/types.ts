@@ -35,4 +35,5 @@ export interface Doc extends PathItem {
 export interface Repo {
   name: string;
   path: string;
+  enableIndexing: boolean
 }

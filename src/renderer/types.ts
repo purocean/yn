@@ -39,10 +39,10 @@ export type SettingSchema = {
       title: TTitle,
       properties: {
         [K in string] : {
-          type: string,
+          type: string | boolean,
           title: TTitle,
           description?: TTitle,
-          options: {
+          options?: {
             inputAttributes: { placeholder: TTitle }
           }
           openDialogOptions?: OpenDialogOptions,

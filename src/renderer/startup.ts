@@ -134,7 +134,7 @@ registerHook('SETTING_FETCHED', () => {
   }
 })
 
-registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
+registerHook('SETTING_CHANGED', ({ schema, changedKeys, settings }) => {
   if (changedKeys.some(key => key.startsWith('render.'))) {
     view.render()
   }
@@ -152,6 +152,12 @@ registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
 
   if (changedKeys.includes('tree.exclude')) {
     tree.refreshTree()
+    setTimeout(() => {
+      indexer.triggerWatchCurrentRepo()
+    }, 500)
+  }
+
+  if (changedKeys.includes('repos')) {
     setTimeout(() => {
       indexer.triggerWatchCurrentRepo()
     }, 500)

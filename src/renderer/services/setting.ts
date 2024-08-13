@@ -51,7 +51,8 @@ function transformSettings (data: any) {
 
   data.repos = Object.keys(data.repositories || {}).map(name => ({
     name,
-    path: data.repositories[name]
+    path: data.repositories[name],
+    enableIndexing: !data.disableIndexingRepos?.includes(name),
   }))
 
   data.mark = (data.mark || []).map((item: PathItem) => ({
@@ -113,16 +114,21 @@ export async function writeSettings (settings: Record<string, any>) {
 
   if (data.repos) {
     const repositories: any = {}
-    data.repos.forEach(({ name, path }: any) => {
+    const disableIndexingRepos: string[] = []
+    data.repos.forEach(({ name, path, enableIndexing }: any) => {
       name = name.trim().replace(/_{2,}/g, '_') // disallow consecutive underscores
       path = path.trim()
       if (name && path) {
         repositories[name] = path
+        if (!enableIndexing) {
+          disableIndexingRepos.push(name)
+        }
       }
     })
 
     delete data.repos
     data.repositories = repositories
+    data.disableIndexingRepos = disableIndexingRepos
   }
 
   if (data.theme) {

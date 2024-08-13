@@ -377,7 +377,8 @@ const data: BaseLanguage = {
         'name': '倉庫名',
         'name-placeholder': '請輸入',
         'path': '路徑',
-        'path-placeholder': '請選擇一個路徑'
+        'path-placeholder': '請選擇一個路徑',
+        'enable-indexing': '啟用索引',
       },
       'editor': {
         'mouse-wheel-zoom': '滑鼠滾輪縮放',

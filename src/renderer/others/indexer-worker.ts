@@ -76,7 +76,8 @@ class RepoWatcher {
   }
 
   private async _startWatch (repo: Repo) {
-    if (repo.name === HELP_REPO_NAME) {
+    if (!repo.enableIndexing || repo.name === HELP_REPO_NAME) {
+      this.logger.debug('startWatch', 'skip', repo)
       this.stopWatch()
       return
     }

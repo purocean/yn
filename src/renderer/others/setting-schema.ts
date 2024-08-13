@@ -34,7 +34,13 @@ const schema: SettingSchema = ({
             options: {
               inputAttributes: { placeholder: 'T_setting-panel.schema.repos.path-placeholder', style: 'cursor: pointer' }
             },
-          }
+          },
+          enableIndexing: {
+            type: 'boolean',
+            title: 'T_setting-panel.schema.repos.enable-indexing',
+            defaultValue: true,
+            format: 'checkbox',
+          },
         }
       },
     },

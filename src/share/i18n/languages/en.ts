@@ -386,7 +386,8 @@ const data = {
         'name': 'Name',
         'name-placeholder': 'Name',
         'path': 'Path',
-        'path-placeholder': 'Please select the storage location'
+        'path-placeholder': 'Please select the storage location',
+        'enable-indexing': 'Enable Indexing',
       },
       'editor': {
         'mouse-wheel-zoom': 'Mouse Wheel Zoom',
