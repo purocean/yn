@@ -361,8 +361,8 @@ export async function search (controller: AbortController, query: ITextQuery): P
 export async function watchFs (
   repo: string,
   path: string,
-  options: WatchOptions,
-  onResult: (result: { eventName: 'add' | 'change' | 'unlink' | 'addDir' | 'unlinkDir', path: string, stats?: Stats } | { eventName: 'ready' }) => void,
+  options: WatchOptions & { mdContent?: boolean },
+  onResult: (result: { eventName: 'add' | 'change' | 'unlink' | 'addDir' | 'unlinkDir', path: string, content?: string, stats?: Stats } | { eventName: 'ready' }) => void,
   onError: (error: Error) => void
 ) {
   const controller: AbortController = new AbortController()

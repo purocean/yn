@@ -625,5 +625,6 @@ export interface IndexItem {
 export interface IndexStatus {
   total: number;
   indexed: number;
-  processing: PathItem | null;
+  processing: string | null;
+  cost: number;
 }

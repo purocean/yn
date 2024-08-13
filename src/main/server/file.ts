@@ -486,7 +486,7 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
   }, p)
 }
 
-export async function watchFile (repo: string, p: string, options: chokidar.WatchOptions) {
+export async function watchFile (repo: string, p: string, options: chokidar.WatchOptions & { mdContent?: boolean }) {
   return withRepo(repo, async (_, filePath) => {
     try {
       const ignoredRegexStr = options.ignored as string
@@ -505,10 +505,15 @@ export async function watchFile (repo: string, p: string, options: chokidar.Watc
 
     const { response, enqueue, close } = createStreamResponse()
 
-    watcher.on('all', (eventName, path, stats) => {
+    watcher.on('all', async (eventName, path, stats) => {
+      const content = (options.mdContent && isMarkdownFile(path))
+        ? await fs.readFile(path, 'utf-8')
+        : undefined
+
       enqueue('result', {
         eventName,
         path,
+        content,
         stats: stats ? {
           ...stats,
           isFile: stats?.isFile(),

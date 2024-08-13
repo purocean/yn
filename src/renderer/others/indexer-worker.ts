@@ -1,10 +1,11 @@
 import AsyncLock from 'async-lock'
 import MarkdownIt, { Token } from 'markdown-it'
+import { throttle } from 'lodash-es'
 import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, JSONRPCServer, JSONRPCServerChannel } from 'jsonrpc-bridge'
 import { readFile, watchFs } from '@fe/support/api'
 import { FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME } from '@fe/support/args'
 import { getLogger, path, removeQuery, sleep } from '@fe/utils/pure'
-import { updateOrInsertDocument } from '@fe/others/db'
+import { getDocument, updateOrInsertDocument } from '@fe/others/db'
 import { isMarkdownFile } from '@share/misc'
 import type { Stats } from 'fs'
 import type { PathItem, Repo } from '@share/types'
@@ -58,6 +59,13 @@ const client = new JSONRPCClient<IndexerHostExports>(new WorkerChannel('client')
 
 let total = 0
 let indexed = 0
+let startTime = 0
+
+function _reportStatus (repo: Repo, processing: string | null, cost: number) {
+  client.call.ctx.indexer.updateIndexStatus(repo, { total, indexed, processing, cost })
+}
+
+const reportStatus = throttle(_reportStatus, 900, { leading: true, trailing: true })
 
 class RepoWatcher {
   logger = getLogger('indexer-worker-repo-watcher')
@@ -88,26 +96,30 @@ class RepoWatcher {
 
     total = 0
     indexed = 0
+    startTime = Date.now()
 
     this.handler = await watchFs(
       repo.name,
       '/',
-      { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true, ignored },
+      { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true, ignored, mdContent: true },
       async payload => {
-        this.logger.debug('startWatch onResult', payload)
+        this.logger.debug('startWatch onResult', payload.eventName, (payload as any).path)
 
         if (payload.eventName === 'add' || payload.eventName === 'change') {
+          if (!isMarkdownFile(payload.path)) {
+            return
+          }
+
           try {
-            await processFile(repo, payload)
+            total++
+            reportStatus(repo, payload.path, Date.now() - startTime)
+            await processMarkdownFile(repo, payload)
+            indexed++
           } catch (error) {
             this.logger.error('processFile error', error)
           }
         } else if (payload.eventName === 'ready') {
-          client.call.ctx.indexer.updateIndexStatus(repo, {
-            total,
-            indexed,
-            processing: null
-          })
+          reportStatus(repo, null, Date.now() - startTime)
         }
       },
       async error => {
@@ -151,23 +163,22 @@ function stopWatch () {
   watcher.stopWatch()
 }
 
-async function processFile (repo: Repo, payload: { path: string, stats?: Stats }) {
-  if (!isMarkdownFile(payload.path)) {
-    return
-  }
-
+async function processMarkdownFile (repo: Repo, payload: { content?: string, path: string, stats?: Stats }) {
   const relativePath = '/' + path.relative(repo.path, payload.path)
   const doc: PathItem = { repo: repo.name, path: relativePath }
 
-  total++
+  const oldRecord = await getDocument(doc.repo, doc.path)
+  if (oldRecord && oldRecord.mtimeMs === payload.stats?.mtimeMs) {
+    logger.debug('skip', doc.path)
+    return
+  }
 
-  client.call.ctx.indexer.updateIndexStatus(repo, {
-    total,
-    indexed,
-    processing: doc
-  })
+  let content = payload.content
+  if (!content) {
+    const res = await readFile(doc)
+    content = res.content
+  }
 
-  const { content } = await readFile(doc)
   const env = {}
   const tokens = markdown.parse(content, env)
 
@@ -217,6 +228,7 @@ async function processFile (repo: Repo, payload: { path: string, stats?: Stats }
   convert(tokens)
 
   await updateOrInsertDocument({
+    id: oldRecord?.id,
     repo: doc.repo,
     path: doc.path,
     name: path.basename(doc.path),
@@ -226,8 +238,6 @@ async function processFile (repo: Repo, payload: { path: string, stats?: Stats }
     mtimeMs: payload.stats?.mtimeMs || 0,
     size: payload.stats?.size || 0,
   })
-
-  indexed++
 }
 
 logger.debug('indexer-worker loaded', self.location.href)
