@@ -3,6 +3,7 @@ import store from '@fe/support/store'
 import type { Repo } from '@share/types'
 import { FLAG_DEBUG } from '@fe/support/args'
 import ctx from '@fe/context'
+import { cleanRepoDocument } from '@fe/others/db'
 import type { IndexerWorkerExports } from '@fe/others/indexer-worker'
 import type { IndexStatus } from '@fe/types'
 
@@ -68,6 +69,13 @@ export function stopWatch () {
 export function triggerWatchCurrentRepo () {
   const repo = store.state.currentRepo
   triggerWatchRepo(repo)
+}
+
+export function cleanCurrentRepo () {
+  const repo = store.state.currentRepo
+  if (repo) {
+    cleanRepoDocument(repo.name)
+  }
 }
 
 export function updateIndexStatus (repo: Repo, status: IndexStatus) {

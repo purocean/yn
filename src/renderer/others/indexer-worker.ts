@@ -1,15 +1,18 @@
 import AsyncLock from 'async-lock'
-import MarkdownIt from 'markdown-it'
+import MarkdownIt, { Token } from 'markdown-it'
 import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, JSONRPCServer, JSONRPCServerChannel } from 'jsonrpc-bridge'
 import { readFile, watchFs } from '@fe/support/api'
 import { FLAG_DEBUG, HELP_REPO_NAME } from '@fe/support/args'
-import { getLogger, path, sleep } from '@fe/utils/pure'
+import { getLogger, path, removeQuery, sleep } from '@fe/utils/pure'
+import { updateOrInsertDocument } from '@fe/others/db'
 import { isMarkdownFile } from '@share/misc'
 import type { Stats } from 'fs'
 import type { PathItem, Repo } from '@share/types'
 import type { IndexerHostExports } from '@fe/services/indexer'
+import type { IndexItemLink } from '@fe/types'
 
 const markdown = MarkdownIt({ linkify: true, breaks: true, html: true })
+const supportedLinkTags = ['audio', 'img', 'source', 'video', 'track', 'a', 'iframe', 'embed']
 
 const exportMain = { triggerWatchRepo, stopWatch }
 
@@ -99,7 +102,6 @@ class RepoWatcher {
             this.logger.error('processFile error', error)
           }
         } else if (payload.eventName === 'ready') {
-          debugger
           client.call.ctx.indexer.updateIndexStatus(repo, {
             total,
             indexed,
@@ -153,7 +155,7 @@ async function processFile (repo: Repo, payload: { path: string, stats?: Stats }
     return
   }
 
-  const relativePath = path.relative(repo.path, payload.path)
+  const relativePath = '/' + path.relative(repo.path, payload.path)
   const doc: PathItem = { repo: repo.name, path: relativePath }
 
   total++
@@ -168,8 +170,63 @@ async function processFile (repo: Repo, payload: { path: string, stats?: Stats }
   const env = {}
   const tokens = markdown.parse(content, env)
 
+  const links: IndexItemLink[] = []
+
+  // TODO WIKI LINKS
+  const buildLink = (token: Token) => {
+    let link: string | null | undefined = token.tag === 'a' ? token.attrGet('href') : token.attrGet('src')
+    const title = token.attrGet('title')
+
+    link = link?.trim()
+    if (!link) {
+      return
+    }
+
+    if (link.startsWith('//')) {
+      link = 'https:' + link
+    }
+
+    const val: IndexItemLink = {
+      link,
+      internal: null,
+      title,
+      holder: token.tag as any,
+    }
+
+    if (!/^[a-z+]+:/.test(link)) { // internal link
+      const p = removeQuery(path.normalizeSep(link))
+      val.internal = path.resolve(path.dirname(doc.path), p)
+    }
+
+    links.push(val)
+  }
+
+  const convert = (tokens: Token[]) => {
+    tokens.forEach(token => {
+      if (supportedLinkTags.includes(token.tag)) {
+        buildLink(token)
+      }
+
+      if (token.children) {
+        convert(token.children)
+      }
+    })
+  }
+
+  convert(tokens)
+
+  await updateOrInsertDocument({
+    repo: doc.repo,
+    path: doc.path,
+    name: path.basename(doc.path),
+    links,
+    frontmatter: {}, // TODO frontmatter
+    ctimeMs: payload.stats?.ctimeMs || 0,
+    mtimeMs: payload.stats?.mtimeMs || 0,
+    size: payload.stats?.size || 0,
+  })
+
   indexed++
-  console.log('xxxyyy', tokens)
 }
 
 logger.debug('indexer-worker loaded', self.location.href)

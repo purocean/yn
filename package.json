@@ -104,6 +104,7 @@
     "autoprefixer": "^10.4.16",
     "canvas-confetti": "^1.6.0",
     "crypto-js": "^4.2.0",
+    "dexie": "^4.0.8",
     "dom-to-image": "^2.6.0",
     "electron": "28.3.3",
     "electron-builder": "^23.6.0",

@@ -604,6 +604,24 @@ export type FrontMatterAttrs = {
   defaultPreviewer?: string,
 }
 
+export interface IndexItemLink {
+  link: string;
+  internal: string | null;
+  holder: 'audio' | 'img' | 'source' | 'video' | 'track' | 'a' | 'iframe' | 'embed';
+  title: string | null;
+}
+
+export interface IndexItem {
+  repo: string;
+  path: string;
+  name: string;
+  links: IndexItemLink[];
+  frontmatter: {};
+  ctimeMs: number;
+  mtimeMs: number;
+  size: number;
+}
+
 export interface IndexStatus {
   total: number;
   indexed: number;
