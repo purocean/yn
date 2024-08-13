@@ -26,7 +26,7 @@ export default {
     }
 
     async function startWatch (doc: Doc) {
-      if (doc.repo === ctx.args.HELP_REPO_NAME) {
+      if (doc.repo === ctx.args.HELP_REPO_NAME || ctx.args.MODE !== 'normal') {
         stopWatch()
         return
       }
