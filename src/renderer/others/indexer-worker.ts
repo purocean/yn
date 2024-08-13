@@ -2,7 +2,7 @@ import AsyncLock from 'async-lock'
 import MarkdownIt, { Token } from 'markdown-it'
 import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, JSONRPCServer, JSONRPCServerChannel } from 'jsonrpc-bridge'
 import { readFile, watchFs } from '@fe/support/api'
-import { FLAG_DEBUG, HELP_REPO_NAME } from '@fe/support/args'
+import { FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME } from '@fe/support/args'
 import { getLogger, path, removeQuery, sleep } from '@fe/utils/pure'
 import { updateOrInsertDocument } from '@fe/others/db'
 import { isMarkdownFile } from '@share/misc'
@@ -76,7 +76,7 @@ class RepoWatcher {
   }
 
   private async _startWatch (repo: Repo) {
-    if (!repo.enableIndexing || repo.name === HELP_REPO_NAME) {
+    if (!repo.enableIndexing || repo.name === HELP_REPO_NAME || FLAG_DEMO) {
       this.logger.debug('startWatch', 'skip', repo)
       this.stopWatch()
       return
