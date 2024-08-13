@@ -24,7 +24,22 @@ export function escapeMd (str: string) {
 }
 
 export function removeQuery (url: string) {
-  return url.replace(/[#?].*$/, '')
+  const questionMarkIndex = url.indexOf('?')
+  const hashIndex = url.indexOf('#')
+
+  if (questionMarkIndex === -1 && hashIndex === -1) {
+    return url
+  }
+
+  if (questionMarkIndex === -1) {
+    return url.slice(0, hashIndex)
+  }
+
+  if (hashIndex === -1) {
+    return url.slice(0, questionMarkIndex)
+  }
+
+  return url.slice(0, Math.min(questionMarkIndex, hashIndex))
 }
 
 export function dataURLtoBlob (dataURL: string) {
