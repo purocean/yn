@@ -8,7 +8,9 @@ import { getAllRepos } from './base'
 import type { IndexerWorkerExports } from '@fe/others/indexer-worker'
 import type { IndexStatus } from '@fe/types'
 
-const workerURL = new URL('@fe/others/indexer-worker.ts', import.meta.url)
+import workerUrl from '@fe/others/indexer-worker?worker&url'
+
+const workerURL = new URL(workerUrl, import.meta.url)
 
 const searchParams = new URLSearchParams(window.location.search)
 
