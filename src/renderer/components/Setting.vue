@@ -23,9 +23,9 @@ import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
 import GroupTabs from '@fe/components/GroupTabs.vue'
-import { BuildInSettings, SettingGroup } from '@fe/types'
 import { getActionHandler } from '@fe/core/action'
 import store from '@fe/support/store'
+import type { BuildInSettings, Repo, SettingGroup } from '@fe/types'
 
 JSONEditor.defaults.language = 'en'
 
@@ -93,10 +93,17 @@ export default defineComponent({
         }
       })
 
+      const reposEditor = editor.getEditor('root.repos')
+
+      reposEditor.addRow = function (val: any) {
+        val ??= { name: '', path: '', enableIndexing: true } satisfies Repo
+        this.constructor.prototype.addRow.call(this, val)
+      }
+
       const data = await fetchSettings()
 
       if (data.repos.length < 1) {
-        data.repos = [{ name: '', path: '' }]
+        data.repos = [{ name: '', path: '', enableIndexing: true }] satisfies Repo[]
       }
 
       const value: any = {}
