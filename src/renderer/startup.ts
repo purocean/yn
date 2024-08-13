@@ -22,6 +22,7 @@ import { toggleOutline } from '@fe/services/workbench'
 import * as view from '@fe/services/view'
 import * as tree from '@fe/services/tree'
 import * as editor from '@fe/services/editor'
+import * as indexer from '@fe/services/indexer'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 import ga from '@fe/support/ga'
@@ -151,6 +152,9 @@ registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
 
   if (changedKeys.includes('tree.exclude')) {
     tree.refreshTree()
+    setTimeout(() => {
+      indexer.triggerWatchCurrentRepo()
+    }, 500)
   }
 })
 
@@ -203,6 +207,9 @@ registerHook('DOC_PRE_ENSURE_CURRENT_FILE_SAVED', async () => {
 store.watch(() => store.state.currentRepo, (val) => {
   toggleOutline(false)
   document.documentElement.setAttribute('repo-name', val?.name || '')
+  setTimeout(() => {
+    indexer.triggerWatchCurrentRepo()
+  }, 1000)
 }, { immediate: true })
 
 store.watch(() => store.state.currentFile, (val) => {

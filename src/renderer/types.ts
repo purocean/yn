@@ -603,3 +603,9 @@ export type FrontMatterAttrs = {
   mdOptions?: Record<string, boolean>,
   defaultPreviewer?: string,
 }
+
+export interface IndexStatus {
+  total: number;
+  indexed: number;
+  processing: PathItem | null;
+}
