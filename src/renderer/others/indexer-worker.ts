@@ -65,7 +65,7 @@ function _reportStatus (repo: Repo, processing: string | null, cost: number) {
   client.call.ctx.indexer.updateIndexStatus(repo, { total, indexed, processing, cost })
 }
 
-const reportStatus = throttle(_reportStatus, 900, { leading: true, trailing: true })
+const reportStatus = throttle(_reportStatus, 500, { leading: true, trailing: true })
 
 class RepoWatcher {
   logger = getLogger('indexer-worker-repo-watcher')
