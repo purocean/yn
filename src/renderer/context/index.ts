@@ -34,6 +34,7 @@ import * as exportDoc from '@fe/services/export'
 import * as routines from '@fe/services/routines'
 import * as directives from '@fe/directives/index'
 import * as indexer from '@fe/services/indexer'
+import * as repo from '@fe/services/repo'
 import * as lib from './lib'
 import * as components from './components'
 
@@ -67,6 +68,7 @@ const ctx = Object.freeze({
   utils,
   routines,
   indexer,
+  repo,
   export: exportDoc,
   ui: { useToast, useModal, useQuickFilter, useContextMenu },
   registerHook: hook.registerHook,

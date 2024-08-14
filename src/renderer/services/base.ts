@@ -160,23 +160,6 @@ export async function reloadMainWindow () {
 }
 
 /**
- * Get all repositories
- * @returns
- */
-export function getAllRepos () {
-  return getSetting('repos', [])
-}
-
-/**
- * get repo by name
- * @param name
- * @returns
- */
-export function getRepo (name: string) {
-  return getAllRepos().find(x => x.name === name)
-}
-
-/**
  * Read content from clipboard
  * @param callback
  * @returns

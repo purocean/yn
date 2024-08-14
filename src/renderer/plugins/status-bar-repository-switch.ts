@@ -18,7 +18,7 @@ export default {
 
     function chooseRepoByName (name?: string) {
       if (name) {
-        const repo = ctx.base.getRepo(name)
+        const repo = ctx.repo.getRepo(name)
         if (repo) {
           choose(repo)
         }
@@ -49,7 +49,7 @@ export default {
         title: currentRepo
           ? ctx.i18n.t('status-bar.repo.repo', currentRepo.name.substring(0, 10))
           : ctx.i18n.t('status-bar.repo.no-data'),
-        list: ctx.base.getAllRepos().map((repo, i, arr) => {
+        list: ctx.repo.getAllRepos().map((repo, i, arr) => {
           const { name, path } = repo
           return {
             id: name,
@@ -96,7 +96,7 @@ export default {
         forUser: true,
         keys: [ctx.keybinding.Alt, String(i)],
         handler: () => {
-          const repos = ctx.base.getAllRepos()
+          const repos = ctx.repo.getAllRepos()
           const idx = i === 0 ? repos.length - 1 : i - 1
           const repo = repos[idx]
           if (repo) {

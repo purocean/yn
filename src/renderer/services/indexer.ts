@@ -4,7 +4,7 @@ import type { Repo } from '@share/types'
 import { FLAG_DEBUG } from '@fe/support/args'
 import ctx from '@fe/context'
 import { cleanExceptRepoDocument, cleanRepoDocument } from '@fe/others/db'
-import { getAllRepos } from './base'
+import { getAllRepos } from './repo'
 import type { IndexerWorkerExports } from '@fe/others/indexer-worker'
 import type { IndexStatus } from '@fe/types'
 
