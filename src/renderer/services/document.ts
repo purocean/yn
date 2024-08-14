@@ -590,7 +590,7 @@ export async function ensureCurrentFileSaved () {
   const { currentFile, currentContent } = store.state
 
   // do not check if current file is not plain file.
-  if (currentFile && !extensions.supported(currentFile.name)) {
+  if (!currentFile || !currentFile.plain) {
     return
   }
 
