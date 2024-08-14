@@ -909,6 +909,8 @@ export function hideHistory () {
 }
 
 function cacheSupportedExtension () {
+  const currentFileSupported = !!(store.state.currentFile && supported(store.state.currentFile))
+
   supportedExtensionCache.types.clear()
   supportedExtensionCache.sortedExtensions = []
 
@@ -922,6 +924,14 @@ function cacheSupportedExtension () {
   }
 
   supportedExtensionCache.sortedExtensions.sort((a, b) => b.length - a.length)
+
+  // refresh current file if change supported status
+  if (store.state.currentFile) {
+    const currentFileSupportedNow = supported(store.state.currentFile)
+    if (currentFileSupported !== currentFileSupportedNow) {
+      switchDoc(store.state.currentFile || null, { force: true })
+    }
+  }
 }
 
 /**

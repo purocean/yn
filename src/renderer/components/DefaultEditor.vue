@@ -101,17 +101,19 @@ export default defineComponent({
         return
       }
 
+      const readOnly = FLAG_READONLY || !current || !current.plain || current.writeable === false
+      const editor = getEditor()
+
       // change content only
       if (current && previous && isSameFile(current, previous)) {
+        editor.updateOptions({ readOnly })
         setValue(current.content ?? '\n')
       } else {
         getMonacoEditor().createModel(toUri(current), current?.content ?? '\n')
       }
 
       await nextTick()
-      getEditor().updateOptions({
-        readOnly: FLAG_READONLY || !current || !current.plain || current.writeable === false
-      })
+      editor.updateOptions({ readOnly })
 
       if (isDefault()) {
         await nextTick()
