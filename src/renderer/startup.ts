@@ -23,6 +23,7 @@ import * as view from '@fe/services/view'
 import * as tree from '@fe/services/tree'
 import * as editor from '@fe/services/editor'
 import * as indexer from '@fe/services/indexer'
+import * as repo from '@fe/services/repo'
 import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 import ga from '@fe/support/ga'
@@ -132,9 +133,14 @@ registerHook('SETTING_FETCHED', () => {
       setTheme('light')
     })
   }
+
+  setTimeout(() => {
+    // reset current repo to change repo setting
+    repo.setCurrentRepo(store.state.currentRepo?.name)
+  }, 0)
 })
 
-registerHook('SETTING_CHANGED', ({ schema, changedKeys, settings }) => {
+registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
   if (changedKeys.some(key => key.startsWith('render.'))) {
     view.render()
   }
@@ -152,12 +158,6 @@ registerHook('SETTING_CHANGED', ({ schema, changedKeys, settings }) => {
 
   if (changedKeys.includes('tree.exclude')) {
     tree.refreshTree()
-    setTimeout(() => {
-      indexer.triggerWatchCurrentRepo()
-    }, 500)
-  }
-
-  if (changedKeys.includes('repos')) {
     setTimeout(() => {
       indexer.triggerWatchCurrentRepo()
     }, 500)

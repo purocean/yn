@@ -4,27 +4,10 @@ import { $args } from '@fe/support/args'
 import { basename } from '@fe/utils/path'
 import { switchDoc } from '@fe/services/document'
 import { whenEditorReady } from '@fe/services/editor'
-import type { Repo } from '@fe/types'
 
 export default {
   name: 'status-bar-repository-switch',
   register: ctx => {
-    function choose (repo: Repo) {
-      const { currentRepo } = store.state
-      if (repo.name !== currentRepo?.name) {
-        store.state.currentRepo = repo
-      }
-    }
-
-    function chooseRepoByName (name?: string) {
-      if (name) {
-        const repo = ctx.repo.getRepo(name)
-        if (repo) {
-          choose(repo)
-        }
-      }
-    }
-
     function initRepo () {
       const { currentRepo } = store.state
 
@@ -32,7 +15,7 @@ export default {
       const initFilePath = $args().get('init-file')
 
       if (initRepoName) {
-        chooseRepoByName(initRepoName)
+        ctx.repo.setCurrentRepo(initRepoName)
       }
 
       if (initFilePath) {
@@ -57,7 +40,7 @@ export default {
             title: name,
             tips: path,
             checked: currentRepo && currentRepo.name === name && currentRepo.path === path,
-            onClick: () => choose({ ...repo }),
+            onClick: () => ctx.repo.setCurrentRepo(name),
             subTitle: i === arr.length - 1
               ? ctx.keybinding.getKeysLabel('base.switch-repository-0')
               : (
@@ -78,12 +61,9 @@ export default {
       const { currentRepo } = store.state
       const { repos } = settings
 
+      // If the current repo is not in the list, switch to the first one
       if (!currentRepo || !repos.some(x => x.name === currentRepo.name && x.path === currentRepo.path)) {
-        if (repos.length > 0) {
-          store.state.currentRepo = { ...repos[0] }
-        } else {
-          store.state.currentRepo = undefined
-        }
+        ctx.repo.setCurrentRepo(repos?.[0]?.name)
       } else {
         ctx.statusBar.refreshMenu()
       }
@@ -100,7 +80,7 @@ export default {
           const idx = i === 0 ? repos.length - 1 : i - 1
           const repo = repos[idx]
           if (repo) {
-            choose({ ...repo })
+            ctx.repo.setCurrentRepo(repo.name)
           }
         },
       })

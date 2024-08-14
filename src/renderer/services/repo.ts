@@ -1,5 +1,6 @@
 import store from '@fe/support/store'
 import { getSetting } from './setting'
+import { isEqual } from 'lodash-es'
 
 /**
  * Get all repositories
@@ -25,7 +26,11 @@ export function getRepo (name: string) {
 export function setCurrentRepo (name?: string) {
   if (name) {
     const repo = getRepo(name)
-    if (repo) {
+    if (!repo) {
+      throw new Error(`Repository ${name} not found.`)
+    }
+
+    if (!isEqual(store.state.currentRepo, repo)) {
       store.state.currentRepo = { ...repo }
     }
   } else {
