@@ -506,7 +506,7 @@ export async function watchFile (repo: string, p: string, options: chokidar.Watc
     const { response, enqueue, close } = createStreamResponse()
 
     watcher.on('all', async (eventName, path, stats) => {
-      const content = (options.mdContent && isMarkdownFile(path))
+      const content = (options.mdContent && isMarkdownFile(path) && (eventName === 'add' || eventName === 'change'))
         ? await fs.readFile(path, 'utf-8')
         : undefined
 
