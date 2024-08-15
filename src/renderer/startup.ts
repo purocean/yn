@@ -29,6 +29,7 @@ import ctx from '@fe/context'
 import ga from '@fe/support/ga'
 import * as jsonrpc from '@fe/support/jsonrpc'
 import { getLogger } from '@fe/utils'
+import { removeOldDatabases } from './others/db'
 
 const logger = getLogger('startup')
 
@@ -260,6 +261,10 @@ whenEditorReady().then(() => {
 // json-rpc
 
 jsonrpc.init({ ctx })
+
+setTimeout(() => {
+  removeOldDatabases()
+}, 20000)
 
 // google analytics
 

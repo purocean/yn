@@ -9,7 +9,11 @@ export interface DocumentEntity extends IndexItem {
   id: number
 }
 
-const db = new Dexie('yank-note') as Dexie & {
+const dbPrefix = 'yank-note-'
+
+const dbName = dbPrefix + __APP_VERSION__
+
+const db = new Dexie(dbName) as Dexie & {
   documents: EntityTable<DocumentEntity, 'id'>;
 }
 
@@ -52,4 +56,11 @@ export const documents = {
     logger.debug('deletedByRepoAndPath deleted', deleted)
     return deleted
   }
+}
+
+export async function removeOldDatabases () {
+  const databases = await Dexie.getDatabaseNames()
+  const oldDatabases = databases.filter(name => name.startsWith(dbPrefix) && name !== dbName)
+  logger.debug('remove old databases', oldDatabases)
+  oldDatabases.forEach(name => Dexie.delete(name))
 }
