@@ -92,6 +92,10 @@ export function updateIndexStatus (repo: Repo, status: IndexStatus) {
   console.log('xxx index status', status)
 }
 
+export async function importScriptsToWorker (url: string) {
+  await client.call.main.importScripts(url)
+}
+
 Promise.resolve().then(() => {
   server.addModule('ctx', ctx)
 })

@@ -11,11 +11,12 @@ import type { Stats } from 'fs'
 import type { PathItem, Repo } from '@share/types'
 import type { IndexerHostExports } from '@fe/services/indexer'
 import type { IndexItemLink } from '@fe/types'
+import { triggerHook } from '@fe/core/hook'
 
 const markdown = MarkdownIt({ linkify: true, breaks: true, html: true })
 const supportedLinkTags = ['audio', 'img', 'source', 'video', 'track', 'a', 'iframe', 'embed']
 
-const exportMain = { triggerWatchRepo, stopWatch }
+const exportMain = { triggerWatchRepo, stopWatch, importScripts: async (url: string) => { await import(url) } }
 
 class WorkerChannel implements JSONRPCServerChannel, JSONRPCClientChannel {
   type: 'server' | 'client'
@@ -50,12 +51,17 @@ class WorkerChannel implements JSONRPCServerChannel, JSONRPCClientChannel {
 
 export type IndexerWorkerExports = { main: typeof exportMain }
 
-// provide ctx to worker
-const server = new JSONRPCServer(new WorkerChannel('server'), { debug: FLAG_DEBUG })
-server.addModule('main', exportMain)
+export interface IndexerWorkerCtx {
+  markdown: MarkdownIt
+  bridgeClient: JSONRPCClient<IndexerHostExports>
+}
 
-// to call worker
-const client = new JSONRPCClient<IndexerHostExports>(new WorkerChannel('client'), { debug: FLAG_DEBUG })
+// provide main to host
+const bridgeServer = new JSONRPCServer(new WorkerChannel('server'), { debug: FLAG_DEBUG })
+bridgeServer.addModule('main', exportMain)
+
+// to call host
+const bridgeClient = new JSONRPCClient<IndexerHostExports>(new WorkerChannel('client'), { debug: FLAG_DEBUG })
 
 const processingStatus = {
   total: 0,
@@ -67,7 +73,7 @@ const processingStatus = {
 
 function _reportStatus (repo: Repo, processing: string | null, cost: number) {
   const { total, indexed, ready } = processingStatus
-  client.call.ctx.indexer.updateIndexStatus(repo, { ready, total, indexed, processing, cost })
+  bridgeClient.call.ctx.indexer.updateIndexStatus(repo, { ready, total, indexed, processing, cost })
 }
 
 function _convertPathToPathItem (repo: Repo, payload: { path: string }): PathItem {
@@ -102,13 +108,15 @@ class RepoWatcher {
 
     this.logger.debug('startWatch', repo)
 
-    const ignored = ((await client.call.ctx.setting.getSetting('tree.exclude')) || '') as string
+    const ignored = ((await bridgeClient.call.ctx.setting.getSetting('tree.exclude')) || '') as string
 
     processingStatus.total = 0
     processingStatus.indexed = 0
     processingStatus.ready = false
     processingStatus.startTime = Date.now()
     processingStatus.processedIds = []
+
+    await triggerHook('WORKER_INDEXER_BEFORE_START_WATCH', { repo }, { breakable: true })
 
     this.handler = await watchFs(
       repo.name,
@@ -196,12 +204,11 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
     content = res.content
   }
 
-  const env = {}
+  const env: Record<string, any> = {}
   const tokens = markdown.parse(content, env)
 
   const links: IndexItemLink[] = []
 
-  // TODO WIKI LINKS
   const buildLink = (token: Token) => {
     let link: string | null | undefined = token.tag === 'a' ? token.attrGet('href') : token.attrGet('src')
     const title = token.attrGet('title')
@@ -250,11 +257,14 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
     path: doc.path,
     name: path.basename(doc.path),
     links,
-    frontmatter: {}, // TODO frontmatter
+    frontmatter: env.attributes || {},
     ctimeMs: payload.stats?.ctimeMs || 0,
     mtimeMs: payload.stats?.mtimeMs || 0,
     size: payload.stats?.size || 0,
   })
 }
+
+// expose to plugin
+self.ctx = { bridgeClient, markdown } as IndexerWorkerCtx
 
 logger.debug('indexer-worker loaded', self.location.href)

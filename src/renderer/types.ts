@@ -519,6 +519,7 @@ export type BuildInHookTypes = {
     payload: { latex: string, options: any }
   },
   PREMIUM_STATUS_CHANGED: never
+  WORKER_INDEXER_BEFORE_START_WATCH: { repo: Repo },
 }
 
 export type Previewer = {
