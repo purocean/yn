@@ -502,28 +502,61 @@ export async function watchFile (repo: string, p: string, options: chokidar.Watc
     }
 
     const watcher = chokidar.watch(filePath, options)
-
     const { response, enqueue, close } = createStreamResponse()
 
-    watcher.on('all', async (eventName, path, stats) => {
-      const content = (options.mdContent && isMarkdownFile(path) && (eventName === 'add' || eventName === 'change'))
-        ? await fs.readFile(path, 'utf-8')
-        : undefined
+    const promiseQueue: Promise<any>[] = []
 
-      enqueue('result', {
-        eventName,
-        path,
-        content,
-        stats: stats ? {
-          ...stats,
-          isFile: stats?.isFile(),
-          isDirectory: stats.isDirectory(),
-        } : undefined
-      })
+    let queueIsRunning = false
+    const triggerPromiseQueue = async () => {
+      if (queueIsRunning) {
+        return
+      }
+
+      queueIsRunning = true
+      while (promiseQueue.length) {
+        const promise = promiseQueue.pop()
+        if (promise) {
+          try {
+            enqueue('result', await promise)
+          } catch (error) {
+            console.error('watchFile', filePath, 'promise error', error)
+          }
+        }
+      }
+      queueIsRunning = false
+    }
+
+    watcher.on('all', async (eventName, path, stats) => {
+      promiseQueue.unshift(new Promise<any>(resolve => {
+        const result = {
+          eventName,
+          path,
+          content: '',
+          stats: stats ? {
+            ...stats,
+            isFile: stats?.isFile(),
+            isDirectory: stats.isDirectory(),
+          } : undefined
+        }
+
+        if (options.mdContent && isMarkdownFile(path) && (eventName === 'add' || eventName === 'change')) {
+          fs.readFile(path, 'utf-8').then(content => {
+            result.content = content
+            resolve(result)
+          }).catch(() => {
+            resolve(result)
+          })
+        } else {
+          resolve(result)
+        }
+      }))
+
+      triggerPromiseQueue()
     })
 
     watcher.on('ready', () => {
-      enqueue('result', { eventName: 'ready' })
+      promiseQueue.unshift(Promise.resolve({ eventName: 'ready' }))
+      triggerPromiseQueue()
     })
 
     const _close = () => {
