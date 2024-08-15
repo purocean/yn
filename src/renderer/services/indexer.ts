@@ -69,10 +69,10 @@ export function stopWatch () {
   client.call.main.stopWatch()
 }
 
-export function cleanCurrentRepo () {
+export async function cleanCurrentRepo () {
   const repo = store.state.currentRepo
   if (repo) {
-    documents.deleteByRepo(repo.name)
+    await documents.deleteByRepo(repo.name)
   }
 }
 
@@ -86,6 +86,11 @@ export function triggerWatchCurrentRepo () {
   const repo = store.state.currentRepo
   triggerWatchRepo(repo)
   cleanUnusedRepo()
+}
+
+export async function rebuildCurrentRepo () {
+  await cleanCurrentRepo()
+  triggerWatchCurrentRepo()
 }
 
 export function updateIndexStatus (repo: Repo, status: IndexStatus) {

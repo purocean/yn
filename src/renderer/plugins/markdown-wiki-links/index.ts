@@ -62,6 +62,12 @@ export default {
 
     ctx.indexer.importScriptsToWorker(workerIndexerUrl)
 
+    ctx.registerHook('SETTING_CHANGED', ({ changedKeys }) => {
+      if (changedKeys.includes('render.md-wiki-links')) {
+        ctx.indexer.rebuildCurrentRepo()
+      }
+    })
+
     return { mdRuleWikiLinks: wikiLinks }
   }
 } satisfies Plugin
