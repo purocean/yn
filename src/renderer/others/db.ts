@@ -26,9 +26,21 @@ export const documents = {
     logger.debug('getByRepoAndPath', repo, path)
     return db.documents.where({ repo, path }).first()
   },
-  updateOrInsert (entity: Omit<DocumentEntity, 'id'> & { id?: number }): Promise<number> {
+  async findAllMtimeMsByRepo (repo: string): Promise<Map<string, { id: number, mtimeMs: number }>> {
+    logger.debug('findAllMtimeMsByRepo', repo)
+    const map = new Map<string, { id: number, mtimeMs: number }>()
+    await db.documents.where({ repo }).each(doc => {
+      map.set(doc.path, { id: doc.id, mtimeMs: doc.mtimeMs })
+    })
+    return map
+  },
+  put (entity: Omit<DocumentEntity, 'id'> & { id?: number }): Promise<number> {
     logger.debug('updateOrInsert', entity)
     return db.documents.put(entity)
+  },
+  bulkPut (items: (Omit<DocumentEntity, 'id'> & { id?: number })[]): Promise<number[]> {
+    logger.debug('blukPut', items.length)
+    return db.documents.bulkPut(items, { allKeys: true })
   },
   async deleteByRepo (repo: string): Promise<number> {
     logger.debug('deleteByRepo', repo)

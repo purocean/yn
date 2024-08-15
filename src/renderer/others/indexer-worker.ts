@@ -5,7 +5,7 @@ import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, J
 import { fetchTree, readFile, watchFs } from '@fe/support/api'
 import { DOM_ATTR_NAME, FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME, MODE } from '@fe/support/args'
 import { getLogger, path, sleep } from '@fe/utils/pure'
-import { documents } from '@fe/others/db'
+import { DocumentEntity, documents } from '@fe/others/db'
 import { isMarkdownFile } from '@share/misc'
 import type { Stats } from 'fs'
 import type { PathItem, Repo } from '@share/types'
@@ -14,7 +14,7 @@ import type { Components, IndexItemLink, IndexItemResource } from '@fe/types'
 import { triggerHook } from '@fe/core/hook'
 import { isAnchorToken, isDataUrl, isResourceToken, parseLink } from '@fe/plugins/markdown-link/lib'
 
-const markdown = MarkdownIt({ linkify: true, breaks: true, html: true })
+const markdown = MarkdownIt({ linkify: false, breaks: true, html: true })
 
 const exportMain = {
   triggerWatchRepo,
@@ -74,7 +74,6 @@ const processingStatus = {
   indexed: 0,
   ready: false,
   startTime: 0,
-  processedIds: [] as number[],
 }
 
 function _reportStatus (repo: Repo, processing: string | null, cost: number) {
@@ -89,7 +88,10 @@ function _convertPathToPathItem (repo: Repo, payload: { path: string }): PathIte
 
 const reportStatus = throttle(_reportStatus, 500, { leading: true, trailing: true })
 
-let repoFiles: Components.Tree.Node[] = []
+let repoFiles: Components.Tree.Node[] = [] // TODO cache
+let allMtimeMs: Map<string, { id: number, mtimeMs: number }> | null = null
+let toPutItems: (Omit<DocumentEntity, 'id'> & { id?: number })[] = []
+let reusedIds: number[] = []
 
 class RepoWatcher {
   logger = getLogger('indexer-worker-repo-watcher')
@@ -122,9 +124,11 @@ class RepoWatcher {
     processingStatus.indexed = 0
     processingStatus.ready = false
     processingStatus.startTime = Date.now()
-    processingStatus.processedIds = []
 
     repoFiles = await fetchTree(repo.name, { by: 'mtime', order: 'desc' }).catch(() => [])
+    allMtimeMs = await documents.findAllMtimeMsByRepo(repo.name)
+    toPutItems = []
+    reusedIds = []
 
     await triggerHook('WORKER_INDEXER_BEFORE_START_WATCH', { repo }, { breakable: true })
 
@@ -143,16 +147,20 @@ class RepoWatcher {
           try {
             processingStatus.total++
             reportStatus(repo, payload.path, Date.now() - processingStatus.startTime)
-            const id = await processMarkdownFile(repo, payload)
-            processingStatus.processedIds.push(id)
+            await processMarkdownFile(repo, payload)
             processingStatus.indexed++
           } catch (error) {
             this.logger.error('processFile error', error)
           }
         } else if (payload.eventName === 'ready') {
+          allMtimeMs = null
           processingStatus.ready = true
+          const ids = toPutItems.length ? await documents.bulkPut(toPutItems) : []
+          await documents.deleteUnusedInRepo(repo.name, reusedIds.concat(ids))
+          toPutItems = []
+          reusedIds = []
+
           reportStatus(repo, null, Date.now() - processingStatus.startTime)
-          await documents.deleteUnusedInRepo(repo.name, processingStatus.processedIds)
         } else if (payload.eventName === 'unlink') {
           const doc = _convertPathToPathItem(repo, payload)
           await documents.deletedByRepoAndPath(doc.repo, doc.path)
@@ -199,13 +207,15 @@ function stopWatch () {
   watcher.stopWatch()
 }
 
-async function processMarkdownFile (repo: Repo, payload: { content?: string, path: string, stats?: Stats }): Promise<number> {
+async function processMarkdownFile (repo: Repo, payload: { content?: string, path: string, stats?: Stats }): Promise<void> {
   const doc = _convertPathToPathItem(repo, payload)
 
-  const oldRecord = await documents.findByRepoAndPath(doc.repo, doc.path)
+  const oldRecord = allMtimeMs ? allMtimeMs.get(doc.path) : await documents.findByRepoAndPath(doc.repo, doc.path)
+
   if (oldRecord && oldRecord.mtimeMs === payload.stats?.mtimeMs) {
     logger.debug('skip', oldRecord.id, doc.path)
-    return oldRecord.id
+    reusedIds.push(oldRecord.id)
+    return
   }
 
   let content = payload.content
@@ -250,7 +260,7 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
 
   convert(tokens)
 
-  return documents.updateOrInsert({
+  const item = {
     id: oldRecord?.id,
     repo: doc.repo,
     path: doc.path,
@@ -261,7 +271,13 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
     ctimeMs: payload.stats?.ctimeMs || 0,
     mtimeMs: payload.stats?.mtimeMs || 0,
     size: payload.stats?.size || 0,
-  })
+  }
+
+  if (processingStatus.ready) {
+    documents.put(item)
+  } else {
+    toPutItems.push(item)
+  }
 }
 
 // expose to plugin
