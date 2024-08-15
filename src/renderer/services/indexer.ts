@@ -3,7 +3,7 @@ import store from '@fe/support/store'
 import type { Repo } from '@share/types'
 import { FLAG_DEBUG } from '@fe/support/args'
 import ctx from '@fe/context'
-import { cleanExceptRepoDocument, cleanRepoDocument } from '@fe/others/db'
+import { documents } from '@fe/others/db'
 import { getAllRepos } from './repo'
 import type { IndexerWorkerExports } from '@fe/others/indexer-worker'
 import type { IndexStatus } from '@fe/types'
@@ -72,14 +72,14 @@ export function stopWatch () {
 export function cleanCurrentRepo () {
   const repo = store.state.currentRepo
   if (repo) {
-    cleanRepoDocument(repo.name)
+    documents.deleteByRepo(repo.name)
   }
 }
 
 export function cleanUnusedRepo () {
   const repos = getAllRepos()
 
-  cleanExceptRepoDocument(repos.filter(x => x.enableIndexing).map(repo => repo.name))
+  documents.deleteUnusedRepo(repos.filter(x => x.enableIndexing).map(repo => repo.name))
 }
 
 export function triggerWatchCurrentRepo () {

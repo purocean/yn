@@ -627,4 +627,5 @@ export interface IndexStatus {
   indexed: number;
   processing: string | null;
   cost: number;
+  ready: boolean,
 }

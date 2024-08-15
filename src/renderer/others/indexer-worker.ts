@@ -5,7 +5,7 @@ import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, J
 import { readFile, watchFs } from '@fe/support/api'
 import { FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME, MODE } from '@fe/support/args'
 import { getLogger, path, removeQuery, sleep } from '@fe/utils/pure'
-import { getDocument, updateOrInsertDocument } from '@fe/others/db'
+import { documents } from '@fe/others/db'
 import { isMarkdownFile } from '@share/misc'
 import type { Stats } from 'fs'
 import type { PathItem, Repo } from '@share/types'
@@ -57,12 +57,22 @@ server.addModule('main', exportMain)
 // to call worker
 const client = new JSONRPCClient<IndexerHostExports>(new WorkerChannel('client'), { debug: FLAG_DEBUG })
 
-let total = 0
-let indexed = 0
-let startTime = 0
+const processingStatus = {
+  total: 0,
+  indexed: 0,
+  ready: false,
+  startTime: 0,
+  processedIds: [] as number[],
+}
 
 function _reportStatus (repo: Repo, processing: string | null, cost: number) {
-  client.call.ctx.indexer.updateIndexStatus(repo, { total, indexed, processing, cost })
+  const { total, indexed, ready } = processingStatus
+  client.call.ctx.indexer.updateIndexStatus(repo, { ready, total, indexed, processing, cost })
+}
+
+function _convertPathToPathItem (repo: Repo, payload: { path: string }): PathItem {
+  const relativePath = '/' + path.relative(repo.path, payload.path)
+  return { repo: repo.name, path: relativePath }
 }
 
 const reportStatus = throttle(_reportStatus, 500, { leading: true, trailing: true })
@@ -94,9 +104,11 @@ class RepoWatcher {
 
     const ignored = ((await client.call.ctx.setting.getSetting('tree.exclude')) || '') as string
 
-    total = 0
-    indexed = 0
-    startTime = Date.now()
+    processingStatus.total = 0
+    processingStatus.indexed = 0
+    processingStatus.ready = false
+    processingStatus.startTime = Date.now()
+    processingStatus.processedIds = []
 
     this.handler = await watchFs(
       repo.name,
@@ -111,15 +123,21 @@ class RepoWatcher {
           }
 
           try {
-            total++
-            reportStatus(repo, payload.path, Date.now() - startTime)
-            await processMarkdownFile(repo, payload)
-            indexed++
+            processingStatus.total++
+            reportStatus(repo, payload.path, Date.now() - processingStatus.startTime)
+            const id = await processMarkdownFile(repo, payload)
+            processingStatus.processedIds.push(id)
+            processingStatus.indexed++
           } catch (error) {
             this.logger.error('processFile error', error)
           }
         } else if (payload.eventName === 'ready') {
-          reportStatus(repo, null, Date.now() - startTime)
+          processingStatus.ready = true
+          reportStatus(repo, null, Date.now() - processingStatus.startTime)
+          await documents.deleteUnusedInRepo(repo.name, processingStatus.processedIds)
+        } else if (payload.eventName === 'unlink') {
+          const doc = _convertPathToPathItem(repo, payload)
+          await documents.deletedByRepoAndPath(doc.repo, doc.path)
         }
       },
       async error => {
@@ -163,14 +181,13 @@ function stopWatch () {
   watcher.stopWatch()
 }
 
-async function processMarkdownFile (repo: Repo, payload: { content?: string, path: string, stats?: Stats }) {
-  const relativePath = '/' + path.relative(repo.path, payload.path)
-  const doc: PathItem = { repo: repo.name, path: relativePath }
+async function processMarkdownFile (repo: Repo, payload: { content?: string, path: string, stats?: Stats }): Promise<number> {
+  const doc = _convertPathToPathItem(repo, payload)
 
-  const oldRecord = await getDocument(doc.repo, doc.path)
+  const oldRecord = await documents.findByRepoAndPath(doc.repo, doc.path)
   if (oldRecord && oldRecord.mtimeMs === payload.stats?.mtimeMs) {
     logger.debug('skip', doc.path)
-    return
+    oldRecord.id
   }
 
   let content = payload.content
@@ -227,7 +244,7 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
 
   convert(tokens)
 
-  await updateOrInsertDocument({
+  return documents.updateOrInsert({
     id: oldRecord?.id,
     repo: doc.repo,
     path: doc.path,
