@@ -1,6 +1,6 @@
-import type { IndexerWorkerCtx } from '@fe/others/indexer-worker'
 import { RULE_NAME, wikiLinks } from './lib'
 import { registerHook } from '@fe/core/hook'
+import type { IndexerWorkerCtx } from '@fe/others/indexer-worker'
 
 const ctx: IndexerWorkerCtx = self.ctx
 

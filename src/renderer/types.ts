@@ -8,6 +8,8 @@ import type * as Monaco from 'monaco-editor'
 
 export * from '@share/types'
 
+export type ResourceTagName = 'audio' | 'img' | 'source' | 'video' | 'track' | 'iframe' | 'embed'
+
 export type PositionScrollState = { editorScrollTop?: number, viewScrollTop?: number }
 export type PositionState = { line: number, column?: number } | { anchor: string } | PositionScrollState
 
@@ -606,10 +608,15 @@ export type FrontMatterAttrs = {
 }
 
 export interface IndexItemLink {
-  link: string;
+  href: string;
   internal: string | null;
-  holder: 'audio' | 'img' | 'source' | 'video' | 'track' | 'a' | 'iframe' | 'embed';
-  title: string | null;
+  position: PositionState | null;
+}
+
+export interface IndexItemResource {
+  src: string;
+  internal: string | null;
+  tag: ResourceTagName;
 }
 
 export interface IndexItem {
@@ -617,6 +624,7 @@ export interface IndexItem {
   path: string;
   name: string;
   links: IndexItemLink[];
+  resources: IndexItemResource[];
   frontmatter: {};
   ctimeMs: number;
   mtimeMs: number;

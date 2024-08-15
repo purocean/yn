@@ -2,21 +2,27 @@ import AsyncLock from 'async-lock'
 import MarkdownIt, { Token } from 'markdown-it'
 import { throttle } from 'lodash-es'
 import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, JSONRPCServer, JSONRPCServerChannel } from 'jsonrpc-bridge'
-import { readFile, watchFs } from '@fe/support/api'
-import { FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME, MODE } from '@fe/support/args'
-import { getLogger, path, removeQuery, sleep } from '@fe/utils/pure'
+import { fetchTree, readFile, watchFs } from '@fe/support/api'
+import { DOM_ATTR_NAME, FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME, MODE } from '@fe/support/args'
+import { getLogger, path, sleep } from '@fe/utils/pure'
 import { documents } from '@fe/others/db'
 import { isMarkdownFile } from '@share/misc'
 import type { Stats } from 'fs'
 import type { PathItem, Repo } from '@share/types'
 import type { IndexerHostExports } from '@fe/services/indexer'
-import type { IndexItemLink } from '@fe/types'
+import type { Components, IndexItemLink, IndexItemResource } from '@fe/types'
 import { triggerHook } from '@fe/core/hook'
+import { isAnchorToken, isDataUrl, isResourceToken, parseLink } from '@fe/plugins/markdown-link/lib'
 
 const markdown = MarkdownIt({ linkify: true, breaks: true, html: true })
-const supportedLinkTags = ['audio', 'img', 'source', 'video', 'track', 'a', 'iframe', 'embed']
 
-const exportMain = { triggerWatchRepo, stopWatch, importScripts: async (url: string) => { await import(url) } }
+const exportMain = {
+  triggerWatchRepo,
+  stopWatch,
+  importScripts: async (url: string) => {
+    await import(/* @vite-ignore */ url)
+  },
+}
 
 class WorkerChannel implements JSONRPCServerChannel, JSONRPCClientChannel {
   type: 'server' | 'client'
@@ -83,6 +89,8 @@ function _convertPathToPathItem (repo: Repo, payload: { path: string }): PathIte
 
 const reportStatus = throttle(_reportStatus, 500, { leading: true, trailing: true })
 
+let repoFiles: Components.Tree.Node[] = []
+
 class RepoWatcher {
   logger = getLogger('indexer-worker-repo-watcher')
 
@@ -115,6 +123,8 @@ class RepoWatcher {
     processingStatus.ready = false
     processingStatus.startTime = Date.now()
     processingStatus.processedIds = []
+
+    repoFiles = await fetchTree(repo.name, { by: 'mtime', order: 'desc' }).catch(() => [])
 
     await triggerHook('WORKER_INDEXER_BEFORE_START_WATCH', { repo }, { breakable: true })
 
@@ -194,8 +204,8 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
 
   const oldRecord = await documents.findByRepoAndPath(doc.repo, doc.path)
   if (oldRecord && oldRecord.mtimeMs === payload.stats?.mtimeMs) {
-    logger.debug('skip', doc.path)
-    oldRecord.id
+    logger.debug('skip', oldRecord.id, doc.path)
+    return oldRecord.id
   }
 
   let content = payload.content
@@ -204,43 +214,32 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
     content = res.content
   }
 
-  const env: Record<string, any> = {}
+  const env: Record<string, any> = { file: doc }
   const tokens = markdown.parse(content, env)
 
   const links: IndexItemLink[] = []
-
-  const buildLink = (token: Token) => {
-    let link: string | null | undefined = token.tag === 'a' ? token.attrGet('href') : token.attrGet('src')
-    const title = token.attrGet('title')
-
-    link = link?.trim()
-    if (!link) {
-      return
-    }
-
-    if (link.startsWith('//')) {
-      link = 'https:' + link
-    }
-
-    const val: IndexItemLink = {
-      link,
-      internal: null,
-      title,
-      holder: token.tag as any,
-    }
-
-    if (!/^[a-z+]+:/.test(link)) { // internal link
-      const p = removeQuery(path.normalizeSep(link))
-      val.internal = path.resolve(path.dirname(doc.path), p)
-    }
-
-    links.push(val)
-  }
+  const resources: IndexItemResource[] = []
 
   const convert = (tokens: Token[]) => {
     tokens.forEach(token => {
-      if (supportedLinkTags.includes(token.tag)) {
-        buildLink(token)
+      if (isAnchorToken(token)) {
+        const href = token.attrGet('href') || ''
+        if (!isDataUrl(href)) {
+          const isWikiLink = !!token.attrGet(DOM_ATTR_NAME.WIKI_LINK)
+          const parsedLink = isWikiLink ? parseLink(doc, href, true, repoFiles) : parseLink(doc, href, false)
+          if (parsedLink?.type === 'external') {
+            links.push({ href, internal: null, position: null })
+          } else if (parsedLink?.type === 'internal') {
+            links.push({ href, internal: parsedLink.path, position: parsedLink.position })
+          }
+        }
+      } else if (isResourceToken(token)) {
+        const path = token.attrGet(DOM_ATTR_NAME.TARGET_PATH)
+        const src = token.attrGet('src') || ''
+
+        if (!isDataUrl(src)) {
+          resources.push({ src, internal: path, tag: token.tag as any, })
+        }
       }
 
       if (token.children) {
@@ -257,6 +256,7 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
     path: doc.path,
     name: path.basename(doc.path),
     links,
+    resources,
     frontmatter: env.attributes || {},
     ctimeMs: payload.stats?.ctimeMs || 0,
     mtimeMs: payload.stats?.mtimeMs || 0,

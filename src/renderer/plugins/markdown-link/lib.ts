@@ -1,18 +1,26 @@
 import { basename, dirname, join, normalizeSep, resolve } from '@fe/utils/path'
 import { MARKDOWN_FILE_EXT } from '@share/misc'
-import { DOM_ATTR_NAME } from '@fe/support/args'
+import { DOM_ATTR_NAME, RESOURCE_TAG_NAMES } from '@fe/support/args'
 import { getLogger, removeQuery } from '@fe/utils/pure'
+import { isWindows } from '@fe/support/env'
 import type { Token } from 'markdown-it'
 import type StateCore from 'markdown-it/lib/rules_core/state_core'
-import type { Components, Doc, PathItem, PositionState } from '@fe/types'
-import { isWindows } from '@fe/support/env'
+import type { Components, Doc, PathItem, PositionState, ResourceTagName } from '@fe/types'
 
 const logger = getLogger('markdown-link-lib')
 
 const RE_POS = /:([0-9]+),?([0-9]+)?$/
 const RE_EXTERNAL_LINK = /^[a-zA-Z]{1,}:/
 
-function normalizeExternalLink (link: string) {
+export function isAnchorToken (token: Token) {
+  return token.tag === 'a'
+}
+
+export function isResourceToken (token: Token) {
+  return RESOURCE_TAG_NAMES.includes(token.tag as ResourceTagName)
+}
+
+export function normalizeExternalLink (link: string) {
   if (link.startsWith('//')) {
     return 'https:' + link
   }
@@ -22,6 +30,10 @@ function normalizeExternalLink (link: string) {
   }
 
   return link
+}
+
+export function isDataUrl (url: string) {
+  return url.startsWith('data:')
 }
 
 export function getFirstMatchPath (tree: Components.Tree.Node[], dir: string, fileName: string) {
@@ -71,12 +83,10 @@ export function getFirstMatchPath (tree: Components.Tree.Node[], dir: string, fi
   return findInDir(tree) || findByName(tree)
 }
 
-export function convertLinkState (state: StateCore, shouldNotConvertAnchor?: (file: Doc) => boolean, buildAttachmentUrl?: (file: Doc) => string) {
-  const tags = ['audio', 'img', 'source', 'video', 'track', 'iframe', 'embed']
-
-  const { repo, path, name } = state.env.file || {}
-  if (!repo || !path || !name) {
-    return false
+export function convertResourceState (currentFile: PathItem, state: StateCore, buildAttachmentUrl?: (file: Doc) => string) {
+  const { repo, path } = currentFile || {}
+  if (!repo || !path) {
+    throw new Error('currentFile is required')
   }
 
   const link = (token: Token) => {
@@ -118,7 +128,7 @@ export function convertLinkState (state: StateCore, shouldNotConvertAnchor?: (fi
 
   const convert = (tokens: Token[]) => {
     tokens.forEach(token => {
-      if (tags.includes(token.tag)) {
+      if (isResourceToken(token)) {
         link(token)
       }
 

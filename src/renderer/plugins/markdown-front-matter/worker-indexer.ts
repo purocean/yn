@@ -1,5 +1,5 @@
-import type { IndexerWorkerCtx } from '@fe/others/indexer-worker'
 import { processFrontMatter, useMarkdownItRule } from './lib'
+import type { IndexerWorkerCtx } from '@fe/others/indexer-worker'
 
 const ctx: IndexerWorkerCtx = self.ctx
 

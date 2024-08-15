@@ -12,8 +12,9 @@ import { getAllCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
 import { isMarkdownFile } from '@share/misc'
-import { convertLinkState, parseLink, ParseLinkResult } from './lib'
 import { getRenderEnv } from '@fe/services/view'
+import { convertResourceState, parseLink, ParseLinkResult } from './lib'
+import workerIndexerUrl from './worker-indexer?url'
 
 function getAnchorElement (target: HTMLElement) {
   let cur: HTMLElement | null = target
@@ -114,7 +115,8 @@ function handleLink (link: HTMLAnchorElement): boolean {
 }
 
 function convertLink (state: StateCore) {
-  return convertLinkState(state, doc => getAllCustomEditors().some(x => x.when?.({ doc })), getAttachmentURL)
+  const currentFile = state.env.file || store.state.currentFile
+  return convertResourceState(currentFile, state, getAttachmentURL)
 }
 
 export default {
@@ -212,7 +214,7 @@ export default {
     })
 
     ctx.markdown.registerPlugin(md => {
-      md.core.ruler.push('convert_relative_path', convertLink)
+      md.core.ruler.push('convert-relative-path', convertLink)
       md.renderer.rules.link_open = (tokens, idx, options, _, slf) => {
         if (tokens[idx].attrIndex('target') < 0) {
           tokens[idx].attrPush(['target', '_blank'])
@@ -268,6 +270,8 @@ export default {
         })
       }
     })
+
+    ctx.indexer.importScriptsToWorker(workerIndexerUrl)
 
     return { mdRuleConvertLink: convertLink, htmlHandleLink: handleLink }
   }
