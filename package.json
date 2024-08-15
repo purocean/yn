@@ -28,7 +28,7 @@
     "adm-zip": "^0.5.9",
     "app-license": "^0.3.0",
     "async-lock": "^1.4.0",
-    "chokidar": "^3.5.3",
+    "chokidar": "^3.6.0",
     "command-exists": "^1.2.9",
     "dayjs": "^1.10.5",
     "electron-context-menu": "^3.6.1",
