@@ -96,14 +96,14 @@ export default defineComponent({
       const reposEditor = editor.getEditor('root.repos')
 
       reposEditor.addRow = function (val: any) {
-        val ??= { name: '', path: '', enableIndexing: true } satisfies Repo
+        val ??= { name: '', path: '', enableIndexing: false } satisfies Repo
         this.constructor.prototype.addRow.call(this, val)
       }
 
       const data = await fetchSettings()
 
       if (data.repos.length < 1) {
-        data.repos = [{ name: '', path: '', enableIndexing: true }] satisfies Repo[]
+        data.repos = [{ name: '', path: '', enableIndexing: false }] satisfies Repo[]
       }
 
       const value: any = {}

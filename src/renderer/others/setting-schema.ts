@@ -38,7 +38,7 @@ const schema: SettingSchema = ({
           enableIndexing: {
             type: 'boolean',
             title: 'T_setting-panel.schema.repos.enable-indexing',
-            defaultValue: true,
+            defaultValue: false,
             format: 'checkbox',
           },
         }

@@ -65,6 +65,11 @@ const server = new JSONRPCServer(new WorkerChannel(worker, 'server'), { debug: F
 const client = new JSONRPCClient<IndexerWorkerExports>(new WorkerChannel(worker, 'client'), { debug: FLAG_DEBUG })
 
 function triggerWatchRepo (repo?: Repo) {
+  if (!repo?.enableIndexing) {
+    logger.info('triggerWatchRepo', repo?.name, 'disabled')
+    return
+  }
+
   client.call.main.triggerWatchRepo(repo ? { ...repo } : null)
 }
 
