@@ -1,9 +1,10 @@
 import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, JSONRPCServer, JSONRPCServerChannel } from 'jsonrpc-bridge'
 import store from '@fe/support/store'
 import type { Repo } from '@share/types'
-import { FLAG_DEBUG } from '@fe/support/args'
+import { FLAG_DEBUG, FLAG_DEMO, MODE } from '@fe/support/args'
 import ctx from '@fe/context'
 import { documents } from '@fe/others/db'
+import { getLogger } from '@fe/utils'
 import { getAllRepos } from './repo'
 import type { IndexerWorkerExports } from '@fe/others/indexer-worker'
 import type { IndexStatus } from '@fe/types'
@@ -17,6 +18,8 @@ const searchParams = new URLSearchParams(window.location.search)
 for (const [key, value] of searchParams) {
   workerURL.searchParams.set(key, value)
 }
+
+const logger = getLogger('indexer')
 
 const worker = new Worker(workerURL, { type: 'module' })
 
@@ -94,10 +97,14 @@ export async function rebuildCurrentRepo () {
 }
 
 export function updateIndexStatus (repo: Repo, status: IndexStatus) {
-  console.log('xxx index status', status)
+  logger.debug('updateIndexStatus', repo.name, status)
 }
 
 export async function importScriptsToWorker (url: string | URL) {
+  if (FLAG_DEMO || MODE !== 'normal') {
+    return
+  }
+
   await client.call.main.importScripts(typeof url === 'string' ? url : url.href)
 }
 
