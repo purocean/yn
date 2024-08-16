@@ -1,6 +1,6 @@
 import { Plugin } from '@fe/context'
 import { RULE_NAME, wikiLinks } from './lib'
-import workerIndexerUrl from './worker-indexer?url'
+import workerIndexerUrl from './worker-indexer?worker&url'
 
 export default {
   name: 'markdown-wiki-links',
@@ -60,7 +60,7 @@ export default {
       )
     })
 
-    ctx.indexer.importScriptsToWorker(workerIndexerUrl)
+    ctx.indexer.importScriptsToWorker(new URL(workerIndexerUrl, import.meta.url))
 
     ctx.registerHook('SETTING_CHANGED', ({ changedKeys }) => {
       if (changedKeys.includes('render.md-wiki-links')) {

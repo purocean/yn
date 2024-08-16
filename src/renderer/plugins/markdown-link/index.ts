@@ -14,7 +14,7 @@ import type { Doc } from '@share/types'
 import { isMarkdownFile } from '@share/misc'
 import { getRenderEnv } from '@fe/services/view'
 import { convertResourceState, parseLink, ParseLinkResult } from './lib'
-import workerIndexerUrl from './worker-indexer?url'
+import workerIndexerUrl from './worker-indexer?worker&url'
 
 function getAnchorElement (target: HTMLElement) {
   let cur: HTMLElement | null = target
@@ -271,7 +271,7 @@ export default {
       }
     })
 
-    ctx.indexer.importScriptsToWorker(workerIndexerUrl)
+    ctx.indexer.importScriptsToWorker(new URL(workerIndexerUrl, import.meta.url))
 
     return { mdRuleConvertLink: convertLink, htmlHandleLink: handleLink }
   }

@@ -97,8 +97,8 @@ export function updateIndexStatus (repo: Repo, status: IndexStatus) {
   console.log('xxx index status', status)
 }
 
-export async function importScriptsToWorker (url: string) {
-  await client.call.main.importScripts(url)
+export async function importScriptsToWorker (url: string | URL) {
+  await client.call.main.importScripts(typeof url === 'string' ? url : url.href)
 }
 
 Promise.resolve().then(() => {

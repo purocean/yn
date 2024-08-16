@@ -1,7 +1,7 @@
 import type { Options } from 'markdown-it'
 import type { Plugin } from '@fe/context'
 import { processFrontMatter, useMarkdownItRule } from './lib'
-import workerIndexerUrl from './worker-indexer?url'
+import workerIndexerUrl from './worker-indexer?worker&url'
 
 export default {
   name: 'markdown-front-matter',
@@ -46,6 +46,6 @@ export default {
       )
     })
 
-    ctx.indexer.importScriptsToWorker(workerIndexerUrl)
+    ctx.indexer.importScriptsToWorker(new URL(workerIndexerUrl, import.meta.url))
   }
 } as Plugin
