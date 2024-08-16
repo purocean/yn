@@ -611,12 +611,14 @@ export interface IndexItemLink {
   href: string;
   internal: string | null;
   position: PositionState | null;
+  blockMap: number[]
 }
 
 export interface IndexItemResource {
   src: string;
   internal: string | null;
   tag: ResourceTagName;
+  blockMap: number[]
 }
 
 export interface IndexItem {

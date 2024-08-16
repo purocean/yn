@@ -130,7 +130,8 @@ export function convertResourceState (currentFile: PathItem, state: StateCore, b
   }
 
   const convert = (tokens: Token[]) => {
-    tokens.forEach(token => {
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i]
       if (isResourceToken(token)) {
         link(token)
       }
@@ -138,7 +139,7 @@ export function convertResourceState (currentFile: PathItem, state: StateCore, b
       if (token.children) {
         convert(token.children)
       }
-    })
+    }
   }
 
   convert(state.tokens)

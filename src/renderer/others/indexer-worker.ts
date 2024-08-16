@@ -16,6 +16,22 @@ import { isAnchorToken, isDataUrl, isResourceToken, parseLink } from '@fe/plugin
 
 const markdown = MarkdownIt({ linkify: false, breaks: true, html: true })
 
+markdown.core.ruler.at('inline', function (state) {
+  const tokens = state.tokens
+
+  for (let i = 0, l = tokens.length; i < l; i++) {
+    const tok = tokens[i]
+    if (tok.type === 'inline') {
+      state.md.inline.parse(tok.content, state.md, state.env, tok.children as any)
+
+      for (let j = 0; j < tok.children!.length; j++) {
+        const token = tok.children![j]
+        ;(token as any)._block_map = tok.map
+      }
+    }
+  }
+})
+
 const exportMain = {
   triggerWatchRepo,
   stopWatch,
@@ -231,16 +247,18 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
   const resources: IndexItemResource[] = []
 
   const convert = (tokens: Token[]) => {
-    tokens.forEach(token => {
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i]
       if (isAnchorToken(token)) {
         const href = token.attrGet('href') || ''
+        const blockMap = (token as any)._block_map
         if (!isDataUrl(href)) {
           const isWikiLink = !!token.attrGet(DOM_ATTR_NAME.WIKI_LINK)
           const parsedLink = isWikiLink ? parseLink(doc, href, true, repoFiles) : parseLink(doc, href, false)
           if (parsedLink?.type === 'external') {
-            links.push({ href, internal: null, position: null })
+            links.push({ href, internal: null, position: null, blockMap })
           } else if (parsedLink?.type === 'internal') {
-            links.push({ href, internal: parsedLink.path, position: parsedLink.position })
+            links.push({ href, internal: parsedLink.path, position: parsedLink.position, blockMap })
           }
         }
       } else if (isResourceToken(token)) {
@@ -248,14 +266,15 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
         const src = token.attrGet('src') || ''
 
         if (!isDataUrl(src)) {
-          resources.push({ src, internal: path, tag: token.tag as any, })
+          const blockMap = (token as any)._block_map
+          resources.push({ src, internal: path, tag: token.tag as any, blockMap })
         }
       }
 
       if (token.children) {
         convert(token.children)
       }
-    })
+    }
   }
 
   convert(tokens)
