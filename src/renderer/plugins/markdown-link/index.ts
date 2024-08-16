@@ -40,6 +40,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
 
   const _switchDoc = async (parsedLink: ParseLinkResult | null) => {
     if (parsedLink?.type !== 'internal') {
+      ctx.ui.useToast().show('warning', 'Invalid File Path.')
       return
     }
 
@@ -105,10 +106,14 @@ function handleLink (link: HTMLAnchorElement): boolean {
       return true
     }
   } else {
-    fetchTree(currentFile.repo, { by: 'mtime', order: 'desc' }).catch(() => []).then(tree => {
-      const parsedLink = parseLink(currentFile, href, true, tree)
-      _switchDoc(parsedLink)
-    })
+    if (store.state.currentRepo?.name === currentFile.repo && store.state.tree) {
+      _switchDoc(parseLink(currentFile, href, true, store.state.tree))
+    } else {
+      fetchTree(currentFile.repo, { by: 'mtime', order: 'desc' }).catch(() => []).then(tree => {
+        const parsedLink = parseLink(currentFile, href, true, tree)
+        _switchDoc(parsedLink)
+      })
+    }
 
     return true
   }
