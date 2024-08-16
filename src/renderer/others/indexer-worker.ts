@@ -152,7 +152,7 @@ class RepoWatcher {
 
     this.handler = await watchFs(
       repo.name,
-      '/',
+      '/**/*.md',
       { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true, ignored, mdContent: true },
       async payload => {
         this.logger.debug('startWatch onResult', payload.eventName, (payload as any).path)
