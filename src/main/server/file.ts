@@ -1,5 +1,6 @@
 import { app, shell } from 'electron'
-import chokidar from 'chokidar'
+import { Worker } from 'worker_threads'
+import type { WatchOptions } from 'chokidar'
 import orderBy from 'lodash/orderBy'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -12,6 +13,9 @@ import { createStreamResponse } from '../helper'
 import { HISTORY_DIR } from '../constant'
 import config from '../config'
 import repository from './repository'
+
+// make sure watch-worker.ts is compiled
+import './watch-worker'
 
 const readonly = !!(yargs.argv.readonly)
 
@@ -502,95 +506,44 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
   }, p)
 }
 
-export async function watchFile (repo: string, p: string, options: chokidar.WatchOptions & { mdContent?: boolean }) {
+export async function watchFile (repo: string, p: string, options: WatchOptions & { mdContent?: boolean }) {
   return withRepo(repo, async (_, filePath) => {
-    try {
-      const ignoredRegexStr = options.ignored as string
-      if (ignoredRegexStr && typeof ignoredRegexStr === 'string') {
-        const ignoredRegex = new RegExp(ignoredRegexStr)
-        options.ignored = (str: string) => {
-          return str.split(path.sep)
-            .some((x, i, arr) => ignoredRegex.test(i === arr.length - 1 ? x : x + '/'))
-        }
-      }
-    } catch (error) {
-      console.error('watchFile', filePath, 'ignored error', error)
-    }
-
-    const watcher = chokidar.watch(filePath, options)
     const { response, enqueue, close } = createStreamResponse()
-
-    const promiseQueue: Promise<any>[] = []
-
-    let queueIsRunning = false
-    const triggerPromiseQueue = async () => {
-      if (queueIsRunning) {
-        return
-      }
-
-      queueIsRunning = true
-      while (promiseQueue.length) {
-        const promise = promiseQueue.pop()
-        if (promise) {
-          try {
-            enqueue('result', await promise)
-          } catch (error) {
-            console.error('watchFile', filePath, 'promise error', error)
-          }
-        }
-      }
-      queueIsRunning = false
-    }
-
-    watcher.on('all', async (eventName, path, stats) => {
-      promiseQueue.unshift(new Promise<any>(resolve => {
-        const result = {
-          eventName,
-          path,
-          content: null as string | null,
-          stats: stats ? {
-            ...stats,
-            isFile: stats?.isFile(),
-            isDirectory: stats.isDirectory(),
-          } : undefined
-        }
-
-        if (options.mdContent && isMarkdownFile(path) && (eventName === 'add' || eventName === 'change')) {
-          fs.readFile(path, 'utf-8').then(content => {
-            result.content = content
-            resolve(result)
-          }).catch(() => {
-            resolve(result)
-          })
-        } else {
-          resolve(result)
-        }
-      }))
-
-      triggerPromiseQueue()
-    })
-
-    watcher.on('ready', () => {
-      promiseQueue.unshift(Promise.resolve({ eventName: 'ready' }))
-      triggerPromiseQueue()
-    })
+    const worker = new Worker(path.join(__dirname, '/watch-worker.js'), { workerData: { filePath, options } })
 
     const _close = () => {
-      close()
-      watcher.close()
-      promiseQueue.length = 0
+      console.log('watchFile', filePath, 'close')
       app.off('quit', _close)
+      worker.postMessage({ type: 'cleanup' })
     }
+
+    worker.on('message', (message) => {
+      if (message.type === 'enqueue') {
+        try {
+          if (!response.closed) {
+            enqueue(message.payload.type, message.payload.data)
+          }
+        } catch (error) {
+          console.error('watchFile', filePath, 'enqueue error', error)
+        }
+      } else if (message.type === 'close') {
+        close()
+      }
+    })
+
+    worker.on('error', (err) => {
+      console.error('watchFile', filePath, 'error', err)
+      _close()
+    })
+
+    worker.on('exit', (code) => {
+      console.log('watchFile', filePath, 'exit', code)
+    })
 
     app.on('quit', _close)
 
-    watcher.on('error', err => {
-      console.error('watchFile', filePath, 'error', err)
-      enqueue('error', err)
-    })
-
     response.once('close', () => {
-      console.log('watchFile', filePath, 'close')
+      console.log('watchFile', filePath, 'response close')
       _close()
     })
 
