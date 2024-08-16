@@ -11,7 +11,7 @@ import type { Stats } from 'fs'
 import type { PathItem, Repo } from '@share/types'
 import type { IndexerHostExports } from '@fe/services/indexer'
 import type { Components, IndexItemLink, IndexItemResource } from '@fe/types'
-import { triggerHook } from '@fe/core/hook'
+import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { isAnchorToken, isDataUrl, isResourceToken, parseLink } from '@fe/plugins/markdown-link/lib'
 
 const markdown = MarkdownIt({ linkify: false, breaks: true, html: true })
@@ -74,8 +74,10 @@ class WorkerChannel implements JSONRPCServerChannel, JSONRPCClientChannel {
 export type IndexerWorkerExports = { main: typeof exportMain }
 
 export interface IndexerWorkerCtx {
-  markdown: MarkdownIt
-  bridgeClient: JSONRPCClient<IndexerHostExports>
+  markdown: MarkdownIt;
+  bridgeClient: JSONRPCClient<IndexerHostExports>;
+  registerHook: typeof registerHook;
+  removeHook: typeof removeHook;
 }
 
 // provide main to host
@@ -300,6 +302,6 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
 }
 
 // expose to plugin
-self.ctx = { bridgeClient, markdown } as IndexerWorkerCtx
+self.ctx = { bridgeClient, markdown, registerHook, removeHook } as IndexerWorkerCtx
 
 logger.debug('indexer-worker loaded', self.location.href)
