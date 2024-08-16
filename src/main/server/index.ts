@@ -181,7 +181,7 @@ const fileContent = async (ctx: any, next: any) => {
   } else if (ctx.path === '/api/tree') {
     const arr = (ctx.query.sort || '').split('-')
     const sort = { by: arr[0] || 'name', order: arr[1] || 'asc' }
-    ctx.body = result('ok', 'success', (await file.tree(ctx.query.repo, sort)))
+    ctx.body = result('ok', 'success', (await file.tree(ctx.query.repo, sort, ctx.query.include, ctx.query.noEmptyDir === 'true')))
   } else if (ctx.path === '/api/history/list') {
     ctx.body = result('ok', 'success', (await file.historyList(ctx.query.repo, ctx.query.path)))
   } else if (ctx.path === '/api/history/content') {

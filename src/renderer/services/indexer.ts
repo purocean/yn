@@ -97,7 +97,7 @@ export async function rebuildCurrentRepo () {
 }
 
 export function updateIndexStatus (repo: Repo, status: IndexStatus) {
-  logger.debug('updateIndexStatus', repo.name, status)
+  logger.info('updateIndexStatus', repo.name, status.ready, status.indexed, status.cost)
 }
 
 export async function importScriptsToWorker (url: string | URL) {

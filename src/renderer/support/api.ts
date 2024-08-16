@@ -226,10 +226,13 @@ export async function commentHistoryVersion (file: PathItem, version: string, ms
 /**
  * Fetch file tree from a repository.
  * @param repo
+ * @param sort
+ * @param include
+ * @param noEmptyDir
  * @returns
  */
-export async function fetchTree (repo: string, sort: FileSort): Promise<Components.Tree.Node[]> {
-  const result = await fetchHttp(`/api/tree?repo=${encodeURIComponent(repo)}&sort=${sort.by}-${sort.order}`)
+export async function fetchTree (repo: string, sort: FileSort, include?: string, noEmptyDir?: boolean): Promise<Components.Tree.Node[]> {
+  const result = await fetchHttp(`/api/tree?repo=${encodeURIComponent(repo)}&sort=${sort.by}-${sort.order}&include=${encodeURIComponent(include || '')}&noEmptyDir=${noEmptyDir || false}`)
   return result.data
 }
 
@@ -362,7 +365,7 @@ export async function watchFs (
   repo: string,
   path: string,
   options: WatchOptions & { mdContent?: boolean },
-  onResult: (result: { eventName: 'add' | 'change' | 'unlink' | 'addDir' | 'unlinkDir', path: string, content?: string, stats?: Stats } | { eventName: 'ready' }) => void,
+  onResult: (result: { eventName: 'add' | 'change' | 'unlink' | 'addDir' | 'unlinkDir', path: string, content?: string | null, stats?: Stats } | { eventName: 'ready' }) => void,
   onError: (error: Error) => void
 ) {
   const controller: AbortController = new AbortController()

@@ -143,8 +143,15 @@ class RepoWatcher {
     processingStatus.ready = false
     processingStatus.startTime = Date.now()
 
-    repoFiles = await fetchTree(repo.name, { by: 'mtime', order: 'desc' }).catch(() => [])
-    allMtimeMs = await documents.findAllMtimeMsByRepo(repo.name)
+    const include = '/$|.md$' // dir or md file
+
+    const initRes = await Promise.all([
+      fetchTree(repo.name, { by: 'mtime', order: 'desc' }, include, true).catch(() => []),
+      documents.findAllMtimeMsByRepo(repo.name),
+    ])
+
+    repoFiles = initRes[0]
+    allMtimeMs = initRes[1]
     toPutItems = []
     reusedIds = []
 
@@ -225,7 +232,7 @@ function stopWatch () {
   watcher.stopWatch()
 }
 
-async function processMarkdownFile (repo: Repo, payload: { content?: string, path: string, stats?: Stats }): Promise<void> {
+async function processMarkdownFile (repo: Repo, payload: { content?: string | null, path: string, stats?: Stats }): Promise<void> {
   const doc = _convertPathToPathItem(repo, payload)
 
   const oldRecord = allMtimeMs ? allMtimeMs.get(doc.path) : await documents.findByRepoAndPath(doc.repo, doc.path)
@@ -236,8 +243,10 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string, pat
     return
   }
 
-  let content = payload.content
-  if (!content) {
+  let content: string
+  if (typeof payload.content === 'string') {
+    content = payload.content
+  } else {
     const res = await readFile(doc)
     content = res.content
   }

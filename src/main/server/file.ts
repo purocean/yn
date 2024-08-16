@@ -263,7 +263,9 @@ async function travels (
   basePath: string,
   data: TreeItem,
   excludeRegex: RegExp,
+  includeRegex: RegExp | null,
   order: Order,
+  noEmptyDir: boolean
 ): Promise<void> {
   const list = await fs.readdir(location)
 
@@ -279,6 +281,10 @@ async function travels (
         return
       }
 
+      if (includeRegex && !includeRegex.test(name)) {
+        return
+      }
+
       files.push({
         name,
         path: getRelativePath(basePath, p),
@@ -289,7 +295,12 @@ async function travels (
         level: data.level + 1,
       })
     } else if (stat.isDirectory()) {
-      if (excludeRegex.test(name + '/')) {
+      const dirName = name + '/'
+      if (excludeRegex.test(dirName)) {
+        return
+      }
+
+      if (includeRegex && !includeRegex.test(dirName)) {
         return
       }
 
@@ -304,8 +315,11 @@ async function travels (
         level: data.level + 1,
       }
 
-      dirs.push(dir)
-      await travels(p, repo, basePath, dir, excludeRegex, order)
+      await travels(p, repo, basePath, dir, excludeRegex, includeRegex, order, noEmptyDir)
+
+      if (!(noEmptyDir && dir.children!.length === 0)) {
+        dirs.push(dir)
+      }
     }
   }))
 
@@ -326,7 +340,7 @@ async function travels (
     .concat(sort(files, order))
 }
 
-export async function tree (repo: string, order: Order): Promise<TreeItem[]> {
+export async function tree (repo: string, order: Order, include?: string | RegExp, noEmptyDir?: boolean): Promise<TreeItem[]> {
   const data: TreeItem[] = [{
     name: '/',
     type: 'dir',
@@ -336,7 +350,9 @@ export async function tree (repo: string, order: Order): Promise<TreeItem[]> {
     level: 1,
   }]
 
-  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0], getExcludeRegex(), order))
+  const includeRegex = include ? new RegExp(include) : null
+
+  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0], getExcludeRegex(), includeRegex, order, !!noEmptyDir))
 
   return data
 }
@@ -531,7 +547,7 @@ export async function watchFile (repo: string, p: string, options: chokidar.Watc
         const result = {
           eventName,
           path,
-          content: '',
+          content: null as string | null,
           stats: stats ? {
             ...stats,
             isFile: stats?.isFile(),
@@ -562,6 +578,7 @@ export async function watchFile (repo: string, p: string, options: chokidar.Watc
     const _close = () => {
       close()
       watcher.close()
+      promiseQueue.length = 0
       app.off('quit', _close)
     }
 
