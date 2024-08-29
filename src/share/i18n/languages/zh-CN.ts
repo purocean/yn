@@ -417,7 +417,7 @@ const data: BaseLanguage = {
       'language': '语言',
       'custom-css': '自定义 CSS',
       'assets-dir': '图片存放目录',
-      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, date',
+      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, docHash, date',
       'assets': {
         'path-type': '路径类型',
       },
