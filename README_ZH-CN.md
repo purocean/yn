@@ -4,7 +4,7 @@
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Mac App Store 版本说明](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
-[English](./README.md) | 中文说明
+[English](./README.md) | 中文说明 | [Русский](./README_RU.md)
 
 [toc]{level: [2]}
 

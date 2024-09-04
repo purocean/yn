@@ -4,7 +4,7 @@ A **highly extensible** Markdown editor, designed for productivity. **[Download]
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not recommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
-English | [中文说明](./README_ZH-CN.md)
+English | [中文说明](./README_ZH-CN.md) | [Русский](./README_RU.md)
 
 [toc]{level: [2]}
 
