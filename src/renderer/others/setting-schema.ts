@@ -52,9 +52,9 @@ const schema: SettingSchema = ({
       defaultValue: 'system',
       title: 'T_setting-panel.schema.language',
       type: 'string',
-      enum: ['system', 'en', 'zh-CN', 'zh-TW'],
+      enum: ['system', 'en', 'zh-CN', 'zh-TW', 'ru'],
       options: {
-        enum_titles: ['System', 'English', '简体中文', '繁體中文'],
+        enum_titles: ['System', 'English', '简体中文', '繁體中文', 'русский'],
       },
       group: 'appearance',
       required: true,
