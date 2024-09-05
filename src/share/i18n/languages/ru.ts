@@ -1,6 +1,7 @@
 /* eslint-disable quote-props */
+import type { BaseLanguage } from './en'
 
-const data = {
+const data: BaseLanguage = {
   'app-name': 'Yank Note',
   'about': 'О проекте',
   'feedback': 'Поддержка',
@@ -769,7 +770,5 @@ const data = {
     'open-in-new-tab': 'Открыть в новой вкладке',
   },
 }
-
-export type BaseLanguage = typeof data
 
 export default data
