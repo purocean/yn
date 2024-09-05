@@ -387,7 +387,8 @@ const data: BaseLanguage = {
         'name': 'Имя',
         'name-placeholder': 'Имя',
         'path': 'Путь',
-        'path-placeholder': 'Пожалуйста, выберите место хранения'
+        'path-placeholder': 'Пожалуйста, выберите место хранения',
+        'enable-indexing': 'Включить индексацию',
       },
       'editor': {
         'mouse-wheel-zoom': 'Масштабирование колёсиком мыши',
