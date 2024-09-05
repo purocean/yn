@@ -30,6 +30,7 @@ const schema: SettingSchema = ({
           path: {
             type: 'string',
             title: 'T_setting-panel.schema.repos.path',
+            openDialogOptions: { properties: ['openDirectory', 'createDirectory'] },
             options: {
               inputAttributes: { placeholder: 'T_setting-panel.schema.repos.path-placeholder', style: 'cursor: pointer' }
             },

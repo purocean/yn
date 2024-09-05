@@ -154,15 +154,16 @@ export default defineComponent({
 
     const onClick = async (e: Event) => {
       const target = e.target as HTMLInputElement
-      if (target.name && target.name.endsWith('[path]')) {
+      if (target.tagName === 'INPUT' && target.name) {
         const jsonPath = target.name.replace(/\]/g, '').replace(/\[/g, '.')
         const field = editor.getEditor(jsonPath)
-        const { canceled, filePaths } = await api.choosePath({
-          properties: ['openDirectory', 'createDirectory'],
-        })
 
-        if (!canceled && filePaths[0]) {
-          field.setValue(filePaths[0])
+        if (field && field.schema.openDialogOptions) {
+          const { canceled, filePaths } = await api.choosePath(field.schema.openDialogOptions)
+
+          if (!canceled && filePaths[0]) {
+            field.setValue(filePaths[0])
+          }
         }
       }
     }
