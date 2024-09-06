@@ -75,17 +75,6 @@
 ![Screenshot](./help/4.png)
 ![Screenshot](./help/5.png)
 
-## Список изменений
-
-### [v3.75.4](https://github.com/purocean/yn/releases/tag/v3.75.4) 2024-08-06
-
-[Windows](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-win-x64-3.75.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-mac-arm64-3.75.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-mac-x64-3.75.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-linux-x86_64-3.75.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-linux-amd64-3.75.4.deb)
-
-1. fix: исправление ошибки в определении поддерживаемых типов файлов.
-2. fix: устранение проблемы, при которой сочетание клавиш вызывает нажатие клавиши с ударением и вставляет дополнительные символы в редакторе на macOS.
-   
-[Релизы](https://github.com/purocean/yn/releases)
-
 ## Поддержка
 
 Wechat Group
