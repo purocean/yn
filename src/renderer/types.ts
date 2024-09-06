@@ -1,4 +1,5 @@
 import type { VNode } from 'vue'
+import type { OpenDialogOptions } from 'electron'
 import type { Language, MsgPath } from '@share/i18n'
 import type { Doc, FileItem, PathItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
@@ -29,6 +30,7 @@ export type SettingSchema = {
     defaultValue: BuildInSettings[K] extends any ? BuildInSettings[K] : any,
     enum?: string[] | number [],
     group: SettingGroup,
+    openDialogOptions?: OpenDialogOptions,
     needReloadWindowWhenChanged?: boolean,
     validator?: (schema: SettingSchema['properties'][K], value: BuildInSettings[K], path: string) =>
       {path: string, property: K, message: string}[]
@@ -43,6 +45,7 @@ export type SettingSchema = {
           options: {
             inputAttributes: { placeholder: TTitle }
           }
+          openDialogOptions?: OpenDialogOptions,
         }
       }
     },

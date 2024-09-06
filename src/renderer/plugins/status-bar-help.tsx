@@ -1,5 +1,5 @@
 import type { Plugin } from '@fe/context'
-import { HOMEPAGE_URL } from '@share/misc'
+import { GUIDE_URL, HOMEPAGE_URL } from '@share/misc'
 import logoImg from '@fe/assets/icon.png'
 
 export default {
@@ -42,6 +42,19 @@ export default {
           },
           { type: 'separator' },
           {
+            id: 'show-shortcuts',
+            type: 'normal',
+            title: ctx.i18n.t('status-bar.help.shortcuts'),
+            onClick: () => ctx.action.getActionHandler('keyboard-shortcuts.show-manager')()
+          },
+          { type: 'separator' },
+          {
+            id: 'visit-guide',
+            type: 'normal',
+            title: ctx.i18n.t('status-bar.help.guide'),
+            onClick: () => window.open(GUIDE_URL, '_blank')
+          },
+          {
             id: 'show-readme',
             type: 'normal',
             title: ctx.i18n.t('status-bar.help.readme'),
@@ -52,12 +65,6 @@ export default {
             type: 'normal',
             title: ctx.i18n.t('status-bar.help.plugin'),
             onClick: () => ctx.action.getActionHandler(showPluginAction.name)()
-          },
-          {
-            id: 'show-shortcuts',
-            type: 'normal',
-            title: ctx.i18n.t('status-bar.help.shortcuts'),
-            onClick: () => ctx.action.getActionHandler('keyboard-shortcuts.show-manager')()
           },
           {
             id: 'show-features',

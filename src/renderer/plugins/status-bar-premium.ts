@@ -57,7 +57,8 @@ export default {
 
     ctx.theme.addStyles(`
       html[premium="false"] .status-bar-menu-wrapper > .status-bar-menu[data-id="${id}"] {
-        background: rgb(0 122 204 / 47%);
+        background-color: rgb(0 122 204 / 47%);
+        background-image: linear-gradient(90deg, rgba(218, 119, 242, 0.4), rgba(218, 119, 242, 0));
         animation: blink-${id} 1s 7;
       }
 
@@ -67,13 +68,13 @@ export default {
 
       @keyframes blink-${id} {
         0% {
-          background: rgb(0 122 204 / 47%);
+          background-color: rgb(0 122 204 / 47%);
         }
         50% {
-          background: rgb(0 122 204 / 100%);
+          background-color: rgb(0 122 204 / 100%);
         }
         100% {
-          background: rgb(0 122 204 / 47%);
+          background-color: rgb(0 122 204 / 47%);
         }
       }
     `)

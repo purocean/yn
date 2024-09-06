@@ -759,7 +759,7 @@ const server = (port = 3000) => {
     }
   })
 
-  const host = config.get('server.host', 'localhost')
+  const host = config.get('server.host', '127.0.0.1')
   server.listen(port, host)
 
   console.log(`Address: http://${host}:${port}`)

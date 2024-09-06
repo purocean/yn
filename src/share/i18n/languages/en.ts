@@ -271,6 +271,7 @@ const data = {
       'readme': 'Introduction',
       'features': 'Features',
       'shortcuts': 'Shortcuts',
+      'guide': 'Guide',
       'plugin': 'Create Plugin'
     },
     'terminal': 'Terminal',
@@ -425,7 +426,7 @@ const data = {
       'language': 'Language',
       'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
-      'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, date.',
+      'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, docHash, date.',
       'assets': {
         'path-type': 'Path Type',
       },

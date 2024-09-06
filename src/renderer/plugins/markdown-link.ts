@@ -199,7 +199,12 @@ function convertLink (state: StateCore) {
       return
     }
 
-    if (/^[^:]*:/.test(attrVal) || attrVal.startsWith('//')) { // xxx:
+    if (/^[a-z+]+:/.test(attrVal)) { // xxx:
+      return
+    }
+
+    if (attrVal.startsWith('//')) {
+      token.attrSet(attrName, `https:${attrVal}`)
       return
     }
 

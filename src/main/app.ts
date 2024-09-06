@@ -603,6 +603,37 @@ if (!gotTheLock) {
   app.on('web-contents-created', (_, webContents) => {
     electronRemote.enable(webContents)
 
+    // fix focus issue after dialog show on Windows.
+    webContents.on('frame-created', (_, { frame }) => {
+      frame.on('dom-ready', () => {
+        frame.executeJavaScript(`if ('ctx' in window && ctx?.env?.isWindows) {
+          window._FIX_ELECTRON_DIALOG_FOCUS ??= function () {
+            setTimeout(() => {
+              ctx.env.getElectronRemote().getCurrentWindow().blur();
+              ctx.env.getElectronRemote().getCurrentWindow().focus();
+            }, 0);
+          };
+
+          if (!window._ORIGIN_ALERT) {
+            window._ORIGIN_ALERT = window.alert;
+            window.alert = function (...args) {
+              window._ORIGIN_ALERT(...args);
+              window._FIX_ELECTRON_DIALOG_FOCUS();
+            };
+          }
+
+          if (!window._ORIGIN_CONFIRM) {
+            window._ORIGIN_CONFIRM = window.confirm;
+            window.confirm = function (...args) {
+              const res = window._ORIGIN_CONFIRM(...args);
+              window._FIX_ELECTRON_DIALOG_FOCUS();
+              return res;
+            };
+          }
+        }`)
+      })
+    })
+
     webContents.setWindowOpenHandler(({ url }) => {
       if (url.includes('__allow-open-window__')) {
         return { action: 'allow' }

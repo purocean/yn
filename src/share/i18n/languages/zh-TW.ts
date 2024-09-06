@@ -272,6 +272,7 @@ const data: BaseLanguage = {
       'readme': '應用介紹',
       'features': '特色功能說明',
       'shortcuts': '快捷鍵',
+      'guide': '使用指引',
       'plugin': '插件開發'
     },
     'terminal': '終端',
@@ -416,7 +417,7 @@ const data: BaseLanguage = {
       'language': '語言',
       'custom-css': '自訂 CSS',
       'assets-dir': '圖片存放目錄',
-      'assets-desc': '支援相對路徑和絕對路徑（限於倉庫內部）,可用變數：docName, docBasename, docSlug, date',
+      'assets-desc': '支援相對路徑和絕對路徑（限於倉庫內部）,可用變數：docName, docBasename, docSlug, docHash, date',
       'assets': {
         'path-type': '路徑類型',
       },

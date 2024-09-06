@@ -154,15 +154,16 @@ export default defineComponent({
 
     const onClick = async (e: Event) => {
       const target = e.target as HTMLInputElement
-      if (target.name && target.name.endsWith('[path]')) {
+      if (target.tagName === 'INPUT' && target.name) {
         const jsonPath = target.name.replace(/\]/g, '').replace(/\[/g, '.')
         const field = editor.getEditor(jsonPath)
-        const { canceled, filePaths } = await api.choosePath({
-          properties: ['openDirectory', 'createDirectory'],
-        })
 
-        if (!canceled && filePaths[0]) {
-          field.setValue(filePaths[0])
+        if (field && field.schema.openDialogOptions) {
+          const { canceled, filePaths } = await api.choosePath(field.schema.openDialogOptions)
+
+          if (!canceled && filePaths[0]) {
+            field.setValue(filePaths[0])
+          }
         }
       }
     }
@@ -206,7 +207,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .editor-wrapper {
-  width: 800px;
+  width: 900px;
   background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
@@ -256,7 +257,7 @@ export default defineComponent({
   }
 
   ::v-deep(.je-form-input-label) {
-    width: 120px;
+    width: 140px;
     display: inline-flex;
     align-items: center;
     flex: none;
@@ -264,7 +265,7 @@ export default defineComponent({
   }
 
   ::v-deep(.je-form-input-label + input) {
-    max-width: calc(100% - 140px);
+    max-width: calc(100% - 160px);
   }
 
   ::v-deep(.je-form-input-label ~ .je-form-input-label) {
@@ -309,6 +310,7 @@ export default defineComponent({
 
     tr > td:last-child {
       width: 120px;
+      text-align: left !important;
     }
   }
 

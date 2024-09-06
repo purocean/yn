@@ -17,7 +17,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   const isTab = e.source === 'tab'
   const isOutdent = e.source === 'outdent'
   const isDeleteLeft = e.source === 'deleteLeft'
-  const isEnter = e.source === 'keyboard' && isKeydown('ENTER')
+  const isEnter = (e.source === 'keyboard' || e.source === 'editor.action.insertLineAfter') && isKeydown('ENTER')
   const isSpace = e.source === 'keyboard' && isKeydown(' ')
 
   if (!isTab && !isDeleteLeft && !isEnter && !isSpace && !isOutdent) {

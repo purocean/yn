@@ -272,6 +272,7 @@ const data: BaseLanguage = {
       'readme': '应用介绍',
       'features': '特色功能说明',
       'shortcuts': '快捷键',
+      'guide': '使用指引',
       'plugin': '插件开发'
     },
     'terminal': '终端',
@@ -416,7 +417,7 @@ const data: BaseLanguage = {
       'language': '语言',
       'custom-css': '自定义 CSS',
       'assets-dir': '图片存放目录',
-      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, date',
+      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, docHash, date',
       'assets': {
         'path-type': '路径类型',
       },
