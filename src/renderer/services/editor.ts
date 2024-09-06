@@ -550,6 +550,7 @@ registerHook('MONACO_BEFORE_INIT', ({ monaco }) => {
       'editor.background': '#ffffff',
       'minimap.background': '#f2f2f2',
       'editor.lineHighlightBackground': '#0000000f',
+      'list.focusHighlightForeground': '#2aaaff',
     }
   })
 
