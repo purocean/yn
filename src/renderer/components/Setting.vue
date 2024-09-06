@@ -310,6 +310,7 @@ export default defineComponent({
 
     tr > td:last-child {
       width: 120px;
+      text-align: left !important;
     }
   }
 
