@@ -76,12 +76,17 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.75.4](https://github.com/purocean/yn/releases/tag/v3.75.4) 2024-08-06
+### [v3.76.1](https://github.com/purocean/yn/releases/tag/v3.76.1) 2024-09-06
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-win-x64-3.75.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-mac-arm64-3.75.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-mac-x64-3.75.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-linux-x86_64-3.75.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-linux-amd64-3.75.4.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-win-x64-3.76.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-mac-arm64-3.76.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-mac-x64-3.76.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-linux-x86_64-3.76.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-linux-amd64-3.76.1.deb)
 
-1. fix: Correct the error in detecting supported file types.
-2. fix: Resolve the issue where the shortcut key triggers an accent key and inserts additional characters in the editor on macOS.
+1. feat: Added support for the Russian language
+2. feat: Added an entry point for usage guidance
+3. feat: Optimized the completion of ordered list numbers
+4. feat: Added `{docHash}` placeholder to the image save directory configuration
+5. fix: Fixed an issue where the input box might not be focusable on Windows
+6. fix: Fixed the issue of incorrect read-only status in the editor under certain conditions
+7. fix: Fixed the issue of incorrect size calculation for Mermaid rendering under certain conditions
 
 [More release notes](https://github.com/purocean/yn/releases)
 

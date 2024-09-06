@@ -76,12 +76,17 @@
 
 ## 更新日志
 
-### [v3.75.4](https://github.com/purocean/yn/releases/tag/v3.75.4) 2024-08-06
+### [v3.76.1](https://github.com/purocean/yn/releases/tag/v3.76.1) 2024-09-06
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-win-x64-3.75.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-mac-arm64-3.75.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-mac-x64-3.75.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-linux-x86_64-3.75.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.75.4/Yank-Note-linux-amd64-3.75.4.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-win-x64-3.76.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-mac-arm64-3.76.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-mac-x64-3.76.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-linux-x86_64-3.76.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-linux-amd64-3.76.1.deb)
 
-1. fix: 修复支持的文件类型检测错误
-2. fix: 修复 macOS 上快捷键触发重音键会在编辑器插入额外字符问题
+1. feat: 增加俄语语言支持
+2. feat: 增加使用指引帮助入口
+3. feat: 优化有序列表序号补全
+4. feat: 图片保存目录配置增加 `{docHash}` 占位符
+5. fix: 修复 Windows 上可能出现输入框无法聚焦的问题
+6. fix: 修复某些情况下编辑器只读不正确问题
+7. fix: 修复某些情况下 Mermaid 渲染尺寸计算不正确问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
