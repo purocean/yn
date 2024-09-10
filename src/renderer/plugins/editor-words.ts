@@ -38,6 +38,11 @@ class WordsCompletionProvider implements Monaco.languages.CompletionItemProvider
   }
 
   public async provideCompletionItems (model: Monaco.editor.IModel, position: Monaco.Position): Promise<Monaco.languages.CompletionList | undefined> {
+    const selection = this.ctx.editor.getEditor().getSelection()
+    if (!selection?.isEmpty()) { // only trigger when no selection
+      return
+    }
+
     const currentWord = model.getWordUntilPosition(position)
     const result: Monaco.languages.CompletionItem[] = []
 
