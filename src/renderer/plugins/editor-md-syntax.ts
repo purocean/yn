@@ -77,8 +77,32 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     return 0
   }
 
-  private async provideSelectionCompletionItems (selection: Monaco.Selection): Promise<Monaco.languages.CompletionList | undefined> {
-    const items = this.ctx.editor.getSimpleCompletionItems().filter(item => item.insertText.includes('${TM_SELECTED_TEXT}'))
+  private async provideSelectionCompletionItems (model: Monaco.editor.IModel, selection: Monaco.Selection): Promise<Monaco.languages.CompletionList | undefined> {
+    const selectionEndLineMaxColumn = model.getLineMaxColumn(selection.endLineNumber)
+    const items = this.ctx.editor.getSimpleCompletionItems().filter(item => {
+      if (item.insertText.includes('${TM_SELECTED_TEXT}')) {
+        return true
+      }
+
+      const surroundSelectionSnippet = typeof item.surroundSelection === 'function'
+        ? item.surroundSelection(item.insertText, selection, model)
+        : typeof item.surroundSelection === 'string'
+          ? item.insertText.replace(item.surroundSelection, '$TM_SELECTED_TEXT')
+          : undefined
+
+      if (surroundSelectionSnippet) {
+        const allowBlock = selection.startColumn === 1 && selection.endColumn === selectionEndLineMaxColumn
+        item.insertText = surroundSelectionSnippet
+
+        if (item.block && !allowBlock) {
+          return false
+        }
+
+        return true
+      }
+
+      return false
+    })
 
     const result: Monaco.languages.CompletionItem[] = items.map((item, i) => {
       const range = new this.monaco.Range(
@@ -93,7 +117,7 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
         kind: item.kind || this.monaco.languages.CompletionItemKind.Keyword,
         insertText: item.insertText,
         insertTextRules: this.monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-        range,
+        range: this.monaco.Range.spansMultipleLines(range) ? range.collapseToStart() : range,
         sortText: i.toString().padStart(7),
         detail: item.detail,
       }
@@ -105,7 +129,7 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
   public async provideCompletionItems (model: Monaco.editor.IModel, position: Monaco.Position): Promise<Monaco.languages.CompletionList | undefined> {
     const selection = this.ctx.editor.getEditor().getSelection()!
     if (!selection.isEmpty()) {
-      return this.provideSelectionCompletionItems(selection)
+      return this.provideSelectionCompletionItems(model, selection)
     }
 
     const line = model.getLineContent(position.lineNumber)
@@ -179,6 +203,28 @@ export default {
           { beforeText: /^\s*\d+\) .*$/, action: { indentAction: monaco.languages.IndentAction.None, appendText: '1) ' } },
         ]
       })
+
+      monaco.languages.registerCodeActionProvider('*', {
+        provideCodeActions (_model: Monaco.editor.ITextModel, range: Monaco.Range): Monaco.languages.CodeActionList {
+          const enabled = ctx.setting.getSetting('editor.enable-trigger-suggest-bulb', true)
+          if (!enabled || range.isEmpty()) {
+            return { dispose: () => 0, actions: [] }
+          }
+
+          const actionTitle = ctx.i18n.t('trigger-suggestions')
+          const actionId = 'editor.action.triggerSuggest'
+
+          const actions: Monaco.languages.CodeAction[] = [{
+            title: actionTitle,
+            command: { id: actionId, title: actionTitle },
+            kind: 'refactor',
+            diagnostics: [],
+            isPreferred: true,
+          }]
+
+          return { dispose: () => 0, actions }
+        },
+      })
     })
 
     function buildTableCompletionItems (): SimpleCompletionItem[] {
@@ -203,29 +249,31 @@ export default {
           ]
     }
 
+    const surroundSelectionSingle = (snippet: string, selection: Monaco.Selection) => selection.startLineNumber === selection.endLineNumber ? snippet.replace('$1', '$TM_SELECTED_TEXT') : undefined
+
     ctx.editor.tapSimpleCompletionItems(items => {
       items.unshift(
         { label: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
         { label: '/ []() Link', insertText: '[${2:Link}]($1)' },
-        { label: '/ # Head 1', insertText: '# $1', block: true },
-        { label: '/ ## Head 2', insertText: '## $1', block: true },
-        { label: '/ ### Head 3', insertText: '### $1', block: true },
-        { label: '/ #### Head 4', insertText: '#### $1', block: true },
-        { label: '/ ##### Head 5', insertText: '##### $1', block: true },
-        { label: '/ ###### Head 6', insertText: '###### $1', block: true },
+        { label: '/ # Head 1', insertText: '# $1', block: true, surroundSelection: surroundSelectionSingle, },
+        { label: '/ ## Head 2', insertText: '## $1', block: true, surroundSelection: surroundSelectionSingle, },
+        { label: '/ ### Head 3', insertText: '### $1', block: true, surroundSelection: surroundSelectionSingle, },
+        { label: '/ #### Head 4', insertText: '#### $1', block: true, surroundSelection: surroundSelectionSingle, },
+        { label: '/ ##### Head 5', insertText: '##### $1', block: true, surroundSelection: surroundSelectionSingle, },
+        { label: '/ ###### Head 6', insertText: '###### $1', block: true, surroundSelection: surroundSelectionSingle, },
         { label: '/ + List', insertText: '+ ' },
         { label: '/ - List', insertText: '- ' },
         { label: '/ > Blockquote', insertText: '> ' },
-        { label: '/ ` Code', insertText: '`$1`' },
-        { label: '/ * Italic', insertText: '*$1*' },
-        { label: '/ _ Italic', insertText: '_$1_' },
-        { label: '/ ~ Sub', insertText: '~$1~' },
-        { label: '/ ^ Sup', insertText: '^$1^' },
-        { label: '/ ** Bold', insertText: '**$1**' },
-        { label: '/ __ Bold', insertText: '__$1__' },
-        { label: '/ ~~ Delete', insertText: '~~$1~~' },
-        { label: '/ == Mark', insertText: '==$1==' },
-        { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n', block: true },
+        { label: '/ ` Code', insertText: '`$1`', surroundSelection: '$1', },
+        { label: '/ * Italic', insertText: '*$1*', surroundSelection: '$1', },
+        { label: '/ _ Italic', insertText: '_$1_', surroundSelection: '$1', },
+        { label: '/ ~ Sub', insertText: '~$1~', surroundSelection: '$1', },
+        { label: '/ ^ Sup', insertText: '^$1^', surroundSelection: '$1', },
+        { label: '/ ** Bold', insertText: '**$1**', surroundSelection: '$1', },
+        { label: '/ __ Bold', insertText: '__$1__', surroundSelection: '$1', },
+        { label: '/ ~~ Delete', insertText: '~~$1~~', surroundSelection: '$1', },
+        { label: '/ == Mark', insertText: '==$1==', surroundSelection: '$1', },
+        { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n', block: true, surroundSelection: '$2', },
         ...buildTableCompletionItems(),
         { label: '/ --- Horizontal Line', insertText: '---\n', block: true },
         { label: '/ + [ ] TODO List', insertText: '+ [ ] ' },

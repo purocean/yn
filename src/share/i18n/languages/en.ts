@@ -45,6 +45,7 @@ const data = {
   'file-readonly-desc': 'The file is read-only. You can [change to writable](%s) in the system and then [refresh](%s) the document to edit.',
   'can-not-edit-this-file-type': 'Cannot edit this file type',
   'read-only-mode-desc': 'The application is currently in read-only mode and cannot be edited.',
+  'trigger-suggestions': 'Trigger Suggestions',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
@@ -403,6 +404,7 @@ const data = {
         'sticky-scroll-enabled': 'Enable Sticky Scroll - When the editor scrolls, the document title is fixed',
         'quick-suggestions': 'Quick Suggestions - Suggest as you type',
         'enable-ai-copilot-action': 'Enable the AI Copilot Action - Show the AI Copilot Action lightbulb when available',
+        'enable-trigger-suggest-bulb': 'Enable Trigger Suggest Bulb - Show the Trigger Suggest Bulb lightbulb when available',
       },
       'render': {
         'md-html': 'Enable HTML',

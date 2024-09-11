@@ -344,6 +344,7 @@ export interface BuildInSettings {
   'editor.suggest-on-trigger-characters': boolean,
   'editor.quick-suggestions': boolean,
   'editor.sticky-scroll-enabled': boolean,
+  'editor.enable-trigger-suggest-bulb': boolean,
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,

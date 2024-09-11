@@ -46,6 +46,7 @@ const data: BaseLanguage = {
   'file-readonly-desc': '当前文件只读，如需编辑请先在系统中[改为可写](%s)，然后[刷新](%s)当前文档。',
   'can-not-edit-this-file-type': '不能编辑此类型文件',
   'read-only-mode-desc': '当前是只读模式，不可编辑',
+  'trigger-suggestions': '触发提示',
   'premium': {
     'confetti': '彩色纸屑',
     'need-purchase': '[%s] 需要高级版',
@@ -394,6 +395,7 @@ const data: BaseLanguage = {
         'sticky-scroll-enabled': '启用粘性滚动 - 当编辑器滚动时，固定显示文档标题等',
         'quick-suggestions': '快速提示 - 在输入文本时显示提示',
         'enable-ai-copilot-action': '启用 AI Copilot 操作 - 当可用时显示 AI Copilot 操作灯泡',
+        'enable-trigger-suggest-bulb': '启用触发建议灯泡 - 当可用时显示触发建议操作灯泡',
       },
       'render': {
         'md-html': '启用 HTML',

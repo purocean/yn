@@ -46,6 +46,7 @@ const data: BaseLanguage = {
   'file-readonly-desc': '當前文件是唯讀的。如需編輯，請先在系統中[更改為可寫](%s)，然後[刷新](%s)當前文檔。',
   'can-not-edit-this-file-type': '不能編輯此類型的文件',
   'read-only-mode-desc': '當前應用處於唯讀模式，不可編輯',
+  'trigger-suggestions': '觸發提示',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',
@@ -394,6 +395,7 @@ const data: BaseLanguage = {
         'sticky-scroll-enabled': '啟用黏性捲動 - 當編輯器捲動時，固定顯示文件標題等',
         'quick-suggestions': '快速提示 - 在輸入文字時顯示提示',
         'enable-ai-copilot-action': '啟用 AI Copilot 操作 - 當可用時顯示 AI Copilot 操作燈泡',
+        'enable-trigger-suggest-bulb': '啟用觸發提示燈泡 - 當可用時顯示觸發提示燈泡',
       },
       'render': {
         'md-html': '啟用 HTML',

@@ -36,7 +36,12 @@ export default {
     ctx.editor.tapSimpleCompletionItems(items => {
       /* eslint-disable no-template-curly-in-string */
       items.push(
-        { label: '/ > Github Alerts', insertText: '> [!${1|NOTE,TIP,IMPORTANT,WARNING,CAUTION|}]${2}\n> ${3:Content}\n', block: true },
+        {
+          label: '/ > Github Alerts',
+          insertText: '> [!${1|NOTE,TIP,IMPORTANT,WARNING,CAUTION|}]${2}\n> ${3:Content}\n',
+          block: true,
+          surroundSelection: (snippet, selection, model) => snippet.replace('> ${3:Content}', model.getValueInRange(selection).replaceAll(/^/gm, '> ')),
+        },
       )
     })
   }

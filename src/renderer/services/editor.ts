@@ -20,6 +20,7 @@ export type SimpleCompletionItem = {
   insertText: string,
   detail?: string,
   block?: boolean, // block completion
+  surroundSelection?: `$${number}` | `\${${number}${string}` | ((snippet: string, selection: Monaco.Selection, model: Monaco.editor.ITextModel) => string | undefined),
   command?: {
     id: string;
     title: string;
