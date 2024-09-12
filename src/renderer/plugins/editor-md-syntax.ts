@@ -249,18 +249,16 @@ export default {
           ]
     }
 
-    const surroundSelectionSingle = (snippet: string, selection: Monaco.Selection) => selection.startLineNumber === selection.endLineNumber ? snippet.replace('$1', '$TM_SELECTED_TEXT') : undefined
-
     ctx.editor.tapSimpleCompletionItems(items => {
       items.unshift(
         { label: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
         { label: '/ []() Link', insertText: '[${2:Link}]($1)' },
-        { label: '/ # Head 1', insertText: '# $1', block: true, surroundSelection: surroundSelectionSingle, },
-        { label: '/ ## Head 2', insertText: '## $1', block: true, surroundSelection: surroundSelectionSingle, },
-        { label: '/ ### Head 3', insertText: '### $1', block: true, surroundSelection: surroundSelectionSingle, },
-        { label: '/ #### Head 4', insertText: '#### $1', block: true, surroundSelection: surroundSelectionSingle, },
-        { label: '/ ##### Head 5', insertText: '##### $1', block: true, surroundSelection: surroundSelectionSingle, },
-        { label: '/ ###### Head 6', insertText: '###### $1', block: true, surroundSelection: surroundSelectionSingle, },
+        { label: '/ # Head 1', insertText: '# $1', block: true },
+        { label: '/ ## Head 2', insertText: '## $1', block: true },
+        { label: '/ ### Head 3', insertText: '### $1', block: true },
+        { label: '/ #### Head 4', insertText: '#### $1', block: true },
+        { label: '/ ##### Head 5', insertText: '##### $1', block: true },
+        { label: '/ ###### Head 6', insertText: '###### $1', block: true },
         { label: '/ + List', insertText: '+ ' },
         { label: '/ - List', insertText: '- ' },
         { label: '/ > Blockquote', insertText: '> ' },
