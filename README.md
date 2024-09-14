@@ -76,17 +76,11 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.76.1](https://github.com/purocean/yn/releases/tag/v3.76.1) 2024-09-06
+### [v3.76.2](https://github.com/purocean/yn/releases/tag/v3.76.2) 2024-09-14
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-win-x64-3.76.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-mac-arm64-3.76.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-mac-x64-3.76.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-linux-x86_64-3.76.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.76.1/Yank-Note-linux-amd64-3.76.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-win-x64-3.76.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-mac-arm64-3.76.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-mac-x64-3.76.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-linux-x86_64-3.76.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-linux-amd64-3.76.2.deb)
 
-1. feat: Added support for the Russian language
-2. feat: Added an entry point for usage guidance
-3. feat: Optimized the completion of ordered list numbers
-4. feat: Added `{docHash}` placeholder to the image save directory configuration
-5. fix: Fixed an issue where the input box might not be focusable on Windows
-6. fix: Fixed the issue of incorrect read-only status in the editor under certain conditions
-7. fix: Fixed the issue of incorrect size calculation for Mermaid rendering under certain conditions
+1. fix: correct rendering issue with PlantUML diagrams
 
 [More release notes](https://github.com/purocean/yn/releases)
 
