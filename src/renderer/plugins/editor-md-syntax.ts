@@ -207,7 +207,7 @@ export default {
       monaco.languages.registerCodeActionProvider('*', {
         provideCodeActions (_model: Monaco.editor.ITextModel, range: Monaco.Range): Monaco.languages.CodeActionList {
           const enabled = ctx.setting.getSetting('editor.enable-trigger-suggest-bulb', true)
-          if (!enabled || range.isEmpty()) {
+          if (!enabled || range.isEmpty() || (range as Monaco.Selection).getDirection?.() === monaco.SelectionDirection.LTR) {
             return { dispose: () => 0, actions: [] }
           }
 

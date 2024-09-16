@@ -200,7 +200,7 @@ function convertLink (state: StateCore) {
       return
     }
 
-    if (/^[a-zA-Z+]+:/.test(attrVal)) { // xxx:
+    if (/^[a-zA-Z+_-]+:/.test(attrVal)) { // xxx:
       return
     }
 
