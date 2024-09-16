@@ -8,7 +8,7 @@ import type StateCore from 'markdown-it/lib/rules_core/state_core'
 import type { Components, Doc, PathItem, PositionState, ResourceTagName } from '@fe/types'
 
 const RE_POS = /:([0-9]+),?([0-9]+)?$/
-const RE_EXTERNAL_LINK = /^[a-zA-Z]{1,}:/
+const RE_EXTERNAL_LINK = /^[a-zA-Z_+-]{1,}:/
 
 export function isAnchorToken (token: Token) {
   return token.tag === 'a'
