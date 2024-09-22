@@ -90,7 +90,7 @@ In addition to the above core modules, there are many other modules under ctx, w
 Run the following code, you can see which modules are available of `ctx`.
 
 ```js
-// --run--
+// --run-- --no-worker--
 console.log(Object.keys(ctx).join('\n'))
 ```
 
@@ -109,7 +109,7 @@ In addition, if you only need to create some handy tools, you don't need to writ
 For example, run js code:
 
 ```js
-// --run--
+// --run-- --no-worker--
 ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log("hello world!")
 ```
