@@ -94,6 +94,8 @@ function handleLink (link: HTMLAnchorElement): boolean {
     }
 
     return true
+  } else if (/javascript:/i.test(href)) {
+    return false
   } else if (/^file:\/\//i.test(href)) {
     openPath(decodeURI(href.replace(/^file:\/\//i, '')))
     return true
