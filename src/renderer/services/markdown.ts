@@ -6,6 +6,8 @@ import MarkdownItAbbr from 'markdown-it-abbr'
 import MarkdownItAttributes from 'markdown-it-attributes'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 import { triggerHook } from '@fe/core/hook'
+import { HELP_REPO_NAME } from '@fe/support/args'
+import type { RenderEnv } from '@fe/types'
 import { getSetting } from './setting'
 
 /**
@@ -23,10 +25,10 @@ export function registerPlugin (plugin: (md: Markdown, ...args: any) => void, pa
 }
 
 const render = markdown.render
-markdown.render = (src: string, env?: any) => {
+markdown.render = (src: string, env: RenderEnv) => {
   triggerHook('MARKDOWN_BEFORE_RENDER', { src, env, md: markdown })
 
-  markdown.options.html = getSetting('render.md-html', true)
+  markdown.options.html = env.file?.repo === HELP_REPO_NAME ? true : getSetting('render.md-html', true)
   markdown.options.breaks = getSetting('render.md-breaks', true)
   markdown.options.linkify = getSetting('render.md-linkify', true)
   markdown.options.typographer = getSetting('render.md-typographer', false)

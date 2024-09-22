@@ -58,6 +58,8 @@ function handleLink (link: HTMLAnchorElement): boolean {
       if (/^file:\/\//i.test(parsedLink?.href)) {
         openPath(decodeURI(parsedLink.href.replace(/^file:\/\//i, '')))
         return true
+      } else if (/javascript:/i.test(href)) {
+        return false
       } else {
         if (isElectron) {
           openExternal(link.href)

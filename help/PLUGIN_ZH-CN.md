@@ -88,7 +88,7 @@ Yank Note 有一个 Action 中心 [`ctx.action`](https://yn-api-doc.vercel.app/m
 运行下面的代码，你可以看到 `ctx` 下都有哪些模块可供使用。
 
 ```js
-// --run--
+// --run-- --no-worker--
 console.log(Object.keys(ctx).join('\n'))
 ```
 
@@ -107,7 +107,7 @@ console.log(Object.keys(ctx).join('\n'))
 例如运行代码功能：
 
 ```js
-// --run--
+// --run-- --no-worker--
 ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log("hello world!")
 ```
