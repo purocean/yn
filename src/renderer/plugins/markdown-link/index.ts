@@ -61,10 +61,15 @@ function handleLink (link: HTMLAnchorElement): boolean {
       } else if (/javascript:/i.test(href)) {
         return false
       } else {
-        if (isElectron) {
-          openExternal(link.href)
-        } else {
-          window.open(link.href)
+        try {
+          if (isElectron) {
+            openExternal(link.href)
+          } else {
+            window.open(link.href)
+          }
+        } catch (error) {
+          console.error(error)
+          useToast().show('warning', 'Failed to open link')
         }
 
         return true
