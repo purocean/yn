@@ -1,74 +1,57 @@
 <template>
-  <teleport to="body">
-    <div
-      class="quick-filter"
-      v-fixed-float="props.filterInputHidden ? { onClose: close } : false"
-      @click.stop
-      :style="{
-        top: props.top,
-        right: props.right,
-        bottom: props.bottom,
-        left: props.left,
-      }"
-      @keypress.enter.stop.exact="chooseItem()"
-      @keydown.up.stop.exact="selectItem(-1)"
-      @keydown.down.stop.exact="selectItem(1)"
-    >
-      <div class="input">
-        <input
-          v-auto-focus
-          type="text"
-          :placeholder="placeholder"
-          v-model="keyword"
-          v-if="!props.filterInputHidden"
-          @blur.stop="close"
-          @keydown.esc="close"
-        />
-      </div>
-      <div ref="refList" class="list" :style="{width: fixedWidth}">
-        <div
-          v-for="item in list"
-          :key="item.key"
-          :class="{
-            item: true,
-            selected: selected && selected.key === item.key,
-          }"
-          @mousedown="chooseItem(item)"
-          @mouseover="updateSelected(item)"
-        >
-          <svg-icon class="checked-icon" v-if="item.key === props.current" name="check-solid" />
-          <span>{{ item.label }}</span>
-        </div>
+  <FixedFloat
+    class="quick-filter"
+    :top="props.top"
+    :right="props.right"
+    :bottom="props.bottom"
+    :left="props.left"
+    :disable-auto-focus="!props.filterInputHidden"
+    @close="close"
+    @keypress.enter.stop.exact="chooseItem()"
+    @keydown.up.stop.exact="selectItem(-1)"
+    @keydown.down.stop.exact="selectItem(1)"
+  >
+    <div class="input">
+      <input
+        v-auto-focus
+        type="text"
+        :placeholder="placeholder"
+        v-model="keyword"
+        v-if="!props.filterInputHidden"
+        @blur.stop="close"
+        @keydown.esc="close"
+      />
+    </div>
+    <div ref="refList" class="list" :style="{width: fixedWidth}">
+      <div
+        v-for="item in list"
+        :key="item.key"
+        :class="{
+          item: true,
+          selected: selected && selected.key === item.key,
+        }"
+        @mousedown="chooseItem(item)"
+        @mouseover="updateSelected(item)"
+      >
+        <svg-icon class="checked-icon" v-if="item.key === props.current" name="check-solid" />
+        <span>{{ item.label }}</span>
       </div>
     </div>
-  </teleport>
+  </FixedFloat>
 </template>
 
 <script lang="ts" setup>
 import { Components } from '@fe/types'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import SvgIcon from './SvgIcon.vue'
+import FixedFloat from './FixedFloat.vue'
 
 type Item = Components.QuickFilter.Item
 type Props = Components.QuickFilter.Props
 
-// eslint-disable-next-line no-undef
-const props: Props = defineProps({
-  top: String,
-  right: String,
-  bottom: String,
-  left: String,
-  placeholder: String,
-  current: String,
-  filterInputHidden: Boolean,
-  list: {
-    type: Array as () => Item[],
-    required: true,
-  },
-})
+const props = defineProps<Props>()
 
 const refList = ref<HTMLElement | null>(null)
-// eslint-disable-next-line no-undef
 const emit = defineEmits(['close', 'choose', 'input'])
 const fixedWidth = ref(undefined as string | undefined)
 const keyword = ref('')
@@ -145,23 +128,6 @@ watch(() => keyword.value, (val) => {
 
 <style lang="scss" scoped>
 .quick-filter {
-  position: fixed;
-  padding: 1px;
-  margin: 0;
-  background: var(--g-color-backdrop);
-  border: 1px var(--g-color-84) solid;
-  border-left: 0;
-  border-top: 0;
-  color: var(--g-foreground-color);
-  min-width: 9em;
-  max-width: 20em;
-  cursor: default;
-  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
-  border-radius: var(--g-border-radius);
-  overflow: hidden;
-  backdrop-filter: var(--g-backdrop-filter);
-  z-index: 9999999;
-
   input[type="text"] {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;

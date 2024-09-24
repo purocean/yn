@@ -10,6 +10,7 @@ import * as keybinding from '@fe/core/keybinding'
 import { useToast } from '@fe/support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
+import { useFixedFloat } from '@fe/support/ui/fixed-float'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import * as env from '@fe/support/env'
 import store from '@fe/support/store'
@@ -70,7 +71,7 @@ const ctx = Object.freeze({
   indexer,
   repo,
   export: exportDoc,
-  ui: { useToast, useModal, useQuickFilter, useContextMenu },
+  ui: { useToast, useModal, useQuickFilter, useFixedFloat, useContextMenu },
   registerHook: hook.registerHook,
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,

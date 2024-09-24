@@ -5,6 +5,7 @@ import type { Doc, FileItem, PathItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
+import FixedFloat from './components/FixedFloat.vue'
 
 export * from '@share/types'
 
@@ -193,6 +194,16 @@ export namespace Components {
       icon: string,
       title: string,
       onClick: (e: MouseEvent) => void,
+    }
+  }
+
+  export namespace FixedFloat {
+    export interface Props {
+      disableAutoFocus?: boolean;
+      top?: string | undefined;
+      right?: string | undefined;
+      bottom?: string | undefined;
+      left?: string | undefined;
     }
   }
 

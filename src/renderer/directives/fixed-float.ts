@@ -1,15 +1,15 @@
-import { App } from 'vue'
+import type { App, DirectiveBinding } from 'vue'
 
 export function install (app: App) {
   app.directive('fixed-float', {
-    mounted (el: HTMLElement, binding) {
+    mounted (el: HTMLElement, binding: DirectiveBinding<{ disableAutoFocus?: boolean, onClose: (byClickSelf?: boolean) => void } | undefined>) {
       const { value } = binding
 
       if (typeof value !== 'object') {
         return
       }
 
-      const { onClose } = value
+      const { onClose, disableAutoFocus } = value
 
       el.tabIndex = 0
       if (!el.style.outline) {
@@ -37,7 +37,9 @@ export function install (app: App) {
         }
       })
 
-      el.focus()
+      if (!disableAutoFocus) {
+        el.focus()
+      }
     }
   })
 }
