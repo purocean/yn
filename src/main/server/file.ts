@@ -248,9 +248,33 @@ export async function checkHash (repo: string, p: string, oldHash: string) {
   return oldHash === await hash(repo, p)
 }
 
-export async function upload (repo: string, buffer: Buffer, path: string) {
+export async function upload (repo: string, buffer: Buffer, filePath: string, ifExists: 'rename' | 'overwrite' | 'skip' | 'error' = 'error'): Promise<{ path: string, hash: string }> {
   if (readonly) throw new Error('Readonly')
-  await write(repo, path, buffer)
+
+  let newFilePath = filePath
+
+  if (await exists(repo, filePath)) {
+    if (ifExists === 'overwrite') {
+      // do nothing
+    } else if (ifExists === 'skip') {
+      return { path: filePath, hash: await hash(repo, filePath) }
+    } else if (ifExists === 'rename') {
+      const dir = path.dirname(filePath)
+      const ext = path.extname(filePath)
+      const base = path.basename(filePath, ext)
+
+      let i = 1
+      while (await exists(repo, newFilePath)) {
+        i++
+        const seq = i > 100 ? Math.floor(Math.random() * 1000000) : i
+        newFilePath = path.join(dir, base + `-${seq}` + ext)
+      }
+    } else {
+      throw new Error('File exists')
+    }
+  }
+
+  return { path: newFilePath, hash: await write(repo, newFilePath, buffer) }
 }
 
 function getRelativePath (from: string, to: string) {

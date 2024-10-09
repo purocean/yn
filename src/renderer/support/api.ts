@@ -393,12 +393,14 @@ export async function watchFs (
  * @param repo
  * @param fileBase64Url
  * @param filePath
+ * @param ifExists
  */
-export async function upload (repo: string, fileBase64Url: string, filePath: string): Promise<ApiResult<any>> {
+export async function upload (repo: string, fileBase64Url: string, filePath: string, ifExists: 'rename' | 'overwrite' | 'skip' | 'error' = 'rename'): Promise<ApiResult<{ path: string, hash: string }>> {
   const formData = new FormData()
   formData.append('repo', repo)
   formData.append('path', filePath)
   formData.append('attachment', fileBase64Url)
+  formData.append('exists', ifExists)
 
   return fetchHttp('/api/attachment', { method: 'POST', body: formData })
 }
