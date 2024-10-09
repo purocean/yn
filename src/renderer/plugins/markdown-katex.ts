@@ -248,7 +248,7 @@ export default {
       /* eslint-disable no-template-curly-in-string */
 
       items.push(
-        { label: '/ \\begin KaTeX Environment', insertText: '\\begin{$1}\n\\end{$1}' },
+        { label: '/ \\begin KaTeX Environment', insertText: '\\begin{$1}\n$2\n\\end{$1}', block: true },
         { label: '/ $ Inline KaTeX', insertText: '$$1$' },
         { label: '/ $$ Block KaTeX', insertText: '$$$1$$\n', block: true },
       )
