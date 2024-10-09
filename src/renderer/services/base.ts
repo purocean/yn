@@ -216,15 +216,6 @@ export async function writeToClipboard (type: string, value: any) {
 }
 
 /**
- * Get Server Timestamp
- * @returns timestamp in ms
- */
-export async function getServerTimestamp () {
-  const date = (await api.proxyFetch('https://www.baidu.com/')).headers.get('x-origin-date')
-  return dayjs(date || undefined).valueOf()
-}
-
-/**
  * Find in current repository.
  * @param query
  */
