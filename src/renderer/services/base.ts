@@ -48,7 +48,7 @@ export function getAttachmentURL (doc: Doc, opts: { origin: boolean } = { origin
  * @param name filename
  * @returns
  */
-export async function upload (file: File, belongDoc: Pick<Doc, 'repo' | 'path'>, name?: string) {
+export async function upload (file: File, belongDoc: Pick<Doc, 'repo' | 'path'>, name?: string, ifExists: 'rename' | 'overwrite' | 'skip' | 'error' = 'rename'): Promise<string> {
   if (FLAG_DEMO) {
     return Promise.resolve(URL.createObjectURL(file))
   }
@@ -67,11 +67,13 @@ export async function upload (file: File, belongDoc: Pick<Doc, 'repo' | 'path'>,
     .replaceAll('{date}', dayjs().format('YYYY-MM-DD'))
     .replaceAll('{docHash}', binMd5(parentNameWithoutMdExt).slice(0, 8))
 
-  const path: string = resolve(parentPath, assetsDir, filename)
+  let path: string = resolve(parentPath, assetsDir, filename)
 
   logger.debug('upload', belongDoc, file, path)
 
-  await api.upload(belongDoc.repo, fileBase64Url, path)
+  const res = await api.upload(belongDoc.repo, fileBase64Url, path, ifExists)
+
+  path = res.data.path
 
   if (
     assetsPathType === 'relative' ||

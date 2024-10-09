@@ -206,9 +206,10 @@ const attachment = async (ctx: any, next: any) => {
       const path = ctx.request.body.path
       const repo = ctx.request.body.repo
       const attachment = ctx.request.body.attachment
+      const exists = ctx.request.body.exists
       const buffer = Buffer.from(attachment.substring(attachment.indexOf(',') + 1), 'base64')
-      await file.upload(repo, buffer, path)
-      ctx.body = result('ok', 'success', path)
+      const res = await file.upload(repo, buffer, path, exists)
+      ctx.body = result('ok', 'success', res)
     } else if (ctx.method === 'GET') {
       let { repo, path } = ctx.query
 
