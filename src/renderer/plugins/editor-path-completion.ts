@@ -299,7 +299,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
       pathSegmentEnd.column,
     )
 
-    const items = this.getFileList(parentDir)
+    const items = await this.getFileList(parentDir)
 
     let i = 0
     for (const item of items) {
@@ -328,7 +328,7 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
     }
   }
 
-  private getFileList (parentDir: string): Components.Tree.Node[] {
+  private async getFileList (parentDir: string): Promise<Components.Tree.Node[]> {
     const result: Components.Tree.Node[] = []
 
     const traverseTree = (nodes: Components.Tree.Node[]) => {
@@ -345,7 +345,18 @@ class CompletionProvider implements Monaco.languages.CompletionItemProvider {
       })
     }
 
-    traverseTree(this.ctx.store.state.tree || [])
+    const repo = this.ctx.store.state.currentFile?.repo
+
+    if (!repo) {
+      return result
+    }
+
+    if (this.ctx.store.state.currentFile?.repo === this.ctx.store.state.currentRepo?.name) {
+      traverseTree(this.ctx.store.state.tree || [])
+    } else {
+      const tree = await this.ctx.api.fetchTree(repo, { by: 'name', order: 'asc' }, undefined, true)
+      traverseTree(tree)
+    }
 
     return result
   }
