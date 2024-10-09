@@ -492,6 +492,10 @@ summary > .item {
   outline: 2px #4790fe dashed;
   outline-offset: -4px;
   transition-delay: 0s;
+
+  summary {
+    contain: none;
+  }
 }
 
 .file-name {
