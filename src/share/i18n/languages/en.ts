@@ -352,6 +352,7 @@ const data = {
       'zoom': 'Zoom',
       'use-browser': 'The browser printing feature will be used.',
       'include-bg': 'Include background',
+      'generate-document-outline': 'Generate document outline',
     },
     'use-html': 'Use the rendered HTML source',
     'use-markdown': 'Use markdown source',

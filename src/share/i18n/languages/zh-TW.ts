@@ -353,6 +353,7 @@ const data: BaseLanguage = {
       'zoom': '縮放',
       'use-browser': '將使用瀏覽器打印功能',
       'include-bg': '包含背景',
+      'generate-document-outline': '生成文檔大綱',
     },
     'use-html': '使用渲染後的 HTML 轉換',
     'use-markdown': '使用 Markdown 轉換',

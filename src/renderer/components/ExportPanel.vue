@@ -47,6 +47,9 @@
                   </label>
                 </div>
                 <div style="margin: 10px 0"><label><input type="checkbox" v-model="convert.pdfOptions.printBackground"> {{$t('export-panel.pdf.include-bg')}}</label></div>
+
+                <!-- generateDocumentOutline only works in headless mode https://github.com/MicrosoftEdge/WebView2Feedback/issues/4466 -->
+                <!-- <div style="margin: 10px 0"><label><input type="checkbox" v-model="convert.pdfOptions.generateDocumentOutline"> {{$t('export-panel.pdf.generate-document-outline')}}</label></div> -->
               </div>
               <div v-else> {{$t('export-panel.pdf.use-browser')}} </div>
             </template>
@@ -118,6 +121,7 @@ export default defineComponent({
         pageSize: 'A4' as 'A4' | 'A3' | 'A5' | 'Legal' | 'Letter' | 'Tabloid',
         scaleFactor: 100,
         printBackground: true,
+        generateDocumentOutline: true,
       }
     })
 
@@ -151,13 +155,14 @@ export default defineComponent({
         // in browser, use print api
         await printCurrentDocument()
       } else {
-        const { landscape, pageSize, scaleFactor, printBackground } = convert.pdfOptions
         convert.pdfOptions.scaleFactor = Math.min(200, Math.max(10, convert.pdfOptions.scaleFactor))
 
+        const { landscape, pageSize, scaleFactor, printBackground, generateDocumentOutline } = convert.pdfOptions
 
         const buffer = await printCurrentDocumentToPDF({
           pageSize,
           printBackground,
+          generateDocumentOutline,
           landscape: Boolean(landscape),
           scale: scaleFactor / 100,
         })
