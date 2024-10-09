@@ -270,6 +270,11 @@ export async function upload (repo: string, buffer: Buffer, filePath: string, if
       let i = 1
       while (await exists(repo, newFilePath)) {
         i++
+
+        if (i > 10000) {
+          throw new Error('Too many files with the same name')
+        }
+
         const seq = i > 100 ? Math.floor(Math.random() * 1000000) : i
         newFilePath = path.join(dir, base + `-${seq}` + ext).replace(/\\/g, '/')
       }
