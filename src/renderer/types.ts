@@ -473,6 +473,7 @@ export type BuildInHookTypes = {
   VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },
   VIEW_SCROLL: { e: Event },
+  VIEW_BEFORE_RENDER: { env: RenderEnv },
   VIEW_RENDER: never,
   VIEW_RENDERED: never,
   VIEW_MOUNTED: never,
