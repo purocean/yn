@@ -1,5 +1,5 @@
 import type { VNode } from 'vue'
-import type { OpenDialogOptions } from 'electron'
+import type { OpenDialogOptions, PrintToPDFOptions } from 'electron'
 import type { Language, MsgPath } from '@share/i18n'
 import type { Doc, FileItem, PathItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
@@ -264,12 +264,7 @@ export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 export type Keybinding = { type: 'workbench' | 'editor' | 'application', keys: string | null, command: string }
 
-export type PrintOpts = {
-  landscape?: boolean,
-  pageSize?: 'A0' | 'A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | 'Legal' | 'Letter' | 'Tabloid' | 'Ledger' | { height: number, width: number }
-  scaleFactor?: number,
-  printBackground?: boolean,
-}
+export type PrintOpts = PrintToPDFOptions
 
 export type ConvertOpts = {
   fromType: 'markdown' | 'html',
