@@ -267,7 +267,7 @@ export async function upload (repo: string, buffer: Buffer, filePath: string, if
       while (await exists(repo, newFilePath)) {
         i++
         const seq = i > 100 ? Math.floor(Math.random() * 1000000) : i
-        newFilePath = path.join(dir, base + `-${seq}` + ext)
+        newFilePath = path.join(dir, base + `-${seq}` + ext).replace(/\\/g, '/')
       }
     } else {
       throw new Error('File exists')
