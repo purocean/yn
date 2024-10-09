@@ -1,6 +1,10 @@
 import * as hook from '@fe/core/hook'
 import * as ioc from '@fe/core/ioc'
 
+jest.mock('@fe/support/args', () => ({
+  FLAG_DEMO: false,
+}))
+
 jest.mock('@fe/utils', () => ({
   getLogger: () => new Proxy({}, { get: () => () => 0 })
 }))
