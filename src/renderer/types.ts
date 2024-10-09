@@ -5,7 +5,6 @@ import type { Doc, FileItem, PathItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
-import FixedFloat from './components/FixedFloat.vue'
 
 export * from '@share/types'
 
