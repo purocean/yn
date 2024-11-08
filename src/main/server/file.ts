@@ -296,7 +296,14 @@ async function travels (
 
   await Promise.all(list.map(async name => {
     const p = path.join(location, name)
-    const stat = await fs.stat(p)
+    const stat = await fs.stat(p).catch(e => {
+      console.error('travels', p, e)
+      return null
+    })
+
+    if (!stat) {
+      return
+    }
 
     if (stat.isFile()) {
       if (excludeRegex.test(name)) {
