@@ -1,6 +1,6 @@
 import mime from 'mime'
 import * as api from '@fe/support/api'
-import { encodeMarkdownLink } from '@fe/utils'
+import { encodeMarkdownLink, removeQuery } from '@fe/utils'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
 import { replaceValue } from '@fe/services/editor'
@@ -42,8 +42,20 @@ async function transformImgOutLink (img: HTMLImageElement) {
     const headers = JSON.parse(img.getAttribute('headers') || '{}')
     const res = await api.proxyFetch(img.src, { headers })
     const blob = await res.blob()
-    const imgFile = new File([blob!], 'file.' + mime.getExtension(res.headers.get('content-type')!))
-    const assetPath = await upload(imgFile, currentFile)
+    const contentType = res.headers.get('content-type') || ''
+
+    if (!contentType.startsWith('image/')) {
+      throw new Error('Not an image')
+    }
+
+    const ext = mime.getExtension(contentType) || ''
+    const imgFile = new File([blob!], 'file.' + ext)
+    const name = removeQuery(img.src).split('/').pop() // get file name from url
+    const assetPath = await upload(
+      imgFile,
+      currentFile,
+      ext === name?.split('.').pop() ? name : undefined // if ext is not same as file name, use file name
+    )
     replacedLink = assetPath
   }
 
