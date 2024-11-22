@@ -4,7 +4,7 @@
       <div class="history">
         <div class="versions-wrapper" v-if="versions && versions.length">
           <div v-if="listType === 'all'" class="clear" @click="clearVersions">{{$t('doc-history.clear')}}({{sizeText}})</div>
-          <GroupTabs class="tabs" :tabs="getListTypes()" v-model="listType" />
+          <group-tabs class="x-tabs" size="small" :tabs="getListTypes()" v-model="listType" />
           <div class="versions" v-if="xVersions && xVersions.length">
             <div
               v-for="(version, i) in xVersions"
@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="content" v-if="content">
-          <GroupTabs class="tabs" :tabs="getDisplayTypes()" v-model="displayType" />
+          <group-tabs class="x-tabs" size="small" :tabs="getDisplayTypes()" v-model="displayType" />
           <div class="diff-tips" v-if="displayType === 'diff'">
             <div>{{$t('doc-history.history')}}</div>
             <div>{{$t('doc-history.current')}}</div>
@@ -524,16 +524,8 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
-.tabs {
-  display: inline-flex;
+.versions-wrapper .x-tabs {
   margin-bottom: 8px;
-  z-index: 1;
-  flex: none;
-
-  ::v-deep(.tab) {
-    line-height: 1.5;
-    font-size: 14px;
-  }
 }
 
 .content {

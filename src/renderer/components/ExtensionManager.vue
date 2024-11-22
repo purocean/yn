@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="body">
         <div class="side" ref="refSide">
-          <group-tabs class="tabs" :tabs="listTypes" v-model="listType" />
+          <group-tabs class="x-tabs" size="small" :tabs="listTypes" v-model="listType" />
           <div v-if="extensions.length > 0" class="list">
             <div
               v-for="item in extensions"
@@ -157,7 +157,7 @@
               </div>
             </div>
             <div class="content-wrapper">
-              <group-tabs class="tabs" :tabs="contentTypes" v-model="contentType" />
+              <group-tabs class="x-tabs" size="small" :tabs="contentTypes" v-model="contentType" />
               <template v-if="useNpmjsReadmePage">
                 <div v-show="iframeLoaded" class="content">
                   <iframe
@@ -806,16 +806,8 @@ onUnmounted(() => {
   }
 }
 
-.tabs {
-  display: inline-flex;
+.wrapper .body .x-tabs {
   margin-bottom: 8px;
-  z-index: 1;
-  flex: none;
-
-  ::v-deep(.tab) {
-    line-height: 1.5;
-    font-size: 14px;
-  }
 }
 
 .icon-extension {

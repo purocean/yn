@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs">
+  <div :class="{ tabs: true, small: size === 'small' }">
     <div
       v-for="tab of tabs"
       :key="tab.value"
@@ -12,15 +12,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
-type Tab = { label: string, value: string }
+import type { LabelValueItem } from '@share/types'
 
 export default defineComponent({
   name: 'group-tabs',
   props: {
     modelValue: String,
+    size: String as () => 'small',
     tabs: {
-      type: Array as () => Tab[],
+      type: Array as () => LabelValueItem<string>[],
       required: true,
     }
   },
@@ -54,6 +54,19 @@ export default defineComponent({
       color: var(--g-color-0);
       font-weight: 500;
       background: var(--g-color-94);
+    }
+  }
+
+  &.small {
+    display: inline-flex;
+    margin-bottom: 0;
+    z-index: 1;
+    flex: none;
+    justify-self: center;
+
+    .tab {
+      line-height: 1.5;
+      font-size: 14px;
     }
   }
 }
