@@ -721,6 +721,7 @@ const data: BaseLanguage = {
     'plugin_document-history-stack_forward': '前进到下一个文档',
     'plugin_editor_focus-editor': '聚焦编辑器',
     'plugin_switch-todo_switch': '勾选/取消勾选待办事项（需在编辑器中选中内容）',
+    'plugin_view-links_view-document-links': '查看文档链接',
     'view_enter-presentation': '进入演示模式',
     'workbench_show-quick-open': '显示快速跳转',
     'workbench_toggle-outline': '显示/隐藏目录',
@@ -772,6 +773,20 @@ const data: BaseLanguage = {
     'copy-image': '复制图片',
     'delete-image': '删除图片',
     'open-in-new-tab': '在新标签页中打开',
+  },
+  'index-status': {
+    'switch-repository-html': '请 <a href="javascript:void(0)" data-command="switch-repository">切换到仓库 [<strong>%s</strong>]</a> 来使用此功能。',
+    'enable-indexing-html': '请 <a href="javascript:void(0)" data-command="enable-indexing">为仓库 [<strong>%s</strong>] 启用索引</a> 来使用此功能。',
+    'indexing': '索引中……',
+    'indexed': '已索引',
+  },
+  'view-links': {
+    'links': '链接',
+    'back-links': '反向链接',
+    'no-result': '无结果',
+    'links-in': '“%s”中的链接',
+    'back-links-for': '“%s”的反向链接',
+    're-index': '重新索引',
   },
 }
 

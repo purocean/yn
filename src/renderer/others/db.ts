@@ -22,6 +22,9 @@ db.version(1).stores({
 })
 
 export const documents = {
+  getTable () {
+    return db.documents
+  },
   findByRepoAndPath (repo: string, path: string): Promise<DocumentEntity | undefined> {
     logger.debug('getByRepoAndPath', repo, path)
     return db.documents.where({ repo, path }).first()

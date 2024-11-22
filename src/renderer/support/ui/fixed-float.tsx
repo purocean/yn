@@ -1,10 +1,12 @@
-import { Component, createApp, defineComponent, shallowRef } from 'vue'
+import { omit } from 'lodash-es'
+import { Component, createApp, defineComponent, nextTick, shallowRef } from 'vue'
 import type { Components } from '@fe/types'
 import directives from '@fe/directives'
 import FixedFloat from '@fe/components/FixedFloat.vue'
 
 interface Opts extends Components.FixedFloat.Props {
-  component: Component
+  component: Component;
+  closeOnBlur?: boolean;
 }
 
 export interface Instance {
@@ -29,16 +31,33 @@ export default function install () {
       const attrs = shallowRef<Opts | null>(null)
 
       function show (opts: Opts) {
-        attrs.value = opts
+        if (attrs.value) {
+          hide()
+          nextTick(() => show(opts))
+        } else {
+          attrs.value = opts
+        }
       }
 
       function hide () {
         attrs.value = null
       }
 
+      function onClose (clickBySelf: boolean) {
+        if (attrs.value?.closeOnBlur === false) {
+          return
+        }
+
+        if (clickBySelf) {
+          return
+        }
+
+        hide()
+      }
+
       expose({ show, hide })
 
-      return () => attrs.value && <FixedFloat {...attrs.value} onClose={hide}>
+      return () => attrs.value && <FixedFloat {...omit(attrs.value, 'component', 'closeOnBlur')} onClose={onClose}>
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore */}
         <attrs.value.component />

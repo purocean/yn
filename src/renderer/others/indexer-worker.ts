@@ -170,8 +170,11 @@ class RepoWatcher {
           }
 
           try {
-            processingStatus.total++
-            reportStatus(repo, payload.path, Date.now() - processingStatus.startTime)
+            if (!processingStatus.ready) {
+              processingStatus.total++
+              reportStatus(repo, payload.path, Date.now() - processingStatus.startTime)
+            }
+
             await processMarkdownFile(repo, payload)
             processingStatus.indexed++
           } catch (error) {

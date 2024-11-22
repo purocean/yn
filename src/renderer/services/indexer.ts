@@ -73,12 +73,17 @@ function triggerWatchRepo (repo?: Repo) {
   client.call.main.triggerWatchRepo(repo ? { ...repo } : null)
 }
 
+export function getDocumentsManager () {
+  return documents
+}
+
 export function stopWatch () {
   client.call.main.stopWatch()
 }
 
 export async function cleanCurrentRepo () {
   const repo = store.state.currentRepo
+  store.state.currentRepoIndexStatus = null
   if (repo) {
     await documents.deleteByRepo(repo.name)
   }
@@ -103,6 +108,7 @@ export async function rebuildCurrentRepo () {
 
 export function updateIndexStatus (repo: Repo, status: IndexStatus) {
   logger.info('updateIndexStatus', repo.name, status.ready, status.indexed, status.cost)
+  store.state.currentRepoIndexStatus = { repo: repo.name, status }
 }
 
 export async function importScriptsToWorker (url: string | URL) {

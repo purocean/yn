@@ -15,7 +15,7 @@ export type PositionState = { line: number, column?: number } | { anchor: string
 
 export type SwitchDocOpts = {
   force?: boolean,
-  source?: 'markdown-link' | 'history-stack',
+  source?: 'markdown-link' | 'history-stack' | 'view-links',
   position?: PositionState | null
 }
 
@@ -435,6 +435,7 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-in': () => void,
   'plugin.electron-zoom.zoom-out': () => void,
   'plugin.electron-zoom.zoom-reset': () => void,
+  'plugin.view-links.view-document-links': () => void,
   'premium.show': (tab?: PremiumTab) => void,
   'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
   'base.switch-repository-1': () => void,
@@ -617,14 +618,14 @@ export interface IndexItemLink {
   href: string;
   internal: string | null;
   position: PositionState | null;
-  blockMap: number[]
+  blockMap: number[];
 }
 
 export interface IndexItemResource {
   src: string;
   internal: string | null;
   tag: ResourceTagName;
-  blockMap: number[]
+  blockMap: number[];
 }
 
 export interface IndexItem {

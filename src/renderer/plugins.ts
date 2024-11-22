@@ -73,6 +73,7 @@ import previewFontSize from '@fe/plugins/preview-font-size'
 import dropToOpenFile from '@fe/plugins/drop-to-open-file'
 import recordRecentDocument from '@fe/plugins/record-recent-document'
 import aiCopilot from '@fe/plugins/ai-copilot'
+import viewLinks from '@fe/plugins/view-links'
 
 export default [
   buildInRenderers,
@@ -150,4 +151,5 @@ export default [
   recordRecentDocument,
   markdownGithubAlerts,
   aiCopilot,
+  viewLinks,
 ]

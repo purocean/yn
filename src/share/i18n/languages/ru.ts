@@ -721,6 +721,7 @@ const data: BaseLanguage = {
     'plugin_document-history-stack_forward': 'Перейти к следующему документу',
     'plugin_editor_focus-editor': 'Переключиться на редактор',
     'plugin_switch-todo_switch': 'Отметить/снять отметку с TODO (сначала необходимо выбрать содержимое в редакторе)',
+    'plugin_view-links_view-document-links': 'Показать ссылки на документ',
     'view_enter-presentation': 'Войти в режим презентации',
     'workbench_show-quick-open': 'Показать быстрое открытие',
     'workbench_toggle-outline': 'Показать/скрыть конспект',
@@ -772,6 +773,20 @@ const data: BaseLanguage = {
     'copy-image': 'Копировать изображение',
     'delete-image': 'Удалить изображение',
     'open-in-new-tab': 'Открыть в новой вкладке',
+  },
+  'index-status': {
+    'switch-repository-html': 'Пожалуйста, <a href="javascript:void(0)" data-command="switch-repository">переключитесь на репозиторий [<strong>%s</strong>]</a>, чтобы использовать эту функцию.',
+    'enable-indexing-html': 'Пожалуйста, <a href="javascript:void(0)" data-command="enable-indexing">включите индексацию для репозитория [<strong>%s</strong>]</a>, чтобы использовать эту функцию.',
+    'indexing': 'Индексация...',
+    'indexed': 'Индексировано',
+  },
+  'view-links': {
+    'links': 'Ссылки',
+    'back-links': 'Обратные ссылки',
+    'no-result': 'Нет результатов',
+    'links-in': 'Ссылки в “%s”',
+    'back-links-for': 'Обратные ссылки для “%s”',
+    're-index': 'Переиндексировать',
   },
 }
 

@@ -1,5 +1,5 @@
 import store from '@fe/support/store'
-import { getSetting } from './setting'
+import { getSetting, writeSettings } from './setting'
 import { isEqual } from 'lodash-es'
 
 /**
@@ -35,5 +35,16 @@ export function setCurrentRepo (name?: string) {
     }
   } else {
     store.state.currentRepo = undefined
+  }
+}
+
+/**
+ * enable or disable repo indexing
+ */
+export async function toggleRepoIndexing (name: string, enable: boolean) {
+  const repos = getAllRepos().map(x => x.name === name ? { ...x, enableIndexing: enable } : x)
+  await writeSettings({ repos })
+  if (store.state.currentRepo?.name === name) { // update current repo
+    setCurrentRepo(name)
   }
 }
