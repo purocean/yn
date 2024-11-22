@@ -491,7 +491,6 @@ table {
   }
 
   a {
-    text-decoration: none;
     margin-right: 8px;
     font-size: 14px;
   }
