@@ -19,18 +19,18 @@ export default {
       const list = ctx.lib.vue.ref<(ListItem[] | null)>(null)
       const { $t } = ctx.i18n.useI18n()
 
-      const buildList = (type: TabItemValue) => {
-        const currentRepoName = ctx.store.state.currentRepo?.name
-        const currentFilePath = ctx.store.state.currentFile?.path
-        const currentFileName = ctx.store.state.currentFile?.name
+      const currentFileRepo = ctx.store.state.currentFile?.repo
+      const currentFilePath = ctx.store.state.currentFile?.path
+      const currentFileName = ctx.store.state.currentFile?.name
 
+      const buildList = (type: TabItemValue) => {
         list.value = null
         title.value = currentFileName ? {
           links: $t.value('view-links.links-in', currentFileName),
           'back-links': $t.value('view-links.back-links-for', currentFileName),
         }[type] : ''
 
-        if (!ctx.store.state.currentRepoIndexStatus?.status.ready || currentRepoName !== ctx.store.state.currentRepoIndexStatus?.repo || !currentFilePath) {
+        if (!ctx.store.state.currentRepoIndexStatus?.status.ready || currentFileRepo !== ctx.store.state.currentRepoIndexStatus?.repo || !currentFilePath) {
           list.value = []
           return
         }
@@ -38,10 +38,10 @@ export default {
         const dm = ctx.indexer.getDocumentsManager()
 
         if (type === 'links') {
-          dm.findByRepoAndPath(currentRepoName, currentFilePath).then(doc => {
-            if (currentTab.value === 'links' && currentFilePath === ctx.store.state.currentFile?.path) {
+          dm.findByRepoAndPath(currentFileRepo, currentFilePath).then(doc => {
+            if (currentTab.value === 'links') {
               list.value = doc ? doc.links.filter(link => !!link.internal).map(link => ({
-                doc: { type: 'file', repo: currentRepoName, path: link.internal!, name: ctx.utils.path.basename(link.internal!) },
+                doc: { type: 'file', repo: currentFileRepo, path: link.internal!, name: ctx.utils.path.basename(link.internal!) },
                 position: link.position
               })) : []
             }
@@ -49,15 +49,15 @@ export default {
         } else if (type === 'back-links') {
           const data: ListItem[] = []
 
-          dm.getTable().where({ repo: currentRepoName }).each(doc => {
+          dm.getTable().where({ repo: currentFileRepo }).each(doc => {
             doc.links.forEach(link => {
               if (link.internal === currentFilePath) {
                 const position: PositionState = { line: link.blockMap[0] + 1 }
-                data.push({ doc: { type: 'file', repo: currentRepoName, path: doc.path, name: ctx.utils.path.basename(doc.path) }, position })
+                data.push({ doc: { type: 'file', repo: currentFileRepo, path: doc.path, name: ctx.utils.path.basename(doc.path) }, position })
               }
             })
           }).then(() => {
-            if (currentTab.value === 'back-links' && currentFilePath === ctx.store.state.currentFile?.path) {
+            if (currentTab.value === 'back-links') {
               list.value = data
             }
           })
@@ -68,17 +68,28 @@ export default {
         ctx.ui.useFixedFloat().hide()
       }
 
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          close()
+        }
+      }
+
       ctx.lib.vue.watch(() => currentTab.value, buildList)
       ctx.lib.vue.watch(() => ctx.store.state.currentRepoIndexStatus?.status.ready, () => buildList(currentTab.value))
+      ctx.lib.vue.watch(() => [ctx.store.state.currentFile?.repo, ctx.store.state.currentRepo?.name], (val) => {
+        if (val[0] !== currentFileRepo || val[1] !== currentFileRepo) {
+          close()
+        }
+      }, { flush: 'post' })
 
       ctx.lib.vue.onMounted(() => {
         buildList(currentTab.value)
 
-        ctx.registerHook('GLOBAL_KEYDOWN', e => {
-          if (e.key === 'Escape') {
-            close()
-          }
-        })
+        ctx.registerHook('GLOBAL_KEYDOWN', handleKeyDown)
+      })
+
+      ctx.lib.vue.onBeforeUnmount(() => {
+        ctx.removeHook('GLOBAL_KEYDOWN', handleKeyDown)
       })
 
       return () => <IndexStatus>

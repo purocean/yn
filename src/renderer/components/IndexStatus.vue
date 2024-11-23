@@ -35,13 +35,14 @@ function handleCommand (e: MouseEvent) {
     return
   }
 
-  const command = (e.target as HTMLElement).dataset.command
+  const target = e.target as HTMLElement
+  const command = target.dataset.command || target.parentElement?.dataset.command
   if (command === 'switch-repository') {
+    e.preventDefault()
     setCurrentRepo(currentFile.value.repo)
-    e.preventDefault()
   } else if (command === 'enable-indexing') {
-    toggleRepoIndexing(currentRepo.value.name, true)
     e.preventDefault()
+    toggleRepoIndexing(currentRepo.value.name, true)
   }
 }
 </script>
