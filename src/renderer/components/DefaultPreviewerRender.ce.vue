@@ -90,6 +90,7 @@ async function render (checkInComposition = false) {
   const startTime = performance.now()
   renderEnv = { tokens: [], source: content, file, renderCount, safeMode }
   try {
+    await triggerHook('VIEW_BEFORE_RENDER', { env: renderEnv }, { breakable: true })
     renderContent.value = renderer.render(content, renderEnv)
   } catch (error: any) {
     logger.error('render', error)

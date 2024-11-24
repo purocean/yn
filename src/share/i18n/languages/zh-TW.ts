@@ -46,6 +46,7 @@ const data: BaseLanguage = {
   'file-readonly-desc': '當前文件是唯讀的。如需編輯，請先在系統中[更改為可寫](%s)，然後[刷新](%s)當前文檔。',
   'can-not-edit-this-file-type': '不能編輯此類型的文件',
   'read-only-mode-desc': '當前應用處於唯讀模式，不可編輯',
+  'trigger-suggestions': '觸發提示',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',
@@ -352,6 +353,7 @@ const data: BaseLanguage = {
       'zoom': '縮放',
       'use-browser': '將使用瀏覽器打印功能',
       'include-bg': '包含背景',
+      'generate-document-outline': '生成文檔大綱',
     },
     'use-html': '使用渲染後的 HTML 轉換',
     'use-markdown': '使用 Markdown 轉換',
@@ -376,7 +378,8 @@ const data: BaseLanguage = {
         'name': '倉庫名',
         'name-placeholder': '請輸入',
         'path': '路徑',
-        'path-placeholder': '請選擇一個路徑'
+        'path-placeholder': '請選擇一個路徑',
+        'enable-indexing': '啟用索引',
       },
       'editor': {
         'mouse-wheel-zoom': '滑鼠滾輪縮放',
@@ -394,6 +397,7 @@ const data: BaseLanguage = {
         'sticky-scroll-enabled': '啟用黏性捲動 - 當編輯器捲動時，固定顯示文件標題等',
         'quick-suggestions': '快速提示 - 在輸入文字時顯示提示',
         'enable-ai-copilot-action': '啟用 AI Copilot 操作 - 當可用時顯示 AI Copilot 操作燈泡',
+        'enable-trigger-suggest-bulb': '啟用觸發提示燈泡 - 當可用時顯示觸發提示燈泡',
       },
       'render': {
         'md-html': '啟用 HTML',
@@ -717,6 +721,7 @@ const data: BaseLanguage = {
     'plugin_document-history-stack_forward': '前進到下一個文件',
     'plugin_editor_focus-editor': '聚焦編輯器',
     'plugin_switch-todo_switch': '勾選/取消勾選待辦事項（需在編輯器中選取內容）',
+    'plugin_view-links_view-document-links': '顯示文件中的連結',
     'view_enter-presentation': '進入簡報模式',
     'workbench_show-quick-open': '顯示快速跳轉',
     'workbench_toggle-outline': '顯示/隱藏目錄',
@@ -768,6 +773,20 @@ const data: BaseLanguage = {
     'copy-image': '複製圖片',
     'delete-image': '刪除圖片',
     'open-in-new-tab': '在新標籤中打開',
+  },
+  'index-status': {
+    'switch-repository-html': '請 <a href="javascript:void(0)" data-command="switch-repository">切換到倉庫 [<strong>%s</strong>]</a> 以使用此功能。',
+    'enable-indexing-html': '請 <a href="javascript:void(0)" data-command="enable-indexing">為倉庫 [<strong>%s</strong>] 啟用索引</a> 以使用此功能。',
+    'indexing': '索引中...',
+    'indexed': '已索引',
+  },
+  'view-links': {
+    'links': '連結',
+    'back-links': '反向連結',
+    'no-result': '無結果',
+    'links-in': '“%s”中的連結',
+    'back-links-for': '“%s”的反向連結',
+    're-index': '重新索引',
   },
 }
 

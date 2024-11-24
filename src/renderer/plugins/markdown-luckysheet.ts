@@ -2,7 +2,6 @@ import { h } from 'vue'
 import Markdown from 'markdown-it'
 import { Plugin } from '@fe/context'
 import store from '@fe/support/store'
-import { DOM_ATTR_NAME } from '@fe/support/args'
 import { getInitialized, getLoadStatus } from '@fe/others/extension'
 import { t } from '@fe/services/i18n'
 
@@ -40,7 +39,7 @@ const MarkdownItPlugin = (md: Markdown) => {
       return linkTemp(tokens, idx, options, env, slf)
     }
 
-    const url = token.attrGet(DOM_ATTR_NAME.ORIGIN_HREF)
+    const url = token.attrGet('href')
     if (!url || url.includes(':')) {
       return linkTemp(tokens, idx, options, env, slf)
     }

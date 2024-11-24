@@ -1,5 +1,5 @@
 import type { BuildInHookTypes } from '@fe/types'
-import { getLogger } from '@fe/utils'
+import { getLogger } from '@fe/utils/pure'
 import * as ioc from './ioc'
 
 export type HookType = keyof BuildInHookTypes

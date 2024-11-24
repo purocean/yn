@@ -1,4 +1,4 @@
-import { nextTick, Ref } from 'vue'
+import { markRaw, nextTick, Ref } from 'vue'
 import type { Components } from '@fe/types'
 import { getActionHandler, registerAction } from '@fe/core/action'
 import * as ioc from '@fe/core/ioc'
@@ -79,7 +79,7 @@ export async function refreshTree () {
       tree[0].name = repo.name
     }
 
-    store.state.tree = tree
+    store.state.tree = markRaw(tree)
   } catch (error: any) {
     useToast().show('warning', error.message)
   }

@@ -65,6 +65,11 @@ html {
 
 a {
   color: var(--g-color-anchor);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 ::selection {

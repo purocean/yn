@@ -189,7 +189,6 @@ function openShortcutManager () {
         font-size: 15px;
 
         a {
-          text-decoration: none;
           text-overflow: ellipsis;
           word-wrap: break-word;
         }

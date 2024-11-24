@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="title-bar">
         <h3>{{ $t('keyboard-shortcuts.keyboard-shortcuts') }}</h3>
-        <group-tabs :tabs="tabs" v-model="tab" />
+        <group-tabs :tabs="tabs" size="small" v-model="tab" />
         <input v-model="filterStr" :placeholder="$t('keyboard-shortcuts.search')" />
       </div>
       <div class="list" ref="listRef">
@@ -413,19 +413,6 @@ onUnmounted(() => {
     max-width: 200px;
     font-size: 14px !important;
   }
-
-  .tabs {
-    display: inline-flex;
-    margin-bottom: 0;
-    z-index: 1;
-    flex: none;
-    justify-self: center;
-
-    ::v-deep(.tab) {
-      line-height: 1.5;
-      font-size: 14px;
-    }
-  }
 }
 
 .list {
@@ -504,7 +491,6 @@ table {
   }
 
   a {
-    text-decoration: none;
     margin-right: 8px;
     font-size: 14px;
   }

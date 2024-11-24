@@ -76,11 +76,28 @@
 
 ## 更新日志
 
-### [v3.76.2](https://github.com/purocean/yn/releases/tag/v3.76.2) 2024-09-14
+### [v3.77.1](https://github.com/purocean/yn/releases/tag/v3.77.1) 2024-11-24
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-win-x64-3.76.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-mac-arm64-3.76.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-mac-x64-3.76.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-linux-x86_64-3.76.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-linux-amd64-3.76.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-win-x64-3.77.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-mac-arm64-3.77.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-mac-x64-3.77.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-linux-x86_64-3.77.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-linux-amd64-3.77.1.deb)
 
-1. fix: 修复 PlantUML 渲染不正确问题
+1. feat: 增加仓库索引机制，增加查看文档反向链接功能
+2. feat: 上传图片时候自动重命名重名的图片
+3. feat: 下载网络图片尽量保持原文件名
+4. feat: PicGo 上传图片支持远程模式，api 接口地址如果包含 `key` 参数则认为是远程模式
+5. feat: 支持从操作系统中拖拽复制文件到仓库中
+6. feat: 优化文本片段对选中文本的处理
+7. feat: 增加“启用触发建议灯泡”配置
+8. feat: 优化打开大仓库时候目录树性能
+9. fix: 修复编辑器关闭有序列表序号自动补全时仍然自动添加序号问题
+10. fix: 修复 Windows 上通过托盘菜单可能不能打开设置面板问题
+11. fix: 修复 PlantUML 图像缓存加载异常问题
+12. fix: 修复不能在“弹出预览”窗口中显示 `file://` 协议图片问题
+13. fix: 修复读取断开的符号链接文件导致的错误问题
+14. fix: 修复导出 PDF 设置缩放比例不生效问题
+15. fix: 修复打开仓库外文件自动补全路径计算问题
+16. plugin: 增加 `VIEW_BEFORE_RENDER` 钩子
+17. plugin: 增加 `ctx.repo` 模块
+18. plugin: 增加 `ctx.indexer` 模块
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

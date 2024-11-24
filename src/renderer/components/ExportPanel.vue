@@ -43,10 +43,13 @@
                 <div style="margin: 10px 0">
                   <label class="row-label">
                     {{$t('export-panel.pdf.zoom')}}
-                    <input v-model="convert.pdfOptions.scaleFactor" type="number" max="100" min="10" setp="1" style="display: inline-block;width: 4em">
+                    <input v-model.number="convert.pdfOptions.scaleFactor" type="number" max="200" min="10" step="1" style="display: inline-block;width: 4em">
                   </label>
                 </div>
                 <div style="margin: 10px 0"><label><input type="checkbox" v-model="convert.pdfOptions.printBackground"> {{$t('export-panel.pdf.include-bg')}}</label></div>
+
+                <!-- generateDocumentOutline only works in headless mode https://github.com/MicrosoftEdge/WebView2Feedback/issues/4466 -->
+                <!-- <div style="margin: 10px 0"><label><input type="checkbox" v-model="convert.pdfOptions.generateDocumentOutline"> {{$t('export-panel.pdf.generate-document-outline')}}</label></div> -->
               </div>
               <div v-else> {{$t('export-panel.pdf.use-browser')}} </div>
             </template>
@@ -116,8 +119,9 @@ export default defineComponent({
       pdfOptions: {
         landscape: '',
         pageSize: 'A4' as 'A4' | 'A3' | 'A5' | 'Legal' | 'Letter' | 'Tabloid',
-        scaleFactor: '100',
+        scaleFactor: 100,
         printBackground: true,
+        generateDocumentOutline: true,
       }
     })
 
@@ -151,13 +155,16 @@ export default defineComponent({
         // in browser, use print api
         await printCurrentDocument()
       } else {
-        const { landscape, pageSize, scaleFactor, printBackground } = convert.pdfOptions
+        convert.pdfOptions.scaleFactor = Math.min(200, Math.max(10, convert.pdfOptions.scaleFactor))
+
+        const { landscape, pageSize, scaleFactor, printBackground, generateDocumentOutline } = convert.pdfOptions
 
         const buffer = await printCurrentDocumentToPDF({
           pageSize,
           printBackground,
+          generateDocumentOutline,
           landscape: Boolean(landscape),
-          scaleFactor: Number(scaleFactor)
+          scale: scaleFactor / 100,
         })
 
         downloadContent(name + '.pdf', buffer, 'application/pdf')

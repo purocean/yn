@@ -46,6 +46,7 @@ const data: BaseLanguage = {
   'file-readonly-desc': 'Файл доступен только для чтения. Вы можете [переключиться в режим записи](%s) в системе, а затем [обновить](%s) документ для редактирования.',
   'can-not-edit-this-file-type': 'Невозможно редактировать данный тип файла',
   'read-only-mode-desc': 'В настоящее время приложение находится в режиме "только для чтения".',
+  'trigger-suggestions': 'Подсказки триггера',
   'premium': {
     'confetti': 'Конфетти',
     'need-purchase': 'Для [%s] требуется премиум',
@@ -352,6 +353,7 @@ const data: BaseLanguage = {
       'zoom': 'Увеличение',
       'use-browser': 'Будет использоваться функция печати через браузер.',
       'include-bg': 'Включить фон',
+      'generate-document-outline': 'Создать конспект документа',
     },
     'use-html': 'Использовать отображаемый HTML',
     'use-markdown': 'Использовать исходный код разметки',
@@ -386,7 +388,8 @@ const data: BaseLanguage = {
         'name': 'Имя',
         'name-placeholder': 'Имя',
         'path': 'Путь',
-        'path-placeholder': 'Пожалуйста, выберите место хранения'
+        'path-placeholder': 'Пожалуйста, выберите место хранения',
+        'enable-indexing': 'Включить индексацию',
       },
       'editor': {
         'mouse-wheel-zoom': 'Масштабирование колёсиком мыши',
@@ -404,6 +407,7 @@ const data: BaseLanguage = {
         'sticky-scroll-enabled': 'Включить липкую прокрутку - при прокрутке редактора заголовок документа фиксируется',
         'quick-suggestions': 'Быстрые предложения - предлагайте по мере ввода текста',
         'enable-ai-copilot-action': 'Включить AI Copilot - показать лампочку действия AI Copilot, если она доступна',
+        'enable-trigger-suggest-bulb': 'Включить предложения триггера - показать лампочку предложения триггера, если она доступна',
       },
       'render': {
         'md-html': 'Включить HTML',
@@ -717,6 +721,7 @@ const data: BaseLanguage = {
     'plugin_document-history-stack_forward': 'Перейти к следующему документу',
     'plugin_editor_focus-editor': 'Переключиться на редактор',
     'plugin_switch-todo_switch': 'Отметить/снять отметку с TODO (сначала необходимо выбрать содержимое в редакторе)',
+    'plugin_view-links_view-document-links': 'Показать ссылки на документ',
     'view_enter-presentation': 'Войти в режим презентации',
     'workbench_show-quick-open': 'Показать быстрое открытие',
     'workbench_toggle-outline': 'Показать/скрыть конспект',
@@ -768,6 +773,20 @@ const data: BaseLanguage = {
     'copy-image': 'Копировать изображение',
     'delete-image': 'Удалить изображение',
     'open-in-new-tab': 'Открыть в новой вкладке',
+  },
+  'index-status': {
+    'switch-repository-html': 'Пожалуйста, <a href="javascript:void(0)" data-command="switch-repository">переключитесь на репозиторий [<strong>%s</strong>]</a>, чтобы использовать эту функцию.',
+    'enable-indexing-html': 'Пожалуйста, <a href="javascript:void(0)" data-command="enable-indexing">включите индексацию для репозитория [<strong>%s</strong>]</a>, чтобы использовать эту функцию.',
+    'indexing': 'Индексация...',
+    'indexed': 'Индексировано',
+  },
+  'view-links': {
+    'links': 'Ссылки',
+    'back-links': 'Обратные ссылки',
+    'no-result': 'Нет результатов',
+    'links-in': 'Ссылки в “%s”',
+    'back-links-for': 'Обратные ссылки для “%s”',
+    're-index': 'Переиндексировать',
   },
 }
 

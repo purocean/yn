@@ -25,6 +25,7 @@ export function useQuickFilter (): Instance {
 
 export default function install () {
   const quickFilter = createApp(defineComponent({
+    name: 'g-quick-filter',
     setup (props, { expose }) {
       const attrs = shallowRef<Opts | null>(null)
 

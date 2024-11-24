@@ -181,7 +181,7 @@ const fileContent = async (ctx: any, next: any) => {
   } else if (ctx.path === '/api/tree') {
     const arr = (ctx.query.sort || '').split('-')
     const sort = { by: arr[0] || 'name', order: arr[1] || 'asc' }
-    ctx.body = result('ok', 'success', (await file.tree(ctx.query.repo, sort)))
+    ctx.body = result('ok', 'success', (await file.tree(ctx.query.repo, sort, ctx.query.include, ctx.query.noEmptyDir === 'true')))
   } else if (ctx.path === '/api/history/list') {
     ctx.body = result('ok', 'success', (await file.historyList(ctx.query.repo, ctx.query.path)))
   } else if (ctx.path === '/api/history/content') {
@@ -206,9 +206,10 @@ const attachment = async (ctx: any, next: any) => {
       const path = ctx.request.body.path
       const repo = ctx.request.body.repo
       const attachment = ctx.request.body.attachment
+      const exists = ctx.request.body.exists
       const buffer = Buffer.from(attachment.substring(attachment.indexOf(',') + 1), 'base64')
-      await file.upload(repo, buffer, path)
-      ctx.body = result('ok', 'success', path)
+      const res = await file.upload(repo, buffer, path, exists)
+      ctx.body = result('ok', 'success', res)
     } else if (ctx.method === 'GET') {
       let { repo, path } = ctx.query
 

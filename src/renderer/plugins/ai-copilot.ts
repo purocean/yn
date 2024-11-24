@@ -38,7 +38,8 @@ export default {
             ctx.showExtensionManager(extensionId)
           }
 
-          return undefined
+          codeAction.command = undefined
+          return codeAction
         }
       })
     })

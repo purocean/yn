@@ -8,13 +8,21 @@ export default {
       return
     }
 
-    const dragClassName = 'file-dragover'
+    const dragClassName = 'drop-file-dragover-mask'
+    const rightSelector = 'body > #app > .layout .main > .right'
     let isDrag = true
 
-    function isDragFile (e: DragEvent) {
-      return e.dataTransfer?.items &&
+    function getRightDom () {
+      return document.body.querySelector(rightSelector)
+    }
+
+    function isDragFile (e: DragEvent): boolean {
+      const hasFile = !!e.dataTransfer?.items &&
         e.dataTransfer.items.length > 0 &&
         e.dataTransfer.items[0].kind === 'file'
+
+      // only handle drag to right section
+      return hasFile && (e.target as HTMLElement).closest(rightSelector) === getRightDom()
     }
 
     function enableDropStyle (e: DragEvent) {
@@ -22,7 +30,7 @@ export default {
         isDrag = true
         e.stopPropagation()
         e.preventDefault()
-        window.document.body.classList.add(dragClassName)
+        getRightDom()?.classList.add(dragClassName)
       }
     }
 
@@ -47,7 +55,7 @@ export default {
       isDrag = false
       await ctx.utils.sleep(50)
       if (!isDrag) {
-        window.document.body.classList.remove(dragClassName)
+        getRightDom()?.classList.remove(dragClassName)
       }
     }
 
@@ -65,9 +73,9 @@ export default {
     })
 
     ctx.theme.addStyles(`
-      body.${dragClassName}::after {
+      .${dragClassName}::after {
         content: '';
-        position: fixed;
+        position: absolute;
         pointer-events: none;
         top: 0;
         left: 0;

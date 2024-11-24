@@ -10,7 +10,7 @@
       <div v-if="menu._customTitle" class="custom-title">
         <component :is="menu.title" />
       </div>
-      <div v-else class="title" :title="menu.tips">
+      <div v-else :class="{title: true, 'no-text': !menu.title}" :title="menu.tips">
         <svg-icon v-if="menu.icon" :name="menu.icon" class="title-icon" />
         <div v-if="menu.title" class="title-text">{{menu.title}}</div>
       </div>
@@ -103,7 +103,7 @@ export default defineComponent({
 .status-bar-menu {
   cursor: pointer;
   user-select: none;
-  z-index: 99999;
+  z-index: 99999999;
   position: relative;
   overflow-x: hidden;
   font-variant-numeric: tabular-nums;
@@ -127,6 +127,10 @@ export default defineComponent({
   width: fit-content;
   display: flex;
   align-content: center;
+
+  &.no-text {
+    padding: 0 .65em;
+  }
 }
 
 .title-icon {

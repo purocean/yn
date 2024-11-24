@@ -1,5 +1,5 @@
 import type { VNode } from 'vue'
-import type { OpenDialogOptions } from 'electron'
+import type { OpenDialogOptions, PrintToPDFOptions } from 'electron'
 import type { Language, MsgPath } from '@share/i18n'
 import type { Doc, FileItem, PathItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
@@ -8,12 +8,14 @@ import type * as Monaco from 'monaco-editor'
 
 export * from '@share/types'
 
+export type ResourceTagName = 'audio' | 'img' | 'source' | 'video' | 'track' | 'iframe' | 'embed'
+
 export type PositionScrollState = { editorScrollTop?: number, viewScrollTop?: number }
 export type PositionState = { line: number, column?: number } | { anchor: string } | PositionScrollState
 
 export type SwitchDocOpts = {
   force?: boolean,
-  source?: 'markdown-link' | 'history-stack',
+  source?: 'markdown-link' | 'history-stack' | 'view-links',
   position?: PositionState | null
 }
 
@@ -39,10 +41,10 @@ export type SettingSchema = {
       title: TTitle,
       properties: {
         [K in string] : {
-          type: string,
+          type: string | boolean,
           title: TTitle,
           description?: TTitle,
-          options: {
+          options?: {
             inputAttributes: { placeholder: TTitle }
           }
           openDialogOptions?: OpenDialogOptions,
@@ -194,6 +196,16 @@ export namespace Components {
     }
   }
 
+  export namespace FixedFloat {
+    export interface Props {
+      disableAutoFocus?: boolean;
+      top?: string | undefined;
+      right?: string | undefined;
+      bottom?: string | undefined;
+      left?: string | undefined;
+    }
+  }
+
   export namespace QuickFilter {
     export interface Item {
       label: string,
@@ -252,12 +264,7 @@ export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 export type Keybinding = { type: 'workbench' | 'editor' | 'application', keys: string | null, command: string }
 
-export type PrintOpts = {
-  landscape?: boolean,
-  pageSize?: 'A0' | 'A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | 'Legal' | 'Letter' | 'Tabloid' | 'Ledger' | { height: number, width: number }
-  scaleFactor?: number,
-  printBackground?: boolean,
-}
+export type PrintOpts = PrintToPDFOptions
 
 export type ConvertOpts = {
   fromType: 'markdown' | 'html',
@@ -344,6 +351,7 @@ export interface BuildInSettings {
   'editor.suggest-on-trigger-characters': boolean,
   'editor.quick-suggestions': boolean,
   'editor.sticky-scroll-enabled': boolean,
+  'editor.enable-trigger-suggest-bulb': boolean,
   'render.md-html': boolean,
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,
@@ -427,6 +435,7 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-in': () => void,
   'plugin.electron-zoom.zoom-out': () => void,
   'plugin.electron-zoom.zoom-reset': () => void,
+  'plugin.view-links.view-document-links': () => void,
   'premium.show': (tab?: PremiumTab) => void,
   'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
   'base.switch-repository-1': () => void,
@@ -459,6 +468,7 @@ export type BuildInHookTypes = {
   VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },
   VIEW_SCROLL: { e: Event },
+  VIEW_BEFORE_RENDER: { env: RenderEnv },
   VIEW_RENDER: never,
   VIEW_RENDERED: never,
   VIEW_MOUNTED: never,
@@ -518,6 +528,7 @@ export type BuildInHookTypes = {
     payload: { latex: string, options: any }
   },
   PREMIUM_STATUS_CHANGED: never
+  WORKER_INDEXER_BEFORE_START_WATCH: { repo: Repo },
 }
 
 export type Previewer = {
@@ -601,4 +612,38 @@ export type FrontMatterAttrs = {
   define?: Record<string, boolean>,
   mdOptions?: Record<string, boolean>,
   defaultPreviewer?: string,
+}
+
+export interface IndexItemLink {
+  href: string;
+  internal: string | null;
+  position: PositionState | null;
+  blockMap: number[];
+}
+
+export interface IndexItemResource {
+  src: string;
+  internal: string | null;
+  tag: ResourceTagName;
+  blockMap: number[];
+}
+
+export interface IndexItem {
+  repo: string;
+  path: string;
+  name: string;
+  links: IndexItemLink[];
+  resources: IndexItemResource[];
+  frontmatter: {};
+  ctimeMs: number;
+  mtimeMs: number;
+  size: number;
+}
+
+export interface IndexStatus {
+  total: number;
+  indexed: number;
+  processing: string | null;
+  cost: number;
+  ready: boolean,
 }

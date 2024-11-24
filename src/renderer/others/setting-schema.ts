@@ -34,7 +34,13 @@ const schema: SettingSchema = ({
             options: {
               inputAttributes: { placeholder: 'T_setting-panel.schema.repos.path-placeholder', style: 'cursor: pointer' }
             },
-          }
+          },
+          enableIndexing: {
+            type: 'boolean',
+            title: 'T_setting-panel.schema.repos.enable-indexing',
+            defaultValue: false,
+            format: 'checkbox',
+          },
         }
       },
     },
@@ -263,6 +269,14 @@ const schema: SettingSchema = ({
     'editor.sticky-scroll-enabled': {
       defaultValue: true,
       title: 'T_setting-panel.schema.editor.sticky-scroll-enabled',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
+    'editor.enable-trigger-suggest-bulb': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.editor.enable-trigger-suggest-bulb',
       type: 'boolean',
       format: 'checkbox',
       group: 'editor',

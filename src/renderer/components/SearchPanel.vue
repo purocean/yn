@@ -666,7 +666,6 @@ onBeforeUnmount(() => {
   }
 
   .action-btn {
-    text-decoration: none;
     flex: none;
     margin-left: 6px;
     font-size: 12px;

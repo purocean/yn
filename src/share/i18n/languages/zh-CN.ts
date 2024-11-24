@@ -46,6 +46,7 @@ const data: BaseLanguage = {
   'file-readonly-desc': '当前文件只读，如需编辑请先在系统中[改为可写](%s)，然后[刷新](%s)当前文档。',
   'can-not-edit-this-file-type': '不能编辑此类型文件',
   'read-only-mode-desc': '当前是只读模式，不可编辑',
+  'trigger-suggestions': '触发提示',
   'premium': {
     'confetti': '彩色纸屑',
     'need-purchase': '[%s] 需要高级版',
@@ -352,6 +353,7 @@ const data: BaseLanguage = {
       'zoom': '缩放',
       'use-browser': '将使用浏览器打印功能',
       'include-bg': '包含背景',
+      'generate-document-outline': '生成文档大纲',
     },
     'use-html': '使用渲染后的 HTML 转换',
     'use-markdown': '使用 Markdown 转换',
@@ -376,7 +378,8 @@ const data: BaseLanguage = {
         'name': '仓库名',
         'name-placeholder': '请输入',
         'path': '路径',
-        'path-placeholder': '请选择一个路径'
+        'path-placeholder': '请选择一个路径',
+        'enable-indexing': '启用索引',
       },
       'editor': {
         'mouse-wheel-zoom': '鼠标滚动缩放',
@@ -394,6 +397,7 @@ const data: BaseLanguage = {
         'sticky-scroll-enabled': '启用粘性滚动 - 当编辑器滚动时，固定显示文档标题等',
         'quick-suggestions': '快速提示 - 在输入文本时显示提示',
         'enable-ai-copilot-action': '启用 AI Copilot 操作 - 当可用时显示 AI Copilot 操作灯泡',
+        'enable-trigger-suggest-bulb': '启用触发建议灯泡 - 当可用时显示触发建议操作灯泡',
       },
       'render': {
         'md-html': '启用 HTML',
@@ -717,6 +721,7 @@ const data: BaseLanguage = {
     'plugin_document-history-stack_forward': '前进到下一个文档',
     'plugin_editor_focus-editor': '聚焦编辑器',
     'plugin_switch-todo_switch': '勾选/取消勾选待办事项（需在编辑器中选中内容）',
+    'plugin_view-links_view-document-links': '查看文档链接',
     'view_enter-presentation': '进入演示模式',
     'workbench_show-quick-open': '显示快速跳转',
     'workbench_toggle-outline': '显示/隐藏目录',
@@ -768,6 +773,20 @@ const data: BaseLanguage = {
     'copy-image': '复制图片',
     'delete-image': '删除图片',
     'open-in-new-tab': '在新标签页中打开',
+  },
+  'index-status': {
+    'switch-repository-html': '请 <a href="javascript:void(0)" data-command="switch-repository">切换到仓库 [<strong>%s</strong>]</a> 来使用此功能。',
+    'enable-indexing-html': '请 <a href="javascript:void(0)" data-command="enable-indexing">为仓库 [<strong>%s</strong>] 启用索引</a> 来使用此功能。',
+    'indexing': '索引中……',
+    'indexed': '已索引',
+  },
+  'view-links': {
+    'links': '链接',
+    'back-links': '反向链接',
+    'no-result': '无结果',
+    'links-in': '“%s”中的链接',
+    'back-links-for': '“%s”的反向链接',
+    're-index': '重新索引',
   },
 }
 

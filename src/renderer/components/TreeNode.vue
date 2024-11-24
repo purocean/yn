@@ -55,15 +55,16 @@
 import { computed, defineComponent, h, nextTick, PropType, ref, shallowRef, watch } from 'vue'
 import { useContextMenu } from '@fe/support/ui/context-menu'
 import { triggerHook } from '@fe/core/hook'
-import { getContextMenuItems, getNodeActionButtons } from '@fe/services/tree'
+import { getContextMenuItems, getNodeActionButtons, refreshTree } from '@fe/services/tree'
 import type { Components } from '@fe/types'
 import { deleteDoc, duplicateDoc, isMarkdownFile, isMarked, moveDoc, switchDoc } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import { dirname, extname, isBelongTo, join } from '@fe/utils/path'
 import { useToast } from '@fe/support/ui/toast'
 import { FLAG_READONLY } from '@fe/support/args'
-import { encodeMarkdownLink, escapeMd } from '@fe/utils'
+import { encodeMarkdownLink, escapeMd, fileToBase64URL } from '@fe/utils'
 import store from '@fe/support/store'
+import { upload } from '@fe/support/api'
 import SvgIcon from './SvgIcon.vue'
 
 export default defineComponent({
@@ -183,6 +184,20 @@ export default defineComponent({
       }
     }
 
+    async function handleFileUpload (files: FileList) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const base64 = await fileToBase64URL(file)
+        const path = join(itemNode.value.path, file.name)
+
+        await upload(props.item.repo, base64, path, 'rename').catch((e) => {
+          toast.show('warning', e.message)
+        })
+      }
+
+      refreshTree()
+    }
+
     let dragOverTimer: number
     let dragEnterElement: HTMLElement | null = null
 
@@ -294,6 +309,14 @@ export default defineComponent({
       if (data) {
         const item = JSON.parse(data) as Components.Tree.Node
         handleFileDrop(item, e.altKey)
+      } else {
+        const isDragFile = !!e.dataTransfer?.items &&
+          e.dataTransfer.items.length > 0 &&
+          e.dataTransfer.items[0].kind === 'file'
+
+        if (isDragFile) {
+          handleFileUpload(e.dataTransfer.files)
+        }
       }
     }
 
@@ -492,6 +515,10 @@ summary > .item {
   outline: 2px #4790fe dashed;
   outline-offset: -4px;
   transition-delay: 0s;
+
+  summary {
+    contain: none;
+  }
 }
 
 .file-name {

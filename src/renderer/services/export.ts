@@ -7,7 +7,7 @@ import type { ConvertOpts, ExportType, PrintOpts } from '@fe/types'
 import { sleep } from '@fe/utils'
 import * as api from '@fe/support/api'
 import { basename, dirname } from '@fe/utils/path'
-import { getRepo } from './base'
+import { getRepo } from './repo'
 import { getContentHtml, getPreviewStyles, getRenderIframe } from './view'
 
 function buildHtml (title: string, body: string, options: { includeStyle: boolean }) {

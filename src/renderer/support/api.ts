@@ -226,10 +226,13 @@ export async function commentHistoryVersion (file: PathItem, version: string, ms
 /**
  * Fetch file tree from a repository.
  * @param repo
+ * @param sort
+ * @param include
+ * @param noEmptyDir
  * @returns
  */
-export async function fetchTree (repo: string, sort: FileSort): Promise<Components.Tree.Node[]> {
-  const result = await fetchHttp(`/api/tree?repo=${encodeURIComponent(repo)}&sort=${sort.by}-${sort.order}`)
+export async function fetchTree (repo: string, sort: FileSort, include?: string, noEmptyDir?: boolean): Promise<Components.Tree.Node[]> {
+  const result = await fetchHttp(`/api/tree?repo=${encodeURIComponent(repo)}&sort=${sort.by}-${sort.order}&include=${encodeURIComponent(include || '')}&noEmptyDir=${noEmptyDir || false}`)
   return result.data
 }
 
@@ -281,14 +284,14 @@ export async function choosePath (options: Record<string, any>): Promise<{ cance
 }
 
 type SearchReturn = (
-  onResult: (result: ISerializedFileMatch[]) => void,
-  onMessage?: (message: IProgressMessage) => void
+  onResult: (result: ISerializedFileMatch[]) => void | Promise<void>,
+  onMessage?: (message: IProgressMessage) => void | Promise<void>
 ) => Promise<ISerializedSearchSuccess | null>
 
 async function readReader<R = any, S = any, M = any> (
   reader: ReadableStreamDefaultReader,
-  onResult: (result: R) => void,
-  onMessage?: (message: M) => void
+  onResult: (result: R) => void | Promise<void>,
+  onMessage?: (message: M) => void | Promise<void>
 ): Promise<S | null> {
   let val = ''
 
@@ -314,10 +317,10 @@ async function readReader<R = any, S = any, M = any> (
 
       switch (data.type) {
         case 'result':
-          onResult(data.payload)
+          await onResult(data.payload)
           break
         case 'message':
-          onMessage?.(data.payload)
+          await onMessage?.(data.payload)
           break
         case 'done':
           return data.payload
@@ -361,8 +364,8 @@ export async function search (controller: AbortController, query: ITextQuery): P
 export async function watchFs (
   repo: string,
   path: string,
-  options: WatchOptions,
-  onResult: (result: { eventName: 'add' | 'change' | 'unlink' | 'addDir' | 'unlinkDir', path: string, stats?: Stats }) => void,
+  options: WatchOptions & { mdContent?: boolean },
+  onResult: (result: { eventName: 'add' | 'change' | 'unlink' | 'addDir' | 'unlinkDir', path: string, content?: string | null, stats?: Stats } | { eventName: 'ready' }) => void,
   onError: (error: Error) => void
 ) {
   const controller: AbortController = new AbortController()
@@ -393,12 +396,14 @@ export async function watchFs (
  * @param repo
  * @param fileBase64Url
  * @param filePath
+ * @param ifExists
  */
-export async function upload (repo: string, fileBase64Url: string, filePath: string): Promise<ApiResult<any>> {
+export async function upload (repo: string, fileBase64Url: string, filePath: string, ifExists: 'rename' | 'overwrite' | 'skip' | 'error' = 'rename'): Promise<ApiResult<{ path: string, hash: string }>> {
   const formData = new FormData()
   formData.append('repo', repo)
   formData.append('path', filePath)
   formData.append('attachment', fileBase64Url)
+  formData.append('exists', ifExists)
 
   return fetchHttp('/api/attachment', { method: 'POST', body: formData })
 }

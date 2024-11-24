@@ -356,6 +356,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 .right-before {

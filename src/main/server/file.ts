@@ -1,5 +1,6 @@
 import { app, shell } from 'electron'
-import chokidar from 'chokidar'
+import ch from 'child_process'
+import type { WatchOptions } from 'chokidar'
 import orderBy from 'lodash/orderBy'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -13,7 +14,36 @@ import { HISTORY_DIR } from '../constant'
 import config from '../config'
 import repository from './repository'
 
+// make sure watch-worker.ts is compiled
+import './watch-worker'
+
 const readonly = !!(yargs.argv.readonly)
+
+let _watchProcess: ch.ChildProcess | null = null
+let watchGid = 0
+
+function getWatchProcess () {
+  if (!_watchProcess) {
+    console.log('start watch-worker process')
+    _watchProcess = ch.fork(
+      path.join(__dirname, '/watch-worker.js'),
+      {
+        env: { ELECTRON_RUN_AS_NODE: '1' },
+        // execArgv: ['--inspect']
+      }
+    )
+
+    _watchProcess.on('exit', () => {
+      _watchProcess = null
+    })
+
+    _watchProcess.on('error', () => {
+      _watchProcess = null
+    })
+  }
+
+  return _watchProcess
+}
 
 interface XFile {
   name: string;
@@ -248,9 +278,38 @@ export async function checkHash (repo: string, p: string, oldHash: string) {
   return oldHash === await hash(repo, p)
 }
 
-export async function upload (repo: string, buffer: Buffer, path: string) {
+export async function upload (repo: string, buffer: Buffer, filePath: string, ifExists: 'rename' | 'overwrite' | 'skip' | 'error' = 'error'): Promise<{ path: string, hash: string }> {
   if (readonly) throw new Error('Readonly')
-  await write(repo, path, buffer)
+
+  let newFilePath = filePath
+
+  if (await exists(repo, filePath)) {
+    if (ifExists === 'overwrite') {
+      // do nothing
+    } else if (ifExists === 'skip') {
+      return { path: filePath, hash: await hash(repo, filePath) }
+    } else if (ifExists === 'rename') {
+      const dir = path.dirname(filePath)
+      const ext = path.extname(filePath)
+      const base = path.basename(filePath, ext)
+
+      let i = 1
+      while (await exists(repo, newFilePath)) {
+        i++
+
+        if (i > 10000) {
+          throw new Error('Too many files with the same name')
+        }
+
+        const seq = i > 100 ? Math.floor(Math.random() * 1000000) : i
+        newFilePath = path.join(dir, base + `-${seq}` + ext).replace(/\\/g, '/')
+      }
+    } else {
+      throw new Error('File exists')
+    }
+  }
+
+  return { path: newFilePath, hash: await write(repo, newFilePath, buffer) }
 }
 
 function getRelativePath (from: string, to: string) {
@@ -263,7 +322,9 @@ async function travels (
   basePath: string,
   data: TreeItem,
   excludeRegex: RegExp,
+  includeRegex: RegExp | null,
   order: Order,
+  noEmptyDir: boolean
 ): Promise<void> {
   const list = await fs.readdir(location)
 
@@ -272,10 +333,21 @@ async function travels (
 
   await Promise.all(list.map(async name => {
     const p = path.join(location, name)
-    const stat = await fs.stat(p)
+    const stat = await fs.stat(p).catch(e => {
+      console.error('travels', p, e)
+      return null
+    })
+
+    if (!stat) {
+      return
+    }
 
     if (stat.isFile()) {
       if (excludeRegex.test(name)) {
+        return
+      }
+
+      if (includeRegex && !includeRegex.test(name)) {
         return
       }
 
@@ -289,7 +361,12 @@ async function travels (
         level: data.level + 1,
       })
     } else if (stat.isDirectory()) {
-      if (excludeRegex.test(name + '/')) {
+      const dirName = name + '/'
+      if (excludeRegex.test(dirName)) {
+        return
+      }
+
+      if (includeRegex && !includeRegex.test(dirName)) {
         return
       }
 
@@ -304,8 +381,11 @@ async function travels (
         level: data.level + 1,
       }
 
-      dirs.push(dir)
-      await travels(p, repo, basePath, dir, excludeRegex, order)
+      await travels(p, repo, basePath, dir, excludeRegex, includeRegex, order, noEmptyDir)
+
+      if (!(noEmptyDir && dir.children!.length === 0)) {
+        dirs.push(dir)
+      }
     }
   }))
 
@@ -326,7 +406,11 @@ async function travels (
     .concat(sort(files, order))
 }
 
-export async function tree (repo: string, order: Order): Promise<TreeItem[]> {
+export async function tree (repo: string, order: Order, include?: string | RegExp, noEmptyDir?: boolean): Promise<TreeItem[]> {
+  if (repo.startsWith(ROOT_REPO_NAME_PREFIX)) {
+    return []
+  }
+
   const data: TreeItem[] = [{
     name: '/',
     type: 'dir',
@@ -336,7 +420,9 @@ export async function tree (repo: string, order: Order): Promise<TreeItem[]> {
     level: 1,
   }]
 
-  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0], getExcludeRegex(), order))
+  const includeRegex = include ? new RegExp(include) : null
+
+  await withRepo(repo, async repoPath => travels(repoPath, repo, repoPath, data[0], getExcludeRegex(), includeRegex, order, !!noEmptyDir))
 
   return data
 }
@@ -486,36 +572,68 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
   }, p)
 }
 
-export async function watchFile (repo: string, p: string, options: chokidar.WatchOptions) {
+export async function watchFile (repo: string, p: string, options: WatchOptions & { mdContent?: boolean }) {
   return withRepo(repo, async (_, filePath) => {
-    const watcher = chokidar.watch(filePath, options)
     const { response, enqueue, close } = createStreamResponse()
 
-    watcher.on('all', (eventName, path, stats) => {
-      enqueue('result', { eventName, path, stats })
-    })
+    type Message = { id: number, type: 'init' | 'stop' | 'enqueue', payload?: any }
 
-    const _close = () => {
-      close()
-      watcher.close()
-      app.off('quit', _close)
+    watchGid++
+
+    const id = watchGid
+
+    const wp = getWatchProcess()
+
+    wp.send({ id, type: 'init', payload: { filePath, options } } satisfies Message)
+
+    const onMessage = (message: Message) => {
+      if (message.id !== id) {
+        return
+      }
+
+      if (message.type === 'enqueue') {
+        try {
+          if (!response.closed) {
+            enqueue(message.payload.type, message.payload.data)
+          }
+        } catch (error) {
+          console.error('watchFile', filePath, 'enqueue error', error)
+        }
+      }
     }
 
-    app.on('quit', _close)
-
-    watcher.on('error', err => {
+    const onError = (err: any) => {
       console.error('watchFile', filePath, 'error', err)
-      enqueue('error', err)
-    })
+      _stop()
+    }
+
+    const onExit = (code: any) => {
+      close()
+      console.log('watchFile', id, filePath, 'exit', code)
+    }
+
+    const _stop = () => {
+      console.log('watchFile', id, filePath, 'stop')
+      wp.send({ id, type: 'stop' } satisfies Message)
+      app.off('quit', _stop)
+      wp.off('message', onMessage)
+      wp.off('error', onError)
+      wp.off('exit', onExit)
+    }
+
+    wp.on('message', onMessage)
+    wp.on('error', onError)
+    wp.on('exit', onExit)
+    app.on('quit', _stop)
 
     response.once('close', () => {
-      console.log('watchFile', filePath, 'close')
-      _close()
+      console.log('watchFile', id, filePath, 'response close')
+      _stop()
     })
 
-    response.on('error', (err) => {
-      console.warn('watchFile', filePath, 'error', err)
-      _close()
+    response.once('error', (err) => {
+      console.warn('watchFile', id, filePath, 'error', err)
+      _stop()
     })
 
     return response

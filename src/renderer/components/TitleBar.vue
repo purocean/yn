@@ -105,6 +105,27 @@ export default defineComponent({
       win && win.close()
     }
 
+    function clean () {
+      if (!isElectron) {
+        window.onbeforeunload = null
+      }
+
+      if (win) {
+        win.removeListener('maximize', updateWindowStatus)
+        win.removeListener('restore', updateWindowStatus)
+        win.removeListener('unmaximize', updateWindowStatus)
+        win.removeListener('minimize', updateWindowStatus)
+        win.removeListener('always-on-top-changed', updateWindowStatus)
+        win.removeListener('focus', updateWindowStatus)
+        win.removeListener('blur', updateWindowStatus)
+        win.removeListener('enter-full-screen', handleFullscreenEnter)
+        win.removeListener('leave-full-screen', handleFullscreenLeave)
+      }
+
+      win = null
+      hasWin.value = false
+    }
+
     onMounted(() => {
       if (!isElectron) {
         window.onbeforeunload = () => {
@@ -128,28 +149,13 @@ export default defineComponent({
         // win.isFullScreen() not work
         win.on('enter-full-screen', handleFullscreenEnter)
         win.on('leave-full-screen', handleFullscreenLeave)
+
+        window.addEventListener('beforeunload', clean)
       }
     })
 
     onBeforeUnmount(() => {
-      if (!isElectron) {
-        window.onbeforeunload = null
-      }
-
-      if (win) {
-        win.removeListener('maximize', updateWindowStatus)
-        win.removeListener('restore', updateWindowStatus)
-        win.removeListener('unmaximize', updateWindowStatus)
-        win.removeListener('minimize', updateWindowStatus)
-        win.removeListener('always-on-top-changed', updateWindowStatus)
-        win.removeListener('focus', updateWindowStatus)
-        win.removeListener('blur', updateWindowStatus)
-        win.removeListener('enter-full-screen', handleFullscreenEnter)
-        win.removeListener('leave-full-screen', handleFullscreenLeave)
-      }
-
-      win = null
-      hasWin.value = false
+      clean()
     })
 
     const statusText = computed(() => {
