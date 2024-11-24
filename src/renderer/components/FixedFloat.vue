@@ -2,7 +2,11 @@
   <teleport to="body">
     <div
       class="fixed-float"
-      v-fixed-float="{ onClose: (byClickSelf: any) => emits('close', byClickSelf), disableAutoFocus: props.disableAutoFocus }"
+      v-fixed-float="{
+        onClose: (byClickSelf: any) => emits('close', byClickSelf),
+        onBlur: (byClickSelf: any) => emits('blur', byClickSelf),
+        disableAutoFocus: props.disableAutoFocus
+      }"
       @click.stop
       v-bind="$attrs"
       :style="{
@@ -31,6 +35,7 @@ const props = defineProps<Props>()
 // eslint-disable-next-line func-call-spacing
 const emits = defineEmits<{
   (e: 'close', byClickSelf: boolean): void
+  (e: 'blur', byClickSelf: boolean): void
 }>()
 </script>
 

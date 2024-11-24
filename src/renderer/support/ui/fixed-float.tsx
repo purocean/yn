@@ -7,6 +7,7 @@ import FixedFloat from '@fe/components/FixedFloat.vue'
 interface Opts extends Components.FixedFloat.Props {
   component: Component;
   closeOnBlur?: boolean;
+  onBlur?: (byClickSelf?: boolean) => void;
 }
 
 export interface Instance {
@@ -55,9 +56,13 @@ export default function install () {
         hide()
       }
 
+      function onBlur (clickBySelf: boolean) {
+        attrs.value?.onBlur?.(clickBySelf)
+      }
+
       expose({ show, hide })
 
-      return () => attrs.value && <FixedFloat {...omit(attrs.value, 'component', 'closeOnBlur')} onClose={onClose}>
+      return () => attrs.value && <FixedFloat {...omit(attrs.value, 'component', 'closeOnBlur')} onClose={onClose} onBlur={onBlur}>
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore */}
         <attrs.value.component />
