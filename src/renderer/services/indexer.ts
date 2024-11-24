@@ -67,6 +67,7 @@ const client = new JSONRPCClient<IndexerWorkerExports>(new WorkerChannel(worker,
 function triggerWatchRepo (repo?: Repo) {
   if (!repo?.enableIndexing) {
     logger.info('triggerWatchRepo', repo?.name, 'disabled')
+    stopWatch()
     return
   }
 
