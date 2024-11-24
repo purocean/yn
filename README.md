@@ -76,11 +76,28 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.76.2](https://github.com/purocean/yn/releases/tag/v3.76.2) 2024-09-14
+### [v3.77.1](https://github.com/purocean/yn/releases/tag/v3.77.1) 2024-11-24
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-win-x64-3.76.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-mac-arm64-3.76.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-mac-x64-3.76.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-linux-x86_64-3.76.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.76.2/Yank-Note-linux-amd64-3.76.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-win-x64-3.77.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-mac-arm64-3.77.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-mac-x64-3.77.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-linux-x86_64-3.77.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-linux-amd64-3.77.1.deb)
 
-1. fix: correct rendering issue with PlantUML diagrams
+1. feat: Implement a repository indexing mechanism, and add a feature to view document backlinks.
+2. feat: Automatically rename duplicate images when uploading.
+3. feat: Download network images while preserving the original filenames as much as possible.
+4. feat: Support remote mode for PicGo image uploads; if the API interface address contains a `key` parameter, it is considered to be in remote mode.
+5. feat: Support dragging and dropping files from the operating system into the warehouse.
+6. feat: Optimize the processing of text snippets for selected text.
+7. feat: Add a configuration for "Enable trigger suggestion lightbulb."
+8. feat: Optimize the performance of the directory tree when opening large warehouses.
+9. fix: Fix the issue where the editor still automatically adds numbers when closing an ordered list with auto-complete numbers.
+10. fix: Fix the issue where the settings panel might not open through the tray menu on Windows.
+11. fix: Fix the exception issue with loading PlantUML image cache.
+12. fix: Fix the issue of not being able to display `file://` protocol images in the "pop-up preview" window.
+13. fix: Fix the error caused by reading disconnected symbolic link files.
+14. fix: Fix the issue where the export PDF setting for scaling ratio does not take effect.
+15. fix: Fix the issue with automatic path calculation when opening files outside the warehouse.
+16. plugin: Add the `VIEW_BEFORE_RENDER` hook.
+17. plugin: Add the `ctx.repo` module.
+18. plugin: Add the `ctx.indexer` module.
 
 [More release notes](https://github.com/purocean/yn/releases)
 
