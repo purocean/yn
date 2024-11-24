@@ -10,8 +10,12 @@ export default {
     })
 
     ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
-      editor.onDidChangeCursorPosition(e => {
+      editor.onDidChangeCursorPosition(async e => {
+        // debugger
         if (e.source === 'keyboard' && e.reason === 0) {
+          // delay to next tick to avoid issue on Windows
+          await ctx.utils.sleep(0)
+
           const prevStr = editor.getModel()!.getValueInRange({
             startLineNumber: e.position.lineNumber,
             startColumn: e.position.column - 2,
