@@ -1,13 +1,12 @@
-import { parentPort, workerData, isMainThread, threadId } from 'worker_threads'
 import * as fs from 'fs-extra'
 import chokidar from 'chokidar'
 import path from 'path'
 import { isMarkdownFile } from '../../share/misc'
 
-if (!isMainThread) {
-  const { filePath, options } = workerData as { filePath: string, options: chokidar.WatchOptions & { mdContent?: boolean } }
+export type Message = { id: number, type: 'init' | 'stop' | 'enqueue', payload?: any }
 
-  console.log(`watch worker ${threadId} >`, filePath)
+function init (id: number, filePath: string, options: chokidar.WatchOptions & { mdContent?: boolean }) {
+  console.log(`watch process ${id} >`, filePath, 'init')
 
   try {
     const ignoredRegexStr = options.ignored as string
@@ -19,7 +18,7 @@ if (!isMainThread) {
       }
     }
   } catch (error) {
-    console.error(`watch worker ${threadId} >`, filePath, 'ignored error', error)
+    console.error(`watch process ${id} >`, filePath, 'ignored error', error)
   }
 
   const watcher = chokidar.watch(filePath, options)
@@ -39,7 +38,7 @@ if (!isMainThread) {
         try {
           enqueue('result', await promise)
         } catch (error) {
-          console.error(`watch worker ${threadId} >`, filePath, 'promise error', error)
+          console.error(`watch process ${id} >`, filePath, 'promise error', error)
         }
       }
     }
@@ -80,35 +79,33 @@ if (!isMainThread) {
   })
 
   watcher.on('error', err => {
-    console.error(`watch worker ${threadId} >`, filePath, 'error', err)
+    console.error(`watch process ${id} >`, filePath, 'error', err)
     enqueue('error', err)
   })
 
-  const _cleanup = () => {
-    console.log(`watch worker ${threadId} >`, filePath, 'cleanup')
-
-    try {
-      closeResponse()
-      watcher.close()
-      promiseQueue.length = 0
-    } catch (error) {
-      console.error(`watch worker ${threadId} >`, filePath, 'cleanup error', error)
-    }
-
-    process.exit(0)
-  }
-
   function enqueue (type: string, data: any) {
-    parentPort!.postMessage({ type: 'enqueue', payload: { type, data } })
+    process.send?.({ id, type: 'enqueue', payload: { type, data } } satisfies Message)
   }
 
-  function closeResponse () {
-    parentPort!.postMessage({ type: 'close' })
+  function stop () {
+    console.log(`watch process ${id} >`, filePath, 'stop')
+    promiseQueue.length = 0
+    watcher.close()
   }
 
-  parentPort!.on('message', (message) => {
-    if (message.type === 'cleanup') {
-      _cleanup()
+  function onMessage (message: Message) {
+    if (message.id === id && message.type === 'stop') {
+      stop()
+      process.off('message', onMessage)
     }
-  })
+  }
+
+  process.on('message', onMessage)
 }
+
+process.on('message', (message: Message) => {
+  if (message.type === 'init') {
+    const { filePath, options } = message.payload!
+    init(message.id, filePath, options)
+  }
+})

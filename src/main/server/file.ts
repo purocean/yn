@@ -1,5 +1,5 @@
 import { app, shell } from 'electron'
-import { Worker } from 'worker_threads'
+import ch from 'child_process'
 import type { WatchOptions } from 'chokidar'
 import orderBy from 'lodash/orderBy'
 import * as fs from 'fs-extra'
@@ -18,6 +18,32 @@ import repository from './repository'
 import './watch-worker'
 
 const readonly = !!(yargs.argv.readonly)
+
+let _watchProcess: ch.ChildProcess | null = null
+let watchGid = 0
+
+function getWatchProcess () {
+  if (!_watchProcess) {
+    console.log('start watch-worker process')
+    _watchProcess = ch.fork(
+      path.join(__dirname, '/watch-worker.js'),
+      {
+        env: { ELECTRON_RUN_AS_NODE: '1' },
+        // execArgv: ['--inspect']
+      }
+    )
+
+    _watchProcess.on('exit', () => {
+      _watchProcess = null
+    })
+
+    _watchProcess.on('error', () => {
+      _watchProcess = null
+    })
+  }
+
+  return _watchProcess
+}
 
 interface XFile {
   name: string;
@@ -545,15 +571,22 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
 export async function watchFile (repo: string, p: string, options: WatchOptions & { mdContent?: boolean }) {
   return withRepo(repo, async (_, filePath) => {
     const { response, enqueue, close } = createStreamResponse()
-    const worker = new Worker(path.join(__dirname, '/watch-worker.js'), { workerData: { filePath, options } })
 
-    const _close = () => {
-      console.log('watchFile', filePath, 'close')
-      app.off('quit', _close)
-      worker.postMessage({ type: 'cleanup' })
-    }
+    type Message = { id: number, type: 'init' | 'stop' | 'enqueue', payload?: any }
 
-    worker.on('message', (message) => {
+    watchGid++
+
+    const id = watchGid
+
+    const wp = getWatchProcess()
+
+    wp.send({ id, type: 'init', payload: { filePath, options } } satisfies Message)
+
+    const onMessage = (message: Message) => {
+      if (message.id !== id) {
+        return
+      }
+
       if (message.type === 'enqueue') {
         try {
           if (!response.closed) {
@@ -562,30 +595,41 @@ export async function watchFile (repo: string, p: string, options: WatchOptions 
         } catch (error) {
           console.error('watchFile', filePath, 'enqueue error', error)
         }
-      } else if (message.type === 'close') {
-        close()
       }
-    })
+    }
 
-    worker.on('error', (err) => {
+    const onError = (err: any) => {
       console.error('watchFile', filePath, 'error', err)
-      _close()
-    })
+      _stop()
+    }
 
-    worker.on('exit', (code) => {
-      console.log('watchFile', filePath, 'exit', code)
-    })
+    const onExit = (code: any) => {
+      close()
+      console.log('watchFile', id, filePath, 'exit', code)
+    }
 
-    app.on('quit', _close)
+    const _stop = () => {
+      console.log('watchFile', id, filePath, 'stop')
+      wp.send({ id, type: 'stop' } satisfies Message)
+      app.off('quit', _stop)
+      wp.off('message', onMessage)
+      wp.off('error', onError)
+      wp.off('exit', onExit)
+    }
+
+    wp.on('message', onMessage)
+    wp.on('error', onError)
+    wp.on('exit', onExit)
+    app.on('quit', _stop)
 
     response.once('close', () => {
-      console.log('watchFile', filePath, 'response close')
-      _close()
+      console.log('watchFile', id, filePath, 'response close')
+      _stop()
     })
 
-    response.on('error', (err) => {
-      console.warn('watchFile', filePath, 'error', err)
-      _close()
+    response.once('error', (err) => {
+      console.warn('watchFile', id, filePath, 'error', err)
+      _stop()
     })
 
     return response
