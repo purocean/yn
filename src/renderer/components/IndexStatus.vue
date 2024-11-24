@@ -49,7 +49,6 @@ function handleCommand (e: MouseEvent) {
 
 <style lang="scss" scoped>
 .indexer-status {
-  width: 300px;
   position: relative;
 
   & > p {
