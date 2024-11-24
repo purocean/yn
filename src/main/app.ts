@@ -415,7 +415,10 @@ const showSetting = (key?: string) => {
   }
 
   showWindow()
-  jsonRPCClient.call.ctx.setting.showSettingPanel(key)
+  // delay to show setting panel to ensure window is ready.
+  setTimeout(() => {
+    jsonRPCClient.call.ctx.setting.showSettingPanel(key)
+  }, 200)
 }
 
 const toggleFullscreen = () => {
