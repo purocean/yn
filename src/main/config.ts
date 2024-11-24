@@ -5,33 +5,6 @@ import store from './storage'
 
 const configFile = CONFIG_FILE
 
-const trySync = (fn: () => any): any => {
-  let tried = 0
-  const maxTries = 20
-
-  const tryFn = () => {
-    try {
-      return fn()
-    } catch (error: any) {
-      if (['ENFILE', 'EMFILE'].includes(error.code) && tried < maxTries) {
-        tried++
-
-        const wait = 10 * tried
-        console.warn(`config > trySync Waiting for ${wait}ms to retry... ${tried}`)
-        const startTime = Date.now()
-        // Watching the repository may cause an EMFILE error in other worker processes, so we need to wait for a while in the main process. This may cause some performance issues.
-        while (Date.now() - startTime < wait) { /* empty */ }
-
-        return tryFn()
-      } else {
-        throw error
-      }
-    }
-  }
-
-  return tryFn()
-}
-
 const writeJson = (data: any) => {
   if (!data) return
 
@@ -44,16 +17,13 @@ const writeJson = (data: any) => {
   }
 
   delete data.license
-
-  trySync(() => {
-    fs.ensureFileSync(configFile)
-    fs.writeJsonSync(configFile, data, { spaces: 2 })
-  })
+  fs.ensureFileSync(configFile)
+  fs.writeJsonSync(configFile, data, { spaces: 2 })
 }
 
 const readJson = () => {
   try {
-    const result = trySync(() => fs.readJSONSync(configFile))
+    const result = fs.readJSONSync(configFile)
 
     // get license from store
     const license = store.get('license', '')
