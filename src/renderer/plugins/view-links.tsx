@@ -114,9 +114,9 @@ export default {
         </ol> : <div style={{ textAlign: 'center', fontStyle: 'italic', color: 'var(--g-color-45)', padding: '20px 0 10px', fontSize: '14px' }}>
           {list.value ? <span>{$t.value('view-links.no-result')}</span> : <span>Loading...</span>}
         </div>}
-        {title && <div style={{ textAlign: 'center', color: 'var(--g-color-30)', padding: '10px', fontSize: '13px', borderTop: '1px solid var(--g-color-85)', overflowWrap: 'break-word' }}>
-          {title.value} &nbsp;&nbsp;
-          <a href="javascript:void(0)" onClick={e => {
+        {title && <div class="view-links-footer">
+          {title.value} &nbsp;
+          <a class="view-links-re-index-btn" href="javascript:void(0)" onClick={e => {
             e.preventDefault()
             ctx.indexer.rebuildCurrentRepo()
           }} title={`Indexed: ${ctx.store.state.currentRepoIndexStatus?.status?.indexed}, Total: ${ctx.store.state.currentRepoIndexStatus?.status?.total}, Cost: ${ctx.store.state.currentRepoIndexStatus?.status?.cost}ms`}>
@@ -202,6 +202,24 @@ export default {
 
       .view-links-ol-li::marker {
         font-size: 12px
+      }
+
+      .view-links-footer {
+        text-align: center;
+        color: var(--g-color-30);
+        padding: 10px;
+        font-size: 13px;
+        border-top: 1px solid var(--g-color-85);
+        overflow-wrap: break-word;
+      }
+
+      .view-links-re-index-btn {
+        display: none
+      }
+
+      .view-links-footer:hover .view-links-re-index-btn {
+        display: inline;
+        color: var(--g-color-30);
       }
     `)
   }
