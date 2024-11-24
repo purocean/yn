@@ -407,6 +407,10 @@ async function travels (
 }
 
 export async function tree (repo: string, order: Order, include?: string | RegExp, noEmptyDir?: boolean): Promise<TreeItem[]> {
+  if (repo.startsWith(ROOT_REPO_NAME_PREFIX)) {
+    return []
+  }
+
   const data: TreeItem[] = [{
     name: '/',
     type: 'dir',
