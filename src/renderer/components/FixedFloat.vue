@@ -7,6 +7,7 @@
         onBlur: (byClickSelf: any) => emits('blur', byClickSelf),
         disableAutoFocus: props.disableAutoFocus
       }"
+      v-auto-z-index="{ layer: 'popup' }"
       @click.stop
       v-bind="$attrs"
       :style="{
@@ -56,6 +57,5 @@ const emits = defineEmits<{
   border-radius: var(--g-border-radius);
   overflow: hidden;
   backdrop-filter: var(--g-backdrop-filter);
-  z-index: 9999999;
 }
 </style>

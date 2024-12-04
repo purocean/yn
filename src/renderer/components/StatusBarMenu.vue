@@ -103,7 +103,7 @@ export default defineComponent({
 .status-bar-menu {
   cursor: pointer;
   user-select: none;
-  z-index: 99999999;
+  z-index: 300000;
   position: relative;
   overflow-x: hidden;
   font-variant-numeric: tabular-nums;

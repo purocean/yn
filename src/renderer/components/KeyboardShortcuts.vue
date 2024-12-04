@@ -534,7 +534,7 @@ table {
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 900000;
+  z-index: 210000000;
   display: flex;
   flex-direction: column;
   align-items: center;

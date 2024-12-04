@@ -90,7 +90,7 @@ export async function printCurrentDocumentToPDF (opts?: PrintOpts): Promise<Buff
   const id = '__export_pdf__' + Date.now()
   const url = buildSrc(`
     <style> @media screen { html { overflow: hidden; min-width: 16cm; } } </style>
-    <div class="skip-print" style="position: fixed; left: 0; top: 0; width: 100vw; height: 100%; z-index: 99999; background: #fff; color: #24292f; display: flex; align-items: center; justify-content: center;">Exporting……</div>
+    <div class="skip-print" style="position: fixed; left: 0; top: 0; width: 100vw; height: 100%; z-index: 210000000; background: #fff; color: #24292f; display: flex; align-items: center; justify-content: center;">Exporting……</div>
     <div id="app"></div>
   `, 'Export PDF', { id, globalStyle: true })
 
