@@ -260,7 +260,7 @@ Test | Test
 | x4 {colspan=2} |
 [Merge Cells]
 
-## Katex
+## LaTeX
 
 This feature is provided by [KaTeX](https://github.com/KaTeX/KaTeX).
 

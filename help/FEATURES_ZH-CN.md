@@ -260,7 +260,7 @@ Test | Test
 | x4 {colspan=2} |
 [合并单元格]
 
-## Katex 公式
+## 数学公式
 
 此功能由 [KaTeX](https://github.com/KaTeX/KaTeX) 提供。
 
