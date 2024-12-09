@@ -234,12 +234,16 @@ export function write (repo: string, p: string, content: any): Promise<string> {
   }, p)
 }
 
-export async function rm (repo: string, p: string) {
+export async function rm (repo: string, p: string, trash = true) {
   if (readonly) throw new Error('Readonly')
 
   await withRepo(repo, async (repoPath, targetPath) => {
     if (targetPath !== repoPath) {
-      await shell.trashItem(targetPath)
+      if (trash) {
+        await shell.trashItem(targetPath)
+      } else {
+        await fs.remove(targetPath)
+      }
     }
   }, p)
 }

@@ -210,6 +210,10 @@ const data = {
       'title': 'Delete a File',
       'content': 'Are you sure want to delete %s?'
     },
+    'force-delete-dialog': {
+      'title': 'Delete a File',
+      'content': 'Move to trash failed, are you sure want to delete %s directly?',
+    },
     'move-dialog': {
       'title': 'Move/Rename a File',
       'content': 'New path'

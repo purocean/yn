@@ -184,11 +184,12 @@ export async function copyFile (file: FileItem, newPath: string): Promise<ApiRes
 /**
  * Delete a file or dir.
  * @param file
+ * @param trash Move to trash or not, default is true.
  * @returns
  */
-export async function deleteFile (file: PathItem): Promise<ApiResult<any>> {
+export async function deleteFile (file: PathItem, trash = true): Promise<ApiResult<any>> {
   const { path, repo } = file
-  return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}`, { method: 'DELETE' })
+  return fetchHttp(`/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}&trash=${trash}`, { method: 'DELETE' })
 }
 
 export async function fetchHistoryList (file: PathItem): Promise<{size: number, list: {name: string, comment: string}[]}> {

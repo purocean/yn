@@ -155,7 +155,8 @@ const fileContent = async (ctx: any, next: any) => {
         stat: await file.stat(repo, path),
       })
     } else if (ctx.method === 'DELETE') {
-      await file.rm(ctx.query.repo, ctx.query.path)
+      const trash = ctx.query.trash !== 'false'
+      await file.rm(ctx.query.repo, ctx.query.path, trash)
       ctx.body = result()
     } else if (ctx.method === 'PATCH') {
       const { repo, oldPath, newPath } = ctx.request.body

@@ -211,6 +211,10 @@ const data: BaseLanguage = {
       'title': '删除文件',
       'content': '确定要删除 [%s] 吗？'
     },
+    'force-delete-dialog': {
+      'title': '删除文件',
+      'content': '移动到回收站失败，是否要直接删除 [%s]？'
+    },
     'move-dialog': {
       'title': '移动文件',
       'content': '新的路径'
