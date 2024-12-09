@@ -671,8 +671,6 @@ if (!gotTheLock) {
         }
       })
 
-      debugger
-
       return {
         action: 'allow',
         overrideBrowserWindowOptions: {
