@@ -260,7 +260,7 @@ whenEditorReady().then(() => {
 
 // json-rpc
 
-jsonrpc.init({ ctx })
+jsonrpc.init({ ctx }, whenEditorReady())
 
 setTimeout(() => {
   removeOldDatabases()
