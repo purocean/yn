@@ -434,7 +434,7 @@ const data = {
       'language': 'Language',
       'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
-      'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, docHash, date.',
+      'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, docHash, docPath, date.',
       'assets': {
         'path-type': 'Path Type',
       },

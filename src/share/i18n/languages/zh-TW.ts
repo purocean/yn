@@ -425,7 +425,7 @@ const data: BaseLanguage = {
       'language': '語言',
       'custom-css': '自訂 CSS',
       'assets-dir': '圖片存放目錄',
-      'assets-desc': '支援相對路徑和絕對路徑（限於倉庫內部）,可用變數：docName, docBasename, docSlug, docHash, date',
+      'assets-desc': '支援相對路徑和絕對路徑（限於倉庫內部）,可用變數：docName, docBasename, docSlug, docHash, docPath, date',
       'assets': {
         'path-type': '路徑類型',
       },

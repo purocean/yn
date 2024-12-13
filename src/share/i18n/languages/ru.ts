@@ -435,7 +435,7 @@ const data: BaseLanguage = {
       'language': 'Язык',
       'custom-css': 'Пользовательский CSS',
       'assets-dir': 'Папка для изображений',
-      'assets-desc': 'Относительный или абсолютный путь (в хранилище документов). Переменные: docName, docBasename, docSlug, docHash, date.',
+      'assets-desc': 'Относительный или абсолютный путь (в хранилище документов). Переменные: docName, docBasename, docSlug, docHash, docPath, date.',
       'assets': {
         'path-type': 'Тип пути',
       },
