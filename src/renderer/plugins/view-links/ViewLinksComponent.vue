@@ -1,5 +1,5 @@
 <template>
-  <index-status style="width: 300px">
+  <index-status style="width: 300px" :title="title">
     <div class="close-btn" @click="close" :title="$t('close') + ' ' + getKeyLabel(Escape)">
       <svg-icon name="times" width="14px" height="14px" />
     </div>
@@ -25,12 +25,6 @@
       <span v-if="list">{{ $t('view-links.no-result') }}</span>
       <span v-else>Loading...</span>
     </div>
-    <div v-if="title" class="footer">
-      {{ title }} &nbsp;
-      <a class="re-index-btn" href="#" @click.prevent="rebuildCurrentRepo()" :title="`Indexed: ${store.state.currentRepoIndexStatus?.status?.indexed}, Total: ${store.state.currentRepoIndexStatus?.status?.total}, Cost: ${store.state.currentRepoIndexStatus?.status?.cost}ms`">
-        {{ $t('view-links.re-index') }}
-      </a>
-    </div>
   </index-status>
 </template>
 
@@ -40,7 +34,7 @@ import { basename } from '@fe/utils/path'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { Escape, getKeyLabel } from '@fe/core/keybinding'
 import { useFixedFloat } from '@fe/support/ui/fixed-float'
-import { getDocumentsManager, rebuildCurrentRepo } from '@fe/services/indexer'
+import { getDocumentsManager } from '@fe/services/indexer'
 import { switchDoc } from '@fe/services/document'
 import { useI18n } from '@fe/services/i18n'
 import store from '@fe/support/store'
@@ -249,25 +243,6 @@ onBeforeUnmount(() => {
         display: inline;
       }
     }
-  }
-}
-
-.footer {
-  text-align: center;
-  color: var(--g-color-30);
-  padding: 10px;
-  font-size: 13px;
-  border-top: 1px solid var(--g-color-85);
-  overflow-wrap: break-word;
-
-  .re-index-btn {
-    display: none;
-    white-space: nowrap;
-  }
-
-  &:hover .re-index-btn {
-    display: inline;
-    color: var(--g-color-30);
   }
 }
 </style>

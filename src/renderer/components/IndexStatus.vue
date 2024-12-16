@@ -11,11 +11,19 @@
         <p class="processing">{{ currentRepoIndexStatus.processing }}</p>
       </template>
     </template>
-    <slot v-else>
-      <p>
-        {{ $t('index-status.indexed') }} {{ currentRepoIndexStatus.indexed }} ({{ currentRepoIndexStatus.cost }}ms)
-      </p>
-    </slot>
+    <template v-else>
+      <slot>
+        <p>
+          {{ $t('index-status.indexed') }} {{ currentRepoIndexStatus.indexed }} ({{ currentRepoIndexStatus.cost }}ms)
+        </p>
+      </slot>
+      <div v-if="title" class="footer">
+        {{ title }} &nbsp;
+        <a class="re-index-btn" href="#" @click.prevent="rebuildCurrentRepo()" :title="`Indexed: ${store.state.currentRepoIndexStatus?.status?.indexed}, Total: ${store.state.currentRepoIndexStatus?.status?.total}, Cost: ${store.state.currentRepoIndexStatus?.status?.cost}ms`">
+          {{ $t('view-links.re-index') }}
+        </a>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -23,7 +31,12 @@
 import { computed } from 'vue'
 import store from '@fe/support/store'
 import { setCurrentRepo, toggleRepoIndexing } from '@fe/services/repo'
+import { rebuildCurrentRepo } from '@fe/services/indexer'
 import { useI18n } from '@fe/services/i18n'
+
+defineProps<{
+  title?: string
+}>()
 
 const currentRepo = computed(() => store.state.currentRepo)
 const currentFile = computed(() => store.state.currentFile)
@@ -62,6 +75,25 @@ function handleCommand (e: MouseEvent) {
       font-size: 12px;
       color: var(--g-color-30);
     }
+  }
+}
+
+.footer {
+  text-align: center;
+  color: var(--g-color-30);
+  padding: 10px;
+  font-size: 13px;
+  border-top: 1px solid var(--g-color-85);
+  overflow-wrap: break-word;
+
+  .re-index-btn {
+    display: none;
+    white-space: nowrap;
+  }
+
+  &:hover .re-index-btn {
+    display: inline;
+    color: var(--g-color-30);
   }
 }
 </style>
