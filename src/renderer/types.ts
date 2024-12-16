@@ -275,6 +275,7 @@ export type ConvertOpts = {
     inlineStyle: boolean,
     includeStyle: boolean,
     highlightCode: boolean,
+    includeToc: number[],
   }
 }
 

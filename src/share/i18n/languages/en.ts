@@ -46,6 +46,7 @@ const data = {
   'can-not-edit-this-file-type': 'Cannot edit this file type',
   'read-only-mode-desc': 'The application is currently in read-only mode and cannot be edited.',
   'trigger-suggestions': 'Trigger Suggestions',
+  'table-of-contents': 'Table of Contents',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
@@ -626,6 +627,7 @@ const data = {
     'type': 'Copy Type: ',
     'inline-style': 'Inline Style',
     'include-style': 'Include Style',
+    'include-toc': 'Include TOC',
     'inline-image': 'Inline Local Image',
     'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',

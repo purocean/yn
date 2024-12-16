@@ -62,6 +62,17 @@
               </div>
               <template v-if="localHtml">
                 <div style="margin: 10px 0">
+                  <div style="display: block; margin-bottom: 10px;">
+                    <label><input
+                      type="checkbox"
+                      :checked="!!convert.localHtmlOptions.includeToc.length"
+                      @change="(e) => (e.target as any).checked ? convert.localHtmlOptions.includeToc = [1,2,3] : convert.localHtmlOptions.includeToc = []"
+                    /> {{$t('copy-content.include-toc')}} </label>
+                    <template v-if="convert.localHtmlOptions.includeToc.length">
+                      <label v-for="i in 6" :key="i" style="margin-left: 5px" ><input type="checkbox" :checked="convert.localHtmlOptions.includeToc.includes(i - 1)" @change="e => (e.target as any).checked ? convert.localHtmlOptions.includeToc.push(i - 1) : convert.localHtmlOptions.includeToc.splice(convert.localHtmlOptions.includeToc.indexOf(i - 1), 1)"
+                        />H{{ i }}</label>
+                    </template>
+                  </div>
                   <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.highlightCode" type="checkbox" /> {{$t('copy-content.highlight-code')}} </label>
                   <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.uploadLocalImage" type="checkbox" /> {{$t('copy-content.upload-image')}} </label>
                   <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineLocalImage" type="checkbox" /> {{$t('copy-content.inline-image')}} </label>
@@ -115,6 +126,7 @@ export default defineComponent({
         inlineStyle: false,
         includeStyle: true,
         highlightCode: true,
+        includeToc: [] as number[],
       },
       pdfOptions: {
         landscape: '',

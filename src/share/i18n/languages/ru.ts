@@ -47,6 +47,7 @@ const data: BaseLanguage = {
   'can-not-edit-this-file-type': 'Невозможно редактировать данный тип файла',
   'read-only-mode-desc': 'В настоящее время приложение находится в режиме "только для чтения".',
   'trigger-suggestions': 'Подсказки триггера',
+  'table-of-contents': 'Содержание',
   'premium': {
     'confetti': 'Конфетти',
     'need-purchase': 'Для [%s] требуется премиум',
@@ -627,6 +628,7 @@ const data: BaseLanguage = {
     'type': 'Тип копии: ',
     'inline-style': 'Встроенный стиль',
     'include-style': 'Включить стиль',
+    'include-toc': 'Включить содержание',
     'inline-image': 'Встроенное локальное изображение',
     'upload-image': 'Загрузить локальное изображение',
     'highlight-code': 'Выделить код',

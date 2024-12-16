@@ -47,6 +47,7 @@ const data: BaseLanguage = {
   'can-not-edit-this-file-type': '不能编辑此类型文件',
   'read-only-mode-desc': '当前是只读模式，不可编辑',
   'trigger-suggestions': '触发提示',
+  'table-of-contents': '目录',
   'premium': {
     'confetti': '彩色纸屑',
     'need-purchase': '[%s] 需要高级版',
@@ -627,6 +628,7 @@ const data: BaseLanguage = {
     'type': '复制类型: ',
     'inline-style': '内联样式',
     'include-style': '包含样式',
+    'include-toc': '包含目录',
     'inline-image': '内联本地图片',
     'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',
