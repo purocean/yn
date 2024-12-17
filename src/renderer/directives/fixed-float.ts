@@ -4,8 +4,9 @@ export function install (app: App) {
   app.directive('fixed-float', {
     mounted (el: HTMLElement, binding: DirectiveBinding<{
       disableAutoFocus?: boolean,
-      onClose: (byClickSelf?: boolean) => void,
+      onClose: (type: 'byClickSelf' | 'blur' | 'esc') => void,
       onBlur?: (byClickSelf?: boolean) => void
+      onEsc?: () => void
     } | undefined>) {
       const { value } = binding
 
@@ -13,7 +14,7 @@ export function install (app: App) {
         return
       }
 
-      const { onBlur, onClose, disableAutoFocus } = value
+      const { onBlur, onClose, onEsc, disableAutoFocus } = value
 
       el.tabIndex = 0
       if (!el.style.outline) {
@@ -33,12 +34,13 @@ export function install (app: App) {
 
       el.addEventListener('blur', () => {
         onBlur?.(byClickSelf)
-        onClose(byClickSelf)
+        onClose(byClickSelf ? 'byClickSelf' : 'blur')
       })
 
       el.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          onClose()
+          onEsc?.()
+          onClose('esc')
         }
       })
 

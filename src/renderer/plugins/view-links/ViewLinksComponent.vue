@@ -26,9 +26,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { basename } from '@fe/utils/path'
-import { registerHook, removeHook } from '@fe/core/hook'
 import { useFixedFloat } from '@fe/support/ui/fixed-float'
 import { getDocumentsManager } from '@fe/services/indexer'
 import { switchDoc } from '@fe/services/document'
@@ -128,12 +127,6 @@ const close = () => {
   useFixedFloat().hide()
 }
 
-const handleKeyDown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') {
-    close()
-  }
-}
-
 watch(() => currentTab.value, buildList)
 watch(() => store.state.currentRepoIndexStatus?.status.ready, () => buildList(currentTab.value))
 watch(() => [store.state.currentFile?.repo, store.state.currentRepo?.name], (val) => {
@@ -144,12 +137,6 @@ watch(() => [store.state.currentFile?.repo, store.state.currentRepo?.name], (val
 
 onMounted(() => {
   buildList(currentTab.value)
-
-  registerHook('GLOBAL_KEYDOWN', handleKeyDown)
-})
-
-onBeforeUnmount(() => {
-  removeHook('GLOBAL_KEYDOWN', handleKeyDown)
 })
 </script>
 

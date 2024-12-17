@@ -3,8 +3,9 @@
     <div
       class="fixed-float"
       v-fixed-float="{
-        onClose: (byClickSelf: any) => emits('close', byClickSelf),
+        onClose: (type: 'byClickSelf' | 'blur' | 'esc') => emits('close', type),
         onBlur: (byClickSelf: any) => emits('blur', byClickSelf),
+        onEsc: () => emits('esc'),
         disableAutoFocus: props.disableAutoFocus
       }"
       v-auto-z-index="{ layer: 'popup' }"
@@ -27,7 +28,6 @@
 
 <script lang="ts" setup>
 import SvgIcon from '@fe/components/SvgIcon.vue'
-import { useFixedFloat } from '@fe/support/ui/fixed-float'
 import { getKeyLabel, Escape } from '@fe/core/keybinding'
 import { useI18n } from '@fe/services/i18n'
 
@@ -46,12 +46,13 @@ const props = defineProps<Props>()
 
 // eslint-disable-next-line func-call-spacing
 const emits = defineEmits<{
-  (e: 'close', byClickSelf: boolean): void
+  (e: 'close', type: 'byClickSelf' | 'blur' | 'esc' | 'btn'): void
   (e: 'blur', byClickSelf: boolean): void
+  (e: 'esc'): void
 }>()
 
 function close () {
-  useFixedFloat().hide()
+  emits('close', 'btn')
 }
 </script>
 

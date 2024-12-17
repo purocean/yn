@@ -7,7 +7,9 @@ import FixedFloat from '@fe/components/FixedFloat.vue'
 interface Opts extends Components.FixedFloat.Props {
   component: Component;
   closeOnBlur?: boolean;
+  closeOnEsc?: boolean;
   onBlur?: (byClickSelf?: boolean) => void;
+  onEsc?: () => void;
 }
 
 export interface Instance {
@@ -44,25 +46,31 @@ export default function install () {
         attrs.value = null
       }
 
-      function onClose (clickBySelf: boolean) {
-        if (attrs.value?.closeOnBlur === false) {
+      function onClose (type: 'byClickSelf' | 'blur' | 'esc' | 'btn') {
+        if (type === 'byClickSelf') {
           return
         }
 
-        if (clickBySelf) {
-          return
+        if (attrs.value?.closeOnBlur !== false && type === 'blur') {
+          hide()
+        } else if (attrs.value?.closeOnEsc !== false && type === 'esc') {
+          hide()
+        } else if (type === 'btn') {
+          hide()
         }
-
-        hide()
       }
 
       function onBlur (clickBySelf: boolean) {
         attrs.value?.onBlur?.(clickBySelf)
       }
 
+      function onEsc () {
+        attrs.value?.onEsc?.()
+      }
+
       expose({ show, hide })
 
-      return () => attrs.value && <FixedFloat {...omit(attrs.value, 'component', 'closeOnBlur')} onClose={onClose} onBlur={onBlur}>
+      return () => attrs.value && <FixedFloat {...omit(attrs.value, 'component', 'closeOnBlur')} onClose={onClose} onBlur={onBlur} onEsc={onEsc}>
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore */}
         <attrs.value.component />
