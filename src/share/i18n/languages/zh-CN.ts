@@ -787,6 +787,7 @@ const data: BaseLanguage = {
     'indexed': '已索引',
   },
   'view-links': {
+    'view-links': '查看链接',
     'links': '链接',
     'back-links': '反向链接',
     'no-result': '无结果',

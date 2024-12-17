@@ -49,8 +49,9 @@ export default {
         btns.push({ type: 'separator' })
         btns.push({
           type: 'normal',
+          key: actionName,
           icon: 'link-solid',
-          title: 'Links',
+          title: ctx.i18n.t('view-links.view-links') + ' ' + ctx.keybinding.getKeysLabel(actionName),
           onClick: () => {
             ctx.action.getActionHandler(actionName)()
           },

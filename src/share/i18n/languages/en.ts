@@ -786,6 +786,7 @@ const data = {
     'indexed': 'Indexed',
   },
   'view-links': {
+    'view-links': 'View Links',
     'links': 'Links',
     'back-links': 'Back Links',
     'no-result': 'No Result',

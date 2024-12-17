@@ -787,6 +787,7 @@ const data: BaseLanguage = {
     'indexed': 'Индексировано',
   },
   'view-links': {
+    'view-links': 'Ссылки',
     'links': 'Ссылки',
     'back-links': 'Обратные ссылки',
     'no-result': 'Нет результатов',
