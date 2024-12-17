@@ -65,94 +65,17 @@
       </div>
     </div>
     <div class="activation" v-show="tab === 'activation'">
-      <template v-if="info">
-        <div v-if="info.status === 'stale'" class="status-action">
-          <span>{{$t('premium.activation.need-refresh')}}</span>
-          <span v-if="loading" class="loading">Refreshing...</span>
-          <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
-        </div>
-        <div v-if="info.status === 'expired'" class="status-action">
-          <span>{{$t('premium.activation.expired')}}</span>
-          <button class="small primary" @click="renewal">{{ $t('premium.activation.renewal') }}</button>
-          <span v-if="loading" class="loading">Refreshing...</span>
-          <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
-        </div>
-        <div v-else-if="tokenIsStaleSoon(info)" class="status-action">
-          <span>{{$t('premium.activation.need-refresh')}}</span>
-          <span v-if="loading" class="loading">Refreshing...</span>
-          <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
-        </div>
-        <div v-else-if="tokenIsExpiredSoon(info)" class="status-action">
-          <span>{{$t('premium.activation.expiring', String(tokenAvailableDays(info)))}}</span>
-          <button class="small primary" @click="renewal">{{ $t('premium.activation.renewal') }}</button>
-          <span v-if="loading" class="loading">Refreshing...</span>
-          <button v-else class="small primary" @click="refresh">{{ $t('premium.activation.refresh') }}</button>
-        </div>
+      <div>
         <div>
-          <div>
-            <h4 @dblclick="copyLicenseId" :title="info.licenseId">{{$t('premium.activation.info')}}</h4>
-            <ul>
-              <li>{{$t('premium.activation.name', info.name)}}</li>
-              <li>{{$t('premium.activation.email', info.email)}}</li>
-              <li>{{$t('premium.activation.plan', info.displayName)}}</li>
-              <li>{{$t('premium.activation.expires', info.expires.toLocaleDateString())}}</li>
-            </ul>
-          </div>
-          <div>
-            <h4>{{$t('premium.activation.devices')}} ({{devices.length}})</h4>
-            <ol>
-              <li v-for="device in devices" :key="device.id">
-                <span>{{device.label}}&nbsp;</span>
-                <a href="javascript:void(0)" @click="removeDevice(device)">{{$t('premium.activation.unbind')}}</a>
-              </li>
-            </ol>
-          </div>
+          <h4 @dblclick="copyLicenseId" title="ok">{{$t('premium.activation.info')}}</h4>
+          <ul>
+            <li>{{$t('premium.activation.name', '隔壁小王')}}</li>
+            <li>{{$t('premium.activation.email', 'xiaowang@gb.com')}}</li>
+            <li>{{$t('premium.activation.plan', '永久激活')}}</li>
+            <li>{{$t('premium.activation.expires', new Date('6666/06/06').toLocaleDateString())}}</li>
+          </ul>
         </div>
-      </template>
-      <template v-else-if="offline">
-        <div class="code-label">
-          Machine Code
-          <a href="javascript: void(0)" @click="offline = false">{{ $t('premium.activation.online-activation') }}</a>
-        </div>
-        <div class="offline-input-wrapper">
-          <input readonly :value="machineCode" />
-          <button v-if="machineCode" class="primary small input-copy-btn" @click="copyMachineCode">Copy</button>
-        </div>
-        <div class="code-label">
-          Activation Token
-          <a href="javascript: void(0)" @click="getActivationToken">{{ $t('premium.activation.get-activation-token') }}</a>
-          <img v-if="activationTokenQrcodeUrl" class="qrcode" :src="activationTokenQrcodeUrl" >
-        </div>
-        <textarea placeholder="Activation Token" v-model="activationToken" />
-      </template>
-      <template v-else>
-        <div class="code-label">
-          {{ $t('premium.activation.placeholder') }}
-          <span>
-            <a href="javascript: void(0)" @click="offline = true">{{ $t('premium.activation.offline-activation') }}</a> |
-            <a href="javascript: void(0)" @click="buy">{{ $t('premium.activation.get-license') }}</a>
-          </span>
-        </div>
-        <input v-model="license" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" maxlength="36" />
-      </template>
-      <div v-if="!info" class="tips">
-        {{$t('premium.activation.tips')}}:&nbsp;
-        <a href="mailto:yank-note@outlook.com">yank-note@outlook.com</a>
-        &nbsp; | &nbsp;
-        <a href="javascript:void(0)">{{$t('premium.activation.tips-wechat')}}</a>
-        <img class="qrcode" src="~@fe/assets/qrcode-wechat.jpg" >
       </div>
-    </div>
-    <div v-if="tab === 'activation' && !info && offline" class="action">
-      <button class="btn tr" :disabled="activationToken.trim().length < 36 || loading" @click="activateOffline">
-        {{loading ? $t('premium.activation.activating') : $t('ok')}}
-      </button>
-    </div>
-    <div v-if="tab === 'activation' && !info && !offline" class="action">
-      <div class="activation-tips" v-html="$t('premium.activation.activation-tips')" />
-      <button class="btn tr" :disabled="license.trim().length < 36 || loading" @click="activate">
-        {{loading ? $t('premium.activation.activating') : $t('ok')}}
-      </button>
     </div>
   </div>
 </XMask>
