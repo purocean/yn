@@ -65,8 +65,7 @@ function close () {
   border-left: 0;
   border-top: 0;
   color: var(--g-foreground-color);
-  min-width: 9em;
-  max-width: 20em;
+  min-width: 50px;
   cursor: default;
   box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
