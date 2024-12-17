@@ -203,6 +203,7 @@ export namespace Components {
       right?: string | undefined;
       bottom?: string | undefined;
       left?: string | undefined;
+      closeBtn?: boolean;
     }
   }
 

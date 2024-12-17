@@ -17,18 +17,29 @@
         left: props.left,
       }"
     >
+      <div v-if="closeBtn" class="close-btn" @click="close" :title="$t('close') + ' ' + getKeyLabel(Escape)">
+        <svg-icon name="times" width="14px" height="14px" />
+      </div>
       <slot />
     </div>
   </teleport>
 </template>
 
 <script lang="ts" setup>
+import SvgIcon from '@fe/components/SvgIcon.vue'
+import { useFixedFloat } from '@fe/support/ui/fixed-float'
+import { getKeyLabel, Escape } from '@fe/core/keybinding'
+import { useI18n } from '@fe/services/i18n'
+
+useI18n()
+
 interface Props {
   top?: string
   right?: string
   bottom?: string
   left?: string
   disableAutoFocus?: boolean
+  closeBtn?: boolean
 }
 
 const props = defineProps<Props>()
@@ -38,6 +49,10 @@ const emits = defineEmits<{
   (e: 'close', byClickSelf: boolean): void
   (e: 'blur', byClickSelf: boolean): void
 }>()
+
+function close () {
+  useFixedFloat().hide()
+}
 </script>
 
 <style lang="scss" scoped>
@@ -57,5 +72,27 @@ const emits = defineEmits<{
   border-radius: var(--g-border-radius);
   overflow: hidden;
   backdrop-filter: var(--g-backdrop-filter);
+
+  .close-btn {
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    padding: 3px;
+    box-sizing: border-box;
+    color: var(--g-color-30);
+    z-index: 10;
+
+    &:hover {
+      color: var(--g-color-0);
+      background-color: var(--g-color-80);
+      border-radius: 50%;
+    }
+
+    .svg-icon {
+      display: block;
+    }
+  }
 }
 </style>

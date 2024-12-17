@@ -1,8 +1,5 @@
 <template>
   <index-status style="width: 300px" :title="title">
-    <div class="close-btn" @click="close" :title="$t('close') + ' ' + getKeyLabel(Escape)">
-      <svg-icon name="times" width="14px" height="14px" />
-    </div>
     <div class="header">
       <group-tabs :tabs="[
         { value: 'links', label: $t('view-links.links') },
@@ -32,7 +29,6 @@
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { basename } from '@fe/utils/path'
 import { registerHook, removeHook } from '@fe/core/hook'
-import { Escape, getKeyLabel } from '@fe/core/keybinding'
 import { useFixedFloat } from '@fe/support/ui/fixed-float'
 import { getDocumentsManager } from '@fe/services/indexer'
 import { switchDoc } from '@fe/services/document'
@@ -171,27 +167,6 @@ onBeforeUnmount(() => {
   color: var(--g-color-45);
   padding: 20px 0 10px;
   font-size: 14px;
-}
-
-.close-btn {
-  position: absolute;
-  right: 3px;
-  top: 3px;
-  width: 20px;
-  height: 20px;
-  padding: 3px;
-  box-sizing: border-box;
-  color: var(--g-color-30);
-
-  &:hover {
-    color: var(--g-color-0);
-    background-color: var(--g-color-80);
-    border-radius: 50%;
-  }
-
-  .svg-icon {
-    display: block;
-  }
 }
 
 .list {

@@ -13,6 +13,7 @@ export default {
         top: ctx.env.isElectron ? '66px' : '36px',
         component: ViewLinksComponent,
         closeOnBlur: false,
+        closeBtn: true,
         onBlur (byClickSelf) {
           if (!byClickSelf && ctx.store.state.currentRepoIndexStatus?.repo !== ctx.store.state.currentFile?.repo) {
             ctx.ui.useFixedFloat().hide()
