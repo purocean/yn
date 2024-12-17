@@ -35,8 +35,8 @@ export default defineComponent({
       default: () => ({}),
     },
     layer: {
-      type: String as () => 'popup' | 'context-menu' | 'max',
-      default: 'popup'
+      type: String as () => 'popup' | 'context-menu' | 'max' | 'modal',
+      default: 'modal'
     },
   },
   emits: ['close'],

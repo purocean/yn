@@ -6,6 +6,7 @@ const stack: number[] = []
 
 const layers = {
   popup: 2e5,
+  modal: 3e5,
   'context-menu': 9e6,
   max: 2e8,
 }
