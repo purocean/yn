@@ -793,6 +793,7 @@ const data: BaseLanguage = {
     'links-in': '“%s”中的連結',
     'back-links-for': '“%s”的反向連結',
     're-index': '重新索引',
+    'disable-index': '停用索引',
   },
 }
 

@@ -1,8 +1,8 @@
 <template>
-  <div v-if="currentRepo && currentFile" class="indexer-status" @click.prevent="handleCommand">
-    <p v-if="currentRepo.name !== currentFile.repo" v-html="$t('index-status.switch-repository-html', currentFile.repo)" />
-    <p v-else-if="!currentRepo.enableIndexing" v-html="$t('index-status.enable-indexing-html', currentRepo.name)" />
-    <template v-else-if="!currentRepoIndexStatus?.ready">
+  <div v-if="currentRepo" class="indexer-status" @click.prevent="handleCommand">
+    <p v-if="status === 'not-same-repo'" v-html="$t('index-status.switch-repository-html', currentFile!.repo)" />
+    <p v-else-if="status === 'index-disabled'" v-html="$t('index-status.enable-indexing-html', currentRepo.name)" />
+    <template v-else-if="status === 'indexing'">
       <p v-if="!currentRepoIndexStatus">
         [<strong>{{ currentRepo.name }}</strong>] {{ $t('index-status.indexing') }}
       </p>
@@ -14,34 +14,74 @@
     <template v-else>
       <slot>
         <p>
-          {{ $t('index-status.indexed') }} {{ currentRepoIndexStatus.indexed }} ({{ currentRepoIndexStatus.cost }}ms)
+          {{ $t('index-status.indexed') }} {{ currentRepoIndexStatus?.indexed }} ({{ currentRepoIndexStatus?.cost }}ms)
         </p>
       </slot>
       <div v-if="title" class="footer">
         {{ title }} &nbsp;
-        <a class="re-index-btn" href="#" @click.prevent="rebuildCurrentRepo()" :title="`Indexed: ${store.state.currentRepoIndexStatus?.status?.indexed}, Total: ${store.state.currentRepoIndexStatus?.status?.total}, Cost: ${store.state.currentRepoIndexStatus?.status?.cost}ms`">
-          {{ $t('view-links.re-index') }}
-        </a>
+
+        <span class="index-action">
+          <a href="#" @click.prevent="rebuildCurrentRepo()" :title="`Indexed: ${store.state.currentRepoIndexStatus?.status?.indexed}, Total: ${store.state.currentRepoIndexStatus?.status?.total}, Cost: ${store.state.currentRepoIndexStatus?.status?.cost}ms`">
+            {{ $t('view-links.re-index') }}
+          </a>
+          /
+          <a href="#" @click.prevent="disableIndex()">{{ $t('view-links.disable-index') }}</a>
+        </span>
       </div>
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import store from '@fe/support/store'
 import { setCurrentRepo, toggleRepoIndexing } from '@fe/services/repo'
 import { rebuildCurrentRepo } from '@fe/services/indexer'
 import { useI18n } from '@fe/services/i18n'
 
-defineProps<{
-  title?: string
+const props = defineProps<{
+  title?: string;
+  disableCheckCurrentFile?: boolean;
+}>()
+
+type Status = 'not-open-file' | 'not-open-repo' | 'not-same-repo' | 'index-disabled' | 'indexing' | 'indexed'
+
+const emit = defineEmits<{
+  'status-change': [Status]
 }>()
 
 const currentRepo = computed(() => store.state.currentRepo)
 const currentFile = computed(() => store.state.currentFile)
 const currentRepoIndexStatus = computed(() => store.state.currentRepoIndexStatus?.status)
 const { $t } = useI18n()
+
+const status = computed<Status>(() => {
+  if (!currentRepo.value) {
+    return 'not-open-repo'
+  }
+
+  if (!currentFile.value && !props.disableCheckCurrentFile) {
+    return 'not-open-file'
+  }
+
+  if (!props.disableCheckCurrentFile && currentRepo.value.name !== currentFile.value?.repo) {
+    return 'not-same-repo'
+  }
+
+  if (!currentRepo.value.enableIndexing) {
+    return 'index-disabled'
+  }
+
+  if (!currentRepoIndexStatus.value?.ready) {
+    return 'indexing'
+  }
+
+  return 'indexed'
+})
+
+watch(status, (value) => {
+  emit('status-change', value)
+}, { immediate: true })
 
 function handleCommand (e: MouseEvent) {
   if (!currentRepo.value || !currentFile.value) {
@@ -56,6 +96,12 @@ function handleCommand (e: MouseEvent) {
   } else if (command === 'enable-indexing') {
     e.preventDefault()
     toggleRepoIndexing(currentRepo.value.name, true)
+  }
+}
+
+function disableIndex () {
+  if (currentRepo.value) {
+    toggleRepoIndexing(currentRepo.value.name, false)
   }
 }
 </script>
@@ -86,14 +132,18 @@ function handleCommand (e: MouseEvent) {
   border-top: 1px solid var(--g-color-85);
   overflow-wrap: break-word;
 
-  .re-index-btn {
+  .index-action {
     display: none;
     white-space: nowrap;
+    color: var(--g-color-30);
+
+    a {
+      color: var(--g-color-30);
+    }
   }
 
-  &:hover .re-index-btn {
+  &:hover .index-action {
     display: inline;
-    color: var(--g-color-30);
   }
 }
 </style>

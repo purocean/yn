@@ -793,6 +793,7 @@ const data: BaseLanguage = {
     'links-in': 'Ссылки в “%s”',
     'back-links-for': 'Обратные ссылки для “%s”',
     're-index': 'Переиндексировать',
+    'disable-index': 'Отключить индексацию',
   },
 }
 

@@ -792,6 +792,7 @@ const data = {
     'links-in': 'Links in "%s"',
     'back-links-for': 'Back Links for "%s"',
     're-index': 'Re-index',
+    'disable-index': 'Disable Index',
   },
 }
 
