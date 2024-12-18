@@ -1,6 +1,6 @@
 <template>
   <div :class="{'markdown-view': true, presentation}" :style="{'--markdown-body-max-width': markdownBodyMaxWidth}">
-    <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick" @contextmenu.capture="handleContextMenu">
+    <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick" @contextmenu.capture="handleContextMenu" @error.capture="handleError">
       <Render :content="renderContent" />
     </article>
   </div>
@@ -127,6 +127,10 @@ function handleDbClick (e: MouseEvent) {
 
 function handleClick (e: MouseEvent) {
   triggerHook('VIEW_ELEMENT_CLICK', { e, view: getViewDom()! }, { breakable: true })
+}
+
+function handleError (e: Event) {
+  triggerHook('VIEW_DOM_ERROR', { e, view: getViewDom()! }, { breakable: true })
 }
 
 function handleContextMenu (e: MouseEvent) {

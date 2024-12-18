@@ -38,10 +38,6 @@ export function isDataUrl (url: string) {
 const treeCache = new WeakMap<Components.Tree.Node[], Map<string, string | boolean>>()
 
 export function getFirstMdMatchPath (tree: Components.Tree.Node[], dir: string, fileName: string): string | null {
-  if (!isMarkdownFile(fileName)) {
-    fileName += MARKDOWN_FILE_EXT
-  }
-
   if (fileName.includes('/')) {
     return fileName
   }
@@ -187,7 +183,10 @@ export function parseLink (currentFile: PathItem, href: string, isWikiLink: bool
   if (path) {
     if (isWikiLink && tree) {
       path = path.replace(/:/g, '/') // replace all ':' to '/'
-      path = getFirstMdMatchPath(tree, baseDir, path) || path
+
+      const fileName = isMarkdownFile(path) ? path : path += MARKDOWN_FILE_EXT
+
+      path = getFirstMdMatchPath(tree, baseDir, fileName) || path
     }
 
     path = resolve(baseDir, path)

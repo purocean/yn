@@ -283,7 +283,7 @@ export default {
       mdLanguage.tokenizer.root.unshift(
         [/^\s*[+\-*] \[[ xX]\]\s/, 'keyword'],
         [/==\S.*\S?==/, 'keyword'],
-        [/(\[\[)([^[\]]+)(\]\])/, ['keyword.predefined', 'string', 'keyword.predefined']],
+        [/(!?\[\[)([^[\]]+)(\]\])/, ['keyword.predefined', 'string', 'keyword.predefined']],
         [/~\S[^~]*\S?~/, 'string'],
         [/\^\S[^^]*\S?\^/, 'string'],
       )
