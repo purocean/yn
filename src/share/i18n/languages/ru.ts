@@ -798,6 +798,11 @@ const data: BaseLanguage = {
     're-index': 'Переиндексировать',
     'disable-index': 'Отключить индексацию',
   },
+  'insert-table': {
+    'insert-table': 'Вставить таблицу',
+    'insert': 'Вставить',
+    'compact': 'Сжатая',
+  },
 }
 
 export default data

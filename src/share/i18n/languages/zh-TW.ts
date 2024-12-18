@@ -798,6 +798,11 @@ const data: BaseLanguage = {
     're-index': '重新索引',
     'disable-index': '停用索引',
   },
+  'insert-table': {
+    'insert-table': '插入表格',
+    'insert': '插入',
+    'compact': '緊湊',
+  },
 }
 
 export default data

@@ -797,6 +797,11 @@ const data = {
     're-index': 'Re-index',
     'disable-index': 'Disable Index',
   },
+  'insert-table': {
+    'insert-table': 'Insert Table',
+    'insert': 'Insert',
+    'compact': 'Compact',
+  },
 }
 
 export type BaseLanguage = typeof data
