@@ -121,7 +121,6 @@ export default {
             component: () => ctx.lib.vue.h(InsertTable, {
               onConfirm: () => {
                 ctx.ui.useModal().ok()
-                insertTable(params.value)
               },
               onChange: (val: any) => { params.value = val }
             }),
