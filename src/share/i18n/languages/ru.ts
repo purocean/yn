@@ -789,9 +789,11 @@ const data: BaseLanguage = {
   'view-links': {
     'view-links': 'Ссылки',
     'links': 'Ссылки',
+    'resources': 'Ресурсы',
     'back-links': 'Обратные ссылки',
     'no-result': 'Нет результатов',
     'links-in': 'Ссылки в “%s”',
+    'resources-in': 'Ресурсы в “%s”',
     'back-links-for': 'Обратные ссылки для “%s”',
     're-index': 'Переиндексировать',
     'disable-index': 'Отключить индексацию',

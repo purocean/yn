@@ -789,9 +789,11 @@ const data: BaseLanguage = {
   'view-links': {
     'view-links': '查看連結',
     'links': '連結',
+    'resources': '資源',
     'back-links': '反向連結',
     'no-result': '無結果',
     'links-in': '“%s”中的連結',
+    'resources-in': '“%s”中的資源',
     'back-links-for': '“%s”的反向連結',
     're-index': '重新索引',
     'disable-index': '停用索引',

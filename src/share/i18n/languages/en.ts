@@ -788,9 +788,11 @@ const data = {
   'view-links': {
     'view-links': 'View Links',
     'links': 'Links',
+    'resources': 'Resources',
     'back-links': 'Back Links',
     'no-result': 'No Result',
     'links-in': 'Links in "%s"',
+    'resources-in': 'Resources in "%s"',
     'back-links-for': 'Back Links for "%s"',
     're-index': 'Re-index',
     'disable-index': 'Disable Index',
