@@ -4,7 +4,7 @@ import { throttle } from 'lodash-es'
 import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, JSONRPCServer, JSONRPCServerChannel } from 'jsonrpc-bridge'
 import { fetchTree, readFile, watchFs } from '@fe/support/api'
 import { DOM_ATTR_NAME, FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME, MODE } from '@fe/support/args'
-import { getLogger, path, sleep } from '@fe/utils/pure'
+import * as utils from '@fe/utils/pure'
 import { DocumentEntity, documents } from '@fe/others/db'
 import { isMarkdownFile } from '@share/misc'
 import type { Stats } from 'fs'
@@ -35,8 +35,14 @@ markdown.core.ruler.at('inline', function (state) {
 const exportMain = {
   triggerWatchRepo,
   stopWatch,
-  importScripts: async (url: string) => {
-    await import(/* @vite-ignore */ url)
+  importScripts: async (urlOrCode: string, isCode = false) => {
+    if (isCode) {
+      const url = URL.createObjectURL(new Blob([urlOrCode], { type: 'application/javascript' }))
+      await import(url)
+      URL.revokeObjectURL(url)
+    } else {
+      await import(/* @vite-ignore */ urlOrCode)
+    }
   },
 }
 
@@ -78,6 +84,7 @@ export interface IndexerWorkerCtx {
   bridgeClient: JSONRPCClient<IndexerHostExports>;
   registerHook: typeof registerHook;
   removeHook: typeof removeHook;
+  utils: typeof utils;
 }
 
 // provide main to host
@@ -100,7 +107,7 @@ function _reportStatus (repo: Repo, processing: string | null, cost: number) {
 }
 
 function _convertPathToPathItem (repo: Repo, payload: { path: string }): PathItem {
-  const relativePath = '/' + path.relative(repo.path, payload.path)
+  const relativePath = '/' + utils.path.relative(repo.path, payload.path)
   return { repo: repo.name, path: relativePath }
 }
 
@@ -112,7 +119,7 @@ let toPutItems: (Omit<DocumentEntity, 'id'> & { id?: number })[] = []
 let reusedIds: number[] = []
 
 class RepoWatcher {
-  logger = getLogger('indexer-worker-repo-watcher')
+  logger = utils.getLogger('indexer-worker-repo-watcher')
 
   lock = new AsyncLock()
 
@@ -203,7 +210,7 @@ class RepoWatcher {
         }
 
         // retry watch then other error occurred
-        await sleep(2000)
+        await utils.sleep(2000)
         this.triggerWatchRepo(repo)
       }
     )
@@ -224,7 +231,7 @@ class RepoWatcher {
   }
 }
 
-const logger = getLogger('indexer-worker')
+const logger = utils.getLogger('indexer-worker')
 const watcher = new RepoWatcher()
 
 function triggerWatchRepo (repo: Repo | null | undefined) {
@@ -297,7 +304,7 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string | nu
     id: oldRecord?.id,
     repo: doc.repo,
     path: doc.path,
-    name: path.basename(doc.path),
+    name: utils.path.basename(doc.path),
     links,
     resources,
     frontmatter: env.attributes || {},
@@ -314,6 +321,6 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string | nu
 }
 
 // expose to plugin
-self.ctx = { bridgeClient, markdown, registerHook, removeHook } as IndexerWorkerCtx
+self.ctx = { bridgeClient, markdown, registerHook, removeHook, utils } satisfies IndexerWorkerCtx
 
 logger.debug('indexer-worker loaded', self.location.href)

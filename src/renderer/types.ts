@@ -12,6 +12,7 @@ export type ResourceTagName = 'audio' | 'img' | 'source' | 'video' | 'track' | '
 
 export type PositionScrollState = { editorScrollTop?: number, viewScrollTop?: number }
 export type PositionState = { line: number, column?: number } | { anchor: string } | PositionScrollState
+export type ParseLinkResult = { type: 'external', href: string } | { type: 'internal', path: string, name: string, position: PositionState | null }
 
 export type SwitchDocOpts = {
   force?: boolean,
@@ -529,8 +530,9 @@ export type BuildInHookTypes = {
     type: 'before-render',
     payload: { latex: string, options: any }
   },
-  PREMIUM_STATUS_CHANGED: never
+  PREMIUM_STATUS_CHANGED: never,
   WORKER_INDEXER_BEFORE_START_WATCH: { repo: Repo },
+  AFTER_PARSE_LINK: { params: { currentFile: PathItem, href: string, isWikiLink: boolean, tree?: Components.Tree.Node[] }, result: ParseLinkResult | null },
 }
 
 export type Previewer = {
