@@ -24,9 +24,21 @@ markdown.core.ruler.at('inline', function (state) {
     if (tok.type === 'inline') {
       state.md.inline.parse(tok.content, state.md, state.env, tok.children as any)
 
+      let map = tok.map
+
+      if (!map) {
+        // find previous token with map info
+        for (let j = i - 1; j >= 0; j--) {
+          if (tokens[j].map) {
+            map = tokens[j].map
+            break
+          }
+        }
+      }
+
       for (let j = 0; j < tok.children!.length; j++) {
         const token = tok.children![j]
-        ;(token as any)._block_map = tok.map
+        ;(token as any)._block_map = map
       }
     }
   }

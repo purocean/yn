@@ -623,14 +623,14 @@ export interface IndexItemLink {
   href: string;
   internal: string | null;
   position: PositionState | null;
-  blockMap: number[];
+  blockMap?: number[] | null;
 }
 
 export interface IndexItemResource {
   src: string;
   internal: string | null;
   tag: ResourceTagName;
-  blockMap: number[];
+  blockMap?: number[] | null;
 }
 
 export interface IndexItem {

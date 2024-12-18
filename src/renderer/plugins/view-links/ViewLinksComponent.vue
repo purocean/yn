@@ -1,5 +1,5 @@
 <template>
-  <index-status style="width: 300px" :title="title">
+  <index-status style="width: 400px" :title="title">
     <div class="header">
       <group-tabs :tabs="[
         { value: 'links', label: $t('view-links.links') },
@@ -8,7 +8,7 @@
       ]" size="small" v-model="currentTab" />
     </div>
     <ol v-if="list && list.length" class="list">
-      <li v-for="item in list" :key="item.title" class="item" :data-has-location="!!item.location">
+      <li v-for="item in list" :key="item.title" :class="{ item: true, external: !item.doc }" :data-has-location="!!item.location">
         <span v-if="item.location" class="item-icon-location" @click="switchDoc(item.location.doc, { source: 'view-links', position: item.location.position })">
           <SvgIcon name="location-crosshairs-solid" width="10px" height="10px" />
         </span>
@@ -42,7 +42,7 @@ import GroupTabs from '@fe/components/GroupTabs.vue'
 import IndexStatus from '@fe/components/IndexStatus.vue'
 
 type TabItemValue = 'links' | 'back-links' | 'resources'
-type ListItem = { title: string, link?: string | null, doc?: Doc | null, position?: PositionState | null, location?: { doc: Doc, position: { line: number } } }
+type ListItem = { title: string, link?: string | null, doc?: Doc | null, position?: PositionState | null, location?: { doc: Doc, position: { line: number } } | null }
 
 const currentTab = ref<TabItemValue>('links')
 const title = ref('')
@@ -89,11 +89,12 @@ const buildList = (type: TabItemValue) => {
   if (type === 'links') {
     dm.findByRepoAndPath(currentFileRepo, currentFilePath).then(doc => {
       if (currentTab.value === 'links') {
-        list.value = doc ? doc.links.filter(link => !!link.internal).map(link => ({
-          title: buildTitle(link.internal!, link.position),
-          doc: { type: 'file' as const, repo: currentFileRepo, path: link.internal!, name: basename(link.internal!), },
+        list.value = doc ? doc.links.map(link => ({
+          title: link.internal ? buildTitle(link.internal, link.position) : link.href,
+          link: link.href,
+          doc: link.internal ? { type: 'file' as const, repo: currentFileRepo, path: link.internal!, name: basename(link.internal!) } : null,
           position: link.position,
-          location: {
+          location: link.blockMap ? {
             doc: {
               type: 'file' as const,
               repo: currentFileRepo,
@@ -101,9 +102,11 @@ const buildList = (type: TabItemValue) => {
               name: currentFileName!,
             },
             position: { line: link.blockMap[0] + 1 },
-          }
+          } : null
         })) : []
       }
+    }).catch(e => {
+      console.error(e)
     })
   } else if (type === 'back-links') {
     const data: ListItem[] = []
@@ -111,7 +114,7 @@ const buildList = (type: TabItemValue) => {
     dm.getTable().where({ repo: currentFileRepo }).each(doc => {
       doc.links.forEach(link => {
         if (link.internal === currentFilePath) {
-          const position: PositionState = { line: link.blockMap[0] + 1 }
+          const position: PositionState | null = link.blockMap ? { line: link.blockMap[0] + 1 } : null
           data.push({
             title: buildTitle(doc.path, position),
             doc: { type: 'file', repo: currentFileRepo, path: doc.path, name: basename(doc.path) },
@@ -131,7 +134,7 @@ const buildList = (type: TabItemValue) => {
           title: res.internal ? buildTitle(res.internal) : res.src!,
           link: res.src,
           doc: res.internal ? { type: 'file' as const, repo: currentFileRepo, path: res.internal, name: basename(res.internal) } : null,
-          location: {
+          location: res.blockMap ? {
             doc: {
               type: 'file' as const,
               repo: currentFileRepo,
@@ -139,7 +142,7 @@ const buildList = (type: TabItemValue) => {
               name: currentFileName!,
             },
             position: { line: res.blockMap[0] + 1 },
-          },
+          } : null,
           position: null
         })) : []
       }
@@ -205,6 +208,10 @@ onMounted(() => {
     margin: 4px 0;
     font-size: 14px;
     position: relative;
+
+    &.external a {
+      font-style: italic;
+    }
 
     &::marker {
       font-size: 12px;
