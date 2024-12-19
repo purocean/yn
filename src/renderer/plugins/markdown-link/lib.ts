@@ -1,11 +1,12 @@
 import { basename, dirname, normalizeSep, resolve } from '@fe/utils/path'
 import { isMarkdownFile, MARKDOWN_FILE_EXT } from '@share/misc'
 import { DOM_ATTR_NAME, RESOURCE_TAG_NAMES } from '@fe/support/args'
+import { triggerHook } from '@fe/core/hook'
 import { removeQuery } from '@fe/utils/pure'
 import { isWindows } from '@fe/support/env'
 import type { Token } from 'markdown-it'
 import type StateCore from 'markdown-it/lib/rules_core/state_core'
-import type { Components, Doc, PathItem, PositionState, ResourceTagName } from '@fe/types'
+import type { Components, Doc, ParseLinkResult, PathItem, PositionState, ResourceTagName } from '@fe/types'
 
 const RE_POS = /:([0-9]+),?([0-9]+)?$/
 const RE_EXTERNAL_LINK = /^[a-zA-Z_+-]{1,}:/
@@ -37,10 +38,6 @@ export function isDataUrl (url: string) {
 const treeCache = new WeakMap<Components.Tree.Node[], Map<string, string | boolean>>()
 
 export function getFirstMdMatchPath (tree: Components.Tree.Node[], dir: string, fileName: string): string | null {
-  if (!isMarkdownFile(fileName)) {
-    fileName += MARKDOWN_FILE_EXT
-  }
-
   if (fileName.includes('/')) {
     return fileName
   }
@@ -147,7 +144,6 @@ export function convertResourceState (currentFile: PathItem, state: StateCore, b
   return true
 }
 
-export type ParseLinkResult = { type: 'external', href: string } | { type: 'internal', path: string, position: PositionState | null }
 export function parseLink (currentFile: PathItem, href: string, isWikiLink: false): ParseLinkResult | null
 export function parseLink (currentFile: PathItem, href: string, isWikiLink: true, tree: Components.Tree.Node[]): ParseLinkResult | null
 export function parseLink (currentFile: PathItem, href: string, isWikiLink: boolean, tree?: Components.Tree.Node[]): ParseLinkResult | null {
@@ -187,7 +183,10 @@ export function parseLink (currentFile: PathItem, href: string, isWikiLink: bool
   if (path) {
     if (isWikiLink && tree) {
       path = path.replace(/:/g, '/') // replace all ':' to '/'
-      path = getFirstMdMatchPath(tree, baseDir, path) || path
+
+      const fileName = isMarkdownFile(path) ? path : path += MARKDOWN_FILE_EXT
+
+      path = getFirstMdMatchPath(tree, baseDir, fileName) || path
     }
 
     path = resolve(baseDir, path)
@@ -196,7 +195,10 @@ export function parseLink (currentFile: PathItem, href: string, isWikiLink: bool
   const hash = tmp.slice(1).join('#')
   const position: PositionState | null = pos ? { line: pos[0], column: pos[1] } : hash ? { anchor: hash } : null
 
-  const result: ParseLinkResult = { type: 'internal', path, position }
+  const name = basename(path)
+  const result: ParseLinkResult = { type: 'internal', path, name, position }
+
+  triggerHook('AFTER_PARSE_LINK', { params: { currentFile, href, isWikiLink, tree }, result })
 
   return result
 }

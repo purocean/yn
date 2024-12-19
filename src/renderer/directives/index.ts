@@ -5,8 +5,9 @@ import * as placeholder from './placeholder'
 import * as upDownHistory from './up-down-history'
 import * as fixedFloat from './fixed-float'
 import * as textareaOnEnter from './textarea-on-enter'
+import * as autoZIndex from './auto-z-index'
 
-export { autoFocus, autoResize, placeholder, upDownHistory, fixedFloat, textareaOnEnter }
+export { autoFocus, autoResize, placeholder, upDownHistory, fixedFloat, textareaOnEnter, autoZIndex }
 
 export default function (app: App) {
   autoFocus.install(app)
@@ -15,4 +16,5 @@ export default function (app: App) {
   upDownHistory.install(app)
   fixedFloat.install(app)
   textareaOnEnter.install(app)
+  autoZIndex.install(app)
 }

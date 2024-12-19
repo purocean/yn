@@ -47,6 +47,7 @@ const data: BaseLanguage = {
   'can-not-edit-this-file-type': '不能编辑此类型文件',
   'read-only-mode-desc': '当前是只读模式，不可编辑',
   'trigger-suggestions': '触发提示',
+  'table-of-contents': '目录',
   'premium': {
     'confetti': '彩色纸屑',
     'need-purchase': '[%s] 需要高级版',
@@ -210,6 +211,10 @@ const data: BaseLanguage = {
     'delete-dialog': {
       'title': '删除文件',
       'content': '确定要删除 [%s] 吗？'
+    },
+    'force-delete-dialog': {
+      'title': '删除文件',
+      'content': '移动到回收站失败，是否要直接删除 [%s]？'
     },
     'move-dialog': {
       'title': '移动文件',
@@ -421,7 +426,7 @@ const data: BaseLanguage = {
       'language': '语言',
       'custom-css': '自定义 CSS',
       'assets-dir': '图片存放目录',
-      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, docHash, date',
+      'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, docHash, docPath, date',
       'assets': {
         'path-type': '路径类型',
       },
@@ -623,6 +628,7 @@ const data: BaseLanguage = {
     'type': '复制类型: ',
     'inline-style': '内联样式',
     'include-style': '包含样式',
+    'include-toc': '包含目录',
     'inline-image': '内联本地图片',
     'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',
@@ -781,12 +787,21 @@ const data: BaseLanguage = {
     'indexed': '已索引',
   },
   'view-links': {
+    'view-links': '查看链接',
     'links': '链接',
+    'resources': '资源',
     'back-links': '反向链接',
     'no-result': '无结果',
     'links-in': '“%s”中的链接',
+    'resources-in': '“%s”中的资源',
     'back-links-for': '“%s”的反向链接',
     're-index': '重新索引',
+    'disable-index': '停用索引',
+  },
+  'insert-table': {
+    'insert-table': '插入表格',
+    'insert': '插入',
+    'compact': '紧凑',
   },
 }
 

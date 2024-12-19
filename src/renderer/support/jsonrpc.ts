@@ -2,6 +2,8 @@ import { JSONRPCError, JSONRPCRequest, JSONRPCResult, JSONRPCServer, JSONRPCServ
 import { FLAG_DEBUG } from '@fe/support/args'
 import { isElectron, nodeRequire } from './env'
 
+let appReady: Promise<void> | null = null
+
 class ElectronRendererServerChannel implements JSONRPCServerChannel {
   ipcRenderer: Electron.IpcRenderer
 
@@ -15,7 +17,15 @@ class ElectronRendererServerChannel implements JSONRPCServerChannel {
 
   setMessageHandler (callback: (message: JSONRPCRequest<any[]>) => void): void {
     this.ipcRenderer.on('jsonrpc', (_event, message) => {
-      callback(message)
+      // delay the message until the app is ready
+      if (appReady) {
+        appReady.then(() => {
+          appReady = null
+          callback(message)
+        })
+      } else {
+        callback(message)
+      }
     })
   }
 }
@@ -27,8 +37,9 @@ function initElectronRPCServer (modules: Record<string, any>) {
   }
 }
 
-export function init (modules: Record<string, any>) {
+export function init (modules: Record<string, any>, ready: Promise<any>) {
   if (isElectron) {
+    appReady = ready
     initElectronRPCServer(modules)
   }
 }

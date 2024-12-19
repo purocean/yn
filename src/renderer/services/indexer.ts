@@ -112,12 +112,12 @@ export function updateIndexStatus (repo: Repo, status: IndexStatus) {
   store.state.currentRepoIndexStatus = { repo: repo.name, status }
 }
 
-export async function importScriptsToWorker (url: string | URL) {
+export async function importScriptsToWorker (urlOrCode: string | URL, isCode = false) {
   if (FLAG_DEMO || MODE !== 'normal') {
     return
   }
 
-  await client.call.main.importScripts(typeof url === 'string' ? url : url.href)
+  await client.call.main.importScripts(typeof urlOrCode === 'string' ? urlOrCode : urlOrCode.href, isCode)
 }
 
 Promise.resolve().then(() => {

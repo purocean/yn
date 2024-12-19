@@ -47,6 +47,7 @@ const data: BaseLanguage = {
   'can-not-edit-this-file-type': '不能編輯此類型的文件',
   'read-only-mode-desc': '當前應用處於唯讀模式，不可編輯',
   'trigger-suggestions': '觸發提示',
+  'table-of-contents': '目錄',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',
@@ -210,6 +211,10 @@ const data: BaseLanguage = {
     'delete-dialog': {
       'title': '刪除文件',
       'content': '確定要刪除 [%s] 嗎？'
+    },
+    'force-delete-dialog': {
+      'title': '刪除文件',
+      'content': '移動到回收站失敗，是否要直接刪除 [%s]？'
     },
     'move-dialog': {
       'title': '移動文件',
@@ -421,7 +426,7 @@ const data: BaseLanguage = {
       'language': '語言',
       'custom-css': '自訂 CSS',
       'assets-dir': '圖片存放目錄',
-      'assets-desc': '支援相對路徑和絕對路徑（限於倉庫內部）,可用變數：docName, docBasename, docSlug, docHash, date',
+      'assets-desc': '支援相對路徑和絕對路徑（限於倉庫內部）,可用變數：docName, docBasename, docSlug, docHash, docPath, date',
       'assets': {
         'path-type': '路徑類型',
       },
@@ -623,6 +628,7 @@ const data: BaseLanguage = {
     'type': '複製類型: ',
     'inline-style': '內聯樣式',
     'include-style': '包含樣式',
+    'include-toc': '包含目錄',
     'inline-image': '內聯本地圖片',
     'upload-image': '上傳本地圖片',
     'highlight-code': '高亮代碼',
@@ -781,12 +787,21 @@ const data: BaseLanguage = {
     'indexed': '已索引',
   },
   'view-links': {
+    'view-links': '查看連結',
     'links': '連結',
+    'resources': '資源',
     'back-links': '反向連結',
     'no-result': '無結果',
     'links-in': '“%s”中的連結',
+    'resources-in': '“%s”中的資源',
     'back-links-for': '“%s”的反向連結',
     're-index': '重新索引',
+    'disable-index': '停用索引',
+  },
+  'insert-table': {
+    'insert-table': '插入表格',
+    'insert': '插入',
+    'compact': '緊湊',
   },
 }
 

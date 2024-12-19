@@ -13,8 +13,9 @@ import { fetchTree } from '@fe/support/api'
 import type { Doc } from '@share/types'
 import { isMarkdownFile } from '@share/misc'
 import { getRenderEnv } from '@fe/services/view'
-import { convertResourceState, parseLink, ParseLinkResult } from './lib'
+import { convertResourceState, parseLink } from './lib'
 import workerIndexerUrl from './worker-indexer?worker&url'
+import type { ParseLinkResult } from '@fe/types'
 
 function getAnchorElement (target: HTMLElement) {
   let cur: HTMLElement | null = target
@@ -45,7 +46,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
     }
 
     const file: Doc = parsedLink.path
-      ? { path: parsedLink.path, type: 'file', name: basename(parsedLink.path), repo: currentFile.repo }
+      ? { path: parsedLink.path, type: 'file', name: parsedLink.name || basename(parsedLink.path), repo: currentFile.repo }
       : currentFile
 
     await ctx.doc.switchDoc(file, { source: 'markdown-link', position: parsedLink.position })

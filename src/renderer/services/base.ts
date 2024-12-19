@@ -66,6 +66,7 @@ export async function upload (file: File, belongDoc: Pick<Doc, 'repo' | 'path'>,
     .replaceAll('{docBasename}', parentName.startsWith('.') ? 'upload' : filenamify(parentNameWithoutMdExt))
     .replaceAll('{date}', dayjs().format('YYYY-MM-DD'))
     .replaceAll('{docHash}', binMd5(parentNameWithoutMdExt).slice(0, 8))
+    .replaceAll('{docPath}', belongDoc.path)
 
   let path: string = resolve(parentPath, assetsDir, filename)
 

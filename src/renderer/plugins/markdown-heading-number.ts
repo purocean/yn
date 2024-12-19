@@ -9,11 +9,11 @@ export default {
         counter-reset: outline-h2counter outline-h3counter outline-h4counter outline-h5counter outline-h6counter;
       }
 
-      .outline-toc .tag-h1.show-number { counter-reset: outline-h2counter; }
-      .outline-toc .tag-h2.show-number { counter-reset: outline-h3counter; }
-      .outline-toc .tag-h3.show-number { counter-reset: outline-h4counter; }
-      .outline-toc .tag-h4.show-number { counter-reset: outline-h5counter; }
-      .outline-toc .tag-h5.show-number { counter-reset: outline-h6counter; }
+      .outline-toc .tag-h1.show-number { counter-set: outline-h2counter; }
+      .outline-toc .tag-h2.show-number { counter-set: outline-h3counter; }
+      .outline-toc .tag-h3.show-number { counter-set: outline-h4counter; }
+      .outline-toc .tag-h4.show-number { counter-set: outline-h5counter; }
+      .outline-toc .tag-h5.show-number { counter-set: outline-h6counter; }
 
       .outline-toc .tag-h2.show-number:before {
         counter-increment: outline-h2counter;
@@ -56,11 +56,11 @@ export default {
         counter-reset: h2counter h3counter h4counter h5counter h6counter;
       }
 
-      .markdown-view .markdown-body h1.show-number { counter-reset: h2counter; }
-      .markdown-view .markdown-body h2.show-number { counter-reset: h3counter; }
-      .markdown-view .markdown-body h3.show-number { counter-reset: h4counter; }
-      .markdown-view .markdown-body h4.show-number { counter-reset: h5counter; }
-      .markdown-view .markdown-body h5.show-number { counter-reset: h6counter; }
+      .markdown-view .markdown-body h1.show-number { counter-set: h2counter; }
+      .markdown-view .markdown-body h2.show-number { counter-set: h3counter; }
+      .markdown-view .markdown-body h3.show-number { counter-set: h4counter; }
+      .markdown-view .markdown-body h4.show-number { counter-set: h5counter; }
+      .markdown-view .markdown-body h5.show-number { counter-set: h6counter; }
 
       .markdown-view .markdown-body h2.show-number:before {
         counter-increment: h2counter;

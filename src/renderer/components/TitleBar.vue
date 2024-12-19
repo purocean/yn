@@ -252,7 +252,7 @@ export default defineComponent({
   -webkit-user-select: none;
   -webkit-app-region: drag;
   position: relative;
-  z-index: 199999;
+  z-index: 8000000;
 }
 
 .resizer {

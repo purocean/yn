@@ -12,6 +12,7 @@ export type ResourceTagName = 'audio' | 'img' | 'source' | 'video' | 'track' | '
 
 export type PositionScrollState = { editorScrollTop?: number, viewScrollTop?: number }
 export type PositionState = { line: number, column?: number } | { anchor: string } | PositionScrollState
+export type ParseLinkResult = { type: 'external', href: string } | { type: 'internal', path: string, name: string, position: PositionState | null }
 
 export type SwitchDocOpts = {
   force?: boolean,
@@ -203,6 +204,7 @@ export namespace Components {
       right?: string | undefined;
       bottom?: string | undefined;
       left?: string | undefined;
+      closeBtn?: boolean;
     }
   }
 
@@ -275,6 +277,7 @@ export type ConvertOpts = {
     inlineStyle: boolean,
     includeStyle: boolean,
     highlightCode: boolean,
+    includeToc: number[],
   }
 }
 
@@ -467,6 +470,7 @@ export type BuildInHookTypes = {
   VIEW_ELEMENT_CLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_ELEMENT_DBCLICK: { e: MouseEvent, view: HTMLElement },
   VIEW_KEY_DOWN: { e: KeyboardEvent, view: HTMLElement },
+  VIEW_DOM_ERROR: { e: Event, view: HTMLElement },
   VIEW_SCROLL: { e: Event },
   VIEW_BEFORE_RENDER: { env: RenderEnv },
   VIEW_RENDER: never,
@@ -527,8 +531,9 @@ export type BuildInHookTypes = {
     type: 'before-render',
     payload: { latex: string, options: any }
   },
-  PREMIUM_STATUS_CHANGED: never
+  PREMIUM_STATUS_CHANGED: never,
   WORKER_INDEXER_BEFORE_START_WATCH: { repo: Repo },
+  AFTER_PARSE_LINK: { params: { currentFile: PathItem, href: string, isWikiLink: boolean, tree?: Components.Tree.Node[] }, result: ParseLinkResult | null },
 }
 
 export type Previewer = {
@@ -618,14 +623,14 @@ export interface IndexItemLink {
   href: string;
   internal: string | null;
   position: PositionState | null;
-  blockMap: number[];
+  blockMap?: number[] | null;
 }
 
 export interface IndexItemResource {
   src: string;
   internal: string | null;
   tag: ResourceTagName;
-  blockMap: number[];
+  blockMap?: number[] | null;
 }
 
 export interface IndexItem {

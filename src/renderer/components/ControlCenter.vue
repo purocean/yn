@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: (byClickSelf: any) => !byClickSelf && toggle(false) }">
+    <div v-if="visible && schema" class="control-center" v-fixed-float="{ onClose: (type: 'blur') => type === 'blur' && toggle(false) }" v-auto-z-index="{ layer: 'popup' }">
       <div v-for="(row, category) in schema" :key="category" class="row">
         <template v-for="(item, i) in row?.items" :key="i">
           <div
@@ -82,7 +82,6 @@ onBeforeUnmount(() => {
   position: fixed;
   right: 14px;
   top: 36px;
-  z-index: 1000;
   outline: none;
   background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);

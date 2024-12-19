@@ -145,7 +145,7 @@ export default defineComponent({
 
 .presentation-exit {
   position: fixed;
-  z-index: 99999;
+  z-index: 210000000;
   bottom: 6px;
   left: 6px;
   padding: 10px;

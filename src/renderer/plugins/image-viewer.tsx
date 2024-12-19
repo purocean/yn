@@ -87,7 +87,7 @@ export default {
     ctx.registerHook('VIEW_MOUNTED', () => {
       setTimeout(() => {
         const viewer = new Viewer(ctx.view.getViewDom()!, {
-          zIndex: 299999,
+          zIndex: 2.11e8,
           container: document.body,
           transition: false,
           toolbar: {

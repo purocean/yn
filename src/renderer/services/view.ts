@@ -18,6 +18,7 @@ export type Heading = {
   tag: string;
   class: string;
   text: string;
+  id: string;
   level: number;
   sourceLine: number;
   activated?: boolean;
@@ -305,6 +306,7 @@ export function getHeadings (withActivated = false): Heading[] {
     return {
       tag,
       class: `heading ${node.className} tag-${tag}`,
+      id: node.id,
       text: node.textContent || '',
       level: tags.indexOf(tag),
       sourceLine: parseInt(node.dataset.sourceLine || '0'),

@@ -46,6 +46,7 @@ const data = {
   'can-not-edit-this-file-type': 'Cannot edit this file type',
   'read-only-mode-desc': 'The application is currently in read-only mode and cannot be edited.',
   'trigger-suggestions': 'Trigger Suggestions',
+  'table-of-contents': 'Table of Contents',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
@@ -209,6 +210,10 @@ const data = {
     'delete-dialog': {
       'title': 'Delete a File',
       'content': 'Are you sure want to delete %s?'
+    },
+    'force-delete-dialog': {
+      'title': 'Delete a File',
+      'content': 'Move to trash failed, are you sure want to delete %s directly?',
     },
     'move-dialog': {
       'title': 'Move/Rename a File',
@@ -430,7 +435,7 @@ const data = {
       'language': 'Language',
       'custom-css': 'Custom CSS',
       'assets-dir': 'Image Dir',
-      'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, docHash, date.',
+      'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, docHash, docPath, date.',
       'assets': {
         'path-type': 'Path Type',
       },
@@ -622,6 +627,7 @@ const data = {
     'type': 'Copy Type: ',
     'inline-style': 'Inline Style',
     'include-style': 'Include Style',
+    'include-toc': 'Include TOC',
     'inline-image': 'Inline Local Image',
     'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',
@@ -780,12 +786,21 @@ const data = {
     'indexed': 'Indexed',
   },
   'view-links': {
+    'view-links': 'View Links',
     'links': 'Links',
+    'resources': 'Resources',
     'back-links': 'Back Links',
     'no-result': 'No Result',
     'links-in': 'Links in "%s"',
+    'resources-in': 'Resources in "%s"',
     'back-links-for': 'Back Links for "%s"',
     're-index': 'Re-index',
+    'disable-index': 'Disable Index',
+  },
+  'insert-table': {
+    'insert-table': 'Insert Table',
+    'insert': 'Insert',
+    'compact': 'Compact',
   },
 }
 

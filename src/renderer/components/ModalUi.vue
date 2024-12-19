@@ -28,7 +28,7 @@ import XMask from './Mask.vue'
 type ModalType = '' | 'confirm' | 'input' | 'alert'
 
 export default defineComponent({
-  name: 'modal-input',
+  name: 'modal-ui',
   components: { XMask },
   setup () {
     const { t } = useI18n()

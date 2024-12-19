@@ -82,7 +82,7 @@ export default {
         right: 0;
         bottom: 0;
         background: rgba(0, 0, 0, 0.2);
-        z-index: 99999999;
+        z-index: 210000000;
       }
     `)
   }

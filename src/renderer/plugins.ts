@@ -74,6 +74,7 @@ import dropToOpenFile from '@fe/plugins/drop-to-open-file'
 import recordRecentDocument from '@fe/plugins/record-recent-document'
 import aiCopilot from '@fe/plugins/ai-copilot'
 import viewLinks from '@fe/plugins/view-links'
+import insertTable from '@fe/plugins/insert-table'
 
 export default [
   buildInRenderers,
@@ -152,4 +153,5 @@ export default [
   markdownGithubAlerts,
   aiCopilot,
   viewLinks,
+  insertTable,
 ]

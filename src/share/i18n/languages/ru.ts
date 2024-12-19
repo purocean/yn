@@ -47,6 +47,7 @@ const data: BaseLanguage = {
   'can-not-edit-this-file-type': 'Невозможно редактировать данный тип файла',
   'read-only-mode-desc': 'В настоящее время приложение находится в режиме "только для чтения".',
   'trigger-suggestions': 'Подсказки триггера',
+  'table-of-contents': 'Содержание',
   'premium': {
     'confetti': 'Конфетти',
     'need-purchase': 'Для [%s] требуется премиум',
@@ -210,6 +211,10 @@ const data: BaseLanguage = {
     'delete-dialog': {
       'title': 'Удалить файл',
       'content': 'Вы уверены, что хотите удалить %s?'
+    },
+    'force-delete-dialog': {
+      'title': 'Удалить файл',
+      'content': 'Перемещение в корзину не удалось, удалить [%s] напрямую?',
     },
     'move-dialog': {
       'title': 'Переместить/переименовать файл',
@@ -431,7 +436,7 @@ const data: BaseLanguage = {
       'language': 'Язык',
       'custom-css': 'Пользовательский CSS',
       'assets-dir': 'Папка для изображений',
-      'assets-desc': 'Относительный или абсолютный путь (в хранилище документов). Переменные: docName, docBasename, docSlug, docHash, date.',
+      'assets-desc': 'Относительный или абсолютный путь (в хранилище документов). Переменные: docName, docBasename, docSlug, docHash, docPath, date.',
       'assets': {
         'path-type': 'Тип пути',
       },
@@ -623,6 +628,7 @@ const data: BaseLanguage = {
     'type': 'Тип копии: ',
     'inline-style': 'Встроенный стиль',
     'include-style': 'Включить стиль',
+    'include-toc': 'Включить содержание',
     'inline-image': 'Встроенное локальное изображение',
     'upload-image': 'Загрузить локальное изображение',
     'highlight-code': 'Выделить код',
@@ -781,12 +787,21 @@ const data: BaseLanguage = {
     'indexed': 'Индексировано',
   },
   'view-links': {
+    'view-links': 'Ссылки',
     'links': 'Ссылки',
+    'resources': 'Ресурсы',
     'back-links': 'Обратные ссылки',
     'no-result': 'Нет результатов',
     'links-in': 'Ссылки в “%s”',
+    'resources-in': 'Ресурсы в “%s”',
     'back-links-for': 'Обратные ссылки для “%s”',
     're-index': 'Переиндексировать',
+    'disable-index': 'Отключить индексацию',
+  },
+  'insert-table': {
+    'insert-table': 'Вставить таблицу',
+    'insert': 'Вставить',
+    'compact': 'Сжатая',
   },
 }
 

@@ -8,17 +8,21 @@ const rePos = /(:\d{1,6},?\d{0,6})$/
 export const RULE_NAME = 'wiki-links'
 
 export function wikiLinks (state: StateInline, silent?: boolean) {
+  const isImage = state.src.charCodeAt(state.pos) === 0x21/* ! */
+
+  const offset = isImage ? 3 : 2
+
   // check [[
-  if (state.src.charCodeAt(state.pos) !== 0x5B/* [ */ || state.src.charCodeAt(state.pos + 1) !== 0x5B/* [ */) {
+  if (state.src.charCodeAt(state.pos + offset - 2) !== 0x5B/* [ */ || state.src.charCodeAt(state.pos + offset - 1) !== 0x5B/* [ */) {
     return false
   }
 
-  const endPos = state.src.indexOf(']]', state.pos + 2)
-  if (endPos === -1 || endPos === state.pos + 2) {
+  const endPos = state.src.indexOf(']]', state.pos + offset)
+  if (endPos === -1 || endPos === state.pos + offset) {
     return false
   }
 
-  const content = state.src.slice(state.pos + 2, endPos)
+  const content = state.src.slice(state.pos + offset, endPos)
   const parts = content.match(reMatch)
   if (!parts) {
     return false
@@ -54,21 +58,31 @@ export function wikiLinks (state: StateInline, silent?: boolean) {
   }
 
   if (!silent) {
-    const attrs: [string, string][] = [
-      ['href', url],
-      [DOM_ATTR_NAME.WIKI_LINK, 'true'],
-    ]
+    if (isImage) {
+      const attrs: [string, string][] = [
+        ['src', url],
+        [DOM_ATTR_NAME.WIKI_RESOURCE, 'true'],
+        ['alt', text],
+      ]
 
-    if (isAnchor) {
-      attrs.push([DOM_ATTR_NAME.IS_ANCHOR, 'true'])
+      state.push('image', 'img', 0).attrs = attrs
+    } else {
+      const attrs: [string, string][] = [
+        ['href', url],
+        [DOM_ATTR_NAME.WIKI_LINK, 'true'],
+      ]
+
+      if (isAnchor) {
+        attrs.push([DOM_ATTR_NAME.IS_ANCHOR, 'true'])
+      }
+
+      state.push('link_open', 'a', 1).attrs = attrs
+      state.push('text', '', 0).content = text
+      state.push('link_close', 'a', -1)
     }
-
-    state.push('link_open', 'a', 1).attrs = attrs
-    state.push('text', '', 0).content = text
-    state.push('link_close', 'a', -1)
   }
 
-  state.pos = endPos + 2
+  state.pos = endPos + offset
 
   return true
 }
