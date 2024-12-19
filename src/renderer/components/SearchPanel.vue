@@ -120,6 +120,7 @@
 </template>
 
 <script lang="ts" setup>
+/* eslint-disable no-labels */
 import { computed, Fragment, h, nextTick, onBeforeUnmount, reactive, ref, shallowRef, Text, watch } from 'vue'
 import type { ISearchRange, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery, ITextSearchMatch } from 'ripgrep-wrapper'
 import { getLogger, sleep } from '@fe/utils'
@@ -401,8 +402,73 @@ function markText (text: string, ranges: ISearchRange[]) {
   const lines = text.split('\n')
   const result: {type: 'span' | 'mark' | 'br', value?: string }[] = []
 
+  const previousChars = 20
+  const maxPreviewLength = 300
+  let contentLength = 0
+  let hasMarked = false
+
+  const pushResult = (type: typeof result[number]['type'], value?: string): boolean => {
+    // exceed max preview length and we have marked text, stop build the result
+    if (hasMarked && contentLength >= maxPreviewLength) {
+      return false
+    }
+
+    // exceed max preview length and we have no marked text, process the unmarked text to keep the last span 20 chars
+    if (!hasMarked && contentLength > previousChars) {
+      let length = 0
+      for (let i = result.length - 1; i >= 0; i--) {
+        const item = result[i]
+        if (item.type === 'span') {
+          length += item.value!.length
+        } else if (item.type === 'br') {
+          length += 1
+        }
+
+        if (length >= previousChars) {
+          if (item.type === 'br') {
+            result.splice(0, i + 1) // remove items before the br
+            contentLength -= length
+            break
+          } else if (item.type === 'span') {
+            const lastSpanLength = item.value!.length
+            const keepChars = previousChars - (length - lastSpanLength)
+            item.value = item.value!.slice(-keepChars)
+            contentLength -= lastSpanLength - keepChars
+            break
+          }
+        }
+      }
+    }
+
+    if (type === 'br') {
+      contentLength++
+      result.push({ type })
+      return true
+    }
+
+    if (type === 'mark') {
+      hasMarked = true
+    }
+
+    if (!value) {
+      return true
+    }
+
+    value = (value.length + contentLength > maxPreviewLength)
+      ? value.slice(0, maxPreviewLength - contentLength)
+      : value
+
+    contentLength += value.length
+
+    result.push({ type, value })
+
+    return true
+  }
+
   let lastLine = 0
   let lastColumn = 0
+
+  rangesLoop:
   for (const range of ranges) {
     const start = range.startLineNumber
     const end = range.endLineNumber
@@ -420,38 +486,38 @@ function markText (text: string, ranges: ISearchRange[]) {
     // process previous lines
     if (start > lastLine) {
       const lastTail = lines[lastLine].slice(lastColumn)
-      lastTail && result.push({ type: 'span', value: lastTail })
-      result.push({ type: 'br' })
+      if (!pushResult('span', lastTail)) break rangesLoop
+      if (!pushResult('br')) break rangesLoop
 
       const prevLines = lines.slice(lastLine + 1, start)
-      prevLines.forEach((line) => {
-        line && result.push({ type: 'span', value: line })
-        result.push({ type: 'br' })
-      })
+      for (const line of prevLines) {
+        if (!pushResult('span', line)) break rangesLoop
+        if (!pushResult('br')) break rangesLoop
+      }
     }
 
     // process current range lines
     const currentStartLine = lines[start]
     const currentStartLinePrefix = currentStartLine.slice(0, startOffset)
-    currentStartLinePrefix && result.push({ type: 'span', value: currentStartLine.slice(0, startOffset) })
+    if (!pushResult('span', currentStartLinePrefix)) break rangesLoop
 
     if (start === end) {
       const startLineMarked = currentStartLine.slice(startOffset, endOffset)
-      startLineMarked && result.push({ type: 'mark', value: startLineMarked })
+      if (!pushResult('mark', startLineMarked)) break rangesLoop
     } else {
       const startLineMarked = currentStartLine.slice(startOffset)
-      startLineMarked && result.push({ type: 'mark', value: startLineMarked })
-      result.push({ type: 'br' })
+      if (!pushResult('mark', startLineMarked)) break rangesLoop
+      if (!pushResult('br')) break rangesLoop
 
       const currentMiddleLines = lines.slice(start + 1, end)
-      currentMiddleLines.forEach((line) => {
-        line && result.push({ type: 'mark', value: line })
-        result.push({ type: 'br' })
-      })
+      for (const line of currentMiddleLines) {
+        if (!pushResult('mark', line)) break rangesLoop
+        if (!pushResult('br')) break rangesLoop
+      }
 
       const currentEndLine = lines[end]
       const endLineMarked = currentEndLine.slice(0, endOffset)
-      endLineMarked && result.push({ type: 'mark', value: endLineMarked })
+      if (!pushResult('mark', endLineMarked)) break rangesLoop
     }
 
     lastLine = end
@@ -460,18 +526,19 @@ function markText (text: string, ranges: ISearchRange[]) {
 
   if (lastLine < lines.length - 1) {
     const lastTail = lines[lastLine].slice(lastColumn)
-    lastTail && result.push({ type: 'span', value: lastTail })
-    result.push({ type: 'br' })
-
-    const restLines = lines.slice(lastLine + 1)
-    restLines.forEach((line) => {
-      line && result.push({ type: 'span', value: line })
+    if (pushResult('span', lastTail)) {
       result.push({ type: 'br' })
-    })
+
+      const restLines = lines.slice(lastLine + 1)
+      for (const line of restLines) {
+        if (!pushResult('span', line)) break
+        result.push({ type: 'br' })
+      }
+    }
   }
 
   // remove end br
-  while (result[result.length - 1]?.type === 'br') {
+  while (result.length > 0 && result[result.length - 1].type === 'br') {
     result.pop()
   }
 
