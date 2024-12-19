@@ -105,8 +105,6 @@ const buildList = (type: TabItemValue) => {
           } : null
         })) : []
       }
-    }).catch(e => {
-      console.error(e)
     })
   } else if (type === 'back-links') {
     const data: ListItem[] = []
