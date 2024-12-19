@@ -76,28 +76,21 @@
 
 ## 更新日志
 
-### [v3.77.1](https://github.com/purocean/yn/releases/tag/v3.77.1) 2024-11-24
+### [v3.78.1](https://github.com/purocean/yn/releases/tag/v3.78.1) 2024-12-19
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-win-x64-3.77.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-mac-arm64-3.77.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-mac-x64-3.77.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-linux-x86_64-3.77.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.77.1/Yank-Note-linux-amd64-3.77.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-win-x64-3.78.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-mac-arm64-3.78.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-mac-x64-3.78.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-linux-x86_64-3.78.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-linux-amd64-3.78.1.deb)
 
-1. feat: 增加仓库索引机制，增加查看文档反向链接功能
-2. feat: 上传图片时候自动重命名重名的图片
-3. feat: 下载网络图片尽量保持原文件名
-4. feat: PicGo 上传图片支持远程模式，api 接口地址如果包含 `key` 参数则认为是远程模式
-5. feat: 支持从操作系统中拖拽复制文件到仓库中
-6. feat: 优化文本片段对选中文本的处理
-7. feat: 增加“启用触发建议灯泡”配置
-8. feat: 优化打开大仓库时候目录树性能
-9. fix: 修复编辑器关闭有序列表序号自动补全时仍然自动添加序号问题
-10. fix: 修复 Windows 上通过托盘菜单可能不能打开设置面板问题
-11. fix: 修复 PlantUML 图像缓存加载异常问题
-12. fix: 修复不能在“弹出预览”窗口中显示 `file://` 协议图片问题
-13. fix: 修复读取断开的符号链接文件导致的错误问题
-14. fix: 修复导出 PDF 设置缩放比例不生效问题
-15. fix: 修复打开仓库外文件自动补全路径计算问题
-16. plugin: 增加 `VIEW_BEFORE_RENDER` 钩子
-17. plugin: 增加 `ctx.repo` 模块
-18. plugin: 增加 `ctx.indexer` 模块
+1. feat: 查看链接面板增加查看当前文档引用的资源链接和外部链接功能
+2. feat: 增加插入表格面板，支持快速指定行列数
+3. feat: 导出 HTML 支持包含目录
+4. feat: 当无法将文件移动到回收站时，询问是否永久删除文件
+5. feat: 支持 `![[图片链接]]` Wiki 链接方式引入图片，但暂不支持模糊匹配路径
+6. feat: 设置图片保存路径变量增加 `{docPath}` 变量
+7. fix: 修复新版 Chrome 浏览器上文档标题自动编号不正确问题
+8. fix: 修复某些情况下 UI 元素层级不正确问题
+9. feat(plugin): 增加 `AFTER_PARSE_LINK` Hook 用以拦截链接解析
+10. feat(plugin): 增加 `VIEW_DOM_ERROR` Hook 用以监听预览区错误事件
+11. feat(plugin): 增加 `ctx.components.IndexStatus` 组件
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
