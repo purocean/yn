@@ -50,7 +50,7 @@ const exportMain = {
   importScripts: async (urlOrCode: string, isCode = false) => {
     if (isCode) {
       const url = URL.createObjectURL(new Blob([urlOrCode], { type: 'application/javascript' }))
-      await import(url)
+      await import(/* @vite-ignore */ url)
       URL.revokeObjectURL(url)
     } else {
       await import(/* @vite-ignore */ urlOrCode)
