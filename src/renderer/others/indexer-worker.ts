@@ -6,7 +6,6 @@ import { fetchTree, readFile, watchFs } from '@fe/support/api'
 import { DOM_ATTR_NAME, FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME, MODE } from '@fe/support/args'
 import * as utils from '@fe/utils/pure'
 import { DocumentEntity, documents } from '@fe/others/db'
-import { isMarkdownFile } from '@share/misc'
 import type { Stats } from 'fs'
 import type { PathItem, Repo } from '@share/types'
 import type { IndexerHostExports } from '@fe/services/indexer'
@@ -178,16 +177,12 @@ class RepoWatcher {
 
     this.handler = await watchFs(
       repo.name,
-      '/**/*.md',
-      { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true, ignored, mdContent: true },
+      '/**/*',
+      { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true, ignored, mdContent: true, mdFilesOnly: true },
       async payload => {
         this.logger.debug('startWatch onResult', payload.eventName, (payload as any).path)
 
         if (payload.eventName === 'add' || payload.eventName === 'change') {
-          if (!isMarkdownFile(payload.path)) {
-            return
-          }
-
           try {
             if (!processingStatus.ready) {
               processingStatus.total++

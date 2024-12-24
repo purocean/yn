@@ -4,8 +4,9 @@ import path from 'path'
 import { isMarkdownFile } from '../../share/misc'
 
 export type Message = { id: number, type: 'init' | 'stop' | 'enqueue', payload?: any }
+export type WatchOpts = chokidar.WatchOptions & { mdContent?: boolean, mdFilesOnly?: boolean }
 
-function init (id: number, filePath: string, options: chokidar.WatchOptions & { mdContent?: boolean }) {
+function init (id: number, filePath: string | string[], options: WatchOpts) {
   console.log(`watch process ${id} >`, filePath, 'init')
 
   try {
@@ -46,6 +47,12 @@ function init (id: number, filePath: string, options: chokidar.WatchOptions & { 
   }
 
   watcher.on('all', async (eventName, path, stats) => {
+    const isMdFile = isMarkdownFile(path)
+
+    if (options.mdFilesOnly && !isMdFile) {
+      return
+    }
+
     promiseQueue.unshift(new Promise<any>(resolve => {
       const result = {
         eventName,
@@ -58,7 +65,7 @@ function init (id: number, filePath: string, options: chokidar.WatchOptions & { 
         } : undefined
       }
 
-      if (options.mdContent && isMarkdownFile(path) && (eventName === 'add' || eventName === 'change')) {
+      if (options.mdContent && isMdFile && (eventName === 'add' || eventName === 'change')) {
         fs.readFile(path, 'utf-8').then(content => {
           result.content = content
           resolve(result)

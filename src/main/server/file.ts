@@ -1,6 +1,5 @@
 import { app, shell } from 'electron'
 import ch from 'child_process'
-import type { WatchOptions } from 'chokidar'
 import orderBy from 'lodash/orderBy'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -13,6 +12,7 @@ import { createStreamResponse } from '../helper'
 import { HISTORY_DIR } from '../constant'
 import config from '../config'
 import repository from './repository'
+import type { WatchOpts } from './watch-worker'
 
 // make sure watch-worker.ts is compiled
 import './watch-worker'
@@ -576,8 +576,10 @@ export async function commentHistoryVersion (repo: string, p: string, version: s
   }, p)
 }
 
-export async function watchFile (repo: string, p: string, options: WatchOptions & { mdContent?: boolean }) {
-  return withRepo(repo, async (_, filePath) => {
+export async function watchFile (repo: string, p: string | string[], options: WatchOpts) {
+  return withRepo(repo, async (_, ...args) => {
+    const filePath = args.length === 1 ? args[0] : args
+
     const { response, enqueue, close } = createStreamResponse()
 
     type Message = { id: number, type: 'init' | 'stop' | 'enqueue', payload?: any }
@@ -641,5 +643,5 @@ export async function watchFile (repo: string, p: string, options: WatchOptions 
     })
 
     return response
-  }, p)
+  }, ...(Array.isArray(p) ? p : [p]))
 }
