@@ -392,6 +392,7 @@ async function chooseMatch (result: ISerializedFileMatch & { repo: string }, mat
       endLineNumber: range.endLineNumber + 1,
       endColumn: range.endColumn + 1,
     })
+    editor.getEditor().focus()
   }
 
   await view.highlightLine(lines[0], true, 1000)
