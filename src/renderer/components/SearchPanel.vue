@@ -752,6 +752,7 @@ onBeforeUnmount(() => {
   height: calc(100% - 40px);
   margin-top: 2px;
   padding-top: 6px;
+  padding-bottom: 1em;
   border-top: 1px solid var(--g-color-90);
 
   &::-webkit-scrollbar {
