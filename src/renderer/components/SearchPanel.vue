@@ -386,6 +386,12 @@ async function chooseMatch (result: ISerializedFileMatch & { repo: string }, mat
 
   if (editor.isDefault()) {
     editor.highlightLine(lines, true, 1000)
+    editor.getEditor().setSelection({
+      startLineNumber: range.startLineNumber + 1,
+      startColumn: range.startColumn + 1,
+      endLineNumber: range.endLineNumber + 1,
+      endColumn: range.endColumn + 1,
+    })
   }
 
   await view.highlightLine(lines[0], true, 1000)
