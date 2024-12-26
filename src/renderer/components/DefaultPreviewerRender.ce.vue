@@ -306,7 +306,7 @@ watch(fileUri, () => {
 </style>
 
 <style lang="scss">
-@import '@fe/styles/mixins.scss';
+@use '@fe/styles/mixins.scss' as *;
 
 body.find-in-preview-highlight ::selection {
   background-color: #ffeb3b !important;

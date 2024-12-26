@@ -378,7 +378,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@fe/styles/mixins.scss';
+@use '@fe/styles/mixins.scss' as *;
 
 .wrapper {
   width: 90vw;

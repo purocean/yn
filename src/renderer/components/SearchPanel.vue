@@ -594,7 +594,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-@import '@fe/styles/mixins.scss';
+@use '@fe/styles/mixins.scss' as *;
 
 .search-panel-wrapper {
   background: rgba(0, 0, 0, 0.2);
