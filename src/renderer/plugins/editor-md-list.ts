@@ -24,6 +24,15 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
     return false
   }
 
+  const cursorAtEnd = model.getLineMaxColumn(e.position.lineNumber) === e.position.column
+
+  const tryKeepCursorAtEnd = () => {
+    if (cursorAtEnd) {
+      // force set position to the end of line
+      editor.setPosition(new monaco.Position(e.position.lineNumber, model.getLineMaxColumn(e.position.lineNumber)))
+    }
+  }
+
   const processTab = (position: Monaco.Position) => {
     const currentLine = model.getLineContent(position.lineNumber)
     if (!currentLine) {
@@ -77,6 +86,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   if (isTab) {
     if (!ignoreTabProcess) {
       processTab(e.position)
+      tryKeepCursorAtEnd()
     }
   } else if (isEnter) {
     if (processEnter(e.position)) {
@@ -216,13 +226,9 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
 
     // apply edits
     if (edits.length) {
-      const cursorAtEnd = model.getLineMaxColumn(position.lineNumber) === position.column
       editor.pushUndoStop()
       editor.executeEdits(source, edits)
-      if (cursorAtEnd) {
-        // force set position to the end of line
-        editor.setPosition(new monaco.Position(position.lineNumber, model.getLineMaxColumn(position.lineNumber)))
-      }
+      tryKeepCursorAtEnd()
     }
   }
 
