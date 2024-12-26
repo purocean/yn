@@ -106,7 +106,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
     const currentLine = model.getLineContent(line)
     const prefix = currentLine.slice(0, position.column - 1)
 
-    // check current line is a ordered list item
+    // check current line is an ordered list item
     const match = currentLine.match(reg)
     if (!match) {
       return
@@ -119,7 +119,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       return
     }
 
-    // if pres delete left key, only auto complete when cursor at the end of line
+    // if press delete left key, only auto complete when cursor at the end of line
     if (isDeleteLeft && model.getLineMaxColumn(line) !== position.column) {
       return
     }
@@ -128,7 +128,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       const content = model.getLineContent(startLine)
 
       const m = content.match(reg)
-      if (!m || m[1].length < indent.length) {
+      if ((!m && content.trim().length === 0) || (m && m[1].length < indent.length)) {
         break
       }
 
@@ -142,7 +142,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       const content = model.getLineContent(endLine)
 
       const m = content.match(reg)
-      if (!m || m[1].length < indent.length) {
+      if ((!m && content.trim().length === 0) || (m && m[1].length < indent.length)) {
         break
       }
 
