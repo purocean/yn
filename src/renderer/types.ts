@@ -533,6 +533,7 @@ export type BuildInHookTypes = {
   },
   PREMIUM_STATUS_CHANGED: never,
   WORKER_INDEXER_BEFORE_START_WATCH: { repo: Repo },
+  INDEXER_FS_CHANGE: { repo: Repo },
   AFTER_PARSE_LINK: { params: { currentFile: PathItem, href: string, isWikiLink: boolean, tree?: Components.Tree.Node[] }, result: ParseLinkResult | null },
 }
 

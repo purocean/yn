@@ -1,6 +1,6 @@
 import AsyncLock from 'async-lock'
 import MarkdownIt, { Token } from 'markdown-it'
-import { throttle } from 'lodash-es'
+import { debounce, throttle } from 'lodash-es'
 import { JSONRPCClient, JSONRPCClientChannel, JSONRPCRequest, JSONRPCResponse, JSONRPCServer, JSONRPCServerChannel } from 'jsonrpc-bridge'
 import { fetchTree, readFile, watchFs } from '@fe/support/api'
 import { DOM_ATTR_NAME, FLAG_DEBUG, FLAG_DEMO, HELP_REPO_NAME, MODE } from '@fe/support/args'
@@ -129,6 +129,12 @@ let allMtimeMs: Map<string, { id: number, mtimeMs: number }> | null = null
 let toPutItems: (Omit<DocumentEntity, 'id'> & { id?: number })[] = []
 let reusedIds: number[] = []
 
+const triggerFsChangeHook = debounce((repo: Repo) => {
+  if (processingStatus.ready) {
+    bridgeClient.notify.ctx.triggerHook('INDEXER_FS_CHANGE', { repo })
+  }
+}, 500)
+
 class RepoWatcher {
   logger = utils.getLogger('indexer-worker-repo-watcher')
 
@@ -181,6 +187,10 @@ class RepoWatcher {
       { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true, ignored, mdContent: true, mdFilesOnly: true },
       async payload => {
         this.logger.debug('startWatch onResult', payload.eventName, (payload as any).path)
+
+        if (processingStatus.ready && payload.eventName !== 'change' && payload.eventName !== 'ready') {
+          triggerFsChangeHook(repo)
+        }
 
         if (payload.eventName === 'add' || payload.eventName === 'change') {
           try {

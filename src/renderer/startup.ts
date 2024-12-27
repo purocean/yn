@@ -100,6 +100,7 @@ registerHook('DOC_CREATED', refreshTree)
 registerHook('DOC_DELETED', refreshTree)
 registerHook('DOC_MOVED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', refreshTree)
+registerHook('INDEXER_FS_CHANGE', refreshTree)
 registerHook('DOC_SWITCH_FAILED', async (payload?: { doc?: Doc | null, message: string }) => {
   if (payload && payload.doc && payload.message?.includes('NOENT')) {
     unmarkDoc(payload.doc)
