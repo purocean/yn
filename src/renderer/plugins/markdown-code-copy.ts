@@ -67,7 +67,7 @@ export default {
         height: 100%;
         display: inline-block;
       }
-    `)
+    `, true)
 
     ctx.markdown.registerPlugin(md => {
       const codeInline = (fn: Function) => (tokens: any, idx: any, options: any, env: any, slf: any) => {

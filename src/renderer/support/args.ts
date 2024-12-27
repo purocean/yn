@@ -51,6 +51,7 @@ export const DOM_ATTR_NAME = {
   WIKI_LINK: 'wiki-link',
   WIKI_RESOURCE: 'wiki-resource',
   IS_ANCHOR: 'is-anchor',
+  SKIP_EXPORT: 'skip-export',
 }
 
 export const DOM_CLASS_NAME = {

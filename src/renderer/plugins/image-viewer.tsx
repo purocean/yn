@@ -158,7 +158,7 @@ export default {
       body.viewer-open {
         padding-right: 0 !important;
       }
-    `)
+    `, true)
 
     ctx.editor.registerCustomEditor({
       name: 'image-viewer',

@@ -3,7 +3,7 @@ import Markdown from 'markdown-it'
 import { escape } from 'lodash-es'
 import { Plugin } from '@fe/context'
 import { getActionHandler } from '@fe/core/action'
-import { FLAG_DISABLE_XTERM } from '@fe/support/args'
+import { DOM_CLASS_NAME, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/core/keybinding'
 import { useI18n } from '@fe/services/i18n'
 import { getLogger, md5 } from '@fe/utils'
@@ -198,7 +198,7 @@ const RunCode = defineComponent({
       const runResult = result.value || cache[hash.value]
 
       return [
-        h('div', { class: 'p-mcr-run-code-action skip-export' }, [
+        h('div', { class: `p-mcr-run-code-action ${DOM_CLASS_NAME.SKIP_EXPORT}` }, [
           h('div', {
             title: status.value !== 'running' ? t('code-run.run') : t('code-run.stop'),
             class: 'p-mcr-run-btn' + (status.value === 'running' ? ' p-mcr-run-btn-stop' : ''),
@@ -211,7 +211,7 @@ const RunCode = defineComponent({
             onClick: runInXterm
           }),
         ]),
-        h('div', { class: 'p-mcr-run-code-result skip-export', ref: resultRef }, h('output', { onDblclick: selectRunResult, key: runResult, innerHTML: runResult })),
+        h('div', { class: `p-mcr-run-code-result ${DOM_CLASS_NAME.SKIP_EXPORT}`, ref: resultRef }, h('output', { onDblclick: selectRunResult, key: runResult, innerHTML: runResult })),
         h('div', { class: 'p-mcr-clear-btn-wrapper skip-print' }, h(
           h(
             'div',
@@ -338,7 +338,7 @@ export default {
       .markdown-view .markdown-body .p-mcr-clear-btn:hover {
         background: var(--g-color-76);
       }
-    `)
+    `, true)
 
     ctx.markdown.registerPlugin(RunPlugin)
 
