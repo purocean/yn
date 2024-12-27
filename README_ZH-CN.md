@@ -76,21 +76,15 @@
 
 ## 更新日志
 
-### [v3.78.1](https://github.com/purocean/yn/releases/tag/v3.78.1) 2024-12-19
+### [v3.78.2](https://github.com/purocean/yn/releases/tag/v3.78.2) 2024-12-27
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-win-x64-3.78.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-mac-arm64-3.78.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-mac-x64-3.78.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-linux-x86_64-3.78.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-linux-amd64-3.78.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-win-x64-3.78.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-mac-arm64-3.78.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-mac-x64-3.78.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-linux-x86_64-3.78.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-linux-amd64-3.78.2.deb)
 
-1. feat: 查看链接面板增加查看当前文档引用的资源链接和外部链接功能
-2. feat: 增加插入表格面板，支持快速指定行列数
-3. feat: 导出 HTML 支持包含目录
-4. feat: 当无法将文件移动到回收站时，询问是否永久删除文件
-5. feat: 支持 `![[图片链接]]` Wiki 链接方式引入图片，但暂不支持模糊匹配路径
-6. feat: 设置图片保存路径变量增加 `{docPath}` 变量
-7. fix: 修复新版 Chrome 浏览器上文档标题自动编号不正确问题
-8. fix: 修复某些情况下 UI 元素层级不正确问题
-9. feat(plugin): 增加 `AFTER_PARSE_LINK` Hook 用以拦截链接解析
-10. feat(plugin): 增加 `VIEW_DOM_ERROR` Hook 用以监听预览区错误事件
-11. feat(plugin): 增加 `ctx.components.IndexStatus` 组件
+1. feat: 优化搜索结果高亮显示和交互，切换文件时候编辑器自动选择搜索结果
+2. feat: 优化有序列表自动编号，支持单条目跨多行识别
+3. fix: 修复导出 HTML 丢失样式问题
+4. fix: 修复删除目录后文档索引不更新问题
+5. fix: 修复搜索出大量结果可能导致应用卡住问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
