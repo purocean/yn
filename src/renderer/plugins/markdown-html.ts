@@ -117,12 +117,13 @@ function htmlInline (state: StateInline, silent = false): boolean {
 
   let token: Token
   if (content.startsWith('</') || content.startsWith('-->')) {
-    const prevHtmlTag = prevHtmlTags.pop()
-    if (prevHtmlTags && prevHtmlTag === tag) {
-      if (!validateTagName(tag)) {
-        return false
-      }
+    if (!validateTagName(tag)) {
+      return false
+    }
 
+    const prevHtmlTag = prevHtmlTags.pop()
+
+    if (prevHtmlTags && prevHtmlTag === tag) {
       token = state.push('html_close', tag, -1)
     } else {
       console.warn('html tag not match', prevHtmlTag, tag)
@@ -231,7 +232,7 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
     max = state.eMarks[nextLine]
     lineText = state.src.slice(pos, max)
 
-    if (lineText.length === 0) {
+    if (lineText.length === 0 && prevHtmlTags.length === 0) {
       break
     }
 
