@@ -231,8 +231,9 @@ function math_plugin (md: any) {
 export default {
   name: 'markdown-katex',
   register: ctx => {
-    ctx.view.addStyles(styles)
     ctx.view.addStyles(`
+      ${styles}
+
       .markdown-view .markdown-body .katex {
         background: initial;
       }

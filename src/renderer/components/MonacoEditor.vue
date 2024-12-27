@@ -110,7 +110,7 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
-@import '@fe/styles/mixins.scss';
+@use '@fe/styles/mixins.scss' as *;
 
 .monaco-editor .inputarea {
   display: unset;

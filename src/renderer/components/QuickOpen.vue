@@ -7,7 +7,7 @@
     @keydown.up.exact="selectItem(-1)"
     @keydown.down.exact="selectItem(1)"
     @click.stop>
-    <div class="tab">
+    <div class="tab" v-if="tabs.length > 1">
       <div
         v-for="tab in tabs"
         :key="tab.key"

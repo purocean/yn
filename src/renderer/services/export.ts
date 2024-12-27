@@ -297,7 +297,14 @@ export async function convertCurrentDocument (opts: ConvertOpts): Promise<Blob> 
 
   // export html directly
   if (opts.fromType === 'html' && opts.toType === 'html') {
-    const html = await wrapExportProcess('html', () => getContentHtml(opts.fromHtmlOptions))
+    const html = await wrapExportProcess('html', () => getContentHtml({
+      ...opts.fromHtmlOptions,
+      nodeProcessor: node => {
+        if (node.tagName === 'IFRAME' && !/https?:\/\//.test(node.getAttribute('src') || '')) {
+          node.outerHTML = '<i style="border: 1px solid lightgray">This iframe is not supported in export.</i>'
+        }
+      }
+    }))
     return new Blob([
       buildHtml(fileName, html, opts.fromHtmlOptions || { includeStyle: false, includeToc: [] })
     ], { type: 'text/html' })
@@ -316,6 +323,11 @@ export async function convertCurrentDocument (opts: ConvertOpts): Promise<Blob> 
         // remove katex-html
         if (node.classList.contains('katex-html')) {
           node.remove()
+        }
+
+        // remove unsupported iframe
+        if (node.tagName === 'IFRAME' && !/https?:\/\//.test(node.getAttribute('src') || '')) {
+          node.outerHTML = '<i style="border: 1px solid lightgray">This iframe is not supported in export.</i>'
         }
       }
     }))

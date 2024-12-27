@@ -76,21 +76,15 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.78.1](https://github.com/purocean/yn/releases/tag/v3.78.1) 2024-12-19
+### [v3.78.2](https://github.com/purocean/yn/releases/tag/v3.78.2) 2024-12-27
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-win-x64-3.78.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-mac-arm64-3.78.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-mac-x64-3.78.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-linux-x86_64-3.78.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.78.1/Yank-Note-linux-amd64-3.78.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-win-x64-3.78.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-mac-arm64-3.78.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-mac-x64-3.78.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-linux-x86_64-3.78.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-linux-amd64-3.78.2.deb)
 
-1. feat: Added the ability to view resource links and external links referenced in the current document through the link panel.
-2. feat: Added a table insertion panel, supporting quick specification of rows and columns.
-3. feat: Exporting to HTML now supports the inclusion of a table of contents.
-4. feat: When unable to move a file to the recycle bin, prompt whether to permanently delete the file.
-5. feat: Support for introducing images using the Wiki link method `![[Image Link]]`, but fuzzy path matching is not yet supported.
-6. feat: Added the `{docPath}` variable to the image save path settings.
-7. fix: Fixed the issue of incorrect automatic numbering of document titles in the latest version of the Chrome browser.
-8. fix: Fixed the issue of incorrect UI element layering in certain situations.
-9. feat(plugin): Added the `AFTER_PARSE_LINK` Hook to intercept link parsing.
-10. feat(plugin): Added the `VIEW_DOM_ERROR` Hook to listen for errors in the preview area.
-11. feat(plugin): Added the `ctx.components.IndexStatus` component.
+1. feat: Enhance search result highlighting and interaction, automatically select search results in the editor when switching files
+2. feat: Optimize ordered list auto-numbering, support single-entry multi-line recognition
+3. fix: Fix the issue of losing styles when exporting to HTML
+4. fix: Fix the issue of document index not updating after deleting a directory
+5. fix: Fix the issue where searching for a large number of results may cause the application to freeze
 
 [More release notes](https://github.com/purocean/yn/releases)
 

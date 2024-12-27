@@ -28,7 +28,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@fe/styles/mixins.scss';
+@use '@fe/styles/mixins.scss' as *;
 
 .tabs {
   display: flex;

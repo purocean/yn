@@ -12,6 +12,10 @@ if (os.platform() === 'darwin') {
 }
 
 export async function search (query: ITextQuery) {
+  if (!query.maxFileSize) {
+    query.maxFileSize = 3 * 1024 * 1024 // limit to 3MB
+  }
+
   const cts = new CancellationTokenSource()
   const cancel = () => {
     cts.cancel()

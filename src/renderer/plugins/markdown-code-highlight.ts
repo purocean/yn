@@ -17,85 +17,84 @@ const DATA_ATTR_NAME = 'data-line-number'
 const BREAK_LINE_REGEXP = /\r\n|\r|\n/g
 
 function addCustomStyles (ctx: Ctx) {
-  ctx.view.addStyles(styles)
-  ctx.view.addStyles(
-    `
-      .markdown-view .markdown-body table.${TABLE_NAME} {
-        margin: 0;
-        border-collapse: separate;
+  ctx.view.addStyles(`
+    ${styles}
+
+    .markdown-view .markdown-body table.${TABLE_NAME} {
+      margin: 0;
+      border-collapse: separate;
+    }
+
+    .markdown-view .markdown-body table.${TABLE_NAME},
+    .markdown-view .markdown-body table.${TABLE_NAME} tr,
+    .markdown-view .markdown-body table.${TABLE_NAME} td {
+      border: 0;
+    }
+
+    .markdown-view .markdown-body table.${TABLE_NAME} td {
+      padding: 0;
+    }
+
+    .markdown-view .markdown-body table.${TABLE_NAME} tbody {
+      display: table;
+      min-width: 100%;
+    }
+
+    .markdown-view .markdown-body table.${TABLE_NAME} td.${NUMBERS_BLOCK_NAME} {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      text-align: center;
+      vertical-align: top;
+      text-align: right;
+      min-width: 2em;
+      width: 2em;
+      position: sticky;
+      left: 0;
+      background-color: var(--g-color-96);
+      box-shadow: -20px 0px 0px var(--g-color-96);
+      border-right: 1px solid var(--g-color-86);
+    }
+
+    .markdown-view .markdown-body table.${TABLE_NAME} td.${CODE_BLOCK_NAME} {
+      padding-left: 10px;
+    }
+
+    .markdown-view .markdown-body table.${TABLE_NAME} .${NUMBER_LINE_NAME}{
+      white-space: nowrap;
+      padding-right: 8px;
+      color: var(--g-color-40);
+    }
+
+    .markdown-view .markdown-body table.${TABLE_NAME} .${NUMBER_LINE_NAME}:before{
+      content: attr(${DATA_ATTR_NAME})
+    }
+
+    .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE} table.${TABLE_NAME} td {
+      white-space: pre-wrap;
+      box-shadow: none !important;
+    }
+
+    @media print {
+      .markdown-view .markdown-body table.${TABLE_NAME} tr {
+        background-color: inherit;
       }
 
-      .markdown-view .markdown-body table.${TABLE_NAME},
-      .markdown-view .markdown-body table.${TABLE_NAME} tr,
       .markdown-view .markdown-body table.${TABLE_NAME} td {
-        border: 0;
-      }
-
-      .markdown-view .markdown-body table.${TABLE_NAME} td {
-        padding: 0;
-      }
-
-      .markdown-view .markdown-body table.${TABLE_NAME} tbody {
-        display: table;
-        min-width: 100%;
-      }
-
-      .markdown-view .markdown-body table.${TABLE_NAME} td.${NUMBERS_BLOCK_NAME} {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        text-align: center;
-        vertical-align: top;
-        text-align: right;
-        min-width: 2em;
-        width: 2em;
-        position: sticky;
-        left: 0;
-        background-color: var(--g-color-96);
-        box-shadow: -20px 0px 0px var(--g-color-96);
-        border-right: 1px solid var(--g-color-86);
-      }
-
-      .markdown-view .markdown-body table.${TABLE_NAME} td.${CODE_BLOCK_NAME} {
-        padding-left: 10px;
-      }
-
-      .markdown-view .markdown-body table.${TABLE_NAME} .${NUMBER_LINE_NAME}{
-        white-space: nowrap;
-        padding-right: 8px;
-        color: var(--g-color-40);
-      }
-
-      .markdown-view .markdown-body table.${TABLE_NAME} .${NUMBER_LINE_NAME}:before{
-        content: attr(${DATA_ATTR_NAME})
-      }
-
-      .markdown-view .markdown-body .${ctx.args.DOM_CLASS_NAME.WRAP_CODE} table.${TABLE_NAME} td {
         white-space: pre-wrap;
         box-shadow: none !important;
       }
+    }
 
-      @media print {
-        .markdown-view .markdown-body table.${TABLE_NAME} tr {
-          background-color: inherit;
-        }
-
-        .markdown-view .markdown-body table.${TABLE_NAME} td {
-          white-space: pre-wrap;
-          box-shadow: none !important;
-        }
+    @media screen {
+      .markdown-view .markdown-body table.${TABLE_NAME} {
+        max-height: 400px;
       }
-
-      @media screen {
-        .markdown-view .markdown-body table.${TABLE_NAME} {
-          max-height: 400px;
-        }
-      }
-    `
-  )
+    }
+  `)
 }
 
 function getLinesCount (text: string) {

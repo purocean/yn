@@ -1,9 +1,14 @@
+@use 'sass:meta';
+@use 'sass:color';
+@use 'sass:math' as *;
+@use './mixins.scss' as *;
+@use './dark.scss' as dark;
+@use './light.scss' as light;
+
 @import 'normalize.css' layer;
 
-@import './mixins.scss';
-
 @function hex2rgb($hex) {
-  @return red($hex), green($hex), blue($hex);
+  @return color.channel($hex, 'red', $space: rgb), color.channel($hex, 'green', $space: rgb), color.channel($hex, 'blue', $space: rgb);
 }
 
 @font-face {
@@ -18,8 +23,8 @@
   --g-foreground-color: #{$foreground};
   --g-foreground-color-rgb: #{hex2rgb($foreground)};
   @for $i from 0 through 100 {
-    --g-color-#{$i}: #{mix($background, $foreground, $i * 1%)};
-    --g-color-#{$i}-rgb: #{hex2rgb(mix($background, $foreground, $i * 1%))};
+    --g-color-#{$i}: #{color.mix($background, $foreground, $i * 1%)};
+    --g-color-#{$i}-rgb: #{hex2rgb(color.mix($background, $foreground, $i * 1%))};
   }
 
   --selection-color: rgba(86, 155, 214, 0.38);
@@ -41,14 +46,20 @@
   --g-color-active-d: #{rgba(var(--g-color-0-rgb), 0.25)};
 }
 
+html {
+  // for export to html
+  --common-styles: 1;
+  --skip-contain: 1;
+}
+
 html[app-theme=light]:root, :root {
-  @import './light.scss';
-  @include root-vars($g-background-color, $g-foreground-color);
+  @include meta.load-css('./light.scss');
+  @include root-vars(light.$g-background-color, light.$g-foreground-color);
 }
 
 @include dark-theme {
-  @import './dark.scss';
-  @include root-vars($g-background-color, $g-foreground-color);
+  @include meta.load-css('./dark.scss');
+  @include root-vars(dark.$g-background-color, dark.$g-foreground-color);
 
   --g-color-backdrop: #{rgba(var(--g-color-88-rgb), 0.9)};
 }

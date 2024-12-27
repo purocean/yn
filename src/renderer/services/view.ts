@@ -164,17 +164,16 @@ export function getScrollTop () {
 
 export function getPreviewStyles () {
   let styles = `article.${DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY} { max-width: 1024px; margin: 20px auto; }`
-  Array.prototype.forEach.call(renderIframe.contentDocument!.styleSheets, item => {
-    // inject global styles, normalize.css
-    const flag = item.cssRules[0] &&
-      item.cssRules[0].selectorText === 'html' &&
-      item.cssRules[0].cssText === 'html { line-height: 1.15; text-size-adjust: 100%; }'
+  Array.prototype.forEach.call(renderIframe.contentDocument!.styleSheets, (item: CSSStyleSheet) => {
+    const node = item.ownerNode as HTMLElement | null
+    const flag = (node?.tagName === 'STYLE' && node.getAttribute(DOM_ATTR_NAME.SKIP_EXPORT) !== 'true') || Array.prototype.some.call(item.cssRules, (rule: CSSRule) => {
+      return rule.cssText.includes('--common-styles')
+    })
 
     Array.prototype.forEach.call(item.cssRules, (rule) => {
       if (rule.selectorText && (
         flag ||
-        rule.selectorText.includes('.' + DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY) ||
-        rule.selectorText.startsWith('.katex')
+        rule.selectorText.includes('.' + DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY)
       )) {
         // skip contain rules
         if (rule?.style?.getPropertyValue('--skip-contain')) {
@@ -464,14 +463,21 @@ export function getRenderIframe (): Promise<HTMLIFrameElement> {
 /**
  * Add styles to default preview.
  * @param style
+ * @param skipExport
  * @return css dom
  */
-export async function addStyles (style: string) {
+export async function addStyles (style: string, skipExport = false) {
   const iframe = await getRenderIframe()
   const document = iframe.contentDocument!
   const css = document.createElement('style')
   css.id = 'style-' + Math.random().toString(36).slice(2, 9) + '-' + Date.now()
+
+  if (skipExport) {
+    css.setAttribute(DOM_ATTR_NAME.SKIP_EXPORT, 'true')
+  }
+
   css.innerHTML = style
+
   document.head.appendChild(css)
 
   return css
