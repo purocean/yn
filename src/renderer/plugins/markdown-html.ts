@@ -23,6 +23,7 @@ const HTML_TAG_RE = new RegExp('^(?:' + comment + '|' + openTag + '|' + closeTag
 const HTML_SELF_CLOSE_TAG_RE = new RegExp('^' + selfCloseTag, 'i')
 const INVALID_HTML_TAG_NAME_RE = /script/i
 const INVALID_ATTR_NAME_RE = /^on|^xmlns$|^xml$|^aria-|^srcdoc$/i
+const MULTI_LINE_TAG_RE = /<[A-Za-z][A-Za-z0-9]*[^>]?$/
 
 const SAFE_MODE_ALLOWED_TAGS = [
   'br', 'b', 'i', 'strong', 'em', 'a', 'pre', 'code', 'img',
@@ -149,6 +150,31 @@ function htmlInline (state: StateInline, silent = false): boolean {
   return true
 }
 
+function getMultiLineTag (args: {lineText: string, line: number, endLine: number, state: StateBlock, pos: number}) {
+  let { lineText, line, endLine, state, pos } = args
+
+  let currentLine = lineText
+
+  do {
+    // don't allow empty line
+    if (currentLine.length === 0 || state.sCount[line] < state.blkIndent) {
+      return false
+    }
+
+    if (currentLine.includes('>')) {
+      lineText = state.src.slice(pos, state.eMarks[line])
+      return { lineText, line }
+    }
+
+    line++
+    if (line >= endLine) {
+      return false
+    }
+
+    currentLine = state.src.slice(state.bMarks[line], state.eMarks[line])
+  } while (true)
+}
+
 function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
   let nextLine; let lineText
   let pos = state.bMarks[startLine] + state.tShift[startLine]
@@ -160,10 +186,11 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
   if (state.src.charCodeAt(pos) !== 0x3C/* < */) { return false }
 
   lineText = state.src.slice(pos, max)
+  nextLine = startLine
 
   // comment detected
   if (lineText.startsWith('<!--')) {
-    for (nextLine = startLine; nextLine < endLine; nextLine++) {
+    for (; nextLine < endLine; nextLine++) {
       pos = state.bMarks[nextLine] + state.tShift[nextLine]
       max = state.eMarks[nextLine]
       lineText = state.src.slice(pos, max)
@@ -181,6 +208,14 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
     return true
   }
 
+  const multiLineTag = getMultiLineTag({ lineText, line: nextLine, endLine, state, pos })
+  if (multiLineTag) {
+    lineText = multiLineTag.lineText
+    nextLine = multiLineTag.line + 1
+  } else {
+    return false
+  }
+
   const inlineParse: any = state.md.inline.parse.bind(state.md.inline)
   const pushState = state.push
   const prevHtmlTags = (state.md as any)._prev_block_html_tags
@@ -189,7 +224,7 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
   inlineParse(lineText, state.md, state.env, state.tokens, prevHtmlTags, pushState)
 
   // If we are here - we detected HTML block.
-  for (nextLine = startLine + 1; nextLine < endLine; nextLine++) {
+  for (; nextLine < endLine; nextLine++) {
     if (state.sCount[nextLine] < state.blkIndent) { break }
 
     pos = state.bMarks[nextLine] + state.tShift[nextLine]
@@ -198,6 +233,16 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
 
     if (lineText.length === 0) {
       break
+    }
+
+    if (MULTI_LINE_TAG_RE.test(lineText)) {
+      const multiLineTag = getMultiLineTag({ lineText, line: nextLine, endLine, state, pos })
+      if (multiLineTag) {
+        lineText = multiLineTag.lineText
+        nextLine = multiLineTag.line
+      } else {
+        return false
+      }
     }
 
     inlineParse(lineText, state.md, state.env, state.tokens, prevHtmlTags, pushState)
