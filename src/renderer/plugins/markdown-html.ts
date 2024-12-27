@@ -189,8 +189,8 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
   lineText = state.src.slice(pos, max)
   nextLine = startLine
 
-  // comment detected
-  if (lineText.startsWith('<!--')) {
+  // multi-line comment detected
+  if (lineText.startsWith('<!--') && !lineText.includes('-->')) {
     for (; nextLine < endLine; nextLine++) {
       pos = state.bMarks[nextLine] + state.tShift[nextLine]
       max = state.eMarks[nextLine]
