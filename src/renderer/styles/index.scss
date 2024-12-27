@@ -46,6 +46,12 @@
   --g-color-active-d: #{rgba(var(--g-color-0-rgb), 0.25)};
 }
 
+html {
+  // for export to html
+  --common-styles: 1;
+  --skip-contain: 1;
+}
+
 html[app-theme=light]:root, :root {
   @include meta.load-css('./light.scss');
   @include root-vars(light.$g-background-color, light.$g-foreground-color);

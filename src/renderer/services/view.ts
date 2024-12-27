@@ -164,11 +164,11 @@ export function getScrollTop () {
 
 export function getPreviewStyles () {
   let styles = `article.${DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY} { max-width: 1024px; margin: 20px auto; }`
-  Array.prototype.forEach.call(renderIframe.contentDocument!.styleSheets, item => {
+  Array.prototype.forEach.call(renderIframe.contentDocument!.styleSheets, (item: CSSStyleSheet) => {
     // inject global styles, normalize.css
-    const flag = item.cssRules[0] &&
-      item.cssRules[0].selectorText === 'html' &&
-      item.cssRules[0].cssText === 'html { line-height: 1.15; text-size-adjust: 100%; }'
+    const flag = Array.prototype.some.call(item.cssRules, (rule: CSSRule) => {
+      return (rule as any).selectorText === 'html' && rule.cssText.includes('--common-styles')
+    })
 
     Array.prototype.forEach.call(item.cssRules, (rule) => {
       if (rule.selectorText && (
