@@ -23,7 +23,7 @@ const HTML_TAG_RE = new RegExp('^(?:' + comment + '|' + openTag + '|' + closeTag
 const HTML_SELF_CLOSE_TAG_RE = new RegExp('^' + selfCloseTag, 'i')
 const INVALID_HTML_TAG_NAME_RE = /script/i
 const INVALID_ATTR_NAME_RE = /^on|^xmlns$|^xml$|^aria-|^srcdoc$/i
-const MULTI_LINE_TAG_RE = /<[A-Za-z][A-Za-z0-9]*[^>]?$/
+const MULTI_LINE_TAG_RE = /^[^<]*<[A-Za-z][A-Za-z0-9]{0,20}[^>]*$/
 
 const SAFE_MODE_ALLOWED_TAGS = [
   'br', 'b', 'i', 'strong', 'em', 'a', 'pre', 'code', 'img',
@@ -232,7 +232,8 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
     max = state.eMarks[nextLine]
     lineText = state.src.slice(pos, max)
 
-    if (lineText.length === 0 && prevHtmlTags.length === 0) {
+    // break if it's empty line when previous tag is empty or the empty line is flowing tag
+    if (lineText.length === 0 && (prevHtmlTags.length === 0 || nextLine === multiLineTag.line + 1)) {
       break
     }
 
