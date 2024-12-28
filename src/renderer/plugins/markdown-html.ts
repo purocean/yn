@@ -233,7 +233,7 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
     lineText = state.src.slice(pos, max)
 
     // break if it's empty line when previous tag is empty or the empty line is flowing tag
-    if (lineText.length === 0 && (prevHtmlTags.length === 0 || nextLine === multiLineTag.line + 1)) {
+    if (lineText.length === 0) {
       break
     }
 
