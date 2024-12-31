@@ -445,6 +445,22 @@ export async function deleteTmpFile (name: string): Promise<ApiResult<any>> {
 }
 
 /**
+ * List user dir.
+ * @param name
+ * @returns
+ */
+export async function listUserDir (name: string, recursive = false): Promise<ApiResult<{
+  name: string,
+  path: string,
+  parent: string,
+  isFile: boolean,
+  isDir: boolean,
+}[]>> {
+  const result = await fetchHttp(`/api/user-dir?name=${encodeURIComponent(name)}&recursive=${recursive}`)
+  return result.data
+}
+
+/**
  * Write user file.
  * @param name
  * @param data
