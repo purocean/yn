@@ -233,6 +233,10 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
         node.removeAttribute('title')
       }
 
+      if (node.tagName === 'A' && node.getAttribute('href')?.startsWith('#')) {
+        node.removeAttribute('target')
+      }
+
       const len = node.children.length
       for (let i = len - 1; i >= 0; i--) {
         const ele = node.children[i]
