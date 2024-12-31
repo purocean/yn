@@ -135,7 +135,7 @@ export async function writeSettings (settings: Record<string, any>) {
     delete data.theme
   }
 
-  triggerHook('SETTING_BEFORE_WRITE', { settings: data } as any)
+  await triggerHook('SETTING_BEFORE_WRITE', { settings: data } as any, { breakable: true })
 
   await api.writeSettings(data)
   return await fetchSettings()
@@ -182,12 +182,14 @@ export async function setSetting<T extends keyof BuildInSettings> (key: T, val: 
 export async function showSettingPanel (keyOrGroup?: SettingGroup | keyof BuildInSettings): Promise<void>
 export async function showSettingPanel (keyOrGroup?: string): Promise<void>
 export async function showSettingPanel (keyOrGroup?: string) {
+  const showSettingOld = store.state.showSetting
+
   store.state.showSetting = true
   if (!keyOrGroup) {
     return
   }
 
-  registerHook('SETTING_PANEL_AFTER_SHOW', async () => {
+  const locate = async () => {
     const schema = getSchema().properties[keyOrGroup as keyof Schema['properties']]
     const group = schema?.group || keyOrGroup
 
@@ -205,7 +207,13 @@ export async function showSettingPanel (keyOrGroup?: string) {
         el.style.backgroundColor = ''
       }
     }
-  }, true)
+  }
+
+  if (showSettingOld) {
+    locate()
+  } else {
+    registerHook('SETTING_PANEL_AFTER_SHOW', locate, true)
+  }
 }
 
 /**
