@@ -520,6 +520,7 @@ export type BuildInHookTypes = {
   DOC_PRE_ENSURE_CURRENT_FILE_SAVED: never,
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
+  SETTING_PANEL_AFTER_SHOW: {},
   SETTING_CHANGED: { schema: SettingSchema, changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: Partial<BuildInSettings> },

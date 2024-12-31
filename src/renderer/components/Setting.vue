@@ -115,6 +115,8 @@ export default defineComponent({
       editor.setValue(value)
       updateTab()
       isReady.value = true
+
+      triggerHook('SETTING_PANEL_AFTER_SHOW', {})
     })
 
     setLanguage()
