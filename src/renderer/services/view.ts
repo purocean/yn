@@ -164,13 +164,24 @@ export function getScrollTop () {
 
 export function getPreviewStyles () {
   let styles = `article.${DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY} { max-width: 1024px; margin: 20px auto; }`
+
+  const getCssRules = (item: CSSStyleSheet) => {
+    try {
+      return item.cssRules
+    } catch (error) {
+      console.warn('Failed to get css rules', error)
+      return []
+    }
+  }
+
   Array.prototype.forEach.call(renderIframe.contentDocument!.styleSheets, (item: CSSStyleSheet) => {
     const node = item.ownerNode as HTMLElement | null
-    const flag = (node?.tagName === 'STYLE' && node.getAttribute(DOM_ATTR_NAME.SKIP_EXPORT) !== 'true') || Array.prototype.some.call(item.cssRules, (rule: CSSRule) => {
-      return rule.cssText.includes('--common-styles')
-    })
+    const flag = (node?.tagName === 'STYLE' && node.getAttribute(DOM_ATTR_NAME.SKIP_EXPORT) !== 'true') ||
+      Array.prototype.some.call(getCssRules(item), (rule: CSSRule) => {
+        return rule.cssText.includes('--common-styles')
+      })
 
-    Array.prototype.forEach.call(item.cssRules, (rule) => {
+    Array.prototype.forEach.call(getCssRules(item), (rule) => {
       if (rule.selectorText && (
         flag ||
         rule.selectorText.includes('.' + DOM_CLASS_NAME.PREVIEW_MARKDOWN_BODY)
