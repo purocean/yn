@@ -375,6 +375,9 @@ const data = {
     'delete-warning': 'Are you sure you want to remove this node?',
     'error-choose-repo-path': 'Please choose repository path',
     'change-keyboard-shortcuts': 'Change Keyboard Shortcuts',
+    'reset-title': 'Reset to the default value "%s"',
+    'reset-confirm-title': 'Attention',
+    'reset-confirm-desc': 'Are you sure you want to reset to the default value "%s"?',
     'tabs': {
       'repos': 'Repositories',
       'appearance': 'Appearance',

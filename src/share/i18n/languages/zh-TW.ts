@@ -376,6 +376,9 @@ const data: BaseLanguage = {
     'delete-warning': '確定要刪除嗎？',
     'error-choose-repo-path': '請選擇儲存位置',
     'change-keyboard-shortcuts': '更改鍵盤快捷鍵',
+    'reset-title': '重置為默認值 "%s"',
+    'reset-confirm-title': '注意',
+    'reset-confirm-desc': '確定要重置為默認值 "%s" 嗎？',
     'schema': {
       'repos': {
         'repos': '倉庫',

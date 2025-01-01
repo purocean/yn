@@ -376,6 +376,9 @@ const data: BaseLanguage = {
     'delete-warning': 'Вы уверены, что хотите удалить этот узел?',
     'error-choose-repo-path': 'Пожалуйста, выберите путь к репозиторию',
     'change-keyboard-shortcuts': 'Изменить сочетания клавиш',
+    'reset-title': 'Сбросить на значение по умолчанию "%s"',
+    'reset-confirm-title': 'Внимание',
+    'reset-confirm-desc': 'Вы уверены, что хотите сбросить на значение по умолчанию "%s"?',
     'tabs': {
       'repos': 'Репозитории',
       'appearance': 'Внешний вид',
