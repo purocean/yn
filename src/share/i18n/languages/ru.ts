@@ -467,7 +467,6 @@ const data: BaseLanguage = {
       'proxy': {
         'enabled': 'Включено',
         'server': 'Прокси сервер',
-        'server-hint': '127.0.0.1:8080',
         'bypass-list': 'Cписок обходных адресов',
         'pac-url': 'PAC URL',
       },

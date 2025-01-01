@@ -466,7 +466,6 @@ const data = {
       'proxy': {
         'enabled': 'Enabled',
         'server': 'Proxy Server',
-        'server-hint': '127.0.0.1:8080',
         'bypass-list': 'Bypass List',
         'pac-url': 'PAC URL',
       },

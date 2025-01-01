@@ -457,7 +457,6 @@ const data: BaseLanguage = {
       'proxy': {
         'enabled': '啟用代理',
         'server': '代理伺服器',
-        'server-hint': '127.0.0.1:8080',
         'bypass-list': 'Bypass List',
         'pac-url': 'PAC URL',
       },
