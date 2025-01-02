@@ -76,15 +76,21 @@
 
 ## 更新日志
 
-### [v3.78.2](https://github.com/purocean/yn/releases/tag/v3.78.2) 2024-12-27
+### [v3.79.1](https://github.com/purocean/yn/releases/tag/v3.79.1) 2025-01-02
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-win-x64-3.78.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-mac-arm64-3.78.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-mac-x64-3.78.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-linux-x86_64-3.78.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.78.2/Yank-Note-linux-amd64-3.78.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-win-x64-3.79.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-mac-arm64-3.79.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-mac-x64-3.79.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-linux-x86_64-3.79.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-linux-amd64-3.79.1.deb)
 
-1. feat: 优化搜索结果高亮显示和交互，切换文件时候编辑器自动选择搜索结果
-2. feat: 优化有序列表自动编号，支持单条目跨多行识别
-3. fix: 修复导出 HTML 丢失样式问题
-4. fix: 修复删除目录后文档索引不更新问题
-5. fix: 修复搜索出大量结果可能导致应用卡住问题
+1. feat: Markdown `![]()` 图片语法支持本地视频和音频路径
+2. feat: 增加直接在应用中打开预览视频和音频文件
+3. feat: 优化 HTML 解析
+4. feat: 支持书写 [mhchem](https://mhchem.github.io/MathJax-mhchem/) 化学方程式
+5. feat: 设置面板设置项增加重置为默认值按钮
+6. feat: 开启索引的仓库支持仓库 md 文件添加/删除后自动刷新目录树
+7. fix: 修复导出 HTML 点击锚点后会在新窗口打开页面问题
+8. fix: 修复文档中嵌入本地视频不能播放问题
+9. feat(plugin): 增加 `ctx.api.listUserDir` 方法，获取用户插件数据目录文件列表
+10. feat(plugin): 增加 `SETTING_PANEL_AFTER_SHOW` Hook，设置面板显示后触发
+11. feat(plugin): 增加 `INDEXER_FS_CHANGE` Hook，开启索引的仓库文件变更后触发
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
