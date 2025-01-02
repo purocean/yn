@@ -56,11 +56,18 @@ const MediaPlayer = defineComponent({
       }
     })
 
+    function onLeavepictureinpicture (e: Event) {
+      const target = e.target as HTMLMediaElement
+      if (!target.isConnected) {
+        target.pause()
+      }
+    }
+
     return () => src.value ? h(
       'div',
       { style: 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center' },
       type.value === 'video'
-        ? h('video', { src: src.value, controls: true, disablePictureInPicture: true, style: 'width: 100%; height: 100%; object-fit: contain' })
+        ? h('video', { src: src.value, controls: true, onLeavepictureinpicture, style: 'width: 100%; height: 100%; object-fit: contain' })
         : type.value === 'audio'
           ? h('audio', { src: src.value, controls: true })
           : ''

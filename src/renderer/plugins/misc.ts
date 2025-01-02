@@ -10,7 +10,7 @@ export default {
           tokens[idx + 1]?.type === 'inline' &&
           tokens[idx + 2]?.type === 'paragraph_close' &&
           tokens[idx + 1]?.children?.length === 1 &&
-          tokens[idx + 1]?.children?.[0]?.type === 'image'
+          (tokens[idx + 1]?.children?.[0]?.type === 'image' || tokens[idx + 1]?.children?.[0]?.type === 'media')
         ) {
           tokens[idx + 1]?.children?.[0].attrSet(ctx.args.DOM_ATTR_NAME.ONLY_CHILD, 'true')
         }

@@ -11,6 +11,15 @@ const attrNameReg = /^[a-zA-Z_:][a-zA-Z0-9:._-]*$/
 const attrEventReg = /^on/i
 const defaultRules = {} as any
 
+function onLeavepictureinpicture (e: Event) {
+  const target = e.target as HTMLMediaElement
+  if (!target.isConnected) {
+    target.pause()
+  } else {
+    (target as any).scrollIntoViewIfNeeded()
+  }
+}
+
 function validateAttrName (name: string) {
   return attrNameReg.test(name) && !attrEventReg.test(name)
 }
@@ -166,6 +175,16 @@ defaultRules.image = function (tokens: Token[], idx: number, options: any, env: 
   return createVNode('img', {
     ...slf.renderAttrs(token) as any,
     alt: slf.renderInlineAsText(token.children || [], options, env)
+  }, [])
+}
+
+defaultRules.media = function (tokens: Token[], idx: number, _options: any, _env: any, slf: Renderer) {
+  const token = tokens[idx]
+  return createVNode(token.tag, {
+    controlsList: 'nodownload',
+    controls: true,
+    onLeavepictureinpicture,
+    ...slf.renderAttrs(token) as any,
   }, [])
 }
 
