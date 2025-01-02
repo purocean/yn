@@ -520,6 +520,7 @@ export type BuildInHookTypes = {
   DOC_PRE_ENSURE_CURRENT_FILE_SAVED: never,
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
+  SETTING_PANEL_AFTER_SHOW: {},
   SETTING_CHANGED: { schema: SettingSchema, changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: Partial<BuildInSettings> },
@@ -533,6 +534,7 @@ export type BuildInHookTypes = {
   },
   PREMIUM_STATUS_CHANGED: never,
   WORKER_INDEXER_BEFORE_START_WATCH: { repo: Repo },
+  INDEXER_FS_CHANGE: { repo: Repo },
   AFTER_PARSE_LINK: { params: { currentFile: PathItem, href: string, isWikiLink: boolean, tree?: Components.Tree.Node[] }, result: ParseLinkResult | null },
 }
 

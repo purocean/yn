@@ -463,6 +463,7 @@ summary > .item {
   word-break: break-all;
   height: 26px;
   font-variant-numeric: tabular-nums;
+  flex-grow: 1;
 }
 
 .item-action {

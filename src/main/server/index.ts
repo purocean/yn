@@ -230,7 +230,26 @@ const attachment = async (ctx: any, next: any) => {
       noCache(ctx)
 
       try {
-        ctx.body = await file.read(repo, path)
+        // support range
+        const range = ctx.headers.range
+        if (range) {
+          const { size } = await file.stat(repo, path)
+          const requestRange = range.replace('bytes=', '').split('-').map((x: string) => parseInt(x || '-1'))
+          const start = requestRange[0] < 0 ? 0 : requestRange[0]
+          const end = requestRange[1] < 0
+            ? size - 1
+            : requestRange[1]
+
+          const chunkSize = end - start + 1
+
+          ctx.status = 206
+          ctx.set('Content-Range', `bytes ${start}-${end}/${size}`)
+          ctx.set('Accept-Ranges', 'bytes')
+          ctx.set('Content-Length', chunkSize)
+          ctx.body = await file.createReadStream(repo, path, { start, end })
+        } else {
+          ctx.body = await file.read(repo, path)
+        }
         ctx.type = mime.getType(path)
       } catch (error: any) {
         if (error.code === 'ENOENT') {
@@ -321,6 +340,11 @@ const tmpFile = async (ctx: any, next: any) => {
 const userFile = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/user-file')) {
     const filePath = ctx.query.name.replace(/\.+/g, '.') // replace multiple dots with one dot
+
+    if (!filePath) {
+      throw new Error('Invalid path')
+    }
+
     const absPath = path.join(USER_DATA, filePath)
 
     if (ctx.method === 'GET') {
@@ -341,6 +365,43 @@ const userFile = async (ctx: any, next: any) => {
     } else if (ctx.method === 'DELETE') {
       await fs.unlink(absPath)
       ctx.body = result('ok', 'success')
+    }
+  } else if (ctx.path.startsWith('/api/user-dir')) {
+    const dirPath = ctx.query.name.replace(/\.+/g, '.') // replace multiple dots with one dot
+
+    if (!dirPath) {
+      throw new Error('Invalid path')
+    }
+
+    const absPath = path.join(USER_DATA, dirPath)
+
+    if (ctx.method === 'GET') {
+      const recursive = ctx.query.recursive === 'true'
+
+      const data: ({ name: string, absolutePath: string, path: string, isFile: boolean, isDir: boolean })[] = []
+
+      const readDirRecursive = async (dir: string) => {
+        const items = await fs.readdir(dir, { withFileTypes: true })
+
+        for (const item of items) {
+          const absolutePath = path.resolve(dir, item.name)
+          data.push({
+            name: item.name,
+            absolutePath,
+            path: path.relative(absPath, absolutePath).replace(/\\/g, '/'),
+            isFile: item.isFile(),
+            isDir: item.isDirectory(),
+          })
+
+          if (recursive && item.isDirectory()) {
+            await readDirRecursive(absolutePath)
+          }
+        }
+      }
+
+      await readDirRecursive(absPath)
+
+      ctx.body = result('ok', 'success', data)
     }
   } else {
     await next()

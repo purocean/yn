@@ -13,6 +13,7 @@ for rendering output.
 */
 
 import katex from 'katex'
+import 'katex/contrib/mhchem/mhchem.js'
 import { h } from 'vue'
 import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'

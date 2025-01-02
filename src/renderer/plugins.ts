@@ -32,6 +32,7 @@ import editorRestoreState from '@fe/plugins/editor-restore-state'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
+import mediaPlayer from '@fe/plugins/media-player'
 import emoji from '@fe/plugins/emoji'
 import getStarted from '@fe/plugins/get-started'
 import markdownWikiLinks from '@fe/plugins/markdown-wiki-links'
@@ -111,6 +112,7 @@ export default [
   copyText,
   switchTodo,
   imageViewer,
+  mediaPlayer,
   emoji,
   getStarted,
   markdownWikiLinks,

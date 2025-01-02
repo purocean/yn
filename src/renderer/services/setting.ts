@@ -1,5 +1,5 @@
 import { cloneDeep, cloneDeepWith, isEqual, uniq } from 'lodash-es'
-import { triggerHook } from '@fe/core/hook'
+import { registerHook, triggerHook } from '@fe/core/hook'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
 import { basename } from '@fe/utils/path'
@@ -135,7 +135,7 @@ export async function writeSettings (settings: Record<string, any>) {
     delete data.theme
   }
 
-  triggerHook('SETTING_BEFORE_WRITE', { settings: data } as any)
+  await triggerHook('SETTING_BEFORE_WRITE', { settings: data } as any, { breakable: true })
 
   await api.writeSettings(data)
   return await fetchSettings()
@@ -182,27 +182,37 @@ export async function setSetting<T extends keyof BuildInSettings> (key: T, val: 
 export async function showSettingPanel (keyOrGroup?: SettingGroup | keyof BuildInSettings): Promise<void>
 export async function showSettingPanel (keyOrGroup?: string): Promise<void>
 export async function showSettingPanel (keyOrGroup?: string) {
+  const showSettingOld = store.state.showSetting
+
   store.state.showSetting = true
   if (!keyOrGroup) {
     return
   }
 
-  const schema = getSchema().properties[keyOrGroup as keyof Schema['properties']]
-  const group = schema?.group || keyOrGroup
+  const locate = async () => {
+    const schema = getSchema().properties[keyOrGroup as keyof Schema['properties']]
+    const group = schema?.group || keyOrGroup
 
-  await sleep(200)
-  const tab: HTMLElement | null = document.querySelector(`.editor-wrapper div[data-key="${group}"]`)
-  tab?.click()
+    await sleep(200)
+    const tab: HTMLElement | null = document.querySelector(`.editor-wrapper div[data-key="${group}"]`)
+    tab?.click()
 
-  if (schema) {
-    const el: HTMLElement | null = document.querySelector(`.editor-wrapper .row > div[data-schemapath="root.${keyOrGroup}"]`)
-    if (el) {
-      await sleep(200)
-      el.style.backgroundColor = 'rgba(255, 255, 50, 0.3)'
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      await sleep(2000)
-      el.style.backgroundColor = ''
+    if (schema) {
+      const el: HTMLElement | null = document.querySelector(`.editor-wrapper .row > div[data-schemapath="root.${keyOrGroup}"]`)
+      if (el) {
+        await sleep(200)
+        el.style.backgroundColor = 'rgba(255, 255, 50, 0.3)'
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        await sleep(3000)
+        el.style.backgroundColor = ''
+      }
     }
+  }
+
+  if (showSettingOld) {
+    locate()
+  } else {
+    registerHook('SETTING_PANEL_AFTER_SHOW', locate, true)
   }
 }
 

@@ -15,7 +15,7 @@ export default {
         title: 'T_picgo.setting.api-title',
         description: 'T_picgo.setting.api-desc',
         type: 'string',
-        defaultValue: '',
+        defaultValue: 'http://127.0.0.1:36677/upload',
         pattern: '^(http://|https://|$)',
         options: {
           patternmessage: 'T_picgo.setting.api-msg',

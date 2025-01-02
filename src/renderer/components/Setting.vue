@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts">
+import { debounce } from 'lodash-es'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 import * as api from '@fe/support/api'
@@ -22,10 +23,11 @@ import { fetchSettings, getSchema, writeSettings } from '@fe/services/setting'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { basename } from '@fe/utils/path'
 import { getPurchased, showPremium } from '@fe/others/premium'
-import GroupTabs from '@fe/components/GroupTabs.vue'
 import { getActionHandler } from '@fe/core/action'
+import { useModal } from '@fe/support/ui/modal'
 import store from '@fe/support/store'
-import type { BuildInSettings, Repo, SettingGroup } from '@fe/types'
+import GroupTabs from '@fe/components/GroupTabs.vue'
+import type { BuildInSettings, Repo, SettingGroup, SettingSchema } from '@fe/types'
 
 JSONEditor.defaults.language = 'en'
 
@@ -43,6 +45,7 @@ export default defineComponent({
     const show = computed(() => store.state.showSetting)
 
     let editor: any = null
+    let schemaCache: SettingSchema | null = null
 
     function setLanguage () {
       JSONEditor.defaults.languages.en.button_move_down_title = '⬇'
@@ -52,10 +55,68 @@ export default defineComponent({
       JSONEditor.defaults.languages.en.button_delete_node_warning = t('setting-panel.delete-warning')
     }
 
+    function getSchemaWithCache () {
+      if (!schemaCache) {
+        schemaCache = getSchema()
+      }
+
+      return schemaCache
+    }
+
+    function initResetButtons () {
+      // remove all reset buttons
+      refEditor.value?.querySelectorAll('.reset-button').forEach(el => el.remove())
+
+      const types = ['string', 'number', 'boolean']
+
+      const selectors = types
+        .map(type => `.row > div[data-schematype="${type}"]`)
+        .join(',')
+
+      refEditor.value?.querySelectorAll<HTMLElement>(selectors).forEach(el => {
+        const type = el.getAttribute('data-schematype')
+
+        const label = type !== 'boolean' ? el.querySelector('.je-form-input-label') : el.querySelector('.form-control')
+        if (!label) return
+
+        const editorSchemaPath = el.getAttribute('data-schemapath') || ''
+        const schemaPath = editorSchemaPath.replace('root.', '')
+
+        const schema = getSchemaWithCache()
+        const schemaItem = schema.properties[schemaPath as keyof BuildInSettings]
+        const value = editor.getEditor(editorSchemaPath).getValue()
+
+        if (
+          types.includes(typeof schemaItem?.defaultValue) &&
+          schemaItem?.defaultValue !== value
+        ) {
+          const resetBtn = document.createElement('div')
+          resetBtn.innerHTML = '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sync-alt"  role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z"></path></svg>'
+          resetBtn.title = t('setting-panel.reset-title', String(schemaItem.defaultValue))
+          resetBtn.className = 'reset-button'
+          resetBtn.onclick = () => {
+            useModal().confirm({
+              title: t('setting-panel.reset-confirm-title'),
+              content: t('setting-panel.reset-confirm-desc', String(schemaItem.defaultValue)),
+            }).then(ok => {
+              if (ok) {
+                editor.getEditor(editorSchemaPath).setValue(schemaItem.defaultValue)
+              }
+            })
+          }
+
+          label.prepend(resetBtn)
+        }
+      })
+    }
+
+    const initResetButtonsDebounced = debounce(initResetButtons, 100)
+
     onMounted(async () => {
       await triggerHook('SETTING_PANEL_BEFORE_SHOW', {}, { breakable: true })
 
-      const schema: any = getSchema()
+      const schema = getSchemaWithCache()
+
       tabs.value = schema.groups
 
       // begin: hack to use DOMPurify, support html
@@ -68,7 +129,7 @@ export default defineComponent({
         disable_array_delete_last_row: true,
         disable_array_delete_all_rows: true,
         remove_button_labels: true,
-        schema,
+        schema: schemaCache,
         custom_validators: [(schema: any, value: any, path: any) => {
           if (schema.validator && typeof schema.validator === 'function') {
             return schema.validator(schema, value, path)
@@ -93,6 +154,8 @@ export default defineComponent({
         }
       })
 
+      editor.on('change', initResetButtonsDebounced)
+
       const reposEditor = editor.getEditor('root.repos')
 
       reposEditor.addRow = function (val: any) {
@@ -114,7 +177,10 @@ export default defineComponent({
 
       editor.setValue(value)
       updateTab()
+      initResetButtonsDebounced()
       isReady.value = true
+
+      triggerHook('SETTING_PANEL_AFTER_SHOW', {})
     })
 
     setLanguage()
@@ -176,7 +242,7 @@ export default defineComponent({
     }
 
     function updateTab () {
-      const schema = getSchema()
+      const schema = getSchemaWithCache()
 
       const getPaths = (group: SettingGroup) => Object.keys(schema.properties as any)
         .filter(key => {
@@ -214,7 +280,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .editor-wrapper {
-  width: 900px;
+  width: 920px;
   background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);
   margin: auto;
@@ -263,16 +329,48 @@ export default defineComponent({
     position: relative;
   }
 
+  ::v-deep(.row > div > .form-control) {
+    padding-left: 20px;
+  }
+
   ::v-deep(.je-form-input-label) {
     width: 140px;
     display: inline-flex;
     align-items: center;
     flex: none;
     padding-right: 14px;
+    font-size: 15px;
   }
 
   ::v-deep(.je-form-input-label + input) {
-    max-width: calc(100% - 160px);
+    max-width: calc(100% - 180px);
+  }
+
+  ::v-deep(.reset-button) {
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    position: absolute;
+    left: -5px;
+    opacity: 0.6;
+    transition: opacity 0.1s;
+    z-index: 1;
+    border-radius: 50%;
+    padding: 5px;
+    color: var(--g-color-30);
+
+    svg {
+      display: block;
+    }
+
+    &:hover {
+      background: var(--g-color-80);
+      color: var(--g-color-10);
+    }
+  }
+
+  ::v-deep(.je-form-input-label:hover > .reset-button) {
+    opacity: 1;
   }
 
   ::v-deep(.je-form-input-label ~ .je-form-input-label) {

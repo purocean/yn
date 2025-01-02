@@ -4,6 +4,11 @@ import type { Plugin } from '@fe/context'
 import { getSetting } from '@fe/services/setting'
 import { isKeydown } from '@fe/core/keybinding'
 
+const emptyItemReg = /^\s*(?:[*+\->]|\d+[.)]|[*+-] \[ \])\s*$/
+const unorderedListReg = /^\s*[*+-]\s/
+const orderedListReg = /^(\s*)(\d+)([.)])(\s)/
+const emptyLineReg = /^\s*$/
+
 let ignoreTabProcess = false
 
 function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco, e: Monaco.editor.ICursorPositionChangedEvent) {
@@ -13,7 +18,6 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   }
 
   const source = 'list-completion'
-  const emptyItemReg = /^\s*(?:[*+\->]|\d+[.)]|[*+-] \[ \])\s*$/
   const isTab = e.source === 'tab'
   const isOutdent = e.source === 'outdent'
   const isDeleteLeft = e.source === 'deleteLeft'
@@ -101,7 +105,6 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
   }
 
   const maxLineCount = model.getLineCount()
-  const reg = /^(\s*)(\d+)([.)])(\s)/
 
   const processOrderedList = (position: Monaco.Position) => {
     const line = position.lineNumber
@@ -117,7 +120,7 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
     const prefix = currentLine.slice(0, position.column - 1)
 
     // check current line is an ordered list item
-    const match = currentLine.match(reg)
+    const match = currentLine.match(orderedListReg)
     if (!match) {
       return
     }
@@ -134,14 +137,42 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
       return
     }
 
+    // 1. outdent a <- break
+    //     1. aaa <- matched
+    //     2. bbb <- matched
+    //        1. bbb.aaa <- matched
+    //        2. bbb.bbb <- matched
+    //     3. ccc <- matched
+    //        CCC <- matched
+    //     4. ddd <- [*]cursor here
+    //     5. eee <- matched
+    //        1. eee.aaa <- matched
+    //     6. ddd <- matched
+    // 2. outdent b <- break
+    const matchContent = (content: string) => {
+      if (emptyLineReg.test(content)) { // empty line
+        return false
+      }
+
+      if (unorderedListReg.test(content)) { // unordered list
+        return false
+      }
+
+      const m = content.match(orderedListReg)
+      if (m && m[1].length < indent.length) { // outdent
+        return false
+      }
+
+      return true
+    }
+
     while (startLine > 0) {
       const content = model.getLineContent(startLine)
-
-      const m = content.match(reg)
-      if ((!m && content.trim().length === 0) || (m && m[1].length < indent.length)) {
+      if (!matchContent(content)) {
         break
       }
 
+      // if we are here, it means the line is ordered list item (same or deeper indent)
       prevLines.unshift(content)
       startLine--
     }
@@ -150,12 +181,11 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
 
     while (endLine <= maxLineCount) {
       const content = model.getLineContent(endLine)
-
-      const m = content.match(reg)
-      if ((!m && content.trim().length === 0) || (m && m[1].length < indent.length)) {
+      if (!matchContent(content)) {
         break
       }
 
+      // if we are here, it means the line is ordered list item (same or deeper indent)
       nextLines.push(content)
       endLine++
     }
@@ -168,20 +198,20 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
     }
 
     const firstLine = prevLines[0]
-    const firstMatch = firstLine ? firstLine.match(reg) : null
+    const firstMatch = firstLine ? firstLine.match(orderedListReg) : null
     const startNum = firstMatch ? parseInt(firstMatch[2]) : 1
     let shouldInc = orderedListCompletion === 'increase'
 
     if (orderedListCompletion === 'auto') {
       const secondLine = prevLines[1]
-      const secondMatch = secondLine ? secondLine.match(reg) : null
+      const secondMatch = secondLine ? secondLine.match(orderedListReg) : null
       shouldInc = secondMatch ? parseInt(secondMatch[2]) > 1 : false
     }
 
     const changedLines: number[] = []
     let seq = 0
     const text = [...prevLines, currentLine, ...nextLines].map((line, i) => {
-      const replaced = line.replace(reg, (s, p1, p2, p3, p4) => {
+      const replaced = line.replace(orderedListReg, (s, p1, p2, p3, p4) => {
         if (p1 !== indent) {
           return s
         }
@@ -234,9 +264,33 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
 
   doEdits(e.position)
 
-  // if press tab key, auto complete the next line
-  if ((isTab || isOutdent) && model.getLineCount() > e.position.lineNumber) {
-    doEdits(new monaco.Position(e.position.lineNumber + 1, 1))
+  // if press tab key, auto complete the next outdent line
+  if ((isTab || isOutdent)) {
+    // find the next outdent line
+    let outdentLine: number = 0
+    const lineCount = model.getLineCount()
+    const currentLine = model.getLineContent(e.position.lineNumber)
+    const currentLineIndent = currentLine.match(orderedListReg)?.[1]
+
+    if (typeof currentLineIndent !== 'string') return
+
+    let line = e.position.lineNumber + 1
+    while (line < lineCount) {
+      const content = model.getLineContent(line)
+      const m = content.match(orderedListReg)
+      if (!m) return
+
+      if (m[1].length < currentLineIndent.length) {
+        outdentLine = line
+        break
+      }
+
+      line++
+    }
+
+    if (outdentLine) {
+      doEdits(new monaco.Position(outdentLine, 1))
+    }
   }
 }
 

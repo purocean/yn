@@ -182,6 +182,10 @@ export function read (repo: string, p: string): Promise<Buffer> {
   return withRepo(repo, (_, targetPath) => fs.readFile(targetPath), p)
 }
 
+export function createReadStream (repo: string, p: string, options?: Parameters<typeof fs.createReadStream>[1]): Promise<ReturnType<typeof fs.createReadStream>> {
+  return withRepo(repo, async (_, targetPath) => fs.createReadStream(targetPath, options), p)
+}
+
 export function stat (repo: string, p: string) {
   return withRepo(repo, async (_, targetPath) => {
     const stat = await fs.stat(targetPath)

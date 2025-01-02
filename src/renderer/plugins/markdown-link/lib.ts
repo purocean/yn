@@ -10,6 +10,8 @@ import type { Components, Doc, ParseLinkResult, PathItem, PositionState, Resourc
 
 const RE_POS = /:([0-9]+),?([0-9]+)?$/
 const RE_EXTERNAL_LINK = /^[a-zA-Z_+-]{1,}:/
+const RE_VIDEO = /\.(mp4|webm|ogg)$/
+const RE_AUDIO = /\.(mp3|wav|ogg)$/
 
 export function isAnchorToken (token: Token) {
   return token.tag === 'a'
@@ -116,7 +118,16 @@ export function convertResourceState (currentFile: PathItem, state: StateCore, b
       name: fileName,
     }
 
-    token.attrSet(DOM_ATTR_NAME.LOCAL_IMAGE, 'true')
+    if (RE_VIDEO.test(fileName)) {
+      token.tag = 'video'
+      token.type = 'media'
+    } else if (RE_AUDIO.test(fileName)) {
+      token.tag = 'audio'
+      token.type = 'media'
+    } else {
+      token.attrSet(DOM_ATTR_NAME.LOCAL_IMAGE, 'true')
+    }
+
     token.attrSet(DOM_ATTR_NAME.TARGET_PATH, filePath)
     token.attrSet(DOM_ATTR_NAME.TARGET_REPO, repo)
     token.attrSet(originAttr, attrVal)

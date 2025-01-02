@@ -151,6 +151,7 @@ const extensions = [
   '.dot',
   '.gv',
   '.puml',
+  '.lrc',
 ]
 
 const supported = (name: string) => {

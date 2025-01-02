@@ -348,13 +348,29 @@ body.find-in-preview-highlight ::selection {
       cursor: zoom-in;
     }
 
-    p > img[auto-center] {
+    video {
+      max-width: 100%;
+    }
+
+    audio {
+      max-width: 100%;
+      width: 300px;
+      height: 42px;
+    }
+
+    p > img[auto-center],
+    p > video[auto-center],
+    p > audio[auto-center] {
       display: block;
       margin-left: auto;
       margin-right: auto;
     }
 
-    img {
+    p > audio[auto-center] {
+      width: 100%;
+    }
+
+    img, video {
       &.inline,
       &[src*=".inline"],
       &[origin-src*=".inline"] {

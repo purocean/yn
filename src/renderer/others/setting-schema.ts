@@ -227,7 +227,7 @@ const schema: SettingSchema = ({
       required: true,
     },
     'editor.mouse-wheel-zoom': {
-      defaultValue: true,
+      defaultValue: false,
       title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',
       type: 'boolean',
       format: 'checkbox',
@@ -464,7 +464,7 @@ const schema: SettingSchema = ({
       group: 'proxy',
       pattern: '^(|.+:\\d{2,5})$',
       options: {
-        inputAttributes: { placeholder: 'T_setting-panel.schema.proxy.server-hint', }
+        inputAttributes: { placeholder: 'e.g. 127.0.0.1:8080', }
       }
     },
     'proxy.bypass-list': {
