@@ -11,7 +11,6 @@ import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
 import { reloadMainWindow } from '@fe/services/base'
 import { createDoc, isMarked, markDoc, switchDoc, toUri, unmarkDoc } from '@fe/services/document'
-import { refreshTree } from '@fe/services/tree'
 import { whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage, t } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
@@ -91,6 +90,12 @@ function switchDefaultPreviewer () {
   }
 }
 
+let autoRefreshedAt = 0
+const refreshTree = async () => {
+  await tree.refreshTree()
+  autoRefreshedAt = Date.now()
+}
+
 registerHook('STARTUP', syncDomPremiumFlag)
 registerHook('PREMIUM_STATUS_CHANGED', syncDomPremiumFlag)
 registerHook('I18N_CHANGE_LANGUAGE', view.refresh)
@@ -100,7 +105,14 @@ registerHook('DOC_CREATED', refreshTree)
 registerHook('DOC_DELETED', refreshTree)
 registerHook('DOC_MOVED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', refreshTree)
-registerHook('INDEXER_FS_CHANGE', refreshTree)
+
+registerHook('INDEXER_FS_CHANGE', async () => {
+  if (Date.now() - autoRefreshedAt > 3000) {
+    await refreshTree()
+    autoRefreshedAt = 0
+  }
+})
+
 registerHook('DOC_SWITCH_FAILED', async (payload?: { doc?: Doc | null, message: string }) => {
   if (payload && payload.doc && payload.message?.includes('NOENT')) {
     unmarkDoc(payload.doc)
@@ -159,7 +171,7 @@ registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
   }
 
   if (changedKeys.includes('tree.exclude')) {
-    tree.refreshTree()
+    refreshTree()
     setTimeout(() => {
       indexer.triggerWatchCurrentRepo()
     }, 500)
