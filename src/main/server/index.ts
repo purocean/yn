@@ -230,7 +230,26 @@ const attachment = async (ctx: any, next: any) => {
       noCache(ctx)
 
       try {
-        ctx.body = await file.read(repo, path)
+        // support range
+        const range = ctx.headers.range
+        if (range) {
+          const { size } = await file.stat(repo, path)
+          const requestRange = range.replace('bytes=', '').split('-').map((x: string) => parseInt(x || '-1'))
+          const start = requestRange[0] < 0 ? 0 : requestRange[0]
+          const end = requestRange[1] < 0
+            ? size - 1
+            : requestRange[1]
+
+          const chunkSize = end - start + 1
+
+          ctx.status = 206
+          ctx.set('Content-Range', `bytes ${start}-${end}/${size}`)
+          ctx.set('Accept-Ranges', 'bytes')
+          ctx.set('Content-Length', chunkSize)
+          ctx.body = await file.createReadStream(repo, path, { start, end })
+        } else {
+          ctx.body = await file.read(repo, path)
+        }
         ctx.type = mime.getType(path)
       } catch (error: any) {
         if (error.code === 'ENOENT') {
