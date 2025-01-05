@@ -611,6 +611,7 @@ onBeforeUnmount(() => {
   opacity: 1;
   transition: opacity 0.2s cubic-bezier(1, 0.29, 0.63, 0.94);
   outline: none;
+  contain: strict;
 }
 
 .search-panel {
