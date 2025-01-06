@@ -695,7 +695,12 @@ const data: BaseLanguage = {
   },
   'search-panel': {
     'search-files': 'Поиск файлов',
+    'replace-files': 'Замена файлов',
+    'replace-confirm-title': 'Заменить файл',
+    'replace-confirm-content': 'Вы уверены, что хотите заменить все совпадения файлов (%s)? Обратите внимание, что это действие нельзя отменить.',
     'placeholder-search': 'Поиск',
+    'placeholder-replace': 'Замена',
+    'replace-all': 'Заменить все',
     'for-history': '(⇅ для истории)',
     'files-to-include': 'Файлы для включения',
     'files-to-exclude': 'Файлы для исключения',

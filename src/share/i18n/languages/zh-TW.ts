@@ -695,7 +695,12 @@ const data: BaseLanguage = {
   },
   'search-panel': {
     'search-files': '搜尋檔案',
+    'replace-files': '替換檔案',
+    'replace-confirm-title': '替換文件',
+    'replace-confirm-content': '確定要替換所有匹配的文件（%s 個）嗎？注意此操作不可撤銷。',
     'placeholder-search': '搜尋',
+    'placeholder-replace': '替換',
+    'replace-all': '全部替換',
     'for-history': '(⇅ 切換歷史)',
     'files-to-include': '包含檔案',
     'files-to-exclude': '排除檔案',

@@ -140,7 +140,7 @@ export async function readFile (file: PathItem, asBase64 = false): Promise<FileR
  * @param asBase64
  * @returns
  */
-export async function writeFile (file: Doc, content = '', asBase64 = false): Promise<{ hash: string, stat: FileStat }> {
+export async function writeFile (file: Pick<Doc, 'repo' | 'path' | 'contentHash'>, content = '', asBase64 = false): Promise<{ hash: string, stat: FileStat }> {
   const { repo, path, contentHash } = file
   const { data } = await fetchHttp('/api/file', {
     method: 'POST',

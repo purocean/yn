@@ -694,7 +694,12 @@ const data = {
   },
   'search-panel': {
     'search-files': 'Search Files',
+    'replace-files': 'Replace Files',
     'placeholder-search': 'Search',
+    'placeholder-replace': 'Replace',
+    'replace-confirm-title': 'Replace Files',
+    'replace-confirm-content': 'Are you sure want to replace all matched files (%s)? This operation cannot be undone.',
+    'replace-all': 'Replace All',
     'for-history': '(⇅ for history)',
     'files-to-include': 'Files to include',
     'files-to-exclude': 'Files to exclude',
