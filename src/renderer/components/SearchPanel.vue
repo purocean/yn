@@ -1102,6 +1102,7 @@ onBeforeUnmount(() => {
         border-radius: 8px;
 
         &.replace-status {
+          margin-left: auto;
           color: #fff;
         }
       }
