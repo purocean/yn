@@ -171,7 +171,7 @@ import { toggleSide } from '@fe/services/layout'
 import type { FindInRepositoryQuery, PathItem } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
-const MAX_RESULTS = 1000
+const MAX_RESULTS = 2000
 const SEARCH_LIMIT_SETTING_KEY = 'search.number-limit'
 
 const logger = getLogger('search-panel')
@@ -394,7 +394,7 @@ async function search () {
         excludePattern: buildGlobObject(exclude.value),
       },
     ],
-    maxResults: Math.min(MAX_RESULTS, getSetting(SEARCH_LIMIT_SETTING_KEY, 300)),
+    maxResults: Math.min(MAX_RESULTS, getSetting(SEARCH_LIMIT_SETTING_KEY, 700)),
   }
 
   try {
