@@ -648,7 +648,7 @@ function markText (text: string, ranges: ISearchRange[]) {
           } else if (item.type === 'span') {
             const lastSpanLength = item.value!.length
             const keepChars = previousChars - (length - lastSpanLength)
-            item.value = item.value!.slice(-keepChars)
+            item.value = '...' + item.value!.slice(-keepChars)
             contentLength -= lastSpanLength - keepChars
             break
           }
@@ -672,7 +672,9 @@ function markText (text: string, ranges: ISearchRange[]) {
 
     const pushText = (type: Exclude<typeof result[number]['type'], 'br'>, text: string) => {
       const value = (text.length + contentLength > maxPreviewLength)
-        ? text.slice(0, maxPreviewLength - contentLength) + '...'
+        ? (type === 'span' && !hasMarked)
+            ? '...' + text.slice(-maxPreviewLength + contentLength)
+            : text.slice(0, maxPreviewLength - contentLength) + '...'
         : text
       result.push({ type, value })
       contentLength += value.length
