@@ -1124,23 +1124,23 @@ onBeforeUnmount(() => {
         }
 
         span {
-          white-space: pre;
+          white-space: pre-wrap;
         }
 
         mark {
           background: #fff8c5 !important;
-          white-space: pre;
+          white-space: pre-wrap;
         }
 
         del {
           background: #f8c5c5;
-          white-space: pre;
+          white-space: pre-wrap;
         }
 
         ins {
           background: #c5f8c5;
           font-weight: 500;
-          white-space: pre;
+          white-space: pre-wrap;
           text-decoration: none;
         }
       }
