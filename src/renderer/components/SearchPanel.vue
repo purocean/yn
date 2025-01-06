@@ -1038,6 +1038,7 @@ onBeforeUnmount(() => {
       font-size: 14px;
       user-select: none;
       padding: 6px;
+      gap: 4px;
 
       &::-webkit-details-marker,
       &::marker {
@@ -1084,7 +1085,6 @@ onBeforeUnmount(() => {
         min-width: 16px;
         text-align: center;
         padding: 0 4px;
-        margin-left: 6px;
         border-radius: 8px;
 
         &.replace-status {
