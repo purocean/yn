@@ -103,7 +103,7 @@
               v-else-if="result.length > 1"
               class="action-btn"
               href="javascript:void(0)"
-              @click="toggleExpandAll"
+              @click="toggleExpandAll()"
             >{{ $t(allResultCollapsed ? 'search-panel.expand-all' : 'search-panel.collapse-all') }}</a>
           </div>
           <div class="results" ref="resultsRef" v-if="result.length > 0">
