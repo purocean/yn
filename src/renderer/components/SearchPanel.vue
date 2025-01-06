@@ -681,10 +681,13 @@ function markText (text: string, ranges: ISearchRange[]) {
     if (type === 'mark') {
       if (replaceRegex) {
         result.push({ type: 'del', value })
-        if (replaceRegex === true) {
-          result.push({ type: 'ins', value: replaceText.value })
-        } else {
-          result.push({ type: 'ins', value: value.replace(replaceRegex, replaceText.value) })
+
+        const replacedVal = replaceRegex === true
+          ? replaceText.value
+          : value.replace(replaceRegex, replaceText.value)
+
+        if (replacedVal) {
+          result.push({ type: 'ins', value: replacedVal })
         }
       } else {
         result.push({ type: 'mark', value })
@@ -699,7 +702,6 @@ function markText (text: string, ranges: ISearchRange[]) {
   let lastLine = 0
   let lastColumn = 0
 
-  rangesLoop:
   for (const range of ranges) {
     const start = range.startLineNumber
     const end = range.endLineNumber
@@ -716,26 +718,21 @@ function markText (text: string, ranges: ISearchRange[]) {
 
     // process previous lines
     if (start > lastLine) {
-      const lastTail = lines[lastLine].slice(lastColumn)
-      if (!pushResult('span', lastTail)) break rangesLoop
-      if (!pushResult('br')) break rangesLoop
-
-      const prevLines = lines.slice(lastLine + 1, start)
-      for (const line of prevLines) {
-        if (!pushResult('span', line)) break rangesLoop
-        if (!pushResult('br')) break rangesLoop
-      }
+      const prevLines = lines.slice(lastLine, start)
+      if (!pushResult('span', prevLines.join('\n'))) break
     }
 
     // process current range lines
     const currentStartLine = lines[start]
-    const currentStartLinePrefix = currentStartLine.slice(0, startOffset)
-    if (!pushResult('span', currentStartLinePrefix)) break rangesLoop
+    const currentLineStart = start === lastLine ? lastColumn : 0
+    const currentStartLinePrefix = currentStartLine.slice(currentLineStart, startOffset)
+    if (!pushResult('span', currentStartLinePrefix)) break
 
+    // process marked text
     if (start === end) {
       const startLineMarked = currentStartLine.slice(startOffset, endOffset)
-      if (!pushResult('mark', startLineMarked)) break rangesLoop
-    } else if (isReplaceVisible.value) { // replace mode use only one mark
+      if (!pushResult('mark', startLineMarked)) break
+    } else {
       const markedText: string[] = []
 
       for (let i = start; i <= end; i++) {
@@ -749,37 +746,20 @@ function markText (text: string, ranges: ISearchRange[]) {
         }
       }
 
-      if (!pushResult('mark', markedText.join('\n'))) break rangesLoop
-    } else {
-      const startLineMarked = currentStartLine.slice(startOffset)
-      if (!pushResult('mark', startLineMarked)) break rangesLoop
-      if (!pushResult('br')) break rangesLoop
-
-      const currentMiddleLines = lines.slice(start + 1, end)
-      for (const line of currentMiddleLines) {
-        if (!pushResult('mark', line)) break rangesLoop
-        if (!pushResult('br')) break rangesLoop
-      }
-
-      const currentEndLine = lines[end]
-      const endLineMarked = currentEndLine.slice(0, endOffset)
-      if (!pushResult('mark', endLineMarked)) break rangesLoop
+      if (!pushResult('mark', markedText.join('\n'))) break
     }
 
     lastLine = end
     lastColumn = endOffset
   }
 
-  if (lastLine < lines.length - 1) {
+  if (lastLine < lines.length) {
     const lastTail = lines[lastLine].slice(lastColumn)
     if (pushResult('span', lastTail)) {
       result.push({ type: 'br' })
 
       const restLines = lines.slice(lastLine + 1)
-      for (const line of restLines) {
-        if (!pushResult('span', line)) break
-        result.push({ type: 'br' })
-      }
+      pushResult('span', restLines.join('\n'))
     }
   }
 
@@ -1142,6 +1122,27 @@ onBeforeUnmount(() => {
           background-color: var(--g-color-90);
           color: var(--g-color-0);
         }
+
+        span {
+          white-space: pre;
+        }
+
+        mark {
+          background: #fff8c5 !important;
+          white-space: pre;
+        }
+
+        del {
+          background: #f8c5c5;
+          white-space: pre;
+        }
+
+        ins {
+          background: #c5f8c5;
+          font-weight: 500;
+          white-space: pre;
+          text-decoration: none;
+        }
       }
     }
 
@@ -1188,40 +1189,26 @@ onBeforeUnmount(() => {
   transform: translateY(70vh);
 }
 
-mark {
-  background: #fff8c5 !important;
-}
-
-del {
-  background: #f8c5c5;
-  white-space: pre;
-}
-
-ins {
-  background: #c5f8c5;
-  font-weight: 500;
-  white-space: pre;
-  text-decoration: none;
-}
-
 @include dark-theme {
   .search-panel-wrapper {
     background-color: rgba(255, 255, 255, 0.07);
   }
 
-  mark {
-    background: #746900 !important;
-    color: #ebebeb;
-  }
+  .results .matches .match {
+    mark {
+      background: #746900 !important;
+      color: #ebebeb;
+    }
 
-  del {
-    background: #8f0000;
-    color: #ebebeb;
-  }
+    del {
+      background: #8f0000;
+      color: #ebebeb;
+    }
 
-  ins {
-    background: #008f00;
-    color: #ebebeb;
+    ins {
+      background: #008f00;
+      color: #ebebeb;
+    }
   }
 }
 </style>
