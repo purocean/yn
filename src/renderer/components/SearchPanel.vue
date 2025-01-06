@@ -670,30 +670,34 @@ function markText (text: string, ranges: ISearchRange[]) {
       return true
     }
 
-    const replaceRegex = replaceSearchRegex.value
-
-    value = (value.length + contentLength > maxPreviewLength)
-      ? (replaceRegex ? value : value.slice(0, maxPreviewLength - contentLength))
-      : value
-
-    contentLength += value.length
+    const pushText = (type: Exclude<typeof result[number]['type'], 'br'>, text: string) => {
+      const value = (text.length + contentLength > maxPreviewLength)
+        ? text.slice(0, maxPreviewLength - contentLength) + '...'
+        : text
+      result.push({ type, value })
+      contentLength += value.length
+    }
 
     if (type === 'mark') {
+      const replaceRegex = replaceSearchRegex.value
       if (replaceRegex) {
-        result.push({ type: 'del', value })
+        pushText('del', value)
 
         const replacedVal = replaceRegex === true
           ? replaceText.value
           : value.replace(replaceRegex, replaceText.value)
 
         if (replacedVal) {
-          result.push({ type: 'ins', value: replacedVal })
+          result.push({
+            type: 'ins',
+            value: replacedVal.length > 200 ? replacedVal.slice(0, 200) + '...' : replacedVal,
+          })
         }
       } else {
-        result.push({ type: 'mark', value })
+        pushText('mark', value)
       }
     } else {
-      result.push({ type, value })
+      pushText(type, value)
     }
 
     return true
