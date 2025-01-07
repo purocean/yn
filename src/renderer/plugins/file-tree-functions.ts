@@ -30,7 +30,7 @@ export default {
       input.click()
     }
 
-    function getItems (node: Doc, position: 'tabs' | 'tree'): Components.ContextMenu.Item[] {
+    function getItems (node: Components.Tree.Node, position: 'tabs' | 'tree'): Components.ContextMenu.Item[] {
       const t = ctx.i18n.t
 
       const disableItems = ctx.args.FLAG_READONLY
@@ -103,11 +103,11 @@ export default {
     ctx.workbench.FileTabs.tapTabContextMenus((items, tab) => {
       const doc: Doc | null = tab.payload.file
 
-      if (!doc || doc.repo.startsWith('__')) {
+      if (!doc || doc.type !== 'file' || doc.repo.startsWith('__')) {
         return
       }
 
-      items.push(...getItems(doc, 'tabs'))
+      items.push(...getItems(doc as Components.Tree.Node, 'tabs'))
     })
 
     async function createFile (node: Components.Tree.Node) {

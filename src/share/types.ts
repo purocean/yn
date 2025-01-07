@@ -24,7 +24,7 @@ export interface FileReadResult {
 }
 
 export interface Doc extends PathItem {
-  type: 'file' | 'dir';
+  type: 'file' | 'dir' | `__${string}`;
   name: string;
   content?: string;
   title?: string;

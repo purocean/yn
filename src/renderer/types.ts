@@ -17,7 +17,8 @@ export type ParseLinkResult = { type: 'external', href: string } | { type: 'inte
 export type SwitchDocOpts = {
   force?: boolean,
   source?: 'markdown-link' | 'history-stack' | 'view-links',
-  position?: PositionState | null
+  position?: PositionState | null,
+  extra?: any,
 }
 
 export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
@@ -182,6 +183,7 @@ export namespace Components {
 
   export namespace Tree {
     export interface Node extends Pick<Doc, 'type' | 'name' | 'path' | 'repo'> {
+      type: 'file' | 'dir',
       mtime?: number;
       birthtime?: number;
       marked?: boolean;

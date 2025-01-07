@@ -51,7 +51,7 @@ export default defineComponent({
 
     function copyDoc (file: Doc | null): Doc | null {
       return file ? {
-        type: 'file',
+        type: file.type,
         name: file?.name,
         repo: file?.repo,
         path: file?.path,
