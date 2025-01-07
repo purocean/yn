@@ -134,6 +134,11 @@ export function isMarkdownFile (doc: Doc) {
   return !!(doc && doc.type === 'file' && misc.isMarkdownFile(doc.path))
 }
 
+/**
+ * Check if the document is supported.
+ * @param doc
+ * @returns
+ */
 export function supported (doc: Doc) {
   return !!(doc && doc.type === 'file' && supportedExtensionCache.sortedExtensions.some(x => doc.path.endsWith(x)))
 }
@@ -845,6 +850,11 @@ export async function switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise
   })
 }
 
+/**
+ * Switch document by path.
+ * @param path
+ * @returns
+ */
 export async function switchDocByPath (path: string): Promise<void> {
   logger.debug('switchDocByPath', path)
 
@@ -902,10 +912,19 @@ export async function unmarkDoc (doc: Doc) {
   triggerHook('DOC_CHANGED', { doc })
 }
 
+/**
+ *  Get marked files.
+ * @returns
+ */
 export function getMarkedFiles () {
   return getSetting('mark', [])
 }
 
+/**
+ * Check if document is marked.
+ * @param doc
+ * @returns
+ */
 export function isMarked (doc: PathItem & { type?: Doc['type'] }) {
   if (doc.type !== 'file') {
     return false
