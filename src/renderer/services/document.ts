@@ -101,17 +101,28 @@ export function createCurrentDocChecker () {
 /**
  * Get all document categories.
  * @param doc
+ * @param opts
  * @returns
  */
-export function cloneDoc (doc?: Doc | null): Doc | null {
-  return doc ? {
+export function cloneDoc (doc?: Doc | null, opts?: { includeExtra?: boolean }): Doc | null {
+  if (!doc) {
+    return null
+  }
+
+  const newDoc: Doc = {
     type: doc.type,
     name: doc.name,
     repo: doc.repo,
     path: doc.path,
     absolutePath: doc.absolutePath,
     plain: doc.plain,
-  } : null
+  }
+
+  if (opts?.includeExtra) {
+    newDoc.extra = doc.extra
+  }
+
+  return newDoc
 }
 
 /**

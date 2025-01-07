@@ -52,14 +52,14 @@ export default defineComponent({
     function setTabs (list: Components.FileTabs.Item[]) {
       store.state.tabs = list.map(item => {
         const file = item.payload.file
-        item.payload.file = cloneDoc(file)
+        item.payload.file = cloneDoc(file, { includeExtra: true })
         item.class = isOutOfRepo(file) ? 'out-of-repo' : ''
         return item
       })
     }
 
     function switchFile (file: Doc | null) {
-      return switchDoc(cloneDoc(file))
+      return switchDoc(cloneDoc(file, { includeExtra: true }))
     }
 
     function switchTab (item: Components.FileTabs.Item) {
