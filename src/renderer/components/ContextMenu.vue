@@ -214,7 +214,7 @@ export default defineComponent({
     position: absolute;
     width: 10px;
     height: 10px;
-    transform: translateX(-14px) translateY(0px) scaleX(0.8);
+    transform: translateX(-14px) translateY(1px) scaleX(0.8);
   }
 }
 

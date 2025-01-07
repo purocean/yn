@@ -218,7 +218,7 @@ export default defineComponent({
     position: absolute;
     width: 12px;
     height: 12px;
-    transform: translateX(-14px) translateY(-2px) scaleX(0.8);
+    transform: translateX(-14px) translateY(0) scaleX(0.8);
   }
 
   .menu-item-sub-title {
