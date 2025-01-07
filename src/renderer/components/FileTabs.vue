@@ -338,7 +338,7 @@ export default defineComponent({
 
     const fileTabs = computed(() => (tabs.value as Components.FileTabs.Item[]).map(tab => {
       if (currentFile.value && tab.key === toUri(currentFile.value)) {
-        const { status, writeable } = currentFile.value
+        const { type, status, writeable } = currentFile.value
 
         let mark = ''
         if (!isSaved.value) {
@@ -351,7 +351,7 @@ export default defineComponent({
           mark = '!'
         } else if (status === 'loaded') {
           mark = ''
-        } else {
+        } else if (type === 'file') {
           mark = '…'
         }
 

@@ -716,7 +716,7 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
 
   logger.debug('switchDoc', doc)
 
-  if (doc && doc.type !== 'file') {
+  if (doc && doc.type === 'dir') {
     throw new Error('Invalid document type')
   }
 
@@ -739,15 +739,15 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
   })
 
   if (doc) {
-    doc.plain = !!(extensions.supported(doc.name) || resolveDocType(doc.name)?.type?.plain)
+    doc.plain = doc.type === 'file' && (!!(extensions.supported(doc.name) || resolveDocType(doc.name)?.type?.plain))
     doc.absolutePath = getAbsolutePath(doc)
   }
 
   await triggerHook('DOC_BEFORE_SWITCH', { doc, opts }, { breakable: true, ignoreError: true })
 
   try {
-    if (!doc) {
-      store.state.currentFile = null
+    if (!doc || doc.type !== 'file') {
+      store.state.currentFile = doc
       store.state.currentContent = ''
       triggerHook('DOC_SWITCHED', { doc: null, opts })
       return

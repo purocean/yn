@@ -48,6 +48,7 @@ const data: BaseLanguage = {
   'read-only-mode-desc': '当前是只读模式，不可编辑',
   'trigger-suggestions': '触发提示',
   'table-of-contents': '目录',
+  'text-comparator': '文本比较器',
   'premium': {
     'confetti': '彩色纸屑',
     'need-purchase': '[%s] 需要高级版',
@@ -266,6 +267,7 @@ const data: BaseLanguage = {
       'share-preview': '分享预览',
       'print': '打印文档',
       'export': '导出文档',
+      'open-text-comparator': '打开文本比较器',
     },
     'document-info': {
       'selected': '已选择',

@@ -48,6 +48,7 @@ const data: BaseLanguage = {
   'read-only-mode-desc': '當前應用處於唯讀模式，不可編輯',
   'trigger-suggestions': '觸發提示',
   'table-of-contents': '目錄',
+  'text-comparator': '文本比較器',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',
@@ -266,6 +267,7 @@ const data: BaseLanguage = {
       'share-preview': '分享預覽',
       'print': '打印文檔',
       'export': '導出文檔',
+      'open-text-comparator': '打開文本比較器',
     },
     'document-info': {
       'selected': '已選擇',

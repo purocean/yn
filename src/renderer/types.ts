@@ -441,6 +441,7 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-out': () => void,
   'plugin.electron-zoom.zoom-reset': () => void,
   'plugin.view-links.view-document-links': () => void,
+  'plugin.text-comparator.open-text-comparator': () => void,
   'premium.show': (tab?: PremiumTab) => void,
   'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
   'base.switch-repository-1': () => void,

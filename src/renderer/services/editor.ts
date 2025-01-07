@@ -456,15 +456,20 @@ export function switchEditor (name: string) {
 /**
  * Register a custom editor.
  * @param editor Editor
+ * @param override Override the existing editor
  */
-export function registerCustomEditor (editor: CustomEditor) {
+export function registerCustomEditor (editor: CustomEditor, override = false) {
   if (!editor.component && editor.name !== DEFAULT_MARKDOWN_EDITOR_NAME) {
     throw new Error('Editor component is required')
   }
 
   // check if the editor is already registered
   if (ioc.get('EDITOR_CUSTOM_EDITOR').some(item => item.name === editor.name)) {
-    throw new Error(`Editor ${editor.name} is already registered`)
+    if (override) {
+      removeCustomEditor(editor.name)
+    } else {
+      throw new Error(`Editor ${editor.name} is already registered`)
+    }
   }
 
   ioc.register('EDITOR_CUSTOM_EDITOR', editor)

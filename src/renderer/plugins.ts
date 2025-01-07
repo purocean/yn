@@ -76,6 +76,7 @@ import recordRecentDocument from '@fe/plugins/record-recent-document'
 import aiCopilot from '@fe/plugins/ai-copilot'
 import viewLinks from '@fe/plugins/view-links'
 import insertTable from '@fe/plugins/insert-table'
+import textComparator from '@fe/plugins/text-comparator'
 
 export default [
   buildInRenderers,
@@ -156,4 +157,5 @@ export default [
   aiCopilot,
   viewLinks,
   insertTable,
+  textComparator,
 ]
