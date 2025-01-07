@@ -47,7 +47,7 @@ export default {
         // clean models
         const models = monaco.editor.getModels()
         for (const model of models) {
-          if (!uris.includes(model.uri.toString())) {
+          if (model.uri.scheme === ctx.doc.URI_SCHEME && !uris.includes(model.uri.toString())) {
             logger.debug('dispose model', model.uri.toString())
             model.dispose()
           }

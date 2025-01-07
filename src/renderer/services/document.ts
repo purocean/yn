@@ -32,6 +32,8 @@ const supportedExtensionCache = {
   types: new Map<string, { type: DocType, category: DocCategory }>()
 }
 
+export const URI_SCHEME = 'yank-note'
+
 type PathItemWithType = PathItem & { type?: Doc['type'] }
 
 function decrypt (content: any, password: string) {
@@ -168,13 +170,13 @@ export function isSubOrSameFile (docA: PathItemWithType | null | undefined, docB
  */
 export function toUri (doc?: PathItemWithType | null): string {
   if (doc?.type && doc.type !== 'file') {
-    return URI.parse(`yank-note://${doc.type}/${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
+    return URI.parse(`${URI_SCHEME}://${doc.type}/${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
   }
 
   if (doc && doc.type === 'file' && doc.repo && doc.path) {
-    return URI.parse(`yank-note://${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
+    return URI.parse(`${URI_SCHEME}://${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
   } else {
-    return 'yank-note://system/blank.md'
+    return `${URI_SCHEME}://system/blank.md`
   }
 }
 
@@ -664,7 +666,7 @@ export async function ensureCurrentFileSaved () {
 
   try {
     const autoSave = !isEncrypted(currentFile) && getSetting('auto-save', 2000)
-    if (autoSave) {
+    if (autoSave && currentFile.type === 'file') {
       try {
         await saveContent()
         return
