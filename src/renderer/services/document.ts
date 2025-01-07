@@ -99,6 +99,22 @@ export function createCurrentDocChecker () {
 }
 
 /**
+ * Get all document categories.
+ * @param doc
+ * @returns
+ */
+export function cloneDoc (doc?: Doc | null): Doc | null {
+  return doc ? {
+    type: doc.type,
+    name: doc.name,
+    repo: doc.repo,
+    path: doc.path,
+    absolutePath: doc.absolutePath,
+    plain: doc.plain,
+  } : null
+}
+
+/**
  * Check if the document is a markdown file.
  * @param doc
  * @returns

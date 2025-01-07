@@ -21,7 +21,7 @@ import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/keybinding'
 import type { Components, Doc, PathItem } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
-import { isEncrypted, isOutOfRepo, isSameFile, isSubOrSameFile, supported, switchDoc, toUri } from '@fe/services/document'
+import { cloneDoc, isEncrypted, isOutOfRepo, isSameFile, isSubOrSameFile, supported, switchDoc, toUri } from '@fe/services/document'
 import store from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
 import { FileTabs } from '@fe/services/workbench'
@@ -49,26 +49,17 @@ export default defineComponent({
 
     const welcomeShortcuts = isElectron ? [CtrlCmd, 'n'] : [CtrlCmd, Alt, 'n']
 
-    function copyDoc (file: Doc | null): Doc | null {
-      return file ? {
-        type: file.type,
-        name: file?.name,
-        repo: file?.repo,
-        path: file?.path,
-      } : null
-    }
-
     function setTabs (list: Components.FileTabs.Item[]) {
       store.state.tabs = list.map(item => {
         const file = item.payload.file
-        item.payload.file = copyDoc(file)
+        item.payload.file = cloneDoc(file)
         item.class = isOutOfRepo(file) ? 'out-of-repo' : ''
         return item
       })
     }
 
     function switchFile (file: Doc | null) {
-      return switchDoc(copyDoc(file))
+      return switchDoc(cloneDoc(file))
     }
 
     function switchTab (item: Components.FileTabs.Item) {
