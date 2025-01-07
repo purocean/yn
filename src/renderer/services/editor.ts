@@ -372,7 +372,10 @@ export function replaceValue (search: string | RegExp, val: string, replaceAll =
  * @returns
  */
 export function getSelectionInfo () {
-  const selection = getEditor().getSelection()!
+  const selection = getEditor().getSelection()
+  if (!selection) {
+    return
+  }
 
   return {
     line: selection.positionLineNumber,
@@ -545,7 +548,12 @@ export async function isDirty (): Promise<boolean> {
     return !window.documentSaved
   }
 
-  return currentEditor?.getIsDirty ? (await currentEditor.getIsDirty()) : false
+  try {
+    return currentEditor?.getIsDirty ? (await currentEditor.getIsDirty()) : false
+  } catch (error) {
+    console.error(error)
+    return true
+  }
 }
 
 registerAction({

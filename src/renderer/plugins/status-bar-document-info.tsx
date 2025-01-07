@@ -20,7 +20,10 @@ const DocumentInfo = defineComponent({
     })
 
     function updateSelectionInfo () {
-      selectionInfo.value = getSelectionInfo()
+      const info = getSelectionInfo()
+      if (info) {
+        selectionInfo.value = getSelectionInfo()
+      }
     }
 
     whenEditorReady().then(({ editor }) => {
