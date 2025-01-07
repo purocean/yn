@@ -554,6 +554,7 @@ export type CustomEditor = {
   name: string,
   displayName: string,
   hiddenPreview?: boolean,
+  supportNonNormalFile?: boolean,
   when: (ctx: CustomEditorCtx) => boolean | Promise<boolean>,
   component: any,
   getIsDirty?: () => boolean | Promise<boolean>,

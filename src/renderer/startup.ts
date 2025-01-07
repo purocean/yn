@@ -10,8 +10,8 @@ import * as storage from '@fe/utils/storage'
 import { basename } from '@fe/utils/path'
 import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
 import { reloadMainWindow } from '@fe/services/base'
-import { createDoc, isMarked, markDoc, switchDoc, toUri, unmarkDoc } from '@fe/services/document'
-import { whenEditorReady } from '@fe/services/editor'
+import { createDoc, isMarkdownFile, isMarked, markDoc, switchDoc, toUri, unmarkDoc } from '@fe/services/document'
+import { DEFAULT_MARKDOWN_EDITOR_NAME, whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage, t } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
 import { getPurchased } from '@fe/others/premium'
@@ -221,6 +221,15 @@ registerHook('DOC_PRE_ENSURE_CURRENT_FILE_SAVED', async () => {
     } else {
       throw new Error('Current Editor is dirty')
     }
+  }
+})
+
+editor.registerCustomEditor({
+  name: DEFAULT_MARKDOWN_EDITOR_NAME,
+  displayName: t('editor.default-editor'),
+  component: null,
+  when ({ doc }) {
+    return !!(doc && isMarkdownFile(doc))
   }
 })
 

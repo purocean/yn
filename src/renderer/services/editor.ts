@@ -12,7 +12,7 @@ import { getColorScheme } from './theme'
 import { getSetting } from './setting'
 import { t } from './i18n'
 import { language as markdownLanguage } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
-import { CustomEditor } from '@fe/types'
+import type { CustomEditor, CustomEditorCtx } from '@fe/types'
 
 export type SimpleCompletionItem = {
   label: string,
@@ -35,7 +35,8 @@ let currentEditor: CustomEditor | null | undefined
 let monaco: typeof Monaco
 let editor: Monaco.editor.IStandaloneCodeEditor
 
-const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monospace'
+export const DEFAULT_MAC_FONT_FAMILY = 'MacEmoji, Menlo, Monaco, \'Courier New\', monospace'
+export const DEFAULT_MARKDOWN_EDITOR_NAME = 'default-markdown-editor'
 
 const refreshMarkdownMonarchLanguageDebounce = debounce(() => {
   whenEditorReady().then(({ monaco }) => {
@@ -457,8 +458,13 @@ export function switchEditor (name: string) {
  * @param editor Editor
  */
 export function registerCustomEditor (editor: CustomEditor) {
-  if (!editor.component) {
+  if (!editor.component && editor.name !== DEFAULT_MARKDOWN_EDITOR_NAME) {
     throw new Error('Editor component is required')
+  }
+
+  // check if the editor is already registered
+  if (ioc.get('EDITOR_CUSTOM_EDITOR').some(item => item.name === editor.name)) {
+    throw new Error(`Editor ${editor.name} is already registered`)
   }
 
   ioc.register('EDITOR_CUSTOM_EDITOR', editor)
@@ -481,6 +487,31 @@ export function removeCustomEditor (name: string) {
  */
 export function getAllCustomEditors () {
   return ioc.get('EDITOR_CUSTOM_EDITOR')
+}
+
+/**
+ * Get all available custom editors.
+ */
+export async function getAvailableCustomEditors (ctx: CustomEditorCtx): Promise<CustomEditor[]> {
+  const promises = getAllCustomEditors().map(async editor => {
+    try {
+      // check if the editor is supported for the other file types
+      if (ctx.doc && ctx.doc.type !== 'file' && !editor.supportNonNormalFile) {
+        return null
+      }
+
+      if (await editor.when(ctx)) {
+        return editor
+      } else {
+        return null
+      }
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  })
+
+  return (await Promise.all(promises)).filter(Boolean) as CustomEditor[]
 }
 
 /**

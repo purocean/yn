@@ -5,28 +5,18 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { getAllCustomEditors, isDefault, getValue, setValue, switchEditor } from '@fe/services/editor'
+import { getAvailableCustomEditors, isDefault, getValue, setValue, switchEditor } from '@fe/services/editor'
 import { registerAction, removeAction } from '@fe/core/action'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { getLogger, storage } from '@fe/utils'
 import { FileTabs } from '@fe/services/workbench'
 import { useQuickFilter } from '@fe/support/ui/quick-filter'
-import { isMarkdownFile } from '@fe/services/document'
 import { t } from '@fe/services/i18n'
 import store from '@fe/support/store'
 import type { Components, CustomEditor, Doc } from '@fe/types'
 import DefaultEditor from './DefaultEditor.vue'
 
 const EDITOR_LAST_USAGE_TIME_KEY = 'editor.last-usage-time'
-
-const defaultEditor: CustomEditor = {
-  name: 'default-markdown-editor',
-  displayName: t('editor.default-editor'),
-  component: null,
-  when ({ doc }) {
-    return !!(doc && isMarkdownFile(doc))
-  }
-}
 
 const logger = getLogger('main-editor')
 const editorLastUsageTime = storage.get<Record<string, number>>(EDITOR_LAST_USAGE_TIME_KEY, {})
@@ -41,19 +31,14 @@ function recordEditorUsageTime (name: string) {
   storage.set(EDITOR_LAST_USAGE_TIME_KEY, editorLastUsageTime)
 }
 
-async function changeEditor ({ doc }: { doc?: Doc | null, name?: string }) {
-  availableEditors.value = (await Promise.allSettled(
-    getAllCustomEditors().concat([defaultEditor]).map(async val => {
-      if (await val.when({ doc })) {
-        (val as any)._lastUsageAt = editorLastUsageTime[val.name] || 0
-        return val
-      }
+type XCustomEditor = CustomEditor & { _lastUsageAt: number }
 
-      return null
+async function changeEditor ({ doc }: { doc?: Doc | null, name?: string }) {
+  availableEditors.value = (await getAvailableCustomEditors({ doc }))
+    .map((editor) => {
+      (editor as XCustomEditor)._lastUsageAt = editorLastUsageTime[editor.name] || 0
+      return editor as XCustomEditor
     })
-  ))
-    .filter(x => x.status === 'fulfilled' && x.value)
-    .map(x => (x as any).value)
     .sort((a, b) => b._lastUsageAt - a._lastUsageAt)
 
   if (availableEditors.value.length < 1) {
