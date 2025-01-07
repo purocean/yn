@@ -35,6 +35,7 @@ export interface Doc extends PathItem {
   status?: 'loaded' | 'save-failed' | 'saved' | 'unsaved';
   absolutePath?: string,
   plain?: boolean;
+  extra?: any;
 }
 
 export interface Repo {

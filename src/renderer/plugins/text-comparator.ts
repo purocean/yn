@@ -1,5 +1,5 @@
 import { Plugin } from '@fe/context'
-import type { BuildInActions } from '@fe/types'
+import type { BuildInActions, Doc } from '@fe/types'
 
 export default {
   name: 'text-comparator',
@@ -41,12 +41,35 @@ export default {
       name: compareTextActionId,
       description: ctx.i18n.t('status-bar.tool.open-text-comparator'),
       forUser: true,
-      handler: () => {
+      handler: (original?: Doc | null, modified?: Doc | null) => {
+        type Extra = {
+          original?: Doc | null
+          modified?: Doc | null
+        }
+
+        const currentFile = ctx.store.state.currentFile
+        if (typeof original === 'undefined' && currentFile?.type === 'file' && currentFile.plain) {
+          original = ctx.doc.cloneDoc(currentFile)
+        }
+
+        if (typeof modified !== 'undefined') {
+          modified = ctx.doc.cloneDoc(modified)
+        }
+
+        if (original && (original.type !== 'file' || !original.plain)) {
+          throw new Error('Original doc is not a text file')
+        }
+
+        if (modified && (modified.type !== 'file' || !modified.plain)) {
+          throw new Error('Modified doc is not a text file')
+        }
+
         ctx.doc.switchDoc({
           type: editorDocType,
           name: 'Text Comparator',
           path: '',
-          repo: ctx.store.state.currentRepo?.name || ''
+          repo: ctx.store.state.currentRepo?.name || '',
+          extra: currentFile ? { original, modified } satisfies Extra : null,
         })
       },
     })
