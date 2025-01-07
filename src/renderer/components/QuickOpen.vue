@@ -35,8 +35,8 @@
           <span :ref="el => refFilename[i] = el">
             {{item.name}}
           </span>
-          <span :ref="el => refFilepath[i] = el" class="path">
-            [{{item.repo}}] {{item.path.substr(0, item.path.lastIndexOf('/'))}}
+          <span class="path">
+            <span v-if="currentTab === 'marked'">[{{item.repo}}]</span> <span :ref="el => refFilepath[i] = el">{{item.path.substr(0, item.path.lastIndexOf('/'))}}</span>
           </span>
         </li>
         <li v-if="dataList.length < 1">{{$t('quick-open.empty')}}</li>
@@ -53,16 +53,19 @@ import { fetchSettings } from '@fe/services/setting'
 import { isMarked, supported } from '@fe/services/document'
 import store from '@fe/support/store'
 import { PathItem } from '@fe/types'
+import { Components } from '../types'
+import { path } from '@fe/utils'
 
 type TabKey = 'marked' | 'file' | 'command'
+type XPathItem = PathItem & { name: string }
 
 let lastTab: TabKey = 'marked'
-let markedFilesCache: PathItem[] = []
+let markedFilesCache: XPathItem[] = []
 
 export default defineComponent({
   name: 'quick-open',
   props: {
-    withMarked: {
+    onlyCurrentRepo: {
       type: Boolean,
       default: true,
     },
@@ -74,33 +77,30 @@ export default defineComponent({
     const refResult = ref<HTMLUListElement | null>(null)
     const refFilename = ref<HTMLElement[]>([])
     const refFilepath = ref<HTMLElement[]>([])
-    const markedFiles = ref<PathItem[]>(markedFilesCache)
+    const markedFiles = ref<XPathItem[]>(markedFilesCache)
 
     const { recentOpenTime, tree } = toRefs(store.state)
 
-    const selected = ref<any>(null)
+    const selected = ref<XPathItem | null>(null)
     const searchText = ref('')
     const currentTab = ref<TabKey>(lastTab)
-    const list = ref<any>([])
+    const list = ref<XPathItem[] | null>([])
     const disableMouseover = ref(false)
 
     const tabs = computed(() => {
       const arr: {key: TabKey; label: string}[] = [
+        { key: 'marked', label: t('quick-open.marked') },
         { key: 'file', label: t('quick-open.files') },
       ]
-
-      if (props.withMarked) {
-        arr.unshift({ key: 'marked', label: t('quick-open.marked') })
-      }
 
       return arr
     })
 
     const files = computed(() => {
-      const travelFiles = (tree: any) => {
-        let tmp: any[] = []
+      const travelFiles = (tree: Components.Tree.Node[]) => {
+        let tmp: Components.Tree.Node[] = []
 
-        tree.forEach((node: any) => {
+        tree.forEach((node) => {
           if (supported(node)) {
             tmp.push(node)
           }
@@ -116,14 +116,10 @@ export default defineComponent({
       return travelFiles(tree.value || [])
     })
 
-    function sortList (list: any) {
-      if (list === null) {
-        return
-      }
-
+    function sortList (list: XPathItem[]) {
       const map = (recentOpenTime.value || {})
 
-      return list.sort((a: any, b: any) => {
+      return list.sort((a, b) => {
         const at = map[`${a.repo}|${a.path}`] || 0
         const bt = map[`${b.repo}|${b.path}`] || 0
 
@@ -131,23 +127,27 @@ export default defineComponent({
       })
     }
 
-    function filterFiles (files: any[], search: string, fuzzy: boolean) {
+    function filterFiles (files: XPathItem[], search: string, fuzzy: boolean) {
       if (!fuzzy) {
         search = search.toLowerCase()
         return files.filter(x => x.path.toLowerCase().indexOf(search) > -1)
       }
 
-      const tmp: any[] = []
+      type Item = (XPathItem & { _score: number })
+      const tmp: Item[] = []
+
+      const removeExtReg = /\.\w+$/
 
       files.forEach(x => {
+        const basenameWithoutExt = path.basename(x.path).replace(removeExtReg, '').trim()
         const result = fuzzyMatch(search, x.path)
-
         if (result.matched) {
-          tmp.push({ ...x })
+          (x as Item)._score = search.trim() === basenameWithoutExt ? Number.MAX_SAFE_INTEGER : result.score
+          tmp.push(x as Item)
         }
       })
 
-      return tmp.sort((a, b) => b.score - a.score)
+      return tmp.sort((a, b) => b._score - a._score)
     }
 
     const dataList = computed(() => {
@@ -156,7 +156,8 @@ export default defineComponent({
       }
 
       // filter except full text search.
-      const arr = filterFiles(list.value, searchText.value.trim(), false)
+      const currentRepoName = store.state.currentRepo?.name
+      const arr = filterFiles(list.value, searchText.value.trim(), true).filter(x => props.onlyCurrentRepo ? x.repo === currentRepoName : true)
 
       // sort by last usage time.
       return sortList(arr).slice(0, 70)
@@ -174,7 +175,7 @@ export default defineComponent({
         const openR = new RegExp(escape(openF), 'g')
         const closeR = new RegExp(escape(closeF), 'g')
 
-        ;(refFilename.value || []).concat(refFilepath.value || []).forEach(function (it: any) {
+        ;(refFilename.value || []).concat(refFilepath.value || []).forEach((it) => {
           if (!it) {
             return
           }
@@ -231,7 +232,7 @@ export default defineComponent({
         return
       }
 
-      const currentIndex = dataList.value.findIndex((x: any) => selected.value === x)
+      const currentIndex = dataList.value.findIndex((x) => selected.value === x)
 
       let index = currentIndex + inc
       if (index > dataList.value.length - 1) {
@@ -262,16 +263,10 @@ export default defineComponent({
       currentTab.value = arr[index > -1 ? index : arr.length - 1] || arr[0]
     }
 
-    watch(() => props.withMarked, val => {
-      if (!val && currentTab.value === 'marked') {
-        currentTab.value = 'file'
-      }
-    }, { immediate: true })
-
     watch(searchText, () => updateDataSource())
 
     watch(dataList, val => {
-      if (val.length) {
+      if (val?.length) {
         disableMouseover.value = true
         setTimeout(() => {
           disableMouseover.value = false
@@ -340,7 +335,7 @@ export default defineComponent({
 }
 
 .result li {
-  color: var(--g-color-20);
+  color: var(--g-color-30);
   line-height: 1.5em;
   font-size: 18px;
   padding: 2px 6px;
@@ -373,7 +368,7 @@ export default defineComponent({
 
 .result li span.path ::v-deep(b) {
   color: var(--g-color-5);
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .result li ::v-deep(b) {

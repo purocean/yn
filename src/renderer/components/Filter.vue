@@ -1,6 +1,6 @@
 <template>
   <XMask :show="show" @close="close">
-    <QuickOpen @choose-file="chooseFile" @close="close" :with-marked="withMarked"></QuickOpen>
+    <QuickOpen @choose-file="chooseFile" @close="close" :only-current-repo="onlyCurrentRepo"></QuickOpen>
   </XMask>
 </template>
 
@@ -19,10 +19,10 @@ export default defineComponent({
   components: { QuickOpen, XMask },
   setup () {
     const callback = ref<Function | null>(null)
-    const withMarked = ref(true)
+    const onlyCurrentRepo = ref(false)
 
     function showQuickOpen () {
-      withMarked.value = true
+      onlyCurrentRepo.value = false
       callback.value = (f: any) => {
         switchDoc(f)
         callback.value = null
@@ -41,7 +41,7 @@ export default defineComponent({
           resolve(f)
           callback.value = null
         }
-        withMarked.value = false
+        onlyCurrentRepo.value = true
       })
     }
 
@@ -76,7 +76,7 @@ export default defineComponent({
       close,
       callback,
       chooseFile,
-      withMarked,
+      onlyCurrentRepo,
     }
   },
 })
