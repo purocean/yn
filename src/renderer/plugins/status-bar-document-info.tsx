@@ -20,10 +20,7 @@ const DocumentInfo = defineComponent({
     })
 
     function updateSelectionInfo () {
-      const info = getSelectionInfo()
-      if (info) {
-        selectionInfo.value = getSelectionInfo()
-      }
+      selectionInfo.value = getSelectionInfo()
     }
 
     whenEditorReady().then(({ editor }) => {
@@ -39,7 +36,7 @@ const DocumentInfo = defineComponent({
       disposable.forEach(disposable => disposable.dispose())
     })
 
-    return () => <div class="document-info">
+    return () => selectionInfo.value && <div class="document-info">
       <span>L {selectionInfo.value.line},</span>
       <span>C {selectionInfo.value.column}</span>
       {selectionInfo.value.selectionCount > 1 && <span>{$t.value('status-bar.document-info.selections')}: {selectionInfo.value.selectionCount}</span>}
