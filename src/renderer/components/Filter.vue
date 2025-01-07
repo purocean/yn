@@ -1,6 +1,6 @@
 <template>
-  <XMask :show="show" @close="callback = null">
-    <QuickOpen @choose-file="chooseFile" @close="callback = null" :with-marked="withMarked"></QuickOpen>
+  <XMask :show="show" @close="close">
+    <QuickOpen @choose-file="chooseFile" @close="close" :with-marked="withMarked"></QuickOpen>
   </XMask>
 </template>
 
@@ -45,6 +45,14 @@ export default defineComponent({
       })
     }
 
+    function close () {
+      if (callback.value) {
+        callback.value(null)
+      }
+
+      callback.value = null
+    }
+
     onMounted(() => {
       registerAction({
         name: 'workbench.show-quick-open',
@@ -65,6 +73,7 @@ export default defineComponent({
 
     return {
       show,
+      close,
       callback,
       chooseFile,
       withMarked,

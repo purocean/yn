@@ -53,7 +53,9 @@ async function linkFile () {
   }
 }
 
-function addDocument (doc: Doc) {
+function addDocument (doc?: Doc | null) {
+  if (!doc) return
+
   const file = store.state.currentFile
   if (file) {
     if (!isSameRepo(file, doc)) {
