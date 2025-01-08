@@ -95,14 +95,24 @@ async function transformAll () {
 export default {
   name: 'image-localization',
   register: (ctx) => {
+    function when () {
+      const currentFile = ctx.store.state.currentFile
+      const previewFile = ctx.view.getRenderEnv()?.file
+
+      return !!(currentFile && ctx.editor.isDefault() && ctx.doc.isSameFile(currentFile, previewFile))
+    }
+
     ctx.action.registerAction({
       name: actionKeydown,
       handler: transformAll,
       description: ctx.i18n.t('command-desc.plugin_image-localization_all'),
       forUser: true,
+      when,
     })
 
     ctx.statusBar.tapMenus(menus => {
+      if (!when()) return
+
       menus['status-bar-tool']?.list?.push(
         {
           id: actionKeydown,
@@ -114,6 +124,8 @@ export default {
     })
 
     ctx.view.tapContextMenus((items, e) => {
+      if (!when()) return
+
       const el = e.target as HTMLElement
 
       if (
