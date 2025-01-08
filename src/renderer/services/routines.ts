@@ -1,9 +1,10 @@
-import type { PositionState } from '@fe/types'
+import type { BaseDoc, Doc, PositionState } from '@fe/types'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import store from '@fe/support/store'
 import { sleep } from '@fe/utils'
 import * as editor from './editor'
 import * as view from './view'
+import { getActionHandler } from '@fe/core/action'
 
 /**
  * Change position.
@@ -58,4 +59,13 @@ export async function changePosition (position: PositionState) {
       }
     }
   }
+}
+
+/**
+ *  Choose a document.
+ * @param filter
+ * @returns
+ */
+export async function chooseDocument (filter?: (item: BaseDoc) => boolean): Promise<Doc | null> {
+  return getActionHandler('filter.choose-document')(filter)
 }

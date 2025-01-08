@@ -1,18 +1,23 @@
 <template>
   <XMask :show="show" @close="close">
-    <QuickOpen @choose-file="chooseFile" @close="close" :only-current-repo="onlyCurrentRepo"></QuickOpen>
+    <QuickOpen
+      @choose-file="chooseFile"
+      @close="close"
+      :filter-item="filterItem"
+      :only-current-repo="onlyCurrentRepo" />
   </XMask>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue'
-import type { Doc } from '@fe/types'
+import { computed, defineComponent, onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import { CtrlCmd } from '@fe/core/keybinding'
 import { switchDoc } from '@fe/services/document'
 import { t } from '@fe/services/i18n'
+import type { Doc, BaseDoc } from '@fe/types'
 import XMask from './Mask.vue'
 import QuickOpen from './QuickOpen.vue'
+import { isMarkdownFile } from '@share/misc'
 
 export default defineComponent({
   name: 'x-filter',
@@ -20,12 +25,14 @@ export default defineComponent({
   setup () {
     const callback = ref<Function | null>(null)
     const onlyCurrentRepo = ref(false)
+    const filterItem = shallowRef<(item: BaseDoc) => boolean>()
 
     function showQuickOpen () {
       onlyCurrentRepo.value = false
       callback.value = (f: any) => {
         switchDoc(f)
         callback.value = null
+        filterItem.value = undefined
       }
     }
 
@@ -35,13 +42,16 @@ export default defineComponent({
       }
     }
 
-    function chooseDocument () {
+    function chooseDocument (filter = (item: BaseDoc) => isMarkdownFile(item.path)) {
       return new Promise<Doc>(resolve => {
         callback.value = (f: Doc) => {
           resolve(f)
           callback.value = null
+          filterItem.value = undefined
         }
+
         onlyCurrentRepo.value = true
+        filterItem.value = filter
       })
     }
 
@@ -77,6 +87,7 @@ export default defineComponent({
       callback,
       chooseFile,
       onlyCurrentRepo,
+      filterItem,
     }
   },
 })

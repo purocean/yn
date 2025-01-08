@@ -32,11 +32,11 @@
           :class="{selected: selected === item, marked: isMarked(item)}"
           @mouseover="!disableMouseover && updateSelected(item)"
           @click="chooseItem(item)">
-          <span :ref="el => refFilename[i] = el">
+          <span :ref="(el: any) => refFilename[i] = el">
             {{item.name}}
           </span>
           <span class="path">
-            <span v-if="currentTab === 'marked'">[{{item.repo}}]</span> <span :ref="el => refFilepath[i] = el">{{item.path.substr(0, item.path.lastIndexOf('/'))}}</span>
+            <span v-if="currentTab === 'marked'">[{{item.repo}}]</span> <span :ref="(el: any) => refFilepath[i] = el">{{item.path.substr(0, item.path.lastIndexOf('/'))}}</span>
           </span>
         </li>
         <li v-if="dataList.length < 1">{{$t('quick-open.empty')}}</li>
@@ -50,17 +50,14 @@ import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } fr
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
-import { isMarked, supported } from '@fe/services/document'
+import { getMarkedFiles, isMarked, supported } from '@fe/services/document'
 import store from '@fe/support/store'
-import { PathItem } from '@fe/types'
-import { Components } from '../types'
-import { path } from '@fe/utils'
+import { Components, BaseDoc } from '@fe/types'
 
 type TabKey = 'marked' | 'file' | 'command'
-type XPathItem = PathItem & { name: string }
 
 let lastTab: TabKey = 'marked'
-let markedFilesCache: XPathItem[] = []
+let markedFilesCache: BaseDoc[] = []
 
 export default defineComponent({
   name: 'quick-open',
@@ -68,6 +65,10 @@ export default defineComponent({
     onlyCurrentRepo: {
       type: Boolean,
       default: true,
+    },
+    filterItem: {
+      type: Function as unknown as () => (item : BaseDoc) => boolean,
+      default: () => () => true,
     },
   },
   setup (props, { emit }) {
@@ -77,14 +78,14 @@ export default defineComponent({
     const refResult = ref<HTMLUListElement | null>(null)
     const refFilename = ref<HTMLElement[]>([])
     const refFilepath = ref<HTMLElement[]>([])
-    const markedFiles = ref<XPathItem[]>(markedFilesCache)
+    const markedFiles = ref<BaseDoc[]>(markedFilesCache)
 
     const { recentOpenTime, tree } = toRefs(store.state)
 
-    const selected = ref<XPathItem | null>(null)
+    const selected = ref<BaseDoc | null>(null)
     const searchText = ref('')
     const currentTab = ref<TabKey>(lastTab)
-    const list = ref<XPathItem[] | null>([])
+    const list = ref<BaseDoc[] | null>([])
     const disableMouseover = ref(false)
 
     const tabs = computed(() => {
@@ -116,7 +117,7 @@ export default defineComponent({
       return travelFiles(tree.value || [])
     })
 
-    function sortList (list: XPathItem[]) {
+    function sortList (list: BaseDoc[]) {
       const map = (recentOpenTime.value || {})
 
       return list.sort((a, b) => {
@@ -127,22 +128,20 @@ export default defineComponent({
       })
     }
 
-    function filterFiles (files: XPathItem[], search: string, fuzzy: boolean) {
+    function filterFiles (files: BaseDoc[], search: string, fuzzy: boolean) {
       if (!fuzzy) {
         search = search.toLowerCase()
         return files.filter(x => x.path.toLowerCase().indexOf(search) > -1)
       }
 
-      type Item = (XPathItem & { _score: number })
+      type Item = (BaseDoc & { _score: number })
       const tmp: Item[] = []
 
-      const removeExtReg = /\.\w+$/
-
       files.forEach(x => {
-        const basenameWithoutExt = path.basename(x.path).replace(removeExtReg, '').trim()
         const result = fuzzyMatch(search, x.path)
         if (result.matched) {
-          (x as Item)._score = search.trim() === basenameWithoutExt ? Number.MAX_SAFE_INTEGER : result.score
+          const nameResult = fuzzyMatch(search, x.name)
+          ;(x as Item)._score = nameResult.matched ? nameResult.score * 100000 + result.score : result.score
           tmp.push(x as Item)
         }
       })
@@ -157,7 +156,11 @@ export default defineComponent({
 
       // filter except full text search.
       const currentRepoName = store.state.currentRepo?.name
-      const arr = filterFiles(list.value, searchText.value.trim(), true).filter(x => props.onlyCurrentRepo ? x.repo === currentRepoName : true)
+      const arr = filterFiles(list.value, searchText.value.trim(), true)
+        .filter(x => {
+          return props.filterItem(x) &&
+          (props.onlyCurrentRepo ? x.repo === currentRepoName : true)
+        })
 
       // sort by last usage time.
       return sortList(arr).slice(0, 70)
@@ -205,7 +208,7 @@ export default defineComponent({
       }
     }
 
-    function updateSelected (item: any = null) {
+    function updateSelected (item: BaseDoc | null = null) {
       if (dataList.value === null) {
         return
       }
@@ -244,10 +247,10 @@ export default defineComponent({
       updateSelected(dataList.value[index])
     }
 
-    function chooseItem (item: any = null) {
+    function chooseItem (item: BaseDoc | null = null) {
       const file = item || selected.value
       if (file) {
-        emit('choose-file', { type: 'file', ...file })
+        emit('choose-file', { ...file } satisfies BaseDoc)
       }
     }
 
@@ -288,8 +291,8 @@ export default defineComponent({
     onMounted(async () => {
       refInput.value!.focus()
       updateDataSource()
-      const settings = await fetchSettings()
-      markedFilesCache = settings.mark || []
+      await fetchSettings()
+      markedFilesCache = getMarkedFiles()
       markedFiles.value = markedFilesCache
       updateDataSource()
     })
@@ -297,8 +300,8 @@ export default defineComponent({
     return {
       refInput,
       refResult,
-      refFilename: refFilename as any,
-      refFilepath: refFilepath as any,
+      refFilename,
+      refFilepath,
       tabs,
       currentTab,
       searchText,
