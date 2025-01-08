@@ -10,7 +10,7 @@ import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import type { DocType, FileStat, Doc, DocCategory, PathItem, SwitchDocOpts } from '@fe/types'
+import type { DocType, FileStat, Doc, DocCategory, PathItem, SwitchDocOpts, BaseDoc } from '@fe/types'
 import { basename, dirname, extname, isBelongTo, join, normalizeSep, relative, resolve } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
@@ -34,7 +34,7 @@ const supportedExtensionCache = {
 
 export const URI_SCHEME = 'yank-note'
 
-type PathItemWithType = PathItem & { type?: Doc['type'] }
+type PathItemWithType = Optional<Omit<BaseDoc, 'name'>, 'type'>
 
 function decrypt (content: any, password: string) {
   if (!password) {
@@ -167,8 +167,8 @@ export function isEncrypted (doc?: Pick<Doc, 'path' | 'type'> | null): boolean {
  * @param docB
  * @returns
  */
-export function isSameRepo (docA: PathItemWithType | null | undefined, docB: PathItemWithType | null | undefined) {
-  return docA && docB && docA.type === docB.type && docA.repo === docB.repo
+export function isSameRepo (docA: PathItem | null | undefined, docB: PathItem | null | undefined) {
+  return docA && docB && docA.repo === docB.repo
 }
 
 /**
@@ -178,7 +178,7 @@ export function isSameRepo (docA: PathItemWithType | null | undefined, docB: Pat
  * @returns
  */
 export function isSameFile (docA: PathItemWithType | null | undefined, docB: PathItemWithType | null | undefined) {
-  return docA && docB && isSameRepo(docA, docB) && docA.path === docB.path
+  return docA && docB && isSameRepo(docA, docB) && docA.type === docB.type && docA.path === docB.path
 }
 
 /**
@@ -895,9 +895,9 @@ export async function switchDocByPath (path: string): Promise<void> {
  * Mark document.
  * @param doc
  */
-export async function markDoc (doc: Doc) {
+export async function markDoc (doc: BaseDoc) {
   const list = getSetting('mark', []).filter(x => !(x.path === doc.path && x.repo === doc.repo))
-  list.push({ repo: doc.repo, path: doc.path, name: basename(doc.path) })
+  list.push({ type: 'file', repo: doc.repo, path: doc.path, name: basename(doc.path) })
   await setSetting('mark', list)
   triggerHook('DOC_CHANGED', { doc })
 }
@@ -906,7 +906,7 @@ export async function markDoc (doc: Doc) {
  * Unmark document.
  * @param doc
  */
-export async function unmarkDoc (doc: Doc) {
+export async function unmarkDoc (doc: BaseDoc) {
   const list = getSetting('mark', []).filter(x => !(x.path === doc.path && x.repo === doc.repo))
   await setSetting('mark', list)
   triggerHook('DOC_CHANGED', { doc })
