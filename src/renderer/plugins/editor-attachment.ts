@@ -108,7 +108,7 @@ export default {
         keybindings: [
           monaco.KeyMod.Alt | monaco.KeyCode.KeyD
         ],
-        run: () => getActionHandler('filter.choose-document')().then(addDocument),
+        run: () => ctx.routines.chooseDocument().then(addDocument),
       })
       editor.addAction({
         id: idLinkFile,
@@ -145,7 +145,7 @@ export default {
           title: ctx.i18n.t('editor.context-menu.link-doc'),
           subTitle: ctx.keybinding.getKeysLabel(ctx.editor.lookupKeybindingKeys(idLinkDoc) || []),
           ellipsis: true,
-          onClick: () => getActionHandler('filter.choose-document')().then(addDocument),
+          onClick: () => ctx.routines.chooseDocument().then(addDocument),
         },
         {
           id: idLinkFile,
