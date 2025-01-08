@@ -11,7 +11,15 @@ export default {
     const TextComparator = ctx.lib.vue.defineComponent({
       setup () {
         const { h } = ctx.lib.vue
-        return () => h(
+        const extensionInitialized = ctx.lib.vue.ref(ctx.getExtensionInitialized())
+
+        if (!extensionInitialized.value) {
+          ctx.whenExtensionInitialized().then(() => {
+            extensionInitialized.value = true
+          })
+        }
+
+        return () => extensionInitialized.value ? h(
           'div',
           { style: 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;' },
           [
@@ -22,7 +30,7 @@ export default {
               },
             }, ctx.i18n.t('install-extension-tips', extensionId))
           ]
-        )
+        ) : null
       }
     })
 

@@ -9,7 +9,7 @@ import type { Extension, ExtensionCompatible, ExtensionLoadStatus, RegistryHostn
 import * as i18n from '@fe/services/i18n'
 import * as theme from '@fe/services/theme'
 import * as view from '@fe/services/view'
-import { triggerHook } from '@fe/core/hook'
+import { registerHook, triggerHook } from '@fe/core/hook'
 import { FLAG_DEMO } from '@fe/support/args'
 
 const logger = getLogger('extension')
@@ -276,6 +276,18 @@ let initialized = false
 
 export function getInitialized () {
   return initialized
+}
+
+export function whenInitialized (): Promise<void> {
+  return new Promise(resolve => {
+    if (initialized) {
+      resolve()
+    } else {
+      registerHook('EXTENSION_READY', () => {
+        resolve()
+      }, true)
+    }
+  })
 }
 
 /**
