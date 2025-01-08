@@ -4,6 +4,16 @@ import type { Components, Doc, FileSort, IndexStatus, Repo } from '@fe/types'
 import { computed, reactive, watch, watchEffect } from 'vue'
 import { isNormalRepoName } from '@share/misc'
 
+function getCurrentFile () {
+  const data = storage.get<Doc>('currentFile')
+
+  if (data && data.type) {
+    return data
+  }
+
+  return null
+}
+
 export const initState = {
   tree: null as Components.Tree.Node[] | null,
   treeSort: storage.get<FileSort>('treeSort', { by: 'serial', order: 'asc' }),
@@ -25,7 +35,7 @@ export const initState = {
   inComposition: false,
   currentRepo: storage.get<Repo>('currentRepo'),
   currentRepoIndexStatus: null as { repo: string, status: IndexStatus} | null,
-  currentFile: storage.get<Repo>('currentFile') as Doc | null | undefined,
+  currentFile: getCurrentFile() as Doc | null | undefined,
   recentOpenTime: storage.get<Record<string, number>>('recentOpenTime', {}),
   tabs: storage.get<Components.FileTabs.Item[]>('tabs', []),
   previewer: 'default',
