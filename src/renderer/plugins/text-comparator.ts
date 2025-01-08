@@ -56,7 +56,12 @@ export default {
         }
 
         const currentFile = ctx.store.state.currentFile
-        if (typeof original === 'undefined' && currentFile?.type === 'file' && currentFile.plain) {
+        if (
+          typeof original === 'undefined' &&
+          currentFile?.type === 'file' &&
+          currentFile.plain &&
+          ctx.repo.isNormalRepo(currentFile.repo)
+        ) {
           original = ctx.doc.cloneDoc(currentFile)
         }
 
@@ -76,7 +81,7 @@ export default {
           type: editorDocType,
           name: 'Text Comparator',
           path: '',
-          repo: ctx.store.state.currentRepo?.name || '',
+          repo: editorDocType,
           extra: currentFile ? { original, modified } satisfies Extra : null,
         })
       },
