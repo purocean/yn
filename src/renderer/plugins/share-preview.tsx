@@ -91,10 +91,13 @@ export default {
       await ctx.utils.sleep(100)
 
       if (ctx.setting.getSetting('server.host') !== '0.0.0.0') {
-        ctx.ui.useModal().alert({
+        await ctx.ui.useModal().alert({
           title: ctx.i18n.t('status-bar.tool.share-preview'),
           content: ctx.i18n.t('share-preview.tips')
         })
+
+        ctx.setting.showSettingPanel('server.host')
+
         return
       }
 
