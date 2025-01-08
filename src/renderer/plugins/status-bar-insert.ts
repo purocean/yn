@@ -8,6 +8,7 @@ export default {
         id: 'status-bar-insert',
         position: 'left',
         title: ctx.i18n.t('status-bar.insert.insert'),
+        hidden: !ctx.editor.isDefault(),
         list: []
       }
     })
