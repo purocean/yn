@@ -16,6 +16,9 @@
               <div class="item">
                 <a href="javascript:void(0);" @click="createFile()">{{$t('tree.context-menu.create-doc')}}...</a>
               </div>
+              <div class="item">
+                <a href="javascript:void(0);" @click="getActionHandler('workbench.show-quick-open')()">{{$t('status-bar.nav.goto')}}...</a>
+              </div>
               <div class="item" v-if="!getPurchased()">
                 <a href="javascript:void(0);" @click="showPremium()">{{$t('premium.premium')}}...</a>
               </div>
