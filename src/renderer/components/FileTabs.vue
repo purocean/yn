@@ -37,6 +37,7 @@ export default defineComponent({
   setup () {
     const { t, $t } = useI18n()
 
+    let lastKey = blankUri
     const { currentFile, tabs } = toRefs(store.state)
     const isSaved = store.getters.isSaved
 
@@ -72,7 +73,10 @@ export default defineComponent({
 
       // if close current file, switch other first
       if (items.some(x => x.key === current.value)) {
-        await switchDoc(rest.length > 0 ? rest[rest.length - 1].payload.file : null)
+        const lastItem = rest.find(x => x.key === lastKey)
+        if (lastItem?.payload?.file) {
+          await switchDoc(lastItem.payload.file)
+        }
       }
 
       setTabs(rest)
@@ -302,10 +306,12 @@ export default defineComponent({
       removeAction('file-tabs.close-tabs')
     })
 
-    watch(currentFile, file => {
+    watch(currentFile, (file, oldFile) => {
       if (file === undefined) {
         return
       }
+
+      lastKey = toUri(oldFile)
 
       const uri = toUri(file)
       const item = {
