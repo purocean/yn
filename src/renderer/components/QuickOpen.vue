@@ -16,6 +16,7 @@
     </div>
     <input
       ref="refInput"
+      v-auto-focus="{ delay: 0 }"
       v-model="searchText"
       type="text"
       class="input"
