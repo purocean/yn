@@ -47,13 +47,14 @@
 </template>
 
 <script lang="ts">
+import { cloneDeep } from 'lodash-es'
 import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } from 'vue'
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
 import { getMarkedFiles, isMarked, supported } from '@fe/services/document'
 import store from '@fe/support/store'
-import { Components, BaseDoc } from '@fe/types'
+import type { BaseDoc, Components } from '@fe/types'
 
 type TabKey = 'marked' | 'file' | 'command'
 
@@ -100,11 +101,16 @@ export default defineComponent({
 
     const files = computed(() => {
       const travelFiles = (tree: Components.Tree.Node[]) => {
-        let tmp: Components.Tree.Node[] = []
+        let tmp: BaseDoc[] = []
 
         tree.forEach((node) => {
           if (supported(node)) {
-            tmp.push(node)
+            tmp.push({
+              name: node.name,
+              path: node.path,
+              repo: node.repo,
+              type: node.type
+            })
           }
 
           if (Array.isArray(node.children)) {
@@ -155,16 +161,15 @@ export default defineComponent({
         return null
       }
 
-      // filter except full text search.
       const currentRepoName = store.state.currentRepo?.name
-      const arr = filterFiles(list.value, searchText.value.trim(), true)
-        .filter(x => {
-          return props.filterItem(x) &&
-          (props.onlyCurrentRepo ? x.repo === currentRepoName : true)
-        })
+      const search = searchText.value.trim()
 
-      // sort by last usage time.
-      return sortList(arr).slice(0, 70)
+      const result = search ? filterFiles(list.value, search, true) : sortList(list.value)
+
+      return result.filter(x => {
+        return props.filterItem(x) &&
+          (props.onlyCurrentRepo ? x.repo === currentRepoName : true)
+      }).slice(0, 70)
     })
 
     function highlightText (search: string) {
@@ -205,7 +210,7 @@ export default defineComponent({
       if (currentTab.value === 'file') {
         list.value = files.value
       } else if (currentTab.value === 'marked') {
-        list.value = markedFiles.value
+        list.value = cloneDeep(markedFiles.value)
       }
     }
 

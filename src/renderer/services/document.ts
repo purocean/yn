@@ -65,7 +65,7 @@ function checkFilePath (path: string) {
  * @param doc
  * @returns
  */
-export function getAbsolutePath (doc: Doc) {
+export function getAbsolutePath (doc: PathItem) {
   if (isOutOfRepo(doc)) {
     const repoPath = doc.repo.substring(misc.ROOT_REPO_NAME_PREFIX.length)
     return normalizeSep(join(repoPath, doc.path))
@@ -130,7 +130,7 @@ export function cloneDoc (doc?: Doc | null, opts?: { includeExtra?: boolean }): 
  * @param doc
  * @returns
  */
-export function isMarkdownFile (doc: Doc) {
+export function isMarkdownFile (doc: PathItemWithType) {
   return !!(doc && doc.type === 'file' && misc.isMarkdownFile(doc.path))
 }
 
@@ -139,7 +139,7 @@ export function isMarkdownFile (doc: Doc) {
  * @param doc
  * @returns
  */
-export function supported (doc: Doc) {
+export function supported (doc: PathItemWithType) {
   return !!(doc && doc.type === 'file' && supportedExtensionCache.sortedExtensions.some(x => doc.path.endsWith(x)))
 }
 
@@ -148,7 +148,7 @@ export function supported (doc: Doc) {
  * @param doc
  * @returns
  */
-export function isOutOfRepo (doc?: Doc | null) {
+export function isOutOfRepo (doc?: PathItem | null) {
   return !!(doc && doc.repo.startsWith(misc.ROOT_REPO_NAME_PREFIX))
 }
 
@@ -230,9 +230,9 @@ export function toUri (doc?: PathItemWithType | null): string {
  * @param baseDoc
  * @returns
  */
-export async function createDoc (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: Doc & { type: 'file' | 'dir' }): Promise<Doc>
-export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc & { type: 'file' | 'dir' }): Promise<Doc>
-export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc & { type: 'file' | 'dir' }) {
+export async function createDoc (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: BaseDoc & { type: 'file' | 'dir' }): Promise<Doc>
+export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: BaseDoc & { type: 'file' | 'dir' }): Promise<Doc>
+export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: BaseDoc & { type: 'file' | 'dir' }) {
   const docType = shallowRef<DocType | null | undefined>(null)
 
   const othersDocCategoryName = '__others__'
@@ -371,9 +371,9 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
  * @param baseDoc
  * @returns
  */
-export async function createDir (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: Doc & { type: 'file' | 'dir' }): Promise<Doc>
-export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc & { type: 'file' | 'dir' }): Promise<Doc>
-export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc & { type: 'file' | 'dir' }) {
+export async function createDir (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: BaseDoc & { type: 'file' | 'dir' }): Promise<Doc>
+export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: BaseDoc & { type: 'file' | 'dir' }): Promise<Doc>
+export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: BaseDoc & { type: 'file' | 'dir' }) {
   if (!doc.path) {
     if (baseDoc) {
       const currentPath = baseDoc.type === 'dir' ? baseDoc.path : dirname(baseDoc.path)
@@ -929,7 +929,12 @@ export async function unmarkDoc (doc: BaseDoc) {
  * @returns
  */
 export function getMarkedFiles () {
-  return getSetting('mark', [])
+  return getSetting('mark', []).map(item => ({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    type: 'file',
+    ...item
+  }))
 }
 
 /**
@@ -937,7 +942,7 @@ export function getMarkedFiles () {
  * @param doc
  * @returns
  */
-export function isMarked (doc: PathItem & { type?: Doc['type'] }) {
+export function isMarked (doc: PathItemWithType) {
   if (doc.type !== 'file') {
     return false
   }
