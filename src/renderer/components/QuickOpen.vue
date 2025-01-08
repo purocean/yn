@@ -40,7 +40,10 @@
             {{item.name}}
           </span>
           <span class="path">
-            <span v-if="currentTab === 'marked'">[{{item.repo}}]</span> <span :ref="(el: any) => refFilepath[i] = el">{{item.path.slice(0, item.path.lastIndexOf('/'))}}</span>
+            <span v-if="currentTab === 'marked'">[{{item.repo}}]</span> <span :ref="(el: any) => refFilepath[i] = el">
+              {{item.path.slice(0, item.path.lastIndexOf('/'))}}
+              <!-- {{ item._score }} -->
+            </span>
           </span>
         </li>
         <li v-if="dataList.length < 1">{{$t('quick-open.empty')}}</li>
@@ -53,7 +56,7 @@
 import { cloneDeep } from 'lodash-es'
 import { computed, defineComponent, nextTick, onMounted, ref, shallowRef, toRefs, watch } from 'vue'
 import { useI18n } from '@fe/services/i18n'
-import fuzzyMatch from '@fe/others/fuzzy-match'
+import { fuzzyMatch } from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
 import { getMarkedFiles, isMarked, supported } from '@fe/services/document'
 import store from '@fe/support/store'
@@ -148,10 +151,18 @@ export default defineComponent({
       const tmp: Item[] = []
 
       files.forEach(x => {
-        const result = fuzzyMatch(search, x.path)
-        if (result.matched) {
+        if (x.name) {
           const nameResult = fuzzyMatch(search, x.name)
-          ;(x as Item)._score = nameResult.matched ? nameResult.score * 100000 + result.score : result.score
+          if (nameResult.matched) {
+            ;(x as Item)._score = nameResult.score * 10000
+            tmp.push(x as Item)
+            return
+          }
+        }
+
+        const pathResult = fuzzyMatch(search, x.path)
+        if (pathResult.matched) {
+          ;(x as Item)._score = pathResult.score
           tmp.push(x as Item)
         }
       })
