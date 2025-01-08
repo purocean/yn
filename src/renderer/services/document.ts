@@ -162,6 +162,18 @@ export function isEncrypted (doc?: Pick<Doc, 'path' | 'type'> | null): boolean {
 }
 
 /**
+ * Check if the document is a plain file.
+ * @param doc
+ * @returns
+ */
+export function isPlain (doc?: PathItemWithType) {
+  if (!doc) return false
+
+  return doc.type === 'file' &&
+    (!!(extensions.supported(doc.path) || resolveDocType(doc.path)?.type?.plain))
+}
+
+/**
  * Determine if it is in the same repository.
  * @param docA
  * @param docB
@@ -773,7 +785,7 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
   })
 
   if (doc) {
-    doc.plain = doc.type === 'file' && (!!(extensions.supported(doc.name) || resolveDocType(doc.name)?.type?.plain))
+    doc.plain = isPlain(doc)
     doc.absolutePath = getAbsolutePath(doc)
   }
 
