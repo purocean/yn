@@ -389,7 +389,7 @@ const schema: SettingSchema = ({
       group: 'other',
     },
     'server.host': {
-      defaultValue: 'localhost',
+      defaultValue: '127.0.0.1',
       title: 'T_setting-panel.schema.server.host',
       type: 'string',
       enum: ['127.0.0.1', '0.0.0.0'],
