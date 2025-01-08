@@ -29,15 +29,18 @@
       <template v-else>
         <li
           v-for="(item, i) in dataList"
-          :key="item.repo + item.path"
-          :class="{selected: selected === item, marked: isMarked(item)}"
+          :key="item.type + item.repo + item.path"
+          :class="{
+            selected: isEqual(item, selected),
+            marked: isMarked(item)
+          }"
           @mouseover="!disableMouseover && updateSelected(item)"
           @click="chooseItem(item)">
           <span :ref="(el: any) => refFilename[i] = el">
             {{item.name}}
           </span>
           <span class="path">
-            <span v-if="currentTab === 'marked'">[{{item.repo}}]</span> <span :ref="(el: any) => refFilepath[i] = el">{{item.path.substr(0, item.path.lastIndexOf('/'))}}</span>
+            <span v-if="currentTab === 'marked'">[{{item.repo}}]</span> <span :ref="(el: any) => refFilepath[i] = el">{{item.path.slice(0, item.path.lastIndexOf('/'))}}</span>
           </span>
         </li>
         <li v-if="dataList.length < 1">{{$t('quick-open.empty')}}</li>
@@ -48,7 +51,7 @@
 
 <script lang="ts">
 import { cloneDeep } from 'lodash-es'
-import { computed, defineComponent, nextTick, onMounted, ref, toRefs, watch } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, ref, shallowRef, toRefs, watch } from 'vue'
 import { useI18n } from '@fe/services/i18n'
 import fuzzyMatch from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
@@ -87,7 +90,7 @@ export default defineComponent({
     const selected = ref<BaseDoc | null>(null)
     const searchText = ref('')
     const currentTab = ref<TabKey>(lastTab)
-    const list = ref<BaseDoc[] | null>([])
+    const list = shallowRef<BaseDoc[] | null>([])
     const disableMouseover = ref(false)
 
     const tabs = computed(() => {
@@ -161,16 +164,29 @@ export default defineComponent({
         return null
       }
 
+      const data = list.value
+
       const currentRepoName = store.state.currentRepo?.name
       const search = searchText.value.trim()
 
-      const result = search ? filterFiles(list.value, search, true) : sortList(list.value)
+      const result = search ? filterFiles(data, search, true) : sortList(data)
 
-      return result.filter(x => {
-        return props.filterItem(x) &&
-          (props.onlyCurrentRepo ? x.repo === currentRepoName : true)
-      }).slice(0, 70)
+      const limit = 70
+      const filteredResult = []
+
+      for (const item of result) {
+        if (filteredResult.length >= limit) break
+        if (props.filterItem(item) && (props.onlyCurrentRepo ? item.repo === currentRepoName : true)) {
+          filteredResult.push(item)
+        }
+      }
+
+      return filteredResult
     })
+
+    function isEqual (a: BaseDoc | null, b: BaseDoc | null) {
+      return a?.type === b?.type && a?.repo === b?.repo && a?.path === b?.path
+    }
 
     function highlightText (search: string) {
       if (refFilename.value && refFilepath.value) {
@@ -241,7 +257,7 @@ export default defineComponent({
         return
       }
 
-      const currentIndex = dataList.value.findIndex((x) => selected.value === x)
+      const currentIndex = dataList.value.findIndex((x) => isEqual(x, selected.value))
 
       let index = currentIndex + inc
       if (index > dataList.value.length - 1) {
@@ -319,6 +335,7 @@ export default defineComponent({
       updateSelected,
       disableMouseover,
       isMarked,
+      isEqual,
     }
   },
 })
@@ -376,7 +393,6 @@ export default defineComponent({
 }
 
 .result li span.path ::v-deep(b) {
-  color: var(--g-color-5);
   font-weight: 500;
 }
 
