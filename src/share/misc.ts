@@ -50,3 +50,7 @@ export function getDefaultApplicationAccelerators (platform: NodeJS.Platform, la
     }
   ] as {command: 'show-main-window' | 'hide-main-window' | 'open-in-browser', accelerator: string | null, description: string}[]
 }
+
+export function isNormalRepoName (repoName: string) {
+  return !repoName.startsWith('__')
+}

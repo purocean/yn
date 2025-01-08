@@ -1,4 +1,5 @@
 import { Plugin, Ctx } from '@fe/context'
+import { isNormalRepo } from '@fe/services/repo'
 import { FLAG_DISABLE_XTERM } from '@fe/support/args'
 import type { Components, Doc } from '@fe/types'
 
@@ -103,7 +104,7 @@ export default {
     ctx.workbench.FileTabs.tapTabContextMenus((items, tab) => {
       const doc: Doc | null = tab.payload.file
 
-      if (!doc || doc.type !== 'file' || doc.repo.startsWith('__')) {
+      if (!doc || doc.type !== 'file' || !isNormalRepo(doc.repo)) {
         return
       }
 
