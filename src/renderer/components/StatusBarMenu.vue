@@ -160,7 +160,7 @@ export default defineComponent({
 
 .list {
   min-width: 70px;
-  max-height: calc(100vh - 32px);
+  max-height: calc(100vh - 64px);
   overflow-y: auto;
   margin: 0;
   list-style: none;
