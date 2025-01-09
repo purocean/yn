@@ -166,7 +166,7 @@ export function isEncrypted (doc?: Pick<Doc, 'path' | 'type'> | null): boolean {
  * @param doc
  * @returns
  */
-export function isPlain (doc?: PathItemWithType) {
+export function isPlain (doc?: Omit<PathItemWithType, 'repo'>) {
   if (!doc) return false
 
   return doc.type === 'file' &&
