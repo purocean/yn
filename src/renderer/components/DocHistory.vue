@@ -321,7 +321,14 @@ async function updateEditor () {
     }
 
     if (isDiffEditor) {
-      editor = monaco.editor.createDiffEditor(refEditor.value, options)
+      editor = monaco.editor.createDiffEditor(refEditor.value, {
+        ...options,
+        diffAlgorithm: 'legacy',
+        ignoreTrimWhitespace: false,
+        hideUnchangedRegions: {
+          enabled: true
+        },
+      })
     } else {
       editor = monaco.editor.create(refEditor.value, options)
     }
