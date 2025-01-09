@@ -98,7 +98,7 @@ export function useI18n () {
  * create i18n
  * @param data - language data
  * @param defaultLanguage - default language
- * @returns
+ * @returns { t, $t, $$t }, t is translate function, $t is ref of t, $$t is dynamic translate function
  */
 export function createI18n <T extends Record<string, any>> (data: { [lang in Language]?: T }, defaultLanguage: Language = 'en') {
   type _MsgPath = keyof Flat<T>
@@ -114,6 +114,34 @@ export function createI18n <T extends Record<string, any>> (data: { [lang in Lan
 
   const $t = ref(_t.bind(null))
 
+  const update = () => {
+    triggerRef($t)
+  }
+
+  if (($t as any)?.dep?.sc !== 0) {
+    throw new Error('we depend on vue inner implementation, please check the vue version.')
+  }
+
+  // now we use a dep to track the language change.
+  Object.defineProperty(($t as any).dep, 'sc', {
+    get () {
+      return this._sc || 0
+    },
+    set (v) {
+      if (!this._ready && v > 0) {
+        // when some vue component use $t, we register the hook.
+        registerHook('I18N_CHANGE_LANGUAGE', update)
+        this._ready = true
+      } else if (this._ready && v === 0) {
+        // when no vue component use $t, we remove the hook.
+        removeHook('I18N_CHANGE_LANGUAGE', update)
+        this._ready = false
+      }
+
+      this._sc = v
+    }
+  })
+
   function $$t (path: _MsgPath, ...args: string[]): string {
     return Object.freeze({
       toString: () => _t(path, ...args),
@@ -121,25 +149,11 @@ export function createI18n <T extends Record<string, any>> (data: { [lang in Lan
     }) as any
   }
 
-  const vm = getCurrentInstance()?.proxy
-  if (vm) {
-    Object.defineProperty((vm as any), '$t', {
-      get () {
-        return $t.value
-      },
-    })
-
-    const update = () => {
-      triggerRef($t)
-    }
-
-    registerHook('I18N_CHANGE_LANGUAGE', update)
-    onBeforeUnmount(() => {
-      removeHook('I18N_CHANGE_LANGUAGE', update)
-    })
-  }
-
-  return { t: _t, $t, $$t }
+  return Object.defineProperties({}, {
+    t: { value: _t },
+    $t: { value: $t },
+    $$t: { value: $$t },
+  })
 }
 
 declare module '@vue/runtime-core' {
