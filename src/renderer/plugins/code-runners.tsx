@@ -109,8 +109,17 @@ class JavascriptWorkerExecutor {
 
       let buffer = ''
       let lastFlushedAt = 0
+      let timer = 0
+
+      const clearTimer = () => {
+        if (timer) {
+          clearTimeout(timer)
+          timer = 0
+        }
+      }
 
       const flushBuffer = () => {
+        clearTimer()
         if (buffer) {
           Atomics.wait(isb, 0, 1)
           self.postMessage({ type: 'output', value: buffer })
@@ -119,12 +128,19 @@ class JavascriptWorkerExecutor {
         }
       }
 
+      const debounceFlushBuffer = () => {
+        clearTimer()
+        timer = setTimeout(flushBuffer, maxFlushInterval)
+      }
+
       const flush = (type, val) => {
         if (type === 'output') {
           buffer += val
 
           if (buffer.length > maxBuffer || performance.now() - lastFlushedAt > maxFlushInterval) {
             flushBuffer()
+          } else {
+            debounceFlushBuffer()
           }
         } else {
           flushBuffer()
@@ -188,8 +204,7 @@ class JavascriptWorkerExecutor {
         } else if (type === 'error') {
           _flush(value)
         } else if (type === 'done') {
-          await sleep(0)
-          this._flush(this._outputType, '')
+          _flush('')
         }
       }
 
