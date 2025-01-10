@@ -10,7 +10,7 @@ import * as crypto from '@fe/utils/crypto'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
 import store from '@fe/support/store'
-import type { DocType, FileStat, Doc, DocCategory, PathItem, SwitchDocOpts } from '@fe/types'
+import type { DocType, FileStat, Doc, DocCategory, PathItem, SwitchDocOpts, BaseDoc } from '@fe/types'
 import { basename, dirname, extname, isBelongTo, join, normalizeSep, relative, resolve } from '@fe/utils/path'
 import { getActionHandler } from '@fe/core/action'
 import { triggerHook } from '@fe/core/hook'
@@ -31,6 +31,10 @@ const supportedExtensionCache = {
   sortedExtensions: [] as string[],
   types: new Map<string, { type: DocType, category: DocCategory }>()
 }
+
+export const URI_SCHEME = 'yank-note'
+
+type PathItemWithType = Optional<Omit<BaseDoc, 'name'>, 'type'>
 
 function decrypt (content: any, password: string) {
   if (!password) {
@@ -61,7 +65,7 @@ function checkFilePath (path: string) {
  * @param doc
  * @returns
  */
-export function getAbsolutePath (doc: Doc) {
+export function getAbsolutePath (doc: PathItem) {
   if (isOutOfRepo(doc)) {
     const repoPath = doc.repo.substring(misc.ROOT_REPO_NAME_PREFIX.length)
     return normalizeSep(join(repoPath, doc.path))
@@ -95,15 +99,47 @@ export function createCurrentDocChecker () {
 }
 
 /**
+ * Get all document categories.
+ * @param doc
+ * @param opts
+ * @returns
+ */
+export function cloneDoc (doc?: Doc | null, opts?: { includeExtra?: boolean }): Doc | null {
+  if (!doc) {
+    return null
+  }
+
+  const newDoc: Doc = {
+    type: doc.type,
+    name: doc.name,
+    repo: doc.repo,
+    path: doc.path,
+    absolutePath: doc.absolutePath,
+    plain: doc.plain,
+  }
+
+  if (opts?.includeExtra) {
+    newDoc.extra = doc.extra
+  }
+
+  return newDoc
+}
+
+/**
  * Check if the document is a markdown file.
  * @param doc
  * @returns
  */
-export function isMarkdownFile (doc: Doc) {
+export function isMarkdownFile (doc: PathItemWithType) {
   return !!(doc && doc.type === 'file' && misc.isMarkdownFile(doc.path))
 }
 
-export function supported (doc: Doc) {
+/**
+ * Check if the document is supported.
+ * @param doc
+ * @returns
+ */
+export function supported (doc: PathItemWithType) {
   return !!(doc && doc.type === 'file' && supportedExtensionCache.sortedExtensions.some(x => doc.path.endsWith(x)))
 }
 
@@ -112,7 +148,7 @@ export function supported (doc: Doc) {
  * @param doc
  * @returns
  */
-export function isOutOfRepo (doc?: Doc | null) {
+export function isOutOfRepo (doc?: PathItem | null) {
   return !!(doc && doc.repo.startsWith(misc.ROOT_REPO_NAME_PREFIX))
 }
 
@@ -126,12 +162,24 @@ export function isEncrypted (doc?: Pick<Doc, 'path' | 'type'> | null): boolean {
 }
 
 /**
+ * Check if the document is a plain file.
+ * @param doc
+ * @returns
+ */
+export function isPlain (doc?: Omit<PathItemWithType, 'repo'>) {
+  if (!doc) return false
+
+  return doc.type === 'file' &&
+    (!!(extensions.supported(doc.path) || resolveDocType(doc.path)?.type?.plain))
+}
+
+/**
  * Determine if it is in the same repository.
  * @param docA
  * @param docB
  * @returns
  */
-export function isSameRepo (docA: Doc | null | undefined, docB: Doc | null | undefined) {
+export function isSameRepo (docA: PathItem | null | undefined, docB: PathItem | null | undefined) {
   return docA && docB && docA.repo === docB.repo
 }
 
@@ -141,8 +189,8 @@ export function isSameRepo (docA: Doc | null | undefined, docB: Doc | null | und
  * @param docB
  * @returns
  */
-export function isSameFile (docA: PathItem | null | undefined, docB: PathItem | null | undefined) {
-  return docA && docB && docA.repo === docB.repo && docA.path === docB.path
+export function isSameFile (docA: PathItemWithType | null | undefined, docB: PathItemWithType | null | undefined) {
+  return docA && docB && isSameRepo(docA, docB) && docA.type === docB.type && docA.path === docB.path
 }
 
 /**
@@ -151,8 +199,8 @@ export function isSameFile (docA: PathItem | null | undefined, docB: PathItem | 
  * @param docB
  * @returns
  */
-export function isSubOrSameFile (docA: PathItem | null | undefined, docB?: PathItem | null | undefined) {
-  return docA && docB && docA.repo === docB.repo &&
+export function isSubOrSameFile (docA: PathItemWithType | null | undefined, docB?: PathItemWithType | null | undefined) {
+  return docA && docB && isSameRepo(docA, docB) &&
   (
     isBelongTo(docA.path, docB.path) ||
     isSameFile(docA, docB)
@@ -164,11 +212,15 @@ export function isSubOrSameFile (docA: PathItem | null | undefined, docB?: PathI
  * @param doc
  * @returns
  */
-export function toUri (doc?: PathItem | null): string {
-  if (doc && doc.repo && doc.path) {
-    return URI.parse(`yank-note://${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
+export function toUri (doc?: PathItemWithType | null): string {
+  if (doc?.type && doc.type !== 'file') {
+    return URI.parse(`${URI_SCHEME}://${doc.type}/${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
+  }
+
+  if (doc && doc.type === 'file' && doc.repo && doc.path) {
+    return URI.parse(`${URI_SCHEME}://${doc.repo}/${doc.path.replace(/^\//, '')}`).toString()
   } else {
-    return 'yank-note://system/blank.md'
+    return `${URI_SCHEME}://system/blank.md`
   }
 }
 
@@ -178,9 +230,9 @@ export function toUri (doc?: PathItem | null): string {
  * @param baseDoc
  * @returns
  */
-export async function createDoc (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: Doc): Promise<Doc>
-export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc): Promise<Doc>
-export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc) {
+export async function createDoc (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: BaseDoc & { type: 'file' | 'dir' }): Promise<Doc>
+export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: BaseDoc & { type: 'file' | 'dir' }): Promise<Doc>
+export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: BaseDoc & { type: 'file' | 'dir' }) {
   const docType = shallowRef<DocType | null | undefined>(null)
 
   const othersDocCategoryName = '__others__'
@@ -319,9 +371,9 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
  * @param baseDoc
  * @returns
  */
-export async function createDir (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: Doc): Promise<Doc>
-export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc): Promise<Doc>
-export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: Doc) {
+export async function createDir (doc: Pick<Doc, 'repo' | 'path' | 'content'>, baseDoc: BaseDoc & { type: 'file' | 'dir' }): Promise<Doc>
+export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: BaseDoc & { type: 'file' | 'dir' }): Promise<Doc>
+export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'content'>, 'path'>, baseDoc?: BaseDoc & { type: 'file' | 'dir' }) {
   if (!doc.path) {
     if (baseDoc) {
       const currentPath = baseDoc.type === 'dir' ? baseDoc.path : dirname(baseDoc.path)
@@ -370,6 +422,8 @@ export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
  * @returns
  */
 export async function duplicateDoc (originDoc: Doc, newPath?: string) {
+  if (originDoc.type !== 'file') throw new Error('Invalid document type')
+
   newPath ??= await useModal().input({
     title: t('document.duplicate-dialog.title'),
     hint: t('document.duplicate-dialog.hint'),
@@ -656,7 +710,7 @@ export async function ensureCurrentFileSaved () {
 
   try {
     const autoSave = !isEncrypted(currentFile) && getSetting('auto-save', 2000)
-    if (autoSave) {
+    if (autoSave && currentFile.type === 'file') {
       try {
         await saveContent()
         return
@@ -708,7 +762,7 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
 
   logger.debug('switchDoc', doc)
 
-  if (doc && doc.type !== 'file') {
+  if (doc && doc.type === 'dir') {
     throw new Error('Invalid document type')
   }
 
@@ -731,15 +785,15 @@ async function _switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise<void>
   })
 
   if (doc) {
-    doc.plain = !!(extensions.supported(doc.name) || resolveDocType(doc.name)?.type?.plain)
+    doc.plain = isPlain(doc)
     doc.absolutePath = getAbsolutePath(doc)
   }
 
   await triggerHook('DOC_BEFORE_SWITCH', { doc, opts }, { breakable: true, ignoreError: true })
 
   try {
-    if (!doc) {
-      store.state.currentFile = null
+    if (!doc || doc.type !== 'file') {
+      store.state.currentFile = doc
       store.state.currentContent = ''
       triggerHook('DOC_SWITCHED', { doc: null, opts })
       return
@@ -808,6 +862,11 @@ export async function switchDoc (doc: Doc | null, opts?: SwitchDocOpts): Promise
   })
 }
 
+/**
+ * Switch document by path.
+ * @param path
+ * @returns
+ */
 export async function switchDocByPath (path: string): Promise<void> {
   logger.debug('switchDocByPath', path)
 
@@ -848,9 +907,9 @@ export async function switchDocByPath (path: string): Promise<void> {
  * Mark document.
  * @param doc
  */
-export async function markDoc (doc: Doc) {
+export async function markDoc (doc: BaseDoc) {
   const list = getSetting('mark', []).filter(x => !(x.path === doc.path && x.repo === doc.repo))
-  list.push({ repo: doc.repo, path: doc.path, name: basename(doc.path) })
+  list.push({ type: 'file', repo: doc.repo, path: doc.path, name: basename(doc.path) })
   await setSetting('mark', list)
   triggerHook('DOC_CHANGED', { doc })
 }
@@ -859,18 +918,32 @@ export async function markDoc (doc: Doc) {
  * Unmark document.
  * @param doc
  */
-export async function unmarkDoc (doc: Doc) {
+export async function unmarkDoc (doc: BaseDoc) {
   const list = getSetting('mark', []).filter(x => !(x.path === doc.path && x.repo === doc.repo))
   await setSetting('mark', list)
   triggerHook('DOC_CHANGED', { doc })
 }
 
+/**
+ *  Get marked files.
+ * @returns
+ */
 export function getMarkedFiles () {
-  return getSetting('mark', [])
+  return getSetting('mark', []).map(item => ({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    type: 'file',
+    ...item
+  }))
 }
 
-export function isMarked (doc: PathItem & { type?: Doc['type'] }) {
-  if (doc.type === 'dir') {
+/**
+ * Check if document is marked.
+ * @param doc
+ * @returns
+ */
+export function isMarked (doc: PathItemWithType) {
+  if (doc.type !== 'file') {
     return false
   }
 

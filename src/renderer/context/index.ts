@@ -80,6 +80,7 @@ const ctx = Object.freeze({
   showExtensionManager: extension.showManager,
   getExtensionLoadStatus: extension.getLoadStatus,
   getExtensionInitialized: extension.getInitialized,
+  whenExtensionInitialized: extension.whenInitialized,
   getPluginApi: plugin.getApi,
   version: __APP_VERSION__,
 })

@@ -76,21 +76,28 @@
 
 ## 更新日志
 
-### [v3.79.1](https://github.com/purocean/yn/releases/tag/v3.79.1) 2025-01-02
+### [v3.80.1](https://github.com/purocean/yn/releases/tag/v3.80.1) 2025-01-10
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-win-x64-3.79.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-mac-arm64-3.79.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-mac-x64-3.79.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-linux-x86_64-3.79.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.79.1/Yank-Note-linux-amd64-3.79.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-win-x64-3.80.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-mac-arm64-3.80.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-mac-x64-3.80.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-linux-x86_64-3.80.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-linux-amd64-3.80.1.deb)
 
-1. feat: Markdown `![]()` 图片语法支持本地视频和音频路径
-2. feat: 增加直接在应用中打开预览视频和音频文件
-3. feat: 优化 HTML 解析
-4. feat: 支持书写 [mhchem](https://mhchem.github.io/MathJax-mhchem/) 化学方程式
-5. feat: 设置面板设置项增加重置为默认值按钮
-6. feat: 开启索引的仓库支持仓库 md 文件添加/删除后自动刷新目录树
-7. fix: 修复导出 HTML 点击锚点后会在新窗口打开页面问题
-8. fix: 修复文档中嵌入本地视频不能播放问题
-9. feat(plugin): 增加 `ctx.api.listUserDir` 方法，获取用户插件数据目录文件列表
-10. feat(plugin): 增加 `SETTING_PANEL_AFTER_SHOW` Hook，设置面板显示后触发
-11. feat(plugin): 增加 `INDEXER_FS_CHANGE` Hook，开启索引的仓库文件变更后触发
+1. feat: 增加仓库搜索并全部替换功能
+2. feat: 增加文本对比工具（需安装扩展）
+3. feat: 优化仓库搜索结果展示性能，搜索结果可设置到 2000 个结果
+4. feat: 优化文件选项卡、状态栏菜单、编辑器状态保存恢复等若干交互细节
+5. feat: 优化快速跳转文件筛选输入模糊匹配算法
+6. feat: 大幅度优化运行 JS 代码日志吞吐性能
+7. feat: Wiki 链接支持跳转到非 Md 文件
+8. feat: 宏替换 `$include` 支持引入纯文本文件（不限于 Md 文件）
+9. feat: 文档历史 Diff 编辑器折叠未改动部分
+10. fix: 修复切换预览器/编辑器菜单 UI 问题
+11. fix: 修复文档历史 Diff 编辑器同主编辑器可能干扰问题
+12. fix(plugin): 修复 `ctx.i18n.createI18n` 生成的 Vue ref 对象可能不响应语言变化问题
+13. feat(plugin): 增加 `ctx.whenExtensionInitialized` 方法，插件初始化完成后执行回调
+14. feat(plugin): 增加 `ctx.routines.chooseDocument` 方法，用以选择文档
+15. feat(plugin): 增加 `ctx.doc.cloneDoc` 方法，用以克隆文档对象基本信息
+16. feat(plugin): 增加 `ctx.doc.isPlain` 方法，用以判断文档是否为纯文本文档
+17. feat(plugin): 增加 `ctx.editor.getAvailableCustomEditors` 方法，用以获取文档可用的自定义编辑器
+18. feat(plugin): 增加 `ctx.repo.isNormalRepo` 方法，用以判断仓库是否为普通仓库
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

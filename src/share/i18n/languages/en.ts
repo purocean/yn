@@ -47,6 +47,7 @@ const data = {
   'read-only-mode-desc': 'The application is currently in read-only mode and cannot be edited.',
   'trigger-suggestions': 'Trigger Suggestions',
   'table-of-contents': 'Table of Contents',
+  'text-comparator': 'Text Comparator',
   'premium': {
     'confetti': 'Confetti',
     'need-purchase': '[%s] Premium is required',
@@ -265,6 +266,7 @@ const data = {
       'share-preview': 'Share Preview',
       'print': 'Print Document',
       'export': 'Export Document',
+      'open-text-comparator': 'Open Text Comparator',
     },
     'document-info': {
       'selected': 'Selected',
@@ -694,7 +696,12 @@ const data = {
   },
   'search-panel': {
     'search-files': 'Search Files',
+    'replace-files': 'Replace Files',
     'placeholder-search': 'Search',
+    'placeholder-replace': 'Replace',
+    'replace-confirm-title': 'Replace Files',
+    'replace-confirm-content': 'Are you sure want to replace all matched files (%s)? This operation cannot be undone.',
+    'replace-all': 'Replace All',
     'for-history': '(⇅ for history)',
     'files-to-include': 'Files to include',
     'files-to-exclude': 'Files to exclude',

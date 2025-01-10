@@ -21,7 +21,7 @@ import { Alt, CtrlCmd, getKeysLabel, Shift } from '@fe/core/keybinding'
 import type { Components, Doc, PathItem } from '@fe/types'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
-import { isEncrypted, isOutOfRepo, isSameFile, isSubOrSameFile, supported, switchDoc, toUri } from '@fe/services/document'
+import { cloneDoc, isEncrypted, isOutOfRepo, isSameFile, isSubOrSameFile, supported, switchDoc, toUri } from '@fe/services/document'
 import store from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
 import { FileTabs } from '@fe/services/workbench'
@@ -37,6 +37,7 @@ export default defineComponent({
   setup () {
     const { t, $t } = useI18n()
 
+    let lastKey = blankUri
     const { currentFile, tabs } = toRefs(store.state)
     const isSaved = store.getters.isSaved
 
@@ -49,26 +50,17 @@ export default defineComponent({
 
     const welcomeShortcuts = isElectron ? [CtrlCmd, 'n'] : [CtrlCmd, Alt, 'n']
 
-    function copyDoc (file: Doc | null): Doc | null {
-      return file ? {
-        type: 'file',
-        name: file?.name,
-        repo: file?.repo,
-        path: file?.path,
-      } : null
-    }
-
     function setTabs (list: Components.FileTabs.Item[]) {
       store.state.tabs = list.map(item => {
         const file = item.payload.file
-        item.payload.file = copyDoc(file)
+        item.payload.file = cloneDoc(file, { includeExtra: true })
         item.class = isOutOfRepo(file) ? 'out-of-repo' : ''
         return item
       })
     }
 
     function switchFile (file: Doc | null) {
-      return switchDoc(copyDoc(file))
+      return switchDoc(cloneDoc(file, { includeExtra: true }))
     }
 
     function switchTab (item: Components.FileTabs.Item) {
@@ -81,7 +73,10 @@ export default defineComponent({
 
       // if close current file, switch other first
       if (items.some(x => x.key === current.value)) {
-        await switchDoc(rest.length > 0 ? rest[rest.length - 1].payload.file : null)
+        const lastItem = rest.find(x => x.key === lastKey)
+        if (lastItem?.payload?.file) {
+          await switchDoc(lastItem.payload.file)
+        }
       }
 
       setTabs(rest)
@@ -311,10 +306,12 @@ export default defineComponent({
       removeAction('file-tabs.close-tabs')
     })
 
-    watch(currentFile, file => {
+    watch(currentFile, (file, oldFile) => {
       if (file === undefined) {
         return
       }
+
+      lastKey = toUri(oldFile)
 
       const uri = toUri(file)
       const item = {
@@ -338,7 +335,7 @@ export default defineComponent({
 
     const fileTabs = computed(() => (tabs.value as Components.FileTabs.Item[]).map(tab => {
       if (currentFile.value && tab.key === toUri(currentFile.value)) {
-        const { status, writeable } = currentFile.value
+        const { type, status, writeable } = currentFile.value
 
         let mark = ''
         if (!isSaved.value) {
@@ -351,7 +348,7 @@ export default defineComponent({
           mark = '!'
         } else if (status === 'loaded') {
           mark = ''
-        } else {
+        } else if (type === 'file') {
           mark = '…'
         }
 

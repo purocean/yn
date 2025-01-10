@@ -1,5 +1,5 @@
 import type { Plugin } from '@fe/context'
-import GetStarted from '@fe/components/GetStarted.vue'
+import GetStarted from './GetStarted.vue'
 
 export default {
   name: 'get-started',

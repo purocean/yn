@@ -12,6 +12,7 @@ const RE_POS = /:([0-9]+),?([0-9]+)?$/
 const RE_EXTERNAL_LINK = /^[a-zA-Z_+-]{1,}:/
 const RE_VIDEO = /\.(mp4|webm|ogg)$/
 const RE_AUDIO = /\.(mp3|wav|ogg)$/
+const RE_EXTNAME = /^[a-zA-Z0-9_-]{1,10}$/
 
 export function isAnchorToken (token: Token) {
   return token.tag === 'a'
@@ -195,9 +196,13 @@ export function parseLink (currentFile: PathItem, href: string, isWikiLink: bool
     if (isWikiLink && tree) {
       path = path.replace(/:/g, '/') // replace all ':' to '/'
 
-      const fileName = isMarkdownFile(path) ? path : path += MARKDOWN_FILE_EXT
+      const lastDotPos = path.lastIndexOf('.')
+      const ext = lastDotPos > -1 ? path.slice(lastDotPos + 1) : ''
+      const fileName = RE_EXTNAME.test(ext) ? path : path += MARKDOWN_FILE_EXT
 
-      path = getFirstMdMatchPath(tree, baseDir, fileName) || path
+      if (isMarkdownFile(fileName)) {
+        path = getFirstMdMatchPath(tree, baseDir, fileName) || path
+      }
     }
 
     path = resolve(baseDir, path)

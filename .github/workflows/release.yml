@@ -13,10 +13,8 @@ jobs:
             platform: 'mac'
           - os: windows-2019
             platform: 'win'
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             platform: 'linux'
-#           - os: ubuntu-18.04
-#             platform: 'linux'
     runs-on: ${{ matrix.os }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

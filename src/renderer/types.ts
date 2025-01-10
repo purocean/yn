@@ -1,7 +1,7 @@
 import type { VNode } from 'vue'
 import type { OpenDialogOptions, PrintToPDFOptions } from 'electron'
 import type { Language, MsgPath } from '@share/i18n'
-import type { Doc, FileItem, PathItem, Repo } from '@share/types'
+import type { BaseDoc, Doc, FileItem, PathItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
@@ -17,7 +17,8 @@ export type ParseLinkResult = { type: 'external', href: string } | { type: 'inte
 export type SwitchDocOpts = {
   force?: boolean,
   source?: 'markdown-link' | 'history-stack' | 'view-links',
-  position?: PositionState | null
+  position?: PositionState | null,
+  extra?: any,
 }
 
 export type TTitle = keyof {[K in MsgPath as `T_${K}`]: never}
@@ -182,6 +183,7 @@ export namespace Components {
 
   export namespace Tree {
     export interface Node extends Pick<Doc, 'type' | 'name' | 'path' | 'repo'> {
+      type: 'file' | 'dir',
       mtime?: number;
       birthtime?: number;
       marked?: boolean;
@@ -372,7 +374,7 @@ export interface BuildInSettings {
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
   'license': string,
-  'mark': FileItem[],
+  'mark': (BaseDoc & { name: string })[],
   'updater.source': 'auto' | 'github' | 'yank-note',
   'doc-history.number-limit': number,
   'search.number-limit': number,
@@ -418,7 +420,7 @@ export type BuildInActions = {
   'editor.refresh-custom-editor': () => void,
   'editor.trigger-save': () => void,
   'workbench.show-quick-open': () => void,
-  'filter.choose-document': () => Promise<Doc>,
+  'filter.choose-document': (filter?: (item: BaseDoc) => boolean) => Promise<Doc | null>,
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
   'file-tabs.close-current': () => void,
@@ -439,6 +441,7 @@ export type BuildInActions = {
   'plugin.electron-zoom.zoom-out': () => void,
   'plugin.electron-zoom.zoom-reset': () => void,
   'plugin.view-links.view-document-links': () => void,
+  'plugin.text-comparator.open-text-comparator': () => void,
   'premium.show': (tab?: PremiumTab) => void,
   'base.find-in-repository': (query?: FindInRepositoryQuery) => void,
   'base.switch-repository-1': () => void,
@@ -516,7 +519,7 @@ export type BuildInHookTypes = {
   DOC_SWITCHED: { doc: Doc | null, opts?: SwitchDocOpts },
   DOC_SWITCH_FAILED: { doc?: Doc | null, message: string, opts?: SwitchDocOpts },
   DOC_SWITCH_SKIPPED: { doc?: Doc | null, opts?: SwitchDocOpts },
-  DOC_CHANGED: { doc: Doc },
+  DOC_CHANGED: { doc: BaseDoc },
   DOC_PRE_ENSURE_CURRENT_FILE_SAVED: never,
   I18N_CHANGE_LANGUAGE: { lang: LanguageName, currentLang: Language },
   SETTING_PANEL_BEFORE_SHOW: {},
@@ -552,6 +555,7 @@ export type CustomEditor = {
   name: string,
   displayName: string,
   hiddenPreview?: boolean,
+  supportNonNormalFile?: boolean,
   when: (ctx: CustomEditorCtx) => boolean | Promise<boolean>,
   component: any,
   getIsDirty?: () => boolean | Promise<boolean>,
@@ -580,6 +584,12 @@ export type DocCategory = {
   types: DocType[],
 }
 
+export type CodeRunnerResultType = 'html' | 'plain'
+export type CodeRunnerRunOptions = {
+  signal: AbortSignal,
+  flusher: (type: CodeRunnerResultType, value: string) => void
+}
+
 export interface CodeRunner {
   name: string;
   order?: number;
@@ -589,8 +599,12 @@ export interface CodeRunner {
     start: string,
     exit: string,
   } | null;
-  run: (language: string, code: string, opts?: { signal?: AbortSignal }) => Promise<{
-    type: 'html' | 'plain',
+  run (
+    language: string,
+    code: string,
+    opts: CodeRunnerRunOptions
+  ): Promise<null | {
+    type: CodeRunnerResultType,
     value: ReadableStreamDefaultReader | string,
   }>;
 }

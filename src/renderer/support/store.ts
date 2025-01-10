@@ -2,6 +2,17 @@ import { orderBy, pick } from 'lodash-es'
 import * as storage from '@fe/utils/storage'
 import type { Components, Doc, FileSort, IndexStatus, Repo } from '@fe/types'
 import { computed, reactive, watch, watchEffect } from 'vue'
+import { isNormalRepoName } from '@share/misc'
+
+function getCurrentFile () {
+  const data = storage.get<Doc>('currentFile')
+
+  if (data && data.type) {
+    return data
+  }
+
+  return null
+}
 
 export const initState = {
   tree: null as Components.Tree.Node[] | null,
@@ -24,7 +35,7 @@ export const initState = {
   inComposition: false,
   currentRepo: storage.get<Repo>('currentRepo'),
   currentRepoIndexStatus: null as { repo: string, status: IndexStatus} | null,
-  currentFile: undefined as Doc | null | undefined,
+  currentFile: getCurrentFile() as Doc | null | undefined,
   recentOpenTime: storage.get<Record<string, number>>('recentOpenTime', {}),
   tabs: storage.get<Components.FileTabs.Item[]>('tabs', []),
   previewer: 'default',
@@ -93,9 +104,10 @@ watchEffect(() => {
 
 watchEffect(() => {
   const data = state.currentFile
-  storage.set('currentFile', pick(data, 'repo', 'path', 'type', 'name'))
 
-  if (data && !data.repo.startsWith('__')) { // record recent open time, except for repo starts with '__'
+  storage.set('currentFile', data ? pick(data, 'repo', 'path', 'type', 'name', 'extra') : null)
+
+  if (data && data.type === 'file' && !isNormalRepoName(data.repo)) { // record recent open time, except for repo starts with '__'
     const record: Record<string, number> = {
       ...(state.recentOpenTime || {}),
       [`${data.repo}|${data.path}`]: Date.now()
@@ -104,9 +116,11 @@ watchEffect(() => {
     state.recentOpenTime = Object.fromEntries(
       orderBy(Object.entries(record), x => x[1], 'desc').slice(0, 100)
     )
-
-    storage.set('recentOpenTime', state.recentOpenTime)
   }
+})
+
+watchEffect(() => {
+  storage.set('recentOpenTime', state.recentOpenTime)
 })
 
 watch(() => state.currentRepo, () => {

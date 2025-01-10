@@ -23,8 +23,12 @@ export interface FileReadResult {
   writeable: boolean,
 }
 
-export interface Doc extends PathItem {
-  type: 'file' | 'dir';
+export interface BaseDoc extends PathItem {
+  type: 'file' | 'dir' | `__${string}`;
+  name?: string
+}
+
+export interface Doc extends BaseDoc {
   name: string;
   content?: string;
   title?: string;
@@ -35,6 +39,7 @@ export interface Doc extends PathItem {
   status?: 'loaded' | 'save-failed' | 'saved' | 'unsaved';
   absolutePath?: string,
   plain?: boolean;
+  extra?: any;
 }
 
 export interface Repo {

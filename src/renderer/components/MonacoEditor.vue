@@ -123,6 +123,10 @@ export default defineComponent({
   user-select: none;
 }
 
+.monaco-editor a:hover {
+  text-decoration: unset;
+}
+
 .editor .monaco-editor .suggest-widget {
   background-color: rgba(var(--g-color-98-rgb), 0.6);
   backdrop-filter: var(--g-backdrop-filter);

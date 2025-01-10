@@ -87,7 +87,7 @@ export default {
       // update scroll position when switching doc
       if ((!currentState.position || isScrollPosition(currentState.position)) && ctx.doc.isSubOrSameFile(currentDoc, currentState.doc)) {
         const viewScrollTop = ctx.view.getScrollTop() || 0
-        const editorScrollTop = ctx.editor.getEditor().getScrollTop()
+        const editorScrollTop = ctx.editor.getEditor()?.getScrollTop() || 0
         currentState.position = { viewScrollTop, editorScrollTop }
       }
     }

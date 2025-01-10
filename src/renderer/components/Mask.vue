@@ -3,7 +3,7 @@
     <transition name="fade">
       <div v-if="show" :class="{'mask-wrapper': true, transparent}" :style="style" v-auto-z-index="{ layer, onEsc }">
         <div class="mask" @click="() => maskCloseable && $emit('close')" @contextmenu.prevent.stop="$emit('close')" />
-        <div class="content">
+        <div class="content" @click.self="() => maskCloseable && $emit('close')">
           <slot></slot>
         </div>
       </div>

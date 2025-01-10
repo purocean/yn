@@ -48,6 +48,7 @@ const data: BaseLanguage = {
   'read-only-mode-desc': '當前應用處於唯讀模式，不可編輯',
   'trigger-suggestions': '觸發提示',
   'table-of-contents': '目錄',
+  'text-comparator': '文本比較器',
   'premium': {
     'confetti': '彩色紙屑',
     'need-purchase': '[%s] 需高級版',
@@ -266,6 +267,7 @@ const data: BaseLanguage = {
       'share-preview': '分享預覽',
       'print': '打印文檔',
       'export': '導出文檔',
+      'open-text-comparator': '打開文本比較器',
     },
     'document-info': {
       'selected': '已選擇',
@@ -695,7 +697,12 @@ const data: BaseLanguage = {
   },
   'search-panel': {
     'search-files': '搜尋檔案',
+    'replace-files': '替換檔案',
+    'replace-confirm-title': '替換文件',
+    'replace-confirm-content': '確定要替換所有匹配的文件（%s 個）嗎？注意此操作不可撤銷。',
     'placeholder-search': '搜尋',
+    'placeholder-replace': '替換',
+    'replace-all': '全部替換',
     'for-history': '(⇅ 切換歷史)',
     'files-to-include': '包含檔案',
     'files-to-exclude': '排除檔案',

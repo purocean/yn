@@ -8,14 +8,13 @@ import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, join } from '@fe/utils/path'
 import { getAttachmentURL, openExternal, openPath } from '@fe/services/base'
 import { getRepo } from '@fe/services/repo'
-import { getAllCustomEditors } from '@fe/services/editor'
+import { getAvailableCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
-import type { Doc } from '@share/types'
 import { isMarkdownFile } from '@share/misc'
 import { getRenderEnv } from '@fe/services/view'
 import { convertResourceState, parseLink } from './lib'
 import workerIndexerUrl from './worker-indexer?worker&url'
-import type { ParseLinkResult } from '@fe/types'
+import type { Doc, ParseLinkResult } from '@fe/types'
 
 function getAnchorElement (target: HTMLElement) {
   let cur: HTMLElement | null = target
@@ -99,14 +98,21 @@ function handleLink (link: HTMLAnchorElement): boolean {
         return true
       } else if (
         (!parsedLink.path && parsedLink.position) || // anchor
-        isMarkdownFile(parsedLink.path) || // markdown file
-        getAllCustomEditors() // custom editor support
-          .some(x => x.when?.({ doc: { path: parsedLink.path, type: 'file', name: basename(parsedLink.path), repo: currentFile.repo } }))
+        isMarkdownFile(parsedLink.path) // markdown file
       ) {
         _switchDoc(parsedLink)
         return true
       } else {
-        openFile()
+        const doc: Doc = { path: parsedLink.path, type: 'file', name: basename(parsedLink.path), repo: currentFile.repo }
+
+        getAvailableCustomEditors({ doc }).then(editors => {
+          if (editors.length > 0) {
+            _switchDoc(parsedLink)
+          } else {
+            openFile()
+          }
+        })
+
         return true
       }
     } else {
@@ -114,6 +120,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
       return true
     }
   } else {
+    // is Wiki Link
     if (store.state.currentRepo?.name === currentFile.repo && store.state.tree) {
       _switchDoc(parseLink(currentFile, href, true, store.state.tree))
     } else {

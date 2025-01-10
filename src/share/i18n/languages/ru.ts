@@ -48,6 +48,7 @@ const data: BaseLanguage = {
   'read-only-mode-desc': 'В настоящее время приложение находится в режиме "только для чтения".',
   'trigger-suggestions': 'Подсказки триггера',
   'table-of-contents': 'Содержание',
+  'text-comparator': 'Сравнение текста',
   'premium': {
     'confetti': 'Конфетти',
     'need-purchase': 'Для [%s] требуется премиум',
@@ -266,6 +267,7 @@ const data: BaseLanguage = {
       'share-preview': 'Поделиться',
       'print': 'Печать документа',
       'export': 'Экспорт документа',
+      'open-text-comparator': 'Открыть сравнение текста',
     },
     'document-info': {
       'selected': 'Выделено',
@@ -695,7 +697,12 @@ const data: BaseLanguage = {
   },
   'search-panel': {
     'search-files': 'Поиск файлов',
+    'replace-files': 'Замена файлов',
+    'replace-confirm-title': 'Заменить файл',
+    'replace-confirm-content': 'Вы уверены, что хотите заменить все совпадения файлов (%s)? Обратите внимание, что это действие нельзя отменить.',
     'placeholder-search': 'Поиск',
+    'placeholder-replace': 'Замена',
+    'replace-all': 'Заменить все',
     'for-history': '(⇅ для истории)',
     'files-to-include': 'Файлы для включения',
     'files-to-exclude': 'Файлы для исключения',

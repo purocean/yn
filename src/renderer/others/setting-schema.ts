@@ -129,10 +129,10 @@ const schema: SettingSchema = ({
       group: 'other',
     },
     'search.number-limit': {
-      defaultValue: 300,
+      defaultValue: 700,
       title: 'T_setting-panel.schema.search.number-limit',
       type: 'number',
-      enum: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+      enum: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1300, 1600, 2000],
       required: true,
       group: 'other',
     },
@@ -389,7 +389,7 @@ const schema: SettingSchema = ({
       group: 'other',
     },
     'server.host': {
-      defaultValue: 'localhost',
+      defaultValue: '127.0.0.1',
       title: 'T_setting-panel.schema.server.host',
       type: 'string',
       enum: ['127.0.0.1', '0.0.0.0'],

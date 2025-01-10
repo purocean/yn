@@ -20,6 +20,8 @@ import config from './config'
 import { initProxy } from './proxy'
 import { initEnvs } from './envs'
 
+app.commandLine.appendSwitch('enable-features', 'SharedArrayBuffer')
+
 type WindowState = { maximized: boolean } & Rectangle
 
 initProxy()
@@ -608,6 +610,10 @@ if (!gotTheLock) {
 
     // fix focus issue after dialog show on Windows.
     webContents.on('frame-created', (_, { frame }) => {
+      if (!frame) {
+        return
+      }
+
       frame.on('dom-ready', () => {
         frame.executeJavaScript(`if ('ctx' in window && ctx?.env?.isWindows) {
           window._FIX_ELECTRON_DIALOG_FOCUS ??= function () {

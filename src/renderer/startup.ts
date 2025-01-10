@@ -6,12 +6,10 @@ import store from '@fe/support/store'
 import { isElectron } from '@fe/support/env'
 import { useToast } from './support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
-import * as storage from '@fe/utils/storage'
-import { basename } from '@fe/utils/path'
-import type { BuildInSettings, Doc, FrontMatterAttrs, Repo } from '@fe/types'
+import type { BuildInSettings, Doc, FrontMatterAttrs } from '@fe/types'
 import { reloadMainWindow } from '@fe/services/base'
-import { createDoc, isMarked, markDoc, switchDoc, toUri, unmarkDoc } from '@fe/services/document'
-import { whenEditorReady } from '@fe/services/editor'
+import { createDoc, isMarkdownFile, isMarked, markDoc, switchDoc, toUri, unmarkDoc } from '@fe/services/document'
+import { DEFAULT_MARKDOWN_EDITOR_NAME, whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage, t } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
 import { getPurchased } from '@fe/others/premium'
@@ -34,42 +32,9 @@ const logger = getLogger('startup')
 
 init(plugins, ctx)
 
-function getLastOpenFile (repoName?: string): Doc | null {
-  const currentFile = storage.get<Doc>('currentFile')
-  const recentOpenTime = storage.get('recentOpenTime', {}) as {[key: string]: number}
-
-  repoName ??= storage.get<Repo>('currentRepo')?.name
-
-  if (!repoName) {
-    return null
-  }
-
-  if (currentFile && currentFile.repo === repoName) {
-    return currentFile
-  }
-
-  const item = Object.entries(recentOpenTime)
-    .filter(x => x[0].startsWith(repoName + '|'))
-    .sort((a, b) => b[1] - a[1])[0]
-
-  if (!item) {
-    return null
-  }
-
-  const path = item[0].split('|', 2)[1]
-  if (!path) {
-    return null
-  }
-
-  return { type: 'file', repo: repoName, name: basename(path), path }
-}
-
 export default function startup () {
   triggerHook('STARTUP')
 }
-
-const doc = getLastOpenFile()
-switchDoc(doc)
 
 function changeLanguage ({ settings }: { settings: Partial<BuildInSettings> }) {
   if (settings.language && settings.language !== getLanguage()) {
@@ -221,6 +186,15 @@ registerHook('DOC_PRE_ENSURE_CURRENT_FILE_SAVED', async () => {
     } else {
       throw new Error('Current Editor is dirty')
     }
+  }
+})
+
+editor.registerCustomEditor({
+  name: DEFAULT_MARKDOWN_EDITOR_NAME,
+  displayName: t('editor.default-editor'),
+  component: null,
+  when ({ doc }) {
+    return !!(doc && isMarkdownFile(doc))
   }
 })
 

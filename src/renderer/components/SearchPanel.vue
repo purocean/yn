@@ -2,9 +2,12 @@
   <transition name="search-panel-wrapper">
     <div v-show="visible" class="search-panel-wrapper" tabindex="-1" @keydown.esc="close" @click.self="close">
       <transition name="search-panel">
-        <div v-if="visible" class="search-panel">
-          <div class="title">{{$t('search-panel.search-files')}}</div>
-          <div class="close-btn" @click="close" :title="$t('close')">
+        <div v-if="visible" :class="{'search-panel': true, 'replace-visible': isReplaceVisible, replacing}">
+          <div class="title">{{$t(isReplaceVisible ? 'search-panel.replace-files' : 'search-panel.search-files')}}</div>
+          <div class="circle-btn replace-btn" :class="{ active: isReplaceVisible }" @click="isReplaceVisible = !isReplaceVisible" :title="$t('search-panel.placeholder-replace')">
+            <svg-icon class="replace-btn-icon" name="pen-solid" width="10px" />
+          </div>
+          <div class="circle-btn close-btn" @click="close" :title="$t('close')">
             <svg-icon class="close-btn-icon" name="times" width="8px" />
           </div>
           <div class="search">
@@ -47,6 +50,26 @@
                 </div>
               </div>
             </div>
+            <div v-if="isReplaceVisible" class="search-row replace-row">
+              <textarea
+                class="search-input search-replace"
+                v-model="replaceText"
+                type="text"
+                rows="1"
+                v-up-down-history
+                v-placeholder="{
+                  blur: $t('search-panel.placeholder-replace'),
+                  focus: $t('search-panel.placeholder-replace') + ' ' + $t('search-panel.for-history')
+                }"
+                v-auto-resize="{ maxRows: 6, minRows: 1 }"
+                v-textarea-on-enter="search"
+              />
+              <div class="option-btns">
+                <div class="option-btn" :title="$t('search-panel.replace-all')" @click="replaceAll">
+                  <svg-icon name="codicon-search-replace-all" width="15px" />
+                </div>
+              </div>
+            </div>
             <div class="search-input-label">{{$t('search-panel.files-to-include')}}</div>
             <input
               class="search-input"
@@ -75,15 +98,15 @@
           <div class="message-wrapper">
             <div v-if="typeof message === 'string'" class="message">{{message}}</div>
             <div v-else class="message"><component :is="message" /></div>
-            <a v-if="loadingVisible" class="action-btn" href="javascript:void(0)" @click="stop">{{$t('cancel')}}</a>
+            <a v-if="loadingVisible || replacing" class="action-btn" href="javascript:void(0)" @click="stop">{{$t('cancel')}}</a>
             <a
               v-else-if="result.length > 1"
               class="action-btn"
               href="javascript:void(0)"
-              @click="toggleExpandAll"
+              @click="toggleExpandAll()"
             >{{ $t(allResultCollapsed ? 'search-panel.expand-all' : 'search-panel.collapse-all') }}</a>
           </div>
-          <div class="results" v-if="result.length > 0">
+          <div class="results" ref="resultsRef" v-if="result.length > 0">
             <details
               class="item"
               v-for="item in result"
@@ -91,14 +114,19 @@
               :open="item.open"
               @toggle="(e: any) => item.open = e.target.open"
             >
-              <summary :title="item.path">
+              <summary :title="item.path" :data-status="replaceResult[item.path]?.status">
                 <div class="item-info">
                   <span class="item-name">{{basename(item.path)}}</span>
                   <span class="item-dir">{{dirname(item.path)}}</span>
                 </div>
-                <div class="item-count">{{item.numMatches}}</div>
+                <div class="item-badge">{{item.numMatches}}</div>
+                <div v-if="replaceResult[item.path]" class="item-badge replace-status" :title="replaceResult[item.path].msg">
+                  <svg-icon v-if="replaceResult[item.path].status === 'doing'" name="sync-alt-solid" width="8px" height="8px" />
+                  <svg-icon v-else-if="replaceResult[item.path].status === 'done'" name="check-solid" width="8px" height="8px" />
+                  <svg-icon v-else name="triangle-exclamation-solid" width="8px" height="10px" />
+                </div>
               </summary>
-              <div class="matches">
+              <div v-if="item.open" class="matches">
                 <div
                   :class="{match: true, active: currentItemKey === match.key}"
                   v-for="match of (item.results as any)"
@@ -121,6 +149,7 @@
 
 <script lang="ts" setup>
 /* eslint-disable no-labels */
+import { escapeRegExp, throttle } from 'lodash-es'
 import { computed, Fragment, h, nextTick, onBeforeUnmount, reactive, ref, shallowRef, Text, watch } from 'vue'
 import type { ISearchRange, ISerializedFileMatch, ISerializedSearchSuccess, ITextQuery, ITextSearchMatch } from 'ripgrep-wrapper'
 import { getLogger, sleep } from '@fe/utils'
@@ -130,17 +159,19 @@ import { CtrlCmd, Shift } from '@fe/core/keybinding'
 import { useLazyRef } from '@fe/utils/composable'
 import * as api from '@fe/support/api'
 import store from '@fe/support/store'
+import { isEncryptedMarkdownFile, isMarkdownFile } from '@share/misc'
 import { useToast } from '@fe/support/ui/toast'
+import { useModal } from '@fe/support/ui/modal'
 import { switchDoc } from '@fe/services/document'
 import * as editor from '@fe/services/editor'
 import * as view from '@fe/services/view'
 import { useI18n } from '@fe/services/i18n'
 import { getSetting, showSettingPanel } from '@fe/services/setting'
 import { toggleSide } from '@fe/services/layout'
-import type { FindInRepositoryQuery } from '@fe/types'
+import type { FindInRepositoryQuery, PathItem } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
 
-const MAX_RESULTS = 1000
+const MAX_RESULTS = 2000
 const SEARCH_LIMIT_SETTING_KEY = 'search.number-limit'
 
 const logger = getLogger('search-panel')
@@ -157,17 +188,49 @@ const option = reactive({
   isCaseSensitive: false,
 })
 
+const resultsRef = ref<HTMLElement>()
 const loading = ref(false)
 const loadingVisible = useLazyRef(loading, val => val ? 200 : -1)
 const result = ref<(ISerializedFileMatch & { open: boolean })[]>([])
 const success = shallowRef<ISerializedSearchSuccess | null>(null)
-const errorMessage = shallowRef('')
+const outputMessage = shallowRef('')
 const currentItemKey = ref('')
 const visible = ref(false)
+const isReplaceVisible = ref(false)
+const replaceText = ref('')
+const replaceSearchRegex = shallowRef<RegExp | boolean>(false)
+const replacing = ref(false)
+const replaceResult = ref<Record<string, { msg: string, status: 'doing' | 'error' | 'done' }>>({})
 
 const message = computed(() => {
-  if (errorMessage.value) {
-    return errorMessage.value
+  if ((replacing.value || Object.keys(replaceResult.value).length > 0) && result.value.length) {
+    let done = 0
+    let error = 0
+    let doing = 0
+    const total = result.value.length
+
+    for (const key in replaceResult.value) {
+      const status = replaceResult.value[key].status
+      if (status === 'done') {
+        done++
+      } else if (status === 'doing') {
+        doing++
+      } else if (status === 'error') {
+        error++
+      }
+    }
+
+    if (replacing.value) {
+      return `Replacing ${done + error + doing} / ${total} files`
+    } else if (error > 0) {
+      return `Replaced ${done + error} / ${total} files, ${error} files failed`
+    } else {
+      return `Replaced ${done} files`
+    }
+  }
+
+  if (outputMessage.value) {
+    return outputMessage.value
   }
 
   if (result.value.length === 0) {
@@ -193,6 +256,15 @@ const allResultCollapsed = computed(() => {
 watch(() => store.state.currentRepo, () => {
   stop()
   result.value = []
+  cleanReplaceResult()
+})
+
+watch(isReplaceVisible, (val) => {
+  buildReplaceRegex()
+
+  if (!val) {
+    cleanReplaceResult()
+  }
 })
 
 let controller: AbortController | null = null
@@ -201,6 +273,7 @@ async function stop () {
   logger.debug('stop')
   success.value = null
   loading.value = false
+  replacing.value = false
 
   if (controller) {
     controller.abort()
@@ -216,6 +289,9 @@ async function search () {
     toast.show('warning', 'Please choose a repository first')
     return
   }
+
+  buildReplaceRegex()
+  cleanReplaceResult()
 
   await stop()
 
@@ -318,13 +394,13 @@ async function search () {
         excludePattern: buildGlobObject(exclude.value),
       },
     ],
-    maxResults: Math.min(MAX_RESULTS, getSetting(SEARCH_LIMIT_SETTING_KEY, 300)),
+    maxResults: Math.min(MAX_RESULTS, getSetting(SEARCH_LIMIT_SETTING_KEY, 700)),
   }
 
   try {
     loading.value = true
     result.value = []
-    errorMessage.value = ''
+    outputMessage.value = ''
     const receiveResult = await api.search(controller, query)
     success.value = await receiveResult(
       (data) => {
@@ -345,12 +421,49 @@ async function search () {
       (data) => {
         logger.debug('onMessage', data)
         if (data.message && data.message.includes('regex engine error')) {
-          errorMessage.value = data.message.replace(/^~{10,}$/gm, '~~~~~~~~~~~~~~~~~~')
+          outputMessage.value = data.message.replace(/^~{10,}$/gm, '~~~~~~~~~~~~~~~~~~')
         }
       },
     )
+  } catch {
+    // ignore error
   } finally {
     loading.value = false
+  }
+}
+
+async function buildReplaceRegex () {
+  if (!isReplaceVisible.value) {
+    replaceSearchRegex.value = false
+    return
+  }
+
+  const { isRegExp, isWordMatch, isCaseSensitive } = option
+
+  if (isReplaceVisible.value) {
+    let searchPattern = pattern.value
+
+    // If a simple replacement can be done, avoid using regular expressions.
+    if (!isRegExp && !isWordMatch && isCaseSensitive) {
+      replaceSearchRegex.value = true
+      return
+    }
+
+    if (!isRegExp) {
+      searchPattern = escapeRegExp(searchPattern)
+    }
+
+    if (isWordMatch) {
+      searchPattern = `\\b${searchPattern}\\b`
+    }
+
+    try {
+      replaceSearchRegex.value = new RegExp(searchPattern, isCaseSensitive ? undefined : 'i')
+    } catch {
+      replaceSearchRegex.value = false
+    }
+  } else {
+    replaceSearchRegex.value = false
   }
 }
 
@@ -360,7 +473,18 @@ function toggleOption (key: keyof typeof option) {
   search()
 }
 
+function cleanReplaceResult () {
+  replaceResult.value = {}
+  replacing.value = false
+}
+
 function close () {
+  if (replacing.value) {
+    return
+  }
+
+  cleanReplaceResult()
+
   visible.value = false
   stop()
 }
@@ -398,23 +522,108 @@ async function chooseMatch (result: ISerializedFileMatch & { repo: string }, mat
   await view.highlightLine(lines[0], true, 1000)
 }
 
-function toggleExpandAll () {
-  result.value = result.value.map(r => ({
-    ...r,
-    open: allResultCollapsed.value,
-  }))
+function toggleExpandAll (val?: boolean) {
+  const open = typeof val === 'boolean' ? val : allResultCollapsed.value
+  result.value = result.value.map(r => ({ ...r, open }))
+}
+
+const scrollReplacingItem = throttle(() => {
+  const isElementInViewport = (el: HTMLElement, container: HTMLElement) => {
+    const rect = el.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+    return (
+      rect.top >= containerRect.top &&
+        rect.left >= containerRect.left &&
+        rect.bottom <= containerRect.bottom &&
+        rect.right <= containerRect.right
+    )
+  }
+
+  const currentEl = resultsRef.value?.querySelector('summary[data-status="doing"]') as HTMLElement
+  if (currentEl) {
+    if (!isElementInViewport(currentEl, resultsRef.value!)) {
+      currentEl.scrollIntoView({ block: 'start', behavior: 'instant' })
+    }
+  }
+}, 100, { leading: false, trailing: true })
+
+async function replaceAll () {
+  if (loading.value) return // searching
+
+  await search() // do search first to get all the files
+
+  if (!controller) return // search aborted
+
+  const repo = store.state.currentRepo?.name
+  if (!repo) return
+
+  const files = result.value.map(item => item.path)
+
+  if (files.length === 0) {
+    useToast().show('warning', 'No files to replace')
+    return
+  }
+
+  if (!(await useModal().confirm({
+    title: t('search-panel.replace-confirm-title'),
+    content: t('search-panel.replace-confirm-content', String(files.length)),
+  }))) {
+    return
+  }
+
+  cleanReplaceResult()
+
+  if (replaceSearchRegex.value === false) return
+
+  const searchPattern = replaceSearchRegex.value === true
+    ? pattern.value
+    : new RegExp(replaceSearchRegex.value.source, replaceSearchRegex.value.flags + 'g')
+
+  toggleExpandAll(false)
+  replacing.value = true
+  for (const file of files) {
+    if (!replacing.value) break
+
+    try {
+      if (!isMarkdownFile(file) || isEncryptedMarkdownFile(file)) {
+        throw new Error('Do not support replace in this file, markdown only')
+      }
+
+      replaceResult.value[file] = { msg: 'Replacing...', status: 'doing' }
+      scrollReplacingItem()
+
+      const doc: PathItem = { path: file, repo }
+      const res = await api.readFile(doc)
+      if (!res.writeable) throw new Error('File is not writeable')
+      if (!replacing.value) throw new Error('Replace canceled')
+
+      const content = res.content.replaceAll(searchPattern, replaceText.value)
+      await api.writeFile({
+        path: doc.path,
+        repo: doc.repo,
+        contentHash: res.hash,
+      }, content)
+
+      replaceResult.value[file] = { msg: 'Replaced', status: 'done' }
+    } catch (error) {
+      logger.error('replaceAll', error)
+      replaceResult.value[file] = { msg: String(error), status: 'error' }
+    }
+  }
+
+  replacing.value = false
 }
 
 function markText (text: string, ranges: ISearchRange[]) {
   const lines = text.split('\n')
-  const result: {type: 'span' | 'mark' | 'br', value?: string }[] = []
+  const result: {type: 'span' | 'mark' | 'del' | 'ins' | 'br', value?: string }[] = []
 
   const previousChars = 20
   const maxPreviewLength = 300
   let contentLength = 0
   let hasMarked = false
 
-  const pushResult = (type: typeof result[number]['type'], value?: string): boolean => {
+  const pushResult = (type: Exclude<typeof result[number]['type'], 'del' | 'ins'>, value?: string): boolean => {
     // exceed max preview length and we have marked text, stop build the result
     if (hasMarked && contentLength >= maxPreviewLength) {
       return false
@@ -439,7 +648,7 @@ function markText (text: string, ranges: ISearchRange[]) {
           } else if (item.type === 'span') {
             const lastSpanLength = item.value!.length
             const keepChars = previousChars - (length - lastSpanLength)
-            item.value = item.value!.slice(-keepChars)
+            item.value = '...' + item.value!.slice(-keepChars)
             contentLength -= lastSpanLength - keepChars
             break
           }
@@ -461,13 +670,37 @@ function markText (text: string, ranges: ISearchRange[]) {
       return true
     }
 
-    value = (value.length + contentLength > maxPreviewLength)
-      ? value.slice(0, maxPreviewLength - contentLength)
-      : value
+    const pushText = (type: Exclude<typeof result[number]['type'], 'br'>, text: string) => {
+      const value = (text.length + contentLength > maxPreviewLength)
+        ? (type === 'span' && !hasMarked)
+            ? '...' + text.slice(-maxPreviewLength + contentLength)
+            : text.slice(0, maxPreviewLength - contentLength) + '...'
+        : text
+      result.push({ type, value })
+      contentLength += value.length
+    }
 
-    contentLength += value.length
+    if (type === 'mark') {
+      const replaceRegex = replaceSearchRegex.value
+      if (replaceRegex) {
+        pushText('del', value)
 
-    result.push({ type, value })
+        const replacedVal = replaceRegex === true
+          ? replaceText.value
+          : value.replace(replaceRegex, replaceText.value)
+
+        if (replacedVal) {
+          result.push({
+            type: 'ins',
+            value: replacedVal.length > 200 ? replacedVal.slice(0, 200) + '...' : replacedVal,
+          })
+        }
+      } else {
+        pushText('mark', value)
+      }
+    } else {
+      pushText(type, value)
+    }
 
     return true
   }
@@ -475,7 +708,6 @@ function markText (text: string, ranges: ISearchRange[]) {
   let lastLine = 0
   let lastColumn = 0
 
-  rangesLoop:
   for (const range of ranges) {
     const start = range.startLineNumber
     const end = range.endLineNumber
@@ -492,55 +724,48 @@ function markText (text: string, ranges: ISearchRange[]) {
 
     // process previous lines
     if (start > lastLine) {
-      const lastTail = lines[lastLine].slice(lastColumn)
-      if (!pushResult('span', lastTail)) break rangesLoop
-      if (!pushResult('br')) break rangesLoop
-
-      const prevLines = lines.slice(lastLine + 1, start)
-      for (const line of prevLines) {
-        if (!pushResult('span', line)) break rangesLoop
-        if (!pushResult('br')) break rangesLoop
-      }
+      const prevLines = lines.slice(lastLine, start)
+      if (!pushResult('span', prevLines.join('\n'))) break
     }
 
     // process current range lines
     const currentStartLine = lines[start]
-    const currentStartLinePrefix = currentStartLine.slice(0, startOffset)
-    if (!pushResult('span', currentStartLinePrefix)) break rangesLoop
+    const currentLineStart = start === lastLine ? lastColumn : 0
+    const currentStartLinePrefix = currentStartLine.slice(currentLineStart, startOffset)
+    if (!pushResult('span', currentStartLinePrefix)) break
 
+    // process marked text
     if (start === end) {
       const startLineMarked = currentStartLine.slice(startOffset, endOffset)
-      if (!pushResult('mark', startLineMarked)) break rangesLoop
+      if (!pushResult('mark', startLineMarked)) break
     } else {
-      const startLineMarked = currentStartLine.slice(startOffset)
-      if (!pushResult('mark', startLineMarked)) break rangesLoop
-      if (!pushResult('br')) break rangesLoop
+      const markedText: string[] = []
 
-      const currentMiddleLines = lines.slice(start + 1, end)
-      for (const line of currentMiddleLines) {
-        if (!pushResult('mark', line)) break rangesLoop
-        if (!pushResult('br')) break rangesLoop
+      for (let i = start; i <= end; i++) {
+        const line = lines[i]
+        if (i === start) {
+          markedText.push(line.slice(startOffset))
+        } else if (i === end) {
+          markedText.push(line.slice(0, endOffset))
+        } else {
+          markedText.push(line)
+        }
       }
 
-      const currentEndLine = lines[end]
-      const endLineMarked = currentEndLine.slice(0, endOffset)
-      if (!pushResult('mark', endLineMarked)) break rangesLoop
+      if (!pushResult('mark', markedText.join('\n'))) break
     }
 
     lastLine = end
     lastColumn = endOffset
   }
 
-  if (lastLine < lines.length - 1) {
+  if (lastLine < lines.length) {
     const lastTail = lines[lastLine].slice(lastColumn)
     if (pushResult('span', lastTail)) {
       result.push({ type: 'br' })
 
       const restLines = lines.slice(lastLine + 1)
-      for (const line of restLines) {
-        if (!pushResult('span', line)) break
-        result.push({ type: 'br' })
-      }
+      pushResult('span', restLines.join('\n'))
     }
   }
 
@@ -611,6 +836,7 @@ onBeforeUnmount(() => {
   opacity: 1;
   transition: opacity 0.2s cubic-bezier(1, 0.29, 0.63, 0.94);
   outline: none;
+  contain: strict;
 }
 
 .search-panel {
@@ -635,9 +861,8 @@ onBeforeUnmount(() => {
     user-select: none;
   }
 
-  .close-btn {
+  .circle-btn {
     position: absolute;
-    right: 5px;
     top: 5px;
     width: 20px;
     height: 20px;
@@ -645,11 +870,23 @@ onBeforeUnmount(() => {
     justify-content: center;
     align-items: center;
     color: var(--g-color-30);
+    border-radius: 50%;
 
     &:hover {
       color: var(--g-color-0);
       background-color: var(--g-color-86);
-      border-radius: 50%;
+    }
+  }
+
+  .close-btn {
+    right: 5px;
+  }
+
+  .replace-btn {
+    left: 5px;
+    &.active {
+      color: var(--g-color-0);
+      background-color: var(--g-color-86);
     }
   }
 
@@ -686,6 +923,25 @@ onBeforeUnmount(() => {
       user-select: none;
     }
   }
+
+  &.replace-visible {
+    textarea.search-pattern {
+      border-bottom-left-radius: 0 !important;
+    }
+
+    .results details.item  .matches .match {
+      max-height: unset;
+      -webkit-line-clamp: unset;
+      webkit-box-orient: unset;
+    }
+  }
+
+  &.replacing {
+    & > .search,
+    & > .circle-btn {
+      display: none;
+    }
+  }
 }
 
 .search-row {
@@ -718,6 +974,19 @@ onBeforeUnmount(() => {
         outline-offset: -1px;
       }
     }
+  }
+}
+
+.replace-row {
+  margin-top: 1px;
+  textarea.search-input {
+    width: calc(100% - 28px);
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
+
+  .option-btn {
+    cursor: pointer;
   }
 }
 
@@ -769,6 +1038,7 @@ onBeforeUnmount(() => {
       font-size: 14px;
       user-select: none;
       padding: 6px;
+      gap: 4px;
 
       &::-webkit-details-marker,
       &::marker {
@@ -806,7 +1076,7 @@ onBeforeUnmount(() => {
         }
       }
 
-      .item-count {
+      .item-badge {
         flex: none;
         background-color: var(--g-color-90);
         line-height: 16px;
@@ -815,8 +1085,12 @@ onBeforeUnmount(() => {
         min-width: 16px;
         text-align: center;
         padding: 0 4px;
-        margin-left: 6px;
         border-radius: 8px;
+
+        &.replace-status {
+          margin-left: auto;
+          color: #fff;
+        }
       }
     }
 
@@ -828,10 +1102,11 @@ onBeforeUnmount(() => {
       font-size: 16px;
 
       .match {
-        border-top: 4px solid transparent;
-        border-bottom: 4px solid transparent;
+        border-bottom: 1px dashed var(--g-color-92);
         box-sizing: border-box;
         padding-left: 20px;
+        padding-top: 4px;
+        padding-bottom: 4px;
         user-select: none;
         overflow-wrap: break-word;
         line-height: 17px;
@@ -853,6 +1128,59 @@ onBeforeUnmount(() => {
           background-color: var(--g-color-90);
           color: var(--g-color-0);
         }
+
+        span {
+          white-space: pre-wrap;
+        }
+
+        mark {
+          background: #fff8c5 !important;
+          white-space: pre-wrap;
+        }
+
+        del {
+          background: #f8c5c5;
+          white-space: pre-wrap;
+        }
+
+        ins {
+          background: #c5f8c5;
+          font-weight: 500;
+          white-space: pre-wrap;
+          text-decoration: none;
+        }
+      }
+    }
+
+    & > summary[data-status='doing'] {
+      outline: 1px dashed #007acc;
+
+      .item-badge.replace-status {
+        background-color: #007acc;
+        .svg-icon {
+          animation: rotate 1s linear infinite;
+
+          @keyframes rotate {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+        }
+      }
+    }
+
+    & > summary[data-status='done'] {
+      .item-badge.replace-status {
+        background-color: #00a86b;
+      }
+    }
+
+    & > summary[data-status='error'] {
+      .item-badge.replace-status {
+        background-color: #e74c3c;
       }
     }
   }
@@ -867,18 +1195,26 @@ onBeforeUnmount(() => {
   transform: translateY(70vh);
 }
 
-mark {
-  background: #fff8c5 !important;
-}
-
 @include dark-theme {
   .search-panel-wrapper {
     background-color: rgba(255, 255, 255, 0.07);
   }
 
-  mark {
-    background: #746900 !important;
-    color: #ebebeb;
+  .results .matches .match {
+    mark {
+      background: #746900 !important;
+      color: #ebebeb;
+    }
+
+    del {
+      background: #8f0000;
+      color: #ebebeb;
+    }
+
+    ins {
+      background: #008f00;
+      color: #ebebeb;
+    }
   }
 }
 </style>

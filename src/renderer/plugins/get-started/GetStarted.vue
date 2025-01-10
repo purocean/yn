@@ -16,6 +16,9 @@
               <div class="item">
                 <a href="javascript:void(0);" @click="createFile()">{{$t('tree.context-menu.create-doc')}}...</a>
               </div>
+              <div class="item">
+                <a href="javascript:void(0);" @click="getActionHandler('workbench.show-quick-open')()">{{$t('status-bar.nav.goto')}}...</a>
+              </div>
               <div class="item" v-if="!getPurchased()">
                 <a href="javascript:void(0);" @click="showPremium()">{{$t('premium.premium')}}...</a>
               </div>
@@ -79,6 +82,7 @@ import { showSettingPanel } from '@fe/services/setting'
 import { createDoc, supported, switchDoc } from '@fe/services/document'
 import { getActionHandler } from '@fe/core/action'
 import { GUIDE_URL } from '@share/misc'
+import type { Components } from '@fe/types'
 
 useI18n()
 
@@ -86,10 +90,10 @@ const hasRepo = computed(() => !!store.state.currentRepo)
 
 const files = computed(() => {
   const map = (store.state.recentOpenTime || {})
-  const travelFiles = (tree: any) => {
+  const travelFiles = (tree: Components.Tree.Node[]) => {
     let tmp: any[] = []
 
-    tree.forEach((node: any) => {
+    tree.forEach((node) => {
       if (supported(node)) {
         const time = map[`${node.repo}|${node.path}`]
         if (time) {
