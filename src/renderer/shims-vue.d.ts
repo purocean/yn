@@ -42,6 +42,10 @@ declare interface Window {
   kityminderM: any;
   kityM: any;
   _INIT_SETTINGS: any;
+  scheduler?: {
+    yield?: () => Promise<void>;
+    postTask: (task: () => void, options?: { priority?: 'user-blocking' | 'background' }) => Promise<void>;
+  };
 }
 
 declare const __APP_VERSION__: string

@@ -1,6 +1,6 @@
 import type { Plugin } from '@fe/context'
 import { sleep } from '@fe/utils'
-import type { ReadableStreamDefaultReadResult } from 'stream/web'
+import type { CodeRunnerRunOptions } from '@fe/types'
 
 const getConsole = (console: Console, resolve: (value: string) => void) => {
   const stringify = (args: any[]) => args.map((arg) => {
@@ -13,14 +13,13 @@ const getConsole = (console: Console, resolve: (value: string) => void) => {
 
   const tick = async (args: any[]) => {
     const str = stringify(args) + '\n'
-    await new Promise(resolve => setTimeout(resolve, 0))
     resolve(str)
   }
 
-  return new Proxy(console, {
+  return new Proxy<typeof console>(console, {
     get: (obj: any, prop: any) => ['error', 'warn', 'info', 'log', 'debug'].includes(prop)
       ? (...args: any[]) => {
-          obj[prop](...args)
+          // obj[prop](...args)
           if (prop === 'log') {
             tick(args)
           } else {
@@ -33,30 +32,20 @@ const getConsole = (console: Console, resolve: (value: string) => void) => {
 
 let javascriptWorker: Worker | null = null
 
-class JavascriptIframeExecutor implements ReadableStreamDefaultReader<string> {
-  private code: string
-  private signal?: AbortSignal
-  private _readResolve: (value: string) => void = () => 0
+class JavascriptIframeExecutor {
+  private _code: string
+  private _signal: AbortSignal
+  private _outputType: 'plain' | 'html'
+  private _flush: CodeRunnerRunOptions['flusher']
 
-  closed: Promise<undefined>
-  _state: 'pending' | 'done' | 'error'
-
-  constructor (code: string, opts?: { signal?: AbortSignal }) {
-    this.code = code
-    this.signal = opts?.signal
-    this._state = 'pending'
-    this.closed = this.runCode()
-
-    // javascript never ends
-    this.closed.then(() => {
-      // this._state = 'done'
-    }).catch((error) => {
-      this._readResolve(error.message || String(error))
-      // this._state = 'error'
-    })
+  constructor (code: string, outputHtml: boolean, opts: CodeRunnerRunOptions) {
+    this._code = code
+    this._signal = opts.signal
+    this._flush = opts.flusher
+    this._outputType = outputHtml ? 'html' : 'plain'
   }
 
-  private getIframe () {
+  private _getIframe () {
     const id = 'code-runner-javascript-vm'
 
     // clean up
@@ -73,99 +62,104 @@ class JavascriptIframeExecutor implements ReadableStreamDefaultReader<string> {
     return iframe
   }
 
-  private async runCode (): Promise<undefined> {
-    const iframe = this.getIframe()
+  public async run () {
+    await sleep(0)
+    const iframe = this._getIframe()
     const iframeWindow = iframe.contentWindow! as Window & typeof globalThis
 
-    this.signal?.addEventListener('abort', () => {
-      iframe.remove()
+    const closed = new Promise<void>(resolve => {
+      this._signal.addEventListener('abort', () => {
+        iframe.remove()
+        resolve()
+      })
     })
 
-    const xConsole = getConsole(iframeWindow.console, val => this._readResolve(val))
+    const xConsole = getConsole(
+      iframeWindow.console,
+      val => this._flush(this._outputType, val),
+    )
 
     const AsyncFunction = iframeWindow.eval('(async function(){}).constructor')
-    const fn = new AsyncFunction('console', 'ctx', this.code)
+    const fn = new AsyncFunction('console', 'ctx', this._code)
 
     await sleep(0)
     await fn.call(iframeWindow, xConsole, window.ctx)
     await sleep(0)
-    this._readResolve('')
+    this._flush(this._outputType, '')
 
-    return undefined
-  }
+    await closed
 
-  read (): Promise<ReadableStreamDefaultReadResult<string>> {
-    if (this._state === 'done') {
-      return Promise.resolve({ done: true })
-    }
-
-    if (this._state === 'error') {
-      return Promise.reject(new Error('Error while running code'))
-    }
-
-    return new Promise((resolve) => {
-      this._readResolve = (value: string) => {
-        this._readResolve = () => 0
-        resolve({ value, done: false })
-      }
-    })
-  }
-
-  releaseLock (): void {
-    throw new Error('Method not implemented.')
-  }
-
-  cancel (): Promise<void> {
-    throw new Error('Method not implemented.')
+    return null
   }
 }
 
-class JavascriptWorkerExecutor implements ReadableStreamDefaultReader<string> {
-  private code: string
-  private signal?: AbortSignal
-  private _readResolve: (value: string) => void = () => 0
-  private workerScript = `
+class JavascriptWorkerExecutor {
+  private _code: string
+  private _signal: AbortSignal
+  private _flush: CodeRunnerRunOptions['flusher']
+  private _outputType: 'plain' | 'html'
+
+  private _workerScript = `
     const getConsole = ${getConsole.toString()}
     self.onmessage = async (event) => {
-      const { code } = event.data
-      const xConsole = getConsole(console, val => self.postMessage({ type: 'output', value: val }))
+      const { code, isb } = event.data
+
+      const maxBuffer = 8 * 1024
+      const maxFlushInterval = 100
+
+      let buffer = ''
+      let lastFlushedAt = 0
+
+      const flushBuffer = () => {
+        if (buffer) {
+          Atomics.wait(isb, 0, 1)
+          self.postMessage({ type: 'output', value: buffer })
+          lastFlushedAt = performance.now()
+          buffer = ''
+        }
+      }
+
+      const flush = (type, val) => {
+        if (type === 'output') {
+          buffer += val
+
+          if (buffer.length > maxBuffer || performance.now() - lastFlushedAt > maxFlushInterval) {
+            flushBuffer()
+          }
+        } else {
+          flushBuffer()
+          Atomics.wait(isb, 0, 1)
+          self.postMessage({ type, value: val })
+        }
+      }
+
+      const xConsole = getConsole(console, val => flush('output', val))
       const AsyncFunction = eval('(async function(){}).constructor')
 
       try {
         const fn = new AsyncFunction('console', code)
         await fn.call(self, xConsole)
-        self.postMessage({ type: 'done' })
+        flush('done', '')
       } catch (error) {
-        self.postMessage({ type: 'error', value: error.message || String(error) })
+        flush('error', error.message || String(error))
       }
     }
   `
 
-  closed: Promise<undefined>
-  _state: 'pending' | 'done' | 'error'
-
-  constructor (code: string, opts?: { signal?: AbortSignal }) {
-    this.code = code
-    this.signal = opts?.signal
-    this._state = 'pending'
-    this.closed = this.runCode()
-
-    // javascript never ends
-    this.closed.then(() => {
-      // this._state = 'done'
-    }).catch((error) => {
-      this._readResolve(error.message || String(error))
-      // this._state = 'error'
-    })
+  constructor (code: string, outputHtml: boolean, opts: CodeRunnerRunOptions) {
+    this._code = code
+    this._signal = opts.signal
+    this._flush = opts.flusher
+    this._outputType = outputHtml ? 'html' : 'plain'
   }
 
-  private getWorker () {
+  private _getWorker () {
     if (javascriptWorker) {
       javascriptWorker.terminate()
       javascriptWorker = null
     }
 
-    const blob = new Blob([this.workerScript], { type: 'application/javascript' })
+    const blob = new Blob([this._workerScript], { type: 'application/javascript' })
     const url = URL.createObjectURL(blob)
     javascriptWorker = new Worker(url)
     URL.revokeObjectURL(url)
@@ -173,57 +167,41 @@ class JavascriptWorkerExecutor implements ReadableStreamDefaultReader<string> {
     return javascriptWorker
   }
 
-  private async runCode (): Promise<undefined> {
+  public async run () {
+    await sleep(0)
     await new Promise<void>(resolve => {
-      const worker = this.getWorker()
+      const isb = new Int32Array(new SharedArrayBuffer(4))
+
+      const _flush = (value: string) => {
+        Atomics.store(isb, 0, 1)
+        Atomics.notify(isb, 0)
+        this._flush(this._outputType, value)
+        Atomics.store(isb, 0, 0)
+        Atomics.notify(isb, 0)
+      }
+
+      const worker = this._getWorker()
       worker.onmessage = async (event) => {
         const { type, value } = event.data
         if (type === 'output') {
-          this._readResolve(value)
+          _flush(value)
         } else if (type === 'error') {
-          this._readResolve(value)
+          _flush(value)
         } else if (type === 'done') {
-          resolve()
+          await sleep(0)
+          this._flush(this._outputType, '')
         }
       }
 
-      worker.postMessage({ code: this.code })
+      worker.postMessage({ code: this._code, isb })
 
-      this.signal?.addEventListener('abort', () => {
+      this._signal.addEventListener('abort', () => {
         worker.terminate()
         resolve()
       })
     })
 
-    await sleep(0)
-    this._readResolve('')
-
-    return undefined
-  }
-
-  read (): Promise<ReadableStreamDefaultReadResult<string>> {
-    if (this._state === 'done') {
-      return Promise.resolve({ done: true })
-    }
-
-    if (this._state === 'error') {
-      return Promise.reject(new Error('Error while running code'))
-    }
-
-    return new Promise((resolve) => {
-      this._readResolve = (value: string) => {
-        this._readResolve = () => 0
-        resolve({ value, done: false })
-      }
-    })
-  }
-
-  releaseLock (): void {
-    throw new Error('Method not implemented.')
-  }
-
-  cancel (): Promise<void> {
-    throw new Error('Method not implemented.')
+    return null
   }
 }
 
@@ -244,10 +222,9 @@ export default {
         const firstLine = code.split('\n')[0].trim()
         const noWorker = firstLine.includes('--no-worker--')
         const outputHtml = firstLine.includes('--output-html--')
-        return {
-          type: outputHtml ? 'html' : 'plain',
-          value: noWorker ? new JavascriptIframeExecutor(code, opts) : new JavascriptWorkerExecutor(code, opts)
-        }
+        return noWorker
+          ? new JavascriptIframeExecutor(code, outputHtml, opts).run()
+          : new JavascriptWorkerExecutor(code, outputHtml, opts).run()
       },
     })
 

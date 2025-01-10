@@ -1,12 +1,12 @@
-import { computed, defineComponent, getCurrentInstance, h, onBeforeUnmount, ref, shallowRef, VNode, watch, watchEffect } from 'vue'
+import { computed, customRef, defineComponent, getCurrentInstance, h, nextTick, onBeforeUnmount, ref, shallowRef, VNode, watch, watchEffect } from 'vue'
 import Markdown from 'markdown-it'
-import { escape } from 'lodash-es'
+import { escape, throttle } from 'lodash-es'
 import { Plugin } from '@fe/context'
 import { getActionHandler } from '@fe/core/action'
 import { DOM_CLASS_NAME, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { CtrlCmd, getKeyLabel, matchKeys } from '@fe/core/keybinding'
 import { useI18n } from '@fe/services/i18n'
-import { getLogger, md5 } from '@fe/utils'
+import { getLogger, md5, sleep } from '@fe/utils'
 import SvgIcon from '@fe/components/SvgIcon.vue'
 import { getAllRunners } from '@fe/services/runner'
 import { registerHook, removeHook } from '@fe/core/hook'
@@ -29,7 +29,19 @@ const RunCode = defineComponent({
   setup (props) {
     const { t } = useI18n()
     const instance = getCurrentInstance()
-    const result = ref('')
+    const result = customRef<string>((track, trigger) => {
+      const _trigger = throttle(trigger, 200, { leading: true, trailing: true })
+      return {
+        get: () => {
+          track()
+          return cache[hash.value] || ''
+        },
+        set: (val: string) => {
+          cache[hash.value] = val
+          _trigger()
+        }
+      }
+    })
     const abortController = shallowRef<AbortController>()
     const hash = computed(() => md5(props.language + props.code))
     const runner = ref<CodeRunner>()
@@ -44,23 +56,20 @@ const RunCode = defineComponent({
         res = escape(res)
       }
 
+      let value = result.value
+
       if (hasResult) {
-        result.value += res
+        value += res
       } else {
-        result.value = res
+        value = res
         hasResult = true
       }
 
-      cache[hash.value] = result.value
+      if (value.length > 32 * 1024) {
+        value = '------Output too long, truncated to 32KB------\n' + value.slice(-32 * 1024)
+      }
 
-      setTimeout(() => {
-        if (resultRef.value) {
-          // scroll to bottom if near the bottom
-          if (resultRef.value.scrollHeight - resultRef.value.scrollTop - resultRef.value.clientHeight < 50) {
-            resultRef.value?.scrollTo(0, resultRef.value.scrollHeight)
-          }
-        }
-      }, 0)
+      result.value = value
     }
 
     const abort = () => {
@@ -89,6 +98,7 @@ const RunCode = defineComponent({
       }
 
       result.value = t('code-run.running')
+      await sleep(0)
 
       try {
         if (abortController.value) {
@@ -97,7 +107,16 @@ const RunCode = defineComponent({
 
         abortController.value = new AbortController()
 
-        const { type, value: val } = await runner.value.run(language!, code, { signal: abortController.value?.signal })
+        const res = await runner.value.run(language!, code, {
+          signal: abortController.value?.signal,
+          flusher: (type, value) => appendLog?.(type, value)
+        })
+
+        if (!res) {
+          return
+        }
+
+        const { type, value: val } = res
 
         if (typeof val === 'string') {
           appendLog?.(type, val)
@@ -159,15 +178,26 @@ const RunCode = defineComponent({
     }
 
     const clearResult = () => {
-      delete cache[hash.value]
-      hasResult = false
       result.value = ''
+      hasResult = false
+      delete cache[hash.value]
       instance?.proxy?.$forceUpdate()
     }
 
     watch(() => props.code, () => {
       result.value = ''
     })
+
+    watch(() => result.value, () => {
+      if (resultRef.value) {
+        // scroll to bottom if near the bottom
+        if (resultRef.value.scrollHeight - resultRef.value.scrollTop - resultRef.value.clientHeight < 50) {
+          nextTick(() => {
+            resultRef.value?.scrollTo(0, resultRef.value.scrollHeight)
+          })
+        }
+      }
+    }, { flush: 'pre' })
 
     const refreshRunner = () => {
       runner.value = getAllRunners().find((runner) => runner.match(props.language!, props.firstLine!))
@@ -195,7 +225,7 @@ const RunCode = defineComponent({
     })
 
     return () => {
-      const runResult = result.value || cache[hash.value]
+      const runResult = result.value
 
       return [
         h('div', { class: `p-mcr-run-code-action ${DOM_CLASS_NAME.SKIP_EXPORT}` }, [

@@ -584,6 +584,12 @@ export type DocCategory = {
   types: DocType[],
 }
 
+export type CodeRunnerResultType = 'html' | 'plain'
+export type CodeRunnerRunOptions = {
+  signal: AbortSignal,
+  flusher: (type: CodeRunnerResultType, value: string) => void
+}
+
 export interface CodeRunner {
   name: string;
   order?: number;
@@ -593,8 +599,12 @@ export interface CodeRunner {
     start: string,
     exit: string,
   } | null;
-  run: (language: string, code: string, opts?: { signal?: AbortSignal }) => Promise<{
-    type: 'html' | 'plain',
+  run (
+    language: string,
+    code: string,
+    opts: CodeRunnerRunOptions
+  ): Promise<null | {
+    type: CodeRunnerResultType,
     value: ReadableStreamDefaultReader | string,
   }>;
 }

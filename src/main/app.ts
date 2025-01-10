@@ -20,6 +20,8 @@ import config from './config'
 import { initProxy } from './proxy'
 import { initEnvs } from './envs'
 
+app.commandLine.appendSwitch('enable-features', 'SharedArrayBuffer')
+
 type WindowState = { maximized: boolean } & Rectangle
 
 initProxy()
