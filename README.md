@@ -76,9 +76,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.80.1](https://github.com/purocean/yn/releases/tag/v3.80.1) 2025-01-10
+### [v3.80.2](https://github.com/purocean/yn/releases/tag/v3.80.2) 2025-01-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-win-x64-3.80.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-mac-arm64-3.80.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-mac-x64-3.80.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-linux-x86_64-3.80.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.80.1/Yank-Note-linux-amd64-3.80.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-win-x64-3.80.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-mac-arm64-3.80.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-mac-x64-3.80.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-linux-x86_64-3.80.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-linux-amd64-3.80.2.deb)
 
 1. feat: Added warehouse search and replace all functionality
 2. feat: Added text comparison tool (requires extension installation)
