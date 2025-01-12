@@ -66,7 +66,7 @@ const RunCode = defineComponent({
       }
 
       if (value.length > 32 * 1024) {
-        value = '------Output too long, truncated to 32KB------\n' + value.slice(-32 * 1024)
+        value = '------Output too long, truncated to 32K------\n' + value.slice(-32 * 1024)
       }
 
       result.value = value
