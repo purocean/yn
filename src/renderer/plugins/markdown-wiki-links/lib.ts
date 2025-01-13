@@ -10,7 +10,9 @@ export const RULE_NAME = 'wiki-links'
 export function wikiLinks (state: StateInline, silent?: boolean) {
   const isImage = state.src.charCodeAt(state.pos) === 0x21/* ! */
 
-  const offset = isImage ? 3 : 2
+  const offset = isImage
+    ? 3 // ![[
+    : 2 // [[
 
   // check [[
   if (state.src.charCodeAt(state.pos + offset - 2) !== 0x5B/* [ */ || state.src.charCodeAt(state.pos + offset - 1) !== 0x5B/* [ */) {
@@ -82,7 +84,7 @@ export function wikiLinks (state: StateInline, silent?: boolean) {
     }
   }
 
-  state.pos = endPos + offset
+  state.pos = endPos + 2 // ]]
 
   return true
 }
