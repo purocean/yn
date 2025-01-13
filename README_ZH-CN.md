@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.80.2](https://github.com/purocean/yn/releases/tag/v3.80.2) 2025-01-11
+### [v3.80.4](https://github.com/purocean/yn/releases/tag/v3.80.4) 2025-01-11
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-win-x64-3.80.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-mac-arm64-3.80.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-mac-x64-3.80.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-linux-x86_64-3.80.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.80.2/Yank-Note-linux-amd64-3.80.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-win-x64-3.80.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-mac-arm64-3.80.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-mac-x64-3.80.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-linux-x86_64-3.80.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-linux-amd64-3.80.4.deb)
 
 1. feat: 增加仓库搜索并全部替换功能
 2. feat: 增加文本对比工具（需安装扩展）
