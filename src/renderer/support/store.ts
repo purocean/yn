@@ -107,7 +107,7 @@ watchEffect(() => {
 
   storage.set('currentFile', data ? pick(data, 'repo', 'path', 'type', 'name', 'extra') : null)
 
-  if (data && data.type === 'file' && !isNormalRepoName(data.repo)) { // record recent open time, except for repo starts with '__'
+  if (data && data.type === 'file' && isNormalRepoName(data.repo)) { // record recent open time, except for repo starts with '__'
     const record: Record<string, number> = {
       ...(state.recentOpenTime || {}),
       [`${data.repo}|${data.path}`]: Date.now()

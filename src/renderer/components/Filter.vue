@@ -23,28 +23,31 @@ export default defineComponent({
   name: 'x-filter',
   components: { QuickOpen, XMask },
   setup () {
-    const callback = ref<Function | null>(null)
+    const callback = ref<((doc: Doc | null) => void) | null>(null)
     const onlyCurrentRepo = ref(false)
     const filterItem = shallowRef<(item: BaseDoc) => boolean>()
 
     function showQuickOpen () {
       onlyCurrentRepo.value = false
-      callback.value = (f: any) => {
-        switchDoc(f)
+      callback.value = (f: Doc | null) => {
+        if (f) {
+          switchDoc(f)
+        }
+
         callback.value = null
         filterItem.value = undefined
       }
     }
 
-    function chooseFile (file: any) {
+    function chooseFile (file: Doc | null) {
       if (callback.value) {
         callback.value(file)
       }
     }
 
     function chooseDocument (filter = (item: BaseDoc) => isMarkdownFile(item.path)) {
-      return new Promise<Doc>(resolve => {
-        callback.value = (f: Doc) => {
+      return new Promise<Doc | null>(resolve => {
+        callback.value = (f: Doc | null) => {
           resolve(f)
           callback.value = null
           filterItem.value = undefined
