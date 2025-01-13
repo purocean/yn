@@ -237,6 +237,10 @@ export async function getContentHtml (options: BuildInHookTypes['VIEW_ON_GET_HTM
         node.removeAttribute('target')
       }
 
+      if (node.tagName === 'AUDIO') {
+        node.removeAttribute('preload')
+      }
+
       const len = node.children.length
       for (let i = len - 1; i >= 0; i--) {
         const ele = node.children[i]

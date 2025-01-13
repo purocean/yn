@@ -125,6 +125,7 @@ export function convertResourceState (currentFile: PathItem, state: StateCore, b
     } else if (RE_AUDIO.test(fileName)) {
       token.tag = 'audio'
       token.type = 'media'
+      token.attrSet('preload', 'none')
     } else {
       token.attrSet(DOM_ATTR_NAME.LOCAL_IMAGE, 'true')
     }
