@@ -438,12 +438,12 @@ $outline-width: 28em;
       margin-top: 0;
       border-radius: 0;
       box-shadow: none;
-      max-height: calc(100vh - 2em);
+      max-height: 100%;
       background: var(--g-color-100);
       border-right: 1px solid var(--g-color-86);
 
       .catalog {
-        max-height: 100% !important;
+        max-height: calc(100% - 35px) !important;
       }
 
       .outline-title {
