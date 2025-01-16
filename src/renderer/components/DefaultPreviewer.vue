@@ -1,5 +1,5 @@
 <template>
-  <div ref="refPreviewer" :class="{'default-previewer': true}">
+  <div ref="refPreviewer" :class="{'default-previewer': true, presentation}">
     <div v-show="scrollTop > 0" class="scroll-decoration"></div>
     <div v-if="heads && heads.length > 0" :class="{outline: true, pined: pinOutline}">
       <div class="outline-title">
@@ -64,6 +64,7 @@ const iframeProps = {
 const initHTML = '<div id="app">Loading……</div>'
 
 const filePath = computed(() => store.state.currentFile?.path)
+const presentation = computed(() => store.state.presentation)
 
 const container = shallowRef<HTMLIFrameElement | null>(null)
 const height = ref(768)
@@ -280,6 +281,8 @@ async function scrollToTop () {
 </script>
 
 <style lang="scss" scoped>
+$outline-width: 28em;
+
 .default-previewer {
   position: relative;
   height: 100%;
@@ -358,7 +361,7 @@ async function scrollToTop () {
 
   &.pined, &:hover {
     max-height: 75vh;
-    max-width: 28em;
+    max-width: $outline-width;
     box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 10px;
 
     .outline-pin {
@@ -421,5 +424,42 @@ async function scrollToTop () {
   width: 100%;
   height: 6px;
   box-shadow: rgba(var(--g-color-80-rgb), 0.8) 0 6px 6px -6px inset;
+}
+
+.default-previewer.presentation {
+  display: flex;
+
+  .outline {
+    &.pined {
+      right: unset;
+      left: 1em;
+      flex: none;
+      position: unset;
+      margin-top: 0;
+      border-radius: 0;
+      box-shadow: none;
+      max-height: calc(100vh - 2em);
+      background: var(--g-color-100);
+      border-right: 1px solid var(--g-color-86);
+
+      .catalog {
+        max-height: 100% !important;
+      }
+
+      .outline-title {
+        border-bottom: 1px solid var(--g-color-86);
+
+        .outline-pin:not(:hover) {
+          background: var(--g-color-88);
+          color: var(--g-color-40);
+        }
+      }
+    }
+  }
+
+  iframe {
+    flex: 1;
+    position: static !important;
+  }
 }
 </style>
