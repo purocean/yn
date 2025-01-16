@@ -146,8 +146,8 @@ export default defineComponent({
 .presentation-exit {
   position: fixed;
   z-index: 210000000;
-  bottom: 6px;
-  left: 6px;
+  bottom: -8px;
+  right: 0px;
   padding: 10px;
   color: var(--g-color-50);
   opacity: 0.4;
