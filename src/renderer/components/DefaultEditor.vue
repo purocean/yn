@@ -58,10 +58,6 @@ export default defineComponent({
         return
       }
 
-      if (!currentContent.value) {
-        return
-      }
-
       if (file.repo === HELP_REPO_NAME) {
         return
       }
