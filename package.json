@@ -148,7 +148,7 @@
     "typescript": "^5.5.4",
     "utility-types": "^3.10.0",
     "viewerjs": "^1.11.6",
-    "vite": "^6.0.6",
+    "vite": "^6.0.9",
     "vue": "^3.5.13",
     "vue-tsc": "^2.2.0",
     "xterm": "^4.18.0",
