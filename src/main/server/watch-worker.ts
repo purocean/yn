@@ -116,3 +116,8 @@ process.on('message', (message: Message) => {
     init(message.id, filePath, options)
   }
 })
+
+process.on('disconnect', () => {
+  console.log('Parent process exited, shutting down...')
+  process.exit()
+})
