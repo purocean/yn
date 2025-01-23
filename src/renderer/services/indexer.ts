@@ -16,6 +16,8 @@ const workerURL = new URL(workerUrl, import.meta.url)
 const searchParams = new URLSearchParams(window.location.search)
 
 for (const [key, value] of searchParams) {
+  if (key.startsWith('init-') || key === 'token') continue // ignore init-xxx and token
+
   workerURL.searchParams.set(key, value)
 }
 

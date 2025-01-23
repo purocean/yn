@@ -98,16 +98,18 @@ function init (id: number, filePath: string | string[], options: WatchOpts) {
     console.log(`watch process ${id} >`, filePath, 'stop')
     promiseQueue.length = 0
     watcher.close()
+    process.off('message', onMessage)
+    process.off('exit', stop)
   }
 
   function onMessage (message: Message) {
     if (message.id === id && message.type === 'stop') {
       stop()
-      process.off('message', onMessage)
     }
   }
 
   process.on('message', onMessage)
+  process.on('exit', stop)
 }
 
 process.on('message', (message: Message) => {
@@ -115,4 +117,9 @@ process.on('message', (message: Message) => {
     const { filePath, options } = message.payload!
     init(message.id, filePath, options)
   }
+})
+
+process.on('disconnect', () => {
+  console.log('Parent process exited, shutting down...')
+  process.exit()
 })

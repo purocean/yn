@@ -6,7 +6,6 @@ import { getAttachmentURL } from '@fe/services/base'
 import { sleep } from '@fe/utils'
 import type { Doc } from '@fe/types'
 
-import 'viewerjs/dist/viewer.css'
 import { isElectron } from '@fe/support/env'
 
 function isMediaFile (doc?: Doc | null): 'video' | 'audio' | false {
@@ -86,6 +85,44 @@ export default {
         return !!isMediaFile(doc)
       },
       component: MediaPlayer,
+    })
+
+    type XHTMLMediaElement = HTMLMediaElement & { _setAudioPreload?: (isInView: boolean) => void }
+
+    let observer: IntersectionObserver | null = null
+
+    function setAudioPreload (this: XHTMLMediaElement, isInView: boolean) {
+      if (isInView && this._setAudioPreload) {
+        this.preload = 'metadata'
+        delete this._setAudioPreload
+        observer?.unobserve(this)
+      }
+    }
+
+    function cleanObserver () {
+      observer?.disconnect()
+      observer = null
+    }
+
+    ctx.registerHook('VIEW_RENDERED', () => {
+      cleanObserver()
+
+      const medias = ctx.view.getViewDom()?.querySelectorAll<HTMLMediaElement>('audio')
+      if (medias && medias.length > 0) {
+        observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            const el = entry.target as XHTMLMediaElement
+            el._setAudioPreload?.(entry.isIntersecting)
+          })
+        })
+
+        medias.forEach((media: XHTMLMediaElement) => {
+          if (media.preload === 'none') {
+            media._setAudioPreload = ctx.lib.lodash.debounce(setAudioPreload, 400, { leading: false, trailing: true })
+            observer!.observe(media)
+          }
+        })
+      }
     })
   }
 } as Plugin

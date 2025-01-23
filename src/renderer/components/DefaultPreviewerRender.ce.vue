@@ -17,7 +17,7 @@ import * as renderer from '@fe/services/renderer'
 import { getContextMenuItems, getRenderIframe, scrollTopTo } from '@fe/services/view'
 import { getSetting } from '@fe/services/setting'
 import { useContextMenu } from '@fe/support/ui/context-menu'
-import { DOM_ATTR_NAME } from '@fe/support/args'
+import { DOM_ATTR_NAME, MODE } from '@fe/support/args'
 import { getLogger, sleep } from '@fe/utils'
 import { t } from '@fe/services/i18n'
 import store from '@fe/support/store'
@@ -134,6 +134,8 @@ function handleError (e: Event) {
 }
 
 function handleContextMenu (e: MouseEvent) {
+  if (MODE !== 'normal') return
+
   const contextMenuItems = getContextMenuItems(e)
   if (contextMenuItems.length > 0) {
     e.stopPropagation()

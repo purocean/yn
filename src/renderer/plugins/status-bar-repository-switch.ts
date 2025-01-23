@@ -15,7 +15,11 @@ export default {
       const initFilePath = $args().get('init-file')
 
       if (initRepoName) {
-        ctx.repo.setCurrentRepo(initRepoName)
+        try {
+          ctx.repo.setCurrentRepo(initRepoName)
+        } catch (error) {
+          console.error(error)
+        }
       }
 
       if (initFilePath) {

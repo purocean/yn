@@ -887,7 +887,7 @@ export async function switchDocByPath (path: string): Promise<void> {
 
     let root = '/'
     if (isWindows) {
-      const regMatch = path.match(/^([a-zA-Z]:\\)/)
+      const regMatch = path.match(/^([a-zA-Z]:\\|\\\\)/)
       if (regMatch) {
         root = regMatch[1]
         path = path.replace(root, '/')

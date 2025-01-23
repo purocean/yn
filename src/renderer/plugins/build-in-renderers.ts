@@ -14,7 +14,7 @@ export default {
         const { h } = ctx.lib.vue
         return [
           h('h1', env.file?.name),
-          h('p', [h('em', 'Not a markdown file.')])
+          h('p', [h('em', env.file ? 'Not a markdown file.' : '')])
         ]
       },
     })
