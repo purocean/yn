@@ -76,28 +76,17 @@
 
 ## 更新日志
 
-### [v3.80.4](https://github.com/purocean/yn/releases/tag/v3.80.4) 2025-01-11
+### [v3.81.0](https://github.com/purocean/yn/releases/tag/v3.81.0) 2025-01-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-win-x64-3.80.4.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-mac-arm64-3.80.4.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-mac-x64-3.80.4.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-linux-x86_64-3.80.4.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.80.4/Yank-Note-linux-amd64-3.80.4.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-win-x64-3.81.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-mac-arm64-3.81.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-mac-x64-3.81.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-linux-x86_64-3.81.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-linux-amd64-3.81.0.deb)
 
-1. feat: 增加仓库搜索并全部替换功能
-2. feat: 增加文本对比工具（需安装扩展）
-3. feat: 优化仓库搜索结果展示性能，搜索结果可设置到 2000 个结果
-4. feat: 优化文件选项卡、状态栏菜单、编辑器状态保存恢复等若干交互细节
-5. feat: 优化快速跳转文件筛选输入模糊匹配算法
-6. feat: 大幅度优化运行 JS 代码日志吞吐性能
-7. feat: Wiki 链接支持跳转到非 Md 文件
-8. feat: 宏替换 `$include` 支持引入纯文本文件（不限于 Md 文件）
-9. feat: 文档历史 Diff 编辑器折叠未改动部分
-10. fix: 修复切换预览器/编辑器菜单 UI 问题
-11. fix: 修复文档历史 Diff 编辑器同主编辑器可能干扰问题
-12. fix(plugin): 修复 `ctx.i18n.createI18n` 生成的 Vue ref 对象可能不响应语言变化问题
-13. feat(plugin): 增加 `ctx.whenExtensionInitialized` 方法，插件初始化完成后执行回调
-14. feat(plugin): 增加 `ctx.routines.chooseDocument` 方法，用以选择文档
-15. feat(plugin): 增加 `ctx.doc.cloneDoc` 方法，用以克隆文档对象基本信息
-16. feat(plugin): 增加 `ctx.doc.isPlain` 方法，用以判断文档是否为纯文本文档
-17. feat(plugin): 增加 `ctx.editor.getAvailableCustomEditors` 方法，用以获取文档可用的自定义编辑器
-18. feat(plugin): 增加 `ctx.repo.isNormalRepo` 方法，用以判断仓库是否为普通仓库
+1. feat: 支持在 Windows 上打开 smb 路径文件
+2. feat: 优化演示模式目录展示，固定目录后将以侧栏形式展示目录
+3. feat: 优化音频元素渲染逻辑，减少文档打开阻塞时间
+4. fix: 修复行内 Wiki 风格图片渲染异常问题
+5. fix: 修复退出应用可能残留孤儿进程问题
+6. fix: 修复不能保存空文件问题
+7. fix: 修复分享预览文件不显示问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
