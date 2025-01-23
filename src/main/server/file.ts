@@ -71,7 +71,9 @@ function getExcludeRegex () {
 }
 
 function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath: string[]) => Promise<T>, ...target: string[]): Promise<T> {
-  const repoPath = repo.startsWith(ROOT_REPO_NAME_PREFIX)
+  const isRootRepo = repo.startsWith(ROOT_REPO_NAME_PREFIX)
+
+  const repoPath = isRootRepo
     ? repo.substring(ROOT_REPO_NAME_PREFIX.length)
     : repository.getPath(repo)
 
@@ -80,7 +82,9 @@ function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath:
   }
 
   return callback(repoPath, ...target.map(x => {
-    const targetPath = path.join(repoPath, x)
+    const targetPath = isRootRepo
+      ? x.replace(/^\//, repoPath) // replace first / to repoPath for case of `\\127.0.0.1/test/a.md`
+      : path.join(repoPath, x)
 
     if (!targetPath.startsWith(repoPath)) {
       throw new Error('Path error.')
