@@ -76,17 +76,12 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.81.0](https://github.com/purocean/yn/releases/tag/v3.81.0) 2025-01-23
+### [v3.81.2](https://github.com/purocean/yn/releases/tag/v3.81.2) 2025-01-27
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-win-x64-3.81.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-mac-arm64-3.81.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-mac-x64-3.81.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-linux-x86_64-3.81.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-linux-amd64-3.81.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-win-x64-3.81.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-mac-arm64-3.81.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-mac-x64-3.81.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-linux-x86_64-3.81.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-linux-amd64-3.81.2.deb)
 
-1. feat: Support for opening SMB path files on Windows
-2. feat: Optimization of presentation mode directory display, with fixed directories now shown in a sidebar format
-3. feat: Optimization of audio element rendering logic to reduce document opening block time
-4. fix: Resolution of inline Wiki-style image rendering exceptions
-5. fix: Resolution of potential orphan process issues when exiting the application
-6. fix: Resolution of the inability to save empty files
-7. fix: Resolution of the issue where shared preview files do not display
+1. fix: Resolve the issue of not being able to load images when opening files outside the repository.
+2. fix: Resolve the issue of abnormal reports appearing when exiting the terminal on the macOS platform.
 
 [More release notes](https://github.com/purocean/yn/releases)
 
