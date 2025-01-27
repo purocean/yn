@@ -76,17 +76,12 @@
 
 ## 更新日志
 
-### [v3.81.0](https://github.com/purocean/yn/releases/tag/v3.81.0) 2025-01-23
+### [v3.81.2](https://github.com/purocean/yn/releases/tag/v3.81.2) 2025-01-27
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-win-x64-3.81.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-mac-arm64-3.81.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-mac-x64-3.81.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-linux-x86_64-3.81.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.0/Yank-Note-linux-amd64-3.81.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-win-x64-3.81.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-mac-arm64-3.81.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-mac-x64-3.81.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-linux-x86_64-3.81.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-linux-amd64-3.81.2.deb)
 
-1. feat: 支持在 Windows 上打开 smb 路径文件
-2. feat: 优化演示模式目录展示，固定目录后将以侧栏形式展示目录
-3. feat: 优化音频元素渲染逻辑，减少文档打开阻塞时间
-4. fix: 修复行内 Wiki 风格图片渲染异常问题
-5. fix: 修复退出应用可能残留孤儿进程问题
-6. fix: 修复不能保存空文件问题
-7. fix: 修复分享预览文件不显示问题
+1. fix: 修复打开仓库外文件不能加载图片问题
+2. fix: 修复在 macOS 平台打开终端时候退出出现异常报告问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
