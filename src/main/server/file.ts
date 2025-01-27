@@ -82,6 +82,11 @@ function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath:
   }
 
   return callback(repoPath, ...target.map(x => {
+    // fix path
+    if (!x.startsWith('/')) {
+      x = '/' + x
+    }
+
     const targetPath = isRootRepo
       ? x.replace(/^\//, repoPath) // replace first / to repoPath for case of `\\127.0.0.1/test/a.md`
       : path.join(repoPath, x)
