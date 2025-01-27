@@ -806,8 +806,18 @@ const server = (port = 3000) => {
         env: process.env,
         useConpty: false,
       })
+
+      const kill = () => {
+        ptyProcess.kill()
+      }
+
       ptyProcess.onData((data: any) => socket.emit('output', data))
-      ptyProcess.onExit(() => socket.disconnect())
+      ptyProcess.onExit(() => {
+        console.log('ptyProcess exit')
+        socket.disconnect()
+        process.off('exit', kill)
+      })
+
       socket.on('input', (data: any) => {
         if (data.startsWith(shell.CD_COMMAND_PREFIX)) {
           ptyProcess.write(shell.transformCdCommand(data.toString()))
@@ -816,7 +826,9 @@ const server = (port = 3000) => {
         }
       })
       socket.on('resize', (size: any) => ptyProcess.resize(size[0], size[1]))
-      socket.on('disconnect', () => ptyProcess.kill())
+      socket.on('disconnect', kill)
+
+      process.on('exit', kill)
     } else {
       socket.emit('output', 'node-pty is not compatible with this platform. Please install another version from GitHub https://github.com/purocean/yn/releases')
     }
