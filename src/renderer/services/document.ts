@@ -496,6 +496,7 @@ export async function deleteDoc (doc: PathItem, skipConfirm = false) {
   }
 
   try {
+    triggerHook('DOC_BEFORE_DELETE', { doc })
     await api.deleteFile(doc, true)
   } catch (error: any) {
     const force = await useModal().confirm({
@@ -571,6 +572,7 @@ export async function moveDoc (doc: Doc, newPath?: string) {
   }
 
   try {
+    triggerHook('DOC_BEFORE_MOVE', { doc, newDoc })
     await api.moveFile(doc, newPath)
     triggerHook('DOC_MOVED', { oldDoc: doc, newDoc })
   } catch (error: any) {

@@ -3,10 +3,10 @@ import { init } from '@fe/core/plugin'
 import { getActionHandler } from '@fe/core/action'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
-import { isElectron } from '@fe/support/env'
+import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from './support/ui/toast'
 import { useModal } from '@fe/support/ui/modal'
-import type { BuildInSettings, Doc, FrontMatterAttrs } from '@fe/types'
+import type { BuildInSettings, Doc, FrontMatterAttrs, PathItem } from '@fe/types'
 import { reloadMainWindow } from '@fe/services/base'
 import { createDoc, isMarkdownFile, isMarked, markDoc, switchDoc, toUri, unmarkDoc } from '@fe/services/document'
 import { DEFAULT_MARKDOWN_EDITOR_NAME, whenEditorReady } from '@fe/services/editor'
@@ -55,6 +55,13 @@ function switchDefaultPreviewer () {
   }
 }
 
+function reWatchFsOnWindows ({ doc }: { doc: PathItem & { type?: Doc['type'] }}) {
+  // fix parent folder rename / delete on Windows https://github.com/paulmillr/chokidar/issues/664
+  if (isWindows && doc.type === 'dir') {
+    setTimeout(indexer.triggerWatchCurrentRepo, 100)
+  }
+}
+
 let autoRefreshedAt = 0
 const refreshTree = async () => {
   await tree.refreshTree()
@@ -70,6 +77,8 @@ registerHook('DOC_CREATED', refreshTree)
 registerHook('DOC_DELETED', refreshTree)
 registerHook('DOC_MOVED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', refreshTree)
+registerHook('DOC_BEFORE_DELETE', reWatchFsOnWindows)
+registerHook('DOC_BEFORE_MOVE', reWatchFsOnWindows)
 
 registerHook('INDEXER_FS_CHANGE', async () => {
   if (Date.now() - autoRefreshedAt > 3000) {

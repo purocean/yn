@@ -36,7 +36,11 @@ export default {
       const watchHandler = await ctx.api.watchFs(
         repo,
         path,
-        { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 }, alwaysStat: true },
+        {
+          awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 50 },
+          alwaysStat: true,
+          usePolling: ctx.env.isWindows, // fix parent folder rename / delete on Windows https://github.com/paulmillr/chokidar/issues/664
+        },
         payload => {
           logger.debug('startWatch onResult', payload)
           if (payload.eventName === 'ready') {
