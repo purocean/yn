@@ -25,7 +25,7 @@ import plugins from '@fe/plugins'
 import ctx from '@fe/context'
 import ga from '@fe/support/ga'
 import * as jsonrpc from '@fe/support/jsonrpc'
-import { getLogger } from '@fe/utils'
+import { getLogger, sleep } from '@fe/utils'
 import { removeOldDatabases } from './others/db'
 
 const logger = getLogger('startup')
@@ -55,10 +55,11 @@ function switchDefaultPreviewer () {
   }
 }
 
-function reWatchFsOnWindows ({ doc }: { doc: PathItem & { type?: Doc['type'] }}) {
+async function reWatchFsOnWindows ({ doc }: { doc: PathItem & { type?: Doc['type'] }}) {
   // fix parent folder rename / delete on Windows https://github.com/paulmillr/chokidar/issues/664
   if (isWindows && doc.type === 'dir') {
     indexer.stopWatch()
+    await sleep(50)
     setTimeout(() => {
       indexer.triggerWatchCurrentRepo()
     }, 500)
