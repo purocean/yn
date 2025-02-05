@@ -509,7 +509,7 @@ export type BuildInHookTypes = {
   EDITOR_CURRENT_EDITOR_CHANGE: { current?: CustomEditor | null },
   EDITOR_CONTENT_CHANGE: { uri: string, value: string },
   DOC_CREATED: { doc: Doc },
-  DOC_BEFORE_DELETE: { doc: PathItem },
+  DOC_BEFORE_DELETE: { doc: PathItem, force: boolean },
   DOC_DELETED: { doc: PathItem },
   DOC_BEFORE_MOVE: { doc: Doc, newDoc: Doc },
   DOC_MOVED: { oldDoc: Doc, newDoc: Doc },

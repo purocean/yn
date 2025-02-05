@@ -496,7 +496,7 @@ export async function deleteDoc (doc: PathItem, skipConfirm = false) {
   }
 
   try {
-    triggerHook('DOC_BEFORE_DELETE', { doc })
+    triggerHook('DOC_BEFORE_DELETE', { doc, force: false })
     await api.deleteFile(doc, true)
   } catch (error: any) {
     const force = await useModal().confirm({
@@ -506,6 +506,7 @@ export async function deleteDoc (doc: PathItem, skipConfirm = false) {
 
     if (force) {
       try {
+        triggerHook('DOC_BEFORE_DELETE', { doc, force: true })
         await api.deleteFile(doc, false)
       } catch (err: any) {
         useToast().show('warning', err.message)

@@ -58,7 +58,10 @@ function switchDefaultPreviewer () {
 function reWatchFsOnWindows ({ doc }: { doc: PathItem & { type?: Doc['type'] }}) {
   // fix parent folder rename / delete on Windows https://github.com/paulmillr/chokidar/issues/664
   if (isWindows && doc.type === 'dir') {
-    indexer.triggerWatchCurrentRepo()
+    indexer.stopWatch()
+    setTimeout(() => {
+      indexer.triggerWatchCurrentRepo()
+    }, 500)
   }
 }
 
