@@ -76,12 +76,11 @@
 
 ## 更新日志
 
-### [v3.81.2](https://github.com/purocean/yn/releases/tag/v3.81.2) 2025-01-27
+### [v3.81.3](https://github.com/purocean/yn/releases/tag/v3.81.3) 2025-01-27
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-win-x64-3.81.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-mac-arm64-3.81.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-mac-x64-3.81.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-linux-x86_64-3.81.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.2/Yank-Note-linux-amd64-3.81.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-win-x64-3.81.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-mac-arm64-3.81.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-mac-x64-3.81.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-linux-x86_64-3.81.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-linux-amd64-3.81.3.deb)
 
-1. fix: 修复打开仓库外文件不能加载图片问题
-2. fix: 修复在 macOS 平台打开终端时候退出出现异常报告问题
+1. fix: 修复 Windows 上可能删除目录失败问题
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
