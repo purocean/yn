@@ -3,7 +3,7 @@ const path = require('path')
 const request = require('request')
 
 const filename = 'plantuml.jar'
-const downloadUrl = 'https://github.com/plantuml/plantuml/releases/download/v1.2023.10/plantuml-1.2023.10.jar'
+const downloadUrl = 'https://github.com/plantuml/plantuml/releases/download/v1.2025.0/plantuml.jar'
 
 console.info('Download plantuml', downloadUrl, filename)
 
