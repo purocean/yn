@@ -59,6 +59,17 @@ interface TreeItem extends XFile {
   level: number;
 }
 
+type MdFileHeader = {
+  title?: string;
+  created?: string;
+  modified?: string;
+  attachments?: string[];
+  tags?: string[];
+  headingNumber?: boolean;
+  enableMacro?: boolean;
+  customVar?: boolean;
+}
+
 type Order = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: 'asc' | 'desc' }
 
 function getExcludeRegex () {
@@ -333,6 +344,56 @@ function getRelativePath (from: string, to: string) {
   return '/' + path.relative(from, to).replace(/\\/g, '/')
 }
 
+async function parseMdHeader (fileName:string, path:string, stat:fs.Stats):Promise<MdFileHeader|null> {
+  if (!isMarkdownFile(fileName)) {
+    return null
+  }
+  const readSize = Math.min(1024, stat.size)
+  if (readSize < 25) {
+    return null
+  }
+
+  let mdFileHeader:string
+  try {
+    const fd = fs.openSync(path, 'r')
+    const buffer = Buffer.alloc(readSize)
+    const bytesRead = fs.readSync(
+      fd,
+      buffer,
+      0,
+      readSize,
+      0
+    )
+    fs.closeSync(fd)
+    if (bytesRead < readSize) {
+      return null
+    }
+    mdFileHeader = buffer.toString('utf8')
+  } catch (e) {
+    return null
+  }
+
+  const matches = mdFileHeader.match(/^---([\s\S]+?)---/)
+  if (!matches || matches.length < 2) {
+    return null
+  }
+  const parsedHeaders:any = {}
+  const headerLines = matches[1].split('\n')
+  for (let j = 0; j < headerLines.length; j++) {
+    const matches2 = headerLines[j].trim().match(/^([a-zA-Z_$-][0-9a-zA-Z-_$]+)?:\s*([\s\S]*)?/)
+    if (matches2 && matches2.length > 1) {
+      if (/true/i.test(matches2[0])) {
+        parsedHeaders[matches2[1]] = true
+      } else if (/false/i.test(matches2[0])) {
+        parsedHeaders[matches2[1]] = false
+      } else {
+        parsedHeaders[matches2[1]] = matches2[2] || ''
+      }
+    }
+  }
+  return parsedHeaders
+}
+
 async function travels (
   location: string,
   repo: string,
@@ -368,7 +429,7 @@ async function travels (
         return
       }
 
-      files.push({
+      const fileProp:TreeItem = {
         name,
         path: getRelativePath(basePath, p),
         type: 'file',
@@ -376,7 +437,20 @@ async function travels (
         birthtime: stat.birthtimeMs,
         mtime: stat.mtimeMs,
         level: data.level + 1,
-      })
+      }
+
+      // 尝试从文件头部解析创建时间和修改时间
+      const mdParsedHeader = await parseMdHeader(name, p, stat)
+      if (mdParsedHeader) {
+        if (Object.hasOwnProperty.call(mdParsedHeader, 'created')) {
+          fileProp.birthtime = dayjs(mdParsedHeader.created).valueOf()
+        }
+        if (Object.hasOwnProperty.call(mdParsedHeader, 'modified')) {
+          fileProp.mtime = dayjs(mdParsedHeader.modified).valueOf()
+        }
+      }
+
+      files.push(fileProp)
     } else if (stat.isDirectory()) {
       const dirName = name + '/'
       if (excludeRegex.test(dirName)) {
