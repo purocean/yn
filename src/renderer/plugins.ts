@@ -70,7 +70,7 @@ import copyContent from '@fe/plugins/copy-content'
 import sharePreview from '@fe/plugins/share-preview'
 import codeRunners from '@fe/plugins/code-runners'
 import watchFileRefresh from '@fe/plugins/watch-file-refresh'
-import previewFontSize from '@fe/plugins/preview-font-size'
+import previewFont from '@fe/plugins/preview-font'
 import dropToOpenFile from '@fe/plugins/drop-to-open-file'
 import recordRecentDocument from '@fe/plugins/record-recent-document'
 import aiCopilot from '@fe/plugins/ai-copilot'
@@ -150,7 +150,7 @@ export default [
   sharePreview,
   codeRunners,
   watchFileRefresh,
-  previewFontSize,
+  previewFont,
   dropToOpenFile,
   recordRecentDocument,
   markdownGithubAlerts,

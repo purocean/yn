@@ -426,6 +426,7 @@ const data: BaseLanguage = {
       'view': {
         'default-previewer-max-width': '预览区最大宽度',
         'default-previewer-max-width-desc': '≤ 100 为百分比，> 100 为像素',
+        'default-previewer-font-family': '预览区字体',
       },
       'theme': '主题',
       'language': '语言',
