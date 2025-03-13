@@ -137,7 +137,7 @@
     "normalize.css": "^8.0.1",
     "parse-author": "^2.0.0",
     "path-browserify": "^1.0.1",
-    "prismjs": "^1.29.0",
+    "prismjs": "^1.30.0",
     "sass": "^1.83.0",
     "socket.io-client": "^4.7.2",
     "sortablejs": "^1.13.0",
