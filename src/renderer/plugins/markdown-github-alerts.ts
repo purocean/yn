@@ -37,6 +37,7 @@ export default {
       /* eslint-disable no-template-curly-in-string */
       items.push(
         {
+          language: 'markdown',
           label: '/ > Github Alerts',
           insertText: '> [!${1|NOTE,TIP,IMPORTANT,WARNING,CAUTION|}]${2}\n> ${3:Content}\n',
           block: true,

@@ -60,7 +60,7 @@ export default {
 
     ctx.editor.tapSimpleCompletionItems(items => {
       items.push(
-        { label: '/ [[]] Wiki Link', insertText: '[[$1]]', command: { id: 'editor.action.triggerSuggest', title: '' } },
+        { language: 'markdown', label: '/ [[]] Wiki Link', insertText: '[[$1]]', command: { id: 'editor.action.triggerSuggest', title: '' } },
       )
     })
 

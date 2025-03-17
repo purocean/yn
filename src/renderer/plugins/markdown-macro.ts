@@ -411,9 +411,9 @@ export default {
       /* eslint-disable no-template-curly-in-string */
 
       items.push(
-        { label: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
-        { label: '/ [= Macro $include', insertText: '[= \\$include(\'$1\') =]' },
-        { label: '/ [= Macro $afterMacro', insertText: '[= \\$afterMacro(src => { \n return src.toUpperCase(); \n}) =]' },
+        { language: 'markdown', label: '/ [= Macro', insertText: '[= ${1:1+1} =]' },
+        { language: 'markdown', label: '/ [= Macro $include', insertText: '[= \\$include(\'$1\') =]' },
+        { language: 'markdown', label: '/ [= Macro $afterMacro', insertText: '[= \\$afterMacro(src => { \n return src.toUpperCase(); \n}) =]' },
       )
     })
 

@@ -30,10 +30,10 @@ export default {
       let i = 1
       return /\|[^|]+/.test(currentLine) ? false : tableCols > 1
         ? [
-            { label: '/ ||| Table Row', insertText: prev2Lines[0].replaceAll('\r', '').replace(/[^|]+/g, () => ` \${${i++}:--} `).trim() + '\n', block: true }
+            { language: 'markdown', label: '/ ||| Table Row', insertText: prev2Lines[0].replaceAll('\r', '').replace(/[^|]+/g, () => ` \${${i++}:--} `).trim() + '\n', block: true }
           ]
         : [
-            { label: '/ ||| Table', insertText: '', command: { id: editorInsertCommand, title: ctx.i18n.t('insert-table.insert-table') }, block: true },
+            { language: 'markdown', label: '/ ||| Table', insertText: '', command: { id: editorInsertCommand, title: ctx.i18n.t('insert-table.insert-table') }, block: true },
           ]
     }
 

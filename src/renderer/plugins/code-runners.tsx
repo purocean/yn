@@ -256,10 +256,10 @@ export default {
       /* eslint-disable no-template-curly-in-string */
 
       items.push(
-        { label: '/ ``` Run Code (JavaScript)', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nconsole.log("hello world!")}\n```\n', block: true },
-        { label: '/ ``` Run Code (JavaScript - No Worker)', insertText: '```js\n// --run-- --no-worker--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n', block: true },
-        { label: '/ ``` Run Code (Bash)', insertText: '```bash\n# --run--\n${1:echo HELLOWORLD}\n```\n', block: true },
-        { label: '/ ``` Run Code (C)', insertText: '```c\n// --run-- gcc \\$tmpFile.c -o \\$tmpFile.out && \\$tmpFile.out\n${1:#include <stdio.h>\n \nint main () {\n    printf("Hello, World!");\n    return 0;\n}}\n```\n', block: true },
+        { language: 'markdown', label: '/ ``` Run Code (JavaScript)', insertText: '```js\n// --run--\n${1:await new Promise(r => setTimeout(r, 500))\nconsole.log("hello world!")}\n```\n', block: true },
+        { language: 'markdown', label: '/ ``` Run Code (JavaScript - No Worker)', insertText: '```js\n// --run-- --no-worker--\n${1:await new Promise(r => setTimeout(r, 500))\nctx.ui.useToast().show("info", "HELLOWORLD!")\nconsole.log("hello world!")}\n```\n', block: true },
+        { language: 'markdown', label: '/ ``` Run Code (Bash)', insertText: '```bash\n# --run--\n${1:echo HELLOWORLD}\n```\n', block: true },
+        { language: 'markdown', label: '/ ``` Run Code (C)', insertText: '```c\n// --run-- gcc \\$tmpFile.c -o \\$tmpFile.out && \\$tmpFile.out\n${1:#include <stdio.h>\n \nint main () {\n    printf("Hello, World!");\n    return 0;\n}}\n```\n', block: true },
       )
     })
   }

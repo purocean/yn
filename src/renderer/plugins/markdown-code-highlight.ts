@@ -247,7 +247,7 @@ export default {
         supportedLanguages = Object.keys(prism.languages).concat(Object.keys(extensionMap)).sort().join(',').replace('DFS,', '')
       }
 
-      items.push({ label: '/ ``` Code', insertText: '```${1|' + supportedLanguages + '|}\n$2\n```\n', block: true })
+      items.push({ language: 'markdown', label: '/ ``` Code', insertText: '```${1|' + supportedLanguages + '|}\n$2\n```\n', block: true })
     })
 
     const exportStyles = `
