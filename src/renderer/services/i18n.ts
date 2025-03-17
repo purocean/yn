@@ -98,7 +98,7 @@ export function useI18n () {
  * create i18n
  * @param data - language data
  * @param defaultLanguage - default language
- * @returns { t, $t, $$t }, t is translate function, $t is ref of t, $$t is dynamic translate function
+ * @returns t is translate function, $t is ref of t, $$t is dynamic translate function
  */
 export function createI18n <T extends Record<string, any>> (data: { [lang in Language]?: T }, defaultLanguage: Language = 'en') {
   type _MsgPath = keyof Flat<T>
@@ -153,7 +153,7 @@ export function createI18n <T extends Record<string, any>> (data: { [lang in Lan
     t: { value: _t },
     $t: { value: $t },
     $$t: { value: $$t },
-  })
+  }) as { t: typeof _t, $t: typeof $t, $$t: typeof $$t }
 }
 
 declare module '@vue/runtime-core' {
