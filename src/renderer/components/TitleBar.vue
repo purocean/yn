@@ -165,7 +165,7 @@ export default defineComponent({
 
       if (file) {
         if (file.repo === HELP_REPO_NAME) {
-          return file.title
+          return file.name
         }
 
         if (!isSaved.value) {
@@ -210,7 +210,7 @@ export default defineComponent({
     })
 
     watch(statusText, () => {
-      document.title = currentFile.value ? (currentFile.value.name || currentFile.value.title || 'Yank Note') : t('file-status.no-file')
+      document.title = currentFile.value ? (currentFile.value.name || 'Yank Note') : t('file-status.no-file')
     }, { immediate: true })
 
     watch(isSaved, (val: boolean) => {

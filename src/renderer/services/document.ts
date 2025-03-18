@@ -978,7 +978,6 @@ export async function showHelp (docName: string) {
   switchDoc({
     type: 'file',
     repo: HELP_REPO_NAME,
-    title: docName,
     name: docName,
     path: docName,
   })
