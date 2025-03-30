@@ -88,6 +88,15 @@ const schema: SettingSchema = ({
       minimum: 10,
       maximum: Number.MAX_SAFE_INTEGER,
     },
+    'view.default-previewer-font-family': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.view.default-previewer-font-family',
+      type: 'string',
+      group: 'appearance',
+      options: {
+        inputAttributes: { placeholder: 'e.g., \'Courier New\', monospace' }
+      },
+    },
     'updater.source': {
       defaultValue: 'auto',
       title: 'T_setting-panel.schema.updater.source',

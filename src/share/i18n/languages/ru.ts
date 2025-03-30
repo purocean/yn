@@ -436,6 +436,7 @@ const data: BaseLanguage = {
       'view': {
         'default-previewer-max-width': 'Максимальная ширина окна предпросмотра',
         'default-previewer-max-width-desc': '≤ 100 означает процент, > 100 - пиксели',
+        'default-previewer-font-family': 'Шрифт предпросмотра',
       },
       'theme': 'Тема',
       'language': 'Язык',

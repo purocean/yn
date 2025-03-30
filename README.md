@@ -76,11 +76,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.81.3](https://github.com/purocean/yn/releases/tag/v3.81.3) 2025-01-27
+### [v3.82.1](https://github.com/purocean/yn/releases/tag/v3.82.1) 2025-03-30
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-win-x64-3.81.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-mac-arm64-3.81.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-mac-x64-3.81.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-linux-x86_64-3.81.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-linux-amd64-3.81.3.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-win-x64-3.82.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-mac-arm64-3.82.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-mac-x64-3.82.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-linux-x86_64-3.82.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-linux-amd64-3.82.1.deb)
 
-1. fix: Fix the issue where directories might fail to be deleted on Windows
+1. feat: Added font configuration for the preview area
+2. feat: Restrict Markdown syntax suggestions in the editor from displaying within code fences
+3. fix: Fixed the issue where exported HTML headings were not highlighted correctly in some cases
+4. feat(plugin): Added the `ctx.editor.getLineLanguageId` method to retrieve the language ID of a specific line
 
 [More release notes](https://github.com/purocean/yn/releases)
 

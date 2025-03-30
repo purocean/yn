@@ -100,8 +100,8 @@ function buildHtml (title: string, body: string, options: { includeStyle: boolea
       <nav id="yn-article-toc">
           <div class="toc-title">${t('table-of-contents')}</div>
           <ul class="${headingNumber ? 'heading-number' : ''}">
-          ${getHeadings(false).filter(heading => options.includeToc.includes(heading.level)).map(heading => `<li data-level="${heading.level}" data-id="${escape(heading.id)}" style="padding-left: ${heading.level}em">
-            <a href="#${escape(heading.id)}">
+          ${getHeadings(false).filter(heading => options.includeToc.includes(heading.level)).map(heading => `<li data-level="${heading.level}" data-id="${heading.sourceLine}-${escape(heading.id)}" style="padding-left: ${heading.level}em">
+            <a href="#${heading.sourceLine}-${escape(heading.id)}">
               ${escape(heading.text)}
             </a>
           </li>`).join('\n')}
@@ -153,6 +153,7 @@ function buildHtml (title: string, body: string, options: { includeStyle: boolea
           })
 
           article.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach((element) => {
+            element.id = element.dataset.sourceLine + '-' + element.id
             tocObserver.observe(element)
           });
 

@@ -295,14 +295,14 @@ export default {
       /* eslint-disable no-template-curly-in-string */
 
       items.push(
-        { label: '/ ``` PlantUML', insertText: '```plantuml\n@startuml\n${1:a -> b}\n@enduml\n```\n', block: true },
-        { label: '/ @startuml PlantUML', insertText: '@startuml\n${1:a -> b}\n@enduml\n', block: true },
-        { label: '/ @startsalt PlantUML Salt', insertText: '@startsalt\n{\n  Just plain text\n  [This is my button]\n  ()  Unchecked radio\n  (X) Checked radio\n  []  Unchecked box\n  [X] Checked box\n  "Enter text here   "\n  ^This is a droplist^\n}\n@endsalt\n', block: true },
-        { label: '/ @startmindmap PlantUML Mindmap', insertText: '@startmindmap\n* Debian\n** Ubuntu\n*** Linux Mint\n*** Kubuntu\n*** Lubuntu\n*** KDE Neon\n** LMDE\n** SolydXK\n** SteamOS\n** Raspbian with a very long name\n*** <s>Raspmbc</s> => OSMC\n*** <s>Raspyfi</s> => Volumio\n@endmindmap\n', block: true },
-        { label: '/ @startgantt PlantUML Gantt', insertText: '@startgantt\nProject starts 2020-07-01\n[Test prototype] lasts 10 days\n[Prototype completed] happens 2020-07-10\n[Setup assembly line] lasts 12 days\n[Setup assembly line] starts at [Test prototype]\'s end\n@endgantt\n', block: true },
-        { label: '/ @startwbs PlantUML Wbs', insertText: '@startwbs\n* Business Process Modelling WBS\n** Launch the project\n*** Complete Stakeholder Research\n*** Initial Implementation Plan\n** Design phase\n*** Model of AsIs Processes Completed\n****< Model of AsIs Processes Completed1\n****> Model of AsIs Processes Completed2\n***< Measure AsIs performance metrics\n***< Identify Quick Wins\n@endwbs\n', block: true },
-        { label: '/ @startjson PlantUML Json', insertText: '@startjson\n{\n   "fruit":"Apple",\n   "size":"Large",\n   "color": ["Red", "Green"]\n}\n@endjson\n', block: true },
-        { label: '/ @startyaml PlantUML Yaml', insertText: '@startyaml\nfruit: Apple\nsize: Large\ncolor: \n  - Red\n  - Green\n@endyaml\n', block: true },
+        { language: 'markdown', label: '/ ``` PlantUML', insertText: '```plantuml\n@startuml\n${1:a -> b}\n@enduml\n```\n', block: true },
+        { language: 'markdown', label: '/ @startuml PlantUML', insertText: '@startuml\n${1:a -> b}\n@enduml\n', block: true },
+        { language: 'markdown', label: '/ @startsalt PlantUML Salt', insertText: '@startsalt\n{\n  Just plain text\n  [This is my button]\n  ()  Unchecked radio\n  (X) Checked radio\n  []  Unchecked box\n  [X] Checked box\n  "Enter text here   "\n  ^This is a droplist^\n}\n@endsalt\n', block: true },
+        { language: 'markdown', label: '/ @startmindmap PlantUML Mindmap', insertText: '@startmindmap\n* Debian\n** Ubuntu\n*** Linux Mint\n*** Kubuntu\n*** Lubuntu\n*** KDE Neon\n** LMDE\n** SolydXK\n** SteamOS\n** Raspbian with a very long name\n*** <s>Raspmbc</s> => OSMC\n*** <s>Raspyfi</s> => Volumio\n@endmindmap\n', block: true },
+        { language: 'markdown', label: '/ @startgantt PlantUML Gantt', insertText: '@startgantt\nProject starts 2020-07-01\n[Test prototype] lasts 10 days\n[Prototype completed] happens 2020-07-10\n[Setup assembly line] lasts 12 days\n[Setup assembly line] starts at [Test prototype]\'s end\n@endgantt\n', block: true },
+        { language: 'markdown', label: '/ @startwbs PlantUML Wbs', insertText: '@startwbs\n* Business Process Modelling WBS\n** Launch the project\n*** Complete Stakeholder Research\n*** Initial Implementation Plan\n** Design phase\n*** Model of AsIs Processes Completed\n****< Model of AsIs Processes Completed1\n****> Model of AsIs Processes Completed2\n***< Measure AsIs performance metrics\n***< Identify Quick Wins\n@endwbs\n', block: true },
+        { language: 'markdown', label: '/ @startjson PlantUML Json', insertText: '@startjson\n{\n   "fruit":"Apple",\n   "size":"Large",\n   "color": ["Red", "Green"]\n}\n@endjson\n', block: true },
+        { language: 'markdown', label: '/ @startyaml PlantUML Yaml', insertText: '@startyaml\nfruit: Apple\nsize: Large\ncolor: \n  - Red\n  - Green\n@endyaml\n', block: true },
       )
     })
 

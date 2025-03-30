@@ -76,9 +76,13 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     return 0
   }
 
-  private async provideSelectionCompletionItems (model: Monaco.editor.IModel, selection: Monaco.Selection): Promise<Monaco.languages.CompletionList | undefined> {
+  private async provideSelectionCompletionItems (model: Monaco.editor.IModel, selection: Monaco.Selection, languageId: string): Promise<Monaco.languages.CompletionList | undefined> {
     const selectionEndLineMaxColumn = model.getLineMaxColumn(selection.endLineNumber)
     const items = this.ctx.editor.getSimpleCompletionItems().filter(item => {
+      if (item.language && item.language !== languageId) {
+        return false
+      }
+
       if (item.insertText.includes('${TM_SELECTED_TEXT}')) {
         return true
       }
@@ -126,9 +130,11 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
   }
 
   public async provideCompletionItems (model: Monaco.editor.IModel, position: Monaco.Position): Promise<Monaco.languages.CompletionList | undefined> {
+    const languageId = this.ctx.editor.getLineLanguageId(position.lineNumber, model)
+
     const selection = this.ctx.editor.getEditor().getSelection()!
     if (!selection.isEmpty()) {
-      return this.provideSelectionCompletionItems(model, selection)
+      return this.provideSelectionCompletionItems(model, selection, languageId)
     }
 
     const line = model.getLineContent(position.lineNumber)
@@ -142,6 +148,10 @@ class MdSyntaxCompletionProvider implements Monaco.languages.CompletionItemProvi
     }
 
     const items = this.ctx.editor.getSimpleCompletionItems().filter((item) => {
+      if (item.language && item.language !== languageId) {
+        return false
+      }
+
       return !item.block || startColumn === 1
     })
 
@@ -228,30 +238,30 @@ export default {
 
     ctx.editor.tapSimpleCompletionItems(items => {
       items.unshift(
-        { label: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
-        { label: '/ []() Link', insertText: '[${2:Link}]($1)' },
-        { label: '/ # Head 1', insertText: '# $1', block: true },
-        { label: '/ ## Head 2', insertText: '## $1', block: true },
-        { label: '/ ### Head 3', insertText: '### $1', block: true },
-        { label: '/ #### Head 4', insertText: '#### $1', block: true },
-        { label: '/ ##### Head 5', insertText: '##### $1', block: true },
-        { label: '/ ###### Head 6', insertText: '###### $1', block: true },
-        { label: '/ + List', insertText: '+ ' },
-        { label: '/ - List', insertText: '- ' },
-        { label: '/ > Blockquote', insertText: '> ' },
-        { label: '/ ` Code', insertText: '`$1`', surroundSelection: '$1', },
-        { label: '/ * Italic', insertText: '*$1*', surroundSelection: '$1', },
-        { label: '/ _ Italic', insertText: '_$1_', surroundSelection: '$1', },
-        { label: '/ ~ Sub', insertText: '~$1~', surroundSelection: '$1', },
-        { label: '/ ^ Sup', insertText: '^$1^', surroundSelection: '$1', },
-        { label: '/ ** Bold', insertText: '**$1**', surroundSelection: '$1', },
-        { label: '/ __ Bold', insertText: '__$1__', surroundSelection: '$1', },
-        { label: '/ ~~ Delete', insertText: '~~$1~~', surroundSelection: '$1', },
-        { label: '/ == Mark', insertText: '==$1==', surroundSelection: '$1', },
-        { label: '/ ``` Fence', insertText: '```$1\n$2\n```\n', block: true, surroundSelection: '$2', },
-        { label: '/ --- Horizontal Line', insertText: '---\n', block: true },
-        { label: '/ + [ ] TODO List', insertText: '+ [ ] ' },
-        { label: '/ - [ ] TODO List', insertText: '- [ ] ' },
+        { language: 'markdown', label: '/ ![]() Image', insertText: '![${2:Img}]($1)' },
+        { language: 'markdown', label: '/ []() Link', insertText: '[${2:Link}]($1)' },
+        { language: 'markdown', label: '/ # Head 1', insertText: '# $1', block: true },
+        { language: 'markdown', label: '/ ## Head 2', insertText: '## $1', block: true },
+        { language: 'markdown', label: '/ ### Head 3', insertText: '### $1', block: true },
+        { language: 'markdown', label: '/ #### Head 4', insertText: '#### $1', block: true },
+        { language: 'markdown', label: '/ ##### Head 5', insertText: '##### $1', block: true },
+        { language: 'markdown', label: '/ ###### Head 6', insertText: '###### $1', block: true },
+        { language: 'markdown', label: '/ + List', insertText: '+ ' },
+        { language: 'markdown', label: '/ - List', insertText: '- ' },
+        { language: 'markdown', label: '/ > Blockquote', insertText: '> ' },
+        { language: 'markdown', label: '/ ` Code', insertText: '`$1`', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ * Italic', insertText: '*$1*', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ _ Italic', insertText: '_$1_', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ ~ Sub', insertText: '~$1~', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ ^ Sup', insertText: '^$1^', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ ** Bold', insertText: '**$1**', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ __ Bold', insertText: '__$1__', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ ~~ Delete', insertText: '~~$1~~', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ == Mark', insertText: '==$1==', surroundSelection: '$1', },
+        { language: 'markdown', label: '/ ``` Fence', insertText: '```$1\n$2\n```\n', block: true, surroundSelection: '$2', },
+        { language: 'markdown', label: '/ --- Horizontal Line', insertText: '---\n', block: true },
+        { language: 'markdown', label: '/ + [ ] TODO List', insertText: '+ [ ] ' },
+        { language: 'markdown', label: '/ - [ ] TODO List', insertText: '- [ ] ' },
       )
     })
 

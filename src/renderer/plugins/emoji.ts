@@ -25,6 +25,11 @@ class EmojiCompletionProvider implements Monaco.languages.CompletionItemProvider
     const cursor = position.column - 1
     const linePrefixText = line.slice(0, cursor)
 
+    // check language id
+    if (this.ctx.editor.getLineLanguageId(position.lineNumber, model) !== 'markdown') {
+      return { suggestions: [] }
+    }
+
     // Check if the cursor is in a wiki link
     if (linePrefixText.lastIndexOf('[[') > linePrefixText.lastIndexOf(']]')) {
       return { suggestions: [] }

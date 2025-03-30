@@ -370,6 +370,7 @@ export interface BuildInSettings {
   'render.multimd-headerless': boolean,
   'render.multimd-multibody': boolean,
   'view.default-previewer-max-width': number,
+  'view.default-previewer-font-family': string,
   'assets.path-type': 'relative' | 'absolute' | 'auto',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,

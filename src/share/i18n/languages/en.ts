@@ -435,6 +435,7 @@ const data = {
       'view': {
         'default-previewer-max-width': 'Previewer Max Width',
         'default-previewer-max-width-desc': '≤ 100 means percentage, > 100 means pixels',
+        'default-previewer-font-family': 'Previewer Font Family',
       },
       'theme': 'Theme',
       'language': 'Language',

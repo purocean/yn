@@ -17,6 +17,7 @@ import type { CustomEditor, CustomEditorCtx } from '@fe/types'
 export type SimpleCompletionItem = {
   label: string,
   kind?: Monaco.languages.CompletionItemKind,
+  language?: string,
   insertText: string,
   detail?: string,
   block?: boolean, // block completion
@@ -162,6 +163,23 @@ export function highlightLine (line: number | [number, number], reveal?: boolean
 export function getOneIndent () {
   const options = editor.getModel()!.getOptions()
   return options.insertSpaces ? ' '.repeat(options.tabSize) : '\t'
+}
+
+/**
+ * Get language id of line.
+ * @param line
+ * @param model
+ * @returns
+ */
+export function getLineLanguageId (line: number, model?: Monaco.editor.ITextModel | null): string {
+  model ||= getEditor().getModel()
+
+  if ((model as any)?.tokenization?.grammarTokens?.getLineTokens) {
+    const lineTokens = (model as any).tokenization.grammarTokens.getLineTokens(line)
+    return lineTokens.getLanguageId()
+  } else {
+    throw new Error('Require model to be tokenized')
+  }
 }
 
 /**

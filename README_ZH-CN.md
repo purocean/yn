@@ -76,11 +76,14 @@
 
 ## 更新日志
 
-### [v3.81.3](https://github.com/purocean/yn/releases/tag/v3.81.3) 2025-01-27
+### [v3.82.1](https://github.com/purocean/yn/releases/tag/v3.82.1) 2025-03-30
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-win-x64-3.81.3.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-mac-arm64-3.81.3.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-mac-x64-3.81.3.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-linux-x86_64-3.81.3.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.81.3/Yank-Note-linux-amd64-3.81.3.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-win-x64-3.82.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-mac-arm64-3.82.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-mac-x64-3.82.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-linux-x86_64-3.82.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-linux-amd64-3.82.1.deb)
 
-1. fix: 修复 Windows 上可能删除目录失败问题
+1. feat: 新增预览区字体配置
+2. feat: 限制编辑器的 Markdown 语法建议在代码围栏中不显示
+3. fix: 修复某些情况下导出的 HTML 标题高亮不正确问题
+4. feat(plugin): 增加 `ctx.editor.getLineLanguageId` 方法获取某行的语言ID
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

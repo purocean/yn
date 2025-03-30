@@ -68,7 +68,7 @@ export default {
       /* eslint-disable no-template-curly-in-string */
 
       items.push(
-        { label: '/ []() Drawio Link', insertText: '[${2:Drawio}]($1){link-type="drawio"}', block: true },
+        { language: 'markdown', label: '/ []() Drawio Link', insertText: '[${2:Drawio}]($1){link-type="drawio"}', block: true },
       )
     })
   }
