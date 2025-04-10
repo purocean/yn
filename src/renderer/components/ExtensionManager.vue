@@ -158,14 +158,11 @@
             </div>
             <div class="content-wrapper">
               <group-tabs class="x-tabs" size="small" :tabs="contentTypes" v-model="contentType" />
-              <template v-if="useNpmjsReadmePage">
-                <div v-show="iframeLoaded" class="content">
-                  <iframe
-                    @load="iframeOnload"
-                    sandbox="allow-scripts allow-popups allow-same-origin"
-                    referrerpolicy="no-referrer"
-                    :src="`/api/proxy?url=https://www.npmjs.com/package/${currentExtension.id}`"
-                  />
+              <template v-if="showHomePageLink">
+                <div class="content" style="text-align: center; padding-top: 10em">
+                  <a :href="`https://www.npmjs.com/package/${currentExtension.id}`" target="_blank" rel="noopener noreferrer">
+                    {{ `https://www.npmjs.com/package/${currentExtension.id}` }}
+                  </a>
                 </div>
                 <div v-if="!iframeLoaded" class="placeholder">{{ $t('loading') }}</div>
               </template>
@@ -339,7 +336,7 @@ const reloadRequired = computed(() => {
   return dirty.value || extensions.value.some(item => item.dirty)
 })
 
-const useNpmjsReadmePage = computed(() => {
+const showHomePageLink = computed(() => {
   return !!(currentExtension.value &&
     currentExtension.value.dist.unpackedSize &&
     contentType.value === 'readme' &&
