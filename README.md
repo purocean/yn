@@ -13,7 +13,7 @@ English | [中文说明](./README_ZH-CN.md) | [Русский](./README_RU.md)
 ## Highlights
 
 - **Easy to use:** Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
-- **Powerful:** Support version control; Applets, runnable code blocks, tables, PlantUML, Drawio, macro replacements, etc., can be embedded in the document; support for [OpenAI](https://openai.com) auto completion.
+- **Powerful:** Support version control; Applets, runnable code blocks, tables, PlantUML, Drawio, macro replacements, etc., can be embedded in the document; support for AI Copilot.
 - **High compatibility:** Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
 - **Plug-in extension:** Support users to write their own plug-ins to expand the functionality of the editor.
 - **Encryption supported:** Use encryption to save private files such as account number, and the password can be set separately for each file.
