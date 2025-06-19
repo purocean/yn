@@ -107,7 +107,7 @@
     "dexie": "^4.0.8",
     "dom-to-image": "^2.6.0",
     "electron": "33.3.1",
-    "electron-builder": "^23.6.0",
+    "electron-builder": "^26.0.12",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
