@@ -57,7 +57,7 @@
     "socks": "^2.8.3",
     "tar-stream": "^2.2.0",
     "transliteration": "^2.2.0",
-    "undici": "^6.21.1",
+    "undici": "^6.21.2",
     "uuid": "^9.0.0",
     "yaml": "^2.2.2",
     "yargs": "^15.3.1"
