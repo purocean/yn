@@ -13,7 +13,7 @@ jobs:
             platform: 'mac'
           - os: windows-2019
             platform: 'win'
-          - os: ubuntu-24.04
+          - os: ubuntu-22.04
             platform: 'linux'
     runs-on: ${{ matrix.os }}
     env:
