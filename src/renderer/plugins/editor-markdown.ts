@@ -151,6 +151,18 @@ export default {
           ctx.view.refresh()
         }
       })
+
+      // Add a double-click event to reveal the line in preview
+      let lastMouseDownTime = 0
+      editor.onMouseDown(() => {
+        const currentTime = Date.now()
+
+        if (currentTime - lastMouseDownTime < 300) {
+          revealLineInPreview()
+        }
+
+        lastMouseDownTime = currentTime
+      })
     })
 
     ctx.statusBar.tapMenus(menus => {
