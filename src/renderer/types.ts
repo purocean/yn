@@ -352,6 +352,7 @@ export interface BuildInSettings {
   'editor.enable-ai-copilot-action': boolean,
   'editor.font-family': string,
   'editor.rulers': string,
+  'editor.mouse-wheel-scroll-sensitivity': number,
   'editor.complete-emoji': boolean,
   'editor.todo-with-time': boolean,
   'editor.suggest-on-trigger-characters': boolean,

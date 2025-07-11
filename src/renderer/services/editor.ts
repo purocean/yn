@@ -103,6 +103,7 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
   fontLigatures: getSetting('editor.font-ligatures', false),
   wordSeparators: '`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?。？！，、；：“”‘’（）《》〈〉【】『』「」﹃﹄〔〕',
   rulers: getSetting('editor.rulers', '').split(',').map(Number),
+  mouseWheelScrollSensitivity: getSetting('editor.mouse-wheel-scroll-sensitivity', 1.0),
 })
 
 /**

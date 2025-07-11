@@ -410,6 +410,7 @@ const data = {
         'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
         'font-family': 'Font Family',
         'rulers': 'Rulers',
+        'mouse-wheel-scroll-sensitivity': 'Mouse Wheel Scroll Sensitivity',
         'font-ligatures': 'Font Ligatures',
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
         'todo-with-time': 'Add time when checking todo',

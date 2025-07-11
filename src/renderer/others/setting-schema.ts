@@ -227,6 +227,17 @@ const schema: SettingSchema = ({
         inputAttributes: { placeholder: 'e.g., \'Courier New\', monospace' }
       },
     },
+    'editor.mouse-wheel-scroll-sensitivity': {
+      defaultValue: 1.0,
+      title: 'T_setting-panel.schema.editor.mouse-wheel-scroll-sensitivity',
+      type: 'number',
+      format: 'range',
+      minimum: 0.1,
+      maximum: 5,
+      step: 0.1,
+      group: 'editor',
+      required: true,
+    },
     'editor.rulers': {
       defaultValue: '',
       title: 'T_setting-panel.schema.editor.rulers',

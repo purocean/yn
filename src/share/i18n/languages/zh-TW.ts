@@ -401,6 +401,7 @@ const data: BaseLanguage = {
         'enable-preview': '開啟預覽 - 開啟新檔案使用暫存標籤，雙擊標籤以變更',
         'font-family': '字體',
         'rulers': '標尺',
+        'mouse-wheel-scroll-sensitivity': '鼠標滾動敏感度',
         'font-ligatures': '字體連字',
         'complete-emoji': '自動補全 Emoji - 輸入 : 時顯示 Emoji 清單',
         'todo-with-time': '勾選待辦事項時自動加入時間',
