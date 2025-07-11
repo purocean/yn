@@ -400,6 +400,7 @@ const data: BaseLanguage = {
         'line-numbers': '行号',
         'enable-preview': '开启预览 - 打开新文件使用临时标签，双击标签以更改',
         'font-family': '字体',
+        'rulers': '标尺',
         'font-ligatures': '字体连字',
         'complete-emoji': '自动补全 Emoji - 输入 : 时显示 Emoji 列表',
         'todo-with-time': '勾选待办事项时自动添加时间',

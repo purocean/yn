@@ -227,6 +227,15 @@ const schema: SettingSchema = ({
         inputAttributes: { placeholder: 'e.g., \'Courier New\', monospace' }
       },
     },
+    'editor.rulers': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.editor.rulers',
+      type: 'string',
+      group: 'editor',
+      options: {
+        inputAttributes: { placeholder: 'e.g., 80,120' }
+      },
+    },
     'editor.font-ligatures': {
       defaultValue: false,
       title: 'T_setting-panel.schema.editor.font-ligatures',

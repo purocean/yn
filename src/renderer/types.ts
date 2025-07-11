@@ -351,6 +351,7 @@ export interface BuildInSettings {
   'editor.enable-preview': boolean,
   'editor.enable-ai-copilot-action': boolean,
   'editor.font-family': string,
+  'editor.rulers': string,
   'editor.complete-emoji': boolean,
   'editor.todo-with-time': boolean,
   'editor.suggest-on-trigger-characters': boolean,
