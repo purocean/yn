@@ -371,6 +371,7 @@ export interface BuildInSettings {
   'render.multimd-rowspan': boolean,
   'render.multimd-headerless': boolean,
   'render.multimd-multibody': boolean,
+  'render.extra-css-style': string,
   'view.default-previewer-max-width': number,
   'view.default-previewer-font-family': string,
   'assets.path-type': 'relative' | 'absolute' | 'auto',

@@ -411,6 +411,16 @@ const schema: SettingSchema = ({
       required: true,
       needReloadWindowWhenChanged: true,
     },
+    'render.extra-css-style': {
+      defaultValue: '.markdown-view .markdown-body a {\n  /* color: red; */\n}',
+      title: 'T_setting-panel.schema.render.extra-css-style',
+      type: 'string',
+      group: 'render',
+      format: 'textarea',
+      options: {
+        inputAttributes: { placeholder: 'e.g., .markdown-view .markdown-body a { color: red; }', style: 'height: 8em' }
+      },
+    },
     shell: {
       defaultValue: '',
       title: 'T_setting-panel.schema.shell',

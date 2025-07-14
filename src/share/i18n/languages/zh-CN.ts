@@ -424,6 +424,7 @@ const data: BaseLanguage = {
         'multimd-rowspan': '[markdown-it-multimd-table]: 启用 rowspan 语法',
         'multimd-headerless': '[markdown-it-multimd-table]: 启用 headerless 语法',
         'multimd-multibody': '[markdown-it-multimd-table]: 启用 multibody 语法',
+        'extra-css-style': '自定义 CSS 样式',
       },
       'view': {
         'default-previewer-max-width': '预览区最大宽度',

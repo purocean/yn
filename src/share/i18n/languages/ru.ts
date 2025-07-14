@@ -434,6 +434,7 @@ const data: BaseLanguage = {
         'multimd-rowspan': 'Включить синтаксис объединением рядов [multimd]:',
         'multimd-headerless': 'Включить синтаксис без заголовков [multimd]:',
         'multimd-multibody': 'Включить многокомпонентный синтаксис [multimd]:',
+        'extra-css-style': 'Пользовательский CSS стиль',
       },
       'view': {
         'default-previewer-max-width': 'Максимальная ширина окна предпросмотра',
