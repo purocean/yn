@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.82.1",
+  "version": "3.83.0",
   "description": "Yank Note: A highly extensible Markdown editor, designed for productivity.",
   "main": "dist/main/app.js",
   "license": "AGPL-3.0",
