@@ -11,7 +11,7 @@ jobs:
         include:
           - os: macos-13
             platform: 'mac'
-          - os: windows-2019
+          - os: windows-2022
             platform: 'win'
           - os: ubuntu-22.04
             platform: 'linux'
