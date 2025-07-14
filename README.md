@@ -76,16 +76,16 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.83.0](https://github.com/purocean/yn/releases/tag/v3.83.0) 2025-07-14
+### [v3.83.1](https://github.com/purocean/yn/releases/tag/v3.83.1) 2025-07-14
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-win-x64-3.83.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-mac-arm64-3.83.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-mac-x64-3.83.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-linux-x86_64-3.83.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-linux-amd64-3.83.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-win-x64-3.83.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-mac-arm64-3.83.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-mac-x64-3.83.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-linux-x86_64-3.83.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-linux-amd64-3.83.1.deb)
 
-1. feat: Added configuration for editor scroll wheel sensitivity  
-2. feat: Added configuration for editor ruler settings  
-3. feat: Added support for custom CSS styling during rendering  
-4. feat: Double-clicking the editor highlights the current line in preview  
-5. fix: Resolved potential freeze when saving encrypted documents  
-6. fix: Fixed extension details display failure issue  
+1. feat: Added configuration for editor scroll wheel sensitivity
+2. feat: Added configuration for editor ruler settings
+3. feat: Added support for custom CSS styling during rendering
+4. feat: Double-clicking the editor highlights the current line in preview
+5. fix: Resolved potential freeze when saving encrypted documents
+6. fix: Fixed extension details display failure issue
 7. feat(plugin): Added `editor` callback parameter to `SETTING_PANEL_AFTER_SHOW` Hook to access configuration editor instances
 
 [More release notes](https://github.com/purocean/yn/releases)
