@@ -12,9 +12,9 @@ import { createDoc, isMarkdownFile, isMarked, markDoc, switchDoc, toUri, unmarkD
 import { DEFAULT_MARKDOWN_EDITOR_NAME, whenEditorReady } from '@fe/services/editor'
 import { getLanguage, setLanguage, t } from '@fe/services/i18n'
 import { fetchSettings } from '@fe/services/setting'
-import { getPurchased } from '@fe/others/premium'
+import { getPurchased, showPremium } from '@fe/others/premium'
 import * as extension from '@fe/others/extension'
-import { setTheme } from '@fe/services/theme'
+import { getThemeName, setTheme } from '@fe/services/theme'
 import { toggleOutline } from '@fe/services/workbench'
 import * as view from '@fe/services/view'
 import * as tree from '@fe/services/tree'
@@ -154,6 +154,23 @@ registerHook('SETTING_CHANGED', ({ schema, changedKeys }) => {
       indexer.triggerWatchCurrentRepo()
     }, 500)
   }
+})
+
+registerHook('SETTING_PANEL_AFTER_SHOW', ({ editor }) => {
+  editor.watch('root.theme', () => {
+    const themeEditor = editor.getEditor('root.theme')
+    const theme = themeEditor.getValue()
+    const oldTheme = getThemeName()
+    if (oldTheme !== theme) {
+      if (getPurchased()) {
+        setTheme(theme)
+      } else {
+        themeEditor.setValue(oldTheme)
+        useToast().show('warning', t('premium.need-purchase', 'Theme'))
+        showPremium()
+      }
+    }
+  })
 })
 
 registerHook('EXTENSION_READY', () => {

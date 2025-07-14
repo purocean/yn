@@ -3,6 +3,15 @@ import type { Plugin } from '@fe/context'
 export default {
   name: 'custom-styles',
   register: (ctx) => {
+    let renderExtraStyle: HTMLStyleElement | null = null
+    async function updateRenderExtraStyle (style: string) {
+      if (!renderExtraStyle) {
+        renderExtraStyle = await ctx.view.addStyles(style)
+      } else {
+        renderExtraStyle.textContent = style
+      }
+    }
+
     ctx.registerHook('STARTUP', () => {
       const head = document.getElementsByTagName('head')[0]
       const cssLink = document.createElement('link')
@@ -47,6 +56,25 @@ export default {
           ctx.base.reloadMainWindow()
         }
       }
+
+      if (changedKeys.includes('render.extra-css-style')) {
+        const extraStyle = ctx.setting.getSetting('render.extra-css-style', '')
+        updateRenderExtraStyle(extraStyle)
+      }
+    })
+
+    ctx.registerHook('SETTING_PANEL_AFTER_SHOW', ({ editor }) => {
+      const debouncedUpdate = ctx.lib.lodash.debounce(updateRenderExtraStyle, 300)
+      const input: HTMLTextAreaElement = editor.getEditor('root.render.extra-css-style').input
+      input.addEventListener('input', (e) => {
+        const value = (e.target as HTMLTextAreaElement).value
+        debouncedUpdate(value)
+      })
+
+      editor.watch('root.render.extra-css-style', () => {
+        const value = editor.getEditor('root.render.extra-css-style').getValue()
+        debouncedUpdate(value)
+      })
     })
   }
 } as Plugin

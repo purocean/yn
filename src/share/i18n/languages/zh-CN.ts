@@ -400,6 +400,8 @@ const data: BaseLanguage = {
         'line-numbers': '行号',
         'enable-preview': '开启预览 - 打开新文件使用临时标签，双击标签以更改',
         'font-family': '字体',
+        'rulers': '标尺',
+        'mouse-wheel-scroll-sensitivity': '鼠标滚动敏感度',
         'font-ligatures': '字体连字',
         'complete-emoji': '自动补全 Emoji - 输入 : 时显示 Emoji 列表',
         'todo-with-time': '勾选待办事项时自动添加时间',
@@ -422,6 +424,7 @@ const data: BaseLanguage = {
         'multimd-rowspan': '[markdown-it-multimd-table]: 启用 rowspan 语法',
         'multimd-headerless': '[markdown-it-multimd-table]: 启用 headerless 语法',
         'multimd-multibody': '[markdown-it-multimd-table]: 启用 multibody 语法',
+        'extra-css-style': '自定义 CSS 样式',
       },
       'view': {
         'default-previewer-max-width': '预览区最大宽度',

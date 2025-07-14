@@ -13,7 +13,7 @@
 ## 特色
 
 - **使用方便**：使用 Monaco 内核，专为 Markdown 优化，拥有和 VSCode 一样的编辑体验。
-- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等；支持接入 [OpenAI](https://openai.com) 自动补全。
+- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等；支持 AI Copilot。
 - **兼容性强**：数据保存为本地 Markdown 文件；拓展功能尽量用 Markdown 原有的语法实现。
 - **插件拓展**：支持用户编写自己的插件来拓展编辑器的功能。
 - **支持加密**：用来保存账号等隐私文件，文件可单独设置密码。
@@ -76,14 +76,17 @@
 
 ## 更新日志
 
-### [v3.82.1](https://github.com/purocean/yn/releases/tag/v3.82.1) 2025-03-30
+### [v3.83.0](https://github.com/purocean/yn/releases/tag/v3.83.0) 2025-07-14
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-win-x64-3.82.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-mac-arm64-3.82.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-mac-x64-3.82.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-linux-x86_64-3.82.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.82.1/Yank-Note-linux-amd64-3.82.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-win-x64-3.83.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-mac-arm64-3.83.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-mac-x64-3.83.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-linux-x86_64-3.83.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.83.0/Yank-Note-linux-amd64-3.83.0.deb)
 
-1. feat: 新增预览区字体配置
-2. feat: 限制编辑器的 Markdown 语法建议在代码围栏中不显示
-3. fix: 修复某些情况下导出的 HTML 标题高亮不正确问题
-4. feat(plugin): 增加 `ctx.editor.getLineLanguageId` 方法获取某行的语言ID
+1. feat: 增加配置编辑器滚轮敏感度配置
+2. feat: 增加配置编辑器标尺配置
+3. feat: 增加渲染自定义 CSS 样式配置
+4. feat: 双击编辑器可以在预览中高亮当前行
+5. fix: 修复保存加密文档可能卡死问题
+6. fix: 修复扩展详情可能不显示问题
+7. feat(plugin): `SETTING_PANEL_AFTER_SHOW` Hook 增加 `editor` 回调参数，用来获取配置编辑器实例
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

@@ -722,18 +722,21 @@ export async function ensureCurrentFileSaved () {
       }
     }
 
-    const confirm = await useModal().confirm({
+    const saveConfirmResolvers = Promise.withResolvers()
+    const confirmPromise = useModal().confirm({
       title: t('save-check-dialog.title'),
       content: t('save-check-dialog.desc'),
       action: h(Fragment, [
         h('button', {
           onClick: async () => {
-            await saveContent().catch(error => {
+            try {
+              await saveContent()
+              saveConfirmResolvers.resolve(true)
+            } catch (error: any) {
+              logger.error('saveDoc', error)
               useToast().show('warning', error.message)
-              throw error
-            })
-
-            useModal().ok()
+              saveConfirmResolvers.resolve(false)
+            }
           }
         }, t('save')),
         h('button', {
@@ -746,6 +749,8 @@ export async function ensureCurrentFileSaved () {
     })
 
     checkFile()
+
+    const confirm = await Promise.race([confirmPromise, saveConfirmResolvers.promise])
 
     if (confirm) {
       if (!store.getters.isSaved && currentFile.content) {

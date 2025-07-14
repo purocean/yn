@@ -410,6 +410,8 @@ const data: BaseLanguage = {
         'line-numbers': 'Номера строк',
         'enable-preview': 'Включить предпросмотр - открывать новые файлы с помощью временных вкладок, двойной клик по вкладке для изменения',
         'font-family': 'Семейство шрифтов',
+        'rulers': 'Линейки',
+        'mouse-wheel-scroll-sensitivity': 'Чувствительность прокрутки мышью',
         'font-ligatures': 'Шрифтовые лигатуры',
         'complete-emoji': 'Полный список эмодзи - введите : для отображения списка эмодзи',
         'todo-with-time': 'Добавлять время при проверке TODO',
@@ -432,6 +434,7 @@ const data: BaseLanguage = {
         'multimd-rowspan': 'Включить синтаксис объединением рядов [multimd]:',
         'multimd-headerless': 'Включить синтаксис без заголовков [multimd]:',
         'multimd-multibody': 'Включить многокомпонентный синтаксис [multimd]:',
+        'extra-css-style': 'Пользовательский CSS стиль',
       },
       'view': {
         'default-previewer-max-width': 'Максимальная ширина окна предпросмотра',

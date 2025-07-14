@@ -409,6 +409,8 @@ const data = {
         'line-numbers': 'Line Numbers',
         'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
         'font-family': 'Font Family',
+        'rulers': 'Rulers',
+        'mouse-wheel-scroll-sensitivity': 'Mouse Wheel Scroll Sensitivity',
         'font-ligatures': 'Font Ligatures',
         'complete-emoji': 'Complete Emoji - Input : to display emoji list',
         'todo-with-time': 'Add time when checking todo',
@@ -431,6 +433,7 @@ const data = {
         'multimd-rowspan': '[markdown-it-multimd-table]: Enable rowspan syntax',
         'multimd-headerless': '[markdown-it-multimd-table]: Enable headerless syntax',
         'multimd-multibody': '[markdown-it-multimd-table]: Enable multibody syntax',
+        'extra-css-style': 'Custom CSS Style',
       },
       'view': {
         'default-previewer-max-width': 'Previewer Max Width',

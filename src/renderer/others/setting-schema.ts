@@ -227,6 +227,26 @@ const schema: SettingSchema = ({
         inputAttributes: { placeholder: 'e.g., \'Courier New\', monospace' }
       },
     },
+    'editor.mouse-wheel-scroll-sensitivity': {
+      defaultValue: 1.0,
+      title: 'T_setting-panel.schema.editor.mouse-wheel-scroll-sensitivity',
+      type: 'number',
+      format: 'range',
+      minimum: 0.1,
+      maximum: 5,
+      step: 0.1,
+      group: 'editor',
+      required: true,
+    },
+    'editor.rulers': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.editor.rulers',
+      type: 'string',
+      group: 'editor',
+      options: {
+        inputAttributes: { placeholder: 'e.g., 80,120' }
+      },
+    },
     'editor.font-ligatures': {
       defaultValue: false,
       title: 'T_setting-panel.schema.editor.font-ligatures',
@@ -390,6 +410,16 @@ const schema: SettingSchema = ({
       group: 'render',
       required: true,
       needReloadWindowWhenChanged: true,
+    },
+    'render.extra-css-style': {
+      defaultValue: '.markdown-view .markdown-body a {\n  /* color: red; */\n}',
+      title: 'T_setting-panel.schema.render.extra-css-style',
+      type: 'string',
+      group: 'render',
+      format: 'textarea',
+      options: {
+        inputAttributes: { placeholder: 'e.g., .markdown-view .markdown-body a { color: red; }', style: 'height: 8em' }
+      },
     },
     shell: {
       defaultValue: '',
