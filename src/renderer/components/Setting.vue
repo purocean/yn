@@ -5,7 +5,7 @@
     <div v-show="isReady" ref="refEditor" class="editor" @click="onClick" />
     <div class="action">
       <a href="javascript:void(0)" @click="showKeyboardShortcuts">{{ $t('setting-panel.change-keyboard-shortcuts') }}</a>
-      <button class="btn tr" @click="cancel">{{$t('cancel')}}</button>
+      <button class="btn tr" @click="close">{{$t('cancel')}}</button>
       <button class="btn primary tr" @click="ok">{{$t('ok')}}</button>
     </div>
   </div>
@@ -175,7 +175,8 @@ export default defineComponent({
       removeHook('I18N_CHANGE_LANGUAGE', setLanguage)
     })
 
-    const cancel = () => {
+    const close = async () => {
+      await triggerHook('SETTING_PANEL_BEFORE_CLOSE', { editor }, { breakable: true })
       emit('close')
     }
 
@@ -208,7 +209,7 @@ export default defineComponent({
 
         await writeSettings({ ...value })
       }
-      emit('close')
+      close()
     }
 
     const onClick = async (e: Event) => {
@@ -253,13 +254,13 @@ export default defineComponent({
     }
 
     function showKeyboardShortcuts () {
-      emit('close')
+      close()
       getActionHandler('keyboard-shortcuts.show-manager')()
     }
 
     watch(tab, updateTab)
 
-    return { isReady, tab, tabs, show, refEditor, cancel, ok, onClick, showKeyboardShortcuts }
+    return { isReady, tab, tabs, show, refEditor, close, ok, onClick, showKeyboardShortcuts }
   },
 })
 </script>
