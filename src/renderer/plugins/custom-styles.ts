@@ -73,8 +73,14 @@ export default {
 
       editor.watch('root.render.extra-css-style', () => {
         const value = editor.getEditor('root.render.extra-css-style').getValue()
-        debouncedUpdate(value)
+        updateRenderExtraStyle(value)
       })
+    })
+
+    ctx.registerHook('SETTING_PANEL_BEFORE_CLOSE', async () => {
+      await ctx.utils.sleep(100)
+      const extraStyle = ctx.setting.getSetting('render.extra-css-style', '')
+      updateRenderExtraStyle(extraStyle)
     })
   }
 } as Plugin

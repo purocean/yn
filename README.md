@@ -76,9 +76,9 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.83.1](https://github.com/purocean/yn/releases/tag/v3.83.1) 2025-07-14
+### [v3.83.2](https://github.com/purocean/yn/releases/tag/v3.83.2) 2025-07-15
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-win-x64-3.83.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-mac-arm64-3.83.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-mac-x64-3.83.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-linux-x86_64-3.83.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.83.1/Yank-Note-linux-amd64-3.83.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-win-x64-3.83.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-mac-arm64-3.83.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-mac-x64-3.83.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-linux-x86_64-3.83.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-linux-amd64-3.83.2.deb)
 
 1. feat: Added configuration for editor scroll wheel sensitivity
 2. feat: Added configuration for editor ruler settings
