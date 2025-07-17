@@ -394,6 +394,8 @@ export interface BuildInSettings {
   'keep-running-after-closing-window': boolean,
   'hide-main-window-on-startup': boolean,
   'plantuml-api': string,
+  'plantuml-custom-api': string,
+  'use-custom-api': boolean,
 }
 
 export type BuildInActions = {

@@ -443,6 +443,7 @@ const data: BaseLanguage = {
       'envs': '环境变量',
       'auto-save': '自动保存',
       'plantuml-api': 'PlantUML 端点',
+      'plantuml-custom-api': '自定义PlantUML端点',
       'updater': {
         'source': '更新源',
       },
@@ -475,6 +476,7 @@ const data: BaseLanguage = {
       },
       'keep-running-after-closing-window': '关闭窗口后保持运行',
       'hide-main-window-on-startup': '启动时隐藏主窗口',
+      'use-custom-api': '启用自定义PlantUML端点',
     },
     'tabs': {
       'repos': '仓库',

@@ -213,6 +213,7 @@ export default defineComponent({
     }
 
     const onClick = async (e: Event) => {
+      
       const target = e.target as HTMLInputElement
       if (target.tagName === 'INPUT' && target.name) {
         const jsonPath = target.name.replace(/\]/g, '').replace(/\[/g, '.')

@@ -453,6 +453,7 @@ const data: BaseLanguage = {
       'envs': 'Окружение',
       'auto-save': 'Автосохранение',
       'plantuml-api': 'PlantUML точка',
+      'plantuml-custom-api': 'Пользовательский PlantUML сервер',
       'updater': {
         'source': 'Обновить источник',
       },
@@ -485,6 +486,7 @@ const data: BaseLanguage = {
       },
       'hide-main-window-on-startup': 'Скрыть главное окно при запуске',
       'keep-running-after-closing-window': 'Продолжать работу после закрытия окна',
+      'use-custom-api': 'Включить пользовательскую конечную точку PlantUML',
     }
   },
   'quick-open': {
