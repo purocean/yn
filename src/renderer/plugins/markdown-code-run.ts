@@ -265,7 +265,7 @@ const RunPlugin = (md: Markdown) => {
       if (['bash', 'shell', 'sh', 'python', 'py'].indexOf(token.info) !== -1) {
         firstLine = '# --run--'
         code = firstLine + '\n' + code
-      } else if ('bat' === token.info) {
+      } else if (token.info === 'bat') {
         firstLine = 'REM --run--'
         code = firstLine + '\n' + code
       } else if (['php', 'node'].indexOf(token.info) !== -1) {
@@ -276,13 +276,13 @@ const RunPlugin = (md: Markdown) => {
           firstLine = '// --run--'
           code = firstLine + '\n' + code
         }
-      } else if ('c' === token.info) {
+      } else if (token.info === 'c') {
         firstLine = '// --run-- gcc $tmpFile.c -o $tmpFile.out && $tmpFile.out'
         code = firstLine + '\n' + code
-      } else if ('c++' === token.info) {
+      } else if (token.info === 'c++') {
         firstLine = '// --run-- g++ $tmpFile.c -o $tmpFile.out && $tmpFile.out'
         code = firstLine + '\n' + code
-      } else if ('java' === token.info) {
+      } else if (token.info === 'java') {
         firstLine = '// --run-- java $tmpFile.java'
         code = firstLine + '\n' + code
       }
