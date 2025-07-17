@@ -67,7 +67,6 @@ async function getCacheData (key: string, gen: () => Promise<any>) {
 
 export default async function (data: string): Promise<{ content: any, type: string }> {
   const api: string = config.get('plantuml-api', 'local')
-
   if (api.startsWith('local')) {
     try {
       await commandExists('java')
@@ -97,13 +96,21 @@ export default async function (data: string): Promise<{ content: any, type: stri
 
     return { content, type }
   } else {
-    const url = api.replace('{data}', plantumlBase64(data))
-    const dispatcher = await getAction('get-proxy-dispatcher')(url)
     let type = api.includes('/svg/') ? 'image/svg+xml' : 'image/png'
+    const api_path :string = config.get('plantuml-custom-api', '')
+    const use_custom_api :boolean = config.get('use-custom-api', false)
+    let api_url = api;
+    if(api_path&&use_custom_api){
+      api_url = path.join(api_path,api.includes('/svg/') ?"svg":"png",plantumlBase64(data))
+    }else{
+      api_url = api.replace('{data}', plantumlBase64(data))
+    }
+    
+    const dispatcher = await getAction('get-proxy-dispatcher')(api_url)
 
     const cacheKey = getCacheKey(api, type, data)
     const content = await getCacheData(cacheKey, async () => {
-      const res = await request(url, { dispatcher })
+      const res = await request(api_url, { dispatcher })
       type = res.headers['content-type'] as string
       return res.body
     })

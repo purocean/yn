@@ -126,6 +126,12 @@ const schema: SettingSchema = ({
       required: true,
       group: 'other',
     },
+    'plantuml-custom-api': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.plantuml-custom-api',
+      type: 'string',
+      group: 'other',
+    },
     'doc-history.number-limit': {
       defaultValue: 500,
       title: 'T_setting-panel.schema.doc-history.number-limit',
@@ -466,6 +472,14 @@ const schema: SettingSchema = ({
     'keep-running-after-closing-window': {
       defaultValue: !isMacOS,
       title: 'T_setting-panel.schema.keep-running-after-closing-window',
+      type: 'boolean',
+      group: 'other',
+      format: 'checkbox',
+      required: true,
+    },
+    'use-custom-api': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.use-custom-api',
       type: 'boolean',
       group: 'other',
       format: 'checkbox',

@@ -452,6 +452,7 @@ const data = {
       'envs': 'Environments',
       'auto-save': 'Auto Save',
       'plantuml-api': 'PlantUML Endpoint',
+      'plantuml-custom-api': 'Custom PlantUML Endpoint',
       'updater': {
         'source': 'Update Source',
       },
@@ -484,6 +485,7 @@ const data = {
       },
       'hide-main-window-on-startup': 'Hide Main Window on Startup',
       'keep-running-after-closing-window': 'Keep Running after Closing Window',
+      'use-custom-api': 'Enable Custom PlantUML Endpoint',
     }
   },
   'quick-open': {
