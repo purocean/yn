@@ -268,9 +268,14 @@ const RunPlugin = (md: Markdown) => {
       } else if ('bat' === token.info) {
         firstLine = 'REM --run--'
         code = firstLine + '\n' + code
-      } else if (['php', 'node', 'javascript', 'js'].indexOf(token.info) !== -1) {
+      } else if (['php', 'node'].indexOf(token.info) !== -1) {
         firstLine = '// --run--'
         code = firstLine + '\n' + code
+      } else if (['javascript', 'js'].indexOf(token.info) !== -1) {
+        if (!firstLine.includes('// --')) {
+          firstLine = '// --run--'
+          code = firstLine + '\n' + code
+        }
       } else if ('c' === token.info) {
         firstLine = '// --run-- gcc $tmpFile.c -o $tmpFile.out && $tmpFile.out'
         code = firstLine + '\n' + code
