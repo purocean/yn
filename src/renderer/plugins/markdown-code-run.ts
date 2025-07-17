@@ -107,7 +107,7 @@ const RunCode = defineComponent({
 
         abortController.value = new AbortController()
 
-            const res = await runner.value.run(language!, code, {
+        const res = await runner.value.run(language!, code, {
           signal: abortController.value?.signal,
           flusher: (type, value) => appendLog?.(type, value)
         })
@@ -265,19 +265,19 @@ const RunPlugin = (md: Markdown) => {
       if (['bash', 'shell', 'sh', 'python', 'py'].indexOf(token.info) !== -1) {
         firstLine = '# --run--'
         code = firstLine + '\n' + code
-      } else if ('bat' == token.info) {
+      } else if ('bat' === token.info) {
         firstLine = 'REM --run--'
         code = firstLine + '\n' + code
       } else if (['php', 'node', 'javascript', 'js'].indexOf(token.info) !== -1) {
         firstLine = '// --run--'
         code = firstLine + '\n' + code
-      } else if ('c' == token.info) {
+      } else if ('c' === token.info) {
         firstLine = '// --run-- gcc $tmpFile.c -o $tmpFile.out && $tmpFile.out'
         code = firstLine + '\n' + code
-      } else if ('c++' == token.info) {
+      } else if ('c++' === token.info) {
         firstLine = '// --run-- g++ $tmpFile.c -o $tmpFile.out && $tmpFile.out'
         code = firstLine + '\n' + code
-      } else if ('java' == token.info) {
+      } else if ('java' === token.info) {
         firstLine = '// --run-- java $tmpFile.java'
         code = firstLine + '\n' + code
       }
