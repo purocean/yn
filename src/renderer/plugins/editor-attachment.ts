@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
-import type { Doc } from '@fe/types'
+import type { BaseDoc, Doc } from '@fe/types'
 import { encodeMarkdownLink, escapeMd } from '@fe/utils'
 import { basename, dirname, isBelongTo, join, normalizeSep, relative } from '@fe/utils/path'
 import store from '@fe/support/store'
@@ -52,7 +52,7 @@ async function linkFile () {
   }
 }
 
-function addDocument (doc?: Doc | null) {
+function addDocument (doc?: BaseDoc | null) {
   if (!doc) return
 
   const file = store.state.currentFile
@@ -66,7 +66,7 @@ function addDocument (doc?: Doc | null) {
     const filePath = isBelongTo(cwd, doc.path)
       ? relative(cwd, doc.path)
       : join('/', doc.path)
-    const fileName = doc.name.replace(/\.[^.]*$/, '')
+    const fileName = doc.name!.replace(/\.[^.]*$/, '')
     insert(`[${fileName}](${encodeMarkdownLink(filePath)})`)
   } else {
     throw new Error('No file opened.')

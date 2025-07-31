@@ -257,6 +257,31 @@ export namespace Components {
 
     export type SchemaTapper = (schema: Schema) => void
   }
+
+  export namespace QuickOpen {
+    export type TabKey = 'marked' | 'file' | 'tags'
+    type BaseDataItem = {
+      key: string,
+      type: string,
+      title: string,
+      description: string,
+      tip?: string,
+      marked: boolean,
+      payload: any,
+    }
+
+    export interface DataItemFile extends BaseDataItem {
+      type: 'file';
+      payload: BaseDoc;
+    }
+
+    export interface DataItemTag extends BaseDataItem {
+      type: 'tag';
+      payload: string;
+    }
+
+    export type DataItem = DataItemFile | DataItemTag;
+  }
 }
 
 export type FileSort = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: 'asc' | 'desc' }
@@ -424,7 +449,7 @@ export type BuildInActions = {
   'editor.refresh-custom-editor': () => void,
   'editor.trigger-save': () => void,
   'workbench.show-quick-open': () => void,
-  'filter.choose-document': (filter?: (item: BaseDoc) => boolean) => Promise<Doc | null>,
+  'filter.choose-document': (filter?: (item: BaseDoc) => boolean) => Promise<BaseDoc | null>,
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
   'file-tabs.close-current': () => void,

@@ -66,6 +66,6 @@ export async function changePosition (position: PositionState) {
  * @param filter
  * @returns
  */
-export async function chooseDocument (filter?: (item: BaseDoc) => boolean): Promise<Doc | null> {
+export async function chooseDocument (filter?: (item: BaseDoc) => boolean): Promise<BaseDoc | null> {
   return getActionHandler('filter.choose-document')(filter)
 }
