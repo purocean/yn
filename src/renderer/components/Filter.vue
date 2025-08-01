@@ -28,15 +28,32 @@ export default defineComponent({
     const filterItem = shallowRef<(item: Components.QuickOpen.DataItem) => boolean>()
     const quickOpen = ref<InstanceType<typeof QuickOpen> | null>(null)
 
-    function showQuickOpen (options?: { query?: string, tab?: Components.QuickOpen.TabKey }) {
-      callback.value = (f: Components.QuickOpen.DataItem | null) => {
-        if (f?.type === 'file') {
-          switchDoc(f.payload as Doc)
+    function bindAction (
+      cb: (item: Components.QuickOpen.DataItem | null) => void,
+      filter: (item: Components.QuickOpen.DataItem) => boolean
+    ) {
+      filterItem.value = filter
+      callback.value = (item: Components.QuickOpen.DataItem | null) => {
+        if (item?.type === 'tag') {
+          quickOpen.value?.switchTab('file')
+          quickOpen.value?.updateSearchText(item.payload + ' ')
+        } else {
+          cb(item)
+          callback.value = null
+          filterItem.value = undefined
         }
-
-        callback.value = null
-        filterItem.value = undefined
       }
+    }
+
+    function showQuickOpen (options?: { query?: string, tab?: Components.QuickOpen.TabKey }) {
+      bindAction(
+        (f: Components.QuickOpen.DataItem | null) => {
+          if (f?.type === 'file') {
+            switchDoc(f.payload as Doc)
+          }
+        },
+        () => true
+      )
 
       nextTick(() => {
         if (options?.tab) {
@@ -57,17 +74,20 @@ export default defineComponent({
 
     function chooseDocument (filter = (item: BaseDoc) => isMarkdownFile(item.path)) {
       return new Promise<BaseDoc | null>(resolve => {
-        callback.value = (item: Components.QuickOpen.DataItem | null) => {
-          resolve((item && item.type === 'file') ? item.payload : null)
-          callback.value = null
-          filterItem.value = undefined
-        }
+        bindAction(
+          (item: Components.QuickOpen.DataItem | null) => {
+            resolve((item && item.type === 'file') ? item.payload : null)
+          },
+          (item: Components.QuickOpen.DataItem) => {
+          // if item is a tag, always show it
+            if (item.type === 'tag') {
+              return true
+            }
 
-        filterItem.value = (item: Components.QuickOpen.DataItem) => {
-          return item.type === 'file' &&
+            return item.type === 'file' &&
             item.payload.repo === store.state.currentRepo?.name && // only current repo
             filter(item.payload as BaseDoc)
-        }
+          })
       })
     }
 

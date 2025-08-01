@@ -52,9 +52,11 @@ export const DOM_ATTR_NAME = {
   WIKI_RESOURCE: 'wiki-resource',
   IS_ANCHOR: 'is-anchor',
   SKIP_EXPORT: 'skip-export',
+  DATA_HASHTAG: 'data-hashtag',
 }
 
 export const DOM_CLASS_NAME = {
+  HASH_TAG: 'hash-tag',
   PREVIEW_HIGHLIGHT: 'preview-highlight',
   PREVIEW_MARKDOWN_BODY: 'markdown-body',
   MARK_OPEN: 'open',

@@ -24,7 +24,8 @@
       @keydown.tab.prevent
       @keydown.up.prevent
       @keydown.down.prevent>
-    <ul ref="refResult" class="result">
+    <index-status v-show="indexStatusVisible" @status-change="handleIndexStatusChange" />
+    <ul v-if="!indexStatusVisible" ref="refResult" class="result">
       <li v-if="dataList === null">{{$t('loading')}}</li>
       <template v-else>
         <li
@@ -35,6 +36,7 @@
             marked: item.marked
           }"
           @mouseover="!disableMouseover && updateSelected(item)"
+          :data-score="(item as any)._score"
           @click="chooseItem(item)">
           <span :ref="(el: any) => refTitles[i] = el">
             {{item.title}}
@@ -43,7 +45,6 @@
             <span v-if="item.tip">{{item.tip}}</span>
             <span :ref="(el: any) => refDescriptions[i] = el">
               {{item.description}}
-              <!-- {{(item as any)._score}} -->
             </span>
           </span>
         </li>
@@ -54,12 +55,16 @@
 </template>
 
 <script lang="ts">
+import { orderBy } from 'lodash-es'
 import { computed, defineComponent, nextTick, onMounted, ref, shallowRef, toRefs, watch } from 'vue'
 import { useI18n } from '@fe/services/i18n'
 import { fuzzyMatch } from '@fe/others/fuzzy-match'
 import { fetchSettings } from '@fe/services/setting'
 import { getMarkedFiles, isMarked, supported } from '@fe/services/document'
 import store from '@fe/support/store'
+import { RE_MATCH } from '@fe/plugins/markdown-hashtags/lib'
+import { getDocumentsManager } from '@fe/services/indexer'
+import IndexStatus from './IndexStatus.vue'
 import type { BaseDoc, Components } from '@fe/types'
 
 type TabKey = Components.QuickOpen.TabKey
@@ -69,9 +74,11 @@ let lastTab: TabKey = 'marked'
 let markedFilesCache: BaseDoc[] = []
 
 const RESULT_LIMIT = 70
+const RE_TAG = new RegExp(RE_MATCH.source, 'g')
 
 export default defineComponent({
   name: 'quick-open',
+  components: { IndexStatus },
   props: {
     filterItem: {
       type: Function as unknown as () => (item : DataItem) => boolean,
@@ -80,6 +87,8 @@ export default defineComponent({
   },
   setup (props, { emit }) {
     const { t } = useI18n()
+
+    let tags: string[] = []
 
     const refInput = ref<HTMLInputElement | null>(null)
     const refResult = ref<HTMLUListElement | null>(null)
@@ -94,11 +103,13 @@ export default defineComponent({
     const currentTab = ref<TabKey>(lastTab)
     const list = shallowRef<DataItem[] | null>([])
     const disableMouseover = ref(false)
+    const fileTags = shallowRef<Map<string, string[]> | null>(null)
 
     const tabs = computed(() => {
       const arr: {key: TabKey; label: string}[] = [
         { key: 'marked', label: t('quick-open.marked') },
         { key: 'file', label: t('quick-open.files') },
+        { key: 'tags', label: t('quick-open.tags') },
       ]
 
       return arr
@@ -129,53 +140,50 @@ export default defineComponent({
       return travelFiles(tree.value || [])
     })
 
-    function sortList (list: DataItem[]) {
-      const isFile = list[0]?.type === 'file'
-      if (!isFile) {
-        return list
+    const indexStatusVisible = computed(() => {
+      const indexIsReady = store.state.currentRepoIndexStatus?.status?.ready
+      const isSameRepo = store.state.currentRepo?.name === store.state.currentFile?.repo
+
+      if (currentTab.value === 'tags' && (!indexIsReady || !isSameRepo)) {
+        return true
       }
 
-      const map = (recentOpenTime.value || {})
-
-      return list.sort((a, b) => {
-        const at = map[`${(a.payload as BaseDoc).repo}|${(a.payload as BaseDoc).path}`] || 0
-        const bt = map[`${(b.payload as BaseDoc).repo}|${(b.payload as BaseDoc).path}`] || 0
-
-        return bt - at
-      })
-    }
-
-    function filterFiles (files: DataItem[], search: string, fuzzy: boolean) {
-      if (!fuzzy) {
-        search = search.toLowerCase()
-        return files.filter(x => x.title.toLowerCase().indexOf(search) > -1 || x.description.toLowerCase().indexOf(search) > -1)
+      if (searchPartial.value?.tags.length && (!indexIsReady || !isSameRepo)) {
+        return true
       }
 
-      type Item = (DataItem & { _score: number })
-      const tmp: Item[] = []
+      return false
+    })
 
-      files.forEach(x => {
-        const nameResult = fuzzyMatch(search, x.title)
-        const descResult = fuzzyMatch(search, x.description)
-        if (nameResult.matched || descResult.matched) {
-          ;(x as Item)._score = nameResult.score * 100000 + descResult.score
-          tmp.push(x as Item)
+    const searchPartial = computed(() => {
+      const str = searchText.value.trim()
+      if (!str) {
+        return null
+      }
+
+      if (currentTab.value === 'tags') {
+        return {
+          tags: [],
+          query: str,
         }
-      })
+      }
 
-      return tmp.sort((a, b) => b._score - a._score)
-    }
+      const tags = str.match(RE_TAG) || []
+      const query = str.replace(RE_TAG, '').trim()
+
+      return { tags, query }
+    })
 
     const dataList = computed<DataItem[] | null>(() => {
-      if (!list.value) {
+      if (!list.value || !fileTags.value) {
         return null
       }
 
       const data = list.value
 
-      const search = searchText.value.trim()
-
-      const result = search ? filterFiles(data, search, true) : sortList(data)
+      const result = searchPartial.value
+        ? filterFiles(data, searchPartial.value.query, searchPartial.value.tags)
+        : sortList(data)
 
       const filteredResult = []
 
@@ -193,6 +201,61 @@ export default defineComponent({
 
       return filteredResult
     })
+
+    function sortList (list: DataItem[]) {
+      const isFile = list[0]?.type === 'file'
+      if (!isFile) {
+        return list
+      }
+
+      const map = (recentOpenTime.value || {})
+
+      return list.sort((a, b) => {
+        const at = map[`${(a.payload as BaseDoc).repo}|${(a.payload as BaseDoc).path}`] || 0
+        const bt = map[`${(b.payload as BaseDoc).repo}|${(b.payload as BaseDoc).path}`] || 0
+
+        return bt - at
+      })
+    }
+
+    function filterByTags (list: DataItem[], tags: string[]) {
+      if (!tags.length) {
+        return list
+      }
+
+      return list.filter(item => {
+        if (item.type === 'file') {
+          const taggedFilesMap = fileTags.value?.get(`${item.payload.repo}|${item.payload.path}`)
+          return taggedFilesMap // match all tags
+            ? tags.every(tag => taggedFilesMap.includes(tag))
+            : false
+        }
+
+        return true
+      })
+    }
+
+    function filterFiles (files: DataItem[], query: string, tags: string[]) {
+      type Item = (DataItem & { _score: number })
+      const tmp: Item[] = []
+
+      const items = filterByTags(files, tags)
+
+      if (!query) {
+        return items
+      }
+
+      items.forEach(x => {
+        const nameResult = fuzzyMatch(query, x.title)
+        const descResult = fuzzyMatch(query, x.description)
+        if (nameResult.matched || descResult.matched) {
+          ;(x as Item)._score = nameResult.score * 100000 + descResult.score
+          tmp.push(x as Item)
+        }
+      })
+
+      return orderBy(tmp, ['_score', x => x.title.length], ['desc', 'asc'])
+    }
 
     function isEqual (a: DataItem | null, b: DataItem | null) {
       return a?.key === b?.key
@@ -260,6 +323,20 @@ export default defineComponent({
             marked: true,
           } satisfies DataItem
         })
+      } else if (currentTab.value === 'tags') {
+        list.value = tags.map(item => {
+          return {
+            key: item,
+            type: 'tag',
+            title: item,
+            payload: item,
+            description: '',
+            tip: '',
+            marked: false,
+          } satisfies DataItem
+        })
+      } else {
+        list.value = null
       }
     }
 
@@ -325,6 +402,39 @@ export default defineComponent({
       searchText.value = text
     }
 
+    async function updateTags () {
+      const dm = getDocumentsManager()
+      const currentRepo = store.state.currentRepo?.name
+      if (!currentRepo) {
+        tags = []
+      }
+
+      const result = new Set<string>()
+
+      fileTags.value = null
+      const fileTagsMap = new Map<string, string[]>()
+      await dm.getTable().where({ repo: currentRepo }).each(doc => {
+        if (doc.tags?.length) {
+          fileTagsMap.set(`${doc.repo}|${doc.path}`, doc.tags)
+
+          doc.tags.forEach(tag => {
+            if (tag && typeof tag === 'string') {
+              result.add(tag)
+            }
+          })
+        }
+      })
+      fileTags.value = fileTagsMap
+      tags = Array.from(result).sort((a, b) => a.localeCompare(b))
+    }
+
+    async function handleIndexStatusChange (status: Components.IndexStatus.Status) {
+      if (status === 'indexed') {
+        await updateTags()
+        updateDataSource()
+      }
+    }
+
     watch(dataList, val => {
       if (val?.length) {
         disableMouseover.value = true
@@ -335,7 +445,11 @@ export default defineComponent({
 
       updateSelected()
 
-      nextTick(() => highlightText(searchText.value.trim()))
+      nextTick(() => {
+        if (searchPartial.value) {
+          highlightText(searchPartial.value.query)
+        }
+      })
     })
 
     watch(currentTab, (val) => {
@@ -343,14 +457,19 @@ export default defineComponent({
       list.value = null
       refInput.value!.focus()
       updateDataSource()
+
+      if (val === 'tags') {
+        // reset search text when switching to tags tab
+        updateSearchText('')
+      }
     })
 
     onMounted(async () => {
       refInput.value!.focus()
       updateDataSource()
       await fetchSettings()
+      await updateTags()
       markedFilesCache = getMarkedFiles()
-      markedFiles.value = markedFilesCache
       updateDataSource()
     })
 
@@ -370,6 +489,8 @@ export default defineComponent({
       updateSearchText,
       updateSelected,
       disableMouseover,
+      indexStatusVisible,
+      handleIndexStatusChange,
       isMarked,
       isEqual,
     }
@@ -454,9 +575,8 @@ export default defineComponent({
   padding: 4px 0;
   background: var(--g-color-active-d);;
   cursor: pointer;
-  transition: all .1s ease-in-out;
+  transition: all .05s ease-in-out;
   color: var(--g-color-0);
-  border-right: 1px var(--g-color-80) solid;
 }
 
 .tab > div:last-child {

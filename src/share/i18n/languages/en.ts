@@ -425,6 +425,7 @@ const data = {
         'md-breaks': 'Convert \\n to &lt;br&gt;',
         'md-linkify': 'Auto convert URL-like text to links',
         'md-wiki-links': 'Enable Wiki Links - [[link]]',
+        'md-hash-tags': 'Enable Hash Tags - #tag',
         'md-typographer': 'Enable some language-neutral replacement + quotes beautification',
         'md-sup': 'Enable sup syntax: 29^th^',
         'md-sub': 'Enable sub syntax: H~2~O',
@@ -491,6 +492,7 @@ const data = {
     'empty': 'Empty',
     'files': 'Files',
     'marked': 'Marked',
+    'tags': 'Tags',
   },
   'editor': {
     'context-menu': {

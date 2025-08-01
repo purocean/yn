@@ -282,6 +282,10 @@ export namespace Components {
 
     export type DataItem = DataItemFile | DataItemTag;
   }
+
+  export namespace IndexStatus {
+    export type Status = 'not-open-file' | 'not-open-repo' | 'not-same-repo' | 'index-disabled' | 'indexing' | 'indexed'
+  }
 }
 
 export type FileSort = { by: 'mtime' | 'birthtime' | 'name' | 'serial', order: 'asc' | 'desc' }
@@ -388,6 +392,7 @@ export interface BuildInSettings {
   'render.md-breaks': boolean,
   'render.md-linkify': boolean,
   'render.md-wiki-links': boolean,
+  'render.md-hash-tags': boolean,
   'render.md-typographer': boolean,
   'render.md-emoji': boolean,
   'render.md-sub': boolean,
@@ -448,7 +453,7 @@ export type BuildInActions = {
   'editor.toggle-wrap': () => void,
   'editor.refresh-custom-editor': () => void,
   'editor.trigger-save': () => void,
-  'workbench.show-quick-open': () => void,
+  'workbench.show-quick-open': (options?: { query?: string, tab?: Components.QuickOpen.TabKey }) => void,
   'filter.choose-document': (filter?: (item: BaseDoc) => boolean) => Promise<BaseDoc | null>,
   'file-tabs.switch-left': () => void,
   'file-tabs.switch-right': () => void,
@@ -686,6 +691,7 @@ export interface IndexItem {
   path: string;
   name: string;
   links: IndexItemLink[];
+  tags: string[];
   resources: IndexItemResource[];
   frontmatter: {};
   ctimeMs: number;

@@ -351,6 +351,14 @@ const schema: SettingSchema = ({
       group: 'render',
       required: true,
     },
+    'render.md-hash-tags': {
+      defaultValue: true,
+      title: 'T_setting-panel.schema.render.md-hash-tags',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'render',
+      required: true,
+    },
     'render.md-typographer': {
       defaultValue: false,
       title: 'T_setting-panel.schema.render.md-typographer',

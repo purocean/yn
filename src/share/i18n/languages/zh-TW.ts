@@ -416,6 +416,7 @@ const data: BaseLanguage = {
         'md-breaks': '將 \\n 轉換為 &lt;br&gt;',
         'md-linkify': '自動將類似 URL 的文字轉換為連結',
         'md-wiki-links': '啟用 Wiki 連結 - [[link]]',
+        'md-hash-tags': '啟用哈希標籤 - #tag',
         'md-typographer': '啟用排版美化，如 (c) -> ©',
         'md-sup': '啟用上標語法: 29^th^',
         'md-sub': '啟用下標語法: H~2~O',
@@ -492,6 +493,7 @@ const data: BaseLanguage = {
     'empty': '無結果',
     'files': '快速跳轉',
     'marked': '已標記',
+    tags: '標籤',
   },
   'editor': {
     'context-menu': {
