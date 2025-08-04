@@ -81,6 +81,11 @@ export default defineComponent({
     }
 
     function show (menuItems: Components.ContextMenu.Item[], opts?: Components.ContextMenu.ShowOpts) {
+      // Do not show context menu if all items are hidden
+      if (menuItems.every(item => item.hidden)) {
+        return
+      }
+
       items.value = menuItems
       currentItemIdx.value = -1
 
