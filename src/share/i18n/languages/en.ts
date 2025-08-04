@@ -407,6 +407,7 @@ const data = {
         'ordered-list-completion': 'Ordered List',
         'minimap': 'Minimap',
         'line-numbers': 'Line Numbers',
+        'wrap-indent': 'Wrap Indent',
         'enable-preview': 'Enable Preview - Open new files using temporary tabs, double click the tab to change',
         'font-family': 'Font Family',
         'rulers': 'Rulers',

@@ -218,6 +218,17 @@ const schema: SettingSchema = ({
       group: 'editor',
       required: true,
     },
+    'editor.wrap-indent': {
+      defaultValue: 'same',
+      title: 'T_setting-panel.schema.editor.wrap-indent',
+      type: 'string',
+      enum: ['same', 'indent', 'deepIndent', 'none'],
+      options: {
+        enum_titles: ['Same', 'Indent', 'Deep Indent', 'None'],
+      },
+      group: 'editor',
+      required: true,
+    },
     'editor.font-family': {
       defaultValue: '',
       title: 'T_setting-panel.schema.editor.font-family',

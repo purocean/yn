@@ -398,6 +398,7 @@ const data: BaseLanguage = {
         'ordered-list-completion': '有序清單補全',
         'minimap': '顯示小地圖',
         'line-numbers': '行號',
+        'wrap-indent': '換行縮進',
         'enable-preview': '開啟預覽 - 開啟新檔案使用暫存標籤，雙擊標籤以變更',
         'font-family': '字體',
         'rulers': '標尺',

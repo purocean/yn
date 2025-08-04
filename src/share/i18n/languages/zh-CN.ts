@@ -398,6 +398,7 @@ const data: BaseLanguage = {
         'ordered-list-completion': '有序列表补全',
         'minimap': '显示小地图',
         'line-numbers': '行号',
+        'wrap-indent': '换行缩进',
         'enable-preview': '开启预览 - 打开新文件使用临时标签，双击标签以更改',
         'font-family': '字体',
         'rulers': '标尺',
