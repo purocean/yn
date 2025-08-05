@@ -36,6 +36,7 @@ export type SettingSchema = {
     group: SettingGroup,
     openDialogOptions?: OpenDialogOptions,
     needReloadWindowWhenChanged?: boolean,
+    suggestions?: string[] | { label: string, value: string }[],
     validator?: (schema: SettingSchema['properties'][K], value: BuildInSettings[K], path: string) =>
       {path: string, property: K, message: string}[]
     items?: {
