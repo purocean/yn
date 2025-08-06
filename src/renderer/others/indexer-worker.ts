@@ -12,6 +12,7 @@ import type { IndexerHostExports } from '@fe/services/indexer'
 import type { Components, IndexItemLink, IndexItemResource } from '@fe/types'
 import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { isAnchorToken, isDataUrl, isResourceToken, parseLink } from '@fe/plugins/markdown-link/lib'
+import { isTagToken } from '@fe/plugins/markdown-hashtags/lib'
 
 const markdown = MarkdownIt({ linkify: false, breaks: true, html: true })
 
@@ -282,12 +283,24 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string | nu
   const tokens = markdown.parse(content, env)
 
   const links: IndexItemLink[] = []
+  const tagsFromAttributes: string[] = typeof env.attributes?.tags === 'string'
+    ? [env.attributes?.tags]
+    : Array.isArray(env.attributes?.tags) ? env.attributes?.tags : []
+  const tags: string[] = tagsFromAttributes
+    .filter(tag => typeof tag === 'string' && tag.trim())
+    .map(tag => '#' + tag.trim())
   const resources: IndexItemResource[] = []
 
   const convert = (tokens: Token[]) => {
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i]
-      if (isAnchorToken(token)) {
+
+      if (isTagToken(token)) {
+        const tag = token.content
+        if (tag) {
+          tags.push(tag)
+        }
+      } else if (isAnchorToken(token)) {
         const href = token.attrGet('href') || ''
         const blockMap = (token as any)._block_map
         if (!isDataUrl(href)) {
@@ -324,6 +337,7 @@ async function processMarkdownFile (repo: Repo, payload: { content?: string | nu
     name: utils.path.basename(doc.path),
     links,
     resources,
+    tags,
     frontmatter: env.attributes || {},
     ctimeMs: payload.stats?.ctimeMs || 0,
     mtimeMs: payload.stats?.mtimeMs || 0,

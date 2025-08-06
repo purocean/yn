@@ -38,13 +38,14 @@ import store from '@fe/support/store'
 import { setCurrentRepo, toggleRepoIndexing } from '@fe/services/repo'
 import { rebuildCurrentRepo } from '@fe/services/indexer'
 import { useI18n } from '@fe/services/i18n'
+import type { Components } from '@fe/types'
 
 const props = defineProps<{
   title?: string;
   disableCheckCurrentFile?: boolean;
 }>()
 
-type Status = 'not-open-file' | 'not-open-repo' | 'not-same-repo' | 'index-disabled' | 'indexing' | 'indexed'
+type Status = Components.IndexStatus.Status
 
 const emit = defineEmits<{
   'status-change': [Status]

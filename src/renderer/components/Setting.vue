@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { debounce } from 'lodash-es'
-import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { JSONEditor } from '@json-editor/json-editor'
 import * as api from '@fe/support/api'
 import { useToast } from '@fe/support/ui/toast'
@@ -108,6 +108,39 @@ export default defineComponent({
       })
     }
 
+    function initInputSuggestions (editor: any, schema: SettingSchema) {
+      Object.keys(schema.properties).forEach((key) => {
+        const field = editor.getEditor(`root.${key}`)
+        if (field && field.schema.suggestions && field.schema.suggestions.length > 0) {
+          const input = field.input as HTMLInputElement
+
+          input.addEventListener('focus', () => {
+            const div = document.createElement('ul')
+            div.className = 'suggestions-datalist'
+            div.style.left = `${input.offsetLeft}px`
+            div.style.top = `${input.offsetTop + input.offsetHeight}px`
+            div.style.width = `${input.offsetWidth - 2}px`
+            field.schema.suggestions.forEach((item: { label: string; value: string } | string) => {
+              const li = document.createElement('li')
+              const label = typeof item === 'string' ? item : item.label
+              const value = typeof item === 'string' ? item : item.value
+              li.textContent = label
+              li.title = value
+              li.onclick = () => {
+                field.setValue(value)
+              }
+              div.appendChild(li)
+            })
+            input.parentElement?.appendChild(div)
+
+            input.addEventListener('blur', () => {
+              setTimeout(() => { div.remove() }, 100)
+            }, { once: true })
+          })
+        }
+      })
+    }
+
     const initResetButtonsDebounced = debounce(initResetButtons, 100)
 
     onMounted(async () => {
@@ -164,6 +197,10 @@ export default defineComponent({
       updateTab()
       initResetButtonsDebounced()
       isReady.value = true
+
+      nextTick(() => {
+        initInputSuggestions(editor, schema)
+      })
 
       triggerHook('SETTING_PANEL_AFTER_SHOW', { editor })
     })
@@ -433,6 +470,30 @@ export default defineComponent({
 
   ::v-deep(a) {
     color: var(-g-color-anchor);
+  }
+
+  ::v-deep(input ~ .suggestions-datalist) {
+    position: absolute;
+    z-index: 1000;
+    background-color: var(--g-color-backdrop);
+    backdrop-filter: var(--g-backdrop-filter);
+    border: 1px solid var(--g-color-84);
+    border-radius: var(--g-border-radius);
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 5px;
+    list-style: none;
+    padding: 4px 0;
+    margin: 0;
+
+    li {
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+
+      &:hover {
+        background-color: var(--g-color-80);
+        color: var(--g-color-10);
+      }
+    }
   }
 }
 

@@ -61,6 +61,7 @@ import markdownLuckysheet from '@fe/plugins/markdown-luckysheet'
 import markdownContainer from '@fe/plugins/markdown-container'
 import markdownHeadingNumber from '@fe/plugins/markdown-heading-number'
 import markdownGithubAlerts from '@fe/plugins/markdown-github-alerts'
+import markdownHashtags from '@fe/plugins/markdown-hashtags'
 import markdownMisc from '@fe/plugins/misc'
 import syncScroll from '@fe/plugins/sync-scroll'
 import imageLocalization from '@fe/plugins/image-localization'
@@ -141,6 +142,8 @@ export default [
   markdownLuckysheet,
   markdownContainer,
   markdownHeadingNumber,
+  markdownGithubAlerts,
+  markdownHashtags,
   markdownMisc,
   syncScroll,
   imageLocalization,
@@ -153,7 +156,6 @@ export default [
   previewFont,
   dropToOpenFile,
   recordRecentDocument,
-  markdownGithubAlerts,
   aiCopilot,
   viewLinks,
   insertTable,

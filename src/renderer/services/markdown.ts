@@ -9,6 +9,8 @@ import { triggerHook } from '@fe/core/hook'
 import { HELP_REPO_NAME } from '@fe/support/args'
 import type { RenderEnv } from '@fe/types'
 import { getSetting } from './setting'
+import { RULE_NAME as WIKI_LINKS_RULE_NAME } from '@fe/plugins/markdown-wiki-links/lib'
+import { RULE_NAME as HASHTAG_RULE_NAME } from '@fe/plugins/markdown-hashtags/lib'
 
 /**
  * Markdown-it instance
@@ -38,7 +40,8 @@ markdown.render = (src: string, env: RenderEnv) => {
 
   ;(getSetting('render.md-sup', true) ? enabledRules : disabledRules).push('sup')
   ;(getSetting('render.md-sub', true) ? enabledRules : disabledRules).push('sub')
-  ;(getSetting('render.md-wiki-links', true) ? enabledRules : disabledRules).push('wiki-links')
+  ;(getSetting('render.md-wiki-links', true) ? enabledRules : disabledRules).push(WIKI_LINKS_RULE_NAME)
+  ;(getSetting('render.md-hash-tags', true) ? enabledRules : disabledRules).push(HASHTAG_RULE_NAME)
 
   markdown.enable(enabledRules, true)
   markdown.disable(disabledRules, true)

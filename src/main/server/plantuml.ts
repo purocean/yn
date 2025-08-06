@@ -66,7 +66,7 @@ async function getCacheData (key: string, gen: () => Promise<any>) {
 }
 
 export default async function (data: string): Promise<{ content: any, type: string }> {
-  const api: string = config.get('plantuml-api', 'local')
+  const api: string = config.get('plantuml-api', 'local') || 'local'
 
   if (api.startsWith('local')) {
     try {
@@ -99,7 +99,7 @@ export default async function (data: string): Promise<{ content: any, type: stri
   } else {
     const url = api.replace('{data}', plantumlBase64(data))
     const dispatcher = await getAction('get-proxy-dispatcher')(url)
-    let type = api.includes('/svg/') ? 'image/svg+xml' : 'image/png'
+    let type = api.includes('svg') ? 'image/svg+xml' : 'image/png'
 
     const cacheKey = getCacheKey(api, type, data)
     const content = await getCacheData(cacheKey, async () => {

@@ -73,8 +73,7 @@ export const getDefaultOptions = (): Monaco.editor.IStandaloneEditorConstruction
   links: !isElectron,
   // wordWrapColumn: 40,
   mouseWheelZoom: getSetting('editor.mouse-wheel-zoom', true),
-  // try "same", "indent" or "none"
-  wrappingIndent: 'same',
+  wrappingIndent: getSetting('editor.wrap-indent', 'same'),
   smoothScrolling: true,
   cursorBlinking: 'smooth',
   scrollbar: getSetting('editor.minimap', true) ? {

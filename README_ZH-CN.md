@@ -76,17 +76,14 @@
 
 ## 更新日志
 
-### [v3.83.2](https://github.com/purocean/yn/releases/tag/v3.83.2) 2025-07-15
+### [v3.84.0](https://github.com/purocean/yn/releases/tag/v3.84.0) 2025-08-06
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-win-x64-3.83.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-mac-arm64-3.83.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-mac-x64-3.83.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-linux-x86_64-3.83.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-linux-amd64-3.83.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-win-x64-3.84.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-mac-arm64-3.84.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-mac-x64-3.84.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-linux-x86_64-3.84.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-linux-amd64-3.84.0.deb)
 
-1. feat: 增加配置编辑器滚轮敏感度配置
-2. feat: 增加配置编辑器标尺配置
-3. feat: 增加渲染自定义 CSS 样式配置
-4. feat: 双击编辑器可以在预览中高亮当前行
-5. fix: 修复保存加密文档可能卡死问题
-6. fix: 修复扩展详情可能不显示问题
-7. feat(plugin): `SETTING_PANEL_AFTER_SHOW` Hook 增加 `editor` 回调参数，用来获取配置编辑器实例
+1. feat: 支持解析文档中的 `#tag` 标签和 frontmatter 中定义的标签
+2. feat: 支持在设置中自定义 PlantUML API
+3. feat: 增加编辑器换行缩进设置项
+4. feat(plugin): 插件定义设置项的时候支持增加 `suggestions` 建议列表
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

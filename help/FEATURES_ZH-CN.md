@@ -71,6 +71,7 @@ define:
     *[W3C]:  World Wide Web Consortium
     The HTML specification is maintained by the W3C.
 + Wiki 链接：支持使用 `[[文件名#锚点|显示文本]]` 或 `[[文件名:行,列|显示文本]]` 语法来链接文档，如 [[README#Highlights|特色功能]] [[README:3,4]]
++ 标签：#Markdown #使用帮助
 
 ## Github Alerts
 
@@ -631,6 +632,7 @@ Yank Note 接入了 [OpenAI](https://openai.com)、[Google AI](https://ai.google
 `wrapCode` | `boolean` | 是否开启代码换行
 `enableMacro` | `boolean` | 是否开启宏替换
 `define` | `Record<string, string>` | 宏定义，定义文本替换
+`tags` | `string[]` | 文档标签
 `defaultPreviewer` | `string` | 文档默认的预览器，某些扩展可能提供特殊的预览界面。如 *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-reveal-js')">Reveal.js 扩展</a>*
 `mdOptions` | `Record<string, boolean>` | Markdown-it 解析参数
 `mdOptions.html` | `boolean` | 开启 HTML 解析

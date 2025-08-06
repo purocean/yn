@@ -1,60 +1,93 @@
 <template>
   <XMask :show="show" @close="close">
     <QuickOpen
-      @choose-file="chooseFile"
+      ref="quickOpen"
+      @choose-item="chooseItem"
       @close="close"
-      :filter-item="filterItem"
-      :only-current-repo="onlyCurrentRepo" />
+      :filter-item="filterItem" />
   </XMask>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref, shallowRef } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import { CtrlCmd } from '@fe/core/keybinding'
 import { switchDoc } from '@fe/services/document'
 import { t } from '@fe/services/i18n'
-import type { Doc, BaseDoc } from '@fe/types'
+import type { BaseDoc, Components, Doc } from '@fe/types'
+import { isMarkdownFile } from '@share/misc'
+import store from '@fe/support/store'
 import XMask from './Mask.vue'
 import QuickOpen from './QuickOpen.vue'
-import { isMarkdownFile } from '@share/misc'
 
 export default defineComponent({
   name: 'x-filter',
   components: { QuickOpen, XMask },
   setup () {
-    const callback = ref<((doc: Doc | null) => void) | null>(null)
-    const onlyCurrentRepo = ref(false)
-    const filterItem = shallowRef<(item: BaseDoc) => boolean>()
+    const callback = ref<((item: Components.QuickOpen.DataItem | null) => void) | null>(null)
+    const filterItem = shallowRef<(item: Components.QuickOpen.DataItem) => boolean>()
+    const quickOpen = ref<InstanceType<typeof QuickOpen> | null>(null)
 
-    function showQuickOpen () {
-      onlyCurrentRepo.value = false
-      callback.value = (f: Doc | null) => {
-        if (f) {
-          switchDoc(f)
+    function bindAction (
+      cb: (item: Components.QuickOpen.DataItem | null) => void,
+      filter: (item: Components.QuickOpen.DataItem) => boolean
+    ) {
+      filterItem.value = filter
+      callback.value = (item: Components.QuickOpen.DataItem | null) => {
+        if (item?.type === 'tag') {
+          quickOpen.value?.switchTab('file')
+          quickOpen.value?.updateSearchText(item.payload + ' ')
+        } else {
+          cb(item)
+          callback.value = null
+          filterItem.value = undefined
         }
-
-        callback.value = null
-        filterItem.value = undefined
       }
     }
 
-    function chooseFile (file: Doc | null) {
+    function showQuickOpen (options?: { query?: string, tab?: Components.QuickOpen.TabKey }) {
+      bindAction(
+        (f: Components.QuickOpen.DataItem | null) => {
+          if (f?.type === 'file') {
+            switchDoc(f.payload as Doc)
+          }
+        },
+        () => true
+      )
+
+      nextTick(() => {
+        if (options?.tab) {
+          quickOpen.value?.switchTab(options.tab)
+        }
+
+        if (typeof options?.query === 'string') {
+          quickOpen.value?.updateSearchText(options.query)
+        }
+      })
+    }
+
+    function chooseItem (item: Components.QuickOpen.DataItem | null) {
       if (callback.value) {
-        callback.value(file)
+        callback.value(item)
       }
     }
 
     function chooseDocument (filter = (item: BaseDoc) => isMarkdownFile(item.path)) {
-      return new Promise<Doc | null>(resolve => {
-        callback.value = (f: Doc | null) => {
-          resolve(f)
-          callback.value = null
-          filterItem.value = undefined
-        }
+      return new Promise<BaseDoc | null>(resolve => {
+        bindAction(
+          (item: Components.QuickOpen.DataItem | null) => {
+            resolve((item && item.type === 'file') ? item.payload : null)
+          },
+          (item: Components.QuickOpen.DataItem) => {
+          // if item is a tag, always show it
+            if (item.type === 'tag') {
+              return true
+            }
 
-        onlyCurrentRepo.value = true
-        filterItem.value = filter
+            return item.type === 'file' &&
+            item.payload.repo === store.state.currentRepo?.name && // only current repo
+            filter(item.payload as BaseDoc)
+          })
       })
     }
 
@@ -88,9 +121,9 @@ export default defineComponent({
       show,
       close,
       callback,
-      chooseFile,
-      onlyCurrentRepo,
+      chooseItem,
       filterItem,
+      quickOpen,
     }
   },
 })

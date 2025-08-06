@@ -70,6 +70,7 @@ Type '/' in the editor to get prompts
     *[W3C]:  World Wide Web Consortium
     The HTML specification is maintained by the W3C.
 + Wiki Link: Supports using `[[filename#anchor|display text]]` or `[[filename:line,column|display text]]` syntax to link documents, such as [[README#Highlights|Features]] [[README:3,4]]
++ Tags: #Markdown #Help
 
 ## Github Alerts
 
@@ -633,6 +634,7 @@ variable name | type | description
 `headingNumber` | `boolean` | whether to enable the page title serial number
 `wrapCode` | `boolean` | whether to enable code wrapping
 `enableMacro` | `boolean` | whether to enable macro replacement
+`tags` | `string[]` | 文档标签
 `define` | `Record<string, string>` | Macro definition, string replacing
 `defaultPreviewer` | `string` | The default previewer for the document, some extensions may provide a special preview interface. Such as *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-reveal-js')">Reveal.js extension</a>*
 `mdOptions` | `Record<string, boolean>` | Markdown-it parse options
