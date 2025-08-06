@@ -63,7 +63,7 @@ For more information on how to use the following functions, please see [characte
 - **Macro replacement:** support for embedded JavaScript expressions to dynamically replace document content
 - **Image hosting service:** support [PicGo](https://picgo.github.io/PicGo-Doc/) image hosting service
 - **OpenAI:** support for [OpenAI](https://openai.com) auto completion
-- **Custom plug-ins:** support writing JavaScript plug-ins to expand editor functionality. The plug-in is placed in the `home directory/plugins`. Refer to [plug-in Development Guide](./help/PLUGIN.md)
+- **Custom plug-ins:** support writing JavaScript plug-ins to #expand editor functionality. The plug-in is placed in the `home directory/plugins`. Refer to [plug-in Development Guide](./help/PLUGIN.md)
 
 ## Screenshots
 
@@ -76,17 +76,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.83.2](https://github.com/purocean/yn/releases/tag/v3.83.2) 2025-07-15
+### [v3.84.0](https://github.com/purocean/yn/releases/tag/v3.84.0) 2025-08-06
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-win-x64-3.83.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-mac-arm64-3.83.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-mac-x64-3.83.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-linux-x86_64-3.83.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.83.2/Yank-Note-linux-amd64-3.83.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-win-x64-3.84.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-mac-arm64-3.84.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-mac-x64-3.84.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-linux-x86_64-3.84.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.84.0/Yank-Note-linux-amd64-3.84.0.deb)
 
-1. feat: Added configuration for editor scroll wheel sensitivity
-2. feat: Added configuration for editor ruler settings
-3. feat: Added support for custom CSS styling during rendering
-4. feat: Double-clicking the editor highlights the current line in preview
-5. fix: Resolved potential freeze when saving encrypted documents
-6. fix: Fixed extension details display failure issue
-7. feat(plugin): Added `editor` callback parameter to `SETTING_PANEL_AFTER_SHOW` Hook to access configuration editor instances
+1. feat: Support parsing `#tag` labels in documents and tags defined in frontmatter  
+2. feat: Support customizing the PlantUML API in settings  
+3. feat: Add editor wrap indent setting  
+4. feat(plugin): Support adding `suggestions` suggestion lists when defining plugin settings  
 
 [More release notes](https://github.com/purocean/yn/releases)
 
