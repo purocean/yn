@@ -48,7 +48,6 @@ export default {
       if (target.tagName === 'SPAN' && target.classList.contains(ctx.args.DOM_CLASS_NAME.HASH_TAG)) {
         const tag = target.getAttribute(ctx.args.DOM_ATTR_NAME.DATA_HASHTAG)
         if (tag) {
-          // TODO 切换到当前文档的仓库
           ctx.action.getActionHandler('workbench.show-quick-open')({
             query: tag + ' ',
             tab: 'file',
