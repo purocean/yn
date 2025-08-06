@@ -29,7 +29,7 @@ export default {
       .markdown-body .${ctx.args.DOM_CLASS_NAME.HASH_TAG} {
         background-color: rgb(159 167 214 / 34%);
         border-radius: 0.5em;
-        padding: 0.2em 0.5em;
+        padding: 0.2em 0.3em;
         font-size: 0.9em;
         color: var(--g-color-0-rgb);
         cursor: pointer;
