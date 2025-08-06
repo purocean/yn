@@ -1,7 +1,7 @@
 import { Token } from 'markdown-it'
 import type StateInline from 'markdown-it/lib/rules_inline/state_inline'
 
-export const RE_MATCH = /(#[a-zA-Z\u4e00-\u9fff][\da-zA-Z\u4e00-\u9fff_-]*)/
+export const RE_MATCH = /(#[a-zA-Z\u4e00-\u9fff][\da-zA-Z\u4e00-\u9fff_/-]*)/
 
 export const RULE_NAME = 'hash-tags'
 

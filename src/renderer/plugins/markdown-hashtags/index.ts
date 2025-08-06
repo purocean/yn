@@ -29,7 +29,7 @@ export default {
       .markdown-body .${ctx.args.DOM_CLASS_NAME.HASH_TAG} {
         background-color: rgb(159 167 214 / 34%);
         border-radius: 0.5em;
-        padding: 0.2em 0.5em;
+        padding: 0.2em 0.3em;
         font-size: 0.9em;
         color: var(--g-color-0-rgb);
         cursor: pointer;
@@ -48,7 +48,6 @@ export default {
       if (target.tagName === 'SPAN' && target.classList.contains(ctx.args.DOM_CLASS_NAME.HASH_TAG)) {
         const tag = target.getAttribute(ctx.args.DOM_ATTR_NAME.DATA_HASHTAG)
         if (tag) {
-          // TODO 切换到当前文档的仓库
           ctx.action.getActionHandler('workbench.show-quick-open')({
             query: tag + ' ',
             tab: 'file',
