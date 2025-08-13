@@ -146,6 +146,14 @@ const schema: SettingSchema = ({
       group: 'image',
       required: true,
       pattern: '^(?![./]+\\{docName\\})[^\\\\<>?:"|*]{1,}$',
+      suggestions: [
+        './FILES/{docName}',
+        './FILES/{docBasename}',
+        './FILES/{docSlug}',
+        './FILES/{docHash}',
+        './FILES/{date}',
+        '/assets/{docPath}',
+      ],
       options: {
         patternmessage: '[\\<>?:"|*] are not allowed. Cannot starts with ./{docName}, /{docName} or {docName}.'
       },
