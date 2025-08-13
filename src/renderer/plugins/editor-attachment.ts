@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
-import type { BaseDoc, Doc } from '@fe/types'
+import type { BaseDoc } from '@fe/types'
 import { encodeMarkdownLink, escapeMd } from '@fe/utils'
 import { basename, dirname, isBelongTo, join, normalizeSep, relative } from '@fe/utils/path'
 import store from '@fe/support/store'

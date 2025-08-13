@@ -1,4 +1,4 @@
-import type { BaseDoc, Doc, PositionState } from '@fe/types'
+import type { BaseDoc, PositionState } from '@fe/types'
 import { DOM_ATTR_NAME } from '@fe/support/args'
 import store from '@fe/support/store'
 import { sleep } from '@fe/utils'
