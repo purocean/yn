@@ -53,7 +53,7 @@ export default defineComponent({
     &.selected {
       color: var(--g-color-0);
       font-weight: 500;
-      background: var(--g-color-94);
+      background: light-dark(var(--g-color-94), var(--g-color-65));
     }
   }
 
@@ -68,12 +68,6 @@ export default defineComponent({
       line-height: 1.5;
       font-size: 14px;
     }
-  }
-}
-
-@include dark-theme {
-  .tabs .tab.selected {
-    background: var(--g-color-65);
   }
 }
 </style>

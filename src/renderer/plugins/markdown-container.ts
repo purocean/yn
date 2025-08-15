@@ -103,8 +103,8 @@ export default {
 
       .markdown-view .markdown-body .custom-container.danger {
         border-color: #cc0000;
-        background-color: #ffe0e0;
-        color: #660000;
+        background-color: light-dark(#ffe0e0, #503f3f);
+        color: light-dark(#800000, #d9bebe);
       }
 
       .markdown-view .markdown-body .custom-container.warning {
@@ -199,30 +199,6 @@ export default {
 
       .markdown-view .markdown-body .custom-container.group .group-item-radio:checked + .group-item-label + .group-item-content {
         display: block;
-      }
-
-      @media screen {
-        html[app-theme=dark] .markdown-view .markdown-body .custom-container.danger {
-          background-color: #503f3f;
-          color: #d9bebe;
-        }
-
-        html[app-theme=dark] .markdown-view .markdown-body .custom-container.warning {
-          background-color: #4a4738;
-          color: #cbb759;
-        }
-      }
-
-      @media (prefers-color-scheme: dark) {
-        html[app-theme=system] .markdown-view .markdown-body .custom-container.danger {
-          background-color: #503f3f;
-          color: #d9bebe;
-        }
-
-        html[app-theme=system] .markdown-view .markdown-body .custom-container.warning {
-          background-color: #4a4738;
-          color: #cbb759;
-        }
       }
     `)
 

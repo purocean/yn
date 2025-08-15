@@ -323,7 +323,8 @@ body.find-in-preview-highlight ::selection {
     position: relative;
 
     mark {
-      background: #fff8c5 !important;
+      background: light-dark(#fff3bf, #663500) !important;
+      color: light-dark(#804200, #ffec99);
     }
 
     fieldset {
@@ -451,11 +452,6 @@ body.find-in-preview-highlight ::selection {
   }
 
   .markdown-body {
-    mark {
-      background: #746900 !important;
-      color: #ebebeb;
-    }
-
     .reduce-brightness, img {
       transition: all .1s ease-in-out;
       filter: brightness(84%);

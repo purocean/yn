@@ -55,6 +55,7 @@ html {
 html[app-theme=light]:root, :root {
   @include meta.load-css('./light.scss');
   @include root-vars(light.$g-background-color, light.$g-foreground-color);
+  color-scheme: only light;
 }
 
 @include dark-theme {
@@ -62,6 +63,10 @@ html[app-theme=light]:root, :root {
   @include root-vars(dark.$g-background-color, dark.$g-foreground-color);
 
   --g-color-backdrop: #{rgba(var(--g-color-88-rgb), 0.9)};
+
+  &:root {
+    color-scheme: only dark;
+  }
 }
 
 html {
