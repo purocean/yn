@@ -106,7 +106,7 @@
     "crypto-js": "^4.2.0",
     "dexie": "^4.0.8",
     "dom-to-image": "^2.6.0",
-    "electron": "33.3.1",
+    "electron": "35.7.5",
     "electron-builder": "^26.0.12",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
