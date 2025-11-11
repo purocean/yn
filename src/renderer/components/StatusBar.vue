@@ -28,7 +28,7 @@ export default defineComponent({
   box-sizing: border-box;
   padding: 0;
   color: #eee;
-  background: #38383a;
+  background: #181818;
   font-size: 12px;
   line-height: 20px;
   height: 100%;

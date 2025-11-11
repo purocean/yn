@@ -85,7 +85,7 @@ export const IFrame = defineComponent({
 
     const changeTheme = ({ name }: { name: ThemeName }) => {
       if (name) {
-        iframe.value?.contentDocument?.documentElement.setAttribute('app-theme', name)
+        iframe.value?.contentDocument?.documentElement.setAttribute('app-theme', 'light')
       }
     }
 

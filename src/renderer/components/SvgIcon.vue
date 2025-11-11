@@ -90,8 +90,8 @@ export default defineComponent({
 
 <style scoped>
 .svg-icon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   display: inline-block;
 }
 
