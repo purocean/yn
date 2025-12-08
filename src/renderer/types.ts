@@ -203,6 +203,7 @@ export namespace Components {
   export namespace FixedFloat {
     export interface Props {
       disableAutoFocus?: boolean;
+      disableFixedFloat?: boolean;
       top?: string | undefined;
       right?: string | undefined;
       bottom?: string | undefined;
