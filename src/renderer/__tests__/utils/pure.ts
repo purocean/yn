@@ -1,6 +1,6 @@
 jest.mock('@fe/support/args', () => ({
   FLAG_DEMO: false,
-  FLAG_DEBUG: false,
+  FLAG_DEBUG: true, // Enable debug for getLogger test
 }))
 
 import {
@@ -13,6 +13,7 @@ import {
   sleep,
   objectInsertAfterKey,
   waitCondition,
+  getLogger,
 } from '@fe/utils/pure'
 
 describe('pure utilities', () => {
@@ -266,6 +267,92 @@ describe('pure utilities', () => {
       }, 10, 1000)
       
       expect(counter).toBeGreaterThanOrEqual(3)
+    })
+  })
+
+  describe('getLogger', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'log').mockImplementation()
+      jest.spyOn(console, 'info').mockImplementation()
+      jest.spyOn(console, 'warn').mockImplementation()
+      jest.spyOn(console, 'error').mockImplementation()
+      jest.spyOn(console, 'debug').mockImplementation()
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test('should create a logger with subject', () => {
+      const logger = getLogger('test-subject')
+      
+      expect(logger).toHaveProperty('debug')
+      expect(logger).toHaveProperty('log')
+      expect(logger).toHaveProperty('info')
+      expect(logger).toHaveProperty('warn')
+      expect(logger).toHaveProperty('error')
+    })
+
+    test('should log messages with log level', () => {
+      const logger = getLogger('test-subject')
+      
+      logger.log('test message', 'arg1')
+      expect(console.log).toHaveBeenCalled()
+      const logCall = (console.log as jest.Mock).mock.calls[0]
+      expect(logCall[0]).toContain('[log]')
+      expect(logCall[0]).toContain('test-subject')
+      expect(logCall[1]).toBe('test message')
+      expect(logCall[2]).toBe('arg1')
+    })
+
+    test('should log messages with info level', () => {
+      const logger = getLogger('test-subject')
+      
+      logger.info('info message')
+      expect(console.info).toHaveBeenCalled()
+      const logCall = (console.info as jest.Mock).mock.calls[0]
+      expect(logCall[0]).toContain('[info]')
+      expect(logCall[0]).toContain('test-subject')
+    })
+
+    test('should log messages with warn level', () => {
+      const logger = getLogger('test-subject')
+      
+      logger.warn('warning message')
+      expect(console.warn).toHaveBeenCalled()
+      const logCall = (console.warn as jest.Mock).mock.calls[0]
+      expect(logCall[0]).toContain('[warn]')
+      expect(logCall[0]).toContain('test-subject')
+    })
+
+    test('should log messages with error level', () => {
+      const logger = getLogger('test-subject')
+      
+      logger.error('error message')
+      expect(console.error).toHaveBeenCalled()
+      const logCall = (console.error as jest.Mock).mock.calls[0]
+      expect(logCall[0]).toContain('[error]')
+      expect(logCall[0]).toContain('test-subject')
+    })
+
+    test('should log messages with debug level when FLAG_DEBUG is true', () => {
+      const logger = getLogger('test-subject')
+      
+      logger.debug('debug message')
+      expect(console.debug).toHaveBeenCalled()
+      const logCall = (console.debug as jest.Mock).mock.calls[0]
+      expect(logCall[0]).toContain('[debug]')
+      expect(logCall[0]).toContain('test-subject')
+    })
+
+    test('should include timestamp in log messages', () => {
+      const logger = getLogger('test-subject')
+      
+      logger.log('test')
+      expect(console.log).toHaveBeenCalled()
+      const logCall = (console.log as jest.Mock).mock.calls[0]
+      // Should contain a timestamp pattern
+      expect(logCall[0]).toMatch(/\[\d+\/\d+\/\d+/)
     })
   })
 })
