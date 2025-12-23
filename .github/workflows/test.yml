@@ -1,0 +1,27 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 22.x
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run tests
+        run: yarn test
