@@ -201,6 +201,8 @@ const replaceText = ref('')
 const replaceSearchRegex = shallowRef<RegExp | boolean>(false)
 const replacing = ref(false)
 const replaceResult = ref<Record<string, { msg: string, status: 'doing' | 'error' | 'done' }>>({})
+// Track user's expand/collapse preference (true = expanded by default, applied to new search results)
+const expandCollapsePreference = ref(true)
 
 const message = computed(() => {
   if ((replacing.value || Object.keys(replaceResult.value).length > 0) && result.value.length) {
@@ -408,7 +410,8 @@ async function search () {
           ...result.value,
           ...data.map((item) => ({
             repo,
-            open: true,
+            // Use expandCollapsePreference to persist user's expand/collapse state across searches
+            open: expandCollapsePreference.value,
             numMatches: item.numMatches,
             results: (item.results!).map((match: any, i) => ({
               ...match,
@@ -525,6 +528,7 @@ async function chooseMatch (result: ISerializedFileMatch & { repo: string }, mat
 function toggleExpandAll (val?: boolean) {
   const open = typeof val === 'boolean' ? val : allResultCollapsed.value
   result.value = result.value.map(r => ({ ...r, open }))
+  expandCollapsePreference.value = open // Store the user's preference
 }
 
 const scrollReplacingItem = throttle(() => {
