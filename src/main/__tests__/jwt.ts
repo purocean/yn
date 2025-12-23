@@ -22,7 +22,7 @@ describe('jwt module', () => {
 
   describe('getToken', () => {
     test('should generate a token for admin role', () => {
-      const token = jwt.getToken({ role: 'admin' })
+      const token = jwt.getToken({ role: 'admin' }, '1h')
       
       expect(token).toBeDefined()
       expect(typeof token).toBe('string')
@@ -30,7 +30,7 @@ describe('jwt module', () => {
     })
 
     test('should generate a token for guest role', () => {
-      const token = jwt.getToken({ role: 'guest' })
+      const token = jwt.getToken({ role: 'guest' }, '1h')
       
       expect(token).toBeDefined()
       expect(typeof token).toBe('string')
@@ -38,8 +38,8 @@ describe('jwt module', () => {
     })
 
     test('should generate different tokens for different roles', () => {
-      const adminToken = jwt.getToken({ role: 'admin' })
-      const guestToken = jwt.getToken({ role: 'guest' })
+      const adminToken = jwt.getToken({ role: 'admin' }, '1h')
+      const guestToken = jwt.getToken({ role: 'guest' }, '1h')
       
       expect(adminToken).not.toBe(guestToken)
     })
@@ -59,7 +59,7 @@ describe('jwt module', () => {
     })
 
     test('should use JWT secret from config', () => {
-      jwt.getToken({ role: 'admin' })
+      jwt.getToken({ role: 'admin' }, '1h')
       
       expect(mockGetImpl).toHaveBeenCalledWith('server.jwt-secret', expect.any(String))
     })
@@ -67,14 +67,14 @@ describe('jwt module', () => {
 
   describe('verify', () => {
     test('should verify a valid admin token', () => {
-      const token = jwt.getToken({ role: 'admin' })
+      const token = jwt.getToken({ role: 'admin' }, '1h')
       const payload = jwt.verify(token)
       
       expect(payload.role).toBe('admin')
     })
 
     test('should verify a valid guest token', () => {
-      const token = jwt.getToken({ role: 'guest' })
+      const token = jwt.getToken({ role: 'guest' }, '1h')
       const payload = jwt.verify(token)
       
       expect(payload.role).toBe('guest')

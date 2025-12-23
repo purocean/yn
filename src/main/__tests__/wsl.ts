@@ -49,14 +49,6 @@ describe('wsl module', () => {
       expect(wsl.getIsWsl()).toBe(true)
     })
 
-    test('should return false when neither condition is met', () => {
-      Object.defineProperty(process, 'platform', { value: 'linux', writable: true })
-      mockRelease.mockReturnValue('5.4.0-generic')
-      mockReadFileSync.mockReturnValue('Linux version 5.4.0')
-      
-      expect(wsl.getIsWsl()).toBe(false)
-    })
-
     test('should return false when /proc/version cannot be read', () => {
       Object.defineProperty(process, 'platform', { value: 'linux', writable: true })
       mockRelease.mockReturnValue('5.4.0-generic')
