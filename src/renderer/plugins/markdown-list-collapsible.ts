@@ -141,9 +141,12 @@ export default {
           
           // Add inline onclick handler for toggle functionality
           // This ensures exported HTML also works without additional JS
+          // Only toggle when clicking on the pseudo-element (icon) area or directly on the li element
           const onclickHandler = `(function(e){
-            if(e.target.tagName.toLowerCase()==='li'||e.target===this){
-              var li=this;
+            var li=this;
+            var rect=li.getBoundingClientRect();
+            var iconArea=e.clientX<rect.left+20;
+            if(iconArea||e.target===this){
               var collapsed=li.getAttribute('data-collapsed')==='true';
               li.setAttribute('data-collapsed',collapsed?'false':'true');
               e.stopPropagation();
