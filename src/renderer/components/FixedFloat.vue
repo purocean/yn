@@ -6,6 +6,7 @@
         onClose: (type: 'byClickSelf' | 'blur' | 'esc') => emits('close', type),
         onBlur: (byClickSelf: any) => emits('blur', byClickSelf),
         onEsc: () => emits('esc'),
+        disable: props.disableFixedFloat,
         disableAutoFocus: props.disableAutoFocus
       }"
       v-auto-z-index="{ layer: 'popup' }"
@@ -40,6 +41,7 @@ interface Props {
   left?: string
   disableAutoFocus?: boolean
   closeBtn?: boolean
+  disableFixedFloat?: boolean
 }
 
 const props = defineProps<Props>()
