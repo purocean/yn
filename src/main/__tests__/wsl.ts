@@ -1,22 +1,28 @@
+/* eslint-disable import/first */
 // Set up mocks before importing
-import * as wsl from '../wsl'
-
-const mockRelease = jest.fn().mockReturnValue('5.4.0-generic')
-const mockReadFileSync = jest.fn().mockReturnValue('Linux version 5.4.0')
-const mockExecFileSync = jest.fn()
-
 jest.mock('os', () => ({
-  release: () => mockRelease(),
+  release: jest.fn(() => '5.4.0-generic'),
   platform: () => 'linux'
 }))
 
 jest.mock('fs', () => ({
-  readFileSync: (...args: any[]) => mockReadFileSync(...args)
+  readFileSync: jest.fn(() => 'Linux version 5.4.0')
 }))
 
 jest.mock('child_process', () => ({
-  execFileSync: (...args: any[]) => mockExecFileSync(...args)
+  execFileSync: jest.fn()
 }))
+
+import * as childProcess from 'child_process'
+import * as fs from 'fs'
+import * as os from 'os'
+
+import * as wsl from '../wsl'
+/* eslint-enable import/first */
+
+const mockRelease = os.release as jest.Mock
+const mockReadFileSync = fs.readFileSync as jest.Mock
+const mockExecFileSync = childProcess.execFileSync as jest.Mock
 
 // Set platform before importing wsl
 Object.defineProperty(process, 'platform', { value: 'linux', writable: true, configurable: true })
