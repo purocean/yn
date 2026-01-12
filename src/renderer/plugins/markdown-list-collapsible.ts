@@ -1,6 +1,9 @@
 import type { Plugin } from '@fe/context'
 import type Token from 'markdown-it/lib/token'
 
+// Constants
+const ICON_AREA_WIDTH = 20 // Width of the clickable icon area in pixels
+
 // Chevron down SVG icon as data URI for both light and dark themes
 const CHEVRON_ICON_LIGHT = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpolyline points="6 9 12 15 18 9"%3E%3C/polyline%3E%3C/svg%3E'
 const CHEVRON_ICON_DARK = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpolyline points="6 9 12 15 18 9"%3E%3C/polyline%3E%3C/svg%3E'
@@ -34,7 +37,7 @@ export default {
       .markdown-view .markdown-body ol.list-collapsible > li.has-children::before {
         content: '';
         position: absolute;
-        left: -20px;
+        left: -${ICON_AREA_WIDTH}px;
         top: 0.3em;
         width: 16px;
         height: 16px;
@@ -143,15 +146,15 @@ export default {
           // This ensures exported HTML also works without additional JS
           // Only toggle when clicking on the pseudo-element (icon) area or directly on the li element
           const onclickHandler = `(function(e){
-            var li=this;
-            var rect=li.getBoundingClientRect();
-            var iconArea=e.clientX<rect.left+20;
-            if(iconArea||e.target===this){
-              var collapsed=li.getAttribute('data-collapsed')==='true';
-              li.setAttribute('data-collapsed',collapsed?'false':'true');
-              e.stopPropagation();
-            }
-          }).call(this,event)`
+  var li=this;
+  var rect=li.getBoundingClientRect();
+  var iconArea=e.clientX<rect.left+${ICON_AREA_WIDTH};
+  if(iconArea||e.target===this){
+    var collapsed=li.getAttribute('data-collapsed')==='true';
+    li.setAttribute('data-collapsed',collapsed?'false':'true');
+    e.stopPropagation();
+  }
+}).call(this,event)`
           
           token.attrSet('onclick', onclickHandler)
         }
