@@ -1,8 +1,3 @@
-jest.mock('@fe/support/args', () => ({
-  FLAG_DEMO: false,
-  FLAG_DEBUG: true, // Enable debug for getLogger test
-}))
-
 import {
   quote,
   encodeMarkdownLink,
@@ -15,6 +10,11 @@ import {
   waitCondition,
   getLogger,
 } from '@fe/utils/pure'
+
+jest.mock('@fe/support/args', () => ({
+  FLAG_DEMO: false,
+  FLAG_DEBUG: true, // Enable debug for getLogger test
+}))
 
 describe('pure utilities', () => {
   describe('quote', () => {
@@ -118,7 +118,7 @@ describe('pure utilities', () => {
     test('should convert data URL to Blob', () => {
       const dataURL = 'data:text/plain;base64,SGVsbG8gV29ybGQ='
       const blob = dataURLtoBlob(dataURL)
-      
+
       expect(blob).toBeInstanceOf(Blob)
       expect(blob.type).toBe('text/plain')
     })
@@ -127,7 +127,7 @@ describe('pure utilities', () => {
       // 1x1 transparent PNG
       const dataURL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
       const blob = dataURLtoBlob(dataURL)
-      
+
       expect(blob).toBeInstanceOf(Blob)
       expect(blob.type).toBe('image/png')
       expect(blob.size).toBeGreaterThan(0)
@@ -139,7 +139,7 @@ describe('pure utilities', () => {
       // Skipped: requires browser FileReader API
       const file = new File(['Hello World'], 'test.txt', { type: 'text/plain' })
       const base64URL = await fileToBase64URL(file)
-      
+
       expect(base64URL).toContain('data:text/plain;base64,')
       expect(base64URL).toContain('SGVsbG8gV29ybGQ=')
     })
@@ -148,7 +148,7 @@ describe('pure utilities', () => {
       // Skipped: requires browser FileReader API
       const blob = new Blob(['Test content'], { type: 'text/plain' })
       const base64URL = await fileToBase64URL(blob)
-      
+
       expect(base64URL).toContain('data:text/plain;base64,')
       expect(base64URL).toContain('VGVzdCBjb250ZW50')
     })
@@ -157,7 +157,7 @@ describe('pure utilities', () => {
       // Skipped: requires browser FileReader API
       const file = new File([], 'empty.txt', { type: 'text/plain' })
       const base64URL = await fileToBase64URL(file)
-      
+
       expect(base64URL).toContain('data:text/plain;base64,')
     })
   })
@@ -167,7 +167,7 @@ describe('pure utilities', () => {
       const start = Date.now()
       await sleep(100)
       const end = Date.now()
-      
+
       expect(end - start).toBeGreaterThanOrEqual(95) // Allow small variance
     })
 
@@ -175,7 +175,7 @@ describe('pure utilities', () => {
       const start = Date.now()
       await sleep(0)
       const end = Date.now()
-      
+
       expect(end - start).toBeLessThan(50)
     })
   })
@@ -184,7 +184,7 @@ describe('pure utilities', () => {
     test('should insert content after specified key', () => {
       const obj = { a: 1, b: 2, c: 3 }
       const result = objectInsertAfterKey(obj, 'b', { x: 10, y: 20 })
-      
+
       expect(Object.keys(result)).toEqual(['a', 'b', 'x', 'y', 'c'])
       expect(result).toEqual({ a: 1, b: 2, x: 10, y: 20, c: 3 })
     })
@@ -192,7 +192,7 @@ describe('pure utilities', () => {
     test('should not modify object if key not found', () => {
       const obj = { a: 1, b: 2, c: 3 }
       const result = objectInsertAfterKey(obj, 'z', { x: 10 })
-      
+
       expect(Object.keys(result)).toEqual(['a', 'b', 'c'])
       expect(result).toEqual({ a: 1, b: 2, c: 3 })
     })
@@ -200,21 +200,21 @@ describe('pure utilities', () => {
     test('should insert after first key', () => {
       const obj = { a: 1, b: 2, c: 3 }
       const result = objectInsertAfterKey(obj, 'a', { x: 10 })
-      
+
       expect(Object.keys(result)).toEqual(['a', 'x', 'b', 'c'])
     })
 
     test('should insert after last key', () => {
       const obj = { a: 1, b: 2, c: 3 }
       const result = objectInsertAfterKey(obj, 'c', { x: 10 })
-      
+
       expect(Object.keys(result)).toEqual(['a', 'b', 'c', 'x'])
     })
 
     test('should handle empty content object', () => {
       const obj = { a: 1, b: 2 }
       const result = objectInsertAfterKey(obj, 'a', {})
-      
+
       expect(result).toEqual({ a: 1, b: 2 })
     })
   })
@@ -223,7 +223,7 @@ describe('pure utilities', () => {
     test('should resolve when condition becomes true', async () => {
       let flag = false
       setTimeout(() => { flag = true }, 50)
-      
+
       await waitCondition(() => flag, 10, 1000)
       expect(flag).toBe(true)
     })
@@ -232,7 +232,7 @@ describe('pure utilities', () => {
       const start = Date.now()
       await waitCondition(() => true, 10, 1000)
       const end = Date.now()
-      
+
       expect(end - start).toBeLessThan(50)
     })
 
@@ -244,28 +244,28 @@ describe('pure utilities', () => {
 
     test('should be cancellable', async () => {
       const promise: any = waitCondition(() => false, 10, 10000)
-      
+
       setTimeout(() => promise.cancel(), 50)
-      
+
       await expect(promise).rejects.toThrow('waitCondition canceled')
     })
 
     test('should work with async condition function', async () => {
       let flag = false
       setTimeout(() => { flag = true }, 50)
-      
+
       await waitCondition(async () => Promise.resolve(flag), 10, 1000)
       expect(flag).toBe(true)
     })
 
     test('should check condition multiple times', async () => {
       let counter = 0
-      
+
       await waitCondition(() => {
         counter++
         return counter >= 3
       }, 10, 1000)
-      
+
       expect(counter).toBeGreaterThanOrEqual(3)
     })
   })
@@ -285,7 +285,7 @@ describe('pure utilities', () => {
 
     test('should create a logger with subject', () => {
       const logger = getLogger('test-subject')
-      
+
       expect(logger).toHaveProperty('debug')
       expect(logger).toHaveProperty('log')
       expect(logger).toHaveProperty('info')
@@ -295,7 +295,7 @@ describe('pure utilities', () => {
 
     test('should log messages with log level', () => {
       const logger = getLogger('test-subject')
-      
+
       logger.log('test message', 'arg1')
       expect(console.log).toHaveBeenCalled()
       const logCall = (console.log as jest.Mock).mock.calls[0]
@@ -307,7 +307,7 @@ describe('pure utilities', () => {
 
     test('should log messages with info level', () => {
       const logger = getLogger('test-subject')
-      
+
       logger.info('info message')
       expect(console.info).toHaveBeenCalled()
       const logCall = (console.info as jest.Mock).mock.calls[0]
@@ -317,7 +317,7 @@ describe('pure utilities', () => {
 
     test('should log messages with warn level', () => {
       const logger = getLogger('test-subject')
-      
+
       logger.warn('warning message')
       expect(console.warn).toHaveBeenCalled()
       const logCall = (console.warn as jest.Mock).mock.calls[0]
@@ -327,7 +327,7 @@ describe('pure utilities', () => {
 
     test('should log messages with error level', () => {
       const logger = getLogger('test-subject')
-      
+
       logger.error('error message')
       expect(console.error).toHaveBeenCalled()
       const logCall = (console.error as jest.Mock).mock.calls[0]
@@ -337,7 +337,7 @@ describe('pure utilities', () => {
 
     test('should log messages with debug level when FLAG_DEBUG is true', () => {
       const logger = getLogger('test-subject')
-      
+
       logger.debug('debug message')
       expect(console.debug).toHaveBeenCalled()
       const logCall = (console.debug as jest.Mock).mock.calls[0]
@@ -347,7 +347,7 @@ describe('pure utilities', () => {
 
     test('should include timestamp in log messages', () => {
       const logger = getLogger('test-subject')
-      
+
       logger.log('test')
       expect(console.log).toHaveBeenCalled()
       const logCall = (console.log as jest.Mock).mock.calls[0]

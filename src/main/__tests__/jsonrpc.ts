@@ -1,4 +1,6 @@
-import { app, ipcMain } from 'electron'
+import { app } from 'electron'
+
+import { initJSONRPCClient } from '../jsonrpc'
 
 jest.mock('electron', () => ({
   app: {
@@ -27,8 +29,6 @@ jest.mock('jsonrpc-bridge', () => {
   }
 })
 
-import { initJSONRPCClient } from '../jsonrpc'
-
 describe('jsonrpc module', () => {
   let mockWebContent: any
 
@@ -42,14 +42,14 @@ describe('jsonrpc module', () => {
   describe('initJSONRPCClient', () => {
     test('should initialize JSONRPC client with web content', () => {
       initJSONRPCClient(mockWebContent)
-      
+
       expect(MockJSONRPCClient).toHaveBeenCalled()
     })
 
     test('should create client with debug mode when app is not packaged', () => {
       (app as any).isPackaged = false
       initJSONRPCClient(mockWebContent)
-      
+
       expect(MockJSONRPCClient).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ debug: true })
@@ -59,7 +59,7 @@ describe('jsonrpc module', () => {
     test('should create client without debug mode when app is packaged', () => {
       (app as any).isPackaged = true
       initJSONRPCClient(mockWebContent)
-      
+
       expect(MockJSONRPCClient).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({ debug: false })
