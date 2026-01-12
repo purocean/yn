@@ -55,11 +55,11 @@ export default {
         }
 
         const token = tokens[idx]
-        
+
         // Add data attribute to track collapsed state (default: expanded)
         token.attrSet('data-collapsed', 'false')
-        
-        const openTag = listItemOpen.call(slf, tokens, idx, options, env, slf)
+
+        const openTag: any = listItemOpen.call(slf, tokens, idx, options, env, slf)
 
         ;(openTag.children as any).push(ctx.lib.vue.h('span', {
           class: 'list-collapse-icon',
