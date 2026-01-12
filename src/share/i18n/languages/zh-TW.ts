@@ -422,6 +422,7 @@ const data: BaseLanguage = {
         'md-sup': '啟用上標語法: 29^th^',
         'md-sub': '啟用下標語法: H~2~O',
         'md-emoji': '啟用 Emoji 語法: :smile:',
+        'list-collapsible': '啟用列表折疊 - 點擊折疊/展開嵌套列表',
         'multimd-multiline': '[markdown-it-multimd-table]: 啟用 multiline 語法',
         'multimd-rowspan': '[markdown-it-multimd-table]: 啟用 rowspan 語法',
         'multimd-headerless': '[markdown-it-multimd-table]: 啟用 headerless 語法',

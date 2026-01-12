@@ -431,6 +431,7 @@ const data = {
         'md-sup': 'Enable sup syntax: 29^th^',
         'md-sub': 'Enable sub syntax: H~2~O',
         'md-emoji': 'Enable emoji syntax: :smile:',
+        'list-collapsible': 'Enable collapsible lists - Click to collapse/expand nested lists',
         'multimd-multiline': '[markdown-it-multimd-table]: Enable multiline syntax',
         'multimd-rowspan': '[markdown-it-multimd-table]: Enable rowspan syntax',
         'multimd-headerless': '[markdown-it-multimd-table]: Enable headerless syntax',

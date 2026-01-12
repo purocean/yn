@@ -105,7 +105,7 @@ describe('i18n utilities', () => {
           greeting: 'Custom Hello'
         }
       }
-      
+
       mergeLanguage('en', customData)
       const result = translate('en', 'custom.greeting' as any)
       expect(result).toBe('Custom Hello')
@@ -118,11 +118,11 @@ describe('i18n utilities', () => {
           quit: 'Custom Quit Text'
         }
       }
-      
+
       mergeLanguage('en', customData)
       const newText = translate('en', 'app.quit' as any)
       expect(newText).toBe('Custom Quit Text')
-      
+
       // Restore original - merge with empty object won't restore, but this shows the override worked
       expect(newText).not.toBe(originalText)
     })
@@ -135,7 +135,7 @@ describe('i18n utilities', () => {
           }
         }
       }
-      
+
       mergeLanguage('en', customData)
       const result = translate('en', 'deeply.nested.value' as any)
       expect(result).toBe('Deep Value')
@@ -147,7 +147,7 @@ describe('i18n utilities', () => {
           message: '自定义消息'
         }
       }
-      
+
       mergeLanguage('zh-CN', customDataCN)
       const result = translate('zh-CN', 'custom.message' as any)
       expect(result).toBe('自定义消息')

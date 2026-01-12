@@ -425,6 +425,7 @@ export interface BuildInSettings {
   'render.multimd-headerless': boolean,
   'render.multimd-multibody': boolean,
   'render.text-autospace': boolean,
+  'render.list-collapsible': boolean,
   'render.extra-css-style': string,
   'view.default-previewer-max-width': number,
   'view.default-previewer-font-family': string,
