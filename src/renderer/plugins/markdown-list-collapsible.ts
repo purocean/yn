@@ -66,12 +66,6 @@ export default {
         opacity: 1;
       }
 
-      /* Rotate icon when expanded */
-      .markdown-view .markdown-body ul.list-collapsible > li.has-children[data-collapsed="false"]::before,
-      .markdown-view .markdown-body ol.list-collapsible > li.has-children[data-collapsed="false"]::before {
-        transform: rotate(0deg);
-      }
-
       /* Rotate icon when collapsed */
       .markdown-view .markdown-body ul.list-collapsible > li.has-children[data-collapsed="true"]::before,
       .markdown-view .markdown-body ol.list-collapsible > li.has-children[data-collapsed="true"]::before {
@@ -145,16 +139,16 @@ export default {
           // Add inline onclick handler for toggle functionality
           // This ensures exported HTML also works without additional JS
           // Only toggle when clicking on the pseudo-element (icon) area or directly on the li element
-          const onclickHandler = `(function(e){
-  var li=this;
-  var rect=li.getBoundingClientRect();
-  var iconArea=e.clientX<rect.left+${ICON_AREA_WIDTH};
-  if(iconArea||e.target===this){
-    var collapsed=li.getAttribute('data-collapsed')==='true';
-    li.setAttribute('data-collapsed',collapsed?'false':'true');
+          const onclickHandler = `(function(e) {
+  var li = this;
+  var rect = li.getBoundingClientRect();
+  var iconArea = e.clientX < rect.left + ${ICON_AREA_WIDTH};
+  if (iconArea || e.target === this) {
+    var collapsed = li.getAttribute('data-collapsed') === 'true';
+    li.setAttribute('data-collapsed', collapsed ? 'false' : 'true');
     e.stopPropagation();
   }
-}).call(this,event)`
+}).call(this, event)`
           
           token.attrSet('onclick', onclickHandler)
         }
