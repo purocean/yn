@@ -47,6 +47,7 @@ import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTable from '@fe/plugins/markdown-table'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
+import markdownListCollapsible from '@fe/plugins/markdown-list-collapsible'
 import markdownFootnote from '@fe/plugins/markdown-footnote'
 import markdownKatex from '@fe/plugins/markdown-katex'
 import markdownCodeCopy from '@fe/plugins/markdown-code-copy'
@@ -130,6 +131,7 @@ export default [
   markdownLink,
   markdownTable,
   markdownTaskList,
+  markdownListCollapsible,
   markdownFootnote,
   markdownKatex,
   markdownCodeCopy,
