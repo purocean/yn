@@ -139,6 +139,7 @@ export default {
           // Add inline onclick handler for toggle functionality
           // This ensures exported HTML also works without additional JS
           // Only toggle when clicking on the pseudo-element (icon) area or directly on the li element
+          // Note: ICON_AREA_WIDTH is a trusted constant, not user input, so no XSS risk
           const onclickHandler = `(function(e) {
   var li = this;
   var rect = li.getBoundingClientRect();
