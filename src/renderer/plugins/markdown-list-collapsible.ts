@@ -17,10 +17,12 @@ export default {
       /* Collapse icon */
       .markdown-view .markdown-body li:has(> ul, > ol) > .list-collapse-icon {
         display: inline-block;
-        width: 16px;
-        height: 16px;
-        margin-right: 4px;
-        margin-left: -20px;
+        width: 1em;
+        height: 1em;
+        position: absolute;
+        margin-left: -2em;
+        margin-top: 0.26em;
+        user-select: none;
         cursor: pointer;
         opacity: 0;
         transition: opacity 0.2s, transform 0.2s;
@@ -28,7 +30,6 @@ export default {
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
-        vertical-align: middle;
       }
 
       /* Show icon on hover or when collapsed */
@@ -58,20 +59,21 @@ export default {
         // Add data attribute to track collapsed state (default: expanded)
         token.attrSet('data-collapsed', 'false')
         
-        // Render the opening tag
         const openTag = listItemOpen.call(slf, tokens, idx, options, env, slf)
-        
-        // Add the collapse icon after the opening tag
-        const icon = '<span class="list-collapse-icon" onclick="(function(e){var li=this.parentElement;var collapsed=li.getAttribute(\'data-collapsed\')===\'true\';li.setAttribute(\'data-collapsed\',collapsed?\'false\':\'true\');e.stopPropagation();}).call(this,event)"></span>'
-        
-        return openTag + icon
+
+        ;(openTag.children as any).push(ctx.lib.vue.h('span', {
+          class: 'list-collapse-icon',
+          onclick: 'this.parentElement.getAttribute("data-collapsed") === "true" ? this.parentElement.setAttribute("data-collapsed", "false") : this.parentElement.setAttribute("data-collapsed", "true"); event.stopPropagation();'
+        }))
+
+        return openTag
       }
     })
 
     // Add setting for enabling/disabling list collapsible
     ctx.setting.changeSchema((schema): void => {
-      (schema.properties as Record<string, any>)['render.list-collapsible'] = {
-        defaultValue: true,
+      schema.properties['render.list-collapsible'] = {
+        defaultValue: false,
         title: 'T_setting-panel.schema.render.list-collapsible',
         type: 'boolean',
         format: 'checkbox',
