@@ -568,7 +568,7 @@ export type BuildInHookTypes = {
   EDITOR_CUSTOM_EDITOR_CHANGE: { type: 'register' | 'remove' | 'switch' },
   EDITOR_CURRENT_EDITOR_CHANGE: { current?: CustomEditor | null },
   EDITOR_CONTENT_CHANGE: { uri: string, value: string },
-  EDITOR_ATTEMPT_READONLY_EDIT: { doc: Doc | null },
+  EDITOR_ATTEMPT_READONLY_EDIT: { doc: Doc | null, readonlyType: 'app-readonly' | 'no-file' | 'file-not-writable' | 'unsupported-file-type' },
   DOC_CREATED: { doc: Doc },
   DOC_BEFORE_DELETE: { doc: PathItem, force: boolean },
   DOC_DELETED: { doc: PathItem },

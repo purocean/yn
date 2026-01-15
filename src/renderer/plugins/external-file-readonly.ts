@@ -13,25 +13,20 @@ export default {
     const MESSAGE_DELAY_MS = 10
 
     // Track files that were set to readonly by this plugin
-    const pluginSetReadonly = new Set<string>()
+    // Store original writeable state to restore when needed
+    const pluginSetReadonly = ctx.lib.vue.shallowReactive<Record<string, boolean>>({})
 
     // Add setting for external file readonly
     ctx.setting.changeSchema((schema): void => {
       schema.properties[settingKey] = {
         defaultValue: true,
         title: 'T_setting-panel.schema.editor.external-file-readonly',
-        description: 'T_setting-panel.schema.editor.external-file-readonly_desc',
         type: 'boolean',
         format: 'checkbox',
         group: 'editor',
         required: true,
       }
     })
-
-    // Helper function to get document key
-    const getDocKey = (doc: Doc): string => {
-      return `${doc.repo}:${doc.path}`
-    }
 
     // Helper function to set document writeable status
     const updateDocWriteable = (doc: Doc | null, writeable: boolean) => {
@@ -46,16 +41,21 @@ export default {
 
       const isExternal = ctx.doc.isOutOfRepo(doc)
       const settingEnabled = ctx.setting.getSetting(settingKey, true)
+      const uri = ctx.doc.toUri(doc)
 
-      // If it's an external file and setting is enabled, and original writeable is not explicitly false
-      if (isExternal && settingEnabled && doc.writeable !== false) {
-        // Track that this file was set to readonly by the plugin
-        pluginSetReadonly.add(getDocKey(doc))
-        // Set as readonly
-        updateDocWriteable(doc, false)
+      // If it's an external file and setting is enabled
+      if (isExternal && settingEnabled) {
+        // Only set readonly if original writeable is not explicitly false (system readonly)
+        if (doc.writeable !== false) {
+          // Track original state and set readonly
+          pluginSetReadonly[uri] = true
+          updateDocWriteable(doc, false)
+        }
       } else {
-        // Remove from tracking if present
-        pluginSetReadonly.delete(getDocKey(doc))
+        // Not external or setting disabled - remove from tracking
+        if (uri in pluginSetReadonly) {
+          delete pluginSetReadonly[uri]
+        }
       }
     })
 
@@ -67,8 +67,11 @@ export default {
         run () {
           const currentFile = ctx.store.state.currentFile
           if (currentFile) {
+            const uri = ctx.doc.toUri(currentFile)
             // Remove from tracking when user manually enables editing
-            pluginSetReadonly.delete(getDocKey(currentFile))
+            if (uri in pluginSetReadonly) {
+              delete pluginSetReadonly[uri]
+            }
             updateDocWriteable(currentFile, true)
           }
         }
@@ -76,15 +79,19 @@ export default {
     })
 
     // EDITOR_ATTEMPT_READONLY_EDIT hook: show custom message for external files
-    ctx.registerHook('EDITOR_ATTEMPT_READONLY_EDIT', async ({ doc }) => {
+    ctx.registerHook('EDITOR_ATTEMPT_READONLY_EDIT', async ({ doc, readonlyType }) => {
+      // Only handle file-not-writable type for external files
+      if (readonlyType !== 'file-not-writable') return
+
       const settingEnabled = ctx.setting.getSetting(settingKey, true)
       if (!doc || !settingEnabled) return
 
       const isExternal = ctx.doc.isOutOfRepo(doc)
-      const wasSetByPlugin = pluginSetReadonly.has(getDocKey(doc))
+      const uri = ctx.doc.toUri(doc)
+      const wasSetByPlugin = uri in pluginSetReadonly
 
       // Only show custom message if this is an external file that was set readonly by our plugin
-      if (!isExternal || !wasSetByPlugin || doc.writeable !== false) return
+      if (!isExternal || !wasSetByPlugin) return
 
       // Delay slightly to ensure this runs after the default handler
       setTimeout(async () => {
@@ -127,17 +134,29 @@ export default {
         if (!isExternal) return
 
         const settingEnabled = ctx.setting.getSetting(settingKey, true)
-        const docKey = getDocKey(currentFile)
+        const uri = ctx.doc.toUri(currentFile)
 
         // Update writeable status based on new setting
         if (settingEnabled && currentFile.writeable !== false) {
           // Setting is now enabled, set as readonly and track it
-          pluginSetReadonly.add(docKey)
+          pluginSetReadonly[uri] = true
           updateDocWriteable(currentFile, false)
-        } else if (!settingEnabled && pluginSetReadonly.has(docKey)) {
+        } else if (!settingEnabled && uri in pluginSetReadonly) {
           // Setting is now disabled, set as writeable only if it was set by our plugin
-          pluginSetReadonly.delete(docKey)
+          delete pluginSetReadonly[uri]
           updateDocWriteable(currentFile, true)
+        }
+      }
+    })
+
+    // Clean up state for closed files - watch tabs changes
+    ctx.lib.vue.watch(() => ctx.store.state.tabs, () => {
+      const uris = ctx.store.state.tabs.map((x: any) => x.key)
+
+      // Clean state for files that are no longer in tabs
+      for (const uri of Object.keys(pluginSetReadonly)) {
+        if (!uris.includes(uri)) {
+          delete pluginSetReadonly[uri]
         }
       }
     })

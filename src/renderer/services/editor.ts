@@ -13,6 +13,7 @@ import { getSetting } from './setting'
 import { t } from './i18n'
 import { language as markdownLanguage } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
 import type { CustomEditor, CustomEditorCtx } from '@fe/types'
+import { FLAG_READONLY } from '@fe/support/args'
 
 export type SimpleCompletionItem = {
   label: string,
@@ -667,7 +668,20 @@ whenEditorReady().then(({ editor }) => {
   })
 
   editor.onDidAttemptReadOnlyEdit(() => {
-    triggerHook('EDITOR_ATTEMPT_READONLY_EDIT', { doc: store.state.currentFile || null })
+    const currentFile = store.state.currentFile
+    let readonlyType: 'app-readonly' | 'no-file' | 'file-not-writable' | 'unsupported-file-type'
+
+    if (FLAG_READONLY) {
+      readonlyType = 'app-readonly'
+    } else if (!currentFile) {
+      readonlyType = 'no-file'
+    } else if (currentFile.writeable === false) {
+      readonlyType = 'file-not-writable'
+    } else {
+      readonlyType = 'unsupported-file-type'
+    }
+
+    triggerHook('EDITOR_ATTEMPT_READONLY_EDIT', { doc: currentFile || null, readonlyType })
   })
 })
 
