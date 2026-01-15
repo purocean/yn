@@ -46,9 +46,9 @@ const data = {
   'can-not-edit-this-file-type': 'Cannot edit this file type',
   'read-only-mode-desc': 'The application is currently in read-only mode and cannot be edited.',
   'external-file-readonly': {
-    'readonly-desc': 'External files are read-only by default. You can [enable editing for current document](%s) or [change settings](%s).',
-    'enable-edit': 'Enable Editing for Current Document',
-    'open-setting': 'Open Settings',
+    'readonly-desc': 'External files are read-only by default. You can [enable editing for this external file](%s) or [change external file readonly settings](%s).',
+    'enable-edit': 'Enable Editing for This External File',
+    'open-setting': 'Change External File Readonly Settings',
   },
   'trigger-suggestions': 'Trigger Suggestions',
   'table-of-contents': 'Table of Contents',
@@ -426,7 +426,6 @@ const data = {
         'enable-ai-copilot-action': 'Enable the AI Copilot Action - Show the AI Copilot Action lightbulb when available',
         'enable-trigger-suggest-bulb': 'Enable Trigger Suggest Bulb - Show the Trigger Suggest Bulb lightbulb when available',
         'external-file-readonly': 'External Files Read-only by Default',
-        'external-file-readonly_desc': 'When opening external files (files outside the repository), set them as read-only by default',
       },
       'render': {
         'md-html': 'Enable HTML',

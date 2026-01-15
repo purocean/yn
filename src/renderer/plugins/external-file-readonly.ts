@@ -7,14 +7,14 @@ export default {
   name: 'external-file-readonly',
   register: (ctx) => {
     const idEnableEdit = 'plugin.external-file-readonly.enable-edit'
+    const idOpenSetting = 'plugin.external-file-readonly.open-setting'
     const settingKey = 'editor.external-file-readonly' as const
 
     // Delay to ensure custom message shows after default handler
     const MESSAGE_DELAY_MS = 10
 
     // Track files that were set to readonly by this plugin
-    // Store original writeable state to restore when needed
-    const pluginSetReadonly = ctx.lib.vue.shallowReactive<Record<string, boolean>>({})
+    const pluginSetReadonly: Record<string, boolean> = {}
 
     // Add setting for external file readonly
     ctx.setting.changeSchema((schema): void => {
@@ -42,12 +42,19 @@ export default {
       const isExternal = ctx.doc.isOutOfRepo(doc)
       const settingEnabled = ctx.setting.getSetting(settingKey, true)
       const uri = ctx.doc.toUri(doc)
+      const wasSetByPlugin = uri in pluginSetReadonly
+
+      // If user has temporarily enabled editing for this file, keep it enabled
+      if (wasSetByPlugin && !pluginSetReadonly[uri]) {
+        // User previously disabled readonly for this file, keep it writable
+        return
+      }
 
       // If it's an external file and setting is enabled
       if (isExternal && settingEnabled) {
         // Only set readonly if original writeable is not explicitly false (system readonly)
         if (doc.writeable !== false) {
-          // Track original state and set readonly
+          // Track and set readonly
           pluginSetReadonly[uri] = true
           updateDocWriteable(doc, false)
         }
@@ -68,10 +75,8 @@ export default {
           const currentFile = ctx.store.state.currentFile
           if (currentFile) {
             const uri = ctx.doc.toUri(currentFile)
-            // Remove from tracking when user manually enables editing
-            if (uri in pluginSetReadonly) {
-              delete pluginSetReadonly[uri]
-            }
+            // Mark as user-enabled (false means user disabled the readonly)
+            pluginSetReadonly[uri] = false
             updateDocWriteable(currentFile, true)
           }
         }
@@ -87,11 +92,8 @@ export default {
       if (!doc || !settingEnabled) return
 
       const isExternal = ctx.doc.isOutOfRepo(doc)
-      const uri = ctx.doc.toUri(doc)
-      const wasSetByPlugin = uri in pluginSetReadonly
-
-      // Only show custom message if this is an external file that was set readonly by our plugin
-      if (!isExternal || !wasSetByPlugin) return
+      // Only show custom message if this is an external file
+      if (!isExternal) return
 
       // Delay slightly to ensure this runs after the default handler
       setTimeout(async () => {
@@ -99,7 +101,7 @@ export default {
         const messageContribution: any = editor.getContribution('editor.contrib.messageController')
 
         const cmdEnableEdit = `command:vs.editor.ICodeEditor:1:${idEnableEdit}`
-        const cmdOpenSetting = 'command:vs.editor.ICodeEditor:1:plugin.external-file-readonly.open-setting'
+        const cmdOpenSetting = `command:vs.editor.ICodeEditor:1:${idOpenSetting}`
 
         // Close any existing message first
         messageContribution.closeMessage()
@@ -116,7 +118,7 @@ export default {
     // Register action to open setting panel
     whenEditorReady().then(({ editor }) => {
       editor.addAction({
-        id: 'plugin.external-file-readonly.open-setting',
+        id: idOpenSetting,
         label: ctx.i18n.t('external-file-readonly.open-setting'),
         run () {
           ctx.setting.showSettingPanel(settingKey)
