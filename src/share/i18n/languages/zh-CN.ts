@@ -46,6 +46,11 @@ const data: BaseLanguage = {
   'file-readonly-desc': '当前文件只读，如需编辑请先在系统中[改为可写](%s)，然后[刷新](%s)当前文档。',
   'can-not-edit-this-file-type': '不能编辑此类型文件',
   'read-only-mode-desc': '当前是只读模式，不可编辑',
+  'external-file-readonly': {
+    'readonly-desc': '外部文件默认只读。可以[开启当前文档编辑](%s)或[修改设置](%s)。',
+    'enable-edit': '开启当前文档编辑',
+    'open-setting': '打开设置',
+  },
   'trigger-suggestions': '触发提示',
   'table-of-contents': '目录',
   'text-comparator': '文本比较器',
@@ -411,6 +416,8 @@ const data: BaseLanguage = {
         'quick-suggestions': '快速提示 - 在输入文本时显示提示',
         'enable-ai-copilot-action': '启用 AI Copilot 操作 - 当可用时显示 AI Copilot 操作灯泡',
         'enable-trigger-suggest-bulb': '启用触发建议灯泡 - 当可用时显示触发建议操作灯泡',
+        'external-file-readonly': '外部文件默认只读',
+        'external-file-readonly_desc': '打开外部文件（非仓库内文件）时，默认设置为只读模式',
       },
       'render': {
         'md-html': '启用 HTML',

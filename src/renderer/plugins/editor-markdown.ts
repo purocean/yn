@@ -114,25 +114,6 @@ export default {
         ctx.store.state.inComposition = false
       })
 
-      const messageContribution: any = editor.getContribution('editor.contrib.messageController')
-      editor.onDidAttemptReadOnlyEdit(() => {
-        const currentFile = ctx.store.state.currentFile
-        const cmdRevealCurrentFile = `command:vs.editor.ICodeEditor:1:${idRevealCurrentFileInOS}`
-        const cmdRefreshCurrentDoc = `command:vs.editor.ICodeEditor:1:${idRefreshCurrentDoc}`
-        const message =
-          ctx.args.FLAG_READONLY
-            ? ctx.i18n.t('read-only-mode-desc')
-            : !currentFile
-                ? ctx.i18n.t('file-status.no-file')
-                : currentFile.writeable === false
-                  ? {
-                    value: ctx.i18n.t('file-readonly-desc', cmdRevealCurrentFile, cmdRefreshCurrentDoc),
-                    isTrusted: true,
-                  } as IMarkdownString
-                  : ctx.i18n.t('can-not-edit-this-file-type')
-        messageContribution.showMessage(message, editor.getPosition())
-      })
-
       editor.addAction({
         id: idRevealCurrentFileInOS,
         label: ctx.i18n.t('editor.action-label.reveal-current-file-in-os'),
@@ -163,6 +144,26 @@ export default {
 
         lastMouseDownTime = currentTime
       })
+    })
+
+    ctx.registerHook('EDITOR_ATTEMPT_READONLY_EDIT', async ({ doc }) => {
+      const { editor } = await whenEditorReady()
+      const messageContribution: any = editor.getContribution('editor.contrib.messageController')
+      const currentFile = doc
+      const cmdRevealCurrentFile = `command:vs.editor.ICodeEditor:1:${idRevealCurrentFileInOS}`
+      const cmdRefreshCurrentDoc = `command:vs.editor.ICodeEditor:1:${idRefreshCurrentDoc}`
+      const message =
+        ctx.args.FLAG_READONLY
+          ? ctx.i18n.t('read-only-mode-desc')
+          : !currentFile
+              ? ctx.i18n.t('file-status.no-file')
+              : currentFile.writeable === false
+                ? {
+                  value: ctx.i18n.t('file-readonly-desc', cmdRevealCurrentFile, cmdRefreshCurrentDoc),
+                  isTrusted: true,
+                } as IMarkdownString
+                : ctx.i18n.t('can-not-edit-this-file-type')
+      messageContribution.showMessage(message, editor.getPosition())
     })
 
     ctx.statusBar.tapMenus(menus => {

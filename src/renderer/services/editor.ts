@@ -665,6 +665,10 @@ whenEditorReady().then(({ editor }) => {
 
     triggerHook('EDITOR_CONTENT_CHANGE', { uri, value })
   })
+
+  editor.onDidAttemptReadOnlyEdit(() => {
+    triggerHook('EDITOR_ATTEMPT_READONLY_EDIT', { doc: store.state.currentFile || null })
+  })
 })
 
 registerHook('SETTING_FETCHED', () => {
