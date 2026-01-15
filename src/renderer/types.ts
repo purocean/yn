@@ -410,6 +410,7 @@ export interface BuildInSettings {
   'editor.quick-suggestions': boolean,
   'editor.sticky-scroll-enabled': boolean,
   'editor.enable-trigger-suggest-bulb': boolean,
+  'editor.external-file-readonly': boolean,
   'editor.wrap-indent': 'same' | 'indent' | 'deepIndent' | 'none',
   'render.md-html': boolean,
   'render.md-breaks': boolean,
