@@ -8,10 +8,10 @@ export default {
   register: (ctx) => {
     const idEnableEdit = 'plugin.external-file-readonly.enable-edit'
     const settingKey = 'editor.external-file-readonly' as const
-    
+
     // Delay to ensure custom message shows after default handler
     const MESSAGE_DELAY_MS = 10
-    
+
     // Track files that were set to readonly by this plugin
     const pluginSetReadonly = new Set<string>()
 
@@ -82,7 +82,7 @@ export default {
 
       const isExternal = ctx.doc.isOutOfRepo(doc)
       const wasSetByPlugin = pluginSetReadonly.has(getDocKey(doc))
-      
+
       // Only show custom message if this is an external file that was set readonly by our plugin
       if (!isExternal || !wasSetByPlugin || doc.writeable !== false) return
 
@@ -92,7 +92,7 @@ export default {
         const messageContribution: any = editor.getContribution('editor.contrib.messageController')
 
         const cmdEnableEdit = `command:vs.editor.ICodeEditor:1:${idEnableEdit}`
-        const cmdOpenSetting = `command:vs.editor.ICodeEditor:1:plugin.external-file-readonly.open-setting`
+        const cmdOpenSetting = 'command:vs.editor.ICodeEditor:1:plugin.external-file-readonly.open-setting'
 
         // Close any existing message first
         messageContribution.closeMessage()
