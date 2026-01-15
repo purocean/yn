@@ -3,7 +3,6 @@ import dayjs from 'dayjs'
 import { getEditor, getOneIndent, insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
-import type { IMarkdownString } from 'monaco-editor'
 
 export default {
   name: 'editor-markdown',
@@ -146,10 +145,9 @@ export default {
       })
     })
 
-    ctx.registerHook('EDITOR_ATTEMPT_READONLY_EDIT', async ({ doc, readonlyType }) => {
+    ctx.registerHook('EDITOR_ATTEMPT_READONLY_EDIT', async ({ readonlyType }) => {
       const { editor } = await whenEditorReady()
       const messageContribution: any = editor.getContribution('editor.contrib.messageController')
-      const currentFile = doc
       const cmdRevealCurrentFile = `command:vs.editor.ICodeEditor:1:${idRevealCurrentFileInOS}`
       const cmdRefreshCurrentDoc = `command:vs.editor.ICodeEditor:1:${idRefreshCurrentDoc}`
 
@@ -162,7 +160,7 @@ export default {
         message = {
           value: ctx.i18n.t('file-readonly-desc', cmdRevealCurrentFile, cmdRefreshCurrentDoc),
           isTrusted: true,
-        } as IMarkdownString
+        }
       } else {
         message = ctx.i18n.t('can-not-edit-this-file-type')
       }
