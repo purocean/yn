@@ -46,6 +46,11 @@ const data: BaseLanguage = {
   'file-readonly-desc': '當前文件是唯讀的。如需編輯，請先在系統中[更改為可寫](%s)，然後[刷新](%s)當前文檔。',
   'can-not-edit-this-file-type': '不能編輯此類型的文件',
   'read-only-mode-desc': '當前應用處於唯讀模式，不可編輯',
+  'external-file-readonly': {
+    'readonly-desc': '外部文件默認唯讀。可以[開啟當前外部文檔編輯](%s)或[修改外部文件唯讀設置](%s)。',
+    'enable-edit': '開啟當前外部文檔編輯',
+    'open-setting': '修改外部文件唯讀設置',
+  },
   'trigger-suggestions': '觸發提示',
   'table-of-contents': '目錄',
   'text-comparator': '文本比較器',
@@ -411,6 +416,7 @@ const data: BaseLanguage = {
         'quick-suggestions': '快速提示 - 在輸入文字時顯示提示',
         'enable-ai-copilot-action': '啟用 AI Copilot 操作 - 當可用時顯示 AI Copilot 操作燈泡',
         'enable-trigger-suggest-bulb': '啟用觸發提示燈泡 - 當可用時顯示觸發提示燈泡',
+        'external-file-readonly': '外部文件默認唯讀',
       },
       'render': {
         'md-html': '啟用 HTML',

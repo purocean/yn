@@ -45,6 +45,11 @@ const data = {
   'file-readonly-desc': 'The file is read-only. You can [change to writable](%s) in the system and then [refresh](%s) the document to edit.',
   'can-not-edit-this-file-type': 'Cannot edit this file type',
   'read-only-mode-desc': 'The application is currently in read-only mode and cannot be edited.',
+  'external-file-readonly': {
+    'readonly-desc': 'External files are read-only by default. You can [enable editing for this external file](%s) or [change external file readonly settings](%s).',
+    'enable-edit': 'Enable Editing for This External File',
+    'open-setting': 'Change External File Readonly Settings',
+  },
   'trigger-suggestions': 'Trigger Suggestions',
   'table-of-contents': 'Table of Contents',
   'text-comparator': 'Text Comparator',
@@ -420,6 +425,7 @@ const data = {
         'quick-suggestions': 'Quick Suggestions - Suggest as you type',
         'enable-ai-copilot-action': 'Enable the AI Copilot Action - Show the AI Copilot Action lightbulb when available',
         'enable-trigger-suggest-bulb': 'Enable Trigger Suggest Bulb - Show the Trigger Suggest Bulb lightbulb when available',
+        'external-file-readonly': 'External Files Read-only by Default',
       },
       'render': {
         'md-html': 'Enable HTML',
