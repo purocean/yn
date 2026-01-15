@@ -9,6 +9,9 @@ export default {
     const idEnableEdit = 'plugin.external-file-readonly.enable-edit'
     const settingKey = 'editor.external-file-readonly' as const
     
+    // Delay to ensure custom message shows after default handler
+    const MESSAGE_DELAY_MS = 10
+    
     // Track files that were set to readonly by this plugin
     const pluginSetReadonly = new Set<string>()
 
@@ -100,7 +103,7 @@ export default {
         } as IMarkdownString
 
         messageContribution.showMessage(message, editor.getPosition())
-      }, 10)
+      }, MESSAGE_DELAY_MS)
     })
 
     // Register action to open setting panel
