@@ -7,25 +7,42 @@
       @mouseenter="handleShadow"
       @dblclick.self="onBlankDblClick"
       class="tabs">
-      <div
-        v-for="item in tabList"
-        :key="item.key"
-        :data-id="item.key"
-        :class="{tab: true, current: item.key === value, fixed: item.fixed, temporary: item.temporary, [item.class || '']: true}"
-        :title="item.description"
-        :data-key="item.key"
-        @contextmenu.exact.prevent.stop="showContextMenu(item)"
-        @mouseup.middle="removeTabs([item])"
-        @mousedown.left="switchTab(item)"
-        @dblclick.stop="onItemDblClick(item)">
-        <div class="label">{{item.label}}</div>
-        <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @mousedown.prevent.stop @click.prevent.stop="toggleFix(item)">
-          <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
+      <template v-for="group in groupedTabs" :key="group.id || 'ungrouped'">
+        <div
+          v-if="group.id"
+          class="tab-group-header"
+          :style="{ borderLeftColor: group.color || 'var(--g-color-50)' }"
+          @click="toggleGroupCollapse(group.id)"
+          @contextmenu.exact.prevent.stop="showGroupContextMenu(group)"
+          :title="group.collapsed ? $t('tabs.expand-group') : $t('tabs.collapse-group')"
+        >
+          <svg-icon :name="group.collapsed ? 'chevron-right' : 'chevron-down'" width="10px" />
+          <span class="group-name">{{ group.name }}</span>
         </div>
-        <div v-else class="icon" :title="$t('close')" @mousedown.prevent.stop @click.prevent.stop="removeTabs([item])">
-          <svg-icon name="times" style="width: 12px; height: 12px;" />
-        </div>
-      </div>
+        <template v-if="!group.collapsed">
+          <div
+            v-for="item in group.tabs"
+            :key="item.key"
+            :data-id="item.key"
+            :class="{tab: true, current: item.key === value, fixed: item.fixed, temporary: item.temporary, grouped: !!item.groupId, [item.class || '']: true}"
+            :style="item.groupId && group.color ? { borderLeftColor: group.color } : {}"
+            :title="item.description"
+            :data-key="item.key"
+            :data-group-id="item.groupId || ''"
+            @contextmenu.exact.prevent.stop="showContextMenu(item)"
+            @mouseup.middle="removeTabs([item])"
+            @mousedown.left="switchTab(item)"
+            @dblclick.stop="onItemDblClick(item)">
+            <div class="label">{{item.label}}</div>
+            <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @mousedown.prevent.stop @click.prevent.stop="toggleFix(item)">
+              <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
+            </div>
+            <div v-else class="icon" :title="$t('close')" @mousedown.prevent.stop @click.prevent.stop="removeTabs([item])">
+              <svg-icon name="times" style="width: 12px; height: 12px;" />
+            </div>
+          </div>
+        </template>
+      </template>
     </div>
     <div ref="refFilterBtn" class="action-btn" style="order: -512" @click="showQuickFilter" :title="filterBtnTitle">
       <svg-icon name="chevron-down" width="12px" />
@@ -60,6 +77,10 @@ export default defineComponent({
       type: Array as () => Components.Tabs.Item[],
       required: true,
     },
+    groups: {
+      type: Array as () => Components.Tabs.Group[],
+      default: () => [],
+    },
     filterBtnTitle: String,
     actionBtns: {
       type: Array as () => Components.Tabs.ActionBtn[],
@@ -70,7 +91,7 @@ export default defineComponent({
       default: () => undefined,
     }
   },
-  emits: ['input', 'remove', 'switch', 'change-list', 'dblclick-blank', 'dblclick-item'],
+  emits: ['input', 'remove', 'switch', 'change-list', 'dblclick-blank', 'dblclick-item', 'update-groups'],
   setup (props, { emit }) {
     const { t } = useI18n()
 
@@ -162,6 +183,73 @@ export default defineComponent({
       })))
     }
 
+    function toggleGroupCollapse (groupId: string) {
+      const updatedGroups = props.groups.map(g =>
+        g.id === groupId ? { ...g, collapsed: !g.collapsed } : g
+      )
+      emit('update-groups', updatedGroups)
+    }
+
+    function addToGroup (item: Components.Tabs.Item, groupId: string) {
+      emit('change-list', props.list.map(x => ({
+        ...x,
+        groupId: x.key === item.key ? groupId : x.groupId,
+      })))
+    }
+
+    function removeFromGroup (item: Components.Tabs.Item) {
+      emit('change-list', props.list.map(x => ({
+        ...x,
+        groupId: x.key === item.key ? undefined : x.groupId,
+      })))
+    }
+
+    function createGroup (name: string, color?: string) {
+      const newGroup: Components.Tabs.Group = {
+        id: `group-${Date.now()}`,
+        name,
+        color: color || `hsl(${Math.random() * 360}, 70%, 50%)`,
+        collapsed: false,
+      }
+      emit('update-groups', [...props.groups, newGroup])
+      return newGroup
+    }
+
+    function deleteGroup (groupId: string) {
+      // Remove group and ungroup all tabs
+      emit('update-groups', props.groups.filter(g => g.id !== groupId))
+      emit('change-list', props.list.map(x => ({
+        ...x,
+        groupId: x.groupId === groupId ? undefined : x.groupId,
+      })))
+    }
+
+    function renameGroup (groupId: string, newName: string) {
+      const updatedGroups = props.groups.map(g =>
+        g.id === groupId ? { ...g, name: newName } : g
+      )
+      emit('update-groups', updatedGroups)
+    }
+
+    function showGroupContextMenu (group: Components.Tabs.Group & { tabs?: Components.Tabs.Item[] }) {
+      const items: Components.ContextMenu.Item[] = [
+        { id: 'rename', label: t('tabs.rename-group'), onClick: () => {
+          const newName = prompt(t('tabs.group-name'), group.name)
+          if (newName) {
+            renameGroup(group.id, newName)
+          }
+        }},
+        { id: 'delete', label: t('tabs.delete-group'), onClick: () => deleteGroup(group.id) },
+        { type: 'separator' },
+        { id: 'close-group', label: t('tabs.close-all'), onClick: () => {
+          if (group.tabs) {
+            removeTabs(group.tabs)
+          }
+        }},
+      ]
+      contextMenu.show(items)
+    }
+
     function showContextMenu (item: Components.Tabs.Item) {
       const items: Components.ContextMenu.Item[] = [
         { id: 'close', label: t('close'), onClick: () => removeTabs([item]) },
@@ -172,6 +260,39 @@ export default defineComponent({
         { type: 'separator' },
         { id: 'fix', label: item.fixed ? t('tabs.unpin') : t('tabs.pin'), onClick: () => toggleFix(item) },
       ]
+
+      // Add group-related menu items
+      if (item.groupId) {
+        items.push({ type: 'separator' })
+        items.push({ id: 'remove-from-group', label: t('tabs.remove-from-group'), onClick: () => removeFromGroup(item) })
+      } else {
+        items.push({ type: 'separator' })
+        
+        // Show existing groups
+        if (props.groups.length > 0) {
+          items.push({
+            id: 'add-to-group',
+            label: t('tabs.add-to-group'),
+            children: props.groups.map(g => ({
+              id: `group-${g.id}`,
+              label: g.name,
+              onClick: () => addToGroup(item, g.id)
+            }))
+          })
+        }
+        
+        items.push({
+          id: 'create-new-group',
+          label: t('tabs.create-new-group'),
+          onClick: () => {
+            const name = prompt(t('tabs.group-name'), t('tabs.new-group'))
+            if (name) {
+              const newGroup = createGroup(name)
+              addToGroup(item, newGroup.id)
+            }
+          }
+        })
+      }
 
       props.hookContextMenu?.(item, items)
 
@@ -246,6 +367,50 @@ export default defineComponent({
 
     const tabList = computed(() => sortTabs(props.list))
 
+    const groupedTabs = computed(() => {
+      const sorted = tabList.value || []
+      const grouped: Array<{ id?: string; name: string; color?: string; collapsed?: boolean; tabs: Components.Tabs.Item[] }> = []
+      
+      // Group tabs by their groupId
+      const groupMap = new Map<string, Components.Tabs.Item[]>()
+      const ungrouped: Components.Tabs.Item[] = []
+      
+      sorted.forEach(tab => {
+        if (tab.groupId) {
+          if (!groupMap.has(tab.groupId)) {
+            groupMap.set(tab.groupId, [])
+          }
+          groupMap.get(tab.groupId)!.push(tab)
+        } else {
+          ungrouped.push(tab)
+        }
+      })
+      
+      // Add grouped tabs
+      props.groups.forEach(group => {
+        const tabs = groupMap.get(group.id) || []
+        if (tabs.length > 0) {
+          grouped.push({
+            id: group.id,
+            name: group.name,
+            color: group.color,
+            collapsed: group.collapsed,
+            tabs
+          })
+        }
+      })
+      
+      // Add ungrouped tabs at the end
+      if (ungrouped.length > 0) {
+        grouped.push({
+          name: t('tabs.ungrouped'),
+          tabs: ungrouped
+        })
+      }
+      
+      return grouped
+    })
+
     watch(tabList, (val) => {
       if (sortable && val) {
         nextTick(() => {
@@ -266,11 +431,14 @@ export default defineComponent({
       refTabs,
       switchTab,
       showContextMenu,
+      showGroupContextMenu,
       removeTabs,
       onItemDblClick,
       onBlankDblClick,
       tabList,
+      groupedTabs,
       toggleFix,
+      toggleGroupCollapse,
       handleShadow,
       onMouseWheel,
       refFilterBtn,
@@ -423,6 +591,38 @@ export default defineComponent({
 
 .tab.temporary {
   font-style: italic;
+}
+
+.tab.grouped {
+  border-left: 3px solid var(--g-color-50);
+}
+
+.tab-group-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  height: 100%;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--g-color-30);
+  background: var(--g-color-85);
+  cursor: pointer;
+  user-select: none;
+  border-left: 3px solid var(--g-color-50);
+  flex: none;
+
+  &:hover {
+    background: var(--g-color-80);
+    color: var(--g-color-10);
+  }
+
+  .group-name {
+    white-space: nowrap;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .action-btn-separator {

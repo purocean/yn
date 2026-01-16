@@ -160,6 +160,14 @@ export namespace Components {
       fixed?: boolean;
       temporary?: boolean;
       class?: string;
+      groupId?: string;
+    }
+
+    export interface Group {
+      id: string;
+      name: string;
+      color?: string;
+      collapsed?: boolean;
     }
 
     export type ActionBtn = {

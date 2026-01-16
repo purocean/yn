@@ -38,6 +38,7 @@ export const initState = {
   currentFile: getCurrentFile() as Doc | null | undefined,
   recentOpenTime: storage.get<Record<string, number>>('recentOpenTime', {}),
   tabs: storage.get<Components.FileTabs.Item[]>('tabs', []),
+  tabGroups: storage.get<Components.Tabs.Group[]>('tabGroups', []),
   previewer: 'default',
   editor: 'default',
 }
@@ -95,6 +96,10 @@ watchEffect(() => {
 
 watchEffect(() => {
   storage.set('tabs', state.tabs)
+})
+
+watchEffect(() => {
+  storage.set('tabGroups', state.tabGroups)
 })
 
 watchEffect(() => {

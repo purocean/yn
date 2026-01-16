@@ -4,12 +4,14 @@
     class="file-tabs"
     :list="fileTabs"
     :value="current"
+    :groups="tabGroups"
     :filter-btn-title="filterBtnTitle"
     :action-btns="actionBtns"
     :hook-context-menu="hookContextMenu"
     @remove="removeTabs"
     @switch="switchTab"
     @change-list="setTabs"
+    @update-groups="setGroups"
     @dblclick-item="makeTabPermanent"
     @dblclick-blank="onDblclickBlank"
   />
@@ -38,7 +40,7 @@ export default defineComponent({
     const { t, $t } = useI18n()
 
     let lastKey = blankUri
-    const { currentFile, tabs } = toRefs(store.state)
+    const { currentFile, tabs, tabGroups } = toRefs(store.state)
     const isSaved = store.getters.isSaved
 
     const list = ref<Components.FileTabs.Item[]>([])
@@ -57,6 +59,10 @@ export default defineComponent({
         item.class = isOutOfRepo(file) ? 'out-of-repo' : ''
         return item
       })
+    }
+
+    function setGroups (groups: Components.Tabs.Group[]) {
+      store.state.tabGroups = groups
     }
 
     function switchFile (file: Doc | null) {
@@ -367,9 +373,11 @@ export default defineComponent({
       list,
       current,
       fileTabs,
+      tabGroups,
       removeTabs,
       switchTab,
       setTabs,
+      setGroups,
       refTabs,
       actionBtns,
       filterBtnTitle,
