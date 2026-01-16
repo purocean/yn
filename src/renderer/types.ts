@@ -167,7 +167,6 @@ export namespace Components {
       id: string;
       name: string;
       color?: string;
-      collapsed?: boolean;
     }
 
     export type ActionBtn = {

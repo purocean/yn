@@ -358,11 +358,8 @@ const data: BaseLanguage = {
     'remove-from-group': '从分组中移除',
     'rename-group': '重命名分组',
     'delete-group': '删除分组',
-    'collapse-group': '折叠分组',
-    'expand-group': '展开分组',
     'group-name': '分组名称',
     'new-group': '新建分组',
-    'ungrouped': '未分组',
   },
   'export-panel': {
     'export': '导出',

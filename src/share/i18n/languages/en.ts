@@ -357,11 +357,8 @@ const data = {
     'remove-from-group': 'Remove from Group',
     'rename-group': 'Rename Group',
     'delete-group': 'Delete Group',
-    'collapse-group': 'Collapse Group',
-    'expand-group': 'Expand Group',
     'group-name': 'Group Name',
     'new-group': 'New Group',
-    'ungrouped': 'Ungrouped',
   },
   'export-panel': {
     'export': 'Export',

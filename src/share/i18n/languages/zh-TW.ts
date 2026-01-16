@@ -353,6 +353,13 @@ const data: BaseLanguage = {
     'unpin': '取消固定',
     'search-tabs': '搜索標籤頁',
     'new-tab': '新建標籤頁',
+    'add-to-group': '添加到分組',
+    'create-new-group': '創建新分組',
+    'remove-from-group': '從分組中移除',
+    'rename-group': '重命名分組',
+    'delete-group': '刪除分組',
+    'group-name': '分組名稱',
+    'new-group': '新建分組',
   },
   'export-panel': {
     'export': '導出',

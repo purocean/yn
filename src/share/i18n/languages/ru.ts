@@ -353,6 +353,13 @@ const data: BaseLanguage = {
     'unpin': 'Открепить',
     'search-tabs': 'Поиск вкладки',
     'new-tab': 'Новая вкладка',
+    'add-to-group': 'Добавить в группу',
+    'create-new-group': 'Создать новую группу',
+    'remove-from-group': 'Удалить из группы',
+    'rename-group': 'Переименовать группу',
+    'delete-group': 'Удалить группу',
+    'group-name': 'Имя группы',
+    'new-group': 'Новая группа',
   },
   'export-panel': {
     'export': 'Экспорт',

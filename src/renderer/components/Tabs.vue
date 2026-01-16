@@ -7,41 +7,34 @@
       @mouseenter="handleShadow"
       @dblclick.self="onBlankDblClick"
       class="tabs">
-      <template v-for="group in groupedTabs" :key="group.id || 'ungrouped'">
+      <template v-for="(item, index) in tabList" :key="item.key">
         <div
-          v-if="group.id"
-          class="tab-group-header"
-          :style="{ borderLeftColor: group.color || 'var(--g-color-50)' }"
-          @click="toggleGroupCollapse(group.id)"
-          @contextmenu.exact.prevent.stop="showGroupContextMenu(group)"
-          :title="group.collapsed ? $t('tabs.expand-group') : $t('tabs.collapse-group')"
+          v-if="shouldShowGroupLabel(item, index)"
+          class="tab-group-label"
+          :style="{ color: getGroupColor(item.groupId) }"
+          :title="getGroupName(item.groupId)"
         >
-          <svg-icon :name="group.collapsed ? 'chevron-right' : 'chevron-down'" width="10px" />
-          <span class="group-name">{{ group.name }}</span>
+          {{ getGroupName(item.groupId) }}
         </div>
-        <template v-if="!group.collapsed">
-          <div
-            v-for="item in group.tabs"
-            :key="item.key"
-            :data-id="item.key"
-            :class="{tab: true, current: item.key === value, fixed: item.fixed, temporary: item.temporary, grouped: !!item.groupId, [item.class || '']: true}"
-            :style="item.groupId && group.color ? { borderLeftColor: group.color } : {}"
-            :title="item.description"
-            :data-key="item.key"
-            :data-group-id="item.groupId || ''"
-            @contextmenu.exact.prevent.stop="showContextMenu(item)"
-            @mouseup.middle="removeTabs([item])"
-            @mousedown.left="switchTab(item)"
-            @dblclick.stop="onItemDblClick(item)">
-            <div class="label">{{item.label}}</div>
-            <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @mousedown.prevent.stop @click.prevent.stop="toggleFix(item)">
-              <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
-            </div>
-            <div v-else class="icon" :title="$t('close')" @mousedown.prevent.stop @click.prevent.stop="removeTabs([item])">
-              <svg-icon name="times" style="width: 12px; height: 12px;" />
-            </div>
+        <div
+          :data-id="item.key"
+          :class="{tab: true, current: item.key === value, fixed: item.fixed, temporary: item.temporary, grouped: !!item.groupId, [item.class || '']: true}"
+          :style="item.groupId ? { borderTopColor: getGroupColor(item.groupId) } : {}"
+          :title="item.description"
+          :data-key="item.key"
+          :data-group-id="item.groupId || ''"
+          @contextmenu.exact.prevent.stop="showContextMenu(item)"
+          @mouseup.middle="removeTabs([item])"
+          @mousedown.left="switchTab(item)"
+          @dblclick.stop="onItemDblClick(item)">
+          <div class="label">{{item.label}}</div>
+          <div v-if="item.fixed" class="icon" :title="$t('tabs.unpin')" @mousedown.prevent.stop @click.prevent.stop="toggleFix(item)">
+            <svg-icon name="thumbtack" style="width: 10px; height: 10px;" />
           </div>
-        </template>
+          <div v-else class="icon" :title="$t('close')" @mousedown.prevent.stop @click.prevent.stop="removeTabs([item])">
+            <svg-icon name="times" style="width: 12px; height: 12px;" />
+          </div>
+        </div>
       </template>
     </div>
     <div ref="refFilterBtn" class="action-btn" style="order: -512" @click="showQuickFilter" :title="filterBtnTitle">
@@ -183,24 +176,17 @@ export default defineComponent({
       })))
     }
 
-    function toggleGroupCollapse (groupId: string) {
-      const updatedGroups = props.groups.map(g =>
-        g.id === groupId ? { ...g, collapsed: !g.collapsed } : g
-      )
-      emit('update-groups', updatedGroups)
-    }
-
     function addToGroup (item: Components.Tabs.Item, groupId: string) {
       emit('change-list', props.list.map(x => ({
         ...x,
-        groupId: x.key === item.key ? groupId : x.groupId,
+        groupId: x.key === item.key ? groupId : x.groupId
       })))
     }
 
     function removeFromGroup (item: Components.Tabs.Item) {
       emit('change-list', props.list.map(x => ({
         ...x,
-        groupId: x.key === item.key ? undefined : x.groupId,
+        groupId: x.key === item.key ? undefined : x.groupId
       })))
     }
 
@@ -208,8 +194,7 @@ export default defineComponent({
       const newGroup: Components.Tabs.Group = {
         id: `group-${Date.now()}`,
         name,
-        color: color || `hsl(${Math.random() * 360}, 70%, 50%)`,
-        collapsed: false,
+        color: color || `hsl(${Math.random() * 360}, 70%, 50%)`
       }
       emit('update-groups', [...props.groups, newGroup])
       return newGroup
@@ -220,7 +205,7 @@ export default defineComponent({
       emit('update-groups', props.groups.filter(g => g.id !== groupId))
       emit('change-list', props.list.map(x => ({
         ...x,
-        groupId: x.groupId === groupId ? undefined : x.groupId,
+        groupId: x.groupId === groupId ? undefined : x.groupId
       })))
     }
 
@@ -231,23 +216,24 @@ export default defineComponent({
       emit('update-groups', updatedGroups)
     }
 
-    function showGroupContextMenu (group: Components.Tabs.Group & { tabs?: Components.Tabs.Item[] }) {
-      const items: Components.ContextMenu.Item[] = [
-        { id: 'rename', label: t('tabs.rename-group'), onClick: () => {
-          const newName = prompt(t('tabs.group-name'), group.name)
-          if (newName) {
-            renameGroup(group.id, newName)
-          }
-        }},
-        { id: 'delete', label: t('tabs.delete-group'), onClick: () => deleteGroup(group.id) },
-        { type: 'separator' },
-        { id: 'close-group', label: t('tabs.close-all'), onClick: () => {
-          if (group.tabs) {
-            removeTabs(group.tabs)
-          }
-        }},
-      ]
-      contextMenu.show(items)
+    function getGroupColor (groupId?: string) {
+      if (!groupId) return undefined
+      const group = props.groups.find(g => g.id === groupId)
+      return group?.color || 'var(--g-color-50)'
+    }
+
+    function getGroupName (groupId?: string) {
+      if (!groupId) return ''
+      const group = props.groups.find(g => g.id === groupId)
+      return group?.name || ''
+    }
+
+    function shouldShowGroupLabel (item: Components.Tabs.Item, index: number) {
+      if (!item.groupId) return false
+      // Show label if it's the first tab in the group
+      if (index === 0) return true
+      const prevItem = tabList.value?.[index - 1]
+      return prevItem?.groupId !== item.groupId
     }
 
     function showContextMenu (item: Components.Tabs.Item) {
@@ -263,24 +249,45 @@ export default defineComponent({
 
       // Add group-related menu items
       if (item.groupId) {
+        const currentGroup = props.groups.find(g => g.id === item.groupId)
         items.push({ type: 'separator' })
-        items.push({ id: 'remove-from-group', label: t('tabs.remove-from-group'), onClick: () => removeFromGroup(item) })
-      } else {
-        items.push({ type: 'separator' })
-        
-        // Show existing groups
-        if (props.groups.length > 0) {
+        items.push({
+          id: 'remove-from-group',
+          label: t('tabs.remove-from-group'),
+          onClick: () => removeFromGroup(item)
+        })
+        if (currentGroup) {
           items.push({
-            id: 'add-to-group',
-            label: t('tabs.add-to-group'),
-            children: props.groups.map(g => ({
-              id: `group-${g.id}`,
-              label: g.name,
-              onClick: () => addToGroup(item, g.id)
-            }))
+            id: 'rename-group',
+            label: t('tabs.rename-group'),
+            onClick: () => {
+              const newName = prompt(t('tabs.group-name'), currentGroup.name)
+              if (newName) {
+                renameGroup(currentGroup.id, newName)
+              }
+            }
+          })
+          items.push({
+            id: 'delete-group',
+            label: t('tabs.delete-group'),
+            onClick: () => deleteGroup(currentGroup.id)
           })
         }
-        
+      } else {
+        items.push({ type: 'separator' })
+
+        // Show existing groups as separate menu items
+        if (props.groups.length > 0) {
+          props.groups.forEach(g => {
+            items.push({
+              id: `add-to-group-${g.id}`,
+              label: `${t('tabs.add-to-group')}: ${g.name}`,
+              onClick: () => addToGroup(item, g.id)
+            })
+          })
+          items.push({ type: 'separator' })
+        }
+
         items.push({
           id: 'create-new-group',
           label: t('tabs.create-new-group'),
@@ -367,50 +374,6 @@ export default defineComponent({
 
     const tabList = computed(() => sortTabs(props.list))
 
-    const groupedTabs = computed(() => {
-      const sorted = tabList.value || []
-      const grouped: Array<{ id?: string; name: string; color?: string; collapsed?: boolean; tabs: Components.Tabs.Item[] }> = []
-      
-      // Group tabs by their groupId
-      const groupMap = new Map<string, Components.Tabs.Item[]>()
-      const ungrouped: Components.Tabs.Item[] = []
-      
-      sorted.forEach(tab => {
-        if (tab.groupId) {
-          if (!groupMap.has(tab.groupId)) {
-            groupMap.set(tab.groupId, [])
-          }
-          groupMap.get(tab.groupId)!.push(tab)
-        } else {
-          ungrouped.push(tab)
-        }
-      })
-      
-      // Add grouped tabs
-      props.groups.forEach(group => {
-        const tabs = groupMap.get(group.id) || []
-        if (tabs.length > 0) {
-          grouped.push({
-            id: group.id,
-            name: group.name,
-            color: group.color,
-            collapsed: group.collapsed,
-            tabs
-          })
-        }
-      })
-      
-      // Add ungrouped tabs at the end
-      if (ungrouped.length > 0) {
-        grouped.push({
-          name: t('tabs.ungrouped'),
-          tabs: ungrouped
-        })
-      }
-      
-      return grouped
-    })
-
     watch(tabList, (val) => {
       if (sortable && val) {
         nextTick(() => {
@@ -431,18 +394,18 @@ export default defineComponent({
       refTabs,
       switchTab,
       showContextMenu,
-      showGroupContextMenu,
       removeTabs,
       onItemDblClick,
       onBlankDblClick,
       tabList,
-      groupedTabs,
       toggleFix,
-      toggleGroupCollapse,
       handleShadow,
       onMouseWheel,
       refFilterBtn,
       showQuickFilter,
+      getGroupColor,
+      getGroupName,
+      shouldShowGroupLabel
     }
   }
 })
@@ -594,35 +557,23 @@ export default defineComponent({
 }
 
 .tab.grouped {
-  border-left: 3px solid var(--g-color-50);
+  border-top: 3px solid var(--g-color-50);
+  padding-top: 2px;
 }
 
-.tab-group-header {
+.tab-group-label {
+  flex: none;
+  font-size: 10px;
+  padding: 0 6px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 0 8px;
-  height: 100%;
-  font-size: 11px;
-  font-weight: 500;
   color: var(--g-color-30);
-  background: var(--g-color-85);
-  cursor: pointer;
+  font-weight: 500;
   user-select: none;
-  border-left: 3px solid var(--g-color-50);
-  flex: none;
-
-  &:hover {
-    background: var(--g-color-80);
-    color: var(--g-color-10);
-  }
-
-  .group-name {
-    white-space: nowrap;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .action-btn-separator {
