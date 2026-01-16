@@ -192,7 +192,7 @@ export default defineComponent({
 
     function createGroup (name: string, color?: string) {
       const newGroup: Components.Tabs.Group = {
-        id: `group-${Date.now()}`,
+        id: `group-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         name,
         color: color || `hsl(${Math.random() * 360}, 70%, 50%)`
       }
