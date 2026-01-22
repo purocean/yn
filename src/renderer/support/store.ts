@@ -22,6 +22,7 @@ export const initState = {
   showSide: storage.get('showSide', true),
   showView: storage.get('showView', true),
   showEditor: storage.get('showEditor', true),
+  showContentRightSide: false,
   editorPreviewExclusive: storage.get('editorPreviewExclusive', false),
   showXterm: false,
   showOutline: false,

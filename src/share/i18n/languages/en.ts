@@ -745,6 +745,7 @@ const data = {
     'layout_toggle-side': 'Show / Hide Side Bar',
     'layout_toggle-view': 'Show / Hide Preview',
     'layout_toggle-xterm': 'Show / Hide Terminal',
+    'layout_toggle-content-right-side': 'Show / Hide Content Right Side Bar',
     'plugin_copy-content_copy-content': 'Show Copy Content Panel',
     'plugin_document-history-stack_back': 'Back to Previous Document',
     'plugin_document-history-stack_forward': 'Forward to Next Document',

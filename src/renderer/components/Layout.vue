@@ -20,6 +20,10 @@
             <div v-if="showView && showEditor" class="sash-left" @dblclick="resetSize('right', 'editor')" @mousedown="initEditorResize"></div>
             <slot name="preview"></slot>
           </div>
+          <div class="content-right-side" ref="contentRightSide" v-show="showContentRightSide">
+            <div class="sash-left" @dblclick="resetSize('left', 'contentRightSide')" @mousedown="initContentRightSideResize"></div>
+            <slot name="content-right-side" />
+          </div>
         </div>
         <div class="terminal" ref="terminal" v-show="showXterm">
           <slot name="terminal"></slot>
@@ -45,13 +49,14 @@ let resizeOrigin: any = null
 export default defineComponent({
   name: 'layout',
   setup () {
-    const { showView, showXterm, showSide, showEditor, presentation, isFullscreen } = toRefs(store.state)
+    const { showView, showXterm, showSide, showEditor, presentation, isFullscreen, showContentRightSide } = toRefs(store.state)
 
     const aside = ref<HTMLElement | null>(null)
     const editor = ref<HTMLElement | null>(null)
     const terminal = ref<HTMLElement | null>(null)
     const content = ref<HTMLElement | null>(null)
-    const refs: any = { aside, editor, terminal }
+    const contentRightSide = ref<HTMLElement | null>(null)
+    const refs: any = { aside, editor, terminal, contentRightSide }
 
     function resizeOutOfRange (ref: string, outOfRange: null | 'min' | 'max') {
       if (ref === 'aside' && outOfRange === 'min') {
@@ -137,6 +142,16 @@ export default defineComponent({
         ref.style.width = fixedWidth
         ref.style.minWidth = fixedWidth
         ref.style.maxWidth = fixedWidth
+      } else if (resizeOrigin.type === 'left') {
+        const offsetX = -(e.clientX - resizeOrigin.mouseX)
+        const width = (resizeOrigin.targetWidth + offsetX)
+
+        checkOutOfRange(width)
+
+        const fixedWidth = Math.min(resizeOrigin.max, Math.max(resizeOrigin.min, width)) + 'px'
+        ref.style.width = fixedWidth
+        ref.style.minWidth = fixedWidth
+        ref.style.maxWidth = fixedWidth
       } else if (resizeOrigin.type === 'top') {
         const offsetY = -(e.clientY - resizeOrigin.mouseY)
         const height = (resizeOrigin.targetHeight + offsetY)
@@ -157,7 +172,7 @@ export default defineComponent({
 
       if (resizeOrigin.outOfRange) {
         if (resizeOutOfRange(resizeOrigin.ref, resizeOrigin.outOfRange)) {
-          if (resizeOrigin.type === 'right') {
+          if (resizeOrigin.type === 'right' || resizeOrigin.type === 'left') {
             ref.style.width = resizeOrigin.targetWidth + 'px'
           }
 
@@ -173,7 +188,7 @@ export default defineComponent({
     function resetSize (type: any, ref: any) {
       const refEl = refs[ref].value
 
-      if (type === 'right') {
+      if (type === 'right' || type === 'left') {
         refEl.style.width = ''
         refEl.style.minWidth = ''
         refEl.style.maxWidth = ''
@@ -210,6 +225,13 @@ export default defineComponent({
       }
     }
 
+    function initContentRightSideResize (e: MouseEvent) {
+      if (content.value) {
+        const maxWidth = content.value.clientWidth - 300
+        initResize('left', 'contentRightSide', 200, maxWidth, e)
+      }
+    }
+
     watchPostEffect(() => {
       // clean width for editor when only one view
       if (showEditor.value !== showView.value) {
@@ -239,11 +261,13 @@ export default defineComponent({
       resetSize,
       initResize,
       initEditorResize,
+      initContentRightSideResize,
       showSide,
       showXterm: FLAG_DISABLE_XTERM ? false : showXterm,
       showFooter,
       showView,
       showEditor,
+      showContentRightSide,
       presentation,
       isElectron,
       isFullscreen,
@@ -251,6 +275,7 @@ export default defineComponent({
       editor,
       terminal,
       content,
+      contentRightSide,
     }
   },
 })
@@ -398,6 +423,15 @@ export default defineComponent({
     width: 0;
     flex: none;
   }
+}
+
+.content-right-side {
+  height: 100%;
+  width: 300px;
+  flex: none;
+  position: relative;
+  border-left: 1px solid var(--g-color-86);
+  background: var(--g-color-98);
 }
 
 .footer {

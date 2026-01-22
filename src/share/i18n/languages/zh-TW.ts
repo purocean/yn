@@ -746,6 +746,7 @@ const data: BaseLanguage = {
     'layout_toggle-side': '顯示/隱藏側欄',
     'layout_toggle-view': '顯示/隱藏預覽',
     'layout_toggle-xterm': '顯示/隱藏終端',
+    'layout_toggle-content-right-side': '顯示/隱藏內容右側欄',
     'plugin_copy-content_copy-content': '顯示複製內容面板',
     'plugin_document-history-stack_back': '返回上一個文件',
     'plugin_document-history-stack_forward': '前進到下一個文件',

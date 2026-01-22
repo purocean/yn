@@ -746,6 +746,7 @@ const data: BaseLanguage = {
     'layout_toggle-side': 'Показать/скрыть боковую панель',
     'layout_toggle-view': 'Показать/скрыть предпросмотр',
     'layout_toggle-xterm': 'Показать/скрыть терминал',
+    'layout_toggle-content-right-side': 'Показать/скрыть правую боковую панель',
     'plugin_copy-content_copy-content': 'Показать панель копирования содержимого',
     'plugin_document-history-stack_back': 'Вернуться к предыдущему документу',
     'plugin_document-history-stack_forward': 'Перейти к следующему документу',

@@ -90,6 +90,15 @@ export function toggleXterm (visible?: boolean) {
 }
 
 /**
+ * Toggle content right side bar visible.
+ * @param visible
+ */
+export function toggleContentRightSide (visible?: boolean) {
+  store.state.showContentRightSide = typeof visible === 'boolean' ? visible : !store.state.showContentRightSide
+  emitResize()
+}
+
+/**
  * Toggle editor preview exclusive.
  * @param exclusive
  */
@@ -135,4 +144,12 @@ registerAction({
   handler: toggleXterm,
   forUser: true,
   keys: [Alt, 't']
+})
+
+registerAction({
+  name: 'layout.toggle-content-right-side',
+  description: t('command-desc.layout_toggle-content-right-side'),
+  handler: toggleContentRightSide,
+  forUser: true,
+  keys: [Alt, 'b']
 })
