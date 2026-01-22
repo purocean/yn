@@ -241,6 +241,7 @@ const data = {
       'preview': 'Show Preview',
       'editor': 'Show Editor',
       'side-bar': 'Show Side Bar',
+      'content-right-side': 'Show Right Side Panel',
       'word-wrap': 'Word Wrap',
       'typewriter-mode': 'Typewriter Mode',
       'editor-preview-exclusive': 'Editor/Preview Exclusive',

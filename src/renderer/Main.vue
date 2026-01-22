@@ -21,6 +21,9 @@
     <template v-slot:preview>
       <Previewer />
     </template>
+    <template v-slot:content-right-side>
+      <ContentRightSide />
+    </template>
     <template v-slot:right-before>
       <FileTabs />
     </template>
@@ -57,6 +60,7 @@ import Terminal from '@fe/components/Terminal.vue'
 import FileTabs from '@fe/components/FileTabs.vue'
 import Editor from '@fe/components/Editor.vue'
 import Previewer from '@fe/components/Previewer.vue'
+import ContentRightSide from '@fe/components/ContentRightSide.vue'
 
 import SettingPanel from '@fe/components/SettingPanel.vue'
 import ExportPanel from '@fe/components/ExportPanel.vue'
@@ -82,6 +86,7 @@ export default defineComponent({
     FileTabs,
     Editor,
     Previewer,
+    ContentRightSide,
     XFilter,
     Premium,
     SettingPanel,

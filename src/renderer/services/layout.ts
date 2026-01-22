@@ -146,10 +146,3 @@ registerAction({
   keys: [Alt, 't']
 })
 
-registerAction({
-  name: 'layout.toggle-content-right-side',
-  description: t('command-desc.layout_toggle-content-right-side'),
-  handler: toggleContentRightSide,
-  forUser: true,
-  keys: [Alt, 'b']
-})

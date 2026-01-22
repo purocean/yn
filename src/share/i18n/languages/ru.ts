@@ -242,6 +242,7 @@ const data: BaseLanguage = {
       'preview': 'Предварительный просмотр',
       'editor': 'Показать редактор',
       'side-bar': 'Показать боковую панель',
+      'content-right-side': 'Показать правую панель',
       'word-wrap': 'Перенос снов',
       'typewriter-mode': 'Режим печатной машинки',
       'editor-preview-exclusive': 'Только режим редактора/просмотра',
