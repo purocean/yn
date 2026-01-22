@@ -126,7 +126,7 @@
     "js-untar": "^2.0.0",
     "juice": "^8.0.0",
     "katex": "^0.16.21",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "markdown-it": "^14.1.0",
     "markdown-it-abbr": "^2.0.0",
     "markdown-it-attributes": "^1.2.0",
