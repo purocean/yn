@@ -145,4 +145,3 @@ registerAction({
   forUser: true,
   keys: [Alt, 't']
 })
-

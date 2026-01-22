@@ -168,7 +168,7 @@ export const ContentRightSide = {
    */
   removePanel (name: string) {
     ioc.removeWhen('RIGHT_SIDE_PANEL', item => item.name === name)
-    
+
     // if the current panel is removed, switch to another one or hide
     if (store.state.currentRightSidePanel === name) {
       const panels = ContentRightSide.getAllPanels()

@@ -301,7 +301,7 @@ registerAction({
   description: t('command-desc.layout_toggle-content-right-side'),
   handler: ctx.layout.toggleContentRightSide,
   forUser: true,
-  when() {
+  when () {
     return ctx.workbench.ContentRightSide.getAllPanels().length > 0
   },
   keys: [Alt, 'b']
