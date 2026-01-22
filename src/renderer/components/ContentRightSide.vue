@@ -18,8 +18,12 @@
             :title="btn.title"
             @click="btn.onClick"
           >
-            <svg-icon :name="btn.icon" width="12px" />
+            <svg-icon :name="btn.icon" width="10px" />
           </div>
+          <component
+            v-else-if="btn.type === 'custom' && !btn.hidden"
+            :is="btn.component"
+          />
         </template>
         <div v-if="actionBtns.length > 0" class="action-separator"></div>
         <div class="action-btn" :title="$t('close')" @click="hide">
@@ -149,6 +153,7 @@ export default defineComponent({
   border-bottom: 1px solid var(--g-color-86);
   background: var(--g-color-96);
   flex-shrink: 0;
+  user-select: none;
 }
 
 .panel-title {
@@ -160,6 +165,7 @@ export default defineComponent({
   color: var(--g-color-20);
   overflow: hidden;
   min-width: 0;
+  cursor: default;
 
   .title-text {
     white-space: nowrap;

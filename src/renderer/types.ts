@@ -213,6 +213,7 @@ export namespace Components {
       onClick: (e: MouseEvent) => void,
     }
     | { type: 'separator', order?: number, hidden?: boolean }
+    | { type: 'custom', key: string | number, order?: number, hidden?: boolean, component: any }
   }
 
   export namespace FixedFloat {
