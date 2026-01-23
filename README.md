@@ -76,15 +76,19 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.86.1](https://github.com/purocean/yn/releases/tag/v3.86.1) 2025-12-13
+### [v3.87.1](https://github.com/purocean/yn/releases/tag/v3.87.1) 2026-01-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-win-x64-3.86.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-mac-arm64-3.86.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-mac-x64-3.86.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-linux-x86_64-3.86.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-linux-amd64-3.86.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-win-x64-3.87.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-arm64-3.87.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-x64-3.87.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-x86_64-3.87.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-amd64-3.87.1.deb)
 
-1. feat: Terminal on Windows uses ConPTY
-2. fix: Fixed some issues with HTML parsing
-3. feat(plugin): Plugins can use the added XTerm component to connect to terminal
+1. feat: Support displaying OpenCode in the sidebar
+2. feat: Search panel supports remembering expanded results state
+3. feat: Support list collapsing in preview area, needs to be enabled in `Settings - Rendering`
+4. feat: Open external files as read-only by default
+5. feat: Optimize list number auto-fill experience
+6. feat(plugin): Support `ctx.workbench.ContentRightSide.registerPanel` for registering sidebar panel components
+7. feat(plugin): Add `EDITOR_ATTEMPT_READONLY_EDIT` Hook
 
-[More release notes](https://github.com/purocean/yn/releases)
+[更多发布说明](https://github.com/purocean/yn/releases)
 
 ## Supports
 
