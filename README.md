@@ -88,7 +88,7 @@ For more information on how to use the following functions, please see [characte
 6. feat(plugin): Support `ctx.workbench.ContentRightSide.registerPanel` for registering sidebar panel components
 7. feat(plugin): Add `EDITOR_ATTEMPT_READONLY_EDIT` Hook
 
-[更多发布说明](https://github.com/purocean/yn/releases)
+[More release notes](https://github.com/purocean/yn/releases)
 
 ## Supports
 
