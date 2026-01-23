@@ -90,6 +90,15 @@ export function toggleXterm (visible?: boolean) {
 }
 
 /**
+ * Toggle content right side bar visible.
+ * @param visible
+ */
+export function toggleContentRightSide (visible?: boolean) {
+  store.state.showContentRightSide = typeof visible === 'boolean' ? visible : !store.state.showContentRightSide
+  emitResize()
+}
+
+/**
  * Toggle editor preview exclusive.
  * @param exclusive
  */

@@ -1,5 +1,5 @@
 import type * as Monaco from 'monaco-editor'
-import { getLineContent, getOneIndent } from '@fe/services/editor'
+import { getLineContent, getLineLanguageId, getOneIndent } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { getSetting } from '@fe/services/setting'
 import { isKeydown } from '@fe/core/keybinding'
@@ -26,6 +26,18 @@ function processCursorChange (editor: Monaco.editor.IStandaloneCodeEditor, monac
 
   if (!isTab && !isDeleteLeft && !isEnter && !isSpace && !isOutdent) {
     return false
+  }
+
+  const tokenLine = e.position.lineNumber - (isEnter ? 1 : 0)
+
+  // only process markdown file
+  if (getLineLanguageId(tokenLine, model) !== 'markdown') {
+    return
+  }
+
+  // ignore if cursor in code block
+  if ((model as any).tokenization.grammarTokens.getLineTokens(tokenLine).getForeground() === 23) {
+    return
   }
 
   const cursorAtEnd = model.getLineMaxColumn(e.position.lineNumber) === e.position.column
