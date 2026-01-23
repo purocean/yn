@@ -76,13 +76,17 @@
 
 ## 更新日志
 
-### [v3.86.1](https://github.com/purocean/yn/releases/tag/v3.86.1) 2025-12-13
+### [v3.87.1](https://github.com/purocean/yn/releases/tag/v3.87.1) 2026-01-23
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-win-x64-3.86.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-mac-arm64-3.86.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-mac-x64-3.86.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-linux-x86_64-3.86.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-linux-amd64-3.86.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-win-x64-3.87.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-arm64-3.87.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-x64-3.87.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-x86_64-3.87.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-amd64-3.87.1.deb)
 
-1. feat: Windows 上终端使用 ConPTY
-2. fix: 修复解析 HTML 的一些问题
-3. feat(plugin): 插件中可使用增加 XTerm 组件连接终端
+1. feat: 支持在侧栏展示 OpenCode
+2. feat: 搜索面板支持记住展开结果状态
+3. feat: 支持预览区列表折叠，需在`设置-渲染`中开启
+4. feat: 打开外部文件默认只读
+5. feat: 优化列表序号自动填充体验
+6. feat(plugin): 支持 `ctx.workbench.ContentRightSide.registerPanel` 注册侧栏面板组件
+7. feat(plugin): 增加  `EDITOR_ATTEMPT_READONLY_EDIT` Hook
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
