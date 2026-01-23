@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watchPostEffect } from 'vue'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
-import { emitResize, toggleEditor, toggleSide, toggleView, toggleXterm } from '@fe/services/layout'
+import { emitResize, toggleEditor, toggleSide, toggleView, toggleContentRightSide, toggleXterm } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
 import store from '@fe/support/store'
 
@@ -66,6 +66,11 @@ export default defineComponent({
 
       if (ref === 'terminal' && outOfRange === 'min') {
         toggleXterm(false)
+        return true
+      }
+
+      if (ref === 'contentRightSide' && outOfRange === 'min') {
+        toggleContentRightSide(false)
         return true
       }
 
@@ -174,6 +179,8 @@ export default defineComponent({
         if (resizeOutOfRange(resizeOrigin.ref, resizeOrigin.outOfRange)) {
           if (resizeOrigin.type === 'right' || resizeOrigin.type === 'left') {
             ref.style.width = resizeOrigin.targetWidth + 'px'
+            ref.style.maxWidth = ref.style.width
+            ref.style.minWidth = ref.style.width
           }
 
           if (resizeOrigin.type === 'top') {
@@ -219,15 +226,15 @@ export default defineComponent({
     }
 
     function initEditorResize (e: MouseEvent) {
-      if (content.value) {
-        const maxWidth = content.value.clientWidth - 270
+      if (content.value && contentRightSide.value) {
+        const maxWidth = content.value.clientWidth - 200 - contentRightSide.value.clientWidth
         initResize('right', 'editor', 200, maxWidth, e)
       }
     }
 
     function initContentRightSideResize (e: MouseEvent) {
-      if (content.value) {
-        const maxWidth = content.value.clientWidth - 300
+      if (content.value && editor.value) {
+        const maxWidth = content.value.clientWidth - 200 - editor.value.clientWidth
         initResize('left', 'contentRightSide', 200, maxWidth, e)
       }
     }
