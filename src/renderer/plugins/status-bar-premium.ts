@@ -83,6 +83,8 @@ export default {
       name: actionName,
       description: ctx.i18n.t('premium.confetti'),
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Show confetti celebration. No args.',
       handler
     })
   }

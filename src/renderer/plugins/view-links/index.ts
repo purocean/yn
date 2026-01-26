@@ -39,6 +39,8 @@ export default {
     ctx.action.registerAction({
       name: actionName,
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'View document links. No args.',
       description: ctx.i18n.t('command-desc.plugin_view-links_view-document-links'),
       handler: showLinks,
       when,

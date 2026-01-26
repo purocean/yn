@@ -200,6 +200,8 @@ registerAction({
   keys: [CtrlCmd, 'f'],
   handler: show,
   forUser: true,
+  forMcp: true,
+  mcpDescription: 'Show find widget in preview. No args.',
   when: () => {
     return !(getEditor()?.hasTextFocus()) && store.state.showView
   }

@@ -192,6 +192,8 @@ export default {
       description: ctx.i18n.t('command-desc.plugin_editor_focus-editor'),
       handler: focusEditor,
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Focus editor. No args.',
       keys: [ctx.keybinding.Shift, ctx.keybinding.Alt, 'x']
     })
   }

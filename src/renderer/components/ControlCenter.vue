@@ -45,6 +45,8 @@ registerAction({
   name: 'control-center.toggle',
   description: t('command-desc.control-center_toggle'),
   forUser: true,
+  forMcp: true,
+  mcpDescription: 'Toggle control center. Optional args: [visible:boolean] - true to show, false to hide, omit to toggle.',
   handler: toggle,
   keys: [Alt, 'c']
 })

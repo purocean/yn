@@ -786,6 +786,8 @@ registerAction({
   keys: [CtrlCmd, Shift, 'f'],
   description: t('command-desc.base_find-in-repository'),
   forUser: true,
+  forMcp: true,
+  mcpDescription: 'Find text in repository. Optional args: [query:FindInRepositoryQuery] - search query object.',
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
 

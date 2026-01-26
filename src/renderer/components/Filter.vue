@@ -105,6 +105,8 @@ export default defineComponent({
         description: t('command-desc.workbench_show-quick-open'),
         handler: showQuickOpen,
         forUser: true,
+        forMcp: true,
+        mcpDescription: 'Show quick open dialog. No args.',
         keys: [CtrlCmd, 'p']
       })
       registerAction({ name: 'filter.choose-document', handler: chooseDocument })

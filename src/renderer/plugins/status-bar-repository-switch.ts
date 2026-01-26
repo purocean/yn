@@ -78,6 +78,8 @@ export default {
         name: `base.switch-repository-${i}`,
         description: i === 0 ? ctx.i18n.t('switch-the-last-repo') : ctx.i18n.t('switch-repo-n', String(i)),
         forUser: true,
+        forMcp: true,
+        mcpDescription: `Switch to repository ${i === 0 ? 'last' : i}. No args.`,
         keys: [ctx.keybinding.Alt, String(i)],
         handler: () => {
           const repos = ctx.repo.getAllRepos()
