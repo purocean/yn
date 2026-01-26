@@ -656,7 +656,7 @@ const mcpEndpoint = async (ctx: any, next: any) => {
           const { getActionHandler } = require('./core/action')
           const handler = getActionHandler('${actionName.replace(/'/g, "\\'")}')
           if (!handler) {
-            throw new Error('Action "${actionName.replace(/'/g, "\\'")} not found"')
+            throw new Error('Action "${actionName.replace(/'/g, "\\'")}" not found')
           }
           return await handler(...${JSON.stringify(args)})
         `
@@ -669,9 +669,9 @@ const mcpEndpoint = async (ctx: any, next: any) => {
       })
 
       ctx.body = result('ok', 'Actions registered')
-    } else if (ctx.path.startsWith('/api/mcp/sse')) {
-      // SSE endpoint for MCP protocol
-      await mcpServer.handleMCPRequest(ctx.req, ctx.res)
+    } else if (ctx.method === 'POST' && ctx.path === '/api/mcp/message') {
+      // MCP JSON-RPC endpoint
+      await mcpServer.handleMCPRequest(ctx.req, ctx.res, ctx.request.body)
       ctx.respond = false
     } else {
       await next()
