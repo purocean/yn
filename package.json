@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
+    "@modelcontextprotocol/sdk": "^1.25.3",
     "@vscode/ripgrep": "^1.15.6",
     "adm-zip": "^0.5.9",
     "app-license": "^0.3.0",

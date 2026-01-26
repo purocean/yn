@@ -22,6 +22,7 @@ import config from '../config'
 import * as jwt from '../jwt'
 import { getAction } from '../action'
 import * as extension from '../extension'
+import * as mcpServer from './mcp'
 import type { FileReadResult } from '../../share/types'
 
 const isLocalhost = (address: string) => {
@@ -639,6 +640,47 @@ const choose = async (ctx: any, next: any) => {
   }
 }
 
+const mcpEndpoint = async (ctx: any, next: any) => {
+  if (ctx.path.startsWith('/api/mcp')) {
+    checkIsAdmin(ctx)
+    
+    if (ctx.method === 'POST' && ctx.path === '/api/mcp/actions') {
+      // Register actions from frontend
+      const { actions } = ctx.request.body
+      mcpServer.registerActions(actions)
+      
+      // Set up execute action callback
+      mcpServer.setExecuteActionCallback(async (actionName: string, args: any[]) => {
+        // Use RPC to execute action in frontend
+        const code = `
+          const { getActionHandler } = require('./core/action')
+          const handler = getActionHandler('${actionName.replace(/'/g, "\\'")}')
+          if (!handler) {
+            throw new Error('Action "${actionName.replace(/'/g, "\\'")} not found"')
+          }
+          return await handler(...${JSON.stringify(args)})
+        `
+        const AsyncFunction = Object.getPrototypeOf(async () => 0).constructor
+        const fn = new AsyncFunction('require', code)
+        const nodeRequire = (id: string) => id.startsWith('.')
+          ? require(path.resolve(STATIC_DIR, id))
+          : require(id)
+        return await fn(nodeRequire)
+      })
+      
+      ctx.body = result('ok', 'Actions registered')
+    } else if (ctx.path.startsWith('/api/mcp/sse')) {
+      // SSE endpoint for MCP protocol
+      await mcpServer.handleMCPRequest(ctx.req, ctx.res)
+      ctx.respond = false
+    } else {
+      await next()
+    }
+  } else {
+    await next()
+  }
+}
+
 const rpc = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/rpc') && ctx.method === 'POST') {
     const { code } = ctx.request.body
@@ -793,6 +835,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userExtension))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, premiumManage))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, mcpEndpoint))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userFile))

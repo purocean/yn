@@ -79,6 +79,11 @@ export interface Action<T extends string = string> {
   description?: string
 
   /**
+   * Description for MCP (Model Context Protocol) including parameter types and notes for AI models
+   */
+  mcpDescription?: string
+
+  /**
    * user can set keybinding or list in action manager
    */
   forUser?: boolean

@@ -117,6 +117,7 @@ export function toggleEditorPreviewExclusive (exclusive?: boolean) {
 registerAction({
   name: 'layout.toggle-side',
   description: t('command-desc.layout_toggle-side'),
+  mcpDescription: 'Toggle side panel visibility. No parameters required.',
   handler: toggleSide,
   forUser: true,
   keys: [Alt, 'e']
@@ -125,6 +126,7 @@ registerAction({
 registerAction({
   name: 'layout.toggle-editor',
   description: t('command-desc.layout_toggle-editor'),
+  mcpDescription: 'Toggle editor panel visibility. No parameters required.',
   handler: toggleEditor,
   forUser: true,
   keys: [Alt, 'x']
@@ -133,6 +135,7 @@ registerAction({
 registerAction({
   name: 'layout.toggle-view',
   description: t('command-desc.layout_toggle-view'),
+  mcpDescription: 'Toggle preview panel visibility. No parameters required.',
   handler: toggleView,
   forUser: true,
   keys: [Alt, 'v']
@@ -141,6 +144,7 @@ registerAction({
 registerAction({
   name: 'layout.toggle-xterm',
   description: t('command-desc.layout_toggle-xterm'),
+  mcpDescription: 'Toggle terminal panel visibility. No parameters required.',
   handler: toggleXterm,
   forUser: true,
   keys: [Alt, 't']

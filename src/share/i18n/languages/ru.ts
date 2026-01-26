@@ -496,6 +496,7 @@ const data: BaseLanguage = {
       },
       'hide-main-window-on-startup': 'Скрыть главное окно при запуске',
       'keep-running-after-closing-window': 'Продолжать работу после закрытия окна',
+      'mcp.enabled': 'Включить MCP-сервер',
     }
   },
   'quick-open': {
