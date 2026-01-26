@@ -193,7 +193,7 @@ export default {
       handler: focusEditor,
       forUser: true,
       forMcp: true,
-      mcpDescription: 'Focus editor. No args.',
+      mcpDescription: 'Focus editor. No args. No return.',
       keys: [ctx.keybinding.Shift, ctx.keybinding.Alt, 'x']
     })
   }

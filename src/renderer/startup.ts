@@ -299,7 +299,7 @@ registerHook('RIGHT_SIDE_PANEL_CHANGE', ({ type }) => {
 registerAction({
   name: 'layout.toggle-content-right-side',
   description: t('command-desc.layout_toggle-content-right-side'),
-  mcpDescription: 'Toggle content right side panel. Optional args: [visible:boolean] - true to show, false to hide, omit to toggle.',
+  mcpDescription: 'Toggle content right panel. Args: [visible:boolean?]. No return.',
   handler: ctx.layout.toggleContentRightSide,
   forUser: true,
   forMcp: true,

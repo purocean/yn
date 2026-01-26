@@ -108,7 +108,7 @@ export default {
       description: ctx.i18n.t('command-desc.plugin_image-localization_all'),
       forUser: true,
       forMcp: true,
-      mcpDescription: 'Transform all remote images to local. No args.',
+      mcpDescription: 'Transform remote images to local. No args. No return.',
       when,
     })
 

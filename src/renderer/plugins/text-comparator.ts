@@ -50,7 +50,7 @@ export default {
       description: ctx.i18n.t('status-bar.tool.open-text-comparator'),
       forUser: true,
       forMcp: true,
-      mcpDescription: 'Open text comparator. Optional args: [original:Doc, modified:Doc] - documents to compare.',
+      mcpDescription: 'Open text comparator. Args: [original:Doc?, modified:Doc?]. No return.',
       handler: (original?: Doc | null, modified?: Doc | null) => {
         type Extra = {
           original?: Doc | null

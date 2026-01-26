@@ -34,7 +34,7 @@ export default {
       keys: [ctx.keybinding.Alt, 'o'],
       forUser: true,
       forMcp: true,
-      mcpDescription: 'Switch todo status. Optional args: [line:number, checked:boolean] - line number and checked state.',
+      mcpDescription: 'Switch todo status. Args: [line:number?, checked:boolean?]. No return.',
       handler: (line?: number, checked?: boolean) => {
         if (line) {
           switchTodo(line, checked)

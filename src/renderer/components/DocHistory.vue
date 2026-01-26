@@ -381,7 +381,7 @@ onMounted(() => {
     keys: [Alt, 'h'],
     forUser: true,
     forMcp: true,
-    mcpDescription: 'Show document history panel. No args.',
+    mcpDescription: 'Show document history panel. No args. No return.',
     description: t('command-desc.doc_show-history'),
   })
   registerAction({ name: 'doc.hide-history', handler: hide })

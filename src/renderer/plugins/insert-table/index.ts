@@ -112,7 +112,7 @@ export default {
       name: actionName,
       forUser: true,
       forMcp: true,
-      mcpDescription: 'Insert table. No args.',
+      mcpDescription: 'Insert table. No args. No return.',
       description: ctx.i18n.t('insert-table.insert-table'),
       handler: () => {
         if (canInsertTable()) {

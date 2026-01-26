@@ -675,7 +675,7 @@ onMounted(() => {
     handler: show,
     forUser: true,
     forMcp: true,
-    mcpDescription: 'Show extension manager. No args.',
+    mcpDescription: 'Show extension manager. No args. No return.',
   })
 })
 

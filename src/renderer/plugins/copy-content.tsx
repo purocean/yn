@@ -143,7 +143,7 @@ export default {
       handler: copyContent,
       forUser: true,
       forMcp: true,
-      mcpDescription: 'Copy content in various formats. No args.',
+      mcpDescription: 'Copy content in various formats. No args. No return.',
       keys: [ctx.keybinding.CtrlCmd, ctx.keybinding.Shift, 'c'],
     })
 

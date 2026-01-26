@@ -787,7 +787,7 @@ registerAction({
   description: t('command-desc.base_find-in-repository'),
   forUser: true,
   forMcp: true,
-  mcpDescription: 'Find text in repository. Optional args: [query:FindInRepositoryQuery] - search query object.',
+  mcpDescription: 'Find text in repository. Args: [query:FindInRepositoryQuery?]. No return.',
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
 

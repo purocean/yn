@@ -265,7 +265,7 @@ onMounted(() => {
     keys: [CtrlCmd, 'r'],
     forUser: true,
     forMcp: true,
-    mcpDescription: 'Refresh preview. No args.'
+    mcpDescription: 'Refresh preview. No args. No return.'
   })
 
   registerHook('SETTING_CHANGED', updateMarkdownBodyMaxWidth)

@@ -40,7 +40,7 @@ export default {
       name: actionName,
       forUser: true,
       forMcp: true,
-      mcpDescription: 'View document links. No args.',
+      mcpDescription: 'View document links. No args. No return.',
       description: ctx.i18n.t('command-desc.plugin_view-links_view-document-links'),
       handler: showLinks,
       when,

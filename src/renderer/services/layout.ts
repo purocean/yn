@@ -117,7 +117,7 @@ export function toggleEditorPreviewExclusive (exclusive?: boolean) {
 registerAction({
   name: 'layout.toggle-side',
   description: t('command-desc.layout_toggle-side'),
-  mcpDescription: 'Toggle side panel visibility. Optional args: [visible:boolean] - true to show, false to hide, omit to toggle.',
+  mcpDescription: 'Toggle side panel. Args: [visible:boolean?]. No return.',
   handler: toggleSide,
   forUser: true,
   forMcp: true,
@@ -127,7 +127,7 @@ registerAction({
 registerAction({
   name: 'layout.toggle-editor',
   description: t('command-desc.layout_toggle-editor'),
-  mcpDescription: 'Toggle editor panel visibility. Optional args: [visible:boolean] - true to show, false to hide, omit to toggle.',
+  mcpDescription: 'Toggle editor panel. Args: [visible:boolean?]. No return.',
   handler: toggleEditor,
   forUser: true,
   forMcp: true,
@@ -137,7 +137,7 @@ registerAction({
 registerAction({
   name: 'layout.toggle-view',
   description: t('command-desc.layout_toggle-view'),
-  mcpDescription: 'Toggle preview panel visibility. Optional args: [visible:boolean] - true to show, false to hide, omit to toggle.',
+  mcpDescription: 'Toggle preview panel. Args: [visible:boolean?]. No return.',
   handler: toggleView,
   forUser: true,
   forMcp: true,
@@ -147,7 +147,7 @@ registerAction({
 registerAction({
   name: 'layout.toggle-xterm',
   description: t('command-desc.layout_toggle-xterm'),
-  mcpDescription: 'Toggle terminal panel visibility. Optional args: [visible:boolean] - true to show, false to hide, omit to toggle.',
+  mcpDescription: 'Toggle terminal panel. Args: [visible:boolean?]. No return.',
   handler: toggleXterm,
   forUser: true,
   forMcp: true,

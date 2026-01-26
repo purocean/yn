@@ -35,7 +35,7 @@ export default {
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-in'),
         forUser: true,
         forMcp: true,
-        mcpDescription: 'Zoom in. No args.',
+        mcpDescription: 'Zoom in. No args. No return.',
         handler: () => changeZoomFactor(true)
       })
 
@@ -45,7 +45,7 @@ export default {
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-out'),
         forUser: true,
         forMcp: true,
-        mcpDescription: 'Zoom out. No args.',
+        mcpDescription: 'Zoom out. No args. No return.',
         handler: () => changeZoomFactor(false)
       })
 
@@ -55,7 +55,7 @@ export default {
         description: ctx.i18n.t('command-desc.plugin_electron-zoom_zoom-reset'),
         forUser: true,
         forMcp: true,
-        mcpDescription: 'Reset zoom. No args.',
+        mcpDescription: 'Reset zoom. No args. No return.',
         handler: () => setZoomFactor(1)
       })
 

@@ -371,7 +371,7 @@ registerAction({
   handler: show,
   forUser: true,
   forMcp: true,
-  mcpDescription: 'Show keyboard shortcuts manager. No args.'
+  mcpDescription: 'Show keyboard shortcuts manager. No args. No return.'
 })
 
 onUnmounted(() => {
