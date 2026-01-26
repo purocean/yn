@@ -10,6 +10,10 @@ type Ctx = {
   },
   base: {
     triggerDeepLinkOpen: (url: string) => Promise<void>
+  },
+  action: {
+    getRawActions: () => Promise<any[]>,
+    getActionHandler: (name: string) => Promise<(...args: any[]) => any>
   }
 }
 

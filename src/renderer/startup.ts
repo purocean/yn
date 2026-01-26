@@ -313,34 +313,3 @@ ga.logEvent('page_view', {
   page_location: window.location.href,
   page_path: window.location.pathname,
 })
-
-/**
- * Sync actions with MCP server
- */
-async function syncActionsWithMCP () {
-  try {
-    const settings = await fetchSettings()
-    if (!settings['mcp.enabled']) {
-      return
-    }
-
-    const { getRawActions } = await import('@fe/core/action')
-    const actions = getRawActions()
-
-    // Send actions to backend MCP server
-    await fetch('/api/mcp/actions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ actions }),
-    })
-
-    logger.info('[MCP] Actions synced with MCP server')
-  } catch (error) {
-    logger.error('[MCP] Failed to sync actions:', error)
-  }
-}
-
-// Sync actions with MCP server after startup
-registerHook('STARTUP', () => {
-  setTimeout(syncActionsWithMCP, 1000)
-})

@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import config from '../config'
+import { jsonRPCClient } from '../jsonrpc'
 
 interface Action {
   name: string
@@ -8,22 +9,25 @@ interface Action {
   forUser?: boolean
 }
 
-let actionsCache: Action[] = []
-let executeActionCallback: ((name: string, args: any[]) => Promise<any>) | null = null
-
 /**
- * Register actions from frontend
+ * Get actions from frontend via jsonRPCClient
  */
-export function registerActions (actions: Action[]) {
-  actionsCache = actions.filter(a => a.forUser)
-  console.log('[MCP] Registered actions:', actionsCache.length)
+async function getActions (): Promise<Action[]> {
+  try {
+    const actions = await jsonRPCClient.call.ctx.action.getRawActions()
+    return actions.filter((a: Action) => a.forUser)
+  } catch (error) {
+    console.error('[MCP] Failed to get actions from frontend:', error)
+    return []
+  }
 }
 
 /**
- * Set execute action callback
+ * Execute action in frontend via jsonRPCClient
  */
-export function setExecuteActionCallback (callback: (name: string, args: any[]) => Promise<any>) {
-  executeActionCallback = callback
+async function executeAction (actionName: string, args: any[]): Promise<any> {
+  const handler = await jsonRPCClient.call.ctx.action.getActionHandler(actionName)
+  return await handler(...args)
 }
 
 /**
@@ -70,7 +74,8 @@ function listTools () {
  */
 async function callTool (name: string, args: any) {
   if (name === 'yn_list_actions') {
-    const actionList = actionsCache.map((action) => ({
+    const actions = await getActions()
+    const actionList = actions.map((action) => ({
       name: action.name,
       description: action.description || '',
       mcpDescription: action.mcpDescription || '',
@@ -90,11 +95,7 @@ async function callTool (name: string, args: any) {
     const { actionName, args: actionArgs = [] } = args
 
     try {
-      if (!executeActionCallback) {
-        throw new Error('Execute action callback not set')
-      }
-
-      const result = await executeActionCallback(actionName, actionArgs)
+      const result = await executeAction(actionName, actionArgs)
 
       return {
         content: [
