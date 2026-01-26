@@ -643,8 +643,8 @@ const choose = async (ctx: any, next: any) => {
 const mcpEndpoint = async (ctx: any, next: any) => {
   if (ctx.path === '/api/mcp/message' && ctx.method === 'POST') {
     checkIsAdmin(ctx)
-    // MCP JSON-RPC endpoint
-    await mcpServer.handleMCPRequest(ctx.req, ctx.res, ctx.request.body)
+    // MCP endpoint using SDK's StreamableHTTPServerTransport
+    await mcpServer.handleMCPRequest(ctx.req, ctx.res)
     ctx.respond = false
   } else {
     await next()

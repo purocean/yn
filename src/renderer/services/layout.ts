@@ -120,6 +120,7 @@ registerAction({
   mcpDescription: 'Toggle side panel visibility. No parameters required.',
   handler: toggleSide,
   forUser: true,
+  forMcp: true,
   keys: [Alt, 'e']
 })
 
@@ -129,6 +130,7 @@ registerAction({
   mcpDescription: 'Toggle editor panel visibility. No parameters required.',
   handler: toggleEditor,
   forUser: true,
+  forMcp: true,
   keys: [Alt, 'x']
 })
 
@@ -138,6 +140,7 @@ registerAction({
   mcpDescription: 'Toggle preview panel visibility. No parameters required.',
   handler: toggleView,
   forUser: true,
+  forMcp: true,
   keys: [Alt, 'v']
 })
 
@@ -147,5 +150,6 @@ registerAction({
   mcpDescription: 'Toggle terminal panel visibility. No parameters required.',
   handler: toggleXterm,
   forUser: true,
+  forMcp: true,
   keys: [Alt, 't']
 })

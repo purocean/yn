@@ -102,5 +102,6 @@ registerAction({
   description: t('command-desc.tree_refresh'),
   mcpDescription: 'Refresh file tree. No parameters required.',
   forUser: true,
+  forMcp: true,
   handler: refreshTree,
 })

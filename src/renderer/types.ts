@@ -89,6 +89,11 @@ export interface Action<T extends string = string> {
   forUser?: boolean
 
   /**
+   * Expose to MCP (Model Context Protocol) for AI agent integration
+   */
+  forMcp?: boolean
+
+  /**
    * Associate shortcuts
    */
   keys?: null | (string | number)[]

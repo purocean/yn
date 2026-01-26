@@ -1,3 +1,9 @@
+import { Server } from '@modelcontextprotocol/sdk/server/index.js'
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+} from '@modelcontextprotocol/sdk/types.js'
 import type { IncomingMessage, ServerResponse } from 'http'
 import config from '../config'
 import { jsonRPCClient } from '../jsonrpc'
@@ -7,7 +13,11 @@ interface Action {
   description?: string
   mcpDescription?: string
   forUser?: boolean
+  forMcp?: boolean
 }
+
+let mcpServer: Server | null = null
+let mcpTransport: StreamableHTTPServerTransport | null = null
 
 /**
  * Get actions from frontend via jsonRPCClient
@@ -15,7 +25,7 @@ interface Action {
 async function getActions (): Promise<Action[]> {
   try {
     const actions = await jsonRPCClient.call.ctx.action.getRawActions()
-    return actions.filter((a: Action) => a.forUser)
+    return actions.filter((a: Action) => a.forMcp)
   } catch (error) {
     console.error('[MCP] Failed to get actions from frontend:', error)
     return []
@@ -31,153 +41,152 @@ async function executeAction (actionName: string, args: any[]): Promise<any> {
 }
 
 /**
- * List available tools
+ * Initialize MCP server and transport
  */
-function listTools () {
-  return {
-    tools: [
-      {
-        name: 'yn_list_actions',
-        description: 'List all available YankNote actions that can be executed',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-          additionalProperties: false,
-        },
-      },
-      {
-        name: 'yn_execute_action',
-        description: 'Execute a YankNote action by name with optional arguments',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            actionName: {
-              type: 'string',
-              description: 'Name of the action to execute',
-            },
-            args: {
-              type: 'array',
-              description: 'Optional arguments to pass to the action',
-              items: {},
-            },
-          },
-          required: ['actionName'],
-          additionalProperties: false,
-        },
-      },
-    ],
+function initMCPServer (): void {
+  if (mcpServer && mcpTransport) {
+    return
   }
-}
 
-/**
- * Call a tool
- */
-async function callTool (name: string, args: any) {
-  if (name === 'yn_list_actions') {
-    const actions = await getActions()
-    const actionList = actions.map((action) => ({
-      name: action.name,
-      description: action.description || '',
-      mcpDescription: action.mcpDescription || '',
-    }))
+  // Create server
+  mcpServer = new Server(
+    {
+      name: 'yn-mcp-server',
+      version: '1.0.0',
+    },
+    {
+      capabilities: {
+        tools: {},
+      },
+    }
+  )
 
+  // List available tools
+  mcpServer.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
-      content: [
+      tools: [
         {
-          type: 'text',
-          text: JSON.stringify(actionList, null, 2),
+          name: 'yn_list_actions',
+          description: 'List all available YankNote actions that can be executed',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+            additionalProperties: false,
+          },
+        },
+        {
+          name: 'yn_execute_action',
+          description: 'Execute a YankNote action by name with optional arguments',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              actionName: {
+                type: 'string',
+                description: 'Name of the action to execute',
+              },
+              args: {
+                type: 'array',
+                description: 'Optional arguments to pass to the action',
+                items: {},
+              },
+            },
+            required: ['actionName'],
+            additionalProperties: false,
+          },
         },
       ],
     }
-  }
+  })
 
-  if (name === 'yn_execute_action') {
-    const { actionName, args: actionArgs = [] } = args
+  // Handle tool calls
+  mcpServer.setRequestHandler(CallToolRequestSchema, async (request) => {
+    const { name, arguments: args } = request.params
 
-    try {
-      const result = await executeAction(actionName, actionArgs)
+    if (name === 'yn_list_actions') {
+      const actions = await getActions()
+      const actionList = actions.map((action) => ({
+        name: action.name,
+        description: action.description || '',
+        mcpDescription: action.mcpDescription || '',
+      }))
 
       return {
         content: [
           {
             type: 'text',
-            text: JSON.stringify({ success: true, result }),
+            text: JSON.stringify(actionList, null, 2),
           },
         ],
-      }
-    } catch (error: any) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify({ success: false, error: error.message }),
-          },
-        ],
-        isError: true,
       }
     }
-  }
 
-  throw new Error(`Unknown tool: ${name}`)
+    if (name === 'yn_execute_action') {
+      const { actionName, args: actionArgs = [] } = args as any
+
+      try {
+        const result = await executeAction(actionName, actionArgs)
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, result }),
+            },
+          ],
+        }
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: false, error: error.message }),
+            },
+          ],
+          isError: true,
+        }
+      }
+    }
+
+    throw new Error(`Unknown tool: ${name}`)
+  })
+
+  // Create transport
+  mcpTransport = new StreamableHTTPServerTransport()
+
+  // Connect server to transport
+  mcpServer.connect(mcpTransport).catch((error) => {
+    console.error('[MCP] Failed to connect server to transport:', error)
+  })
 }
 
 /**
- * Handle MCP JSON-RPC request
+ * Handle MCP HTTP request
  */
 export async function handleMCPRequest (
   req: IncomingMessage,
-  res: ServerResponse,
-  body: any
+  res: ServerResponse
 ): Promise<void> {
   // Check if MCP is enabled
   const mcpEnabled = config.get('mcp.enabled', false)
   if (!mcpEnabled) {
     res.writeHead(403, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ jsonrpc: '2.0', error: { code: -32600, message: 'MCP server is not enabled' }, id: body.id }))
+    res.end(JSON.stringify({ error: 'MCP server is not enabled' }))
     return
   }
 
   try {
-    const { method, params, id } = body
-
-    let result
-
-    if (method === 'tools/list') {
-      result = listTools()
-    } else if (method === 'tools/call') {
-      const { name, arguments: args } = params
-      result = await callTool(name, args || {})
-    } else if (method === 'initialize') {
-      result = {
-        protocolVersion: '2024-11-05',
-        capabilities: {
-          tools: {},
-        },
-        serverInfo: {
-          name: 'yn-mcp-server',
-          version: '1.0.0',
-        },
-      }
-    } else {
-      throw new Error(`Unknown method: ${method}`)
+    // Initialize server if needed
+    if (!mcpServer || !mcpTransport) {
+      initMCPServer()
     }
 
-    res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({
-      jsonrpc: '2.0',
-      result,
-      id,
-    }))
+    // Handle the request using the transport
+    await mcpTransport!.handleRequest(req, res)
   } catch (error: any) {
     console.error('[MCP] Request error:', error)
-    res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({
-      jsonrpc: '2.0',
-      error: {
-        code: -32603,
-        message: error.message,
-      },
-      id: body.id,
-    }))
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: error.message }))
+    }
   }
 }

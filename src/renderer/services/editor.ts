@@ -582,6 +582,7 @@ registerAction({
   mcpDescription: 'Toggle word wrap in editor. No parameters required.',
   handler: toggleWrap,
   forUser: true,
+  forMcp: true,
   keys: [Alt, 'w']
 })
 

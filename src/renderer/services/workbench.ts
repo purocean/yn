@@ -20,6 +20,7 @@ registerAction({
   description: t('command-desc.workbench_toggle-outline'),
   mcpDescription: 'Toggle outline panel visibility. No parameters required.',
   forUser: true,
+  forMcp: true,
   handler: toggleOutline,
   keys: [Shift, Alt, 'o']
 })
