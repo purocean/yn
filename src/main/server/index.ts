@@ -643,12 +643,12 @@ const choose = async (ctx: any, next: any) => {
 const mcpEndpoint = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/mcp')) {
     checkIsAdmin(ctx)
-    
+
     if (ctx.method === 'POST' && ctx.path === '/api/mcp/actions') {
       // Register actions from frontend
       const { actions } = ctx.request.body
       mcpServer.registerActions(actions)
-      
+
       // Set up execute action callback
       mcpServer.setExecuteActionCallback(async (actionName: string, args: any[]) => {
         // Use RPC to execute action in frontend
@@ -667,7 +667,7 @@ const mcpEndpoint = async (ctx: any, next: any) => {
           : require(id)
         return await fn(nodeRequire)
       })
-      
+
       ctx.body = result('ok', 'Actions registered')
     } else if (ctx.path.startsWith('/api/mcp/sse')) {
       // SSE endpoint for MCP protocol
