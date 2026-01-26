@@ -544,7 +544,7 @@ registerAction({
   forUser: true,
   forMcp: true,
   description: t('command-desc.view_enter-presentation'),
-  mcpDescription: 'Enter presentation mode. No parameters required.',
+  mcpDescription: 'Enter presentation mode. No args - enters presentation mode.',
   handler: () => present(true),
   keys: ['F5']
 })

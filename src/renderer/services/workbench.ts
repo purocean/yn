@@ -18,7 +18,7 @@ export function toggleOutline (visible?: boolean) {
 registerAction({
   name: 'workbench.toggle-outline',
   description: t('command-desc.workbench_toggle-outline'),
-  mcpDescription: 'Toggle outline panel visibility. No parameters required.',
+  mcpDescription: 'Toggle outline panel visibility. Optional args: [visible:boolean] - true to show, false to hide, omit to toggle.',
   forUser: true,
   forMcp: true,
   handler: toggleOutline,
