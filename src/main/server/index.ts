@@ -644,7 +644,7 @@ const mcpEndpoint = async (ctx: any, next: any) => {
   if (ctx.path === '/api/mcp/message' && ctx.method === 'POST') {
     checkIsAdmin(ctx)
     // MCP endpoint using SDK's StreamableHTTPServerTransport
-    await mcpServer.handleMCPRequest(ctx.req, ctx.res)
+    await mcpServer.handleMCPRequest(ctx.req, ctx.res, ctx.request.body)
     ctx.respond = false
   } else {
     await next()

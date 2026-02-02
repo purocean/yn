@@ -13,7 +13,7 @@ type Ctx = {
   },
   action: {
     getRawActions: () => Promise<any[]>,
-    getActionHandler: (name: string) => Promise<(...args: any[]) => any>
+    executeAction: (name: string, ...args: any[]) => Promise<any>
   }
 }
 

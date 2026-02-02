@@ -71,6 +71,21 @@ export function getActionHandler <T extends string> (name: T): ActionHandler<T> 
 }
 
 /**
+ * Execute an action directly by name with arguments.
+ * This is used for RPC calls where functions cannot be passed.
+ * @param name Action name
+ * @param args Arguments to pass to the action
+ * @returns Result of the action execution
+ */
+export function executeAction <T extends BuildInActionName> (name: T, ...args: Parameters<ActionHandler<T>>): ReturnType<ActionHandler<T>>
+export function executeAction <T extends string> (name: T, ...args: Parameters<ActionHandler<T>>): ReturnType<ActionHandler<T>>
+export function executeAction <T extends string> (name: T, ...args: any[]): any {
+  const handler = getActionHandler<T>(name)
+  // eslint-disable-next-line prefer-spread
+  return handler.apply(null, args)
+}
+
+/**
  * Get an action.
  * @param name
  */

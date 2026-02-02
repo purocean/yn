@@ -36,8 +36,7 @@ async function getActions (): Promise<Action[]> {
  * Execute action in frontend via jsonRPCClient
  */
 async function executeAction (actionName: string, args: any[]): Promise<any> {
-  const handler = await jsonRPCClient.call.ctx.action.getActionHandler(actionName)
-  return await handler(...args)
+  return await jsonRPCClient.call.ctx.action.executeAction(actionName, ...args)
 }
 
 /**
@@ -164,7 +163,8 @@ function initMCPServer (): void {
  */
 export async function handleMCPRequest (
   req: IncomingMessage,
-  res: ServerResponse
+  res: ServerResponse,
+  parsedBody?: any
 ): Promise<void> {
   // Check if MCP is enabled
   const mcpEnabled = config.get('mcp.enabled', false)
@@ -180,8 +180,8 @@ export async function handleMCPRequest (
       initMCPServer()
     }
 
-    // Handle the request using the transport
-    await mcpTransport!.handleRequest(req, res)
+    // Handle the request using the transport with parsed body
+    await mcpTransport!.handleRequest(req, res, parsedBody)
   } catch (error: any) {
     console.error('[MCP] Request error:', error)
     if (!res.headersSent) {
