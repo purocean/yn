@@ -787,7 +787,7 @@ registerAction({
   description: t('command-desc.base_find-in-repository'),
   forUser: true,
   forMcp: true,
-  mcpDescription: '(query?:{pattern?:string, caseSensitive?:boolean, wholeWord?:boolean, regExp?:boolean, include?:string, exclude?:string}) => void',
+  mcpDescription: 'Find text in repository. Args: [query?:{pattern?:string, caseSensitive?:boolean, wholeWord?:boolean, regExp?:boolean, include?:string, exclude?:string}]. No return.',
   handler: (query?: FindInRepositoryQuery) => {
     visible.value = true
 
