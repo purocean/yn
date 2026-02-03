@@ -511,7 +511,7 @@ const schema: SettingSchema = ({
       format: 'checkbox',
       required: true,
     },
-    'mcp-enabled': {
+    'mcp.enabled': {
       defaultValue: false,
       title: 'T_setting-panel.schema.mcp-enabled',
       type: 'boolean',
