@@ -167,7 +167,7 @@ export async function handleMCPRequest (
   parsedBody?: any
 ): Promise<void> {
   // Check if MCP is enabled
-  const mcpEnabled = config.get('mcp.enabled', false)
+  const mcpEnabled = config.get('mcp-enabled', false)
   if (!mcpEnabled) {
     res.writeHead(403, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ error: 'MCP server is not enabled' }))

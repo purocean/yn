@@ -495,7 +495,7 @@ const data = {
       },
       'hide-main-window-on-startup': 'Hide Main Window on Startup',
       'keep-running-after-closing-window': 'Keep Running after Closing Window',
-      'mcp.enabled': 'Enable MCP Server (Beta)',
+      'mcp-enabled': 'Enable MCP Server (Beta)',
     }
   },
   'quick-open': {
