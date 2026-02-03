@@ -486,7 +486,7 @@ const data: BaseLanguage = {
       },
       'keep-running-after-closing-window': '关闭窗口后保持运行',
       'hide-main-window-on-startup': '启动时隐藏主窗口',
-      'mcp.enabled': '启用 MCP 服务器',
+      'mcp.enabled': '启用 MCP 服务器 (Beta)',
     },
     'tabs': {
       'repos': '仓库',
