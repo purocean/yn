@@ -226,6 +226,9 @@ function htmlBlock (state: StateBlock, startLine: number, endLine: number) {
 
   // If we are here - we detected HTML block.
   for (; nextLine < endLine; nextLine++) {
+    // break if all html tags are closed (clean state)
+    if (prevHtmlTags.length === 0) { break }
+
     if (state.sCount[nextLine] < state.blkIndent) { break }
 
     pos = state.bMarks[nextLine] + state.tShift[nextLine]

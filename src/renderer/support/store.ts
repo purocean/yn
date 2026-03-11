@@ -22,6 +22,8 @@ export const initState = {
   showSide: storage.get('showSide', true),
   showView: storage.get('showView', true),
   showEditor: storage.get('showEditor', true),
+  showContentRightSide: false,
+  currentRightSidePanel: null as string | null,
   editorPreviewExclusive: storage.get('editorPreviewExclusive', false),
   showXterm: false,
   showOutline: false,

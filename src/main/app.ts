@@ -5,7 +5,7 @@ import * as path from 'path'
 import * as os from 'os'
 import * as fs from 'fs-extra'
 import * as yargs from 'yargs'
-import httpServer from './server'
+import httpServer, { killPtyProcesses } from './server'
 import store from './storage'
 import { APP_NAME } from './constant'
 import { getTrayMenus, getMainMenus } from './menus'
@@ -106,7 +106,7 @@ const hideWindow = () => {
   if (win) {
     win.hide()
     win.setSkipTaskbar(true)
-    isMacos && app.dock.hide()
+    isMacos && app.dock?.hide()
   }
 }
 
@@ -325,7 +325,7 @@ const showWindow = (showInCurrentWindow = true) => {
     const show = () => {
       if (win) {
         // macos need show in dock
-        isMacos && app.dock.show()
+        isMacos && app.dock?.show()
         win.setSkipTaskbar(false)
         win.show()
         win.focus()
@@ -406,6 +406,7 @@ const quit = async () => {
   }
 
   await ensureDocumentSaved()
+  await killPtyProcesses()
 
   win.destroy()
   app.quit()

@@ -65,6 +65,14 @@ export default {
           subTitle: getKeysLabel('layout.toggle-xterm'),
           onClick: () => ctx.layout.toggleXterm()
         }] : []),
+        ...(ctx.workbench.ContentRightSide.getAllPanels().length > 0 ? [{
+          id: 'toggle-content-right-side',
+          type: 'normal' as any,
+          checked: ctx.store.state.showContentRightSide,
+          title: ctx.i18n.t('status-bar.view.content-right-side'),
+          subTitle: getKeysLabel('layout.toggle-content-right-side'),
+          onClick: () => ctx.layout.toggleContentRightSide()
+        }] : []),
         {
           id: 'toggle-editor-preview-exclusive',
           type: 'normal',

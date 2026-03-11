@@ -12,7 +12,8 @@ const layers = {
 }
 
 export function install (app: App) {
-  const getKeydownHandler = (zIndex: number, onEsc: () => void) => (e: KeyboardEvent) => {
+  const getKeydownHandler = (el: HTMLElement, onEsc: () => void) => (e: KeyboardEvent) => {
+    const zIndex = (el as any)._autoZIndex
     if (e.key === 'Escape') {
       // close top layer
       if (!stack.includes(zIndex) || Math.max(...stack) !== zIndex) {
@@ -30,12 +31,17 @@ export function install (app: App) {
       const layer = value.layer || 'popup'
       const baseZIndex = layers[layer] || layers.popup
 
-      const zIndex = baseZIndex + globalZIndex++
-      ;(el as any)._autoZIndex = zIndex
-      stack.push(zIndex)
-      el.style.zIndex = zIndex.toString()
+      const bump = () => {
+        const zIndex = baseZIndex + globalZIndex++
+        ;(el as any)._autoZIndex = zIndex
+        stack.push(zIndex)
+        el.style.zIndex = zIndex.toString()
+      }
 
-      const globalKeydownHandler = value.onEsc && getKeydownHandler(zIndex, value.onEsc)
+      bump()
+      ;(el as any).bump = bump
+
+      const globalKeydownHandler = value.onEsc && getKeydownHandler(el, value.onEsc)
       if (globalKeydownHandler) {
         registerHook('GLOBAL_KEYDOWN', globalKeydownHandler)
         ;(el as any)._autoZIndexKeydownHandler = globalKeydownHandler

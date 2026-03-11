@@ -395,6 +395,14 @@ const schema: SettingSchema = ({
       group: 'render',
       required: true,
     },
+    'render.text-autospace': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.render.text-autospace',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'render',
+      required: true,
+    },
     'render.multimd-multiline': {
       defaultValue: true,
       title: 'T_setting-panel.schema.render.multimd-multiline',

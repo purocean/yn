@@ -4,6 +4,7 @@ export function install (app: App) {
   app.directive('fixed-float', {
     mounted (el: HTMLElement, binding: DirectiveBinding<{
       disableAutoFocus?: boolean,
+      disable?: boolean,
       onClose: (type: 'byClickSelf' | 'blur' | 'esc') => void,
       onBlur?: (byClickSelf?: boolean) => void
       onEsc?: () => void
@@ -14,7 +15,11 @@ export function install (app: App) {
         return
       }
 
-      const { onBlur, onClose, onEsc, disableAutoFocus } = value
+      const { onBlur, onClose, onEsc, disable, disableAutoFocus } = value
+
+      if (disable) {
+        return
+      }
 
       el.tabIndex = 0
       if (!el.style.outline) {

@@ -41,7 +41,7 @@ export default {
         const item = e.dataTransfer?.items?.[0]
         // if drag image file, do nothing. let editor handle it
         if (item && !item.type.toLowerCase().startsWith('image')) {
-          const path = item?.getAsFile()?.path
+          const path = (item?.getAsFile() as any)?.path
           if (path) {
             e.stopPropagation()
             e.preventDefault()

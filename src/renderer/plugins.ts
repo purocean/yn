@@ -29,6 +29,7 @@ import editorWords from '@fe/plugins/editor-words'
 import editorPathCompletion from '@fe/plugins/editor-path-completion'
 import editorFolding from '@fe/plugins/editor-folding'
 import editorRestoreState from '@fe/plugins/editor-restore-state'
+import externalFileReadonly from '@fe/plugins/external-file-readonly'
 import copyText from '@fe/plugins/copy-text'
 import switchTodo from '@fe/plugins/switch-todo'
 import imageViewer from '@fe/plugins/image-viewer'
@@ -47,6 +48,7 @@ import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTable from '@fe/plugins/markdown-table'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
+import markdownListCollapsible from '@fe/plugins/markdown-list-collapsible'
 import markdownFootnote from '@fe/plugins/markdown-footnote'
 import markdownKatex from '@fe/plugins/markdown-katex'
 import markdownCodeCopy from '@fe/plugins/markdown-code-copy'
@@ -78,6 +80,7 @@ import aiCopilot from '@fe/plugins/ai-copilot'
 import viewLinks from '@fe/plugins/view-links'
 import insertTable from '@fe/plugins/insert-table'
 import textComparator from '@fe/plugins/text-comparator'
+import textAutospace from '@fe/plugins/text-autospace'
 
 export default [
   buildInRenderers,
@@ -111,6 +114,7 @@ export default [
   editorPathCompletion,
   editorFolding,
   editorRestoreState,
+  externalFileReadonly,
   copyText,
   switchTodo,
   imageViewer,
@@ -129,6 +133,7 @@ export default [
   markdownLink,
   markdownTable,
   markdownTaskList,
+  markdownListCollapsible,
   markdownFootnote,
   markdownKatex,
   markdownCodeCopy,
@@ -160,4 +165,5 @@ export default [
   viewLinks,
   insertTable,
   textComparator,
+  textAutospace,
 ]

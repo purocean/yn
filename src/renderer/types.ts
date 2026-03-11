@@ -5,6 +5,8 @@ import type { BaseDoc, Doc, FileItem, PathItem, Repo } from '@share/types'
 import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
 import type * as Monaco from 'monaco-editor'
+import type { ITerminalOptions, Terminal } from '@xterm/xterm'
+import type { Socket } from 'socket.io-client'
 
 export * from '@share/types'
 
@@ -200,9 +202,24 @@ export namespace Components {
     }
   }
 
+  export namespace RightSidePanel {
+    export type ActionBtn = {
+      type: 'normal',
+      key?: string | number,
+      icon: string,
+      title: string,
+      order?: number,
+      hidden?: boolean,
+      onClick: (e: MouseEvent) => void,
+    }
+    | { type: 'separator', order?: number, hidden?: boolean }
+    | { type: 'custom', key: string | number, order?: number, hidden?: boolean, component: any }
+  }
+
   export namespace FixedFloat {
     export interface Props {
       disableAutoFocus?: boolean;
+      disableFixedFloat?: boolean;
       top?: string | undefined;
       right?: string | undefined;
       bottom?: string | undefined;
@@ -286,6 +303,24 @@ export namespace Components {
 
   export namespace IndexStatus {
     export type Status = 'not-open-file' | 'not-open-repo' | 'not-same-repo' | 'index-disabled' | 'indexing' | 'indexed'
+  }
+
+  export namespace XTerm {
+    export type InitOpts = {
+      cwd?: string,
+      env?: Record<string, string>
+      onDisconnect?: () => void,
+    } & ITerminalOptions
+
+    export interface Ref {
+      domRef: any;
+      init: (opts?: InitOpts) => void;
+      input: (data: string, addNewLine?: boolean) => void;
+      fit: () => void;
+      dispose: () => void;
+      getXterm: () => Terminal | null
+      getSocket: () => Socket | null;
+    }
   }
 }
 
@@ -389,6 +424,7 @@ export interface BuildInSettings {
   'editor.quick-suggestions': boolean,
   'editor.sticky-scroll-enabled': boolean,
   'editor.enable-trigger-suggest-bulb': boolean,
+  'editor.external-file-readonly': boolean,
   'editor.wrap-indent': 'same' | 'indent' | 'deepIndent' | 'none',
   'render.md-html': boolean,
   'render.md-breaks': boolean,
@@ -403,6 +439,8 @@ export interface BuildInSettings {
   'render.multimd-rowspan': boolean,
   'render.multimd-headerless': boolean,
   'render.multimd-multibody': boolean,
+  'render.text-autospace': boolean,
+  'render.list-collapsible': boolean,
   'render.extra-css-style': string,
   'view.default-previewer-max-width': number,
   'view.default-previewer-font-family': string,
@@ -447,6 +485,7 @@ export type BuildInActions = {
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
   'layout.toggle-editor': (visible?: boolean) => void,
+  'layout.toggle-content-right-side': (visible?: boolean) => void,
   'control-center.toggle': (visible?: boolean) => void,
   'status-bar.refresh-menu': () => void,
   'control-center.refresh': () => void,
@@ -464,7 +503,7 @@ export type BuildInActions = {
   'file-tabs.refresh-action-btns': () => void,
   'file-tabs.close-tabs': (keys: string[]) => void,
   'xterm.run': (cmd: { code: string, start: string, exit?: string } | string) => void,
-  'xterm.init': (opts?: { cwd?: string }) => void,
+  'xterm.init': (opts?: Components.XTerm.InitOpts) => void,
   'plugin.document-history-stack.back': () => void,
   'plugin.document-history-stack.forward': () => void,
   'plugin.image-hosting-picgo.upload': (file: File) => Promise<string | undefined>,
@@ -543,7 +582,9 @@ export type BuildInHookTypes = {
   EDITOR_READY: { editor: Monaco.editor.IStandaloneCodeEditor, monaco: typeof Monaco },
   EDITOR_CUSTOM_EDITOR_CHANGE: { type: 'register' | 'remove' | 'switch' },
   EDITOR_CURRENT_EDITOR_CHANGE: { current?: CustomEditor | null },
+  RIGHT_SIDE_PANEL_CHANGE: { type: 'register' | 'remove' | 'switch' },
   EDITOR_CONTENT_CHANGE: { uri: string, value: string },
+  EDITOR_ATTEMPT_READONLY_EDIT: { doc: Doc | null, readonlyType: 'app-readonly' | 'no-file' | 'file-not-writable' | 'unsupported-file-type' },
   DOC_CREATED: { doc: Doc },
   DOC_BEFORE_DELETE: { doc: PathItem, force: boolean },
   DOC_DELETED: { doc: PathItem },
@@ -598,6 +639,15 @@ export type CustomEditor = {
   when: (ctx: CustomEditorCtx) => boolean | Promise<boolean>,
   component: any,
   getIsDirty?: () => boolean | Promise<boolean>,
+}
+
+export type RightSidePanel = {
+  name: string,
+  displayName: string,
+  order?: number,
+  keepAlive?: boolean,
+  component: any,
+  actionBtns?: Components.RightSidePanel.ActionBtn[],
 }
 
 export type Renderer = {
@@ -659,6 +709,7 @@ export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   THEME_STYLES: any;
   VIEW_PREVIEWER: Previewer;
   EDITOR_CUSTOM_EDITOR: CustomEditor,
+  RIGHT_SIDE_PANEL: RightSidePanel,
   RENDERERS: Renderer,
   CODE_RUNNER: CodeRunner;
   DOC_CATEGORIES: DocCategory;
