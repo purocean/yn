@@ -25,7 +25,7 @@ describe('misc utilities', () => {
     })
 
     test('DEFAULT_EXCLUDE_REGEX should be defined', () => {
-      expect(DEFAULT_EXCLUDE_REGEX).toBe('^node_modules/$|^\\.git/$|^\\.DS_Store$|^\\.')
+      expect(DEFAULT_EXCLUDE_REGEX).toBe('^node_modules/$|^\\.git/$|^\\.DS_Store$')
     })
 
     test('DOC_HISTORY_MAX_CONTENT_LENGTH should be 102400', () => {
