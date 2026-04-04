@@ -6,7 +6,7 @@ import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, join } from '@fe/utils/path'
-import { getAttachmentURL, isDirectory, openExternal, openPath } from '@fe/services/base'
+import { getAttachmentURL, openExternal, openPath, openPathInOS } from '@fe/services/base'
 import { getRepo } from '@fe/services/repo'
 import { getAvailableCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
@@ -110,10 +110,8 @@ function handleLink (link: HTMLAnchorElement): boolean {
         const fullPath = getFullPath(parsedLink.path)
 
         ;(async () => {
-          if (await isDirectory(fullPath)) {
-            openPath(fullPath)
-            return
-          }
+          const { isDirectory } = await openPathInOS(fullPath)
+          if (isDirectory) return // backend already opened it in the file manager
 
           const doc: Doc = { path: parsedLink.path, type: 'file', name: basename(parsedLink.path), repo: currentFile.repo }
           const editors = await getAvailableCustomEditors({ doc })
@@ -122,7 +120,10 @@ function handleLink (link: HTMLAnchorElement): boolean {
           } else {
             openFile()
           }
-        })()
+        })().catch(error => {
+          console.error(error)
+          useToast().show('warning', 'Failed to open link')
+        })
 
         return true
       }

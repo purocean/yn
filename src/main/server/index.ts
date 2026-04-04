@@ -639,6 +639,24 @@ const choose = async (ctx: any, next: any) => {
   }
 }
 
+const openPath = async (ctx: any, next: any) => {
+  if (ctx.path === '/api/open-path' && ctx.method === 'POST') {
+    checkIsAdmin(ctx)
+    const { path: p } = ctx.request.body
+    const stat = await fs.stat(p).catch((e) => {
+      console.warn('open-path stat failed:', p, e?.message)
+      return null
+    })
+    const isDirectory = stat?.isDirectory() ?? false
+    if (isDirectory) {
+      await getAction('open-path')(p)
+    }
+    ctx.body = result('ok', 'success', { isDirectory })
+  } else {
+    await next()
+  }
+}
+
 const rpc = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/rpc') && ctx.method === 'POST') {
     const { code } = ctx.request.body
@@ -794,6 +812,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, premiumManage))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, openPath))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, rpc))

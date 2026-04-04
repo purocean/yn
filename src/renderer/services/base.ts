@@ -128,26 +128,16 @@ export async function openPath (path: string) {
 }
 
 /**
- * Check if a path is a directory on the filesystem.
- * @param path
+ * Open a path in the OS. If the path is a directory, open it in the file manager immediately.
+ * @param path absolute path
+ * @returns whether the path is a directory
  */
-export async function isDirectory (path: string): Promise<boolean> {
+export async function openPathInOS (path: string): Promise<{ isDirectory: boolean }> {
   if (isWindows) {
     path = path.replaceAll('/', '\\')
   }
 
-  try {
-    return await api.rpc(`
-      try {
-        return require('fs').statSync(${quote(path)}).isDirectory()
-      } catch (e) {
-        return false
-      }
-    `)
-  } catch (e) {
-    logger.warn('isDirectory failed:', e, path)
-    return false
-  }
+  return api.openPathInOS(path)
 }
 
 /**

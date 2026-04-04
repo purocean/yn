@@ -284,6 +284,21 @@ export async function choosePath (options: Record<string, any>): Promise<{ cance
   return result.data
 }
 
+/**
+ * Open a path in the OS. If the path is a directory, open it in the file manager.
+ * @param path absolute path
+ * @returns whether the path is a directory
+ */
+export async function openPathInOS (path: string): Promise<{ isDirectory: boolean }> {
+  const result = await fetchHttp('/api/open-path', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path })
+  })
+
+  return result.data
+}
+
 type SearchReturn = (
   onResult: (result: ISerializedFileMatch[]) => void | Promise<void>,
   onMessage?: (message: IProgressMessage) => void | Promise<void>
