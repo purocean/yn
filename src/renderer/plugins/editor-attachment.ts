@@ -43,7 +43,7 @@ function addAttachment (asImage = false) {
 }
 
 async function linkFile () {
-  const { filePaths } = await api.choosePath({ properties: ['openFile', 'openDirectory', 'multiSelections'] })
+  const { filePaths } = await api.choosePath({ properties: ['openFile', 'multiSelections'] })
   const useList = filePaths.length > 1
   for (let path of filePaths) {
     path = normalizeSep(path)

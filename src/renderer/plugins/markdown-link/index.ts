@@ -6,7 +6,7 @@ import { isElectron, isWindows } from '@fe/support/env'
 import { useToast } from '@fe/support/ui/toast'
 import { DOM_ATTR_NAME, DOM_CLASS_NAME } from '@fe/support/args'
 import { basename, join } from '@fe/utils/path'
-import { getAttachmentURL, openExternal, openPath } from '@fe/services/base'
+import { getAttachmentURL, isDirectory, openExternal, openPath } from '@fe/services/base'
 import { getRepo } from '@fe/services/repo'
 import { getAvailableCustomEditors } from '@fe/services/editor'
 import { fetchTree } from '@fe/support/api'
@@ -75,6 +75,17 @@ function handleLink (link: HTMLAnchorElement): boolean {
         return true
       }
     } else if (parsedLink?.type === 'internal') {
+      const getFullPath = (path: string): string => {
+        let basePath = (getRepo(currentFile.repo)?.path || '/')
+
+        // net drive path start with '\\' on Windows, so we need to replace '/' to '\\' to prevent `join` lost the first part.
+        if (isWindows) {
+          basePath = basePath.replaceAll('/', '\\')
+        }
+
+        return join(basePath, path)
+      }
+
       const openFile = () => {
         const parsedLink = parseLink(currentFile, href, false)
         const path = (parsedLink && 'path' in parsedLink) ? parsedLink.path : ''
@@ -83,14 +94,7 @@ function handleLink (link: HTMLAnchorElement): boolean {
           return true
         }
 
-        let basePath = (getRepo(currentFile.repo)?.path || '/')
-
-        // net drive path start with '\\' on Windows, so we need to replace '/' to '\\' to prevent `join` lost the first part.
-        if (isWindows) {
-          basePath = basePath.replaceAll('/', '\\')
-        }
-
-        openPath(join(basePath, path))
+        openPath(getFullPath(path))
       }
 
       if (link.classList.contains(DOM_CLASS_NAME.MARK_OPEN)) {
@@ -103,15 +107,22 @@ function handleLink (link: HTMLAnchorElement): boolean {
         _switchDoc(parsedLink)
         return true
       } else {
-        const doc: Doc = { path: parsedLink.path, type: 'file', name: basename(parsedLink.path), repo: currentFile.repo }
+        const fullPath = getFullPath(parsedLink.path)
 
-        getAvailableCustomEditors({ doc }).then(editors => {
+        ;(async () => {
+          if (await isDirectory(fullPath)) {
+            openPath(fullPath)
+            return
+          }
+
+          const doc: Doc = { path: parsedLink.path, type: 'file', name: basename(parsedLink.path), repo: currentFile.repo }
+          const editors = await getAvailableCustomEditors({ doc })
           if (editors.length > 0) {
             _switchDoc(parsedLink)
           } else {
             openFile()
           }
-        })
+        })()
 
         return true
       }

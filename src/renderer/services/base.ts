@@ -128,6 +128,29 @@ export async function openPath (path: string) {
 }
 
 /**
+ * Check if a path is a directory on the filesystem.
+ * @param path
+ */
+export async function isDirectory (path: string): Promise<boolean> {
+  if (isWindows) {
+    path = path.replaceAll('/', '\\')
+  }
+
+  try {
+    return await api.rpc(`
+      try {
+        return require('fs').statSync(${quote(path)}).isDirectory()
+      } catch (e) {
+        return false
+      }
+    `)
+  } catch (e) {
+    logger.warn('isDirectory failed:', e, path)
+    return false
+  }
+}
+
+/**
  * show item in folder
  * @param path
  */
