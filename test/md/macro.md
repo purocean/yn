@@ -2,7 +2,7 @@
 enableMacro: true
 define:
   --February--: February
-  --�ÿ月--: 二月
+  --二月--: 二月
 ---
 
 # Macro Replacement Test
@@ -61,7 +61,7 @@ Year: [= new Date().getFullYear() =]
 
 ## Text Define Replacement
 
-The month is: --FEBRUARY--
+The month is: --February--
 
 中文月份: --二月--
 
