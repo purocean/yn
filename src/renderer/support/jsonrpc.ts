@@ -12,7 +12,8 @@ class ElectronRendererServerChannel implements JSONRPCServerChannel {
   }
 
   send (message: Partial<JSONRPCResult<any> & JSONRPCError>): void {
-    this.ipcRenderer.send('jsonrpc', message)
+    // Filter out non-serializable data before sending
+    this.ipcRenderer.send('jsonrpc', JSON.parse(JSON.stringify(message)))
   }
 
   setMessageHandler (callback: (message: JSONRPCRequest<any[]>) => void): void {
