@@ -76,6 +76,21 @@
 
 ## 更新日志
 
+### [v3.88.1](https://github.com/purocean/yn/releases/tag/v3.88.1) 2026-05-01
+
+[Windows](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-win-x64-3.88.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-mac-arm64-3.88.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-mac-x64-3.88.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-linux-x86_64-3.88.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-linux-amd64-3.88.1.deb)
+
+1. feat: 增加 MCP 集成，包含本地 MCP 端点、设置开关、仓库列表、用户动作调用、Markdown 特性文档、文档导出和主窗口重载
+2. feat: 支持将 `.mdx` 和 `.markdown` 作为 Markdown 文档处理，包含编辑器语言模式和预览
+3. feat: 增强 HTML 导出，支持可选的代码行号、复制按钮，并改进渲染资源等待
+4. feat: 支持绝对路径图片附件和外部图片路径的回退处理
+5. feat: 支持在图片本地化时处理 `file://` 图片
+6. feat: 仓库文件树默认显示点号开头的隐藏文件
+7. fix: 修复创建以斜杠结尾的新文件夹时路径判断错误的问题
+8. fix: 避免在不支持的 Windows 版本上加载代码高亮字体
+9. test: 增加 Markdown 特性测试文档和 Draw.io 示例文件
+10. chore(deps): 更新 `koa`、`lodash`、`lodash-es`、`node-forge`、`rollup`、`undici`、`uuid`、`yaml` 以及安全相关的间接依赖
+
 ### [v3.88.0](https://github.com/purocean/yn/releases/tag/v3.88.0) 2026-05-01
 
 [Windows](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-win-x64-3.88.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-mac-arm64-3.88.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-mac-x64-3.88.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-linux-x86_64-3.88.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-linux-amd64-3.88.0.deb)
