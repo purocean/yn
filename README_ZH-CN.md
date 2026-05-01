@@ -76,6 +76,19 @@
 
 ## 更新日志
 
+### [v3.88.0](https://github.com/purocean/yn/releases/tag/v3.88.0) 2026-05-01
+
+[Windows](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-win-x64-3.88.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-mac-arm64-3.88.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-mac-x64-3.88.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-linux-x86_64-3.88.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-linux-amd64-3.88.0.deb)
+
+1. feat: 支持 MDX 文档预览
+2. feat: 支持导出 HTML 时本地化 file 协议图片
+3. feat: 增强导出 HTML 的代码块
+4. feat: 增加 MCP 服务端点和设置插件
+5. feat: 通过 MCP 暴露用户动作、仓库列表、Markdown 特性文档和文档导出能力
+6. feat: 支持 MCP 主窗口重载工具
+7. fix: 改进绝对路径图片附件和外部图片路径的回退处理
+8. fix: 隔离 MCP HTTP transports，防止并发 MCP 导出，并在 MCP 重载后聚焦窗口
+
 ### [v3.87.1](https://github.com/purocean/yn/releases/tag/v3.87.1) 2026-01-23
 
 [Windows](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-win-x64-3.87.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-arm64-3.87.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-x64-3.87.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-x86_64-3.87.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-amd64-3.87.1.deb)
