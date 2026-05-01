@@ -1,6 +1,7 @@
 import buildInRenderers from '@fe/plugins/build-in-renderers'
 import customStyles from '@fe/plugins/custom-styles'
 import customKeybindings from '@fe/plugins/custom-keybindings'
+import codeSyntaxHighlightFont from '@fe/plugins/code-syntax-highlight-font'
 import electronZoom from '@fe/plugins/electron-zoom'
 import historyStack from '@fe/plugins/history-stack'
 import fileTreeFunctions from '@fe/plugins/file-tree-functions'
@@ -86,6 +87,7 @@ export default [
   buildInRenderers,
   customStyles,
   customKeybindings,
+  codeSyntaxHighlightFont,
   electronZoom,
   historyStack,
   fileTreeFunctions,
