@@ -50,6 +50,8 @@ export default {
       handler,
       description: ctx.i18n.t('command-desc.plugin_status-bar-theme_switch'),
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Switch theme. No args. No return.',
     })
   }
 } as Plugin

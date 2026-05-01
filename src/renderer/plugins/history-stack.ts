@@ -141,6 +141,8 @@ export default {
       name: backId,
       description: ctx.i18n.t('command-desc.plugin_document-history-stack_back'),
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Go back in document history. No args. No return.',
       handler: () => go(-1),
       keys: [ctx.keybinding.Alt, ctx.keybinding.BracketLeft],
     })
@@ -149,6 +151,8 @@ export default {
       name: forwardId,
       description: ctx.i18n.t('command-desc.plugin_document-history-stack_forward'),
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Go forward in document history. No args. No return.',
       handler: () => go(1),
       keys: [ctx.keybinding.Alt, ctx.keybinding.BracketRight],
     })

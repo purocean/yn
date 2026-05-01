@@ -263,7 +263,9 @@ onMounted(() => {
     description: t('command-desc.view_refresh'),
     handler: refresh,
     keys: [CtrlCmd, 'r'],
-    forUser: true
+    forUser: true,
+    forMcp: true,
+    mcpDescription: 'Refresh preview. No args. No return.'
   })
 
   registerHook('SETTING_CHANGED', updateMarkdownBodyMaxWidth)

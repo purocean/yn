@@ -674,6 +674,8 @@ onMounted(() => {
     description: t('command-desc.extension_show-manager'),
     handler: show,
     forUser: true,
+    forMcp: true,
+    mcpDescription: 'Show extension manager. No args. No return.',
   })
 })
 

@@ -96,6 +96,8 @@ export default defineComponent({
       name: 'tree.reveal-current-node',
       description: t('command-desc.tree_reveal-current-node'),
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Reveal current document in tree. No args. No return.',
       handler: revealCurrentNode
     })
 

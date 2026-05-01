@@ -542,7 +542,9 @@ registerHook('VIEW_RENDER_IFRAME_READY', ({ iframe }) => {
 registerAction({
   name: 'view.enter-presentation',
   forUser: true,
+  forMcp: true,
   description: t('command-desc.view_enter-presentation'),
+  mcpDescription: 'Enter presentation mode. No args. No return.',
   handler: () => present(true),
   keys: ['F5']
 })
