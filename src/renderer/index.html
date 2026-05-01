@@ -16,8 +16,11 @@
       window.process = undefined
       window.module = undefined
 
+      const realLocalStorage = localStorage
+      const initialTheme = realLocalStorage['app.theme'] || '"system"'
+
       // initial theme
-      window.document.documentElement.setAttribute('app-theme', JSON.parse(localStorage['app.theme'] || '"system"'))
+      window.document.documentElement.setAttribute('app-theme', JSON.parse(initialTheme))
 
       // os
       window.document.documentElement.setAttribute('platform', navigator.platform)
@@ -27,12 +30,26 @@
         return new URLSearchParams(win.location.search)
       }
 
-      const MODE = _$args().get('mode') || 'normal'
+      const args = _$args()
+      const MODE = args.get('mode') || 'normal'
+      const IS_MCP_EXPORT = args.get('mcp-export') === 'true'
+      const USE_MEMORY_LOCAL_STORAGE = MODE === 'share-preview' || IS_MCP_EXPORT
 
-      if (MODE === 'share-preview') {
+      if (USE_MEMORY_LOCAL_STORAGE) {
+        const initialValues = {}
+
+        if (IS_MCP_EXPORT) {
+          for (let i = 0; i < realLocalStorage.length; i++) {
+            const key = realLocalStorage.key(i)
+            if (key) {
+              initialValues[key] = realLocalStorage.getItem(key)
+            }
+          }
+        }
+
         Object.defineProperty(window, 'localStorage', {
           value: (function () {
-            const s = {}
+            const s = { ...initialValues }
 
             Object.defineProperty(s, 'setItem', {
               get: () => {
@@ -77,6 +94,14 @@
             Object.defineProperty(s, 'length', {
               get: () => {
                 return Object.keys(s).length
+              }
+            })
+
+            Object.defineProperty(s, 'key', {
+              get: () => {
+                return (i) => {
+                  return Object.keys(s)[Number(i)] || null
+                }
               }
             })
 

@@ -414,12 +414,17 @@ export async function printCurrentDocument () {
   })
 }
 
+type PrintPDFRuntimeOptions = {
+  hidden?: boolean,
+}
+
 /**
  * Print current document to PDF.
  * @param opts
+ * @param runtimeOptions
  * @returns
  */
-export async function printCurrentDocumentToPDF (opts?: PrintOpts): Promise<Buffer> {
+export async function printCurrentDocumentToPDF (opts?: PrintOpts, runtimeOptions: PrintPDFRuntimeOptions = {}): Promise<Buffer> {
   if (!isElectron) {
     throw new Error('Not support export pdf in browser.')
   }
@@ -445,6 +450,7 @@ export async function printCurrentDocumentToPDF (opts?: PrintOpts): Promise<Buff
   const win = openWindow(url, 'export-pdf', {
     width: 300,
     height: 100,
+    show: runtimeOptions.hidden ? false : undefined,
     title: '',
     x: undefined,
     y: undefined,
