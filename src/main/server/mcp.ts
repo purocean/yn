@@ -8,9 +8,11 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import config from '../config'
+import { getAction } from '../action'
 import { HELP_DIR } from '../constant'
 import { jsonRPCClient } from '../jsonrpc'
 import { exportDocumentForMcp } from '../mcp-export'
+import type { UrlMode } from '../url'
 
 interface Action {
   name: string
@@ -52,6 +54,23 @@ async function getMarkdownFeaturesDoc (language = 'zh-CN') {
     language: normalizedLanguage,
     fileName,
     content: await fs.readFile(filePath, 'utf-8'),
+  }
+}
+
+/**
+ * Reload the main window, optionally switching its URL mode first.
+ */
+async function reloadMainWindow (urlMode?: UrlMode) {
+  if (urlMode) {
+    getAction('set-url-mode')?.(urlMode)
+    getAction('refresh-menus')?.()
+  }
+
+  await getAction('reload-main-window')?.()
+
+  return {
+    success: true,
+    urlMode: getAction('get-url-mode')?.(),
   }
 }
 
@@ -115,6 +134,21 @@ function createMCPServer (): Server {
                 enum: ['zh-CN', 'en'],
                 description: 'Documentation language. Defaults to zh-CN.',
                 default: 'zh-CN',
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        {
+          name: 'yn_reload_main_window',
+          description: 'Reload the Yank Note main window. Optionally switch URL mode before reloading, matching the tray developer menu modes: scheme, prod backend port, or dev frontend port.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              urlMode: {
+                type: 'string',
+                enum: ['scheme', 'prod', 'dev'],
+                description: 'Optional URL mode to switch to before reload. Omit to reload using the current mode.',
               },
             },
             additionalProperties: false,
@@ -416,6 +450,33 @@ function createMCPServer (): Server {
 
       try {
         const result = await getMarkdownFeaturesDoc(language)
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, result }),
+            },
+          ],
+        }
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: false, error: error.message }),
+            },
+          ],
+          isError: true,
+        }
+      }
+    }
+
+    if (name === 'yn_reload_main_window') {
+      const { urlMode } = args as any
+
+      try {
+        const result = await reloadMainWindow(urlMode)
 
         return {
           content: [
