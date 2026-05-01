@@ -1,6 +1,8 @@
 import { Language, translate } from './i18n'
 
 export const MARKDOWN_FILE_EXT = '.md'
+export const MARKDOWN_X_FILE_EXT = '.mdx'
+export const MARKDOWN_LONG_FILE_EXT = '.markdown'
 export const ENCRYPTED_MARKDOWN_FILE_EXT = '.c.md'
 
 export const DOC_HISTORY_MAX_CONTENT_LENGTH = 102400
@@ -24,7 +26,9 @@ export const HOMEPAGE_URL = 'https://yank-note.com'
 export const GUIDE_URL = 'https://help.yank-note.com'
 
 export function isMarkdownFile (path: string) {
-  return path.endsWith(MARKDOWN_FILE_EXT)
+  return path.endsWith(MARKDOWN_FILE_EXT) ||
+    path.endsWith(MARKDOWN_X_FILE_EXT) ||
+    path.endsWith(MARKDOWN_LONG_FILE_EXT)
 }
 
 export function isEncryptedMarkdownFile (path: string) {

@@ -56,6 +56,7 @@ const extensions = [
   '.less',
   '.lua',
   '.md',
+  '.mdx',
   '.markdown',
   '.mdown',
   '.mkdn',

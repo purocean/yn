@@ -36,13 +36,18 @@ describe('misc utilities', () => {
   describe('isMarkdownFile', () => {
     test('should return true for .md files', () => {
       expect(isMarkdownFile('test.md')).toBe(true)
+      expect(isMarkdownFile('test.mdx')).toBe(true)
+      expect(isMarkdownFile('test.markdown')).toBe(true)
       expect(isMarkdownFile('/path/to/file.md')).toBe(true)
+      expect(isMarkdownFile('/path/to/file.mdx')).toBe(true)
+      expect(isMarkdownFile('/path/to/file.markdown')).toBe(true)
       expect(isMarkdownFile('nested/folder/document.md')).toBe(true)
+      expect(isMarkdownFile('nested/folder/document.mdx')).toBe(true)
+      expect(isMarkdownFile('nested/folder/document.markdown')).toBe(true)
     })
 
     test('should return false for non-.md files', () => {
       expect(isMarkdownFile('test.txt')).toBe(false)
-      expect(isMarkdownFile('test.markdown')).toBe(false)
       expect(isMarkdownFile('test')).toBe(false)
       expect(isMarkdownFile('test.md.txt')).toBe(false)
     })
