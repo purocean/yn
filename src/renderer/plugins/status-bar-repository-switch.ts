@@ -91,5 +91,19 @@ export default {
         },
       })
     }
+
+    ctx.action.registerAction({
+      name: 'base.list-repositories',
+      description: '列出仓库',
+      forMcp: true,
+      mcpDescription: 'List repositories. No args. Return: Repo[] with name, path, enableIndexing.',
+      handler: () => {
+        return ctx.repo.getAllRepos().map(repo => ({
+          name: repo.name,
+          path: repo.path,
+          enableIndexing: repo.enableIndexing,
+        }))
+      },
+    })
   }
 } as Plugin
