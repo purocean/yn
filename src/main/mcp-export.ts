@@ -23,6 +23,8 @@ export type McpExportDocumentArgs = {
   resourceTimeout?: number,
 }
 
+let exporting = false
+
 function validateInputPath (args: McpExportDocumentArgs) {
   if (args.absolutePath) {
     return
@@ -83,18 +85,25 @@ async function waitForExportBridge (win: BrowserWindow, timeout: number) {
 }
 
 export async function exportDocumentForMcp (args: McpExportDocumentArgs) {
-  const win = new BrowserWindow({
-    width: 1200,
-    height: 900,
-    show: false,
-    webPreferences: {
-      webSecurity: false,
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  })
+  if (exporting) {
+    throw new Error('Another MCP document export is already in progress.')
+  }
+
+  exporting = true
+  let win: BrowserWindow | undefined
 
   try {
+    win = new BrowserWindow({
+      width: 1200,
+      height: 900,
+      show: false,
+      webPreferences: {
+        webSecurity: false,
+        nodeIntegration: true,
+        contextIsolation: false,
+      },
+    })
+
     const loaded = waitForWindowLoaded(win)
     await win.loadURL(getExportWindowUrl(args))
     await loaded
@@ -121,6 +130,7 @@ export async function exportDocumentForMcp (args: McpExportDocumentArgs) {
 
     return result
   } finally {
-    win.destroy()
+    exporting = false
+    win?.destroy()
   }
 }
