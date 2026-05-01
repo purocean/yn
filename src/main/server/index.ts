@@ -160,9 +160,14 @@ const checkPrivateRepo = (ctx: any, repo: string) => {
 const fileContent = async (ctx: any, next: any) => {
   if (ctx.path === '/api/file') {
     if (ctx.method === 'GET') {
-      const { repo, path, asBase64 } = ctx.query
+      const { repo, path, asBase64, exists } = ctx.query
 
       checkPrivateRepo(ctx, repo)
+
+      if (exists === 'true') {
+        ctx.body = result('ok', 'success', await file.exists(repo, path))
+        return
+      }
 
       const stat = await file.stat(repo, path)
 

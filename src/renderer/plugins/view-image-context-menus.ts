@@ -3,6 +3,11 @@ import type { Plugin } from '@fe/context'
 export default {
   name: 'view-image-context-menus',
   register: (ctx) => {
+    const isImagePath = (filePath: string) => {
+      const fileType = ctx.lib.mime.getType(filePath)
+      return typeof fileType === 'string' && fileType.startsWith('image/')
+    }
+
     ctx.view.tapContextMenus((menus, e) => {
       const target = e.target as HTMLImageElement
       if (target.tagName !== 'IMG') {
@@ -67,6 +72,16 @@ export default {
       }
 
       if (isLocalImage && repo && path && originSrc) {
+        const getFallbackAbsoluteImagePath = async () => {
+          const existsInRepo = await ctx.api.existsFile({ repo, path }).catch(() => true)
+
+          if (existsInRepo || !path.startsWith('/') || !isImagePath(path)) {
+            return null
+          }
+
+          return path
+        }
+
         menus.push(
           {
             id: 'view-image-context-menus-open-in-new-tab',
@@ -95,13 +110,29 @@ export default {
             id: 'view-image-context-menu-reveal-in-os',
             label: ctx.i18n.t('tree.context-menu.reveal-in-os'),
             type: 'normal',
-            onClick: () => ctx.doc.openInOS({ repo, path }, true)
+            onClick: async () => {
+              const fallbackAbsoluteImagePath = await getFallbackAbsoluteImagePath()
+
+              if (fallbackAbsoluteImagePath) {
+                await ctx.base.showItemInFolder(fallbackAbsoluteImagePath)
+              } else {
+                await ctx.doc.openInOS({ repo, path }, true)
+              }
+            }
           },
           {
             id: 'view-image-context-menu-open-in-os',
             label: ctx.i18n.t('tree.context-menu.open-in-os'),
             type: 'normal',
-            onClick: () => ctx.doc.openInOS({ repo, path })
+            onClick: async () => {
+              const fallbackAbsoluteImagePath = await getFallbackAbsoluteImagePath()
+
+              if (fallbackAbsoluteImagePath) {
+                await ctx.base.openPath(fallbackAbsoluteImagePath)
+              } else {
+                await ctx.doc.openInOS({ repo, path })
+              }
+            }
           },
           { type: 'separator' },
         )
