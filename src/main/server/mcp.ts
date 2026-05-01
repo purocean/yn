@@ -5,7 +5,10 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js'
 import type { IncomingMessage, ServerResponse } from 'http'
+import * as fs from 'fs-extra'
+import * as path from 'path'
 import config from '../config'
+import { HELP_DIR } from '../constant'
 import { jsonRPCClient } from '../jsonrpc'
 import { exportDocumentForMcp } from '../mcp-export'
 
@@ -35,6 +38,21 @@ async function getActions (): Promise<Action[]> {
  */
 async function executeAction (actionName: string, args: any[]): Promise<any> {
   return await jsonRPCClient.call.ctx.action.executeAction(actionName, ...args)
+}
+
+/**
+ * Get the built-in documentation for Yank Note's extended Markdown features.
+ */
+async function getMarkdownFeaturesDoc (language = 'zh-CN') {
+  const normalizedLanguage = language === 'en' ? 'en' : 'zh-CN'
+  const fileName = normalizedLanguage === 'zh-CN' ? 'FEATURES_ZH-CN.md' : 'FEATURES.md'
+  const filePath = path.join(HELP_DIR, fileName)
+
+  return {
+    language: normalizedLanguage,
+    fileName,
+    content: await fs.readFile(filePath, 'utf-8'),
+  }
 }
 
 /**
@@ -83,6 +101,22 @@ function createMCPServer (): Server {
               },
             },
             required: ['actionName'],
+            additionalProperties: false,
+          },
+        },
+        {
+          name: 'yn_get_markdown_features_doc',
+          description: 'Get Yank Note built-in documentation for supported extended Markdown features, such as TOC, containers, diagrams, KaTeX, macros, enhanced tables, wiki links, and other Yank Note-specific syntax.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              language: {
+                type: 'string',
+                enum: ['zh-CN', 'en'],
+                description: 'Documentation language. Defaults to zh-CN.',
+                default: 'zh-CN',
+              },
+            },
             additionalProperties: false,
           },
         },
@@ -355,6 +389,33 @@ function createMCPServer (): Server {
 
       try {
         const result = await executeAction(actionName, actionArgs)
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, result }),
+            },
+          ],
+        }
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: false, error: error.message }),
+            },
+          ],
+          isError: true,
+        }
+      }
+    }
+
+    if (name === 'yn_get_markdown_features_doc') {
+      const { language = 'zh-CN' } = args as any
+
+      try {
+        const result = await getMarkdownFeaturesDoc(language)
 
         return {
           content: [
