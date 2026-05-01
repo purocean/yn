@@ -651,6 +651,7 @@ const data = {
     'inline-image': 'Inline Local Image',
     'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',
+    'line-numbers': 'Code Line Numbers',
     'rt': 'Rich Text',
     'complete': 'Conversion completed, click OK to copy',
     'copy-tips': 'If you need to copy part of the content, you need select it in the preview area first.',

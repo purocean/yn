@@ -13,9 +13,214 @@ import { getRepo } from './repo'
 import { t } from './i18n'
 import { getContentHtml, getHeadings, getPreviewStyles, getRenderEnv, getRenderIframe } from './view'
 
-function buildHtml (title: string, body: string, options: { includeStyle: boolean, includeToc: number[] }) {
-  const hasToc = options.includeToc.length > 0
+type HtmlExportOptions = Partial<NonNullable<ConvertOpts['fromHtmlOptions']>>
+
+function getCodeBlockText (code: HTMLElement, lineNumberTable: HTMLElement | null) {
+  if (!lineNumberTable) {
+    return code.textContent || ''
+  }
+
+  return Array.from(lineNumberTable.querySelectorAll<HTMLElement>('.hljs-ln-code .hljs-ln-line'))
+    .map(line => line.textContent === ' ' ? '' : line.textContent || '')
+    .join('\n')
+}
+
+function enhanceCodeBlocks (body: string, options: HtmlExportOptions) {
+  if (!options.codeLineNumbers && !options.codeCopyButton) {
+    return body
+  }
+
+  const container = document.createElement('div')
+  container.innerHTML = body
+
+  container.querySelectorAll<HTMLPreElement>('pre').forEach(pre => {
+    const code = pre.querySelector('code')
+    if (!code) {
+      return
+    }
+
+    const lineNumberTable = code.querySelector<HTMLElement>('table.hljs-ln')
+    const copyText = lineNumberTable?.dataset.code || getCodeBlockText(code, lineNumberTable)
+    lineNumberTable?.removeAttribute('data-code')
+
+    if (options.codeLineNumbers && lineNumberTable) {
+      pre.classList.add('yn-code-with-lines')
+    }
+
+    if (options.codeCopyButton) {
+      const wrapper = document.createElement('div')
+      wrapper.className = 'yn-code-block'
+
+      const button = document.createElement('button')
+      button.className = 'yn-code-copy'
+      button.type = 'button'
+      button.dataset.code = copyText
+      button.dataset.label = t('copy-code')
+      button.textContent = t('copy-code')
+
+      pre.parentNode?.insertBefore(wrapper, pre)
+      wrapper.appendChild(button)
+      wrapper.appendChild(pre)
+    }
+  })
+
+  return container.innerHTML
+}
+
+function buildCodeBlockAssets (options: HtmlExportOptions) {
+  if (!options.codeLineNumbers && !options.codeCopyButton) {
+    return ''
+  }
+
+  const copyButtonAssets = options.codeCopyButton
+    ? `
+    .yn-code-block {
+      position: relative;
+      margin: 1em 0;
+    }
+
+    .yn-code-block > pre {
+      margin: 0;
+    }
+
+    .yn-code-copy {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
+      border: 1px solid rgba(127, 127, 127, 0.35);
+      border-radius: 6px;
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.88);
+      color: #24292f;
+      font-size: 12px;
+      line-height: 1.4;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 160ms ease;
+    }
+
+    .yn-code-block:hover .yn-code-copy {
+      opacity: 1;
+    }
+
+    .yn-code-copy:focus {
+      opacity: 1;
+      outline: 2px solid #0969da;
+      outline-offset: 2px;
+    }
+    `
+    : ''
+
+  const lineNumberAssets = options.codeLineNumbers
+    ? `
+
+    pre.yn-code-with-lines table.hljs-ln {
+      width: 100%;
+      margin: 0;
+      border: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    pre.yn-code-with-lines table.hljs-ln tr,
+    pre.yn-code-with-lines table.hljs-ln td {
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    pre.yn-code-with-lines table.hljs-ln .hljs-ln-line {
+      white-space: pre;
+    }
+
+    pre.yn-code-with-lines table.hljs-ln .hljs-ln-numbers {
+      width: 2em;
+      min-width: 2em;
+      padding-right: 8px;
+      user-select: none;
+      text-align: right;
+      vertical-align: top;
+      color: #6e7781;
+      border-right: 1px solid rgba(127, 127, 127, 0.25);
+    }
+
+    pre.yn-code-with-lines table.hljs-ln .hljs-ln-code {
+      padding-left: 10px;
+    }
+
+    pre.yn-code-with-lines table.hljs-ln .hljs-ln-n:before {
+      content: attr(data-line-number);
+    }
+    `
+    : ''
+
+  return `<style>
+    ${copyButtonAssets}
+    ${lineNumberAssets}
+  </style>
+  ${options.codeCopyButton ? `<script>
+    (() => {
+      const copiedText = ${JSON.stringify(t('copied'))};
+
+      function fallbackCopy (text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      }
+
+      async function copyCode (button) {
+        const text = button.dataset.code || '';
+        const label = button.dataset.label || button.textContent;
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            fallbackCopy(text);
+          }
+
+          button.textContent = copiedText;
+          setTimeout(() => {
+            button.textContent = label;
+          }, 1200);
+        } catch (error) {
+          fallbackCopy(text);
+          button.textContent = copiedText;
+          setTimeout(() => {
+            button.textContent = label;
+          }, 1200);
+        }
+      }
+
+      document.addEventListener('click', event => {
+        const button = event.target instanceof Element
+          ? event.target.closest('.yn-code-copy')
+          : null;
+        if (button) {
+          copyCode(button);
+        }
+      });
+    })();
+  </script>` : ''}`
+}
+
+function buildHtml (title: string, body: string, options: HtmlExportOptions) {
+  const codeOptions = {
+    ...options,
+    codeCopyButton: !!options.codeCopyButton && !!(options.includeStyle || options.inlineStyle),
+  }
+  const includeToc = options.includeToc || []
+  const hasToc = includeToc.length > 0
   const headingNumber = !!(getRenderEnv()?.attributes?.headingNumber)
+  const bodyHtml = enhanceCodeBlocks(body, codeOptions)
+  const codeBlockAssets = buildCodeBlockAssets(codeOptions)
 
   return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
@@ -31,6 +236,7 @@ function buildHtml (title: string, body: string, options: { includeStyle: boolea
         </style>`
       : ''
     }
+    ${codeBlockAssets}
     ${hasToc ? `<style>
       body {
         padding-left: 240px;
@@ -95,12 +301,12 @@ function buildHtml (title: string, body: string, options: { includeStyle: boolea
     </style>` : ''}
   </head>
   <body>
-    ${body}
+    ${bodyHtml}
     ${hasToc ? `
       <nav id="yn-article-toc">
           <div class="toc-title">${t('table-of-contents')}</div>
           <ul class="${headingNumber ? 'heading-number' : ''}">
-          ${getHeadings(false).filter(heading => options.includeToc.includes(heading.level)).map(heading => `<li data-level="${heading.level}" data-id="${heading.sourceLine}-${escape(heading.id)}" style="padding-left: ${heading.level}em">
+          ${getHeadings(false).filter(heading => includeToc.includes(heading.level)).map(heading => `<li data-level="${heading.level}" data-id="${heading.sourceLine}-${escape(heading.id)}" style="padding-left: ${heading.level}em">
             <a href="#${heading.sourceLine}-${escape(heading.id)}">
               ${escape(heading.text)}
             </a>

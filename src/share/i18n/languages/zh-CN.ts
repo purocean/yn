@@ -652,6 +652,7 @@ const data: BaseLanguage = {
     'inline-image': '内联本地图片',
     'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',
+    'line-numbers': '代码行号',
     'rt': '富文本',
     'complete': '转换完成，点击确定复制',
     'copy-tips': '如需复制部分内容，需要预览区选中后再操作',

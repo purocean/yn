@@ -652,6 +652,7 @@ const data: BaseLanguage = {
     'inline-image': '內聯本地圖片',
     'upload-image': '上傳本地圖片',
     'highlight-code': '高亮代碼',
+    'line-numbers': '程式碼行號',
     'rt': '富文本',
     'complete': '轉換完成，點選確定複製',
     'copy-tips': '如需複製部分內容，需要預覽區選取後再操作',

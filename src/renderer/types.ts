@@ -344,6 +344,8 @@ export type ConvertOpts = {
     inlineStyle: boolean,
     includeStyle: boolean,
     highlightCode: boolean,
+    codeLineNumbers?: boolean,
+    codeCopyButton?: boolean,
     includeToc: number[],
   }
 }
@@ -570,6 +572,8 @@ export type BuildInHookTypes = {
       useRemoteSrcOfLocalImage?: boolean,
       uploadLocalImage?: boolean,
       highlightCode?: boolean,
+      codeLineNumbers?: boolean,
+      codeCopyButton?: boolean,
       preferPng?: boolean,
       onlySelected?: boolean,
       nodeProcessor?: (node: HTMLElement) => void,
