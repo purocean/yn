@@ -11,6 +11,7 @@ const data: BaseLanguage = {
   'ok': '确定',
   'demo-tips': 'DEMO 模式下一些功能不可用',
   'more': '更多',
+  'copy': '复制',
   'copied': '已复制',
   'others': '其他',
   'insert-different-repo-doc': '不能插入不同仓库的文档',
@@ -486,8 +487,6 @@ const data: BaseLanguage = {
       },
       'keep-running-after-closing-window': '关闭窗口后保持运行',
       'hide-main-window-on-startup': '启动时隐藏主窗口',
-      'mcp-enabled': '启用 MCP 服务器',
-      'mcp-enabled-desc': '通过 MCP 端点暴露 Yank Note 操作：/api/mcp/message。客户端需要连接本地服务地址，并使用和应用一致的访问权限。',
     },
     'tabs': {
       'repos': '仓库',
@@ -499,6 +498,9 @@ const data: BaseLanguage = {
       'macros': '宏替换',
       'other': '其他',
     },
+  },
+  'plugin-mcp-server': {
+    'enable': '启用 MCP 服务器（Streamable HTTP）',
   },
   'quick-open': {
     'input-placeholder': '键入字符……',

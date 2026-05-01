@@ -10,6 +10,7 @@ const data = {
   'ok': 'OK',
   'demo-tips': 'Some features are not available in DEMO mode.',
   'more': 'More',
+  'copy': 'Copy',
   'copied': 'Copied',
   'others': 'Others',
   'insert-different-repo-doc': 'Documents from different repository cannot be inserted',
@@ -495,9 +496,10 @@ const data = {
       },
       'hide-main-window-on-startup': 'Hide Main Window on Startup',
       'keep-running-after-closing-window': 'Keep Running after Closing Window',
-      'mcp-enabled': 'Enable MCP Server',
-      'mcp-enabled-desc': 'Expose Yank Note actions through the MCP endpoint: /api/mcp/message. Clients must connect to the local server URL and use the same access permissions as the app.',
     }
+  },
+  'plugin-mcp-server': {
+    'enable': 'Enable MCP Server (Streamable HTTP)',
   },
   'quick-open': {
     'input-placeholder': 'Type characters...',

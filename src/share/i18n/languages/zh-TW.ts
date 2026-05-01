@@ -11,6 +11,7 @@ const data: BaseLanguage = {
   'ok': '確定',
   'demo-tips': 'DEMO 模式下某些功能不可用',
   'more': '更多',
+  'copy': '複製',
   'copied': '已複製',
   'others': '其他',
   'insert-different-repo-doc': '不能插入不同倉庫的文檔',
@@ -486,8 +487,6 @@ const data: BaseLanguage = {
       },
       'keep-running-after-closing-window': '關閉視窗後保持執行',
       'hide-main-window-on-startup': '啟動時隱藏主視窗',
-      'mcp-enabled': '啟用 MCP 伺服器',
-      'mcp-enabled-desc': '透過 MCP 端點暴露 Yank Note 操作：/api/mcp/message。客戶端需要連線本機服務位址，並使用和應用一致的存取權限。',
     },
     'tabs': {
       'repos': '倉庫',
@@ -499,6 +498,9 @@ const data: BaseLanguage = {
       'macros': '巨集替換',
       'other': '其他',
     },
+  },
+  'plugin-mcp-server': {
+    'enable': '啟用 MCP 伺服器（Streamable HTTP）',
   },
   'quick-open': {
     'input-placeholder': '輸入字元……',

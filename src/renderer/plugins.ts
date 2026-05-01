@@ -78,6 +78,7 @@ import previewFont from '@fe/plugins/preview-font'
 import dropToOpenFile from '@fe/plugins/drop-to-open-file'
 import recordRecentDocument from '@fe/plugins/record-recent-document'
 import aiCopilot from '@fe/plugins/ai-copilot'
+import mcpServer from '@fe/plugins/mcp-server'
 import viewLinks from '@fe/plugins/view-links'
 import insertTable from '@fe/plugins/insert-table'
 import textComparator from '@fe/plugins/text-comparator'
@@ -164,6 +165,7 @@ export default [
   dropToOpenFile,
   recordRecentDocument,
   aiCopilot,
+  mcpServer,
   viewLinks,
   insertTable,
   textComparator,

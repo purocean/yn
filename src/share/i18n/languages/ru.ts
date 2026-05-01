@@ -11,6 +11,7 @@ const data: BaseLanguage = {
   'ok': 'OK',
   'demo-tips': 'Некоторые функции недоступны в ДЕМО режиме.',
   'more': 'Ещё',
+  'copy': 'Копировать',
   'copied': 'Скопировано',
   'others': 'Другие',
   'insert-different-repo-doc': 'Документы не могут быть вставлены из другого репозитория',
@@ -496,9 +497,10 @@ const data: BaseLanguage = {
       },
       'hide-main-window-on-startup': 'Скрыть главное окно при запуске',
       'keep-running-after-closing-window': 'Продолжать работу после закрытия окна',
-      'mcp-enabled': 'Включить MCP-сервер',
-      'mcp-enabled-desc': 'Предоставляет действия Yank Note через MCP endpoint: /api/mcp/message. Клиент должен подключаться к локальному адресу сервера и использовать те же права доступа, что и приложение.',
     }
+  },
+  'plugin-mcp-server': {
+    'enable': 'Включить MCP-сервер (Streamable HTTP)',
   },
   'quick-open': {
     'input-placeholder': 'Введите...',
