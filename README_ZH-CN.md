@@ -76,9 +76,9 @@
 
 ## 更新日志
 
-### [v3.88.1](https://github.com/purocean/yn/releases/tag/v3.88.1) 2026-05-01
+### [v3.88.2](https://github.com/purocean/yn/releases/tag/v3.88.2) 2026-05-01
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-win-x64-3.88.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-mac-arm64-3.88.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-mac-x64-3.88.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-linux-x86_64-3.88.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.1/Yank-Note-linux-amd64-3.88.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-win-x64-3.88.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-arm64-3.88.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-x64-3.88.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-x86_64-3.88.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-amd64-3.88.2.deb)
 
 1. feat: 增加 MCP 集成，包含本地 MCP 端点、设置开关、仓库列表、用户动作调用、Markdown 特性文档、文档导出和主窗口重载
 2. feat: 支持将 `.mdx` 和 `.markdown` 作为 Markdown 文档处理，包含编辑器语言模式和预览
@@ -86,23 +86,11 @@
 4. feat: 支持绝对路径图片附件和外部图片路径的回退处理
 5. feat: 支持在图片本地化时处理 `file://` 图片
 6. feat: 仓库文件树默认显示点号开头的隐藏文件
-7. fix: 修复创建以斜杠结尾的新文件夹时路径判断错误的问题
-8. fix: 避免在不支持的 Windows 版本上加载代码高亮字体
-9. test: 增加 Markdown 特性测试文档和 Draw.io 示例文件
-10. chore(deps): 更新 `koa`、`lodash`、`lodash-es`、`node-forge`、`rollup`、`undici`、`uuid`、`yaml` 以及安全相关的间接依赖
-
-### [v3.88.0](https://github.com/purocean/yn/releases/tag/v3.88.0) 2026-05-01
-
-[Windows](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-win-x64-3.88.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-mac-arm64-3.88.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-mac-x64-3.88.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-linux-x86_64-3.88.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-linux-amd64-3.88.0.deb)
-
-1. feat: 支持 MDX 文档预览
-2. feat: 支持导出 HTML 时本地化 file 协议图片
-3. feat: 增强导出 HTML 的代码块
-4. feat: 增加 MCP 服务端点和设置插件
-5. feat: 通过 MCP 暴露用户动作、仓库列表、Markdown 特性文档和文档导出能力
-6. feat: 支持 MCP 主窗口重载工具
-7. fix: 改进绝对路径图片附件和外部图片路径的回退处理
-8. fix: 隔离 MCP HTTP transports，防止并发 MCP 导出，并在 MCP 重载后聚焦窗口
+7. fix: 修复终端浅色模式下选择文本颜色不清晰的问题
+8. fix: 修复创建以斜杠结尾的新文件夹时路径判断错误的问题
+9. fix: 避免在不支持的 Windows 版本上加载代码高亮字体
+10. test: 增加 Markdown 特性测试文档和 Draw.io 示例文件
+11. chore(deps): 更新 `koa`、`lodash`、`lodash-es`、`node-forge`、`rollup`、`undici`、`uuid`、`yaml` 以及安全相关的间接依赖
 
 ### [v3.87.1](https://github.com/purocean/yn/releases/tag/v3.87.1) 2026-01-23
 
