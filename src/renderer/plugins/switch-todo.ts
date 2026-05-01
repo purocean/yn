@@ -33,6 +33,8 @@ export default {
       description: ctx.i18n.t('command-desc.plugin_switch-todo_switch'),
       keys: [ctx.keybinding.Alt, 'o'],
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Switch todo status. Args: [line:number?, checked:boolean?]. No return.',
       handler: (line?: number, checked?: boolean) => {
         if (line) {
           switchTodo(line, checked)

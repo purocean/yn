@@ -104,6 +104,8 @@ onMounted(() => {
     name: 'editor.rotate-custom-editors',
     description: t('command-desc.editor_rotate-custom-editors'),
     forUser: true,
+    forMcp: true,
+    mcpDescription: 'Rotate through custom editors. No args. No return.',
     handler: () => {
       if (availableEditors.value.length > 1) {
         const index = availableEditors.value.findIndex(x => x.name === store.state.editor)

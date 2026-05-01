@@ -11,6 +11,7 @@ const data: BaseLanguage = {
   'ok': 'OK',
   'demo-tips': 'Некоторые функции недоступны в ДЕМО режиме.',
   'more': 'Ещё',
+  'copy': 'Копировать',
   'copied': 'Скопировано',
   'others': 'Другие',
   'insert-different-repo-doc': 'Документы не могут быть вставлены из другого репозитория',
@@ -498,6 +499,9 @@ const data: BaseLanguage = {
       'keep-running-after-closing-window': 'Продолжать работу после закрытия окна',
     }
   },
+  'plugin-mcp-server': {
+    'enable': 'Включить MCP-сервер (Streamable HTTP)',
+  },
   'quick-open': {
     'input-placeholder': 'Введите...',
     'empty': 'Пусто',
@@ -652,6 +656,7 @@ const data: BaseLanguage = {
     'inline-image': 'Встроенное локальное изображение',
     'upload-image': 'Загрузить локальное изображение',
     'highlight-code': 'Выделить код',
+    'line-numbers': 'Номера строк кода',
     'rt': 'Форматированный текст',
     'complete': 'Конвертация завершена, нажмите ОК, чтобы скопировать',
     'copy-tips': 'Если вам необходимо скопировать часть содержимого, сначала выделите его в области предпросмотра.',

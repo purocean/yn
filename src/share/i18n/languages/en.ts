@@ -10,6 +10,7 @@ const data = {
   'ok': 'OK',
   'demo-tips': 'Some features are not available in DEMO mode.',
   'more': 'More',
+  'copy': 'Copy',
   'copied': 'Copied',
   'others': 'Others',
   'insert-different-repo-doc': 'Documents from different repository cannot be inserted',
@@ -497,6 +498,9 @@ const data = {
       'keep-running-after-closing-window': 'Keep Running after Closing Window',
     }
   },
+  'plugin-mcp-server': {
+    'enable': 'Enable MCP Server (Streamable HTTP)',
+  },
   'quick-open': {
     'input-placeholder': 'Type characters...',
     'empty': 'Empty',
@@ -651,6 +655,7 @@ const data = {
     'inline-image': 'Inline Local Image',
     'upload-image': 'Upload Local Image',
     'highlight-code': 'Highlight Code',
+    'line-numbers': 'Code Line Numbers',
     'rt': 'Rich Text',
     'complete': 'Conversion completed, click OK to copy',
     'copy-tips': 'If you need to copy part of the content, you need select it in the preview area first.',

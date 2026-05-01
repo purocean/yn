@@ -266,6 +266,24 @@ export default {
           ?.text
 
         if (code) {
+          if (options.codeCopyButton) {
+            node.dataset.code = code
+          }
+
+          if (options.codeLineNumbers) {
+            if (!options.highlightCode) {
+              const wrapper = document.createElement('div')
+              wrapper.innerHTML = highlight(code, 'text', true)
+
+              if (options.codeCopyButton) {
+                wrapper.firstElementChild?.setAttribute('data-code', code)
+              }
+
+              node.outerHTML = wrapper.innerHTML
+            }
+            return
+          }
+
           if (options.highlightCode) {
             if (options.inlineStyle || options.includeStyle) {
               node.outerHTML = ctx.lib.juice(

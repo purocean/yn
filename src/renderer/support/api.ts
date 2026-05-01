@@ -134,6 +134,24 @@ export async function readFile (file: PathItem, asBase64 = false): Promise<FileR
 }
 
 /**
+ * Check whether a file exists.
+ * @param file
+ * @returns
+ */
+export async function existsFile (file: PathItem): Promise<boolean> {
+  const { path, repo } = file
+
+  if (repo === HELP_REPO_NAME) {
+    return false
+  }
+
+  const url = `/api/file?path=${encodeURIComponent(path)}&repo=${encodeURIComponent(repo)}&exists=true`
+  const { data } = await fetchHttp(url)
+
+  return data
+}
+
+/**
  * Write content to a file.
  * @param file
  * @param content

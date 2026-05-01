@@ -258,29 +258,3 @@ a {
   border: 1px solid var(--g-color-80);
   border-radius: var(--g-border-radius);
 }
-
-@font-face {
-  font-family: 'FontWithASyntaxHighlighterLightOwl-Regular';
-  src:
-    url('@fe/assets/FontWithASyntaxHighlighterLightOwl-Regular.woff2')
-    format('woff2')
-  ;
-}
-
-@font-face {
-  font-family: 'FontWithASyntaxHighlighterNightOwl-Regular';
-  src:
-    url('@fe/assets/FontWithASyntaxHighlighterNightOwl-Regular.woff2')
-    format('woff2')
-  ;
-}
-
-.code-syntax-highlight-font {
-  font-family: 'FontWithASyntaxHighlighterLightOwl-Regular', monospace;
-}
-
-@include dark-theme {
-  .code-syntax-highlight-font {
-    font-family: 'FontWithASyntaxHighlighterNightOwl-Regular', monospace;
-  }
-}

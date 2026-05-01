@@ -76,6 +76,19 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
+### [v3.88.0](https://github.com/purocean/yn/releases/tag/v3.88.0) 2026-05-01
+
+[Windows](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-win-x64-3.88.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-mac-arm64-3.88.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-mac-x64-3.88.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-linux-x86_64-3.88.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.0/Yank-Note-linux-amd64-3.88.0.deb)
+
+1. feat: Support MDX document preview
+2. feat: Support localizing file protocol images for exported HTML
+3. feat: Enhance exported HTML code blocks
+4. feat: Add MCP server endpoint and settings plugin
+5. feat: Expose user actions, repository list, Markdown features documentation, and document export via MCP
+6. feat: Support MCP main window reload tool
+7. fix: Improve fallback handling for absolute image attachments and external image paths
+8. fix: Isolate MCP HTTP transports, prevent concurrent MCP exports, and focus window after MCP reload
+
 ### [v3.87.1](https://github.com/purocean/yn/releases/tag/v3.87.1) 2026-01-23
 
 [Windows](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-win-x64-3.87.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-arm64-3.87.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-x64-3.87.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-x86_64-3.87.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-amd64-3.87.1.deb)
@@ -88,7 +101,7 @@ For more information on how to use the following functions, please see [characte
 6. feat(plugin): Support `ctx.workbench.ContentRightSide.registerPanel` for registering sidebar panel components
 7. feat(plugin): Add `EDITOR_ATTEMPT_READONLY_EDIT` Hook
 
-[更多发布说明](https://github.com/purocean/yn/releases)
+[More release notes](https://github.com/purocean/yn/releases)
 
 ## Supports
 

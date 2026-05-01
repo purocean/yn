@@ -579,8 +579,10 @@ export async function isDirty (): Promise<boolean> {
 registerAction({
   name: 'editor.toggle-wrap',
   description: t('command-desc.editor_toggle-wrap'),
+  mcpDescription: 'Toggle word wrap. No args. No return.',
   handler: toggleWrap,
   forUser: true,
+  forMcp: true,
   keys: [Alt, 'w']
 })
 

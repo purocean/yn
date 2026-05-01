@@ -11,6 +11,7 @@ const data: BaseLanguage = {
   'ok': '确定',
   'demo-tips': 'DEMO 模式下一些功能不可用',
   'more': '更多',
+  'copy': '复制',
   'copied': '已复制',
   'others': '其他',
   'insert-different-repo-doc': '不能插入不同仓库的文档',
@@ -498,6 +499,9 @@ const data: BaseLanguage = {
       'other': '其他',
     },
   },
+  'plugin-mcp-server': {
+    'enable': '启用 MCP 服务器（Streamable HTTP）',
+  },
   'quick-open': {
     'input-placeholder': '键入字符……',
     'empty': '无结果',
@@ -652,6 +656,7 @@ const data: BaseLanguage = {
     'inline-image': '内联本地图片',
     'upload-image': '上传本地图片',
     'highlight-code': '高亮代码',
+    'line-numbers': '代码行号',
     'rt': '富文本',
     'complete': '转换完成，点击确定复制',
     'copy-tips': '如需复制部分内容，需要预览区选中后再操作',

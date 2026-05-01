@@ -79,9 +79,19 @@ export interface Action<T extends string = string> {
   description?: string
 
   /**
+   * Description for MCP (Model Context Protocol) including parameter types and notes for AI models
+   */
+  mcpDescription?: string
+
+  /**
    * user can set keybinding or list in action manager
    */
   forUser?: boolean
+
+  /**
+   * Expose to MCP (Model Context Protocol) for AI agent integration
+   */
+  forMcp?: boolean
 
   /**
    * Associate shortcuts
@@ -344,6 +354,8 @@ export type ConvertOpts = {
     inlineStyle: boolean,
     includeStyle: boolean,
     highlightCode: boolean,
+    codeLineNumbers?: boolean,
+    codeCopyButton?: boolean,
     includeToc: number[],
   }
 }
@@ -570,6 +582,8 @@ export type BuildInHookTypes = {
       useRemoteSrcOfLocalImage?: boolean,
       uploadLocalImage?: boolean,
       highlightCode?: boolean,
+      codeLineNumbers?: boolean,
+      codeCopyButton?: boolean,
       preferPng?: boolean,
       onlySelected?: boolean,
       nodeProcessor?: (node: HTMLElement) => void,

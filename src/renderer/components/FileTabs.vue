@@ -234,6 +234,8 @@ export default defineComponent({
         description: t('command-desc.file-tabs_switch-left'),
         keys: [CtrlCmd, Alt, 'ArrowLeft'],
         forUser: true,
+        forMcp: true,
+        mcpDescription: 'Switch to left tab. No args. No return.',
         handler () {
           const prev = findTab(-1)
           prev && switchTab(prev)
@@ -244,6 +246,8 @@ export default defineComponent({
         name: 'file-tabs.switch-right',
         description: t('command-desc.file-tabs_switch-right'),
         forUser: true,
+        forMcp: true,
+        mcpDescription: 'Switch to right tab. No args. No return.',
         handler () {
           const next = findTab(1)
           next && switchTab(next)
@@ -256,6 +260,8 @@ export default defineComponent({
         description: t('command-desc.file-tabs_close-current'),
         handler: closeCurrent,
         forUser: true,
+        forMcp: true,
+        mcpDescription: 'Close current tab. No args. No return.',
         keys: isElectron ? [CtrlCmd, 'w'] : [CtrlCmd, Alt, 'w']
       })
 
@@ -263,6 +269,8 @@ export default defineComponent({
         name: 'file-tabs.search-tabs',
         description: t('command-desc.file-tabs_search-tabs'),
         forUser: true,
+        forMcp: true,
+        mcpDescription: 'Search tabs. No args. No return.',
         handler () {
           refTabs.value?.showQuickFilter()
         },
@@ -273,6 +281,8 @@ export default defineComponent({
         name: 'file-tabs.show-welcome',
         description: t('command-desc.file-tabs_show-welcome'),
         forUser: true,
+        forMcp: true,
+        mcpDescription: 'Show welcome page. No args. No return.',
         handler () {
           switchDoc(null)
         },
