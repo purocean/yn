@@ -22,6 +22,7 @@ import config from '../config'
 import * as jwt from '../jwt'
 import { getAction } from '../action'
 import * as extension from '../extension'
+import * as mcpServer from './mcp'
 import type { FileReadResult } from '../../share/types'
 
 const isLocalhost = (address: string) => {
@@ -687,6 +688,17 @@ const choose = async (ctx: any, next: any) => {
   }
 }
 
+const mcpEndpoint = async (ctx: any, next: any) => {
+  if (ctx.path === '/api/mcp/message' && ctx.method === 'POST') {
+    checkIsAdmin(ctx)
+    // MCP endpoint using SDK's StreamableHTTPServerTransport
+    await mcpServer.handleMCPRequest(ctx.req, ctx.res, ctx.request.body)
+    ctx.respond = false
+  } else {
+    await next()
+  }
+}
+
 const rpc = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/rpc') && ctx.method === 'POST') {
     const { code } = ctx.request.body
@@ -841,6 +853,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userExtension))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, premiumManage))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, mcpEndpoint))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userFile))

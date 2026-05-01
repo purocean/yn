@@ -486,6 +486,8 @@ const data: BaseLanguage = {
       },
       'keep-running-after-closing-window': '关闭窗口后保持运行',
       'hide-main-window-on-startup': '启动时隐藏主窗口',
+      'mcp-enabled': '启用 MCP 服务器',
+      'mcp-enabled-desc': '通过 MCP 端点暴露 Yank Note 操作：/api/mcp/message。客户端需要连接本地服务地址，并使用和应用一致的访问权限。',
     },
     'tabs': {
       'repos': '仓库',

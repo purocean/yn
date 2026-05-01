@@ -495,6 +495,8 @@ const data = {
       },
       'hide-main-window-on-startup': 'Hide Main Window on Startup',
       'keep-running-after-closing-window': 'Keep Running after Closing Window',
+      'mcp-enabled': 'Enable MCP Server',
+      'mcp-enabled-desc': 'Expose Yank Note actions through the MCP endpoint: /api/mcp/message. Clients must connect to the local server URL and use the same access permissions as the app.',
     }
   },
   'quick-open': {

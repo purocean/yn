@@ -496,6 +496,8 @@ const data: BaseLanguage = {
       },
       'hide-main-window-on-startup': 'Скрыть главное окно при запуске',
       'keep-running-after-closing-window': 'Продолжать работу после закрытия окна',
+      'mcp-enabled': 'Включить MCP-сервер',
+      'mcp-enabled-desc': 'Предоставляет действия Yank Note через MCP endpoint: /api/mcp/message. Клиент должен подключаться к локальному адресу сервера и использовать те же права доступа, что и приложение.',
     }
   },
   'quick-open': {
