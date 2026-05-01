@@ -16,9 +16,6 @@ interface Action {
   forMcp?: boolean
 }
 
-let mcpServer: Server | null = null
-let mcpTransport: StreamableHTTPServerTransport | null = null
-
 /**
  * Get actions from frontend via jsonRPCClient
  */
@@ -40,15 +37,10 @@ async function executeAction (actionName: string, args: any[]): Promise<any> {
 }
 
 /**
- * Initialize MCP server and transport
+ * Create MCP server for a single stateless HTTP request.
  */
-function initMCPServer (): void {
-  if (mcpServer && mcpTransport) {
-    return
-  }
-
-  // Create server
-  mcpServer = new Server(
+function createMCPServer (): Server {
+  const server = new Server(
     {
       name: 'yn-mcp-server',
       version: '1.0.0',
@@ -61,7 +53,7 @@ function initMCPServer (): void {
   )
 
   // List available tools
-  mcpServer.setRequestHandler(ListToolsRequestSchema, async () => {
+  server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
       tools: [
         {
@@ -98,7 +90,7 @@ function initMCPServer (): void {
   })
 
   // Handle tool calls
-  mcpServer.setRequestHandler(CallToolRequestSchema, async (request) => {
+  server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params
 
     if (name === 'yn_list_actions') {
@@ -149,13 +141,7 @@ function initMCPServer (): void {
     throw new Error(`Unknown tool: ${name}`)
   })
 
-  // Create transport
-  mcpTransport = new StreamableHTTPServerTransport()
-
-  // Connect server to transport
-  mcpServer.connect(mcpTransport).catch((error) => {
-    console.error('[MCP] Failed to connect server to transport:', error)
-  })
+  return server
 }
 
 /**
@@ -175,13 +161,11 @@ export async function handleMCPRequest (
   }
 
   try {
-    // Initialize server if needed
-    if (!mcpServer || !mcpTransport) {
-      initMCPServer()
-    }
+    const server = createMCPServer()
+    const transport = new StreamableHTTPServerTransport()
 
-    // Handle the request using the transport with parsed body
-    await mcpTransport!.handleRequest(req, res, parsedBody)
+    await server.connect(transport)
+    await transport.handleRequest(req, res, parsedBody)
   } catch (error: any) {
     console.error('[MCP] Request error:', error)
     if (!res.headersSent) {
