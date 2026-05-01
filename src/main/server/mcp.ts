@@ -67,6 +67,7 @@ async function reloadMainWindow (urlMode?: UrlMode) {
   }
 
   await getAction('reload-main-window')?.()
+  getAction('show-main-window')?.()
 
   return {
     success: true,
