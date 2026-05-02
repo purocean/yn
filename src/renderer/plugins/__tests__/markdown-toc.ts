@@ -97,6 +97,21 @@ describe('markdown-toc plugin', () => {
     log.mockRestore()
   })
 
+  test('handles inline toc markers and empty heading sets', () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    const md = new MarkdownIt()
+    markdownToc.register(createCtx(md))
+
+    expect(md.render('plain [toc] text')).toContain('[object Object]')
+
+    const tokens = md.parse('[toc]\n\nparagraph only', {})
+    const tocToken = tokens.flatMap(token => token.children || []).find(token => token.type === 'toc_body')!
+    const vnode = md.renderer.rules.toc_body!([tocToken] as any, 0, md.options, {}, md.renderer as any) as any
+
+    expect(vnode.props.innerHTML).toContain('<ul></ul>')
+    log.mockRestore()
+  })
+
   test('renders full toc chunks and preserves existing heading attrs', () => {
     const md = new MarkdownIt()
     markdownToc.register(createCtx(md))

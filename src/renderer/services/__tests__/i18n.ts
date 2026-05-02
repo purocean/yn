@@ -16,6 +16,9 @@ vi.mock('@fe/utils/storage', () => storageMocks)
 
 vi.mock('@fe/core/hook', () => hookMocks)
 
+import { defineComponent, h, nextTick } from 'vue'
+import { mount } from '@vue/test-utils'
+
 describe('renderer i18n service', () => {
   beforeEach(() => {
     storageMocks.values.clear()
@@ -106,5 +109,28 @@ describe('renderer i18n service', () => {
     const i18n = await import('@fe/services/i18n')
 
     expect(() => i18n.useI18n()).toThrow('VM Error')
+  })
+
+  test('installs component translator and unregisters language hook on unmount', async () => {
+    const i18n = await import('@fe/services/i18n')
+    i18n.setLanguage('en')
+    const component = defineComponent({
+      setup () {
+        const { $t } = i18n.useI18n()
+        return () => h('span', $t.value('app.quit' as any))
+      },
+    })
+
+    const wrapper = mount(component)
+    await nextTick()
+
+    expect(wrapper.text()).toBe(i18n.t('app.quit' as any))
+    expect((wrapper.vm as any).$t('app.quit')).toBe(i18n.t('app.quit' as any))
+    expect(hookMocks.registerHook).toHaveBeenCalledWith('I18N_CHANGE_LANGUAGE', expect.any(Function))
+
+    hookMocks.registerHook.mock.calls[0][1]()
+    wrapper.unmount()
+
+    expect(hookMocks.removeHook).toHaveBeenCalledWith('I18N_CHANGE_LANGUAGE', expect.any(Function))
   })
 })

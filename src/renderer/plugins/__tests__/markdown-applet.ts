@@ -16,7 +16,11 @@ vi.mock('@fe/core/hook', () => ({
 }))
 
 vi.mock('@fe/support/embed', () => ({
-  IFrame: { name: 'IFrame' },
+  IFrame: {
+    name: 'IFrame',
+    props: ['html', 'debounce', 'globalStyle', 'iframeProps', 'onLoad'],
+    template: '<iframe />',
+  },
 }))
 
 vi.mock('@fe/utils', () => ({
@@ -24,6 +28,7 @@ vi.mock('@fe/utils', () => ({
 }))
 
 import MarkdownIt from 'markdown-it'
+import { mount } from '@vue/test-utils'
 import markdownApplet from '../markdown-applet'
 
 function createCtx (md = new MarkdownIt()) {
@@ -104,6 +109,56 @@ describe('markdown-applet plugin', () => {
       attrs: undefined,
     })
     expect(vnode.props.html).toContain('<input>')
+  })
+
+  test('applet component toggles with render hooks and initializes the iframe', async () => {
+    const ctx = createCtx()
+    markdownApplet.register(ctx)
+    const fence = ctx._md.renderer.rules.fence
+    const vnode = fence([
+      {
+        info: 'html',
+        content: '<!-- --applet-- -->\n<script>window.loaded = true</script>',
+        meta: { attrs: { sandbox: 'allow-scripts' } },
+      },
+    ], 0, {}, { safeMode: false }, {}) as any
+    const wrapper = mount(vnode.type, { props: vnode.props })
+
+    expect(wrapper.findComponent({ name: 'IFrame' }).exists()).toBe(false)
+
+    mocks.hooks.get('VIEW_RENDERED')![0]()
+    await wrapper.vm.$nextTick()
+
+    const iframe = document.createElement('iframe')
+    const contentWindow = { init: vi.fn(), resize: vi.fn() }
+    Object.defineProperty(iframe, 'contentWindow', {
+      value: contentWindow,
+      configurable: true,
+    })
+    const frame = wrapper.findComponent({ name: 'IFrame' })
+    expect(frame.props()).toMatchObject({
+      debounce: 1000,
+      globalStyle: true,
+      iframeProps: {
+        class: 'applet-iframe',
+        height: '20px',
+        sandbox: 'allow-scripts',
+      },
+    })
+
+    frame.props('onLoad')(iframe)
+    expect(contentWindow).toMatchObject({ appletId: 'applet-hash123-0' })
+    expect(contentWindow.init).toHaveBeenCalled()
+    expect(contentWindow.resize).toHaveBeenCalled()
+
+    mocks.hooks.get('DOC_SWITCHED')![0]()
+    await wrapper.vm.$nextTick()
+    expect(wrapper.findComponent({ name: 'IFrame' }).exists()).toBe(false)
+
+    wrapper.unmount()
+    expect(mocks.removeHook).toHaveBeenCalledWith('DOC_SWITCHED', expect.any(Function))
+    expect(mocks.removeHook).toHaveBeenCalledWith('VIEW_BEFORE_REFRESH', expect.any(Function))
+    expect(mocks.removeHook).toHaveBeenCalledWith('VIEW_RENDERED', expect.any(Function))
   })
 
   test('falls back to the default fence renderer for non applet, non-html, or safe-mode fences', () => {

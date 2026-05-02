@@ -1,5 +1,5 @@
 import { nextTick } from 'vue'
-import { shallowMount } from '@vue/test-utils'
+import { flushPromises, shallowMount } from '@vue/test-utils'
 
 const mocks = vi.hoisted(() => ({
   actions: new Map<string, Function>(),
@@ -12,9 +12,14 @@ const mocks = vi.hoisted(() => ({
   commentHistoryVersion: vi.fn(),
   deleteHistoryVersion: vi.fn(),
   setValue: vi.fn(),
+  inputPassword: vi.fn(),
+  decrypt: vi.fn(),
   modalInput: vi.fn(),
   modalConfirm: vi.fn(),
+  modalAlert: vi.fn(),
   toastShow: vi.fn(),
+  showPremium: vi.fn(),
+  purchased: true,
   registerHook: vi.fn(),
   removeHook: vi.fn(),
   createEditor: vi.fn(),
@@ -63,14 +68,14 @@ vi.mock('@fe/services/document', () => ({
   isSameFile: (a: any, b: any) => a?.repo === b?.repo && a?.path === b?.path,
 }))
 
-vi.mock('@fe/services/base', () => ({ inputPassword: vi.fn() }))
+vi.mock('@fe/services/base', () => ({ inputPassword: mocks.inputPassword }))
 
 vi.mock('@fe/services/i18n', () => ({
   useI18n: () => ({ t: (key: string, ...args: string[]) => args.length ? `${key}:${args.join(':')}` : key }),
 }))
 
 vi.mock('@fe/support/ui/modal', () => ({
-  useModal: () => ({ input: mocks.modalInput, confirm: mocks.modalConfirm, alert: vi.fn() }),
+  useModal: () => ({ input: mocks.modalInput, confirm: mocks.modalConfirm, alert: mocks.modalAlert }),
 }))
 
 vi.mock('@fe/support/ui/toast', () => ({
@@ -81,11 +86,11 @@ vi.mock('@fe/utils', () => ({
   getLogger: () => ({ debug: vi.fn() }),
 }))
 
-vi.mock('@fe/utils/crypto', () => ({ decrypt: vi.fn() }))
+vi.mock('@fe/utils/crypto', () => ({ decrypt: mocks.decrypt }))
 
 vi.mock('@fe/others/premium', () => ({
-  getPurchased: () => true,
-  showPremium: vi.fn(),
+  getPurchased: () => mocks.purchased,
+  showPremium: mocks.showPremium,
 }))
 
 vi.mock('@fe/support/store', () => ({
@@ -133,9 +138,16 @@ beforeEach(() => {
   mocks.commentHistoryVersion.mockResolvedValue(undefined)
   mocks.deleteHistoryVersion.mockResolvedValue(undefined)
   mocks.setValue.mockReset()
+  mocks.inputPassword.mockReset()
+  mocks.inputPassword.mockResolvedValue('password')
+  mocks.decrypt.mockReset()
+  mocks.decrypt.mockReturnValue({ content: 'decrypted history' })
   mocks.modalInput.mockReset()
   mocks.modalConfirm.mockReset()
+  mocks.modalAlert.mockReset()
   mocks.toastShow.mockReset()
+  mocks.showPremium.mockReset()
+  mocks.purchased = true
   mocks.registerHook.mockReset()
   mocks.removeHook.mockReset()
   mocks.createEditor.mockReturnValue(editorMock())
@@ -210,5 +222,60 @@ describe('DocHistory', () => {
 
     await (wrapper.vm as any).clearVersions()
     expect(mocks.deleteHistoryVersion).toHaveBeenCalledWith(mocks.storeState.currentFile, '--all--')
+  })
+
+  test('handles premium gating, encrypted content, alerts, and cleanup hooks', async () => {
+    mocks.fetchHistoryList.mockResolvedValue({
+      size: 4096,
+      list: [
+        { name: '2024-01-04 03-04-05.encrypted.md', comment: '' },
+      ],
+    })
+    mocks.fetchHistoryContent.mockResolvedValue('cipher text')
+
+    const wrapper = shallowMount(DocHistory, {
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          XMask: { props: ['show'], template: '<div v-if="show" class="mask-stub"><slot /></div>' },
+          GroupTabs: {
+            props: ['modelValue', 'tabs'],
+            emits: ['update:modelValue'],
+            template: '<div class="group-tabs-stub"><button v-for="tab in tabs" :key="tab.value" @click="$emit(\'update:modelValue\', tab.value)">{{tab.label}}</button></div>',
+          },
+          SvgIcon: { emits: ['click'], template: '<i class="svg-icon" @click="$emit(\'click\', $event)" />' },
+        },
+      },
+    })
+
+    mocks.storeState.currentContent = 'x'.repeat(102401)
+    mocks.actions.get('doc.show-history')?.()
+    await flushPromises()
+    await nextTick()
+
+    expect(mocks.modalAlert).toHaveBeenCalledWith(expect.objectContaining({
+      title: 'doc-history.content-too-long-alert.title',
+    }))
+    expect(mocks.inputPassword).toHaveBeenCalledWith('document.password-open', 'History Version', true)
+    expect(mocks.decrypt).toHaveBeenCalledWith('cipher text', 'password')
+    expect((wrapper.vm as any).content).toBe('decrypted history')
+
+    mocks.purchased = false
+    await (wrapper.vm as any).markVersion((wrapper.vm as any).versions[0])
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'premium.need-purchase:Mark')
+    expect(mocks.showPremium).toHaveBeenCalled()
+
+    mocks.decrypt.mockImplementationOnce(() => {
+      throw new Error('bad password')
+    })
+    ;(wrapper.vm as any).currentVersion = undefined
+    await nextTick()
+    ;(wrapper.vm as any).choose((wrapper.vm as any).versions[0])
+    await flushPromises()
+    expect((wrapper.vm as any).content).toBe('document.wrong-password')
+
+    wrapper.unmount()
+    expect(mocks.removeHook).toHaveBeenCalledWith('GLOBAL_RESIZE', expect.any(Function))
+    expect(mocks.actions.has('doc.show-history')).toBe(false)
   })
 })

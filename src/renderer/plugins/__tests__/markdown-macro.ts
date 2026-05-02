@@ -169,6 +169,73 @@ describe('markdown-macro plugin', () => {
     expect(env.source).toBe('ADA')
   })
 
+  test('skips macro transform when disabled or in safe mode', () => {
+    const md = new MarkdownIt()
+    const ctx = createCtx(md)
+    markdownMacro.register(ctx)
+    const disabledEnv: any = { attributes: { enableMacro: false }, source: 'before' }
+    const safeEnv: any = { attributes: { enableMacro: true }, safeMode: true, source: 'before' }
+
+    md.parse('[= 1 + 1 =]', disabledEnv)
+    md.parse('[= 1 + 1 =]', safeEnv)
+
+    expect(disabledEnv.source).toBe('before')
+    expect(safeEnv.source).toBe('before')
+    expect(ctx.renderer.getRenderCache).not.toHaveBeenCalled()
+  })
+
+  test('shares exported vars and sequence counters across synchronous macros', () => {
+    const md = new MarkdownIt()
+    const ctx = createCtx(md)
+    markdownMacro.register(ctx)
+    const env: any = {
+      attributes: { enableMacro: true },
+      file: { type: 'file', repo: 'main', name: 'note.md', path: '/repo/note.md' },
+    }
+
+    md.parse('[= $seq("n") =],[= $seq("n") =],[= $export("name", "Ada") =][= name =]', env)
+
+    expect(env.source).toBe('n1,n2,Ada')
+  })
+
+  test('caches include errors for non-markdown paths without reading files', async () => {
+    const md = new MarkdownIt()
+    const ctx = createCtx(md)
+    markdownMacro.register(ctx)
+    const env: any = {
+      attributes: { enableMacro: true },
+      file: { type: 'file', repo: 'main', name: 'note.md', path: '/repo/note.md' },
+    }
+
+    md.parse('[= await $include("child.txt") =]', env)
+    expect(env.source).toBe('running...')
+
+    await vi.waitFor(() => {
+      const retryEnv: any = {
+        attributes: { enableMacro: true },
+        file: { type: 'file', repo: 'main', name: 'note.md', path: '/repo/note.md' },
+      }
+      md.parse('[= await $include("child.txt") =]', retryEnv)
+      expect(retryEnv.source).toBe('Error: $include path is not a plain file')
+    })
+    expect(mocks.readFile).not.toHaveBeenCalled()
+  })
+
+  test('reports after-macro errors through toast and keeps transformed body', () => {
+    const md = new MarkdownIt()
+    const ctx = createCtx(md)
+    markdownMacro.register(ctx)
+    const env: any = {
+      attributes: { enableMacro: true },
+      file: { type: 'file', repo: 'main', name: 'note.md', path: '/repo/note.md' },
+    }
+
+    md.parse('[= $afterMacro(() => { throw new Error("bad hook") }) =]body', env)
+
+    expect(env.source).toBe('body')
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', '[$afterMacro]: Error: bad hook')
+  })
+
   test('resolves included markdown with front matter vars through the render cache', async () => {
     const md = new MarkdownIt()
     const ctx = createCtx(md)

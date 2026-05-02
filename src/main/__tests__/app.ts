@@ -487,6 +487,41 @@ describe('main app entry', () => {
     expect(win.destroy).toHaveBeenCalled()
   })
 
+  test('covers alternate window restore and action branches', async () => {
+    const electron = await import('electron')
+    mocks.store.set('window.state', { x: 5, y: 5, width: 900, height: 500, maximized: true })
+    await loadApp()
+    mocks.appEvents.ready()
+    let win = mocks.browserWindowInstances[0]
+
+    expect(win.maximize).toHaveBeenCalled()
+
+    await mocks.actions['show-open-dialog']({ properties: ['openFile'] })
+    expect(electron.dialog.showOpenDialog).toHaveBeenCalledWith(win, { properties: ['openFile'] })
+    expect(mocks.actions['get-main-widow']()).toBe(win)
+    expect(mocks.actions['get-url-mode']()).toBe('scheme')
+    mocks.actions['set-url-mode']('prod')
+    expect(mocks.actions['get-url-mode']()).toBe('prod')
+    mocks.actions['open-in-browser']()
+    expect(mocks.shellOpenExternal).toHaveBeenCalledWith('url:prod:4555:8066')
+
+    win.events['enter-full-screen']()
+    mocks.actions['toggle-fullscreen']()
+    expect(win.setFullScreen).toHaveBeenCalledWith(false)
+    win.events['leave-full-screen']()
+
+    win.events.closed()
+    expect(() => mocks.actions['show-main-window']()).not.toThrow()
+    win = mocks.browserWindowInstances[1]
+    expect(win).toBeTruthy()
+
+    vi.resetModules()
+    mocks.store.set('window.state', { x: 10, y: 10, width: -1, height: 500, maximized: false })
+    await loadApp()
+    mocks.appEvents.ready()
+    expect(mocks.browserWindowInstances[2].setBounds).not.toHaveBeenCalled()
+  })
+
   test('handles open-file, second-instance, and open-url branches', async () => {
     process.argv = ['/electron', '/app/app.js', 'argv-doc.md']
     await loadApp()

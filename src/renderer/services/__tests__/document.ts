@@ -556,6 +556,27 @@ describe('document service pure helpers', () => {
     await expect(createDir({ repo: 'main', content: undefined }, { ...fileDoc, type: 'dir', path: '/folder' })).resolves.toBeUndefined()
   })
 
+  test('lets the create-file panel update doc type before building the path', async () => {
+    const customType = {
+      id: 'vector',
+      displayName: 'Vector',
+      extension: ['.svg'],
+      plain: true,
+      buildNewContent: (filename: string) => `<svg data-name="${filename}" />`,
+    }
+    modalMocks.input.mockImplementationOnce((opts: any) => {
+      const vnode = opts.component()
+      expect(vnode.props.currentPath).toBe('/folder')
+      vnode.props.onUpdateDocType(customType)
+      return 'icon'
+    })
+
+    const doc = await createDoc({ repo: 'main' }, { ...fileDoc, type: 'dir', path: '/folder' })
+
+    expect(doc).toMatchObject({ path: '/folder/icon.svg', name: 'icon.svg' })
+    expect(apiMocks.writeFile).toHaveBeenLastCalledWith(doc, '<svg data-name="icon.svg" />', false)
+  })
+
   test('handles create-doc builder errors, inline base64 payloads, and encrypted creation', async () => {
     const category: DocCategory = {
       category: 'custom-docs',
@@ -599,6 +620,34 @@ describe('document service pure helpers', () => {
     const encrypted = await createDoc({ repo: 'main', path: '/secret.c.md', content: 'secret' })
     expect(cryptoMocks.encrypt).toHaveBeenCalledWith('secret', 'pw')
     expect(apiMocks.writeFile).toHaveBeenLastCalledWith(encrypted, 'encrypted:secret', false)
+  })
+
+  test('runs custom save-confirm actions and tolerates force switching after save errors', async () => {
+    const doc = { ...fileDoc, status: 'loaded' as const }
+    storeMock.state.currentFile = doc
+    storeMock.state.currentContent = 'changed'
+    storeMock.getters.isSaved.value = false
+    settingMocks.values.set('auto-save', 0)
+    modalMocks.confirm.mockImplementationOnce((opts: any) => {
+      opts.action.children[0].props.onClick()
+      return new Promise(() => undefined)
+    })
+
+    await ensureCurrentFileSaved()
+
+    expect(apiMocks.writeFile).toHaveBeenCalledWith(doc, 'changed')
+
+    storeMock.state.currentFile = { ...fileDoc, status: 'loaded' as const }
+    storeMock.state.currentContent = 'still changed'
+    storeMock.getters.isSaved.value = false
+    modalMocks.confirm.mockResolvedValueOnce(false)
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+    await switchDoc({ ...fileDoc, path: '/dir/forced.md', name: 'forced.md' }, { force: true })
+
+    expect(consoleError).toHaveBeenCalledWith(expect.any(Error))
+    expect(storeMock.state.currentFile).toMatchObject({ path: '/dir/forced.md', status: 'loaded' })
+    consoleError.mockRestore()
   })
 
   test('covers guarded document operations and error branches', async () => {

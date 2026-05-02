@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
   fetchTree: vi.fn(),
   toastShow: vi.fn(),
   warn: vi.fn(),
+  watchCallback: undefined as any,
 }))
 
 vi.mock('vue', async importOriginal => ({
@@ -44,7 +45,9 @@ vi.mock('@fe/core/ioc', () => ({
 vi.mock('@fe/support/store', () => ({
   default: {
     state: mocks.state,
-    watch: vi.fn(),
+    watch: vi.fn((_getter: Function, callback: Function) => {
+      mocks.watchCallback = callback
+    }),
   },
 }))
 
@@ -140,5 +143,15 @@ test('does not fetch without a current repo and reveals current node via action'
 
   expect(mocks.fetchTree).not.toHaveBeenCalled()
   expect(mocks.warn).toHaveBeenCalledWith('No repo')
+  expect(mocks.reveal).toHaveBeenCalledTimes(1)
+})
+
+test('refreshes and reveals when tree sort changes', async () => {
+  mocks.state.currentRepo = { name: 'notes' }
+  mocks.fetchTree.mockResolvedValue([{ name: '/', children: [] }])
+
+  await mocks.watchCallback()
+
+  expect(mocks.fetchTree).toHaveBeenCalledWith('notes', { by: 'serial', order: 'asc' })
   expect(mocks.reveal).toHaveBeenCalledTimes(1)
 })

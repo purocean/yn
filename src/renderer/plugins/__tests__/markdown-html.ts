@@ -55,6 +55,15 @@ describe('markdown-html plugin', () => {
     expect(spanOpen?.attrs).toEqual([['data-id', 'ok']])
   })
 
+  test('rejects script tags, incomplete comments, and unsupported safe-mode tags', () => {
+    const md = new MarkdownIt({ html: true })
+    markdownHtml.register(createCtx(md))
+
+    expect(md.parse('<script>alert(1)</script>', {}).some(token => token.tag === 'script')).toBe(false)
+    expect(md.parse('<!-- missing close', {}).some(token => token.type === 'comment')).toBe(false)
+    expect(md.parse('<custom>x</custom>', { safeMode: true }).some(token => token.type === 'html_open')).toBe(false)
+  })
+
   test('hides complete multi-line html comments', () => {
     const md = new MarkdownIt({ html: true })
     markdownHtml.register(createCtx(md))
@@ -94,5 +103,14 @@ describe('markdown-html plugin', () => {
 
     const indented = md.parse('    <div>code</div>', {})
     expect(indented.some(token => token.type === 'html_open')).toBe(false)
+  })
+
+  test('rejects incomplete multi-line blocks and blocks with interrupted indentation', () => {
+    const md = new MarkdownIt({ html: true })
+    markdownHtml.register(createCtx(md))
+
+    expect(md.parse('<div\nclass="note"', {}).some(token => token.type === 'html_end')).toBe(false)
+    expect(md.parse('<div>\n\n</div>', {}).some(token => token.type === 'html_end')).toBe(true)
+    expect(md.parse('<div\n  class="note"\n</div>', {}).some(token => token.type === 'html_end')).toBe(true)
   })
 })

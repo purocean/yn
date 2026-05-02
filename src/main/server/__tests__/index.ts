@@ -931,4 +931,91 @@ describe('server index module', () => {
       loadSpy.mockRestore()
     }
   })
+
+  test('handles websocket pty lifecycle, input, resize, and process cleanup', async () => {
+    const Module = (await import('node:module')).default as any
+    const originalLoad = Module._load
+    const ptyExitHandlers: Function[] = []
+    let dataHandler: Function | undefined
+    const ptyProcess = {
+      kill: vi.fn(),
+      onData: vi.fn((handler: Function) => {
+        dataHandler = handler
+      }),
+      onExit: vi.fn((handler: Function) => {
+        ptyExitHandlers.push(handler)
+      }),
+      resize: vi.fn(),
+      write: vi.fn(),
+    }
+    const pty = {
+      spawn: vi.fn(() => ptyProcess),
+    }
+    const processOn = vi.spyOn(process, 'on')
+    const processOff = vi.spyOn(process, 'off')
+    const loadSpy = vi.spyOn(Module, '_load').mockImplementation((request: string, parent: any, isMain: boolean) => {
+      if (request === 'http') {
+        return { createServer: mocks.httpCreateServer }
+      }
+      if (request === 'socket.io') {
+        return mocks.socketIo
+      }
+      if (request === 'node-pty') {
+        return pty
+      }
+      return originalLoad.call(Module, request, parent, isMain)
+    })
+    mocks.disableServer = false
+
+    try {
+      const { default: server } = await loadServer()
+      server(3999)
+
+      const socketHandlers: Record<string, Function> = {}
+      const localSocket = {
+        client: { conn: { remoteAddress: '127.0.0.1' } },
+        disconnect: vi.fn(),
+        emit: vi.fn(),
+        handshake: { query: { cwd: '/repo', env: '{"TERM":"xterm"}' } },
+        on: vi.fn((event: string, handler: Function) => {
+          socketHandlers[event] = handler
+        })
+      }
+      mocks.socketEmitter.emit('connection', localSocket)
+
+      expect(pty.spawn).toHaveBeenCalledWith('/bin/zsh', [], expect.objectContaining({
+        cols: 80,
+        cwd: '/repo',
+        env: expect.objectContaining({ TERM: 'xterm' }),
+        rows: 24,
+      }))
+      expect(processOn).toHaveBeenCalledWith('exit', expect.any(Function))
+
+      dataHandler?.('hello')
+      expect(localSocket.emit).toHaveBeenCalledWith('output', 'hello')
+
+      socketHandlers.input('\u001b]51;A/tmp\n')
+      expect(mocks.shellTransformCdCommand).toHaveBeenCalledWith('\u001b]51;A/tmp\n')
+      expect(ptyProcess.write).toHaveBeenLastCalledWith('cd:\u001b]51;A/tmp\n')
+
+      socketHandlers.input('echo ok\n')
+      expect(ptyProcess.write).toHaveBeenLastCalledWith('echo ok\n')
+
+      socketHandlers.resize([100, 40])
+      expect(ptyProcess.resize).toHaveBeenCalledWith(100, 40)
+
+      ptyExitHandlers[0]()
+      expect(localSocket.disconnect).toHaveBeenCalled()
+      expect(processOff).toHaveBeenCalledWith('exit', expect.any(Function))
+
+      const killPromise = socketHandlers.disconnect()
+      ptyExitHandlers.at(-1)!()
+      await killPromise
+      expect(ptyProcess.kill).toHaveBeenCalled()
+    } finally {
+      loadSpy.mockRestore()
+      processOn.mockRestore()
+      processOff.mockRestore()
+    }
+  })
 })

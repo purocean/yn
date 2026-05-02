@@ -140,4 +140,47 @@ describe('history-stack plugin', () => {
     expect(menus['status-bar-navigation'].list.map(item => item.disabled)).toEqual([true, true])
     expect(schema.navigation.items.map(item => item.disabled)).toEqual([true, true])
   })
+
+  test('records skipped same-document positions and ignores history-stack sourced switches', async () => {
+    const ctx = createCtx()
+    historyStack.register(ctx)
+    const positionA = { viewScrollTop: 30, editorScrollTop: 40 }
+    const positionB = { viewScrollTop: 50, editorScrollTop: 60 }
+
+    ctx.hooks.get('DOC_SWITCH_SKIPPED')[0]({ doc: docA, opts: { position: positionA } })
+    ctx.hooks.get('DOC_SWITCH_SKIPPED')[0]({ doc: docA, opts: { source: 'history-stack', position: positionB } })
+    ctx.hooks.get('DOC_SWITCH_SKIPPED')[0]({ doc: docB, opts: { position: positionB } })
+    ctx.actions.get('plugin.document-history-stack.back')()
+    await Promise.resolve()
+
+    expect(ctx.doc.switchDoc).toHaveBeenCalledWith(docA, { source: 'history-stack', position: positionA })
+
+    ctx.doc.switchDoc.mockClear()
+    ctx.hooks.get('DOC_SWITCHED')[0]({ doc: docB, opts: { source: 'history-stack' } })
+    ctx.actions.get('plugin.document-history-stack.forward')()
+    await Promise.resolve()
+
+    expect(ctx.doc.switchDoc).toHaveBeenCalledWith(docB, { source: 'history-stack', position: positionB })
+  })
+
+  test('removes deleted, moved, and failed documents from the navigation stack', () => {
+    const ctx = createCtx()
+    historyStack.register(ctx)
+
+    ctx.hooks.get('DOC_SWITCHED')[0]({ doc: docA, opts: {} })
+    ctx.hooks.get('DOC_SWITCHED')[0]({ doc: docB, opts: {} })
+    ctx.hooks.get('DOC_DELETED')[0]({ doc: docA })
+
+    const menusAfterDelete = { 'status-bar-navigation': { list: [] as any[] } }
+    ctx.hooks.get('STARTUP')[0]()
+    ctx.statusBar.tapMenus.mock.calls.at(-1)[0](menusAfterDelete)
+    expect(menusAfterDelete['status-bar-navigation'].list.map(item => item.disabled)).toEqual([true, true])
+
+    ctx.hooks.get('DOC_MOVED')[0]({ oldDoc: docB })
+    ctx.hooks.get('DOC_SWITCH_FAILED')[0]({ doc: docA })
+
+    const schema = { navigation: { items: [] as any[] } }
+    ctx.workbench.ControlCenter.tapSchema.mock.calls[0][0](schema)
+    expect(schema.navigation.items.map(item => item.disabled)).toEqual([true, true])
+  })
 })

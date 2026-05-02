@@ -281,4 +281,51 @@ describe('editor-paste plugin', () => {
     expect(mocks.insert).not.toHaveBeenCalled()
     expect(mocks.refreshTree).toHaveBeenCalledTimes(2)
   })
+
+  test('status menu actions paste clipboard image as base64 and html as markdown', async () => {
+    const ctx = createCtx()
+    editorPaste.register(ctx)
+    await ctx.editor.whenEditorReady.mock.results[0].value
+    mocks.fileToBase64URL.mockResolvedValue('data:image/png;base64,bWVudQ==')
+
+    ctx.base.readFromClipboard.mockImplementationOnce((fn: Function) => {
+      fn('image/png', async () => new Blob(['menu image'], { type: 'image/png' }))
+    })
+    ctx._statusMenus['status-bar-insert'].list[0].onClick()
+
+    await vi.waitFor(() => expect(mocks.insert).toHaveBeenCalledWith('![Img](data:image/png;base64,bWVudQ==)\n'))
+    await vi.waitFor(() => expect(mocks.editor.focus).toHaveBeenCalled())
+
+    mocks.insert.mockClear()
+    mocks.editor.focus.mockClear()
+    ctx.base.readFromClipboard.mockImplementationOnce((fn: Function) => {
+      fn('text/html', async () => new Blob(['<h1>Clip</h1><p>Body</p>'], { type: 'text/html' }))
+    })
+    ctx._statusMenus['status-bar-insert'].list[1].onClick()
+
+    await vi.waitFor(() => expect(mocks.insert).toHaveBeenCalledWith(expect.stringContaining('# Clip')))
+    expect(mocks.insert).toHaveBeenCalledWith(expect.stringContaining('Body'))
+    expect(mocks.editor.focus).toHaveBeenCalled()
+  })
+
+  test('paste listener exits when editor is unfocused or clipboard data is missing', () => {
+    const ctx = createCtx()
+    editorPaste.register(ctx)
+    mocks.editor.hasTextFocus.mockReturnValueOnce(false)
+
+    pasteListener({
+      clipboardData: { items: [{ type: 'image/png', getAsFile: vi.fn() }] },
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    })
+    pasteListener({
+      clipboardData: null,
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    })
+
+    expect(mocks.insert).not.toHaveBeenCalled()
+    expect(mocks.upload).not.toHaveBeenCalled()
+    expect(mocks.editor.getSelections).not.toHaveBeenCalled()
+  })
 })

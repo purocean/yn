@@ -165,6 +165,45 @@ describe('renderer directives', () => {
     expect(textarea.value).toBe('second')
   })
 
+  test('up-down-history ignores guarded keys and trims stored history length', () => {
+    const directive = installOne(upDownHistory, 'up-down-history')
+    const textarea = document.createElement('textarea')
+    const inputListener = vi.fn()
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      lineHeight: '20px',
+      paddingTop: '0px',
+      paddingBottom: '0px',
+    } as CSSStyleDeclaration)
+    Object.defineProperty(textarea, 'clientHeight', { value: 40, configurable: true })
+    textarea.addEventListener('input', inputListener)
+    directive.mounted(textarea, { value: { maxLength: 1 } })
+
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }))
+    textarea.value = 'ignored'
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', isComposing: true, bubbles: true }))
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true, bubbles: true }))
+
+    textarea.value = 'first'
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    textarea.value = 'second'
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+
+    textarea.value = 'middle'
+    textarea.setSelectionRange(1, 1)
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true }))
+    expect(textarea.value).toBe('middle')
+
+    Object.defineProperty(textarea, 'clientHeight', { value: 10, configurable: true })
+    textarea.setSelectionRange(0, 0)
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true }))
+    expect(textarea.value).toBe('second')
+
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length)
+    textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }))
+    expect(textarea.value).toBe('')
+    expect(inputListener).toHaveBeenCalled()
+  })
+
   test('fixed-float manages focus, blur, self-click, and escape close reasons', () => {
     const directive = installOne(fixedFloat, 'fixed-float')
     const el = document.createElement('div')
@@ -191,6 +230,25 @@ describe('renderer directives', () => {
     el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
     expect(onEsc).toHaveBeenCalled()
     expect(onClose).toHaveBeenLastCalledWith('esc')
+  })
+
+  test('fixed-float ignores invalid or disabled bindings and honors autofocus opt-out', () => {
+    const directive = installOne(fixedFloat, 'fixed-float')
+    const invalid = document.createElement('div')
+    const disabled = document.createElement('div')
+    const noFocus = document.createElement('div')
+    vi.spyOn(invalid, 'focus')
+    vi.spyOn(disabled, 'focus')
+    vi.spyOn(noFocus, 'focus')
+
+    directive.mounted(invalid, { value: undefined })
+    directive.mounted(disabled, { value: { disable: true, onClose: vi.fn() } })
+    directive.mounted(noFocus, { value: { disableAutoFocus: true, onClose: vi.fn() } })
+
+    expect(invalid.focus).not.toHaveBeenCalled()
+    expect(disabled.focus).not.toHaveBeenCalled()
+    expect(noFocus.tabIndex).toBe(0)
+    expect(noFocus.focus).not.toHaveBeenCalled()
   })
 
   test('auto-z-index bumps layers and unregisters escape handler', () => {

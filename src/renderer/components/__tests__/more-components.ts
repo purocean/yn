@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => ({
   fileTabsTapActionBtns: vi.fn(),
   fileTabsRemoveActionBtnTapper: vi.fn(),
   fileTabsRefreshActionBtns: vi.fn(),
+  lastIframe: undefined as any,
   xtermInit: vi.fn(),
   xtermInput: vi.fn(),
   downloadContent: vi.fn(),
@@ -86,6 +87,7 @@ vi.mock('@fe/support/embed', () => ({
           }),
         },
       } as any
+      mocks.lastIframe = iframe
       this.onLoad(iframe)
     },
     template: '<iframe class="iframe-stub" />',
@@ -203,6 +205,7 @@ beforeEach(() => {
   mocks.fileTabsTapActionBtns.mockReset()
   mocks.fileTabsRemoveActionBtnTapper.mockReset()
   mocks.fileTabsRefreshActionBtns.mockReset()
+  mocks.lastIframe = undefined
   mocks.xtermInit.mockReset()
   mocks.xtermInput.mockReset()
   mocks.downloadContent.mockReset()
@@ -289,6 +292,44 @@ describe('DefaultPreviewer', () => {
     wrapper.unmount()
     expect(mocks.hooks.has('GLOBAL_RESIZE')).toBe(false)
     expect(mocks.fileTabsRemoveActionBtnTapper).toHaveBeenCalledWith(expect.any(Function))
+  })
+
+  test('handles iframe scroll, beforeunload recovery, resize CSS variable, and empty tab action state', async () => {
+    vi.useFakeTimers()
+    const wrapper = mount(DefaultPreviewer, {
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: { teleport: true },
+      },
+    })
+    await flushPromises()
+
+    mocks.lastIframe.onscroll({ target: { documentElement: { scrollTop: 42 } } })
+    await nextTick()
+    expect(mocks.triggerHook).toHaveBeenCalledWith('VIEW_SCROLL', expect.any(Object))
+    expect(wrapper.find('.scroll-to-top').classes()).not.toContain('hide')
+
+    Object.defineProperty(wrapper.find('.default-previewer').element, 'clientHeight', {
+      value: 640,
+      configurable: true,
+    })
+    mocks.hooks.get('GLOBAL_RESIZE')?.()
+    await nextTick()
+    expect(mocks.lastIframe.contentDocument.documentElement.style.getPropertyValue('--previewer-height')).toBe('640px')
+
+    const tapper = mocks.fileTabsTapActionBtns.mock.calls[0][0]
+    mocks.storeState.currentFile = undefined
+    const btns: any[] = []
+    tapper(btns)
+    expect(btns).toEqual([])
+
+    mocks.lastIframe.onbeforeunload({})
+    await nextTick()
+    expect(wrapper.find('.iframe-stub').exists()).toBe(false)
+    vi.advanceTimersByTime(3000)
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'IFrame Error!')
+
+    vi.useRealTimers()
   })
 })
 

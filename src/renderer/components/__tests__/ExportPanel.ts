@@ -11,6 +11,8 @@ const mocks = vi.hoisted(() => ({
   toggleExportPanel: vi.fn((val: boolean) => { mocks.storeState.showExport = val }),
   downloadContent: vi.fn(),
   sleep: vi.fn(() => Promise.resolve()),
+  isElectron: false,
+  flagDemo: false,
 }))
 
 vi.mock('@share/misc', () => ({
@@ -24,11 +26,11 @@ vi.mock('@fe/support/store', () => ({
 }))
 
 vi.mock('@fe/support/env', () => ({
-  isElectron: false,
+  get isElectron () { return mocks.isElectron },
 }))
 
 vi.mock('@fe/support/args', () => ({
-  FLAG_DEMO: false,
+  get FLAG_DEMO () { return mocks.flagDemo },
 }))
 
 vi.mock('@fe/support/ui/toast', () => ({
@@ -84,9 +86,12 @@ beforeEach(() => {
   mocks.printCurrentDocument.mockReset()
   mocks.printCurrentDocument.mockResolvedValue(undefined)
   mocks.printCurrentDocumentToPDF.mockReset()
+  mocks.printCurrentDocumentToPDF.mockResolvedValue(new Blob(['pdf']))
   mocks.toggleExportPanel.mockClear()
   mocks.downloadContent.mockReset()
   mocks.sleep.mockClear()
+  mocks.isElectron = false
+  mocks.flagDemo = false
 })
 
 describe('ExportPanel', () => {
@@ -135,5 +140,47 @@ describe('ExportPanel', () => {
     convert.localHtmlOptions.inlineStyle = true
     await nextTick()
     expect(convert.localHtmlOptions.includeStyle).toBe(false)
+  })
+
+  test('prints pdf through electron with clamped scale and downloads buffer', async () => {
+    mocks.isElectron = true
+    const wrapper = mountExportPanel()
+    const convert = (wrapper.vm as any).convert
+    convert.pdfOptions.scaleFactor = 500
+    convert.pdfOptions.landscape = 'true'
+    convert.pdfOptions.pageSize = 'Letter'
+    convert.pdfOptions.printBackground = false
+
+    await (wrapper.vm as any).ok()
+    await flushPromises()
+
+    expect(mocks.printCurrentDocumentToPDF).toHaveBeenCalledWith({
+      pageSize: 'Letter',
+      printBackground: false,
+      generateDocumentOutline: true,
+      landscape: true,
+      scale: 2,
+    })
+    expect(mocks.downloadContent).toHaveBeenCalledWith('note.pdf', expect.any(Blob), 'application/pdf')
+  })
+
+  test('handles demo, missing content, and conversion errors without downloading', async () => {
+    const wrapper = mountExportPanel()
+
+    mocks.storeState.currentFile.content = ''
+    await (wrapper.vm as any).ok()
+    expect(mocks.toggleExportPanel).not.toHaveBeenCalled()
+
+    mocks.storeState.currentFile.content = '# Note'
+    mocks.flagDemo = true
+    ;(wrapper.vm as any).convert.toType = 'html'
+    await (wrapper.vm as any).ok()
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'demo-tips')
+    expect(mocks.convertCurrentDocument).not.toHaveBeenCalled()
+
+    mocks.flagDemo = false
+    mocks.convertCurrentDocument.mockRejectedValueOnce(new Error('convert failed'))
+    await expect((wrapper.vm as any).ok()).rejects.toThrow('convert failed')
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'convert failed')
   })
 })
