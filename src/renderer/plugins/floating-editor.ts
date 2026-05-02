@@ -301,7 +301,7 @@ export default {
       editorDom.style.setProperty('border', '1px solid var(--g-color-80)', 'important')
       editorDom.style.setProperty('border-radius', '6px', 'important')
       editorDom.style.setProperty('box-shadow', '0 8px 28px rgba(0, 0, 0, 0.28)', 'important')
-      editorDom.style.setProperty('background', 'var(--g-color-backdrop)', 'important')
+      editorDom.style.setProperty('background', 'var(--g-color-96)', 'important')
       editorDom.style.setProperty('overflow', 'hidden', 'important')
       editorDom.style.setProperty('min-width', '0', 'important')
       editorDom.style.setProperty('max-width', 'none', 'important')
