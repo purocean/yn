@@ -252,6 +252,11 @@ export default {
           ? { type: 'resizeTop', startY: e.clientY, startTop: top, startHeight: height }
           : { type: 'resizeBottom', startY: e.clientY, startHeight: height })
       })
+      handle.addEventListener('dblclick', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        toggleMaximizeFrame()
+      })
       return handle
     }
 
