@@ -54,6 +54,8 @@ const data: BaseLanguage = {
   },
   'floating-editor': {
     'show-editor': '显示编辑器',
+    'preview-hint': '%s + 点击预览文本，可打开浮动编辑器',
+    'resize': '调整大小',
   },
   'trigger-suggestions': '触发提示',
   'table-of-contents': '目录',

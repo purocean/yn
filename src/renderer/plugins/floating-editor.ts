@@ -5,7 +5,6 @@ import { isMacOS } from '@fe/support/env'
 type ShowFloatingEditorOptions = {
   line: number
   lineEnd?: number
-  clientX?: number
   clientY?: number
 }
 
@@ -43,6 +42,7 @@ export default {
     let bottomResizer: HTMLDivElement | null = null
     let dragState: DragState | null = null
     let dragIframeWindow: Window | null = null
+    let dragIframeOffsetTop = 0
     let savedUserSelect: string | null = null
     let maximized = false
     let hint: HTMLDivElement | null = null
@@ -57,13 +57,117 @@ export default {
       return ctx.layout.getContainerDom('preview')
     }
 
-    function getHintText () {
-      const key = isMacOS ? 'Option' : 'Alt'
-      if (navigator.language.toLowerCase().startsWith('zh')) {
-        return `${key} + 点击预览文本，可打开浮动编辑器`
+    ctx.theme.addStyles(`
+      .floating-editor-active {
+        display: flex !important;
+        position: fixed !important;
+        z-index: 200000 !important;
+        box-sizing: border-box !important;
+        padding-top: ${TITLE_HEIGHT}px !important;
+        padding-bottom: 0 !important;
+        border: 1px solid var(--g-color-80) !important;
+        border-radius: 6px !important;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28) !important;
+        background: var(--g-color-96) !important;
+        overflow: hidden !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        flex: none !important;
       }
 
-      return `${key} + click preview text to open the floating editor`
+      .floating-editor-titlebar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: ${TITLE_HEIGHT}px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-sizing: border-box;
+        padding: 3px 6px 3px 10px;
+        border-bottom: 1px solid var(--g-color-86);
+        background: var(--g-color-96);
+        color: var(--g-color-20);
+        cursor: grab;
+        user-select: none;
+        z-index: 2;
+      }
+
+      .floating-editor-titlebar.floating-editor-dragging {
+        cursor: grabbing;
+      }
+
+      .floating-editor-title {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: right;
+      }
+
+      .floating-editor-button {
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--g-color-30);
+        cursor: default;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+      }
+
+      .floating-editor-button:hover {
+        background: var(--g-color-86);
+        color: var(--g-color-0);
+      }
+
+      .floating-editor-resize-handle {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: ${RESIZE_HANDLE_SIZE}px;
+        cursor: ns-resize;
+        background: transparent;
+        z-index: 3;
+      }
+
+      .floating-editor-resize-top {
+        top: 0;
+      }
+
+      .floating-editor-resize-bottom {
+        bottom: 0;
+      }
+
+      .floating-editor-hint {
+        position: fixed;
+        z-index: 200001;
+        max-width: min(360px, calc(100vw - 32px));
+        padding: 7px 10px;
+        border: 1px solid var(--g-color-82);
+        border-radius: 6px;
+        background: var(--g-color-96);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+        color: var(--g-color-40);
+        font-size: 12px;
+        line-height: 18px;
+        pointer-events: none;
+        user-select: none;
+      }
+    `).catch(console.warn)
+
+    function getHintText () {
+      const key = isMacOS ? 'Option' : 'Alt'
+      return ctx.i18n.t('floating-editor.preview-hint', key)
     }
 
     function canShowFloatingEditor () {
@@ -88,12 +192,16 @@ export default {
       })
     }
 
-    function pausePreviewSyncForWheel () {
-      ctx.view.disableSyncScrollAwhile(() => undefined, 350).catch(console.warn)
-    }
-
     function stopWheelBubble (e: WheelEvent) {
       e.stopPropagation()
+    }
+
+    function pausePreviewSyncForEditorScroll () {
+      if (!visible) {
+        return
+      }
+
+      ctx.view.disableSyncScrollAwhile(() => undefined, 350).catch(console.warn)
     }
 
     function getFrameBounds () {
@@ -179,19 +287,6 @@ export default {
       hint = document.createElement('div')
       hint.className = 'floating-editor-hint'
       hint.textContent = getHintText()
-      hint.style.position = 'fixed'
-      hint.style.zIndex = '200001'
-      hint.style.maxWidth = 'min(360px, calc(100vw - 32px))'
-      hint.style.padding = '7px 10px'
-      hint.style.border = '1px solid var(--g-color-82)'
-      hint.style.borderRadius = '6px'
-      hint.style.background = 'var(--g-color-96)'
-      hint.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.18)'
-      hint.style.color = 'var(--g-color-40)'
-      hint.style.fontSize = '12px'
-      hint.style.lineHeight = '18px'
-      hint.style.pointerEvents = 'none'
-      hint.style.userSelect = 'none'
       document.body.appendChild(hint)
       positionHint()
       setHintCount(getHintCount() + 1)
@@ -226,29 +321,9 @@ export default {
       btn.type = 'button'
       btn.title = title
       btn.setAttribute('aria-label', title)
-      btn.style.width = '22px'
-      btn.style.height = '22px'
-      btn.style.padding = '0'
-      btn.style.margin = '0'
-      btn.style.border = '0'
-      btn.style.borderRadius = '50%'
-      btn.style.background = 'transparent'
-      btn.style.color = 'var(--g-color-30)'
-      btn.style.cursor = 'default'
-      btn.style.display = 'flex'
-      btn.style.alignItems = 'center'
-      btn.style.justifyContent = 'center'
-      btn.style.flex = 'none'
+      btn.className = 'floating-editor-button'
       btn.addEventListener('mousedown', e => e.stopPropagation())
       btn.addEventListener('dblclick', e => e.stopPropagation())
-      btn.addEventListener('mouseenter', () => {
-        btn.style.background = 'var(--g-color-86)'
-        btn.style.color = 'var(--g-color-0)'
-      })
-      btn.addEventListener('mouseleave', () => {
-        btn.style.background = 'transparent'
-        btn.style.color = 'var(--g-color-30)'
-      })
       btn.addEventListener('click', (e) => {
         e.stopPropagation()
         onClick()
@@ -307,6 +382,7 @@ export default {
         }
 
         dragIframeWindow = iframe.contentWindow
+        dragIframeOffsetTop = iframe.getBoundingClientRect().top
         dragIframeWindow?.addEventListener('mousemove', handleMouseMove, true)
         dragIframeWindow?.addEventListener('mouseup', handleMouseUp, true)
       } catch (error) {
@@ -320,8 +396,13 @@ export default {
       dragIframeWindow?.removeEventListener('mousemove', handleMouseMove, true)
       dragIframeWindow?.removeEventListener('mouseup', handleMouseUp, true)
       dragIframeWindow = null
+      dragIframeOffsetTop = 0
       document.body.style.userSelect = savedUserSelect || ''
       savedUserSelect = null
+    }
+
+    function getClientY (e: MouseEvent) {
+      return e.view === dragIframeWindow ? e.clientY + dragIframeOffsetTop : e.clientY
     }
 
     function startDrag (e: MouseEvent, state: DragState) {
@@ -333,27 +414,20 @@ export default {
       e.stopPropagation()
       dragState = state
       if (state.type === 'move' && titleBar) {
-        titleBar.style.cursor = 'grabbing'
+        titleBar.classList.add('floating-editor-dragging')
       }
       bindDragListeners().catch(console.warn)
     }
 
     function createResizeHandle (position: 'top' | 'bottom') {
       const handle = document.createElement('div')
-      handle.className = `floating-editor-resize-${position}`
-      handle.title = 'Resize'
-      handle.style.position = 'absolute'
-      handle.style.left = '0'
-      handle.style.right = '0'
-      handle.style[position] = '0'
-      handle.style.height = `${RESIZE_HANDLE_SIZE}px`
-      handle.style.cursor = 'ns-resize'
-      handle.style.background = 'transparent'
-      handle.style.zIndex = '3'
+      handle.className = `floating-editor-resize-handle floating-editor-resize-${position}`
+      handle.title = ctx.i18n.t('floating-editor.resize')
       handle.addEventListener('mousedown', (e) => {
+        const clientY = getClientY(e)
         startDrag(e, position === 'top'
-          ? { type: 'resizeTop', startY: e.clientY, startTop: top, startHeight: height }
-          : { type: 'resizeBottom', startY: e.clientY, startTop: top, startHeight: height })
+          ? { type: 'resizeTop', startY: clientY, startTop: top, startHeight: height }
+          : { type: 'resizeBottom', startY: clientY, startTop: top, startHeight: height })
       })
       handle.addEventListener('dblclick', (e) => {
         e.preventDefault()
@@ -420,24 +494,8 @@ export default {
 
       titleBar = document.createElement('div')
       titleBar.className = 'floating-editor-titlebar'
-      titleBar.style.position = 'absolute'
-      titleBar.style.left = '0'
-      titleBar.style.right = '0'
-      titleBar.style.top = '0'
-      titleBar.style.height = `${TITLE_HEIGHT}px`
-      titleBar.style.display = 'flex'
-      titleBar.style.alignItems = 'center'
-      titleBar.style.gap = '6px'
-      titleBar.style.boxSizing = 'border-box'
-      titleBar.style.padding = '3px 6px 3px 10px'
-      titleBar.style.borderBottom = '1px solid var(--g-color-86)'
-      titleBar.style.background = 'var(--g-color-96)'
-      titleBar.style.color = 'var(--g-color-20)'
-      titleBar.style.cursor = 'grab'
-      titleBar.style.userSelect = 'none'
-      titleBar.style.zIndex = '2'
       titleBar.addEventListener('mousedown', (e) => {
-        startDrag(e, { type: 'move', startY: e.clientY, startTop: top })
+        startDrag(e, { type: 'move', startY: getClientY(e), startTop: top })
       })
       titleBar.addEventListener('dblclick', (e) => {
         e.preventDefault()
@@ -447,14 +505,6 @@ export default {
 
       const title = document.createElement('div')
       title.className = 'floating-editor-title'
-      title.style.flex = '1'
-      title.style.minWidth = '0'
-      title.style.overflow = 'hidden'
-      title.style.textOverflow = 'ellipsis'
-      title.style.whiteSpace = 'nowrap'
-      title.style.fontSize = '12px'
-      title.style.fontWeight = '600'
-      title.style.textAlign = 'right'
 
       const splitEditorBtn = makeButton(ctx.i18n.t('floating-editor.show-editor'), showInlineEditor)
       splitEditorBtn.appendChild(createSplitEditorIcon())
@@ -484,21 +534,7 @@ export default {
         savedStyle = editorDom.getAttribute('style') || ''
       }
 
-      editorDom.style.setProperty('display', 'flex', 'important')
-      editorDom.style.setProperty('position', 'fixed', 'important')
-      editorDom.style.setProperty('z-index', '200000', 'important')
-      editorDom.style.setProperty('box-sizing', 'border-box', 'important')
-      editorDom.style.setProperty('padding-top', `${TITLE_HEIGHT}px`, 'important')
-      editorDom.style.setProperty('padding-bottom', '0', 'important')
-      editorDom.style.setProperty('border', '1px solid var(--g-color-80)', 'important')
-      editorDom.style.setProperty('border-radius', '6px', 'important')
-      editorDom.style.setProperty('box-shadow', '0 8px 28px rgba(0, 0, 0, 0.28)', 'important')
-      editorDom.style.setProperty('background', 'var(--g-color-96)', 'important')
-      editorDom.style.setProperty('overflow', 'hidden', 'important')
-      editorDom.style.setProperty('min-width', '0', 'important')
-      editorDom.style.setProperty('max-width', 'none', 'important')
-      editorDom.style.setProperty('flex', 'none', 'important')
-      editorDom.addEventListener('wheel', pausePreviewSyncForWheel, true)
+      editorDom.classList.add('floating-editor-active')
       editorDom.addEventListener('wheel', stopWheelBubble)
     }
 
@@ -508,8 +544,8 @@ export default {
         return
       }
 
+      editorDom.classList.remove('floating-editor-active')
       editorDom.setAttribute('style', savedStyle)
-      editorDom.removeEventListener('wheel', pausePreviewSyncForWheel, true)
       editorDom.removeEventListener('wheel', stopWheelBubble)
       savedStyle = null
     }
@@ -576,13 +612,14 @@ export default {
       e.preventDefault()
       e.stopPropagation()
       maximized = false
+      const clientY = getClientY(e)
 
       if (dragState.type === 'move') {
-        top = dragState.startTop + e.clientY - dragState.startY
+        top = dragState.startTop + clientY - dragState.startY
       } else if (dragState.type === 'resizeTop') {
         const bounds = getFrameBounds()
         const minTop = bounds?.minTop ?? SCREEN_MARGIN
-        const offset = e.clientY - dragState.startY
+        const offset = clientY - dragState.startY
         const maxOffset = dragState.startHeight - (bounds?.minHeight ?? MIN_HEIGHT)
         const fixedOffset = clamp(offset, minTop - dragState.startTop, maxOffset)
         top = dragState.startTop + fixedOffset
@@ -593,7 +630,7 @@ export default {
         const maxBottom = bounds?.maxBottom ?? window.innerHeight - SCREEN_MARGIN
         const fixedTop = dragState.startTop
         const bottom = clamp(
-          dragState.startTop + dragState.startHeight + e.clientY - dragState.startY,
+          dragState.startTop + dragState.startHeight + clientY - dragState.startY,
           fixedTop + minHeight,
           maxBottom
         )
@@ -611,7 +648,7 @@ export default {
       e?.stopPropagation()
       dragState = null
       if (titleBar) {
-        titleBar.style.cursor = 'grab'
+        titleBar.classList.remove('floating-editor-dragging')
       }
       unbindDragListeners()
     }
@@ -670,7 +707,7 @@ export default {
       e.preventDefault()
       e.stopPropagation()
       hideHint()
-      ctx.action.getActionHandler(ACTION_SHOW)({ ...range, clientX: e.clientX, clientY: e.clientY })
+      ctx.action.getActionHandler(ACTION_SHOW)({ ...range, clientY: e.clientY })
       return true
     }
 
@@ -689,6 +726,9 @@ export default {
     })
 
     ctx.registerHook('VIEW_ELEMENT_CLICK', ({ e }) => handleAltClick(e) || highlightPreviewClickLine(e))
+    ctx.editor.whenEditorReady().then(({ editor }) => {
+      editor.onDidScrollChange(pausePreviewSyncForEditorScroll)
+    }).catch(console.warn)
     ctx.registerHook('GLOBAL_RESIZE', () => {
       if (visible) {
         clampFrame()

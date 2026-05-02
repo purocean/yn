@@ -54,6 +54,8 @@ const data: BaseLanguage = {
   },
   'floating-editor': {
     'show-editor': 'Показать редактор',
+    'preview-hint': '%s + щелкните текст предпросмотра, чтобы открыть плавающий редактор',
+    'resize': 'Изменить размер',
   },
   'trigger-suggestions': 'Подсказки триггера',
   'table-of-contents': 'Содержание',

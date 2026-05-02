@@ -53,6 +53,8 @@ const data = {
   },
   'floating-editor': {
     'show-editor': 'Show Editor',
+    'preview-hint': '%s + click preview text to open the floating editor',
+    'resize': 'Resize',
   },
   'trigger-suggestions': 'Trigger Suggestions',
   'table-of-contents': 'Table of Contents',
