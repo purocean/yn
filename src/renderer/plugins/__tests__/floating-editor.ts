@@ -32,6 +32,8 @@ function createCtx () {
   const iframe = document.createElement('iframe')
   const actions = new Map<string, any>()
   const hooks = new Map<string, Function[]>()
+  const keyDownHandlers: Function[] = []
+  const monaco = { KeyCode: { Escape: 9 }, editor: { EditorOption: { lineHeight: 'lineHeight' } } }
   setRect(previewDom, { left: 100, top: 40, bottom: 640, width: 500, height: 600 })
   setRect(iframe, { top: 40 })
 
@@ -44,6 +46,7 @@ function createCtx () {
     setPosition: vi.fn(),
     setScrollTop: vi.fn(),
     onDidScrollChange: vi.fn(),
+    onKeyDown: vi.fn((fn: Function) => keyDownHandlers.push(fn)),
   }
 
   const ctx = {
@@ -57,10 +60,10 @@ function createCtx () {
     },
     editor: {
       getEditor: vi.fn(() => editor),
-      getMonaco: vi.fn(() => ({ editor: { EditorOption: { lineHeight: 'lineHeight' } } })),
+      getMonaco: vi.fn(() => monaco),
       highlightLine: vi.fn(),
       isDefault: vi.fn(() => true),
-      whenEditorReady: vi.fn(() => Promise.resolve({ editor })),
+      whenEditorReady: vi.fn(() => Promise.resolve({ editor, monaco })),
     },
     i18n: { t: vi.fn((key: string, arg?: string) => arg ? `${key}:${arg}` : key) },
     keybinding: {
@@ -105,6 +108,8 @@ function createCtx () {
     actions,
     editorDom,
     hooks,
+    keyDownHandlers,
+    monaco,
     previewDom,
     editorInstance: editor,
   } as any
@@ -147,6 +152,7 @@ describe('floating-editor plugin', () => {
       'VIEW_FILE_CHANGE',
     ])
     expect(ctx.editorInstance.onDidScrollChange).toHaveBeenCalledWith(expect.any(Function))
+    expect(ctx.editorInstance.onKeyDown).toHaveBeenCalledWith(expect.any(Function))
     expect(ctx.lib.vue.watch).toHaveBeenCalledWith(expect.any(Function), expect.any(Function), { immediate: true })
   })
 
@@ -272,6 +278,42 @@ describe('floating-editor plugin', () => {
 
     ctx.hooks.get('DOC_BEFORE_SWITCH')[0]()
     expect(document.body.querySelector('.floating-editor-hint')).toBeNull()
+  })
+
+  test('escape closes floating editor from monaco keydown', async () => {
+    const ctx = createCtx()
+    floatingEditor.register(ctx)
+    await Promise.resolve()
+    const escEvent = {
+      keyCode: ctx.monaco.KeyCode.Escape,
+      browserEvent: { defaultPrevented: false, isComposing: false },
+    }
+
+    await ctx.actions.get('layout.show-floating-editor').handler({ line: 2 })
+    ctx.keyDownHandlers[0](escEvent)
+    expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(false)
+  })
+
+  test('escape stays in floating editor when a monaco escape widget is visible', async () => {
+    const ctx = createCtx()
+    floatingEditor.register(ctx)
+    await Promise.resolve()
+    const escEvent = {
+      keyCode: ctx.monaco.KeyCode.Escape,
+      browserEvent: { defaultPrevented: true, isComposing: false },
+    }
+
+    await ctx.actions.get('layout.show-floating-editor').handler({ line: 2 })
+    const suggestWidget = document.createElement('div')
+    suggestWidget.className = 'suggest-widget'
+    setRect(suggestWidget, { width: 120, height: 80 })
+    ctx.editorDom.appendChild(suggestWidget)
+    ctx.keyDownHandlers[0](escEvent)
+    expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(true)
+
+    setRect(suggestWidget, { width: 0, height: 0 })
+    ctx.keyDownHandlers[0](escEvent)
+    expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(false)
   })
 
   test('preview click ignores form controls, text selections, presentation mode, and invalid source lines', () => {

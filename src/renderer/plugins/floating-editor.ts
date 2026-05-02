@@ -27,6 +27,11 @@ const HINT_DURATION = 5000
 const EDITOR_SCROLL_SYNC_PAUSE_TIMEOUT = 350
 const CLOSE_SYNC_PAUSE_TIMEOUT = 800
 const PREVIEW_CLICK_IGNORE_TAGS = ['button', 'input', 'textarea', 'select', 'option', 'img', 'canvas', 'video', 'audio', 'details', 'summary']
+const MONACO_ESCAPE_WIDGET_SELECTOR = [
+  '.suggest-widget',
+  '.parameter-hints-widget',
+  '.rename-box',
+].join(',')
 const FLOATING_EDITOR_STYLES = `
   .floating-editor-active {
     display: flex !important;
@@ -196,6 +201,21 @@ export default {
 
     function stopWheelBubble (e: WheelEvent) {
       e.stopPropagation()
+    }
+
+    function isVisibleElement (el: Element) {
+      const style = getComputedStyle(el)
+      if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+        return false
+      }
+
+      const rect = el.getBoundingClientRect()
+      return rect.width > 0 && rect.height > 0
+    }
+
+    function hasVisibleMonacoEscapeWidget () {
+      const editorDom = getEditorDom()
+      return !!editorDom && Array.from(editorDom.querySelectorAll(MONACO_ESCAPE_WIDGET_SELECTOR)).some(isVisibleElement)
     }
 
     function revealEditorLineAtTop (line: number) {
@@ -717,8 +737,19 @@ export default {
     })
 
     ctx.registerHook('VIEW_ELEMENT_CLICK', ({ e }) => handleAltClick(e) || highlightPreviewClickLine(e))
-    ctx.editor.whenEditorReady().then(({ editor }) => {
+    ctx.editor.whenEditorReady().then(({ editor, monaco }) => {
       editor.onDidScrollChange(pausePreviewSyncForEditorScroll)
+      editor.onKeyDown((e) => {
+        if (!visible || e.keyCode !== monaco.KeyCode.Escape) {
+          return
+        }
+
+        if (hasVisibleMonacoEscapeWidget()) {
+          return
+        }
+
+        hideFloatingEditor()
+      })
     }).catch(console.warn)
     ctx.lib.vue.watch(() => canShowFloatingEditor(), (canShow) => {
       if (!canShow) {
