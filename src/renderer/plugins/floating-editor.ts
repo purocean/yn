@@ -28,6 +28,113 @@ const HINT_DURATION = 5000
 const EDITOR_SCROLL_SYNC_PAUSE_TIMEOUT = 350
 const CLOSE_SYNC_PAUSE_TIMEOUT = 800
 const PREVIEW_CLICK_IGNORE_TAGS = ['button', 'input', 'textarea', 'select', 'option', 'img', 'canvas', 'video', 'audio', 'details', 'summary']
+const FLOATING_EDITOR_STYLES = `
+  .floating-editor-active {
+    display: flex !important;
+    position: fixed !important;
+    z-index: 200000 !important;
+    box-sizing: border-box !important;
+    padding-top: ${TITLE_HEIGHT}px !important;
+    padding-bottom: 0 !important;
+    border: 1px solid var(--g-color-80) !important;
+    border-radius: 6px !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28) !important;
+    background: var(--g-color-96) !important;
+    overflow: hidden !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: none !important;
+  }
+
+  .floating-editor-titlebar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: ${TITLE_HEIGHT}px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-sizing: border-box;
+    padding: 3px 6px 3px 10px;
+    border-bottom: 1px solid var(--g-color-86);
+    background: var(--g-color-96);
+    color: var(--g-color-20);
+    cursor: grab;
+    user-select: none;
+    z-index: 2;
+  }
+
+  .floating-editor-titlebar.floating-editor-dragging {
+    cursor: grabbing;
+  }
+
+  .floating-editor-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .floating-editor-button {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--g-color-30);
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .floating-editor-button:hover {
+    background: var(--g-color-86);
+    color: var(--g-color-0);
+  }
+
+  .floating-editor-resize-handle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: ${RESIZE_HANDLE_SIZE}px;
+    cursor: ns-resize;
+    background: transparent;
+    z-index: 3;
+  }
+
+  .floating-editor-resize-top {
+    top: 0;
+  }
+
+  .floating-editor-resize-bottom {
+    bottom: 0;
+  }
+
+  .floating-editor-hint {
+    position: fixed;
+    z-index: 200001;
+    max-width: min(360px, calc(100vw - 32px));
+    padding: 7px 10px;
+    border: 1px solid var(--g-color-82);
+    border-radius: 6px;
+    background: var(--g-color-96);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    color: var(--g-color-40);
+    font-size: 12px;
+    line-height: 18px;
+    pointer-events: none;
+    user-select: none;
+  }
+`
 
 function clamp (value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
@@ -60,113 +167,7 @@ export default {
       return ctx.layout.getContainerDom('preview')
     }
 
-    ctx.theme.addStyles(`
-      .floating-editor-active {
-        display: flex !important;
-        position: fixed !important;
-        z-index: 200000 !important;
-        box-sizing: border-box !important;
-        padding-top: ${TITLE_HEIGHT}px !important;
-        padding-bottom: 0 !important;
-        border: 1px solid var(--g-color-80) !important;
-        border-radius: 6px !important;
-        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28) !important;
-        background: var(--g-color-96) !important;
-        overflow: hidden !important;
-        min-width: 0 !important;
-        max-width: none !important;
-        flex: none !important;
-      }
-
-      .floating-editor-titlebar {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        height: ${TITLE_HEIGHT}px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        box-sizing: border-box;
-        padding: 3px 6px 3px 10px;
-        border-bottom: 1px solid var(--g-color-86);
-        background: var(--g-color-96);
-        color: var(--g-color-20);
-        cursor: grab;
-        user-select: none;
-        z-index: 2;
-      }
-
-      .floating-editor-titlebar.floating-editor-dragging {
-        cursor: grabbing;
-      }
-
-      .floating-editor-title {
-        flex: 1;
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-size: 12px;
-        font-weight: 600;
-        text-align: right;
-      }
-
-      .floating-editor-button {
-        width: 22px;
-        height: 22px;
-        padding: 0;
-        margin: 0;
-        border: 0;
-        border-radius: 50%;
-        background: transparent;
-        color: var(--g-color-30);
-        cursor: default;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: none;
-      }
-
-      .floating-editor-button:hover {
-        background: var(--g-color-86);
-        color: var(--g-color-0);
-      }
-
-      .floating-editor-resize-handle {
-        position: absolute;
-        left: 0;
-        right: 0;
-        height: ${RESIZE_HANDLE_SIZE}px;
-        cursor: ns-resize;
-        background: transparent;
-        z-index: 3;
-      }
-
-      .floating-editor-resize-top {
-        top: 0;
-      }
-
-      .floating-editor-resize-bottom {
-        bottom: 0;
-      }
-
-      .floating-editor-hint {
-        position: fixed;
-        z-index: 200001;
-        max-width: min(360px, calc(100vw - 32px));
-        padding: 7px 10px;
-        border: 1px solid var(--g-color-82);
-        border-radius: 6px;
-        background: var(--g-color-96);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-        color: var(--g-color-40);
-        font-size: 12px;
-        line-height: 18px;
-        pointer-events: none;
-        user-select: none;
-      }
-    `).catch(console.warn)
+    ctx.theme.addStyles(FLOATING_EDITOR_STYLES).catch(console.warn)
 
     function getHintText () {
       const key = isMacOS ? 'Option' : 'Alt'
@@ -325,6 +326,16 @@ export default {
 
     function scheduleCheckHint () {
       window.setTimeout(checkHint)
+    }
+
+    function resetFloatingState (scheduleHint = false) {
+      hideFloatingEditor()
+      hideHint()
+      lastHintEligible = false
+
+      if (scheduleHint) {
+        scheduleCheckHint()
+      }
     }
 
     function makeButton (title: string, onClick: () => void) {
@@ -745,6 +756,19 @@ export default {
     ctx.editor.whenEditorReady().then(({ editor }) => {
       editor.onDidScrollChange(pausePreviewSyncForEditorScroll)
     }).catch(console.warn)
+    ctx.lib.vue.watch(() => canShowFloatingEditor(), (canShow) => {
+      if (!canShow) {
+        if (visible) {
+          hideFloatingEditor()
+        }
+
+        hideHint()
+        lastHintEligible = false
+        return
+      }
+
+      checkHint()
+    })
     ctx.registerHook('GLOBAL_RESIZE', () => {
       if (visible) {
         clampFrame()
@@ -752,27 +776,12 @@ export default {
       }
       positionHint()
     })
-    ctx.registerHook('ACTION_BEFORE_RUN', ({ name }) => {
-      if (visible && name === 'layout.toggle-editor') {
-        hideFloatingEditor()
-      }
-    })
-    ctx.registerHook('ACTION_AFTER_RUN', ({ name }) => {
-      if (name === 'layout.toggle-editor') {
-        scheduleCheckHint()
-      }
-    })
     ctx.registerHook('VIEW_RENDERED', scheduleCheckHint)
     ctx.registerHook('DOC_BEFORE_SWITCH', () => {
-      hideFloatingEditor()
-      hideHint()
-      lastHintEligible = false
+      resetFloatingState()
     })
     ctx.registerHook('VIEW_FILE_CHANGE', () => {
-      hideFloatingEditor()
-      hideHint()
-      lastHintEligible = false
-      scheduleCheckHint()
+      resetFloatingState(true)
     })
   }
 } as Plugin

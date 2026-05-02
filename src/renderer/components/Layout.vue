@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watchPostEffect } from 'vue'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
-import { emitResize, setContainerDom, toggleEditor, toggleSide, toggleView, toggleContentRightSide, toggleXterm, type LayoutContainerName } from '@fe/services/layout'
+import { emitResize, setContainerDom, toggleEditor, toggleSide, toggleView, toggleContentRightSide, toggleXterm } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
 import store from '@fe/support/store'
 
@@ -60,6 +60,16 @@ export default defineComponent({
     const content = ref<HTMLElement | null>(null)
     const contentRightSide = ref<HTMLElement | null>(null)
     const refs: any = { aside, editor, terminal, contentRightSide }
+    const containerRefs = [
+      ['layout', layout],
+      ['aside', aside],
+      ['right', right],
+      ['content', content],
+      ['editor', editor],
+      ['preview', preview],
+      ['terminal', terminal],
+      ['contentRightSide', contentRightSide],
+    ] as const
 
     function resizeOutOfRange (ref: string, outOfRange: null | 'min' | 'max') {
       if (ref === 'aside' && outOfRange === 'min') {
@@ -254,14 +264,7 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      setContainerDom('layout', layout.value)
-      setContainerDom('aside', aside.value)
-      setContainerDom('right', right.value)
-      setContainerDom('content', content.value)
-      setContainerDom('editor', editor.value)
-      setContainerDom('preview', preview.value)
-      setContainerDom('terminal', terminal.value)
-      setContainerDom('contentRightSide', contentRightSide.value)
+      containerRefs.forEach(([name, element]) => setContainerDom(name, element.value))
 
       window.addEventListener('resize', emitResize)
       window.document.addEventListener('mousemove', resizeFrame)
@@ -269,7 +272,7 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
-      ;(['layout', 'aside', 'right', 'content', 'editor', 'preview', 'terminal', 'contentRightSide'] as LayoutContainerName[]).forEach(name => setContainerDom(name, null))
+      containerRefs.forEach(([name]) => setContainerDom(name, null))
 
       window.removeEventListener('resize', emitResize)
       window.document.removeEventListener('mousemove', resizeFrame)
