@@ -91,4 +91,20 @@ describe('renderer i18n service', () => {
     ;(scoped.$t as any).dep.sc = 0
     expect(hookMocks.removeHook).toHaveBeenCalledWith('I18N_CHANGE_LANGUAGE', expect.any(Function))
   })
+
+  test('scoped i18n returns the path when no language data is available', async () => {
+    const i18n = await import('@fe/services/i18n')
+
+    i18n.setLanguage('ru')
+    const scoped = i18n.createI18n({}, 'en')
+
+    expect(scoped.t('missing' as any)).toBe('missing')
+    expect(scoped.$$t('missing' as any).toString()).toBe('missing')
+  })
+
+  test('throws when useI18n is called outside a component instance', async () => {
+    const i18n = await import('@fe/services/i18n')
+
+    expect(() => i18n.useI18n()).toThrow('VM Error')
+  })
 })

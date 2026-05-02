@@ -12,7 +12,7 @@ const mocks = vi.hoisted(() => {
     constructor (options: any) {
       this.options = options
       this.in.on('finish', () => {
-        setImmediate(() => this.out.end(Buffer.from(`rendered:${options.outputFormat}`)))
+        setImmediate(() => this.out.end(Buffer.from(`${mocks.pipeOutput}:${options.outputFormat}`)))
       })
     }
   }
@@ -26,6 +26,7 @@ const mocks = vi.hoisted(() => {
     getProxyDispatcher: vi.fn(),
     inflateRaw: vi.fn(() => Buffer.from('@startuml\nA -> B\n@enduml')),
     request: vi.fn(),
+    pipeOutput: 'rendered',
     MockPlantUmlPipe
   }
 })
@@ -107,6 +108,7 @@ describe('server plantuml module', () => {
       setImmediate(() => body.end(Buffer.from('remote image')))
       return Promise.resolve({ headers: { 'content-type': 'image/svg+xml' }, body })
     })
+    mocks.pipeOutput = 'rendered'
   })
 
   afterEach(async () => {
@@ -156,5 +158,43 @@ describe('server plantuml module', () => {
     expect(mocks.getProxyDispatcher).toHaveBeenCalledWith('https://plantuml.example/svg/GK93')
     expect(mocks.request).toHaveBeenCalledTimes(1)
     expect(mocks.request).toHaveBeenCalledWith('https://plantuml.example/svg/GK93', { dispatcher: 'dispatcher' })
+  })
+
+  test('uses png defaults, ignores empty cache files, and handles non-svg remote APIs', async () => {
+    const fs = await import('fs-extra')
+    mocks.configGet.mockReturnValue('')
+    const plantuml = await loadPlantuml()
+
+    const first = await plantuml('encoded')
+    const firstContent = await readContent(first.content)
+    expect(first.type).toBe('image/png')
+    expect(firstContent.toString()).toBe('rendered:png')
+
+    const cacheFiles = await fs.readdir(path.join(mocks.cacheDir, 'plantuml'))
+    const cacheFile = path.join(mocks.cacheDir, 'plantuml', cacheFiles[0])
+    await fs.writeFile(cacheFile, '')
+    mocks.pipeOutput = 'rerendered'
+
+    const second = await plantuml('encoded')
+    expect((await readContent(second.content)).toString()).toBe('rerendered:png')
+
+    mocks.configGet.mockReturnValue('https://plantuml.example/png/{data}')
+    mocks.request.mockImplementationOnce(() => {
+      const body = new (require('node:stream').PassThrough)()
+      setImmediate(() => body.end(Buffer.from('remote png')))
+      return Promise.resolve({ headers: { 'content-type': 'image/png' }, body })
+    })
+    const remote = await plantuml('QUJD?')
+    expect(remote.type).toBe('image/png')
+    expect(await readContent(remote.content)).toEqual(Buffer.from('remote png'))
+    expect(mocks.getProxyDispatcher).toHaveBeenLastCalledWith('https://plantuml.example/png/GK93')
+  })
+
+  test('throws when a PlantUML generator returns no body', async () => {
+    mocks.configGet.mockReturnValue('https://plantuml.example/svg/{data}')
+    mocks.request.mockResolvedValueOnce({ headers: { 'content-type': 'image/svg+xml' }, body: null })
+    const plantuml = await loadPlantuml()
+
+    await expect(plantuml('QUJD')).rejects.toThrow('No data')
   })
 })

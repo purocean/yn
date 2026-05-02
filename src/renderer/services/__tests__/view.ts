@@ -164,6 +164,11 @@ test('delegates render actions and toggles preview state', () => {
   expect(immediateHandler).toHaveBeenCalledTimes(1)
   expect(mocks.state.autoPreview).toBe(false)
   expect(mocks.state.syncScroll).toBe(false)
+
+  toggleAutoPreview(true)
+  toggleSyncScroll()
+  expect(mocks.state.autoPreview).toBe(true)
+  expect(mocks.state.syncScroll).toBe(true)
 })
 
 test('delegates refresh/reveal actions and toggles presentation through registered commands', async () => {
@@ -255,11 +260,27 @@ test('highlights source lines and anchors with optional reveal', async () => {
   mocks.actionHandlers.set('view.get-view-dom', () => viewDom)
 
   const line = await highlightLine(3, false, 0)
+  const revealedLine = await highlightLine(3, true, 0)
   const anchor = await highlightAnchor('intro', true, 0)
 
   expect(line?.classList.contains('preview-highlight')).toBe(true)
+  expect(revealedLine?.classList.contains('preview-highlight')).toBe(true)
   expect(anchor?.classList.contains('preview-highlight')).toBe(true)
+  expect(iframe.contentWindow!.scrollBy).toHaveBeenCalledWith(0, -120)
   expect(iframe.contentWindow!.scrollBy).toHaveBeenCalledWith(0, -60)
+})
+
+test('finds anchors through decoded and h-prefixed ids', async () => {
+  const iframe = makeIframe()
+  const special = iframe.contentDocument!.createElement('h2')
+  special.id = 'Title(One)'
+  iframe.contentDocument!.body.appendChild(special)
+  const prefixed = iframe.contentDocument!.createElement('h2')
+  prefixed.id = 'Plain'
+  iframe.contentDocument!.body.appendChild(prefixed)
+
+  await expect(highlightAnchor('Title%28One%29', false, 0)).resolves.toBe(special)
+  await expect(highlightAnchor('h-Plain', false, 0)).resolves.toBe(prefixed)
 })
 
 test('returns null for missing anchors and tolerates duration-based highlight cleanup', async () => {
@@ -295,6 +316,31 @@ test('filters content html and inlines styles when requested', async () => {
   expect(html).not.toContain('loading="lazy"')
 })
 
+test('content html filtering supports breakable hooks, node processors, and title cleanup', async () => {
+  makeIframe()
+  mocks.actionHandlers.set('view.get-content-html', () => `
+    <article class="markdown-body">
+      <a href="https://example.com" target="_blank" title="external">External</a>
+      <span class="">empty class</span>
+      <span class="skip-print">print hidden</span>
+      <strong data-break="true" title="keep">break</strong>
+    </article>
+  `)
+  mocks.triggerHook.mockImplementation(async (_name: string, { node }: any) => node.getAttribute?.('data-break') === 'true')
+  const processed: string[] = []
+
+  const html = await getContentHtml({
+    nodeProcessor: node => processed.push(node.tagName),
+  } as any)
+
+  expect(processed).toContain('ARTICLE')
+  expect(html).toContain('target="_blank"')
+  expect(html).not.toContain('title="external"')
+  expect(html).not.toContain('class=""')
+  expect(html).not.toContain('skip-print')
+  expect(html).toContain('title="keep"')
+})
+
 test('collects headings and marks the visible heading as activated', () => {
   const iframe = makeIframe()
   const article = iframe.contentDocument!.querySelector('article')!
@@ -306,6 +352,28 @@ test('collects headings and marks the visible heading as activated', () => {
   expect(getHeadings(true)).toStrictEqual([
     expect.objectContaining({ tag: 'h1', text: 'Intro', sourceLine: 2, activated: true }),
   ])
+  expect(getHeadings(false)[0].activated).toBeUndefined()
+})
+
+test('collects heading activation for before-view and after-view positions', () => {
+  const iframe = makeIframe()
+  const article = iframe.contentDocument!.querySelector('article')!
+  article.innerHTML = `
+    <h1 id="before" data-source-line="1">Before</h1>
+    <h2 id="after" data-source-line="2">After</h2>
+  `
+  const [before, after] = Array.from(article.querySelectorAll('h1,h2')) as HTMLElement[]
+  before.getBoundingClientRect = vi.fn(() => ({ top: -10 } as DOMRect))
+  after.getBoundingClientRect = vi.fn(() => ({ top: 500 } as DOMRect))
+  mocks.actionHandlers.set('view.get-view-dom', () => article)
+
+  expect(getHeadings(true)).toStrictEqual([
+    expect.objectContaining({ id: 'before', activated: true }),
+    expect.objectContaining({ id: 'after', activated: false }),
+  ])
+
+  mocks.actionHandlers.set('view.get-view-dom', () => null)
+  expect(getHeadings(true)).toEqual([])
 })
 
 test('returns preview styles from eligible stylesheets and skips contain rules', () => {
@@ -332,5 +400,11 @@ test('temporarily disables sync scroll and restores it after timeout', async () 
   vi.advanceTimersByTime(100)
 
   expect(getEnableSyncScroll()).toBe(true)
+  mocks.state.syncScroll = false
+  expect(getEnableSyncScroll()).toBe(false)
+  mocks.state.syncScroll = true
+  mocks.sameFile = false
+  expect(getEnableSyncScroll()).toBe(false)
+  mocks.sameFile = true
   vi.useRealTimers()
 })

@@ -19,7 +19,9 @@ vi.mock('@fe/support/api', () => ({
 vi.mock('@fe/support/store', () => ({
   default: {
     state: {
-      currentFile: mocks.currentFile,
+      get currentFile () {
+        return mocks.currentFile
+      },
     },
   },
 }))
@@ -74,7 +76,9 @@ function createCtx () {
     },
     store: {
       state: {
-        currentFile: mocks.currentFile,
+        get currentFile () {
+          return mocks.currentFile
+        },
       },
     },
     ui: {
@@ -101,8 +105,7 @@ function makeResponse (blobType = 'image/png', headerType = blobType) {
 
 describe('image-localization plugin', () => {
   beforeEach(() => {
-    mocks.currentFile.repo = 'repo-a'
-    mocks.currentFile.path = '/notes/current.md'
+    mocks.currentFile = { repo: 'repo-a', path: '/notes/current.md', name: 'current.md' }
     mocks.getViewDom.mockReset()
     mocks.proxyFetch.mockReset()
     mocks.refreshTree.mockReset()
@@ -216,5 +219,45 @@ describe('image-localization plugin', () => {
     local.setAttribute('src', '/assets/local.png')
     ctx.view.tapContextMenus.mock.calls[0][0](ignored, { target: local })
     expect(ignored).toEqual([])
+  })
+
+  test('localizes file-protocol images using fetched blob metadata and decoded names', async () => {
+    const fetch = vi.fn(async () => makeResponse('', null as any))
+    vi.stubGlobal('fetch', fetch)
+    const ctx = createCtx()
+    imageLocalization.register(ctx)
+    const img = document.createElement('img')
+    img.setAttribute('src', 'file:///tmp/photo%20one.gif')
+    const menus: any[] = []
+    ctx.view.tapContextMenus.mock.calls[0][0](menus, { target: img })
+
+    await menus[0].onClick()
+
+    expect(fetch).toHaveBeenCalledWith('file:///tmp/photo%20one.gif')
+    expect(mocks.upload).toHaveBeenCalledWith(expect.any(File), mocks.currentFile, 'photo one.gif')
+    expect(mocks.replaceValue).toHaveBeenCalledWith('file:///tmp/photo%20one.gif', '/notes/assets/local%20image.png')
+  })
+
+  test('skips menus and transforms when the active document cannot be localized', async () => {
+    const ctx = createCtx()
+    ctx.editor.isDefault.mockReturnValue(false)
+    imageLocalization.register(ctx)
+    const menus = { 'status-bar-tool': { list: [] as any[] } }
+    ctx.statusBar.tapMenus.mock.calls[0][0](menus)
+    expect(menus['status-bar-tool'].list).toEqual([])
+
+    const contextMenus: any[] = []
+    const img = document.createElement('img')
+    img.setAttribute('src', 'https://example.com/image.png')
+    ctx.view.tapContextMenus.mock.calls[0][0](contextMenus, { target: img })
+    expect(contextMenus).toEqual([])
+
+    ctx.editor.isDefault.mockReturnValue(true)
+    mocks.currentFile = null
+    const view = document.createElement('article')
+    view.appendChild(img)
+    mocks.getViewDom.mockReturnValue(view)
+    await ctx.actions.get(actionName).handler()
+    expect(mocks.upload).not.toHaveBeenCalled()
   })
 })

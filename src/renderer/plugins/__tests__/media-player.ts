@@ -1,3 +1,5 @@
+import { flushPromises, mount } from '@vue/test-utils'
+
 const mocks = vi.hoisted(() => ({
   currentFile: null as any,
   getAttachmentURL: vi.fn((doc: any) => `/attachment/${doc.name}`),
@@ -87,6 +89,49 @@ describe('media-player plugin', () => {
     expect(customEditor.when({ doc: null })).toBe(false)
   })
 
+  test('renders video, audio, electron file URLs, and pauses detached picture-in-picture media', async () => {
+    const ctx = createCtx()
+    mediaPlayer.register(ctx)
+    const component = ctx.editor.registerCustomEditor.mock.calls[0][0].component
+
+    mocks.currentFile = null
+    let wrapper = mount(component)
+    await flushPromises()
+    expect(wrapper.html()).toBe('')
+    wrapper.unmount()
+
+    mocks.currentFile = { name: 'clip.mp4' }
+    wrapper = mount(component)
+    await flushPromises()
+    expect(wrapper.find('video').attributes('src')).toBe('/attachment/clip.mp4')
+    wrapper.unmount()
+
+    mocks.currentFile = { name: 'song.mp3' }
+    wrapper = mount(component)
+    await flushPromises()
+    expect(wrapper.find('audio').attributes('src')).toBe('/attachment/song.mp3')
+    wrapper.unmount()
+
+    mocks.isElectron = true
+    mocks.currentFile = { name: 'local.mp4', absolutePath: '/tmp/local.mp4' }
+    wrapper = mount(component)
+    await flushPromises()
+    const video = wrapper.find('video')
+    expect(video.attributes('src')).toBe('file:///tmp/local.mp4')
+
+    const pause = vi.fn()
+    const leaveEvent = new Event('leavepictureinpicture')
+    Object.defineProperty(leaveEvent, 'target', { value: { isConnected: false, pause } })
+    video.element.dispatchEvent(leaveEvent)
+    expect(pause).toHaveBeenCalledTimes(1)
+
+    const connectedPause = vi.fn()
+    const connectedEvent = new Event('leavepictureinpicture')
+    Object.defineProperty(connectedEvent, 'target', { value: { isConnected: true, pause: connectedPause } })
+    video.element.dispatchEvent(connectedEvent)
+    expect(connectedPause).not.toHaveBeenCalled()
+  })
+
   test('preloads rendered audio only after it intersects and cleans old observers', () => {
     const observers: any[] = []
     class FakeIntersectionObserver {
@@ -114,6 +159,27 @@ describe('media-player plugin', () => {
     ctx._hooks.get('VIEW_RENDERED')()
     expect(observers[0].disconnect).toHaveBeenCalled()
 
+    vi.unstubAllGlobals()
+  })
+
+  test('skips audio observer setup when no audio nodes are rendered', () => {
+    const observers: any[] = []
+    class FakeIntersectionObserver {
+      constructor () {
+        observers.push(this)
+      }
+      disconnect = vi.fn()
+      observe = vi.fn()
+      unobserve = vi.fn()
+    }
+    vi.stubGlobal('IntersectionObserver', FakeIntersectionObserver)
+    const ctx = createCtx()
+    ctx.view.getViewDom.mockReturnValue(document.createElement('div'))
+
+    mediaPlayer.register(ctx)
+    ctx._hooks.get('VIEW_RENDERED')()
+
+    expect(observers).toHaveLength(0)
     vi.unstubAllGlobals()
   })
 })

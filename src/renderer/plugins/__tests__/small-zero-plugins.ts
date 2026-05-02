@@ -74,6 +74,22 @@ describe('small zero-coverage plugins', () => {
 
     expect(md.renderer.rules.paragraph_open(tokens, 0, {}, {}, { renderToken: () => 'token' })).toBe('token')
     expect(image.attrSet).toHaveBeenCalledWith('data-only-child', 'true')
+
+    const media = { type: 'media', attrSet: vi.fn() }
+    md.renderer.rules.paragraph_open([
+      {},
+      { type: 'inline', children: [media] },
+      { type: 'paragraph_close' },
+    ], 0, {}, {}, { renderToken: () => 'token' })
+    expect(media.attrSet).toHaveBeenCalledWith('data-only-child', 'true')
+
+    const text = { type: 'text', attrSet: vi.fn() }
+    md.renderer.rules.paragraph_open([
+      {},
+      { type: 'inline', children: [text, { type: 'image' }] },
+      { type: 'paragraph_close' },
+    ], 0, {}, {}, { renderToken: () => 'token' })
+    expect(text.attrSet).not.toHaveBeenCalled()
   })
 
   it('adds code copy wrappers and inline copy titles', async () => {
@@ -102,6 +118,27 @@ describe('small zero-coverage plugins', () => {
     expect(vnode.children[0].props.class).toBe('p-mcc-copy-btn-wrapper skip-print')
     expect(vnode.children[0].children[1].props['data-text']).toBe('console.log(1)')
     expect(addStyles).toHaveBeenCalledWith(expect.stringContaining('p-mcc-copy-btn'), true)
+
+    const titledInline = {
+      attrIndex: vi.fn(() => 0),
+      attrJoin: vi.fn(),
+      attrPush: vi.fn(),
+    }
+    expect(md.renderer.rules.code_inline([titledInline], 0, {}, {}, {})).toBe('inline')
+    expect(titledInline.attrJoin).not.toHaveBeenCalled()
+
+    const emptyFence: any = md.renderer.rules.fence([{ content: '   ', info: '' }], 0, {}, {}, {})
+    expect(emptyFence.children).toEqual([])
+
+    md.renderer.rules.fence = vi.fn(() => 'plain')
+    plugin.register({
+      args: { DOM_CLASS_NAME: { COPY_INNER_TEXT: 'copy-inner-text' } },
+      i18n: { t: (key: string) => key },
+      keybinding: { getKeyLabel: () => 'Ctrl' },
+      markdown: { registerPlugin: (fn: Function) => fn(md) },
+      view: { addStyles },
+    } as any)
+    expect(md.renderer.rules.fence([{ content: 'x', info: '' }], 0, {}, {}, {})).toBe('plain')
   })
 
   it('wraps code fences when front matter enables wrapCode', async () => {

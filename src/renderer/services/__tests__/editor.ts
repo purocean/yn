@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   consoleError: vi.fn(),
   isMacOS: true,
   isElectron: false,
+  flagReadonly: false,
 }))
 
 vi.mock('lodash-es', async importOriginal => ({
@@ -99,7 +100,9 @@ vi.mock('@fe/services/i18n', () => ({
 }))
 
 vi.mock('@fe/support/args', () => ({
-  FLAG_READONLY: false,
+  get FLAG_READONLY () {
+    return mocks.flagReadonly
+  },
 }))
 
 import {
@@ -208,6 +211,9 @@ beforeEach(() => {
   mocks.toastShow.mockClear()
   mocks.triggerHook.mockClear()
   mocks.consoleError.mockClear()
+  mocks.isMacOS = true
+  mocks.isElectron = false
+  mocks.flagReadonly = false
   vi.spyOn(console, 'error').mockImplementation(mocks.consoleError)
 })
 
@@ -233,6 +239,23 @@ test('builds default options from settings and platform flags', () => {
 
   mocks.settings.delete('editor.font-family')
   expect(getDefaultOptions().fontFamily).toBe(DEFAULT_MAC_FONT_FAMILY)
+
+  mocks.isMacOS = false
+  mocks.isElectron = true
+  mocks.settings.set('editor.font-family', 'JetBrains Mono')
+  mocks.settings.set('editor.minimap', true)
+  expect(getDefaultOptions()).toMatchObject({
+    links: false,
+    fontFamily: 'JetBrains Mono',
+    scrollbar: {
+      vertical: 'hidden',
+      verticalScrollbarSize: 0,
+    },
+    minimap: undefined,
+  })
+
+  mocks.settings.set('editor.font-family', '   ')
+  expect(getDefaultOptions().fontFamily).toBeUndefined()
 })
 
 test('initializes Monaco, resolves readiness, and edits text through editor helpers', async () => {
@@ -326,6 +349,15 @@ test('reports selection info and keybinding labels', () => {
   })
   expect(lookupKeybindingKeys('cmd')).toStrictEqual(['Ctrl', 'K'])
 
+  ;(editor as any)._standaloneKeybindingService.lookupKeybinding.mockImplementation((id: string) => {
+    if (id === 'vs.editor.ICodeEditor:1:user') {
+      return { getElectronAccelerator: () => null, getUserSettingsLabel: () => 'Ctrl Shift P' }
+    }
+    return null
+  })
+  expect(lookupKeybindingKeys('user')).toStrictEqual(['Ctrl', 'Shift', 'P'])
+  expect(lookupKeybindingKeys('missing')).toBeNull()
+
   editor.getSelection.mockReturnValueOnce(null)
   expect(getSelectionInfo()).toBeUndefined()
 })
@@ -365,6 +397,8 @@ test('registers custom editors, handles duplicates, and filters availability err
   const supported = { name: 'supported', component: {}, when: vi.fn(async () => true) }
   const unsupported = { name: 'unsupported', component: {}, when: vi.fn(async () => false) }
   const throws = { name: 'throws', component: {}, when: vi.fn(async () => { throw new Error('bad') }) }
+  const nonNormal = { name: 'non-normal', component: {}, when: vi.fn(async () => true) }
+  const supportsNonNormal = { name: 'supports-non-normal', component: {}, supportNonNormalFile: true, when: vi.fn(async () => true) }
 
   expect(() => registerCustomEditor({ name: 'missing', when: vi.fn() } as any)).toThrow('Editor component is required')
   registerCustomEditor(supported as any)
@@ -372,8 +406,11 @@ test('registers custom editors, handles duplicates, and filters availability err
   registerCustomEditor(supported as any, true)
   registerCustomEditor(unsupported as any)
   registerCustomEditor(throws as any)
+  registerCustomEditor(nonNormal as any)
+  registerCustomEditor(supportsNonNormal as any)
 
-  await expect(getAvailableCustomEditors({ doc: { type: 'file' } } as any)).resolves.toStrictEqual([supported])
+  await expect(getAvailableCustomEditors({ doc: { type: 'file' } } as any)).resolves.toStrictEqual([supported, nonNormal, supportsNonNormal])
+  await expect(getAvailableCustomEditors({ doc: { type: 'virtual' } } as any)).resolves.toStrictEqual([supportsNonNormal])
   expect(mocks.triggerHook).toHaveBeenCalledWith('EDITOR_CUSTOM_EDITOR_CHANGE', { type: 'register' })
 
   removeCustomEditor('supported')
@@ -428,7 +465,35 @@ test('runs editor lifecycle hooks for Monaco configuration and readonly attempts
   expect(languages[2].aliases).toContain('vue')
 
   fireHook('MONACO_READY', { monaco, editor })
+  fireHook('EDITOR_READY', { monaco, editor })
   await Promise.resolve()
+  const cursorHandler = editor.onDidChangeCursorPosition.mock.calls[0][0]
+  const contentHandler = editor.onDidChangeModelContent.mock.calls[0][0]
+  const readonlyHandler = editor.onDidAttemptReadOnlyEdit.mock.calls[0][0]
+
+  mocks.state.typewriterMode = true
+  cursorHandler({ source: 'keyboard', reason: 0, position: { lineNumber: 8, column: 1 } })
+  cursorHandler({ source: 'deleteLeft', reason: 3, position: { lineNumber: 9, column: 1 } })
+  cursorHandler({ source: 'mouse', reason: 0, position: { lineNumber: 10, column: 1 } })
+  expect(editor.revealPositionInCenter).toHaveBeenCalledTimes(2)
+
+  contentHandler()
+  expect(mocks.triggerHook).toHaveBeenCalledWith('EDITOR_CONTENT_CHANGE', { uri: 'yn://note.md', value: 'foo foo' })
+
+  readonlyHandler()
+  expect(mocks.triggerHook).toHaveBeenCalledWith('EDITOR_ATTEMPT_READONLY_EDIT', { doc: null, readonlyType: 'no-file' })
+
+  mocks.state.currentFile = { path: '/locked.md', writeable: false }
+  readonlyHandler()
+  expect(mocks.triggerHook).toHaveBeenCalledWith('EDITOR_ATTEMPT_READONLY_EDIT', { doc: mocks.state.currentFile, readonlyType: 'file-not-writable' })
+
+  mocks.state.currentFile = { path: '/unsupported.bin' }
+  readonlyHandler()
+  expect(mocks.triggerHook).toHaveBeenCalledWith('EDITOR_ATTEMPT_READONLY_EDIT', { doc: mocks.state.currentFile, readonlyType: 'unsupported-file-type' })
+
+  mocks.flagReadonly = true
+  readonlyHandler()
+  expect(mocks.triggerHook).toHaveBeenCalledWith('EDITOR_ATTEMPT_READONLY_EDIT', { doc: mocks.state.currentFile, readonlyType: 'app-readonly' })
 
   fireHook('THEME_CHANGE', {})
   expect(monaco.editor.setTheme).toHaveBeenCalledWith('vs-dark')

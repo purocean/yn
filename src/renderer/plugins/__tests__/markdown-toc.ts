@@ -80,4 +80,46 @@ describe('markdown-toc plugin', () => {
     expect(vnode.props.class).toBe('toc-box')
     expect(vnode.props.innerHTML).toContain('href="#Say-&quot;Hi&quot;"')
   })
+
+  test('keeps default options when custom params are invalid', () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    const md = new MarkdownIt()
+    markdownToc.register(createCtx(md))
+    const env = {}
+    const tokens = md.parse('[toc]{bad json}\n\n## A', env)
+    const tocToken = tokens.flatMap(token => token.children || []).find(token => token.type === 'toc_body')!
+
+    const vnode = md.renderer.rules.toc_body!([tocToken] as any, 0, md.options, env, md.renderer as any) as any
+
+    expect(log).toHaveBeenCalledWith('parse params error', ['[toc]{bad json}', '{bad json}'])
+    expect(vnode.props.class).toBe('table-of-contents')
+    expect(vnode.props.innerHTML).toContain('<ul><li><a href="#A">A</a></li></ul>')
+    log.mockRestore()
+  })
+
+  test('renders full toc chunks and preserves existing heading attrs', () => {
+    const md = new MarkdownIt()
+    markdownToc.register(createCtx(md))
+    const env = {}
+    const tokens = md.parse('[toc]{forceFullToc: true, type: "ol"}\n\n## A\n### B\n# C', env)
+    const tocToken = tokens.flatMap(token => token.children || []).find(token => token.type === 'toc_body')!
+
+    const vnode = md.renderer.rules.toc_body!([tocToken] as any, 0, md.options, env, md.renderer as any) as any
+
+    expect(vnode.props.innerHTML).toContain('<ol><li><a href="#A">A</a><ol><li><a href="#B">B</a></li></ol></li></ol>')
+
+    const headingOpen = tokens.findIndex(token => token.type === 'heading_open')
+    tokens[headingOpen].attrSet('id', 'preset')
+    tokens[headingOpen].attrSet('title', 'preset title')
+    md.renderer.rules.heading_open!(tokens as any, headingOpen, md.options, env, md.renderer)
+    expect(tokens[headingOpen].attrGet('id')).toBe('preset')
+    expect(tokens[headingOpen].attrGet('title')).toBe('preset title')
+  })
+
+  test('returns nothing before headings are captured', () => {
+    const md = new MarkdownIt()
+    markdownToc.register(createCtx(md))
+
+    expect(md.renderer.rules.toc_body!([] as any, 0, md.options, {}, md.renderer as any)).toBeUndefined()
+  })
 })

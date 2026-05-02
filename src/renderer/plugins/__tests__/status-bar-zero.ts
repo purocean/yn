@@ -225,6 +225,28 @@ describe('status-bar zero coverage plugins', () => {
     expect(ctx.layout.toggleEditorPreviewExclusive).toHaveBeenCalledTimes(1)
   })
 
+  it('omits optional view entries when xterm and right-side panels are unavailable', async () => {
+    setupBaseMocks({ FLAG_DISABLE_XTERM: true })
+    const { default: plugin } = await import('../status-bar-view')
+    const ctx = createCtx({
+      workbench: {
+        ContentRightSide: { getAllPanels: vi.fn(() => []) },
+        ControlCenter: { toggle: vi.fn() },
+      },
+    })
+    plugin.register(ctx)
+
+    const menu = applyMenus(ctx)['status-bar-view']
+    expect(menu.list.map((entry: any) => entry.id).filter(Boolean)).toEqual([
+      'word-wrap',
+      'typewriter-mode',
+      'toggle-side',
+      'toggle-editor',
+      'toggle-view',
+      'toggle-editor-preview-exclusive',
+    ])
+  })
+
   it('switches theme from status menu and registered action with premium checks', async () => {
     setupBaseMocks()
     const { default: plugin } = await import('../status-bar-theme')
@@ -350,6 +372,15 @@ describe('status-bar zero coverage plugins', () => {
     expect(ctx.handlers.get('layout.toggle-xterm')).toHaveBeenCalledTimes(1)
   })
 
+  it('does not register terminal menu when xterm is disabled', async () => {
+    setupBaseMocks({ FLAG_DISABLE_XTERM: true })
+    const { default: plugin } = await import('../status-bar-terminal')
+    const ctx = createCtx()
+    plugin.register(ctx)
+
+    expect(applyMenus(ctx)['status-bar-terminal']).toBeUndefined()
+  })
+
   it('registers tool menu and runs print/export branches', async () => {
     setupBaseMocks()
     vi.useFakeTimers()
@@ -384,6 +415,15 @@ describe('status-bar zero coverage plugins', () => {
     item(menu, 'mas').onClick()
     expect(open).toHaveBeenCalledWith('https://github.example/yn/releases')
     expect(open).toHaveBeenCalledWith('macappstore://yn')
+  })
+
+  it('does not register get-application menu outside demo mode', async () => {
+    setupBaseMocks({ FLAG_DEMO: false })
+    const { default: plugin } = await import('../status-bar-get')
+    const ctx = createCtx()
+    plugin.register(ctx)
+
+    expect(applyMenus(ctx)['status-bar-get']).toBeUndefined()
   })
 
   it('registers history menu only when history action exists', async () => {

@@ -1,4 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 
 const mocks = vi.hoisted(() => ({
   actions: new Map<string, Function>(),
@@ -16,6 +17,8 @@ const mocks = vi.hoisted(() => ({
   refreshLicense: vi.fn(),
   requestApi: vi.fn(),
   decodeDevice: vi.fn(),
+  tokenIsExpiredSoon: vi.fn(() => false),
+  tokenIsStaleSoon: vi.fn(() => false),
 }))
 
 vi.mock('canvas-confetti', () => ({
@@ -59,8 +62,8 @@ vi.mock('@fe/others/premium', () => ({
   refreshLicense: mocks.refreshLicense,
   requestApi: mocks.requestApi,
   tokenAvailableDays: () => 7,
-  tokenIsExpiredSoon: () => false,
-  tokenIsStaleSoon: () => false,
+  tokenIsExpiredSoon: mocks.tokenIsExpiredSoon,
+  tokenIsStaleSoon: mocks.tokenIsStaleSoon,
 }))
 
 vi.mock('@fe/support/ui/toast', () => ({
@@ -132,6 +135,10 @@ beforeEach(() => {
     const [id, platform, hostname] = val.split(':')
     return { id, platform, hostname }
   })
+  mocks.tokenIsExpiredSoon.mockReset()
+  mocks.tokenIsExpiredSoon.mockReturnValue(false)
+  mocks.tokenIsStaleSoon.mockReset()
+  mocks.tokenIsStaleSoon.mockReturnValue(false)
 })
 
 describe('Premium', () => {
@@ -222,5 +229,93 @@ describe('Premium', () => {
     ;(wrapper.vm as any).activationToken = ' offline-token-123456789012345678901234 '
     await (wrapper.vm as any).activateOffline()
     expect(mocks.activateByTokenString).toHaveBeenCalledWith('offline-token-123456789012345678901234')
+  })
+
+  test('handles premium status variants, confetti, cancellation, and error flows', async () => {
+    const token = {
+      licenseId: 'license-2',
+      name: 'Grace',
+      email: 'grace@example.test',
+      displayName: 'Premium',
+      expires: new Date('2031-01-01T00:00:00Z'),
+      device: 'dev1:darwin:mac',
+      devices: ['dev1:darwin:mac'],
+      status: 'expired',
+    }
+    mocks.getPurchased.mockReturnValue(true)
+    mocks.getLicenseToken.mockReturnValue(token)
+    mocks.requestApi.mockResolvedValueOnce([])
+    const wrapper = mount(Premium, {
+      global: { mocks: { $t: (key: string, value?: string) => value ? `${key}:${value}` : key } },
+    })
+    await flushPromises()
+
+    ;(wrapper.vm as any).doConfetti()
+    expect(mocks.confetti).toHaveBeenCalledWith(expect.objectContaining({ particleCount: 150 }))
+
+    ;(wrapper.vm as any).renewal()
+    expect(mocks.openWindow).toHaveBeenCalledWith('https://example.test/renewal?uuid=license-2')
+
+    mocks.modalConfirm.mockResolvedValueOnce(false)
+    await (wrapper.vm as any).removeDevice((wrapper.vm as any).devices[0])
+    expect(mocks.requestApi).toHaveBeenCalledTimes(1)
+
+    mocks.modalConfirm.mockResolvedValueOnce(true)
+    mocks.requestApi.mockRejectedValueOnce(new Error('unbind failed'))
+    await expect((wrapper.vm as any).removeDevice((wrapper.vm as any).devices[0])).rejects.toThrow('unbind failed')
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'Error: unbind failed')
+
+    mocks.activateLicense.mockRejectedValueOnce(new Error('bad license'))
+    ;(wrapper.vm as any).license = 'bad'
+    await (wrapper.vm as any).activate()
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'bad license')
+
+    mocks.activateByTokenString.mockRejectedValueOnce(new Error('bad token'))
+    ;(wrapper.vm as any).activationToken = 'bad token'
+    await (wrapper.vm as any).activateOffline()
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'bad token')
+
+    mocks.refreshLicense.mockRejectedValueOnce(new Error('refresh failed'))
+    await (wrapper.vm as any).refresh()
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'refresh failed')
+  })
+
+  test('renders stale-soon and expired-soon activation branches and demo tabs', async () => {
+    vi.resetModules()
+    vi.doMock('@fe/support/args', () => ({
+      FLAG_DEMO: true,
+    }))
+    const { default: DemoPremium } = await import('../Premium.vue')
+    const token = {
+      licenseId: 'license-3',
+      name: 'Linus',
+      email: 'linus@example.test',
+      displayName: 'Premium',
+      expires: new Date('2032-01-01T00:00:00Z'),
+      device: 'dev1:linux:pc',
+      devices: ['dev1:linux:pc'],
+      status: 'active',
+    }
+    mocks.getPurchased.mockReturnValue(true)
+    mocks.getLicenseToken.mockReturnValue(token)
+    mocks.tokenIsStaleSoon.mockReturnValue(true)
+
+    const wrapper = mount(DemoPremium, {
+      global: { mocks: { $t: (key: string, value?: string) => value ? `${key}:${value}` : key } },
+    })
+    await flushPromises()
+    ;(wrapper.vm as any).tab = 'activation'
+    await nextTick()
+
+    expect((wrapper.vm as any).tabs).toEqual([
+      { value: 'intro', label: 'premium.intro.intro' },
+    ])
+    expect(wrapper.text()).toContain('premium.activation.need-refresh')
+
+    mocks.tokenIsStaleSoon.mockReturnValue(false)
+    mocks.tokenIsExpiredSoon.mockReturnValue(true)
+    ;(wrapper.vm as any).info = { ...token, status: 'active' }
+    await nextTick()
+    expect(wrapper.text()).toContain('premium.activation.expiring:7')
   })
 })

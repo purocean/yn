@@ -1,4 +1,5 @@
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 
 const mocks = vi.hoisted(() => ({
   hooks: new Map<string, Function>(),
@@ -127,4 +128,38 @@ test('IFrame close throws when embedded page blocks unload', () => {
   })
 
   expect(() => (wrapper.vm as any).close()).toThrow('Check close failed.')
+})
+
+test('IFrame waits for html before first update and ignores empty theme names', async () => {
+  const wrapper = mount(IFrame, { props: { html: '' } })
+  expect(wrapper.html()).toBe('')
+
+  await wrapper.setProps({ html: '<section>late</section>' })
+  await flushPromises()
+  expect(wrapper.find('iframe').exists()).toBe(true)
+
+  const iframe = wrapper.find('iframe').element as HTMLIFrameElement
+  const setAttribute = vi.fn()
+  Object.defineProperty(iframe, 'contentDocument', {
+    value: { documentElement: { setAttribute, scrollHeight: 1 } },
+    configurable: true,
+  })
+
+  mocks.hooks.get('THEME_CHANGE')?.({ name: '' })
+  expect(setAttribute).not.toHaveBeenCalled()
+
+  ;(wrapper.vm as any).forceRefresh()
+  await nextTick()
+  expect(wrapper.find('iframe').exists()).toBe(false)
+  await new Promise(resolve => setTimeout(resolve, 0))
+  await nextTick()
+  expect(wrapper.find('iframe').exists()).toBe(true)
+})
+
+test('IFrame safe methods no-op before iframe is available', () => {
+  const wrapper = mount(IFrame, { props: { html: '' } })
+
+  expect(() => (wrapper.vm as any).reload()).not.toThrow()
+  expect(() => (wrapper.vm as any).close()).not.toThrow()
+  expect((wrapper.vm as any).getIframe()).toBeUndefined()
 })

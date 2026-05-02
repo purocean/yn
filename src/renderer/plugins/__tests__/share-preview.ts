@@ -109,6 +109,20 @@ describe('share-preview plugin', () => {
     expect(ctx.store.state.presentation).toBe(true)
   })
 
+  test('startup hook does nothing outside share-preview mode and preserves active presentation', () => {
+    const ctx = createCtx()
+    ctx.store.watch = vi.fn((_source: Function, cb: Function) => cb(true))
+
+    sharePreview.register(ctx)
+    ctx._hooks.get('STARTUP')()
+
+    expect(ctx.store.watch).not.toHaveBeenCalled()
+
+    ctx.args.MODE = 'share-preview'
+    ctx._hooks.get('STARTUP')()
+    expect(ctx.store.state.presentation).toBe(false)
+  })
+
   test('registers status-bar share menu and styles with safe-mode visibility', () => {
     const ctx = createCtx()
 
@@ -122,6 +136,14 @@ describe('share-preview plugin', () => {
       ellipsis: true,
     })
     expect(ctx.theme.addStyles).toHaveBeenCalledWith(expect.stringContaining('.share-preview-options-wrapper'))
+
+    ctx.view.getRenderEnv.mockReturnValue({ safeMode: true })
+    const safeMenus = { 'status-bar-tool': { list: [] as any[] } }
+    ctx.statusBar.tapMenus.mock.calls[0][0](safeMenus)
+    expect(safeMenus['status-bar-tool'].list[0].hidden).toBe(true)
+
+    const missingToolMenu: any = {}
+    expect(() => ctx.statusBar.tapMenus.mock.calls[0][0](missingToolMenu)).not.toThrow()
   })
 
   test('alerts and opens server host setting when sharing is not bound to all interfaces', async () => {
@@ -159,6 +181,30 @@ describe('share-preview plugin', () => {
     expect(mocks.copyText).toHaveBeenCalledWith('http://192.168.1.10/?mode=share-preview')
   })
 
+  test('does not copy cancelled share links and reports clipboard failures', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const ctx = createCtx()
+    sharePreview.register(ctx)
+    const link = mocks.refValues[0]
+    link.value = 'http://192.168.1.10/?mode=share-preview'
+    const menus = { 'status-bar-tool': { list: [] as any[] } }
+    ctx.statusBar.tapMenus.mock.calls[0][0](menus)
+
+    mocks.confirm.mockResolvedValueOnce(false)
+    await menus['status-bar-tool'].list[0].onClick()
+    expect(mocks.copyText).not.toHaveBeenCalled()
+
+    mocks.confirm.mockResolvedValueOnce(true)
+    mocks.copyText.mockImplementationOnce(() => {
+      throw new Error('copy failed')
+    })
+    const toast = { show: vi.fn() }
+    ctx.ui.useToast.mockReturnValueOnce(toast)
+    await menus['status-bar-tool'].list[0].onClick()
+    expect(toast.show).toHaveBeenCalledWith('warning', 'copy failed')
+    error.mockRestore()
+  })
+
   test('panel loads local IPs and builds a tokenized share-preview URL', async () => {
     const ctx = createCtx()
     sharePreview.register(ctx)
@@ -181,6 +227,12 @@ describe('share-preview plugin', () => {
     expect(link.value).toContain('token=jwt-token')
     expect(link.value).toContain('init-repo=repo-a')
     expect(link.value).toContain('init-file=%2Fdocs%2Fcurrent.md')
+
+    ip.value = '10.0.0.2'
+    mocks.rpc.mockResolvedValueOnce(['192.168.1.10', '10.0.0.2'])
+    mocks.component.setup()
+    await Promise.resolve()
+    expect(ip.value).toBe('10.0.0.2')
   })
 
   test('panel watcher clears link and exits without current file or complete options', async () => {

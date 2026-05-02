@@ -10,14 +10,26 @@ const hookMocks = vi.hoisted(() => ({
   triggerHook: vi.fn(),
 }))
 
+const envMocks = vi.hoisted(() => ({
+  isMacOS: false,
+  isOtherOS: false,
+  isWindows: true,
+}))
+
 vi.mock('@fe/utils', () => ({
   getLogger: () => new Proxy({}, { get: () => vi.fn() }),
 }))
 
 vi.mock('@fe/support/env', () => ({
-  isMacOS: false,
-  isOtherOS: false,
-  isWindows: true,
+  get isMacOS () {
+    return envMocks.isMacOS
+  },
+  get isOtherOS () {
+    return envMocks.isOtherOS
+  },
+  get isWindows () {
+    return envMocks.isWindows
+  },
 }))
 
 vi.mock('@fe/support/args', () => ({
@@ -31,6 +43,10 @@ vi.mock('@fe/core/hook', () => hookMocks)
 describe('renderer keybinding utilities', () => {
   beforeEach(() => {
     vi.resetModules()
+    vi.useRealTimers()
+    envMocks.isMacOS = false
+    envMocks.isOtherOS = false
+    envMocks.isWindows = true
     actionMocks.actions = []
     actionMocks.handler.mockClear()
     actionMocks.getAction.mockClear()
@@ -70,10 +86,37 @@ describe('renderer keybinding utilities', () => {
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', ctrlKey: true }), ['CtrlCmd', 'O'])).toBe(true)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: '1', code: 'Digit1', ctrlKey: true }), ['Ctrl', '1'])).toBe(true)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'ArrowUp', code: 'ArrowUp' }), ['up'])).toBe(true)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', altKey: true }), ['Alt', 'O'])).toBe(true)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', shiftKey: true }), ['Shift', 'O'])).toBe(true)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', metaKey: true }), ['Win', 'O'])).toBe(true)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', ctrlKey: true, shiftKey: true }), ['CtrlCmd', 'O'])).toBe(false)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO' }), ['Alt', 'O'])).toBe(false)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO' }), ['Ctrl', 'O'])).toBe(false)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO' }), ['Shift', 'O'])).toBe(false)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO' }), ['Win', 'O'])).toBe(false)
     expect(keybinding.matchKeys(new MouseEvent('click', { button: 0 }), [0])).toBe(true)
     expect(keybinding.matchKeys(new MouseEvent('click', { button: 2 }), [0])).toBe(false)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO' }), [])).toBe(false)
+  })
+
+  test('uses mac and other platform labels and modifiers', async () => {
+    envMocks.isMacOS = true
+    envMocks.isWindows = false
+    let keybinding = await import('@fe/core/keybinding')
+
+    expect(keybinding.hasCtrlCmd(keyboardEvent('keydown', { key: 'k', code: 'KeyK', metaKey: true }))).toBe(true)
+    expect(keybinding.getKeysLabel(['CtrlCmd', 'Alt', 'Shift', 'Meta'])).toBe('⌘ ⌥ ⇧ ⌘')
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'k', code: 'KeyK', metaKey: true }), ['Cmd', 'K'])).toBe(true)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'k', code: 'KeyK' }), ['Cmd', 'K'])).toBe(false)
+
+    vi.resetModules()
+    envMocks.isMacOS = false
+    envMocks.isOtherOS = true
+    envMocks.isWindows = false
+    keybinding = await import('@fe/core/keybinding')
+    expect(keybinding.getKeyLabel('Meta')).toBe('Meta')
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'k', code: 'KeyK', metaKey: true }), ['Meta', 'K'])).toBe(true)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'k', code: 'KeyK' }), ['Meta', 'K'])).toBe(false)
   })
 
   test('records keydown state and clears it on keyup', async () => {
@@ -103,6 +146,36 @@ describe('renderer keybinding utilities', () => {
     expect(event.stopPropagation).toHaveBeenCalled()
     expect(event.preventDefault).toHaveBeenCalled()
     expect(actionMocks.getActionHandler).toHaveBeenCalledWith('open')
+    expect(actionMocks.handler).toHaveBeenCalledTimes(1)
+  })
+
+  test('handles iframe keyboard-like events and mac dead-key focus restoration', async () => {
+    vi.useFakeTimers()
+    envMocks.isMacOS = true
+    envMocks.isWindows = false
+    const keybinding = await import('@fe/core/keybinding')
+    const target = { blur: vi.fn(), focus: vi.fn() }
+    const event = {
+      type: 'keydown',
+      key: 'Dead',
+      code: 'KeyE',
+      metaKey: true,
+      ctrlKey: false,
+      altKey: false,
+      shiftKey: false,
+      target,
+      stopPropagation: vi.fn(),
+      preventDefault: vi.fn(),
+      toString: () => '[object KeyboardEvent]',
+    } as any
+    actionMocks.actions = [{ name: 'accent', keys: ['CtrlCmd', 'E'] }]
+
+    expect(keybinding.matchKeys(event, ['CtrlCmd', 'E'])).toBe(true)
+    keybinding.keydownHandler(event)
+    vi.runAllTimers()
+
+    expect(target.blur).toHaveBeenCalledTimes(1)
+    expect(target.focus).toHaveBeenCalledTimes(1)
     expect(actionMocks.handler).toHaveBeenCalledTimes(1)
   })
 

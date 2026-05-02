@@ -46,6 +46,57 @@ describe('zero coverage plugin entries', () => {
     vi.clearAllMocks()
   })
 
+  it('build-in-renderers handles markdown, plain text, html, and saved html refresh branches', async () => {
+    const { default: plugin } = await import('../build-in-renderers')
+    const renderers: any[] = []
+    const base = makeHookCtx()
+    const ctx = {
+      ...base,
+      args: { CSS_VAR_NAME: { PREVIEWER_HEIGHT: '--preview-height' } },
+      base: { getAttachmentURL: vi.fn(() => '/attachment/page.html') },
+      doc: { isMarkdownFile: vi.fn((file: any) => file.path.endsWith('.md')) },
+      embed: { IFrame: { name: 'IFrame' } },
+      lib: { vue: { h: vi.fn((tag: any, props?: any, children?: any) => ({ tag, props, children })) } },
+      markdown: { markdown: { render: vi.fn(() => '<p>md</p>') } },
+      renderer: { registerRenderer: vi.fn((renderer: any) => renderers.push(renderer)) },
+      view: { render: vi.fn() },
+    } as any
+
+    plugin.register(ctx)
+
+    const notMarkdown = renderers.find(renderer => renderer.name === 'not-markdown-file')
+    const markdown = renderers.find(renderer => renderer.name === 'markdown')
+    const plainText = renderers.find(renderer => renderer.name === 'plain-text')
+    const html = renderers.find(renderer => renderer.name === 'html')
+
+    expect(notMarkdown.when({ file: undefined })).toBe(true)
+    expect(notMarkdown.when({ file: { path: '/note.md' } })).toBe(false)
+    expect(notMarkdown.render('', { file: undefined })[0].children).toBeUndefined()
+    expect(notMarkdown.render('', { file: { name: 'data.csv' } })[1].props[0].props).toBe('Not a markdown file.')
+
+    expect(markdown.when({ file: { path: '/note.md' } })).toBe(true)
+    expect(markdown.when({ file: null })).toBe(false)
+    expect(markdown.render('# hi', { file: { path: '/note.md' } })).toBe('<p>md</p>')
+
+    expect(plainText.when({ file: { path: '/README.TXT' } })).toBe(true)
+    expect(plainText.when({ file: null })).toBe(false)
+    expect(plainText.render('plain').children).toBe('plain')
+
+    expect(html.when({ file: { type: 'file', path: '/page.html' }, safeMode: false })).toBe(true)
+    expect(html.when({ file: { type: 'file', path: '/page.html' }, safeMode: true })).toBe(false)
+    expect(html.when({ file: { type: 'file', path: '/page.txt' }, safeMode: false })).toBe(false)
+    expect(html.render('<main />', { file: { type: 'file', path: '/page.html' } }).props.html).toContain('/attachment/page.html?_t=0')
+    expect(html.render('<main />', { file: undefined }).props.html).toBe('<main />')
+
+    base.hooks.get('DOC_SAVED')![0]({ doc: { type: 'file', path: '/note.md' } })
+    expect(ctx.view.render).not.toHaveBeenCalled()
+    const now = vi.spyOn(Date, 'now').mockReturnValue(1234)
+    base.hooks.get('DOC_SAVED')![0]({ doc: { type: 'file', path: '/page.html' } })
+    expect(ctx.view.render).toHaveBeenCalledTimes(1)
+    expect(html.render('<main />', { file: { type: 'file', path: '/page.html' } }).props.html).toContain('/attachment/page.html?_t=1234')
+    now.mockRestore()
+  })
+
   it('sync-scroll registers editor scroll, model, and preview click sync hooks', async () => {
     vi.useFakeTimers()
     const { default: plugin } = await import('../sync-scroll')

@@ -1,4 +1,5 @@
 const mocks = vi.hoisted(() => {
+  const defaultToastShow = vi.fn()
   const defaultCtx = {
     doc: {
       switchDoc: vi.fn(),
@@ -7,12 +8,13 @@ const mocks = vi.hoisted(() => {
       changePosition: vi.fn(),
     },
     ui: {
-      useToast: vi.fn(() => ({ show: vi.fn() })),
+      useToast: vi.fn(() => ({ show: defaultToastShow })),
     },
   }
 
   return {
     defaultCtx,
+    defaultToastShow,
     fetchTree: vi.fn(),
     getAttachmentURL: vi.fn((file: any) => `asset://${file.repo}${file.path}`),
     getAvailableCustomEditors: vi.fn(),
@@ -21,6 +23,10 @@ const mocks = vi.hoisted(() => {
     openExternal: vi.fn(),
     openPath: vi.fn(),
     toastShow: vi.fn(),
+    currentFile: { repo: 'repo-a', path: '/notes/current.md', name: 'current.md' } as any,
+    currentRepo: { name: 'repo-a' } as any,
+    isElectron: true,
+    isWindows: false,
     tree: [] as any[],
   }
 })
@@ -49,16 +55,26 @@ vi.mock('@fe/support/args', () => ({
 vi.mock('@fe/support/store', () => ({
   default: {
     state: {
-      currentFile: { repo: 'repo-a', path: '/notes/current.md', name: 'current.md' },
-      currentRepo: { name: 'repo-a' },
-      tree: mocks.tree,
+      get currentFile () {
+        return mocks.currentFile
+      },
+      get currentRepo () {
+        return mocks.currentRepo
+      },
+      get tree () {
+        return mocks.tree
+      },
     },
   },
 }))
 
 vi.mock('@fe/support/env', () => ({
-  isElectron: true,
-  isWindows: false,
+  get isElectron () {
+    return mocks.isElectron
+  },
+  get isWindows () {
+    return mocks.isWindows
+  },
 }))
 
 vi.mock('@fe/support/ui/toast', () => ({
@@ -171,8 +187,10 @@ describe('markdown-link plugin entry', () => {
   beforeEach(() => {
     mocks.defaultCtx.doc.switchDoc.mockReset()
     mocks.defaultCtx.routines.changePosition.mockReset()
+    mocks.defaultToastShow.mockReset()
     mocks.fetchTree.mockReset()
     mocks.getAvailableCustomEditors.mockReset()
+    mocks.getAvailableCustomEditors.mockResolvedValue([])
     mocks.getRenderEnv.mockReset()
     mocks.getRenderEnv.mockReturnValue({ file: { repo: 'repo-a', path: '/notes/current.md', name: 'current.md' } })
     mocks.getRepo.mockReset()
@@ -180,6 +198,10 @@ describe('markdown-link plugin entry', () => {
     mocks.openExternal.mockReset()
     mocks.openPath.mockReset()
     mocks.toastShow.mockReset()
+    mocks.currentFile = { repo: 'repo-a', path: '/notes/current.md', name: 'current.md' }
+    mocks.currentRepo = { name: 'repo-a' }
+    mocks.isElectron = true
+    mocks.isWindows = false
     mocks.tree.length = 0
     mocks.tree.push({ type: 'file', name: 'Wiki.md', path: '/notes/Wiki.md' })
   })
@@ -278,6 +300,84 @@ describe('markdown-link plugin entry', () => {
     }, { source: 'markdown-link', position: { anchor: 'Intro' } })
   })
 
+  test('covers browser external links, javascript links, nested anchors, and no-current-file clicks', async () => {
+    const open = vi.fn()
+    vi.stubGlobal('open', open)
+    const ctx = createCtx()
+    markdownLink.register(ctx)
+    const click = ctx.hooks.get('VIEW_ELEMENT_CLICK')![0]
+
+    mocks.isElectron = false
+    const external = document.createElement('a')
+    external.href = 'https://browser.example/page'
+    external.setAttribute('href', 'https://browser.example/page')
+    const child = document.createElement('span')
+    external.appendChild(child)
+    await click({ e: eventFor(child) })
+    expect(open).toHaveBeenCalledWith('https://browser.example/page')
+
+    const javascript = document.createElement('a')
+    javascript.setAttribute('href', 'javascript:alert(1)')
+    const jsEvent = eventFor(javascript)
+    expect(await click({ e: jsEvent })).toBe(true)
+    expect(jsEvent.preventDefault).not.toHaveBeenCalled()
+
+    const plain = document.createElement('span')
+    expect(await click({ e: eventFor(plain) })).toBe(false)
+
+    mocks.getRenderEnv.mockReturnValue(null)
+    mocks.currentFile = null
+    const noFile = document.createElement('a')
+    noFile.setAttribute('href', './target.md')
+    const noFileEvent = eventFor(noFile)
+    await click({ e: noFileEvent })
+    expect(noFileEvent.preventDefault).not.toHaveBeenCalled()
+  })
+
+  test('handles external open failures, same-file anchors, and non-markdown files with or without custom editors', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const ctx = createCtx()
+    markdownLink.register(ctx)
+    const click = ctx.hooks.get('VIEW_ELEMENT_CLICK')![0]
+
+    mocks.openExternal.mockImplementationOnce(() => {
+      throw new Error('open failed')
+    })
+    const external = document.createElement('a')
+    external.href = 'https://fail.example'
+    external.setAttribute('href', 'https://fail.example')
+    await click({ e: eventFor(external) })
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'Failed to open link')
+
+    const anchor = document.createElement('a')
+    anchor.setAttribute('href', '#Intro')
+    await click({ e: eventFor(anchor) })
+    expect(mocks.defaultCtx.doc.switchDoc).toHaveBeenCalledWith(
+      { repo: 'repo-a', path: '/notes/current.md', name: 'current.md' },
+      { source: 'markdown-link', position: { anchor: 'Intro' } },
+    )
+
+    const customEditor = document.createElement('a')
+    customEditor.setAttribute('href', './data.csv')
+    mocks.getAvailableCustomEditors.mockResolvedValueOnce([{ name: 'csv' }])
+    await click({ e: eventFor(customEditor) })
+    await Promise.resolve()
+    expect(mocks.defaultCtx.doc.switchDoc).toHaveBeenCalledWith(expect.objectContaining({
+      path: '/notes/data.csv',
+      repo: 'repo-a',
+    }), expect.objectContaining({ source: 'markdown-link' }))
+
+    const openFile = document.createElement('a')
+    openFile.setAttribute('href', './data.bin')
+    mocks.isWindows = true
+    mocks.getRepo.mockReturnValueOnce({ path: '/repo-root' })
+    await click({ e: eventFor(openFile) })
+    await Promise.resolve()
+    expect(mocks.openPath).toHaveBeenCalledWith(expect.stringContaining('repo-root'))
+
+    error.mockRestore()
+  })
+
   test('opens marked links on disk and resolves wiki links through current or fetched trees', async () => {
     const ctx = createCtx()
     markdownLink.register(ctx)
@@ -312,6 +412,22 @@ describe('markdown-link plugin entry', () => {
     }), expect.any(Object))
   })
 
+  test('warns when fetched wiki links cannot resolve to an internal document', async () => {
+    const ctx = createCtx()
+    markdownLink.register(ctx)
+    const click = ctx.hooks.get('VIEW_ELEMENT_CLICK')![0]
+
+    mocks.getRenderEnv.mockReturnValue({ file: { repo: 'repo-b', path: '/notes/current.md', name: 'current.md' } })
+    mocks.fetchTree.mockRejectedValueOnce(new Error('offline'))
+    const missingWiki = document.createElement('a')
+    missingWiki.setAttribute(DOM_ATTR_NAME.WIKI_LINK, 'true')
+    missingWiki.setAttribute('href', 'https://example.com')
+    await click({ e: eventFor(missingWiki) })
+    await Promise.resolve()
+
+    expect(mocks.defaultToastShow).toHaveBeenCalledWith('warning', 'Invalid File Path.')
+  })
+
   test('refresh hook busts local image cache and doc switch hooks apply positions', async () => {
     const ctx = createCtx()
     markdownLink.register(ctx)
@@ -333,6 +449,10 @@ describe('markdown-link plugin entry', () => {
     switched({ doc: { path: '/a.md' }, opts: { position: { anchor: 'A' } } })
     expect(ctx.routines.changePosition).toHaveBeenCalledWith({ line: 3 })
     expect(ctx.routines.changePosition).toHaveBeenCalledWith({ anchor: 'A' })
+
+    skipped({ opts: {} })
+    switched({ doc: null, opts: { position: { line: 9 } } })
+    expect(ctx.routines.changePosition).toHaveBeenCalledTimes(2)
   })
 
   test('adds a context menu to convert bare urls into titled links', async () => {
@@ -357,5 +477,32 @@ describe('markdown-link plugin entry', () => {
     expect(ctx.api.proxyFetch).toHaveBeenCalledWith('https://example.com/', { timeout: 10000 })
     expect(ctx.editor.getLinesContent).toHaveBeenCalledWith(2, 2)
     expect(ctx.editor.replaceLines).toHaveBeenCalledWith(2, 2, '[Example Title](https://example.com)')
+  })
+
+  test('context menu ignores non-bare links and reports title lookup failures', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const ctx = createCtx()
+    markdownLink.register(ctx)
+    const tap = ctx.view.tapContextMenus.mock.calls[0][0]
+    const parent = document.createElement('p')
+    parent.dataset.sourceLine = '2'
+    parent.setAttribute(DOM_ATTR_NAME.SOURCE_LINE_START, '2')
+    parent.setAttribute(DOM_ATTR_NAME.SOURCE_LINE_END, '3')
+    const link = document.createElement('a')
+    link.href = 'https://example.com'
+    link.setAttribute('href', 'https://example.com')
+    link.innerText = 'Example'
+    parent.appendChild(link)
+    const menus: any[] = []
+
+    tap(menus, { target: link })
+    expect(menus).toHaveLength(0)
+
+    link.innerText = 'https://example.com'
+    ctx.api.proxyFetch.mockResolvedValueOnce({ text: async () => '<html></html>' })
+    tap(menus, { target: link })
+    await menus[0].onClick()
+    expect(mocks.toastShow).toHaveBeenCalledWith('warning', 'No title')
+    error.mockRestore()
   })
 })
