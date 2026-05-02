@@ -313,6 +313,7 @@ async function runRequest (overrides: Record<string, any>) {
 describe('server index module', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.doUnmock('node-pty')
     mocks.actions.clear()
     mocks.MockKoa.instances.length = 0
     mocks.disableServer = true
@@ -753,5 +754,181 @@ describe('server index module', () => {
     await killPtyProcesses()
 
     expect(ptyProcess.kill).not.toHaveBeenCalled()
+  })
+
+  test('wraps attachment, private repo, custom css, and proxy error boundaries', async () => {
+    await expect(runRequest({ path: '/api/attachment' })).resolves.toMatchObject({
+      body: { status: 'error', message: 'Invalid path.', data: null }
+    })
+
+    mocks.jwtVerify.mockReturnValueOnce({ role: 'guest' })
+    await expect(runRequest({
+      headers: { authorization: 'Bearer guest' },
+      path: '/api/file',
+      query: { repo: '__private', path: '/a.md', exists: 'true' }
+    })).resolves.toMatchObject({
+      body: { status: 'error', message: 'Forbidden', data: null }
+    })
+
+    mocks.configGet.mockReturnValueOnce('missing.css')
+    mocks.fsReadFile
+      .mockRejectedValueOnce(new Error('missing custom css'))
+      .mockResolvedValueOnce(Buffer.from('default css'))
+      .mockResolvedValueOnce(Buffer.from('restored css'))
+    const css = await runRequest({ path: '/custom-css' })
+    expect(mocks.fsWriteFile).toHaveBeenCalledWith('/themes/github.css', Buffer.from('default css'))
+    expect(mocks.configSet).toHaveBeenCalledWith('custom-css', 'github.css')
+    expect(css.body).toEqual(Buffer.from('restored css'))
+
+    const upstreamError = new Error('upstream failed')
+    mocks.request.mockRejectedValueOnce(upstreamError)
+    await expect(runRequest({
+      originalUrl: '/api/proxy-fetch/https://example.test/fail',
+      path: '/api/proxy-fetch/https://example.test/fail'
+    })).resolves.toMatchObject({
+      status: 500,
+      body: { status: 'error', message: 'upstream failed', data: null }
+    })
+  })
+
+  test('covers attachment fallback edge cases and filesystem ranges', async () => {
+    const enoent = Object.assign(new Error('missing'), { code: 'ENOENT' })
+
+    mocks.fileStat.mockRejectedValueOnce(enoent)
+    const fallbackRange = await runRequest({
+      headers: { range: 'bytes=3-' },
+      path: '/api/attachment',
+      query: { repo: 'main', path: '/absolute/photo.png' }
+    })
+    expect(mocks.fsStat).toHaveBeenCalledWith('/absolute/photo.png')
+    expect(mocks.fsCreateReadStream).toHaveBeenCalledWith('/absolute/photo.png', { start: 3, end: 7 })
+    expect(fallbackRange.status).toBe(206)
+    expect(fallbackRange.body).toBe('fs-stream')
+    expect(fallbackRange.responseHeaders).toMatchObject({
+      'Content-Length': 5,
+      'Content-Range': 'bytes 3-7/8'
+    })
+
+    mocks.fileRead.mockRejectedValueOnce(enoent)
+    await expect(runRequest({
+      path: '/api/attachment',
+      query: { repo: 'main', path: '/absolute/readme.txt' }
+    })).resolves.toMatchObject({
+      status: 404,
+      body: { status: 'error', message: 'Not found', data: null }
+    })
+
+    mocks.fileRead.mockRejectedValueOnce(enoent)
+    mocks.fsReadFile.mockRejectedValueOnce(Object.assign(new Error('no access'), { code: 'EACCES' }))
+    await expect(runRequest({
+      path: '/api/attachment',
+      query: { repo: 'main', path: '/absolute/photo.png' }
+    })).resolves.toMatchObject({
+      body: { status: 'error', message: 'no access', data: null }
+    })
+  })
+
+  test('serves help assets, settings bootstrap js, extension files, and proxy dispatchers', async () => {
+    const helpAsset = await runRequest({ path: '/api/help', query: { path: '../guide.png' } })
+    expect(helpAsset.type).toBe('image/png')
+    expect(mocks.fsReadFile).toHaveBeenCalledWith('/help/guide.png')
+
+    mocks.configGetAll.mockReturnValueOnce({ theme: 'plain.css', 'api-token': 'secret' })
+    const settingsJs = await runRequest({ path: '/api/settings/js' })
+    expect(settingsJs.type).toBe('application/javascript; charset=utf-8')
+    expect(settingsJs.body).toBe('_INIT_SETTINGS = {"theme":"plain.css","api-token":"secret"}')
+    expect(settingsJs.responseHeaders).toMatchObject({
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      Pragma: 'no-cache'
+    })
+
+    mocks.fsExistsSync.mockReturnValueOnce(true)
+    const extensionFile = await runRequest({ path: '/extensions/foo/main.js' })
+    expect(mocks.fsReadFile).toHaveBeenCalledWith('/extensions/foo/main.js')
+    expect(extensionFile.type).toBe('.js')
+    expect(extensionFile.responseHeaders['Cache-Control']).toBe('no-store, no-cache, must-revalidate')
+
+    const responseBody = new mocks.PassThrough()
+    mocks.request.mockResolvedValueOnce({ body: responseBody, headers: {}, statusCode: 204 })
+    await runRequest({
+      headers: { 'x-proxy-url': 'http://proxy.test', host: 'local' },
+      originalUrl: '/api/proxy-fetch/https://example.test/proxied',
+      path: '/api/proxy-fetch/https://example.test/proxied'
+    })
+    expect(mocks.actions.get('new-proxy-dispatcher')).toHaveBeenCalledWith('http://proxy.test')
+    expect(mocks.request).toHaveBeenCalledWith('https://example.test/proxied', expect.objectContaining({
+      maxRedirections: 3
+    }))
+    responseBody.emit('close')
+  })
+
+  test('falls back through static, theme, directory index, and missing files', async () => {
+    mocks.fsExistsSync
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true)
+    const themeFallback = await runRequest({ path: '/custom.css' })
+    expect(mocks.fsReadFile).toHaveBeenCalledWith('/themes/custom.css')
+    expect(themeFallback.body).toEqual(Buffer.from('disk-content'))
+
+    mocks.fsExistsSync
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(true)
+    mocks.fsStatSync
+      .mockReturnValueOnce({ isDirectory: () => true, mtime: new Date('2026-05-02T00:00:00Z'), size: 0 })
+      .mockReturnValueOnce({ isDirectory: () => false, mtime: new Date('2026-05-02T00:00:00Z'), size: 9 })
+    const directoryIndex = await runRequest({ path: '/docs' })
+    expect(mocks.fsReadFile).toHaveBeenCalledWith('/static/docs/index.html')
+    expect(directoryIndex.type).toBe('.html')
+  })
+
+  test('starts websocket server and handles localhost and non-localhost socket branches', async () => {
+    const Module = (await import('node:module')).default as any
+    const originalLoad = Module._load
+    const loadSpy = vi.spyOn(Module, '_load').mockImplementation((request: string, parent: any, isMain: boolean) => {
+      if (request === 'http') {
+        return { createServer: mocks.httpCreateServer }
+      }
+      if (request === 'socket.io') {
+        return mocks.socketIo
+      }
+      if (request === 'node-pty') {
+        throw new Error('node-pty unavailable')
+      }
+      return originalLoad.call(Module, request, parent, isMain)
+    })
+    mocks.disableServer = false
+
+    try {
+      const { default: server } = await loadServer()
+      const started = server(3999)
+      expect(started.server).toBe(mocks.httpServer)
+      expect(mocks.socketIo).toHaveBeenCalledWith(mocks.httpServer, { path: '/ws' })
+      expect(mocks.httpServer.listen).toHaveBeenCalledWith(3999, '127.0.0.1')
+
+      const remoteSocket = {
+        client: { conn: { remoteAddress: '203.0.113.10' } },
+        disconnect: vi.fn(),
+        emit: vi.fn(),
+        handshake: { query: {} },
+        on: vi.fn()
+      }
+      mocks.socketEmitter.emit('connection', remoteSocket)
+      expect(remoteSocket.disconnect).toHaveBeenCalled()
+
+      const localSocket = {
+        client: { conn: { remoteAddress: '127.0.0.1' } },
+        disconnect: vi.fn(),
+        emit: vi.fn(),
+        handshake: { query: {} },
+        on: vi.fn()
+      }
+      mocks.socketEmitter.emit('connection', localSocket)
+      expect(localSocket.emit).toHaveBeenCalledWith(
+        'output',
+        expect.stringContaining('node-pty is not compatible')
+      )
+    } finally {
+      loadSpy.mockRestore()
+    }
   })
 })

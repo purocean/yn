@@ -362,4 +362,48 @@ describe('server file module', () => {
     expect(worker.send).toHaveBeenLastCalledWith({ id: secondInitMessage.id, type: 'stop' })
     response2.destroy()
   })
+
+  test('surfaces corrupted history archives and skips history when the configured limit is below one', async () => {
+    const filePath = path.join(mocks.repoPath, 'bad.md')
+    await fs.outputFile(filePath, 'current')
+
+    const compressed = new AdmZip()
+    compressed.addFile('unexpected.zip', Buffer.from('bad'))
+    compressed.writeZip(path.join(mocks.historyDir, path.basename(filePath) + '.' + md5(filePath) + '.zip'))
+
+    await expect(file.historyList('main', '/bad.md')).rejects.toThrow('history zip file error')
+
+    mocks.configGet.mockImplementation((key: string, defaultValue: any) => {
+      if (key === 'doc-history.number-limit') return 0
+      return defaultValue
+    })
+
+    await file.write('main', '/skip-history.md', 'no history')
+    await new Promise(resolve => setTimeout(resolve, 20))
+
+    await expect(file.historyList('main', '/skip-history.md')).resolves.toEqual({ list: [], size: 0 })
+  })
+
+  test('cleans watch streams on app quit, worker exit, and response errors', async () => {
+    const worker = new (require('node:events').EventEmitter)()
+    worker.send = vi.fn()
+    mocks.fork.mockReturnValue(worker)
+
+    const response = await file.watchFile('main', '/quit.md', { recursive: false } as any)
+    const initMessage = worker.send.mock.calls[0][0]
+    mocks.app.emit('quit')
+    expect(worker.send).toHaveBeenLastCalledWith({ id: initMessage.id, type: 'stop' })
+    response.removeAllListeners()
+    response.destroy()
+
+    const response2 = await file.watchFile('main', '/exit.md', { recursive: false } as any)
+    worker.emit('exit', 9)
+    expect(mocks.fork).toHaveBeenCalledTimes(1)
+    expect(response2).toBeDefined()
+
+    const response3 = await file.watchFile('main', '/error.md', { recursive: false } as any)
+    const thirdInitMessage = worker.send.mock.calls.at(-1)[0]
+    response3.emit('error', new Error('stream failed'))
+    expect(worker.send).toHaveBeenLastCalledWith({ id: thirdInitMessage.id, type: 'stop' })
+  })
 })

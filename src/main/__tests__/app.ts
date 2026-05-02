@@ -581,4 +581,71 @@ describe('main app entry', () => {
     })
     expect(webContents.windowOpenHandler({ url: 'https://host/__allow-open-window__', features: '' })).toEqual({ action: 'allow' })
   })
+
+  test('handles unsaved-document cancellation and quit without an active window', async () => {
+    await loadApp()
+    mocks.appEvents.ready()
+    const win = mocks.browserWindowInstances[0]
+
+    win.webContents.executeJavaScript.mockResolvedValueOnce(false)
+    mocks.dialogShowMessageBox.mockResolvedValueOnce({ response: 0 })
+    await expect(mocks.actions.quit()).rejects.toThrow('document not saved')
+    expect(mocks.killPtyProcesses).not.toHaveBeenCalled()
+    expect(win.destroy).not.toHaveBeenCalled()
+
+    win.events.closed()
+    const electron = await import('electron')
+    await mocks.actions.quit()
+    expect(electron.app.exit).toHaveBeenCalledWith(0)
+  })
+
+  test('exits when server setup throws and rethrows non-port server errors', async () => {
+    const electron = await import('electron')
+    mocks.httpServer.mockImplementationOnce(() => {
+      throw new Error('boot failed')
+    })
+    await loadApp()
+
+    mocks.appEvents.ready()
+    expect(electron.app.exit).toHaveBeenCalledWith(-1)
+
+    vi.resetModules()
+    mocks.httpServer.mockReturnValueOnce({
+      callback: mocks.httpHandler,
+      server: {
+        on: vi.fn((event: string, handler: Function) => {
+          mocks.serverEvents[event] = handler
+        }),
+      },
+    })
+    await loadApp()
+    mocks.appEvents.ready()
+    expect(() => mocks.serverEvents.error(new Error('listen failed'))).toThrow('listen failed')
+  })
+
+  test('covers deferred mac open-file and empty frame branches', async () => {
+    await loadApp()
+
+    const preventDefault = vi.fn()
+    mocks.appEvents['open-file']({ preventDefault }, '/tmp/deferred.md')
+    expect(preventDefault).toHaveBeenCalled()
+
+    mocks.appEvents.ready()
+    const win = mocks.browserWindowInstances[0]
+    win.webContents.isLoading.mockReturnValueOnce(false)
+    win.events['once:ready-to-show']()
+    await flushPromises()
+
+    expect(mocks.jsonRPCClient.call.ctx.doc.switchDocByPath).toHaveBeenCalledWith('/tmp/deferred.md')
+
+    const webContents = {
+      events: {} as Record<string, Function>,
+      on: vi.fn((event: string, handler: Function) => {
+        webContents.events[event] = handler
+      }),
+      setWindowOpenHandler: vi.fn(),
+    }
+    mocks.appEvents['web-contents-created']({}, webContents)
+    expect(() => webContents.events['frame-created']({}, { frame: null })).not.toThrow()
+  })
 })
