@@ -8,9 +8,35 @@ import * as view from './view'
 import { t } from './i18n'
 import { getEditor } from './editor'
 
+export type LayoutContainerName = 'layout' | 'aside' | 'right' | 'content' | 'editor' | 'preview' | 'terminal' | 'contentRightSide'
+
+const containerDoms: Partial<Record<LayoutContainerName, HTMLElement>> = {}
+
 const emitResizeDebounce = throttle(() => {
   triggerHook('GLOBAL_RESIZE')
 }, 50, { leading: true })
+
+/**
+ * Set layout container dom.
+ * @param name
+ * @param dom
+ */
+export function setContainerDom (name: LayoutContainerName, dom: HTMLElement | null) {
+  if (dom) {
+    containerDoms[name] = dom
+  } else {
+    delete containerDoms[name]
+  }
+}
+
+/**
+ * Get layout container dom.
+ * @param name
+ * @returns
+ */
+export function getContainerDom (name: LayoutContainerName) {
+  return containerDoms[name] || null
+}
 
 /**
  * Trigger resize hook after next tick.

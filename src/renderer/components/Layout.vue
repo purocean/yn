@@ -1,5 +1,5 @@
 <template>
-  <div :class="{layout: true, presentation, electron: isElectron}">
+  <div ref="layout" :class="{layout: true, presentation, electron: isElectron}">
     <div class="header" v-show="isElectron && !isFullscreen">
       <slot name="header"></slot>
     </div>
@@ -8,7 +8,7 @@
         <slot name="left"></slot>
         <div class="sash-right" @dblclick="resetSize('right', 'aside')" @mousedown="e => initResize('right', 'aside', 130, 700, e)"></div>
       </div>
-      <div class="right">
+      <div class="right" ref="right">
         <div class="right-before">
           <slot name="right-before" />
         </div>
@@ -16,7 +16,7 @@
           <div class="editor" ref="editor" v-show="showEditor">
             <slot name="editor"></slot>
           </div>
-          <div :class="{preview: true, 'preview-hidden': !presentation && !showView}">
+          <div ref="preview" :class="{preview: true, 'preview-hidden': !presentation && !showView}">
             <div v-if="showView && showEditor" class="sash-left" @dblclick="resetSize('right', 'editor')" @mousedown="initEditorResize"></div>
             <slot name="preview"></slot>
           </div>
@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watchPostEffect } from 'vue'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
-import { emitResize, toggleEditor, toggleSide, toggleView, toggleContentRightSide, toggleXterm } from '@fe/services/layout'
+import { emitResize, setContainerDom, toggleEditor, toggleSide, toggleView, toggleContentRightSide, toggleXterm, type LayoutContainerName } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
 import store from '@fe/support/store'
 
@@ -51,8 +51,11 @@ export default defineComponent({
   setup () {
     const { showView, showXterm, showSide, showEditor, presentation, isFullscreen, showContentRightSide } = toRefs(store.state)
 
+    const layout = ref<HTMLElement | null>(null)
     const aside = ref<HTMLElement | null>(null)
+    const right = ref<HTMLElement | null>(null)
     const editor = ref<HTMLElement | null>(null)
+    const preview = ref<HTMLElement | null>(null)
     const terminal = ref<HTMLElement | null>(null)
     const content = ref<HTMLElement | null>(null)
     const contentRightSide = ref<HTMLElement | null>(null)
@@ -251,12 +254,23 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      setContainerDom('layout', layout.value)
+      setContainerDom('aside', aside.value)
+      setContainerDom('right', right.value)
+      setContainerDom('content', content.value)
+      setContainerDom('editor', editor.value)
+      setContainerDom('preview', preview.value)
+      setContainerDom('terminal', terminal.value)
+      setContainerDom('contentRightSide', contentRightSide.value)
+
       window.addEventListener('resize', emitResize)
       window.document.addEventListener('mousemove', resizeFrame)
       window.document.addEventListener('mouseup', resizeDone)
     })
 
     onBeforeUnmount(() => {
+      ;(['layout', 'aside', 'right', 'content', 'editor', 'preview', 'terminal', 'contentRightSide'] as LayoutContainerName[]).forEach(name => setContainerDom(name, null))
+
       window.removeEventListener('resize', emitResize)
       window.document.removeEventListener('mousemove', resizeFrame)
       window.document.removeEventListener('mouseup', resizeDone)
@@ -278,8 +292,11 @@ export default defineComponent({
       presentation,
       isElectron,
       isFullscreen,
+      layout,
       aside,
+      right,
       editor,
+      preview,
       terminal,
       content,
       contentRightSide,
