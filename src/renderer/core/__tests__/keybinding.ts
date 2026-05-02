@@ -84,8 +84,10 @@ describe('renderer keybinding utilities', () => {
     const keybinding = await import('@fe/core/keybinding')
 
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', ctrlKey: true }), ['CtrlCmd', 'O'])).toBe(true)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO' }), ['CtrlCmd', 'O'])).toBe(false)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: '1', code: 'Digit1', ctrlKey: true }), ['Ctrl', '1'])).toBe(true)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'ArrowUp', code: 'ArrowUp' }), ['up'])).toBe(true)
+    expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO' }), ['P'])).toBe(false)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', altKey: true }), ['Alt', 'O'])).toBe(true)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', shiftKey: true }), ['Shift', 'O'])).toBe(true)
     expect(keybinding.matchKeys(keyboardEvent('keydown', { key: 'o', code: 'KeyO', metaKey: true }), ['Win', 'O'])).toBe(true)
@@ -136,6 +138,7 @@ describe('renderer keybinding utilities', () => {
 
     actionMocks.actions = [
       { name: 'disabled', keys: ['CtrlCmd', 'O'], when: () => false },
+      { name: 'no-keys' },
       { name: 'open', keys: ['CtrlCmd', 'O'] },
       { name: 'later', keys: ['CtrlCmd', 'O'] },
     ]

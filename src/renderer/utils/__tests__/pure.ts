@@ -136,8 +136,7 @@ describe('pure utilities', () => {
   })
 
   describe('fileToBase64URL', () => {
-    test.skip('should convert File to base64 URL', async () => {
-      // Skipped: requires browser FileReader API
+    test('should convert File to base64 URL', async () => {
       const file = new File(['Hello World'], 'test.txt', { type: 'text/plain' })
       const base64URL = await fileToBase64URL(file)
 
@@ -145,8 +144,7 @@ describe('pure utilities', () => {
       expect(base64URL).toContain('SGVsbG8gV29ybGQ=')
     })
 
-    test.skip('should convert Blob to base64 URL', async () => {
-      // Skipped: requires browser FileReader API
+    test('should convert Blob to base64 URL', async () => {
       const blob = new Blob(['Test content'], { type: 'text/plain' })
       const base64URL = await fileToBase64URL(blob)
 
@@ -154,8 +152,7 @@ describe('pure utilities', () => {
       expect(base64URL).toContain('VGVzdCBjb250ZW50')
     })
 
-    test.skip('should handle empty file', async () => {
-      // Skipped: requires browser FileReader API
+    test('should handle empty file', async () => {
       const file = new File([], 'empty.txt', { type: 'text/plain' })
       const base64URL = await fileToBase64URL(file)
 

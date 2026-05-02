@@ -37,6 +37,9 @@ describe('renderer action registry', () => {
     action.removeAction('alpha')
     expect(action.getAction('alpha')).toBeUndefined()
     expect(action.getRawActions().map(item => item.name)).toEqual(['beta'])
+
+    action.removeAction('missing')
+    expect(action.getRawActions().map(item => item.name)).toEqual(['beta'])
   })
 
   test('applies action tappers to cloned actions', async () => {

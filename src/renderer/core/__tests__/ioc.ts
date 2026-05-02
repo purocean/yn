@@ -3,6 +3,7 @@ import * as ioc from '@fe/core/ioc'
 test('ioc usage', () => {
   expect(ioc.get('ACTION_AFTER_RUN')).toEqual([])
   ioc.remove('ACTION_AFTER_RUN', null)
+  ioc.removeWhen('ACTION_AFTER_RUN', () => true)
   ioc.register('ACTION_AFTER_RUN', 'test')
   ioc.register('ACTION_AFTER_RUN', 'test1')
   expect(ioc.get('ACTION_AFTER_RUN')).toEqual(['test', 'test1'])
