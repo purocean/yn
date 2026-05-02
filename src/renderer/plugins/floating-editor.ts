@@ -25,6 +25,8 @@ const SCREEN_MARGIN = 8
 const HINT_STORAGE_KEY = 'plugin.floating-editor.preview-hint-count'
 const HINT_LIMIT = 3
 const HINT_DURATION = 5000
+const EDITOR_SCROLL_SYNC_PAUSE_TIMEOUT = 350
+const CLOSE_SYNC_PAUSE_TIMEOUT = 800
 const PREVIEW_CLICK_IGNORE_TAGS = ['button', 'input', 'textarea', 'select', 'option', 'img', 'canvas', 'video', 'audio', 'details', 'summary']
 
 function clamp (value: number, min: number, max: number) {
@@ -210,7 +212,7 @@ export default {
         return
       }
 
-      ctx.view.disableSyncScrollAwhile(() => undefined, 350).catch(console.warn)
+      ctx.view.disableSyncScrollAwhile(() => undefined, EDITOR_SCROLL_SYNC_PAUSE_TIMEOUT).catch(console.warn)
     }
 
     function getFrameBounds () {
@@ -602,6 +604,7 @@ export default {
         return
       }
 
+      ctx.view.disableSyncScrollAwhile(() => undefined, CLOSE_SYNC_PAUSE_TIMEOUT).catch(console.warn)
       visible = false
       maximized = false
       dragState = null
