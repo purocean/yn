@@ -64,7 +64,7 @@ const FLOATING_EDITOR_STYLES = `
     z-index: 2;
   }
 
-  .floating-editor-titlebar.floating-editor-dragging {
+  .floating-editor-titlebar:active {
     cursor: grabbing;
   }
 
@@ -406,9 +406,6 @@ export default {
       e.preventDefault()
       e.stopPropagation()
       dragState = state
-      if (state.type === 'move' && titleBar) {
-        titleBar.classList.add('floating-editor-dragging')
-      }
       bindDragListeners().catch(console.warn)
     }
 
@@ -644,9 +641,6 @@ export default {
       e?.preventDefault()
       e?.stopPropagation()
       dragState = null
-      if (titleBar) {
-        titleBar.classList.remove('floating-editor-dragging')
-      }
       unbindDragListeners()
     }
 
