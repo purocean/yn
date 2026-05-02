@@ -51,6 +51,9 @@ const data = {
     'enable-edit': 'Enable Editing for This External File',
     'open-setting': 'Change External File Readonly Settings',
   },
+  'floating-editor': {
+    'show-editor': 'Show Editor',
+  },
   'trigger-suggestions': 'Trigger Suggestions',
   'table-of-contents': 'Table of Contents',
   'text-comparator': 'Text Comparator',

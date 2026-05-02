@@ -456,11 +456,11 @@ export default {
       title.style.fontWeight = '600'
       title.style.textAlign = 'right'
 
-      const splitEditorBtn = makeButton('Show Editor', showInlineEditor)
+      const splitEditorBtn = makeButton(ctx.i18n.t('floating-editor.show-editor'), showInlineEditor)
       splitEditorBtn.appendChild(createSplitEditorIcon())
       titleBar.appendChild(splitEditorBtn)
 
-      const closeBtn = makeButton('Close', hideFloatingEditor)
+      const closeBtn = makeButton(ctx.i18n.t('close'), hideFloatingEditor)
       closeBtn.appendChild(createCloseIcon())
       titleBar.appendChild(closeBtn)
       titleBar.appendChild(title)

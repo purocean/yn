@@ -52,6 +52,9 @@ const data: BaseLanguage = {
     'enable-edit': '开启当前外部文档编辑',
     'open-setting': '修改外部文件只读设置',
   },
+  'floating-editor': {
+    'show-editor': '显示编辑器',
+  },
   'trigger-suggestions': '触发提示',
   'table-of-contents': '目录',
   'text-comparator': '文本比较器',
