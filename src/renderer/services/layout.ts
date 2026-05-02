@@ -1,4 +1,4 @@
-import { nextTick } from 'vue'
+import { nextTick, shallowReactive } from 'vue'
 import { throttle } from 'lodash-es'
 import { triggerHook } from '@fe/core/hook'
 import { getActionHandler, registerAction } from '@fe/core/action'
@@ -10,7 +10,7 @@ import { getEditor } from './editor'
 
 export type LayoutContainerName = 'layout' | 'aside' | 'right' | 'content' | 'editor' | 'preview' | 'terminal' | 'contentRightSide'
 
-const containerDoms: Partial<Record<LayoutContainerName, HTMLElement>> = {}
+const containerDoms = shallowReactive<Partial<Record<LayoutContainerName, HTMLElement>>>({})
 
 const emitResizeDebounce = throttle(() => {
   triggerHook('GLOBAL_RESIZE')
