@@ -574,12 +574,16 @@ export default {
       requestAnimationFrame(() => {
         const lineEnd = options.lineEnd || 0
         const highlightEnd = lineEnd > options.line ? lineEnd - 1 : options.line
+        const editor = ctx.editor.getEditor()
 
-        ctx.editor.getEditor().layout()
-        ctx.view.disableSyncScrollAwhile(() => {
-          ctx.editor.highlightLine(highlightEnd > options.line ? [options.line, highlightEnd] : options.line, true, 1000)
-          ctx.editor.getEditor().setPosition({ lineNumber: options.line, column: 1 })
-          ctx.editor.getEditor().focus()
+        editor.layout()
+        requestAnimationFrame(() => {
+          ctx.view.disableSyncScrollAwhile(() => {
+            ctx.editor.highlightLine(highlightEnd > options.line ? [options.line, highlightEnd] : options.line, false, 1000)
+            editor.setPosition({ lineNumber: options.line, column: 1 })
+            editor.revealLineInCenter(options.line)
+            editor.focus()
+          }).catch(console.warn)
         })
       })
     }
