@@ -733,7 +733,9 @@ const sendFile = async (ctx: any, next: any, filePath: string, fullback = true) 
   ctx.body = await promisify(fs.readFile)(filePath)
   ctx.set('Content-Length', fileStat.size)
   ctx.set('Last-Modified', fileStat.mtime.toUTCString())
-  ctx.set('Cache-Control', 'max-age=0')
+  if (!ctx.response.get('Cache-Control')) {
+    ctx.set('Cache-Control', 'max-age=0')
+  }
   ctx.set('X-XSS-Protection', '0')
   ctx.type = path.extname(filePath)
 
@@ -746,6 +748,7 @@ const userExtension = async (ctx: any, next: any) => {
       ctx.body = result('ok', 'success', await extension.list())
     } else if (ctx.path.startsWith('/extensions/') && ctx.method === 'GET') {
       const filePath = path.join(USER_EXTENSION_DIR, ctx.path.replace('/extensions', ''))
+      noCache(ctx)
       await sendFile(ctx, next, filePath, false)
     } else {
       await next()
