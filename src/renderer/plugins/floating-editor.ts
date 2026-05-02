@@ -196,6 +196,13 @@ export default {
       e.stopPropagation()
     }
 
+    function revealEditorLineAtTop (line: number) {
+      const editor = ctx.editor.getEditor()
+      const top = Math.max(0, editor.getTopForLineNumber(line))
+
+      editor.setScrollTop(top)
+    }
+
     function pausePreviewSyncForEditorScroll () {
       if (!visible) {
         return
@@ -581,7 +588,7 @@ export default {
           ctx.view.disableSyncScrollAwhile(() => {
             ctx.editor.highlightLine(highlightEnd > options.line ? [options.line, highlightEnd] : options.line, false, 1000)
             editor.setPosition({ lineNumber: options.line, column: 1 })
-            editor.revealLineNearTop(options.line)
+            revealEditorLineAtTop(options.line)
             editor.focus()
           }).catch(console.warn)
         }, 50)
