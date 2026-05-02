@@ -138,7 +138,6 @@ vi.mock('@fe/services/document', () => ({
 
 vi.mock('@fe/services/editor', () => ({
   DEFAULT_MARKDOWN_EDITOR_NAME: 'default',
-  get isDefault () { return mocks.isDefault },
   isDefault: mocks.isDefault,
   isDirty: mocks.isDirty,
   registerCustomEditor: mocks.registerCustomEditor,
