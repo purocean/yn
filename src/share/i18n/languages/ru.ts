@@ -52,6 +52,11 @@ const data: BaseLanguage = {
     'enable-edit': 'Включить редактирование этого внешнего файла',
     'open-setting': 'Изменить настройки только для чтения внешних файлов',
   },
+  'floating-editor': {
+    'show-editor': 'Показать редактор',
+    'preview-hint': '%s + щелкните текст предпросмотра, чтобы открыть плавающий редактор',
+    'resize': 'Изменить размер',
+  },
   'trigger-suggestions': 'Подсказки триггера',
   'table-of-contents': 'Содержание',
   'text-comparator': 'Сравнение текста',
