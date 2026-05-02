@@ -577,14 +577,14 @@ export default {
         const editor = ctx.editor.getEditor()
 
         editor.layout()
-        requestAnimationFrame(() => {
+        window.setTimeout(() => {
           ctx.view.disableSyncScrollAwhile(() => {
             ctx.editor.highlightLine(highlightEnd > options.line ? [options.line, highlightEnd] : options.line, false, 1000)
             editor.setPosition({ lineNumber: options.line, column: 1 })
-            editor.revealLineInCenter(options.line)
+            editor.revealLineNearTop(options.line)
             editor.focus()
           }).catch(console.warn)
-        })
+        }, 50)
       })
     }
 
