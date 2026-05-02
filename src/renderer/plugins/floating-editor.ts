@@ -108,18 +108,28 @@ export default {
       btn.type = 'button'
       btn.title = title
       btn.setAttribute('aria-label', title)
-      btn.style.width = '24px'
+      btn.style.width = '22px'
       btn.style.height = '22px'
       btn.style.padding = '0'
       btn.style.margin = '0'
-      btn.style.border = '1px solid var(--g-color-82)'
-      btn.style.borderRadius = '3px'
-      btn.style.background = 'var(--g-color-96)'
-      btn.style.color = 'var(--g-color-20)'
+      btn.style.border = '0'
+      btn.style.borderRadius = '50%'
+      btn.style.background = 'transparent'
+      btn.style.color = 'var(--g-color-30)'
       btn.style.cursor = 'pointer'
-      btn.style.lineHeight = '20px'
-      btn.style.fontSize = '13px'
+      btn.style.display = 'flex'
+      btn.style.alignItems = 'center'
+      btn.style.justifyContent = 'center'
+      btn.style.flex = 'none'
       btn.addEventListener('mousedown', e => e.stopPropagation())
+      btn.addEventListener('mouseenter', () => {
+        btn.style.background = 'var(--g-color-86)'
+        btn.style.color = 'var(--g-color-0)'
+      })
+      btn.addEventListener('mouseleave', () => {
+        btn.style.background = 'transparent'
+        btn.style.color = 'var(--g-color-30)'
+      })
       btn.addEventListener('click', (e) => {
         e.stopPropagation()
         onClick()
@@ -133,6 +143,7 @@ export default {
       svg.setAttribute('width', '14')
       svg.setAttribute('height', '14')
       svg.setAttribute('aria-hidden', 'true')
+      svg.style.display = 'block'
 
       const lineA = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       lineA.setAttribute('d', 'M18 6 6 18')
