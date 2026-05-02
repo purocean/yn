@@ -22,7 +22,7 @@ vi.mock('jsonrpc-bridge', () => {
   }
 })
 
-import { app } from 'electron'
+import { app, ipcMain } from 'electron'
 
 import { initJSONRPCClient } from '../jsonrpc'
 import { JSONRPCClient } from 'jsonrpc-bridge'
@@ -63,6 +63,22 @@ describe('jsonrpc module', () => {
         expect.anything(),
         expect.objectContaining({ debug: false })
       )
+    })
+
+    test('should send messages through webContents and subscribe to ipcMain replies', () => {
+      initJSONRPCClient(mockWebContent)
+
+      const client = vi.mocked(JSONRPCClient).mock.instances[0] as any
+      client.channel.send({ id: 1, method: 'ping', params: [] })
+      expect(mockWebContent.send).toHaveBeenCalledWith('jsonrpc', { id: 1, method: 'ping', params: [] })
+
+      const callback = vi.fn()
+      client.channel.setMessageHandler(callback)
+      expect(ipcMain.on).toHaveBeenCalledWith('jsonrpc', expect.any(Function))
+
+      const handler = vi.mocked(ipcMain.on).mock.calls[0][1]
+      handler({}, { id: 1, result: 'pong' })
+      expect(callback).toHaveBeenCalledWith({ id: 1, result: 'pong' })
     })
   })
 })
