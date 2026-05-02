@@ -1,6 +1,5 @@
 import type { Plugin } from '@fe/context'
 import { DOM_ATTR_NAME } from '@fe/support/args'
-import { isMacOS } from '@fe/support/env'
 
 type ShowFloatingEditorOptions = {
   line: number
@@ -23,7 +22,7 @@ const REVEAL_TOP_CONTEXT_LINES = 3
 const SIDE_MARGIN = 24
 const SCREEN_MARGIN = 8
 const HINT_STORAGE_KEY = 'plugin.floating-editor.preview-hint-count'
-const HINT_LIMIT = 3
+const HINT_LIMIT = 5
 const HINT_DURATION = 5000
 const EDITOR_SCROLL_SYNC_PAUSE_TIMEOUT = 350
 const CLOSE_SYNC_PAUSE_TIMEOUT = 800
@@ -170,7 +169,7 @@ export default {
     ctx.theme.addStyles(FLOATING_EDITOR_STYLES).catch(console.warn)
 
     function getHintText () {
-      const key = isMacOS ? 'Option' : 'Alt'
+      const key = ctx.keybinding.getKeysLabel([ctx.keybinding.Alt])
       return ctx.i18n.t('floating-editor.preview-hint', key)
     }
 
@@ -768,7 +767,7 @@ export default {
       }
 
       checkHint()
-    })
+    }, { immediate: true })
     ctx.registerHook('GLOBAL_RESIZE', () => {
       if (visible) {
         clampFrame()
@@ -776,7 +775,6 @@ export default {
       }
       positionHint()
     })
-    ctx.registerHook('VIEW_RENDERED', scheduleCheckHint)
     ctx.registerHook('DOC_BEFORE_SWITCH', () => {
       resetFloatingState()
     })
