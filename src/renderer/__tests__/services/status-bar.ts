@@ -1,11 +1,11 @@
 import * as ioc from '@fe/core/ioc'
 import * as statusBar from '@fe/services/status-bar'
 
-jest.mock('lodash-es', () => ({
+vi.mock('lodash-es', () => ({
   debounce: (fn: any) => () => fn()
 }))
 
-jest.mock('@fe/core/action', () => ({
+vi.mock('@fe/core/action', () => ({
   getActionHandler: (name: string) => () => {
     if (name !== 'status-bar.refresh-menu') {
       throw Error('action name error')

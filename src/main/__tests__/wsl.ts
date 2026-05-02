@@ -1,16 +1,40 @@
 /* eslint-disable import/first */
+import type { Mock } from 'vitest'
+
+const osMocks = vi.hoisted(() => ({
+  release: vi.fn(() => '5.4.0-generic'),
+}))
+
+const fsMocks = vi.hoisted(() => ({
+  readFileSync: vi.fn(() => 'Linux version 5.4.0'),
+}))
+
+const childProcessMocks = vi.hoisted(() => ({
+  execFileSync: vi.fn(),
+}))
+
 // Set up mocks before importing
-jest.mock('os', () => ({
-  release: jest.fn(() => '5.4.0-generic'),
+vi.mock('os', () => ({
+  default: {
+    release: osMocks.release,
+    platform: () => 'linux'
+  },
+  release: osMocks.release,
   platform: () => 'linux'
 }))
 
-jest.mock('fs', () => ({
-  readFileSync: jest.fn(() => 'Linux version 5.4.0')
+vi.mock('fs', () => ({
+  default: {
+    readFileSync: fsMocks.readFileSync
+  },
+  readFileSync: fsMocks.readFileSync
 }))
 
-jest.mock('child_process', () => ({
-  execFileSync: jest.fn()
+vi.mock('child_process', () => ({
+  default: {
+    execFileSync: childProcessMocks.execFileSync
+  },
+  execFileSync: childProcessMocks.execFileSync
 }))
 
 import * as childProcess from 'child_process'
@@ -20,16 +44,16 @@ import * as os from 'os'
 import * as wsl from '../wsl'
 /* eslint-enable import/first */
 
-const mockRelease = os.release as jest.Mock
-const mockReadFileSync = fs.readFileSync as jest.Mock
-const mockExecFileSync = childProcess.execFileSync as jest.Mock
+const mockRelease = os.release as Mock
+const mockReadFileSync = fs.readFileSync as Mock
+const mockExecFileSync = childProcess.execFileSync as Mock
 
 // Set platform before importing wsl
 Object.defineProperty(process, 'platform', { value: 'linux', writable: true, configurable: true })
 
 describe('wsl module', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('getIsWsl', () => {

@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest'
 import {
   quote,
   encodeMarkdownLink,
@@ -11,7 +12,7 @@ import {
   getLogger,
 } from '@fe/utils/pure'
 
-jest.mock('@fe/support/args', () => ({
+vi.mock('@fe/support/args', () => ({
   FLAG_DEMO: false,
   FLAG_DEBUG: true, // Enable debug for getLogger test
 }))
@@ -272,15 +273,15 @@ describe('pure utilities', () => {
 
   describe('getLogger', () => {
     beforeEach(() => {
-      jest.spyOn(console, 'log').mockImplementation()
-      jest.spyOn(console, 'info').mockImplementation()
-      jest.spyOn(console, 'warn').mockImplementation()
-      jest.spyOn(console, 'error').mockImplementation()
-      jest.spyOn(console, 'debug').mockImplementation()
+      vi.spyOn(console, 'log').mockImplementation(() => undefined)
+      vi.spyOn(console, 'info').mockImplementation(() => undefined)
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+      vi.spyOn(console, 'error').mockImplementation(() => undefined)
+      vi.spyOn(console, 'debug').mockImplementation(() => undefined)
     })
 
     afterEach(() => {
-      jest.restoreAllMocks()
+      vi.restoreAllMocks()
     })
 
     test('should create a logger with subject', () => {
@@ -298,7 +299,7 @@ describe('pure utilities', () => {
 
       logger.log('test message', 'arg1')
       expect(console.log).toHaveBeenCalled()
-      const logCall = (console.log as jest.Mock).mock.calls[0]
+      const logCall = (console.log as Mock).mock.calls[0]
       expect(logCall[0]).toContain('[log]')
       expect(logCall[0]).toContain('test-subject')
       expect(logCall[1]).toBe('test message')
@@ -310,7 +311,7 @@ describe('pure utilities', () => {
 
       logger.info('info message')
       expect(console.info).toHaveBeenCalled()
-      const logCall = (console.info as jest.Mock).mock.calls[0]
+      const logCall = (console.info as Mock).mock.calls[0]
       expect(logCall[0]).toContain('[info]')
       expect(logCall[0]).toContain('test-subject')
     })
@@ -320,7 +321,7 @@ describe('pure utilities', () => {
 
       logger.warn('warning message')
       expect(console.warn).toHaveBeenCalled()
-      const logCall = (console.warn as jest.Mock).mock.calls[0]
+      const logCall = (console.warn as Mock).mock.calls[0]
       expect(logCall[0]).toContain('[warn]')
       expect(logCall[0]).toContain('test-subject')
     })
@@ -330,7 +331,7 @@ describe('pure utilities', () => {
 
       logger.error('error message')
       expect(console.error).toHaveBeenCalled()
-      const logCall = (console.error as jest.Mock).mock.calls[0]
+      const logCall = (console.error as Mock).mock.calls[0]
       expect(logCall[0]).toContain('[error]')
       expect(logCall[0]).toContain('test-subject')
     })
@@ -340,7 +341,7 @@ describe('pure utilities', () => {
 
       logger.debug('debug message')
       expect(console.debug).toHaveBeenCalled()
-      const logCall = (console.debug as jest.Mock).mock.calls[0]
+      const logCall = (console.debug as Mock).mock.calls[0]
       expect(logCall[0]).toContain('[debug]')
       expect(logCall[0]).toContain('test-subject')
     })
@@ -350,7 +351,7 @@ describe('pure utilities', () => {
 
       logger.log('test')
       expect(console.log).toHaveBeenCalled()
-      const logCall = (console.log as jest.Mock).mock.calls[0]
+      const logCall = (console.log as Mock).mock.calls[0]
       // Should contain a timestamp pattern
       expect(logCall[0]).toMatch(/\[\d+\/\d+\/\d+/)
     })

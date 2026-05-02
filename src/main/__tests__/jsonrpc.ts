@@ -1,26 +1,24 @@
 /* eslint-disable import/first */
-jest.mock('electron', () => ({
+vi.mock('electron', () => ({
   app: {
     isPackaged: false
   },
   ipcMain: {
-    on: jest.fn()
+    on: vi.fn()
   }
 }))
 
-jest.mock('jsonrpc-bridge', () => {
+vi.mock('jsonrpc-bridge', () => {
   return {
-    JSONRPCClient: jest.fn().mockImplementation((channel, options) => {
-      return {
-        channel,
-        options,
-        call: jest.fn()
-      }
+    JSONRPCClient: vi.fn().mockImplementation(function (this: any, channel, options) {
+      this.channel = channel
+      this.options = options
+      this.call = vi.fn()
     }),
-    JSONRPCClientChannel: jest.fn(),
+    JSONRPCClientChannel: vi.fn(),
     JSONRPCError: class JSONRPCError extends Error {},
-    JSONRPCRequest: jest.fn(),
-    JSONRPCResult: jest.fn()
+    JSONRPCRequest: vi.fn(),
+    JSONRPCResult: vi.fn()
   }
 })
 
@@ -34,9 +32,9 @@ describe('jsonrpc module', () => {
   let mockWebContent: any
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     mockWebContent = {
-      send: jest.fn()
+      send: vi.fn()
     }
   })
 

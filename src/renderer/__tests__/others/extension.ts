@@ -1,22 +1,23 @@
 import * as extension from '@fe/others/extension'
 
-jest.mock('@fe/support/api', () => ({}))
-jest.mock('@fe/services/theme', () => ({}))
-jest.mock('@fe/services/view', () => ({}))
-jest.mock('js-untar', () => ({}))
-jest.mock('@fe/support/args', () => ({
+vi.mock('@fe/support/api', () => ({}))
+vi.mock('@fe/services/theme', () => ({}))
+vi.mock('@fe/services/view', () => ({}))
+vi.mock('js-untar', () => ({}))
+vi.mock('@fe/support/args', () => ({
   FLAG_DEMO: false,
+  FLAG_DEBUG: false,
 }))
 
-jest.mock('@fe/utils', () => ({
+vi.mock('@fe/utils', () => ({
   getLogger: console.log
 }))
 
-jest.mock('@fe/services/i18n', () => ({
+vi.mock('@fe/services/i18n', () => ({
   getCurrentLanguage: () => 'zh-CN'
 }))
 
-jest.mock('@fe/core/action', () => ({
+vi.mock('@fe/core/action', () => ({
   getActionHandler: () => () => 0
 }))
 

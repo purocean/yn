@@ -1,21 +1,21 @@
 // Mock config before importing
 import * as jwt from '../jwt'
 
-const mockGetImpl = jest.fn()
+const mockGetImpl = vi.fn()
 
-jest.mock('../config', () => ({
+vi.mock('../config', () => ({
   __esModule: true,
   default: {
     get: (...args: any[]) => mockGetImpl(...args),
-    set: jest.fn(),
-    getAll: jest.fn(),
-    setAll: jest.fn()
+    set: vi.fn(),
+    getAll: vi.fn(),
+    setAll: vi.fn()
   }
 }))
 
 describe('jwt module', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     // Mock a fixed JWT secret for consistent tests
     mockGetImpl.mockReturnValue('test-secret-key-1234567890abcdef')
   })

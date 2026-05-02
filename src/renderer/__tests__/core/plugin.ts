@@ -1,28 +1,28 @@
 import * as plugin from '@fe/core/plugin'
 
-jest.mock('@fe/utils', () => ({
+vi.mock('@fe/utils', () => ({
   getLogger: () => new Proxy({}, { get: () => () => 0 })
 }))
 
 // Mock window.document for init tests
 const mockScript = { src: '' }
-const mockBody = { appendChild: jest.fn() }
+const mockBody = { appendChild: vi.fn() }
 global.window = {
   document: {
-    createElement: jest.fn(() => mockScript),
+    createElement: vi.fn(() => mockScript),
     body: mockBody,
   },
   registerPlugin: undefined,
 } as any
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
   mockScript.src = ''
   global.window.registerPlugin = undefined
 })
 
 test('plugin usage', () => {
-  const fn = jest.fn()
+  const fn = vi.fn()
   plugin.register({
     name: 'test',
     register: fn,
@@ -58,8 +58,8 @@ test('plugin register without register function', () => {
 })
 
 test('plugin init should register multiple plugins', () => {
-  const fn1 = jest.fn(() => 'api1')
-  const fn2 = jest.fn(() => 'api2')
+  const fn1 = vi.fn(() => 'api1')
+  const fn2 = vi.fn(() => 'api2')
 
   plugin.init([
     { name: 'plugin1', register: fn1 },
@@ -88,7 +88,7 @@ test('plugin init should create and append script tag', () => {
 })
 
 test('window.registerPlugin should work after init', () => {
-  const fn = jest.fn(() => 'dynamic-api')
+  const fn = vi.fn(() => 'dynamic-api')
 
   plugin.init([], 'context')
 
