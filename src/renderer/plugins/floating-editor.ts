@@ -11,7 +11,7 @@ type ShowFloatingEditorOptions = {
 type DragState =
   | { type: 'move', startY: number, startTop: number }
   | { type: 'resizeTop', startY: number, startTop: number, startHeight: number }
-  | { type: 'resizeBottom', startY: number, startHeight: number }
+  | { type: 'resizeBottom', startY: number, startTop: number, startHeight: number }
 
 const ACTION_SHOW = 'layout.show-floating-editor'
 const ACTION_HIDE = 'layout.hide-floating-editor'
@@ -250,7 +250,7 @@ export default {
       handle.addEventListener('mousedown', (e) => {
         startDrag(e, position === 'top'
           ? { type: 'resizeTop', startY: e.clientY, startTop: top, startHeight: height }
-          : { type: 'resizeBottom', startY: e.clientY, startHeight: height })
+          : { type: 'resizeBottom', startY: e.clientY, startTop: top, startHeight: height })
       })
       handle.addEventListener('dblclick', (e) => {
         e.preventDefault()
@@ -482,7 +482,18 @@ export default {
         top = dragState.startTop + fixedOffset
         height = dragState.startHeight - fixedOffset
       } else {
-        height = dragState.startHeight + e.clientY - dragState.startY
+        const bounds = getFrameBounds()
+        const minHeight = bounds?.minHeight ?? MIN_HEIGHT
+        const maxBottom = bounds?.maxBottom ?? window.innerHeight - SCREEN_MARGIN
+        const fixedTop = dragState.startTop
+        const bottom = clamp(
+          dragState.startTop + dragState.startHeight + e.clientY - dragState.startY,
+          fixedTop + minHeight,
+          maxBottom
+        )
+
+        top = fixedTop
+        height = bottom - fixedTop
       }
 
       clampFrame()
