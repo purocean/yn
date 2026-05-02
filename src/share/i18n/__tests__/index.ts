@@ -3,7 +3,7 @@ import {
   translate,
   mergeLanguage,
   type Language,
-} from '../i18n'
+} from '..'
 
 describe('i18n utilities', () => {
   describe('getText', () => {
