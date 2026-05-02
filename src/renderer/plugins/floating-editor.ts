@@ -1,5 +1,6 @@
 import type { Plugin } from '@fe/context'
 import { DOM_ATTR_NAME } from '@fe/support/args'
+import { isMacOS } from '@fe/support/env'
 
 type ShowFloatingEditorOptions = {
   line: number
@@ -21,6 +22,9 @@ const MIN_HEIGHT = 220
 const DEFAULT_HEIGHT = MIN_HEIGHT
 const SIDE_MARGIN = 24
 const SCREEN_MARGIN = 8
+const HINT_STORAGE_KEY = 'floating-editor.preview-hint-count'
+const HINT_LIMIT = 3
+const HINT_DURATION = 5000
 const PREVIEW_CLICK_IGNORE_TAGS = ['button', 'input', 'textarea', 'select', 'option', 'img', 'canvas', 'video', 'audio', 'details', 'summary']
 
 function clamp (value: number, min: number, max: number) {
@@ -41,6 +45,9 @@ export default {
     let dragIframeWindow: Window | null = null
     let savedUserSelect: string | null = null
     let maximized = false
+    let hint: HTMLDivElement | null = null
+    let hintTimer: number | null = null
+    let lastHintEligible = false
 
     function getEditorDom () {
       return ctx.layout.getContainerDom('editor')
@@ -48,6 +55,15 @@ export default {
 
     function getPreviewDom () {
       return ctx.layout.getContainerDom('preview')
+    }
+
+    function getHintText () {
+      const key = isMacOS ? 'Option' : 'Alt'
+      if (navigator.language.toLowerCase().startsWith('zh')) {
+        return `${key} + 点击预览文本，可打开浮动编辑器`
+      }
+
+      return `${key} + click preview text to open the floating editor`
     }
 
     function canShowFloatingEditor () {
@@ -116,6 +132,93 @@ export default {
       editorDom.style.top = `${Math.round(top)}px`
       editorDom.style.width = `${Math.round(Math.max(0, previewRect.width - sideMargin * 2))}px`
       editorDom.style.height = `${Math.round(height)}px`
+    }
+
+    function getHintCount () {
+      return parseInt(localStorage.getItem(HINT_STORAGE_KEY) || '0')
+    }
+
+    function setHintCount (count: number) {
+      localStorage.setItem(HINT_STORAGE_KEY, String(count))
+    }
+
+    function hideHint () {
+      if (hintTimer) {
+        clearTimeout(hintTimer)
+        hintTimer = null
+      }
+
+      hint?.remove()
+      hint = null
+    }
+
+    function positionHint () {
+      if (!hint) {
+        return
+      }
+
+      const previewRect = getPreviewDom()?.getBoundingClientRect()
+      if (!previewRect) {
+        return
+      }
+
+      hint.style.left = `${Math.round(previewRect.left + SIDE_MARGIN)}px`
+      hint.style.top = `${Math.round(previewRect.bottom - hint.offsetHeight - SCREEN_MARGIN - 4)}px`
+    }
+
+    function showHint () {
+      if (visible || hint || getHintCount() >= HINT_LIMIT) {
+        return
+      }
+
+      const previewDom = getPreviewDom()
+      if (!previewDom) {
+        return
+      }
+
+      hint = document.createElement('div')
+      hint.className = 'floating-editor-hint'
+      hint.textContent = getHintText()
+      hint.style.position = 'fixed'
+      hint.style.zIndex = '200001'
+      hint.style.maxWidth = 'min(360px, calc(100vw - 32px))'
+      hint.style.padding = '7px 10px'
+      hint.style.border = '1px solid var(--g-color-82)'
+      hint.style.borderRadius = '6px'
+      hint.style.background = 'var(--g-color-96)'
+      hint.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.18)'
+      hint.style.color = 'var(--g-color-40)'
+      hint.style.fontSize = '12px'
+      hint.style.lineHeight = '18px'
+      hint.style.pointerEvents = 'none'
+      hint.style.userSelect = 'none'
+      document.body.appendChild(hint)
+      positionHint()
+      setHintCount(getHintCount() + 1)
+
+      hintTimer = window.setTimeout(hideHint, HINT_DURATION)
+    }
+
+    function checkHint () {
+      const eligible = canShowFloatingEditor()
+
+      if (!eligible) {
+        lastHintEligible = false
+        hideHint()
+        return
+      }
+
+      if (!lastHintEligible) {
+        showHint()
+      } else {
+        positionHint()
+      }
+
+      lastHintEligible = true
+    }
+
+    function scheduleCheckHint () {
+      window.setTimeout(checkHint)
     }
 
     function makeButton (title: string, onClick: () => void) {
@@ -351,7 +454,7 @@ export default {
       title.style.whiteSpace = 'nowrap'
       title.style.fontSize = '12px'
       title.style.fontWeight = '600'
-      titleBar.appendChild(title)
+      title.style.textAlign = 'right'
 
       const splitEditorBtn = makeButton('Show Editor', showInlineEditor)
       splitEditorBtn.appendChild(createSplitEditorIcon())
@@ -360,6 +463,7 @@ export default {
       const closeBtn = makeButton('Close', hideFloatingEditor)
       closeBtn.appendChild(createCloseIcon())
       titleBar.appendChild(closeBtn)
+      titleBar.appendChild(title)
 
       topResizer = createResizeHandle('top')
       bottomResizer = createResizeHandle('bottom')
@@ -425,6 +529,7 @@ export default {
       height = height || DEFAULT_HEIGHT
       maximized = false
       visible = true
+      hideHint()
 
       applyFloatingStyle()
       createControls()
@@ -460,6 +565,7 @@ export default {
       bottomResizer = null
       restoreEditorStyle()
       ctx.layout.emitResize()
+      scheduleCheckHint()
     }
 
     function handleMouseMove (e: MouseEvent) {
@@ -563,6 +669,7 @@ export default {
 
       e.preventDefault()
       e.stopPropagation()
+      hideHint()
       ctx.action.getActionHandler(ACTION_SHOW)({ ...range, clientX: e.clientX, clientY: e.clientY })
       return true
     }
@@ -587,13 +694,29 @@ export default {
         clampFrame()
         relayoutEditor()
       }
+      positionHint()
     })
     ctx.registerHook('ACTION_BEFORE_RUN', ({ name }) => {
       if (visible && name === 'layout.toggle-editor') {
         hideFloatingEditor()
       }
     })
-    ctx.registerHook('DOC_BEFORE_SWITCH', hideFloatingEditor)
-    ctx.registerHook('VIEW_FILE_CHANGE', hideFloatingEditor)
+    ctx.registerHook('ACTION_AFTER_RUN', ({ name }) => {
+      if (name === 'layout.toggle-editor') {
+        scheduleCheckHint()
+      }
+    })
+    ctx.registerHook('VIEW_RENDERED', scheduleCheckHint)
+    ctx.registerHook('DOC_BEFORE_SWITCH', () => {
+      hideFloatingEditor()
+      hideHint()
+      lastHintEligible = false
+    })
+    ctx.registerHook('VIEW_FILE_CHANGE', () => {
+      hideFloatingEditor()
+      hideHint()
+      lastHintEligible = false
+      scheduleCheckHint()
+    })
   }
 } as Plugin
