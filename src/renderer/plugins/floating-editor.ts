@@ -19,6 +19,7 @@ const TITLE_HEIGHT = 30
 const RESIZE_HANDLE_SIZE = 8
 const MIN_HEIGHT = 220
 const DEFAULT_HEIGHT = MIN_HEIGHT
+const REVEAL_TOP_CONTEXT_LINES = 3
 const SIDE_MARGIN = 24
 const SCREEN_MARGIN = 8
 const HINT_STORAGE_KEY = 'plugin.floating-editor.preview-hint-count'
@@ -198,7 +199,8 @@ export default {
 
     function revealEditorLineAtTop (line: number) {
       const editor = ctx.editor.getEditor()
-      const top = Math.max(0, editor.getTopForLineNumber(line))
+      const lineHeight = editor.getOption(ctx.editor.getMonaco().editor.EditorOption.lineHeight)
+      const top = Math.max(0, editor.getTopForLineNumber(line) - lineHeight * REVEAL_TOP_CONTEXT_LINES)
 
       editor.setScrollTop(top)
     }
