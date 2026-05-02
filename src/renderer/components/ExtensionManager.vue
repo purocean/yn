@@ -142,7 +142,12 @@
                   </template>
                   <template v-else>
                     <template v-if="!currentExtension.installed">
-                      <button class="small tr" :disabled="!currentExtension.compatible.value" @click="install(currentExtension)">{{ $t('extension.install') }}</button>
+                      <button
+                        class="small tr"
+                        :class="{ disabled: !currentExtension.compatible.value }"
+                        @click="installLatest(currentExtension)"
+                        @contextmenu.prevent.stop="showInstallVersionMenu($event, currentExtension)"
+                      >{{ $t('extension.install') }}</button>
                     </template>
                     <template v-else>
                       <button class="small tr" @click="uninstall(currentExtension)">{{ $t('extension.uninstall') }}</button>
@@ -225,6 +230,7 @@ import { reloadMainWindow } from '@fe/services/base'
 import * as setting from '@fe/services/setting'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
+import { useContextMenu } from '@fe/support/ui/context-menu'
 import { getPurchased, showPremium } from '@fe/others/premium'
 import { FLAG_DISABLE_XTERM, FLAG_MAS, URL_MAS_LIMITATION } from '@fe/support/args'
 
@@ -249,6 +255,7 @@ const uninstalling = ref(false)
 const dirty = ref(false)
 const registryExtensions = ref<Extension[] | null>(null)
 const installedExtensions = ref<Extension[] | null>(null)
+const registryVersionMap = ref<Record<string, Extension[]>>({})
 const listType = ref<'all' | 'installed'>('all')
 const contentType = ref<'readme' | 'changelog'>('readme')
 const autoUpgrade = ref<boolean>()
@@ -471,6 +478,57 @@ async function install (extension?: Extension, auto?: boolean) {
   }
 
   !auto && useToast().show('info', $t.value('extension.toast-loaded'))
+}
+
+async function installLatest (extension?: Extension) {
+  if (!extension?.compatible.value) {
+    return
+  }
+
+  await install(extension)
+}
+
+async function getInstallVersions (extension: Extension) {
+  const key = `${currentRegistry.value}:${extension.id}`
+  if (!registryVersionMap.value[key]) {
+    registryVersionMap.value[key] = await extensionManager.getRegistryExtensionVersions(extension.id, currentRegistry.value)
+  }
+
+  return registryVersionMap.value[key]
+}
+
+async function showInstallVersionMenu (e: MouseEvent, extension?: Extension) {
+  if (!extension) {
+    return
+  }
+
+  try {
+    const versions = await getInstallVersions(extension)
+
+    if (!versions.length) {
+      useToast().show('warning', 'No historical version')
+      return
+    }
+
+    useContextMenu().show(versions.map(item => ({
+      id: `${item.id}@${item.version}`,
+      label: item.compatible.value ? item.version : `${item.version} (incompatible)`,
+      onClick: () => {
+        if (!item.compatible.value) {
+          useToast().show('warning', item.compatible.reason)
+          return
+        }
+
+        install(item)
+      },
+    })), {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+    })
+  } catch (error: any) {
+    logger.error('showInstallVersionMenu', error)
+    useToast().show('warning', error.message || 'Fetch versions failed')
+  }
 }
 
 async function abortInstallation () {
@@ -906,6 +964,15 @@ onUnmounted(() => {
         button {
           margin-left: 0;
           margin-right: 6px;
+
+          &.disabled {
+            background-color: rgba(var(--g-color-40-rgb), 0.2);
+            cursor: not-allowed;
+
+            &:hover {
+              background-color: rgba(var(--g-color-40-rgb), 0.2);
+            }
+          }
         }
 
         i {
