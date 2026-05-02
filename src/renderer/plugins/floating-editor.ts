@@ -21,6 +21,7 @@ const DEFAULT_HEIGHT = 420
 const MIN_HEIGHT = 220
 const SIDE_MARGIN = 24
 const SCREEN_MARGIN = 8
+const PREVIEW_CLICK_IGNORE_TAGS = ['button', 'input', 'textarea', 'select', 'option', 'img', 'canvas', 'video', 'audio', 'details', 'summary']
 
 function clamp (value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
@@ -116,7 +117,7 @@ export default {
       btn.style.borderRadius = '50%'
       btn.style.background = 'transparent'
       btn.style.color = 'var(--g-color-30)'
-      btn.style.cursor = 'pointer'
+      btn.style.cursor = 'default'
       btn.style.display = 'flex'
       btn.style.alignItems = 'center'
       btn.style.justifyContent = 'center'
@@ -425,35 +426,60 @@ export default {
       return false
     }
 
-    function handleAltClick (e: MouseEvent) {
-      if (!e.altKey || !canShowFloatingEditor()) {
-        return false
-      }
-
+    function getClickSourceRange (e: MouseEvent) {
       const target = e.target as HTMLElement
       const tagName = target.tagName.toLowerCase()
-      if (['button', 'input', 'textarea', 'select', 'option', 'img', 'canvas', 'video', 'audio', 'details', 'summary'].includes(tagName)) {
-        return false
+      if (PREVIEW_CLICK_IGNORE_TAGS.includes(tagName)) {
+        return null
       }
 
       if (target.ownerDocument?.defaultView?.getSelection()?.toString()?.length) {
-        return false
+        return null
       }
 
       const sourceEl = target.closest<HTMLElement>(`[${DOM_ATTR_NAME.SOURCE_LINE_START}]`)
       if (!sourceEl) {
-        return false
+        return null
       }
 
       const line = parseInt(sourceEl.getAttribute(DOM_ATTR_NAME.SOURCE_LINE_START) || '0')
       const lineEnd = parseInt(sourceEl.getAttribute(DOM_ATTR_NAME.SOURCE_LINE_END) || '0')
       if (!line) {
+        return null
+      }
+
+      return { line, lineEnd }
+    }
+
+    function highlightPreviewClickLine (e: MouseEvent) {
+      if (!visible || e.altKey || ctx.store.state.presentation) {
+        return false
+      }
+
+      const range = getClickSourceRange(e)
+      if (!range) {
+        return false
+      }
+
+      ctx.view.disableSyncScrollAwhile(() => {
+        ctx.editor.highlightLine(range.lineEnd ? [range.line, range.lineEnd - 1] : range.line, true, 1000)
+      }).catch(console.warn)
+      return false
+    }
+
+    function handleAltClick (e: MouseEvent) {
+      if (!e.altKey || !canShowFloatingEditor()) {
+        return false
+      }
+
+      const range = getClickSourceRange(e)
+      if (!range) {
         return false
       }
 
       e.preventDefault()
       e.stopPropagation()
-      ctx.action.getActionHandler(ACTION_SHOW)({ line, lineEnd, clientX: e.clientX, clientY: e.clientY })
+      ctx.action.getActionHandler(ACTION_SHOW)({ ...range, clientX: e.clientX, clientY: e.clientY })
       return true
     }
 
@@ -471,7 +497,7 @@ export default {
       when: () => visible,
     })
 
-    ctx.registerHook('VIEW_ELEMENT_CLICK', ({ e }) => handleAltClick(e))
+    ctx.registerHook('VIEW_ELEMENT_CLICK', ({ e }) => handleAltClick(e) || highlightPreviewClickLine(e))
     ctx.registerHook('VIEW_KEY_DOWN', ({ e }) => handleKeydown(e))
     ctx.registerHook('GLOBAL_KEYDOWN', handleKeydown)
     ctx.registerHook('GLOBAL_RESIZE', () => {
