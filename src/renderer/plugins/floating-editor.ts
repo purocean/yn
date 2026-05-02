@@ -156,7 +156,6 @@ export default {
     let maximized = false
     let hint: HTMLDivElement | null = null
     let hintTimer: number | null = null
-    let lastHintEligible = false
 
     function getEditorDom () {
       return ctx.layout.getContainerDom('editor')
@@ -305,36 +304,9 @@ export default {
       hintTimer = window.setTimeout(hideHint, HINT_DURATION)
     }
 
-    function checkHint () {
-      const eligible = canShowFloatingEditor()
-
-      if (!eligible) {
-        lastHintEligible = false
-        hideHint()
-        return
-      }
-
-      if (!lastHintEligible) {
-        showHint()
-      } else {
-        positionHint()
-      }
-
-      lastHintEligible = true
-    }
-
-    function scheduleCheckHint () {
-      window.setTimeout(checkHint)
-    }
-
-    function resetFloatingState (scheduleHint = false) {
+    function resetFloatingState () {
       hideFloatingEditor()
       hideHint()
-      lastHintEligible = false
-
-      if (scheduleHint) {
-        scheduleCheckHint()
-      }
     }
 
     function makeButton (title: string, onClick: () => void) {
@@ -627,7 +599,6 @@ export default {
       bottomResizer = null
       restoreEditorStyle()
       ctx.layout.emitResize()
-      scheduleCheckHint()
     }
 
     function handleMouseMove (e: MouseEvent) {
@@ -760,13 +731,10 @@ export default {
         if (visible) {
           hideFloatingEditor()
         }
-
-        hideHint()
-        lastHintEligible = false
         return
       }
 
-      checkHint()
+      showHint()
     }, { immediate: true })
     ctx.registerHook('GLOBAL_RESIZE', () => {
       if (visible) {
@@ -779,7 +747,7 @@ export default {
       resetFloatingState()
     })
     ctx.registerHook('VIEW_FILE_CHANGE', () => {
-      resetFloatingState(true)
+      resetFloatingState()
     })
   }
 } as Plugin
