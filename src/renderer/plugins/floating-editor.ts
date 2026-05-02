@@ -22,7 +22,8 @@ const MIN_HEIGHT = 220
 const DEFAULT_HEIGHT = MIN_HEIGHT
 const SIDE_MARGIN = 24
 const SCREEN_MARGIN = 8
-const HINT_STORAGE_KEY = 'floating-editor.preview-hint-count'
+const LEGACY_HINT_STORAGE_KEY = 'floating-editor.preview-hint-count'
+const HINT_STORAGE_KEY = 'plugin.floating-editor.preview-hint-count'
 const HINT_LIMIT = 3
 const HINT_DURATION = 5000
 const PREVIEW_CLICK_IGNORE_TAGS = ['button', 'input', 'textarea', 'select', 'option', 'img', 'canvas', 'video', 'audio', 'details', 'summary']
@@ -135,11 +136,23 @@ export default {
     }
 
     function getHintCount () {
-      return parseInt(localStorage.getItem(HINT_STORAGE_KEY) || '0')
+      const count = ctx.storage.get<number>(HINT_STORAGE_KEY)
+      if (typeof count === 'number') {
+        return count
+      }
+
+      const legacyCount = ctx.storage.get<number>(LEGACY_HINT_STORAGE_KEY)
+      if (typeof legacyCount === 'number') {
+        ctx.storage.set(HINT_STORAGE_KEY, legacyCount)
+        ctx.storage.remove(LEGACY_HINT_STORAGE_KEY)
+        return legacyCount
+      }
+
+      return 0
     }
 
     function setHintCount (count: number) {
-      localStorage.setItem(HINT_STORAGE_KEY, String(count))
+      ctx.storage.set(HINT_STORAGE_KEY, count)
     }
 
     function hideHint () {
