@@ -17,8 +17,8 @@ const ACTION_SHOW = 'layout.show-floating-editor'
 const ACTION_HIDE = 'layout.hide-floating-editor'
 const TITLE_HEIGHT = 30
 const RESIZE_HANDLE_SIZE = 8
-const DEFAULT_HEIGHT = 420
 const MIN_HEIGHT = 220
+const DEFAULT_HEIGHT = MIN_HEIGHT
 const SIDE_MARGIN = 24
 const SCREEN_MARGIN = 8
 const PREVIEW_CLICK_IGNORE_TAGS = ['button', 'input', 'textarea', 'select', 'option', 'img', 'canvas', 'video', 'audio', 'details', 'summary']
@@ -40,6 +40,7 @@ export default {
     let dragState: DragState | null = null
     let dragIframeWindow: Window | null = null
     let savedUserSelect: string | null = null
+    let maximized = false
 
     function getEditorDom () {
       return ctx.layout.getContainerDom('editor')
@@ -79,23 +80,36 @@ export default {
       e.stopPropagation()
     }
 
-    function clampFrame () {
+    function getFrameBounds () {
       const previewDom = getPreviewDom()
       if (!previewDom) {
-        return
+        return null
       }
 
       const previewRect = previewDom.getBoundingClientRect()
-      const maxHeight = Math.max(MIN_HEIGHT, window.innerHeight - SCREEN_MARGIN * 2)
+      const minTop = previewRect.top + SCREEN_MARGIN
+      const maxBottom = previewRect.bottom - SCREEN_MARGIN
+      const maxHeight = Math.max(TITLE_HEIGHT + RESIZE_HANDLE_SIZE, maxBottom - minTop)
+      const minHeight = Math.min(MIN_HEIGHT, maxHeight)
 
-      height = clamp(height, MIN_HEIGHT, maxHeight)
-      top = clamp(top, SCREEN_MARGIN, Math.max(SCREEN_MARGIN, window.innerHeight - height - SCREEN_MARGIN))
+      return { previewRect, minTop, maxBottom, minHeight, maxHeight }
+    }
+
+    function clampFrame () {
+      const bounds = getFrameBounds()
+      if (!bounds) {
+        return
+      }
+
+      height = clamp(height, bounds.minHeight, bounds.maxHeight)
+      top = clamp(top, bounds.minTop, Math.max(bounds.minTop, bounds.maxBottom - height))
 
       const editorDom = getEditorDom()
       if (!editorDom || !visible) {
         return
       }
 
+      const { previewRect } = bounds
       const sideMargin = previewRect.width >= SIDE_MARGIN * 4 ? SIDE_MARGIN : SCREEN_MARGIN
 
       editorDom.style.left = `${Math.round(previewRect.left + sideMargin)}px`
@@ -123,6 +137,7 @@ export default {
       btn.style.justifyContent = 'center'
       btn.style.flex = 'none'
       btn.addEventListener('mousedown', e => e.stopPropagation())
+      btn.addEventListener('dblclick', e => e.stopPropagation())
       btn.addEventListener('mouseenter', () => {
         btn.style.background = 'var(--g-color-86)'
         btn.style.color = 'var(--g-color-0)'
@@ -138,7 +153,7 @@ export default {
       return btn
     }
 
-    function createCloseIcon () {
+    function createLineIcon (paths: string[]) {
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       svg.setAttribute('viewBox', '0 0 24 24')
       svg.setAttribute('width', '14')
@@ -146,21 +161,31 @@ export default {
       svg.setAttribute('aria-hidden', 'true')
       svg.style.display = 'block'
 
-      const lineA = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-      lineA.setAttribute('d', 'M18 6 6 18')
-      const lineB = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-      lineB.setAttribute('d', 'm6 6 12 12')
-
-      ;[lineA, lineB].forEach(path => {
+      paths.forEach((d) => {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        path.setAttribute('d', d)
         path.setAttribute('fill', 'none')
         path.setAttribute('stroke', 'currentColor')
         path.setAttribute('stroke-width', '2')
         path.setAttribute('stroke-linecap', 'round')
+        path.setAttribute('stroke-linejoin', 'round')
+        svg.appendChild(path)
       })
 
-      svg.appendChild(lineA)
-      svg.appendChild(lineB)
       return svg
+    }
+
+    function createCloseIcon () {
+      return createLineIcon(['M18 6 6 18', 'm6 6 12 12'])
+    }
+
+    function createSplitEditorIcon () {
+      return createLineIcon(['M4 5h16v14H4z', 'M12 5v14'])
+    }
+
+    function showInlineEditor () {
+      hideFloatingEditor()
+      ctx.action.getActionHandler('layout.toggle-editor')(true)
     }
 
     async function bindDragListeners () {
@@ -204,6 +229,9 @@ export default {
       e.preventDefault()
       e.stopPropagation()
       dragState = state
+      if (state.type === 'move' && titleBar) {
+        titleBar.style.cursor = 'grabbing'
+      }
       bindDragListeners().catch(console.warn)
     }
 
@@ -227,18 +255,52 @@ export default {
       return handle
     }
 
-    function updateTitle (line: number) {
+    function updateTitle () {
       if (!titleBar) {
         return
       }
 
       const title = titleBar.querySelector<HTMLDivElement>('.floating-editor-title')
       if (title) {
-        title.textContent = `${ctx.store.state.currentFile?.name || 'Editor'} - L${line}`
+        title.textContent = ctx.store.state.currentFile?.name || 'Editor'
       }
     }
 
-    function createControls (line: number) {
+    function maximizeFrame () {
+      const bounds = getFrameBounds()
+      if (!bounds) {
+        return
+      }
+
+      maximized = true
+      top = bounds.minTop
+      height = bounds.maxHeight
+      clampFrame()
+      relayoutEditor()
+    }
+
+    function restoreDefaultFrame () {
+      const bounds = getFrameBounds()
+      if (!bounds) {
+        return
+      }
+
+      maximized = false
+      height = DEFAULT_HEIGHT
+      top = bounds.previewRect.top + (bounds.previewRect.height - height) / 2
+      clampFrame()
+      relayoutEditor()
+    }
+
+    function toggleMaximizeFrame () {
+      if (maximized) {
+        restoreDefaultFrame()
+      } else {
+        maximizeFrame()
+      }
+    }
+
+    function createControls () {
       const editorDom = getEditorDom()
       if (!editorDom) {
         return
@@ -263,11 +325,16 @@ export default {
       titleBar.style.borderBottom = '1px solid var(--g-color-86)'
       titleBar.style.background = 'var(--g-color-96)'
       titleBar.style.color = 'var(--g-color-20)'
-      titleBar.style.cursor = 'default'
+      titleBar.style.cursor = 'grab'
       titleBar.style.userSelect = 'none'
       titleBar.style.zIndex = '2'
       titleBar.addEventListener('mousedown', (e) => {
         startDrag(e, { type: 'move', startY: e.clientY, startTop: top })
+      })
+      titleBar.addEventListener('dblclick', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        toggleMaximizeFrame()
       })
 
       const title = document.createElement('div')
@@ -281,6 +348,10 @@ export default {
       title.style.fontWeight = '600'
       titleBar.appendChild(title)
 
+      const splitEditorBtn = makeButton('Show Editor', showInlineEditor)
+      splitEditorBtn.appendChild(createSplitEditorIcon())
+      titleBar.appendChild(splitEditorBtn)
+
       const closeBtn = makeButton('Close', hideFloatingEditor)
       closeBtn.appendChild(createCloseIcon())
       titleBar.appendChild(closeBtn)
@@ -291,7 +362,7 @@ export default {
       editorDom.appendChild(titleBar)
       editorDom.appendChild(topResizer)
       editorDom.appendChild(bottomResizer)
-      updateTitle(line)
+      updateTitle()
     }
 
     function applyFloatingStyle () {
@@ -346,11 +417,12 @@ export default {
         : (getPreviewDom()?.getBoundingClientRect().top || SCREEN_MARGIN) + 80
 
       top = preferredTop
-      height = clamp(height || DEFAULT_HEIGHT, MIN_HEIGHT, window.innerHeight - SCREEN_MARGIN * 2)
+      height = height || DEFAULT_HEIGHT
+      maximized = false
       visible = true
 
       applyFloatingStyle()
-      createControls(options.line)
+      createControls()
       clampFrame()
 
       requestAnimationFrame(() => {
@@ -372,6 +444,7 @@ export default {
       }
 
       visible = false
+      maximized = false
       dragState = null
       unbindDragListeners()
       titleBar?.remove()
@@ -391,13 +464,16 @@ export default {
 
       e.preventDefault()
       e.stopPropagation()
+      maximized = false
 
       if (dragState.type === 'move') {
         top = dragState.startTop + e.clientY - dragState.startY
       } else if (dragState.type === 'resizeTop') {
+        const bounds = getFrameBounds()
+        const minTop = bounds?.minTop ?? SCREEN_MARGIN
         const offset = e.clientY - dragState.startY
-        const maxOffset = dragState.startHeight - MIN_HEIGHT
-        const fixedOffset = clamp(offset, SCREEN_MARGIN - dragState.startTop, maxOffset)
+        const maxOffset = dragState.startHeight - (bounds?.minHeight ?? MIN_HEIGHT)
+        const fixedOffset = clamp(offset, minTop - dragState.startTop, maxOffset)
         top = dragState.startTop + fixedOffset
         height = dragState.startHeight - fixedOffset
       } else {
@@ -412,18 +488,10 @@ export default {
       e?.preventDefault()
       e?.stopPropagation()
       dragState = null
-      unbindDragListeners()
-    }
-
-    function handleKeydown (e: KeyboardEvent) {
-      if (visible && e.key === 'Escape') {
-        e.preventDefault()
-        e.stopPropagation()
-        hideFloatingEditor()
-        return true
+      if (titleBar) {
+        titleBar.style.cursor = 'grab'
       }
-
-      return false
+      unbindDragListeners()
     }
 
     function getClickSourceRange (e: MouseEvent) {
@@ -498,8 +566,6 @@ export default {
     })
 
     ctx.registerHook('VIEW_ELEMENT_CLICK', ({ e }) => handleAltClick(e) || highlightPreviewClickLine(e))
-    ctx.registerHook('VIEW_KEY_DOWN', ({ e }) => handleKeydown(e))
-    ctx.registerHook('GLOBAL_KEYDOWN', handleKeydown)
     ctx.registerHook('GLOBAL_RESIZE', () => {
       if (visible) {
         clampFrame()
