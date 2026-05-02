@@ -222,9 +222,10 @@ export default defineComponent({
     function initResize (type: any, ref: any, min: any, max: any, e: any) {
       const refEl = refs[ref].value
       if (!resizeOrigin && type) {
+        const fixedMax = Math.max(min, max)
         resizeOrigin = {
           min,
-          max,
+          max: fixedMax,
           type,
           ref,
           mouseX: e.clientX,
@@ -240,14 +241,16 @@ export default defineComponent({
 
     function initEditorResize (e: MouseEvent) {
       if (content.value && contentRightSide.value) {
-        const maxWidth = content.value.clientWidth - 200 - contentRightSide.value.clientWidth
+        const contentRightSideWidth = showContentRightSide.value ? contentRightSide.value.clientWidth : 0
+        const maxWidth = content.value.clientWidth - 200 - contentRightSideWidth
         initResize('right', 'editor', 200, maxWidth, e)
       }
     }
 
     function initContentRightSideResize (e: MouseEvent) {
       if (content.value && editor.value) {
-        const maxWidth = content.value.clientWidth - 200 - editor.value.clientWidth
+        const editorWidth = showEditor.value ? editor.value.clientWidth : 0
+        const maxWidth = content.value.clientWidth - 200 - editorWidth
         initResize('left', 'contentRightSide', 200, maxWidth, e)
       }
     }

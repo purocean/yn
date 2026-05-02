@@ -442,6 +442,7 @@ describe('component-extra branch coverage', () => {
     window.document.dispatchEvent(new MouseEvent('mouseup'))
     expect(mocks.toggleContentRightSide).toHaveBeenCalledWith(false)
 
+    mocks.storeState.showContentRightSide = true
     const maxWrapper = mount(Layout)
     const maxContent = maxWrapper.find('.content').element as HTMLElement
     const maxEditor = maxWrapper.find('.editor').element as HTMLElement

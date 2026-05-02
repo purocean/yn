@@ -123,4 +123,24 @@ describe('Layout', () => {
     expect(editor.style.minWidth).toBe('')
     expect(editor.style.maxWidth).toBe('')
   })
+
+  test('ignores floating editor width when resizing content right side', async () => {
+    mocks.storeState.showEditor = false
+    const wrapper = mount(Layout)
+    const content = wrapper.find('.content').element as HTMLElement
+    const editor = wrapper.find('.editor').element as HTMLElement
+    const contentRightSide = wrapper.find('.content-right-side').element as HTMLElement
+
+    editor.classList.add('floating-editor-active')
+    Object.defineProperty(content, 'clientWidth', { configurable: true, value: 900 })
+    Object.defineProperty(editor, 'clientWidth', { configurable: true, value: 450 })
+    Object.defineProperty(contentRightSide, 'clientWidth', { configurable: true, value: 250 })
+
+    await wrapper.find('.content-right-side .sash-left').trigger('mousedown', { clientX: 500, clientY: 0 })
+    window.document.dispatchEvent(new MouseEvent('mousemove', { clientX: 0, clientY: 0, buttons: 1 }))
+
+    expect(contentRightSide.style.width).toBe('700px')
+    expect(contentRightSide.style.minWidth).toBe('700px')
+    expect(contentRightSide.style.maxWidth).toBe('700px')
+  })
 })
