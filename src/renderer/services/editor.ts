@@ -13,6 +13,7 @@ import { getSetting } from './setting'
 import { t } from './i18n'
 import { language as markdownLanguage } from 'monaco-editor/esm/vs/basic-languages/markdown/markdown.js'
 import type { CustomEditor, CustomEditorCtx } from '@fe/types'
+import { FLAG_READONLY } from '@fe/support/args'
 
 export type SimpleCompletionItem = {
   label: string,
@@ -578,8 +579,10 @@ export async function isDirty (): Promise<boolean> {
 registerAction({
   name: 'editor.toggle-wrap',
   description: t('command-desc.editor_toggle-wrap'),
+  mcpDescription: 'Toggle word wrap. No args. No return.',
   handler: toggleWrap,
   forUser: true,
+  forMcp: true,
   keys: [Alt, 'w']
 })
 
@@ -664,6 +667,23 @@ whenEditorReady().then(({ editor }) => {
     const value = model.getValue()
 
     triggerHook('EDITOR_CONTENT_CHANGE', { uri, value })
+  })
+
+  editor.onDidAttemptReadOnlyEdit(() => {
+    const currentFile = store.state.currentFile
+    let readonlyType: 'app-readonly' | 'no-file' | 'file-not-writable' | 'unsupported-file-type'
+
+    if (FLAG_READONLY) {
+      readonlyType = 'app-readonly'
+    } else if (!currentFile) {
+      readonlyType = 'no-file'
+    } else if (currentFile.writeable === false) {
+      readonlyType = 'file-not-writable'
+    } else {
+      readonlyType = 'unsupported-file-type'
+    }
+
+    triggerHook('EDITOR_ATTEMPT_READONLY_EDIT', { doc: currentFile || null, readonlyType })
   })
 })
 

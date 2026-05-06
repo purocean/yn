@@ -19,6 +19,8 @@ import { getProxyDispatcher, newProxyDispatcher } from './proxy-dispatcher'
 import config from './config'
 import { initProxy } from './proxy'
 import { initEnvs } from './envs'
+import { buildAppUrl } from './url'
+import type { UrlMode } from './url'
 
 app.commandLine.appendSwitch('enable-features', 'SharedArrayBuffer')
 
@@ -33,7 +35,7 @@ const electronRemote = require('@electron/remote/main')
 const isMacos = os.platform() === 'darwin'
 const isLinux = os.platform() === 'linux'
 
-let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
+let urlMode: UrlMode = 'scheme'
 let skipBeforeUnloadCheck = false
 let macOpenFilePath = ''
 
@@ -79,27 +81,11 @@ const getDeepLinkFromArgv = (argv: string[]) => {
 }
 
 const getUrl = (mode?: typeof urlMode) => {
-  mode = mode ?? urlMode
-
-  const args = Object.entries(yargs.argv).filter(x => [
-    'readonly',
-    'show-status-bar',
-    'init-repo',
-    'init-file',
-  ].includes(x[0]))
-
-  const searchParams = new URLSearchParams(args as any)
-
-  if (mode === 'scheme') {
-    searchParams.set('port', backendPort.toString())
-  }
-
-  const query = searchParams.toString()
-
-  const proto = mode === 'scheme' ? APP_NAME : 'http'
-  const port = proto === 'http' ? (mode === 'dev' ? devFrontendPort : backendPort) : ''
-
-  return `${proto}://localhost:${port}` + (query ? `?${query}` : '')
+  return buildAppUrl({
+    mode: mode ?? urlMode,
+    backendPort,
+    devFrontendPort,
+  })
 }
 
 const hideWindow = () => {

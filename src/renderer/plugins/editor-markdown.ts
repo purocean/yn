@@ -3,7 +3,6 @@ import dayjs from 'dayjs'
 import { getEditor, getOneIndent, insert, whenEditorReady } from '@fe/services/editor'
 import type { Plugin } from '@fe/context'
 import { t } from '@fe/services/i18n'
-import type { IMarkdownString } from 'monaco-editor'
 
 export default {
   name: 'editor-markdown',
@@ -114,25 +113,6 @@ export default {
         ctx.store.state.inComposition = false
       })
 
-      const messageContribution: any = editor.getContribution('editor.contrib.messageController')
-      editor.onDidAttemptReadOnlyEdit(() => {
-        const currentFile = ctx.store.state.currentFile
-        const cmdRevealCurrentFile = `command:vs.editor.ICodeEditor:1:${idRevealCurrentFileInOS}`
-        const cmdRefreshCurrentDoc = `command:vs.editor.ICodeEditor:1:${idRefreshCurrentDoc}`
-        const message =
-          ctx.args.FLAG_READONLY
-            ? ctx.i18n.t('read-only-mode-desc')
-            : !currentFile
-                ? ctx.i18n.t('file-status.no-file')
-                : currentFile.writeable === false
-                  ? {
-                    value: ctx.i18n.t('file-readonly-desc', cmdRevealCurrentFile, cmdRefreshCurrentDoc),
-                    isTrusted: true,
-                  } as IMarkdownString
-                  : ctx.i18n.t('can-not-edit-this-file-type')
-        messageContribution.showMessage(message, editor.getPosition())
-      })
-
       editor.addAction({
         id: idRevealCurrentFileInOS,
         label: ctx.i18n.t('editor.action-label.reveal-current-file-in-os'),
@@ -165,6 +145,29 @@ export default {
       })
     })
 
+    ctx.registerHook('EDITOR_ATTEMPT_READONLY_EDIT', async ({ readonlyType }) => {
+      const { editor } = await whenEditorReady()
+      const messageContribution: any = editor.getContribution('editor.contrib.messageController')
+      const cmdRevealCurrentFile = `command:vs.editor.ICodeEditor:1:${idRevealCurrentFileInOS}`
+      const cmdRefreshCurrentDoc = `command:vs.editor.ICodeEditor:1:${idRefreshCurrentDoc}`
+
+      let message: string | { value: string, isTrusted: boolean }
+      if (readonlyType === 'app-readonly') {
+        message = ctx.i18n.t('read-only-mode-desc')
+      } else if (readonlyType === 'no-file') {
+        message = ctx.i18n.t('file-status.no-file')
+      } else if (readonlyType === 'file-not-writable') {
+        message = {
+          value: ctx.i18n.t('file-readonly-desc', cmdRevealCurrentFile, cmdRefreshCurrentDoc),
+          isTrusted: true,
+        }
+      } else {
+        message = ctx.i18n.t('can-not-edit-this-file-type')
+      }
+
+      messageContribution.showMessage(message, editor.getPosition())
+    })
+
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-insert']?.list?.push(
         {
@@ -189,6 +192,8 @@ export default {
       description: ctx.i18n.t('command-desc.plugin_editor_focus-editor'),
       handler: focusEditor,
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Focus editor. No args. No return.',
       keys: [ctx.keybinding.Shift, ctx.keybinding.Alt, 'x']
     })
   }

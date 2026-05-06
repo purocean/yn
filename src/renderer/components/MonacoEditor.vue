@@ -9,6 +9,7 @@ import { getDefaultOptions } from '@fe/services/editor'
 import { toUri } from '@fe/services/document'
 import { triggerHook } from '@fe/core/hook'
 import { MONACO_EDITOR_NLS } from '@fe/support/args'
+import { isMarkdownFile } from '@share/misc'
 
 export default defineComponent({
   name: 'monaco-editor',
@@ -49,7 +50,13 @@ export default defineComponent({
         model!.setValue(value)
       }
 
-      editor.setModel(model!)
+      const currentModel = model!
+
+      if (isMarkdownFile(uri.path) && currentModel.getLanguageId() !== 'markdown') {
+        monaco.editor.setModelLanguage(currentModel, 'markdown')
+      }
+
+      editor.setModel(currentModel)
     }
 
     function initMonaco () {

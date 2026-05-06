@@ -22,6 +22,7 @@ import config from '../config'
 import * as jwt from '../jwt'
 import { getAction } from '../action'
 import * as extension from '../extension'
+import * as mcpServer from './mcp'
 import type { FileReadResult } from '../../share/types'
 
 const isLocalhost = (address: string) => {
@@ -36,6 +37,56 @@ const noCache = (ctx: any) => {
   ctx.set('Cache-Control', 'no-store, no-cache, must-revalidate')
   ctx.set('Pragma', 'no-cache')
   ctx.set('Expires', 0)
+}
+
+const isImagePath = (filePath: string) => {
+  const fileType = mime.getType(filePath)
+  return typeof fileType === 'string' && fileType.startsWith('image/')
+}
+
+const getFallbackAbsoluteImagePath = (filePath: string) => {
+  if (!isImagePath(filePath) || !filePath.startsWith('/')) {
+    return null
+  }
+
+  return path.posix.isAbsolute(filePath) ? filePath : null
+}
+
+const parseRange = (range: string, size: number) => {
+  const requestRange = range.replace('bytes=', '').split('-').map((x: string) => parseInt(x || '-1'))
+  const start = requestRange[0] < 0 ? 0 : requestRange[0]
+  const end = requestRange[1] < 0 ? size - 1 : requestRange[1]
+
+  return {
+    start,
+    end,
+    chunkSize: end - start + 1,
+  }
+}
+
+const sendAttachmentContent = async (ctx: any, target: { repo?: string, path: string }) => {
+  const range = ctx.headers.range
+
+  if (range) {
+    const { size } = target.repo
+      ? await file.stat(target.repo, target.path)
+      : await fs.stat(target.path)
+    const { start, end, chunkSize } = parseRange(range, size)
+
+    ctx.status = 206
+    ctx.set('Content-Range', `bytes ${start}-${end}/${size}`)
+    ctx.set('Accept-Ranges', 'bytes')
+    ctx.set('Content-Length', chunkSize)
+    ctx.body = target.repo
+      ? await file.createReadStream(target.repo, target.path, { start, end })
+      : fs.createReadStream(target.path, { start, end })
+  } else {
+    ctx.body = target.repo
+      ? await file.read(target.repo, target.path)
+      : await fs.readFile(target.path)
+  }
+
+  ctx.type = mime.getType(target.path) || 'application/octet-stream'
 }
 
 const checkPermission = (ctx: any, next: any) => {
@@ -110,9 +161,14 @@ const checkPrivateRepo = (ctx: any, repo: string) => {
 const fileContent = async (ctx: any, next: any) => {
   if (ctx.path === '/api/file') {
     if (ctx.method === 'GET') {
-      const { repo, path, asBase64 } = ctx.query
+      const { repo, path, asBase64, exists } = ctx.query
 
       checkPrivateRepo(ctx, repo)
+
+      if (exists === 'true') {
+        ctx.body = result('ok', 'success', await file.exists(repo, path))
+        return
+      }
 
       const stat = await file.stat(repo, path)
 
@@ -218,7 +274,7 @@ const attachment = async (ctx: any, next: any) => {
         const filePath = ctx.path.replace('/api/attachment', '')
         const arr = filePath.split('/')
         repo = decodeURIComponent(arr[1] || '')
-        path = decodeURI(arr.slice(2).join('/'))
+        path = decodeURI('/' + arr.slice(2).join('/'))
       }
 
       if (!repo || !path) {
@@ -230,29 +286,22 @@ const attachment = async (ctx: any, next: any) => {
       noCache(ctx)
 
       try {
-        // support range
-        const range = ctx.headers.range
-        if (range) {
-          const { size } = await file.stat(repo, path)
-          const requestRange = range.replace('bytes=', '').split('-').map((x: string) => parseInt(x || '-1'))
-          const start = requestRange[0] < 0 ? 0 : requestRange[0]
-          const end = requestRange[1] < 0
-            ? size - 1
-            : requestRange[1]
-
-          const chunkSize = end - start + 1
-
-          ctx.status = 206
-          ctx.set('Content-Range', `bytes ${start}-${end}/${size}`)
-          ctx.set('Accept-Ranges', 'bytes')
-          ctx.set('Content-Length', chunkSize)
-          ctx.body = await file.createReadStream(repo, path, { start, end })
-        } else {
-          ctx.body = await file.read(repo, path)
-        }
-        ctx.type = mime.getType(path)
+        await sendAttachmentContent(ctx, { repo, path })
       } catch (error: any) {
         if (error.code === 'ENOENT') {
+          const fallbackAbsoluteImagePath = getFallbackAbsoluteImagePath(path)
+
+          if (fallbackAbsoluteImagePath) {
+            try {
+              await sendAttachmentContent(ctx, { path: fallbackAbsoluteImagePath })
+              return
+            } catch (fallbackError: any) {
+              if (fallbackError.code !== 'ENOENT') {
+                throw fallbackError
+              }
+            }
+          }
+
           ctx.status = 404
           ctx.body = result('error', 'Not found')
         } else {
@@ -639,6 +688,17 @@ const choose = async (ctx: any, next: any) => {
   }
 }
 
+const mcpEndpoint = async (ctx: any, next: any) => {
+  if (ctx.path === '/api/mcp/message' && ctx.method === 'POST') {
+    checkIsAdmin(ctx)
+    // MCP endpoint using SDK's StreamableHTTPServerTransport
+    await mcpServer.handleMCPRequest(ctx.req, ctx.res, ctx.request.body)
+    ctx.respond = false
+  } else {
+    await next()
+  }
+}
+
 const rpc = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/rpc') && ctx.method === 'POST') {
     const { code } = ctx.request.body
@@ -673,7 +733,9 @@ const sendFile = async (ctx: any, next: any, filePath: string, fullback = true) 
   ctx.body = await promisify(fs.readFile)(filePath)
   ctx.set('Content-Length', fileStat.size)
   ctx.set('Last-Modified', fileStat.mtime.toUTCString())
-  ctx.set('Cache-Control', 'max-age=0')
+  if (!ctx.response.get('Cache-Control')) {
+    ctx.set('Cache-Control', 'max-age=0')
+  }
   ctx.set('X-XSS-Protection', '0')
   ctx.type = path.extname(filePath)
 
@@ -686,6 +748,7 @@ const userExtension = async (ctx: any, next: any) => {
       ctx.body = result('ok', 'success', await extension.list())
     } else if (ctx.path.startsWith('/extensions/') && ctx.method === 'GET') {
       const filePath = path.join(USER_EXTENSION_DIR, ctx.path.replace('/extensions', ''))
+      noCache(ctx)
       await sendFile(ctx, next, filePath, false)
     } else {
       await next()
@@ -793,6 +856,7 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userExtension))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, premiumManage))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, setting))
+  app.use(async (ctx: any, next: any) => await wrapper(ctx, next, mcpEndpoint))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, choose))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, tmpFile))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, userFile))

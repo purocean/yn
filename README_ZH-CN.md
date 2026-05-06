@@ -12,8 +12,9 @@
 
 ## 特色
 
+- **AI 助手**：**支持 AI Copilot 进行文本补全、文本生成、图片生成（兼容 OpenAI、Ollama、Gemini、Kimi、通义千问、Flux.1 等）；支持 OpenCode AI Agent 智能编码辅助。**
 - **使用方便**：使用 Monaco 内核，专为 Markdown 优化，拥有和 VSCode 一样的编辑体验。
-- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等；支持 AI Copilot。
+- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等。
 - **兼容性强**：数据保存为本地 Markdown 文件；拓展功能尽量用 Markdown 原有的语法实现。
 - **插件拓展**：支持用户编写自己的插件来拓展编辑器的功能。
 - **支持加密**：用来保存账号等隐私文件，文件可单独设置密码。
@@ -62,7 +63,6 @@
 - **容器块:** 支持类似 VuePress 默认主题的自定义容器
 - **宏替换:** 支持内嵌 JavaScript 表达式动态替换文档内容
 - **图床:** 支持 [PicGo](https://picgo.github.io/PicGo-Doc/) 图床
-- **OpenAI:** 支持接入 [OpenAI](https://openai.com) 自动补全
 - **自定义插件:** 支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN_ZH-CN.md)
 
 ## 截图
@@ -76,13 +76,40 @@
 
 ## 更新日志
 
-### [v3.86.1](https://github.com/purocean/yn/releases/tag/v3.86.1) 2025-12-13
+### [v3.89.1](https://github.com/purocean/yn/releases/tag/v3.89.1) 2026-05-06
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-win-x64-3.86.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-mac-arm64-3.86.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-mac-x64-3.86.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-linux-x86_64-3.86.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.86.1/Yank-Note-linux-amd64-3.86.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-win-x64-3.89.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-mac-arm64-3.89.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-mac-x64-3.89.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-linux-x86_64-3.89.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-linux-amd64-3.89.1.deb)
 
-1. feat: Windows 上终端使用 ConPTY
-2. fix: 修复解析 HTML 的一些问题
-3. feat(plugin): 插件中可使用增加 XTerm 组件连接终端
+1. feat(editor): 增加浮动预览编辑器，支持拖拽、调整大小、预览点击同步、目标行定位、关闭控制和发现提示
+2. fix(extension): 避免扩展升级后残留旧文件
+
+### [v3.88.2](https://github.com/purocean/yn/releases/tag/v3.88.2) 2026-05-01
+
+[Windows](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-win-x64-3.88.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-arm64-3.88.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-x64-3.88.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-x86_64-3.88.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-amd64-3.88.2.deb)
+
+1. feat: 增加 MCP 集成，包含本地 MCP 端点、设置开关、仓库列表、用户动作调用、Markdown 特性文档、文档导出和主窗口重载
+2. feat: 支持将 `.mdx` 和 `.markdown` 作为 Markdown 文档处理，包含编辑器语言模式和预览
+3. feat: 增强 HTML 导出，支持可选的代码行号、复制按钮，并改进渲染资源等待
+4. feat: 支持绝对路径图片附件和外部图片路径的回退处理
+5. feat: 支持在图片本地化时处理 `file://` 图片
+6. feat: 仓库文件树默认显示点号开头的隐藏文件
+7. fix: 修复终端浅色模式下选择文本颜色不清晰的问题
+8. fix: 修复创建以斜杠结尾的新文件夹时路径判断错误的问题
+9. fix: 避免在不支持的 Windows 版本上加载代码高亮字体
+10. test: 增加 Markdown 特性测试文档和 Draw.io 示例文件
+11. chore(deps): 更新 `koa`、`lodash`、`lodash-es`、`node-forge`、`rollup`、`undici`、`uuid`、`yaml` 以及安全相关的间接依赖
+
+### [v3.87.1](https://github.com/purocean/yn/releases/tag/v3.87.1) 2026-01-23
+
+[Windows](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-win-x64-3.87.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-arm64-3.87.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-x64-3.87.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-x86_64-3.87.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-amd64-3.87.1.deb)
+
+1. feat: 支持在侧栏展示 OpenCode
+2. feat: 搜索面板支持记住展开结果状态
+3. feat: 支持预览区列表折叠，需在`设置-渲染`中开启
+4. feat: 打开外部文件默认只读
+5. feat: 优化列表序号自动填充体验
+6. feat(plugin): 支持 `ctx.workbench.ContentRightSide.registerPanel` 注册侧栏面板组件
+7. feat(plugin): 增加  `EDITOR_ATTEMPT_READONLY_EDIT` Hook
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

@@ -1,6 +1,7 @@
 import { Fragment, h } from 'vue'
 import { init } from '@fe/core/plugin'
-import { getActionHandler } from '@fe/core/action'
+import { Alt } from '@fe/core/keybinding'
+import { getActionHandler, registerAction } from '@fe/core/action'
 import { registerHook, triggerHook } from '@fe/core/hook'
 import store from '@fe/support/store'
 import { isElectron, isWindows } from '@fe/support/env'
@@ -26,7 +27,7 @@ import ctx from '@fe/context'
 import ga from '@fe/support/ga'
 import * as jsonrpc from '@fe/support/jsonrpc'
 import { getLogger, sleep } from '@fe/utils'
-import { removeOldDatabases } from './others/db'
+import { removeOldDatabases } from '@fe/others/db'
 
 const logger = getLogger('startup')
 
@@ -83,6 +84,7 @@ registerHook('DOC_MOVED', refreshTree)
 registerHook('DOC_SWITCH_FAILED', refreshTree)
 registerHook('DOC_BEFORE_DELETE', reWatchFsOnWindows)
 registerHook('DOC_BEFORE_MOVE', reWatchFsOnWindows)
+registerHook('RIGHT_SIDE_PANEL_CHANGE', ctx.statusBar.refreshMenu)
 
 registerHook('INDEXER_FS_CHANGE', async () => {
   if (Date.now() - autoRefreshedAt > 3000) {
@@ -276,14 +278,11 @@ whenEditorReady().then(() => {
 })
 
 // json-rpc
-
 jsonrpc.init({ ctx }, whenEditorReady())
 
 setTimeout(() => {
   removeOldDatabases()
 }, 20000)
-
-// google analytics
 
 registerHook('DOC_SWITCHED', () => {
   setTimeout(() => {
@@ -291,6 +290,26 @@ registerHook('DOC_SWITCHED', () => {
   }, 0)
 })
 
+registerHook('RIGHT_SIDE_PANEL_CHANGE', ({ type }) => {
+  if (type === 'remove' && ctx.workbench.ContentRightSide.getAllPanels().length < 1) {
+    ctx.layout.toggleContentRightSide(false)
+  }
+})
+
+registerAction({
+  name: 'layout.toggle-content-right-side',
+  description: t('command-desc.layout_toggle-content-right-side'),
+  mcpDescription: 'Toggle content right panel. Args: [visible:boolean?]. No return.',
+  handler: ctx.layout.toggleContentRightSide,
+  forUser: true,
+  forMcp: true,
+  when () {
+    return ctx.workbench.ContentRightSide.getAllPanels().length > 0
+  },
+  keys: [Alt, 'b']
+})
+
+// google analytics
 ga.logEvent('page_view', {
   page_title: '--STARTUP--',
   page_location: window.location.href,

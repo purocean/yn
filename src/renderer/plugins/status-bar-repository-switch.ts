@@ -78,6 +78,8 @@ export default {
         name: `base.switch-repository-${i}`,
         description: i === 0 ? ctx.i18n.t('switch-the-last-repo') : ctx.i18n.t('switch-repo-n', String(i)),
         forUser: true,
+        forMcp: true,
+        mcpDescription: `Switch to repository ${i === 0 ? 'last' : i}. No args. No return.`,
         keys: [ctx.keybinding.Alt, String(i)],
         handler: () => {
           const repos = ctx.repo.getAllRepos()
@@ -89,5 +91,19 @@ export default {
         },
       })
     }
+
+    ctx.action.registerAction({
+      name: 'base.list-repositories',
+      description: '列出仓库',
+      forMcp: true,
+      mcpDescription: 'List repositories. No args. Return: Repo[] with name, path, enableIndexing.',
+      handler: () => {
+        return ctx.repo.getAllRepos().map(repo => ({
+          name: repo.name,
+          path: repo.path,
+          enableIndexing: repo.enableIndexing,
+        }))
+      },
+    })
   }
 } as Plugin

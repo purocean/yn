@@ -74,6 +74,7 @@
                     </template>
                   </div>
                   <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.highlightCode" type="checkbox" /> {{$t('copy-content.highlight-code')}} </label>
+                  <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.codeLineNumbers" type="checkbox" /> {{$t('copy-content.line-numbers')}} </label>
                   <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.uploadLocalImage" type="checkbox" /> {{$t('copy-content.upload-image')}} </label>
                   <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.inlineLocalImage" type="checkbox" /> {{$t('copy-content.inline-image')}} </label>
                   <label style="display: block; margin-bottom: 10px;"><input v-model="convert.localHtmlOptions.includeStyle" type="checkbox" /> {{$t('copy-content.include-style')}} </label>
@@ -126,6 +127,7 @@ export default defineComponent({
         inlineStyle: false,
         includeStyle: true,
         highlightCode: true,
+        codeLineNumbers: true,
         includeToc: [] as number[],
       },
       pdfOptions: {
@@ -206,7 +208,10 @@ export default defineComponent({
         const blob = await convertCurrentDocument({
           fromType: convert.fromType as any,
           toType: convert.toType as any,
-          fromHtmlOptions: convert.localHtmlOptions,
+          fromHtmlOptions: {
+            ...convert.localHtmlOptions,
+            codeCopyButton: convert.localHtmlOptions.includeStyle || convert.localHtmlOptions.inlineStyle,
+          },
         })
 
         downloadContent(fileName.value + '.' + convert.toType, blob)

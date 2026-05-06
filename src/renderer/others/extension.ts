@@ -158,6 +158,20 @@ export async function getRegistryExtensions (registry: RegistryHostname = 'regis
   return extensions.map(readInfoFromJson)
 }
 
+export async function getRegistryExtensionVersions (id: string, registry: RegistryHostname = 'registry.npmjs.org'): Promise<Extension[]> {
+  logger.debug('getRegistryExtensionVersions', id, registry)
+
+  const registryUrl = changeRegistryOrigin(registry, `https://registry.npmjs.org/${encodeURIComponent(id)}`)
+  const registryJson = await api.proxyFetch(registryUrl, { timeout: 5000 }).then(r => r.json())
+
+  return Object.values(registryJson.versions || {})
+    .sort((a: any, b: any) => semver.rcompare(a.version, b.version))
+    .slice(0, 15)
+    .map(readInfoFromJson)
+    .filter((item): item is Omit<Extension, 'installed'> => !!item)
+    .map(item => ({ ...item, installed: false }))
+}
+
 export function showManager (id?: string) {
   getActionHandler('extension.show-manager')(id)
 }
