@@ -505,15 +505,6 @@ The value of the link attribute `link-type` needs to be a `drawio` string. The u
 
 [drawio](./test.drawio){link-type="drawio"}
 
-## Luckysheet Table
-
-The value of the link attribute `link-type` needs to be a `luckysheet` string. The use of the link format will not affect other Markdown resolver resolving.
-
-> [!WARNING]
-> [Luckysheet](https://github.com/mengshukeji/Luckysheet) has many bugs and should be used with caution.
-
-[luckysheet](./test.luckysheet){link-type="luckysheet"}
-
 ## Container Block
 
 Support functions similiar to [VuePress Container Block](https://v2.vuepress.vuejs.org/zh/reference/default-theme/markdown.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%B9%E5%99%A8),using [markdown-it-container](https://github.com/markdown-it/markdown-it-container) to achieve.
@@ -756,6 +747,12 @@ name               | use         | default value |  description                 
 1. Right click the tray icon and click "Open Main Dir", go to the `themes` folder.
 2. Copy `github.css` to a new CSS file ans modify it.
 3. Open Setting => Appearance => Custom CSS switch CSS file.
+
+## CLI and MCP
+
+Yank Note supports CLI (Command Line Interface) and MCP (Model Context Protocol) to allow you to interact with the application programmatically.
+
+For more details, please refer to [CLI and MCP](https://help.yank-note.com/cli-mcp.html).
 
 ## Plug-In Development
 
