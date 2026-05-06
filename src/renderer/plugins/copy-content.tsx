@@ -142,6 +142,8 @@ export default {
       description: ctx.i18n.t('command-desc.plugin_copy-content_copy-content'),
       handler: copyContent,
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Copy content in various formats. No args. No return.',
       keys: [ctx.keybinding.CtrlCmd, ctx.keybinding.Shift, 'c'],
     })
 

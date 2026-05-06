@@ -475,7 +475,7 @@ export default defineComponent({
   }
 
   ::v-deep(a) {
-    color: var(-g-color-anchor);
+    color: var(--g-color-anchor);
   }
 
   ::v-deep(input ~ .suggestions-datalist) {

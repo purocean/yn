@@ -100,6 +100,8 @@ store.watch(() => store.state.treeSort, async () => {
 registerAction({
   name: 'tree.refresh',
   description: t('command-desc.tree_refresh'),
+  mcpDescription: 'Refresh file tree. No args. No return.',
   forUser: true,
+  forMcp: true,
   handler: refreshTree,
 })

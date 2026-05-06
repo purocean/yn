@@ -18,7 +18,9 @@ export function toggleOutline (visible?: boolean) {
 registerAction({
   name: 'workbench.toggle-outline',
   description: t('command-desc.workbench_toggle-outline'),
+  mcpDescription: 'Toggle outline panel. Args: [visible:boolean?]. No return.',
   forUser: true,
+  forMcp: true,
   handler: toggleOutline,
   keys: [Shift, Alt, 'o']
 })

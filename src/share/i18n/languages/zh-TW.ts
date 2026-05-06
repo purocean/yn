@@ -11,6 +11,7 @@ const data: BaseLanguage = {
   'ok': '確定',
   'demo-tips': 'DEMO 模式下某些功能不可用',
   'more': '更多',
+  'copy': '複製',
   'copied': '已複製',
   'others': '其他',
   'insert-different-repo-doc': '不能插入不同倉庫的文檔',
@@ -50,6 +51,11 @@ const data: BaseLanguage = {
     'readonly-desc': '外部文件默認唯讀。可以[開啟當前外部文檔編輯](%s)或[修改外部文件唯讀設置](%s)。',
     'enable-edit': '開啟當前外部文檔編輯',
     'open-setting': '修改外部文件唯讀設置',
+  },
+  'floating-editor': {
+    'show-editor': '顯示編輯器',
+    'preview-hint': '%s + 點擊預覽文字，可開啟浮動編輯器',
+    'resize': '調整大小',
   },
   'trigger-suggestions': '觸發提示',
   'table-of-contents': '目錄',
@@ -498,6 +504,9 @@ const data: BaseLanguage = {
       'other': '其他',
     },
   },
+  'plugin-mcp-server': {
+    'enable': '啟用 MCP 伺服器（Streamable HTTP）',
+  },
   'quick-open': {
     'input-placeholder': '輸入字元……',
     'empty': '無結果',
@@ -652,6 +661,7 @@ const data: BaseLanguage = {
     'inline-image': '內聯本地圖片',
     'upload-image': '上傳本地圖片',
     'highlight-code': '高亮代碼',
+    'line-numbers': '程式碼行號',
     'rt': '富文本',
     'complete': '轉換完成，點選確定複製',
     'copy-tips': '如需複製部分內容，需要預覽區選取後再操作',

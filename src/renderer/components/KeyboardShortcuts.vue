@@ -369,7 +369,9 @@ registerAction({
   name: 'keyboard-shortcuts.show-manager',
   description: t('command-desc.keyboard-shortcuts_show-manager'),
   handler: show,
-  forUser: true
+  forUser: true,
+  forMcp: true,
+  mcpDescription: 'Show keyboard shortcuts manager. No args. No return.'
 })
 
 onUnmounted(() => {

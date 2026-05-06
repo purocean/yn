@@ -10,6 +10,22 @@ import { getViewDom } from '@fe/services/view'
 import type { Plugin } from '@fe/context'
 import type { BuildInActionName } from '@fe/types'
 
+const LOCALIZABLE_IMAGE_SRC_RE = /^(https?:\/\/|data:|file:\/\/)/i
+
+function getImageName (src: string) {
+  const name = removeQuery(src).split('/').pop()
+
+  if (!name) {
+    return undefined
+  }
+
+  try {
+    return decodeURIComponent(name)
+  } catch (error) {
+    return name
+  }
+}
+
 async function transformImgOutLink (img: HTMLImageElement) {
   const { currentFile } = store.state
   if (!currentFile) {
@@ -36,13 +52,16 @@ async function transformImgOutLink (img: HTMLImageElement) {
 
   let replacedLink = ''
   const imgAttrSrc = img.getAttribute('src') || ''
+  const originLink = imgAttrSrc || img.src
   if (img.src.startsWith('data:')) {
     replacedLink = await transform(img)
-  } else if (imgAttrSrc.startsWith('http://') || imgAttrSrc.startsWith('https://')) {
-    const headers = JSON.parse(img.getAttribute('headers') || '{}')
-    const res = await api.proxyFetch(img.src, { headers })
+  } else if (/^https?:\/\//i.test(imgAttrSrc) || /^file:\/\//i.test(originLink)) {
+    const isFileProtocol = /^file:\/\//i.test(originLink)
+    const res = isFileProtocol
+      ? await fetch(img.src)
+      : await api.proxyFetch(img.src, { headers: JSON.parse(img.getAttribute('headers') || '{}') })
     const blob = await res.blob()
-    const contentType = res.headers.get('content-type') || ''
+    const contentType = res.headers.get('content-type') || blob.type || mime.getType(originLink) || ''
 
     if (!contentType.startsWith('image/')) {
       throw new Error('Not an image')
@@ -50,7 +69,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
 
     const ext = mime.getExtension(contentType) || ''
     const imgFile = new File([blob!], 'file.' + ext)
-    const name = removeQuery(img.src).split('/').pop() // get file name from url
+    const name = getImageName(originLink) // get file name from url
     const assetPath = await upload(
       imgFile,
       currentFile,
@@ -60,7 +79,7 @@ async function transformImgOutLink (img: HTMLImageElement) {
   }
 
   if (replacedLink) {
-    return { oldLink: img.src, replacedLink: encodeMarkdownLink(replacedLink) }
+    return { oldLink: originLink, replacedLink: encodeMarkdownLink(replacedLink) }
   }
 
   return null
@@ -107,6 +126,8 @@ export default {
       handler: transformAll,
       description: ctx.i18n.t('command-desc.plugin_image-localization_all'),
       forUser: true,
+      forMcp: true,
+      mcpDescription: 'Transform remote images to local. No args. No return.',
       when,
     })
 
@@ -130,7 +151,7 @@ export default {
 
       if (
         el.tagName === 'IMG' &&
-        /^https:\/\/|^http:\/\/|^data:/.test(el.getAttribute('src') || '')
+        LOCALIZABLE_IMAGE_SRC_RE.test(el.getAttribute('src') || '')
       ) {
         items.push({
           id: commandClick,

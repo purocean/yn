@@ -1,6 +1,7 @@
 import buildInRenderers from '@fe/plugins/build-in-renderers'
 import customStyles from '@fe/plugins/custom-styles'
 import customKeybindings from '@fe/plugins/custom-keybindings'
+import codeSyntaxHighlightFont from '@fe/plugins/code-syntax-highlight-font'
 import electronZoom from '@fe/plugins/electron-zoom'
 import historyStack from '@fe/plugins/history-stack'
 import fileTreeFunctions from '@fe/plugins/file-tree-functions'
@@ -45,6 +46,7 @@ import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCodeWrap from '@fe/plugins/markdown-code-wrap'
 import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
+import floatingEditor from '@fe/plugins/floating-editor'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTable from '@fe/plugins/markdown-table'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
@@ -77,6 +79,8 @@ import previewFont from '@fe/plugins/preview-font'
 import dropToOpenFile from '@fe/plugins/drop-to-open-file'
 import recordRecentDocument from '@fe/plugins/record-recent-document'
 import aiCopilot from '@fe/plugins/ai-copilot'
+import mcpServer from '@fe/plugins/mcp-server'
+import mcpExport from '@fe/plugins/mcp-export'
 import viewLinks from '@fe/plugins/view-links'
 import insertTable from '@fe/plugins/insert-table'
 import textComparator from '@fe/plugins/text-comparator'
@@ -86,6 +90,7 @@ export default [
   buildInRenderers,
   customStyles,
   customKeybindings,
+  codeSyntaxHighlightFont,
   electronZoom,
   historyStack,
   fileTreeFunctions,
@@ -130,6 +135,7 @@ export default [
   markdownToc,
   markdownCodeWrap,
   markdownCodeHighlight,
+  floatingEditor,
   markdownLink,
   markdownTable,
   markdownTaskList,
@@ -162,6 +168,8 @@ export default [
   dropToOpenFile,
   recordRecentDocument,
   aiCopilot,
+  mcpServer,
+  mcpExport,
   viewLinks,
   insertTable,
   textComparator,
