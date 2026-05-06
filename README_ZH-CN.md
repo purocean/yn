@@ -76,6 +76,13 @@
 
 ## 更新日志
 
+### [v3.89.1](https://github.com/purocean/yn/releases/tag/v3.89.1) 2026-05-06
+
+[Windows](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-win-x64-3.89.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-mac-arm64-3.89.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-mac-x64-3.89.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-linux-x86_64-3.89.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.89.1/Yank-Note-linux-amd64-3.89.1.deb)
+
+1. feat(editor): 增加浮动预览编辑器，支持拖拽、调整大小、预览点击同步、目标行定位、关闭控制和发现提示
+2. fix(extension): 避免扩展升级后残留旧文件
+
 ### [v3.88.2](https://github.com/purocean/yn/releases/tag/v3.88.2) 2026-05-01
 
 [Windows](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-win-x64-3.88.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-arm64-3.88.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-x64-3.88.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-x86_64-3.88.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-amd64-3.88.2.deb)
