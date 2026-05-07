@@ -4,6 +4,7 @@ import MarkdownItSup from 'markdown-it-sup'
 import MarkdownItMark from 'markdown-it-mark'
 import MarkdownItAbbr from 'markdown-it-abbr'
 import MarkdownItAttributes from 'markdown-it-attributes'
+import MarkdownItCjFriendly from 'markdown-it-cj-friendly'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 import { triggerHook } from '@fe/core/hook'
 import { HELP_REPO_NAME } from '@fe/support/args'
@@ -54,6 +55,9 @@ markdown.use(MarkdownItSup)
 markdown.use(MarkdownItMark)
 markdown.use(MarkdownItAbbr)
 markdown.use(MarkdownItAttributes)
+if (getSetting('render.md-cj-friendly', false)) {
+  markdown.use(MarkdownItCjFriendly)
+}
 markdown.use(MarkdownItMultimdTable, {
   multiline: getSetting('render.multimd-multiline', true),
   rowspan: getSetting('render.multimd-rowspan', false),

@@ -395,6 +395,15 @@ const schema: SettingSchema = ({
       group: 'render',
       required: true,
     },
+    'render.md-cj-friendly': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.render.md-cj-friendly',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'render',
+      required: true,
+      needReloadWindowWhenChanged: true,
+    },
     'render.text-autospace': {
       defaultValue: false,
       title: 'T_setting-panel.schema.render.text-autospace',

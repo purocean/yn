@@ -23,14 +23,18 @@ vi.mock('@fe/plugins/markdown-hashtags/lib', () => ({
   RULE_NAME: 'hashtag',
 }))
 
-import { markdown, registerPlugin } from '@fe/services/markdown'
-
 beforeEach(() => {
   mocks.settings.clear()
   mocks.triggerHook.mockClear()
 })
 
-test('registerPlugin applies markdown-it plugins with params', () => {
+async function loadMarkdown () {
+  vi.resetModules()
+  return await import('@fe/services/markdown')
+}
+
+test('registerPlugin applies markdown-it plugins with params', async () => {
+  const { markdown, registerPlugin } = await loadMarkdown()
   const plugin = vi.fn((md, params) => {
     md.core.ruler.push('test_plugin', state => {
       state.env.pluginParam = params.enabled
@@ -46,7 +50,8 @@ test('registerPlugin applies markdown-it plugins with params', () => {
   expect(env.pluginParam).toBe(true)
 })
 
-test('render applies setting-driven markdown options and triggers before-render hook', () => {
+test('render applies setting-driven markdown options and triggers before-render hook', async () => {
+  const { markdown } = await loadMarkdown()
   mocks.settings.set('render.md-html', false)
   mocks.settings.set('render.md-breaks', false)
   mocks.settings.set('render.md-linkify', false)
@@ -70,7 +75,8 @@ test('render applies setting-driven markdown options and triggers before-render 
   expect(html).toContain('2^10^ H~2~O')
 })
 
-test('help repo always allows raw html even when html setting is disabled', () => {
+test('help repo always allows raw html even when html setting is disabled', async () => {
+  const { markdown } = await loadMarkdown()
   mocks.settings.set('render.md-html', false)
 
   const html = markdown.render('<span>help</span>', { file: { repo: '__help__' } } as any)
@@ -79,7 +85,8 @@ test('help repo always allows raw html even when html setting is disabled', () =
   expect(html).toContain('<span>help</span>')
 })
 
-test('tokenize and normalize rules attach source, tokens, and line marks to env', () => {
+test('tokenize and normalize rules attach source, tokens, and line marks to env', async () => {
+  const { markdown } = await loadMarkdown()
   const env: any = {}
 
   markdown.render('# Title\n\nBody', env)
@@ -91,4 +98,15 @@ test('tokenize and normalize rules attach source, tokens, and line marks to env'
   expect(Array.isArray(env.eMarks)).toBe(true)
   expect(env.bMarks[0]).toBe(0)
   expect(env.eMarks[0]).toBe(7)
+})
+
+test('cjk friendly plugin is only applied when the render setting is enabled at startup', async () => {
+  const src = '**该星号不会被识别，而是直接显示。**这是因为它没有被识别为强调符号。'
+
+  const { markdown: plainMarkdown } = await loadMarkdown()
+  expect(plainMarkdown.renderInline(src)).toBe(src)
+
+  mocks.settings.set('render.md-cj-friendly', true)
+  const { markdown: cjFriendlyMarkdown } = await loadMarkdown()
+  expect(cjFriendlyMarkdown.renderInline(src)).toContain('<strong>该星号不会被识别，而是直接显示。</strong>')
 })
