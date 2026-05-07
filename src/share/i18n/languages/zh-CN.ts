@@ -434,7 +434,7 @@ const data: BaseLanguage = {
         'md-typographer': '启用排版美化，如 (c) -> ©',
         'md-sup': '启用上标语法: 29^th^',
         'md-sub': '启用下标语法: H~2~O',
-        'md-cj-friendly': '启用 CJK 友好的强调解析',
+        'md-cjk-friendly': '启用 CJK 友好的强调解析',
         'md-emoji': '启用 Emoji 语法: :smile:',
         'list-collapsible': '启用列表折叠 - 点击折叠/展开嵌套列表',
         'multimd-multiline': '[markdown-it-multimd-table]: 启用 multiline 语法',

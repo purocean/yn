@@ -100,13 +100,15 @@ test('tokenize and normalize rules attach source, tokens, and line marks to env'
   expect(env.eMarks[0]).toBe(7)
 })
 
-test('cjk friendly plugin is only applied when the render setting is enabled at startup', async () => {
-  const src = '**该星号不会被识别，而是直接显示。**这是因为它没有被识别为强调符号。'
+test('cjk friendly plugin can be toggled at render time', async () => {
+  const src = '**这应该被识别为强调。**这是后续文本。'
+  const { markdown } = await loadMarkdown()
 
-  const { markdown: plainMarkdown } = await loadMarkdown()
-  expect(plainMarkdown.renderInline(src)).toBe(src)
+  expect(markdown.renderInline(src)).toBe(src)
 
-  mocks.settings.set('render.md-cj-friendly', true)
-  const { markdown: cjFriendlyMarkdown } = await loadMarkdown()
-  expect(cjFriendlyMarkdown.renderInline(src)).toContain('<strong>该星号不会被识别，而是直接显示。</strong>')
+  mocks.settings.set('render.md-cjk-friendly', true)
+  expect(markdown.renderInline(src)).toContain('<strong>这应该被识别为强调。</strong>')
+
+  mocks.settings.set('render.md-cjk-friendly', false)
+  expect(markdown.renderInline(src)).toBe(src)
 })
