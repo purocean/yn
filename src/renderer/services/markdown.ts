@@ -4,7 +4,7 @@ import MarkdownItSup from 'markdown-it-sup'
 import MarkdownItMark from 'markdown-it-mark'
 import MarkdownItAbbr from 'markdown-it-abbr'
 import MarkdownItAttributes from 'markdown-it-attributes'
-import MarkdownItCjkFriendly from 'markdown-it-cjk-friendly'
+import MarkdownItCjFriendly from 'markdown-it-cj-friendly'
 import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 import { triggerHook } from '@fe/core/hook'
 import { HELP_REPO_NAME } from '@fe/support/args'
@@ -18,8 +18,8 @@ import { RULE_NAME as HASHTAG_RULE_NAME } from '@fe/plugins/markdown-hashtags/li
  */
 export const markdown = Markdown({ linkify: true, breaks: true, html: true })
 const defaultInlineState = markdown.inline.State
-MarkdownItCjkFriendly(markdown)
-const cjkFriendlyInlineState = markdown.inline.State
+MarkdownItCjFriendly(markdown)
+const cjFriendlyInlineState = markdown.inline.State
 markdown.inline.State = defaultInlineState
 
 /**
@@ -39,7 +39,7 @@ markdown.render = (src: string, env: RenderEnv) => {
   markdown.options.breaks = getSetting('render.md-breaks', true)
   markdown.options.linkify = getSetting('render.md-linkify', true)
   markdown.options.typographer = getSetting('render.md-typographer', false)
-  markdown.inline.State = getSetting('render.md-cjk-friendly', false) ? cjkFriendlyInlineState : defaultInlineState
+  markdown.inline.State = getSetting('render.md-cj-friendly', false) ? cjFriendlyInlineState : defaultInlineState
 
   const enabledRules: string[] = []
   const disabledRules: string[] = []

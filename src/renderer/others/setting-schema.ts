@@ -395,9 +395,9 @@ const schema: SettingSchema = ({
       group: 'render',
       required: true,
     },
-    'render.md-cjk-friendly': {
+    'render.md-cj-friendly': {
       defaultValue: false,
-      title: 'T_setting-panel.schema.render.md-cjk-friendly',
+      title: 'T_setting-panel.schema.render.md-cj-friendly',
       type: 'boolean',
       format: 'checkbox',
       group: 'render',

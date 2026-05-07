@@ -443,7 +443,7 @@ const data = {
         'md-typographer': 'Enable some language-neutral replacement + quotes beautification',
         'md-sup': 'Enable sup syntax: 29^th^',
         'md-sub': 'Enable sub syntax: H~2~O',
-        'md-cjk-friendly': 'Enable CJK-friendly emphasis parsing',
+        'md-cj-friendly': 'Enable CJ-friendly emphasis parsing',
         'md-emoji': 'Enable emoji syntax: :smile:',
         'list-collapsible': 'Enable collapsible lists - Click to collapse/expand nested lists',
         'multimd-multiline': '[markdown-it-multimd-table]: Enable multiline syntax',

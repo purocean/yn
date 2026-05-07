@@ -5079,11 +5079,6 @@ get-caller-file@^2.0.1, get-caller-file@^2.0.5:
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
 
-get-east-asian-width@^1.4.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/get-east-asian-width/-/get-east-asian-width-1.5.0.tgz#ce7008fe345edcf5497a6f557cfa54bc318a9ce7"
-  integrity sha512-CQ+bEO+Tva/qlmw24dCejulK5pMzVnUOFOijVogd3KQs07HnRIgp8TGipvCCRT06xeYEbpbgwaCxglFyiuIcmA==
-
 get-intrinsic@^1.0.2, get-intrinsic@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/get-intrinsic/-/get-intrinsic-1.1.1.tgz#15f59f376f855c446963948f0d24cd3637b4abc6"
@@ -6725,12 +6720,10 @@ markdown-it-attributes@^1.2.0:
   resolved "https://registry.yarnpkg.com/markdown-it-attributes/-/markdown-it-attributes-1.2.0.tgz#1f3403fb7bd510c6ca4eeaa58c4106313f643234"
   integrity sha512-FDdqndq26KbWrO9ymFz7JyhnxXMP4vmPek7iAMNuQlfvgxO7zeAU8JfARzqcUYBiqsTc+H7wa9ybhIZVKAAWug==
 
-markdown-it-cjk-friendly@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/markdown-it-cjk-friendly/-/markdown-it-cjk-friendly-2.0.2.tgz#4397a33c822334fb4e3c17010410b3394478c9b0"
-  integrity sha512-KXCl6sd129UqkAiRDb+NcAHrxC9xRa2WsGIsMMvtp2y1YlbeIaNYzArX2zfDoGhOjsyNMfJrGO7xGBss27YQSA==
-  dependencies:
-    get-east-asian-width "^1.4.0"
+markdown-it-cj-friendly@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/markdown-it-cj-friendly/-/markdown-it-cj-friendly-0.1.1.tgz#d255d2621f1b17c17b6329f9b824e6443d43d279"
+  integrity sha512-2zD9UltBqLJppIdtWpmslEygOQ4kRLgdznRHVzVJiAfFurUWEQ5UUyN+wD5ZJzZtiLit6MaRpnw20boRFwEeFQ==
 
 markdown-it-container@^4.0.0:
   version "4.0.0"

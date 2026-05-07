@@ -132,7 +132,7 @@
     "markdown-it-abbr": "^2.0.0",
     "markdown-it-attributes": "^1.2.0",
     "markdown-it-container": "^4.0.0",
-    "markdown-it-cjk-friendly": "2.0.2",
+    "markdown-it-cj-friendly": "0.1.1",
     "markdown-it-emoji": "^3.0.0",
     "markdown-it-github-alerts": "^0.3.0",
     "markdown-it-mark": "^4.0.0",

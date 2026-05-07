@@ -100,15 +100,16 @@ test('tokenize and normalize rules attach source, tokens, and line marks to env'
   expect(env.eMarks[0]).toBe(7)
 })
 
-test('cjk friendly plugin can be toggled at render time', async () => {
+test('cj friendly plugin can be toggled at render time', async () => {
   const src = '**这应该被识别为强调。**这是后续文本。'
   const { markdown } = await loadMarkdown()
+  const env: any = {}
 
-  expect(markdown.renderInline(src)).toBe(src)
+  expect(markdown.render(src, env)).toContain(src)
 
-  mocks.settings.set('render.md-cjk-friendly', true)
-  expect(markdown.renderInline(src)).toContain('<strong>这应该被识别为强调。</strong>')
+  mocks.settings.set('render.md-cj-friendly', true)
+  expect(markdown.render(src, env)).toContain('<strong>这应该被识别为强调。</strong>')
 
-  mocks.settings.set('render.md-cjk-friendly', false)
-  expect(markdown.renderInline(src)).toBe(src)
+  mocks.settings.set('render.md-cj-friendly', false)
+  expect(markdown.render(src, env)).toContain(src)
 })
