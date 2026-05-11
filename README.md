@@ -4,6 +4,26 @@ A **highly extensible** Markdown editor, designed for productivity. **[Download]
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not recommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
+## Contribute
+
+```
+#Check out code
+
+git clone https://github.com/purocean/yn.git
+cd yn && git check develop
+
+#developing
+yarn dev
+
+#Local building and running
+yarn build
+yarn start
+
+#Local packing
+yarn build
+yarn electron-builder 
+```
+
 English | [中文说明](./README_ZH-CN.md) | [Русский](./README_RU.md)
 
 [toc]{level: [2]}
