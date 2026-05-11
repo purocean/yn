@@ -10,12 +10,12 @@
 #代码检出
 
 git clone https://github.com/purocean/yn.git
-cd yn && git check develop
+cd yn && git checkout develop
 
 #日常开发
 yarn dev
 
-#本地完整运行
+#本地编译运行
 yarn build
 yarn start
 

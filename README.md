@@ -10,7 +10,7 @@ A **highly extensible** Markdown editor, designed for productivity. **[Download]
 #Check out code
 
 git clone https://github.com/purocean/yn.git
-cd yn && git check develop
+cd yn && git checkout develop
 
 #developing
 yarn dev
