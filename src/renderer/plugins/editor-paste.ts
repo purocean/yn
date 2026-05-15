@@ -32,10 +32,10 @@ async function pasteImage (file: File, asBase64: boolean) {
 
     const ext = path.extname(file.name)
     const imageNameTpl = getSetting('assets.image-name', 'img-{time:YYYYMMDDHHmmss}')
-    const fileBase64Url = await fileToBase64URL(file)
+    const fileBase64Url = imageNameTpl.includes('{hash:') ? await fileToBase64URL(file) : null
     const imageName = imageNameTpl
       .replace(/\{time:([^}]+)\}/g, (_, fmt) => dayjs().format(fmt))
-      .replace(/\{hash:(\d+)\}/g, (_, len) => binMd5(fileBase64Url).slice(0, parseInt(len)))
+      .replace(/\{hash:(\d+)\}/g, (_, len) => binMd5(fileBase64Url!).slice(0, parseInt(len)))
     const filename = `${imageName}${ext}`
 
     file = new File([file], filename, { type: file.type })
