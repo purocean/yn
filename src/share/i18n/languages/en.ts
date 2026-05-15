@@ -464,6 +464,8 @@ const data = {
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, docHash, docPath, date.',
       'assets': {
         'path-type': 'Path Type',
+        'image-name': 'Paste Image Name',
+        'image-name-desc': 'Template for pasted image filename (without extension). Variables: {time:FORMAT}, {hash:N}.',
       },
       'shell': 'Shell',
       'envs': 'Environments',

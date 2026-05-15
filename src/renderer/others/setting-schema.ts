@@ -158,6 +158,18 @@ const schema: SettingSchema = ({
         patternmessage: '[\\<>?:"|*] are not allowed. Cannot starts with ./{docName}, /{docName} or {docName}.'
       },
     },
+    'assets.image-name': {
+      defaultValue: 'img-{time:YYYYMMDDHHmmss}',
+      title: 'T_setting-panel.schema.assets.image-name',
+      type: 'string',
+      description: 'T_setting-panel.schema.assets.image-name-desc',
+      group: 'image',
+      required: true,
+      suggestions: [
+        'img-{time:YYYYMMDDHHmmss}',
+        'img-{hash:6}',
+      ],
+    },
     'assets.path-type': {
       defaultValue: 'auto',
       title: 'T_setting-panel.schema.assets.path-type',

@@ -465,6 +465,8 @@ const data: BaseLanguage = {
       'assets-desc': 'Относительный или абсолютный путь (в хранилище документов). Переменные: docName, docBasename, docSlug, docHash, docPath, date.',
       'assets': {
         'path-type': 'Тип пути',
+        'image-name': 'Имя вставляемого изображения',
+        'image-name-desc': 'Шаблон имени файла вставляемого изображения (без расширения). Переменные: {time:FORMAT}, {hash:N}.',
       },
       'shell': 'Оболочка',
       'envs': 'Окружение',

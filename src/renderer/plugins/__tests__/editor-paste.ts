@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   upload: vi.fn(),
   fileToBase64URL: vi.fn(),
   isKeydown: vi.fn(() => false),
+  getSetting: vi.fn((key: string, defaultValue: any) => defaultValue),
 }))
 
 vi.mock('@fe/services/editor', () => ({
@@ -34,6 +35,10 @@ vi.mock('@fe/services/base', () => ({
   upload: mocks.upload,
 }))
 
+vi.mock('@fe/services/setting', () => ({
+  getSetting: mocks.getSetting,
+}))
+
 vi.mock('@fe/support/store', () => ({
   default: {
     state: {
@@ -43,6 +48,7 @@ vi.mock('@fe/support/store', () => ({
 }))
 
 vi.mock('@fe/utils', () => ({
+  binMd5: vi.fn((value: string) => 'abcdef1234567890'),
   encodeMarkdownLink: vi.fn((value: string) => encodeURI(value)),
   fileToBase64URL: mocks.fileToBase64URL,
   path: {
@@ -106,6 +112,7 @@ describe('editor-paste plugin', () => {
     mocks.fileToBase64URL.mockClear()
     mocks.isKeydown.mockReset()
     mocks.isKeydown.mockReturnValue(false)
+    mocks.getSetting.mockImplementation((_key: string, defaultValue: any) => defaultValue)
   })
 
   afterEach(() => {
@@ -249,6 +256,7 @@ describe('editor-paste plugin', () => {
     await ctx.editor.whenEditorReady.mock.results[0].value
     mocks.upload.mockResolvedValue('assets/my image.png')
     mocks.triggerHook.mockResolvedValue(false)
+    mocks.fileToBase64URL.mockResolvedValue('data:image/png;base64,aW1n')
 
     pasteListener({
       clipboardData: {
@@ -257,8 +265,8 @@ describe('editor-paste plugin', () => {
       preventDefault: vi.fn(),
       stopPropagation: vi.fn(),
     })
-    await Promise.resolve()
-    await Promise.resolve()
+    await vi.waitFor(() => expect(mocks.upload).toHaveBeenCalled())
+    await vi.waitFor(() => expect(mocks.insert).toHaveBeenCalled())
 
     expect(mocks.upload).toHaveBeenCalledWith(expect.any(File), store.state.currentFile, expect.stringMatching(/^img-\d{14}\.png$/))
     expect(mocks.insert).toHaveBeenCalledWith('![Img](assets/my%20image.png)\n')
@@ -274,12 +282,33 @@ describe('editor-paste plugin', () => {
       preventDefault: vi.fn(),
       stopPropagation: vi.fn(),
     })
-    await Promise.resolve()
-    await Promise.resolve()
+    await vi.waitFor(() => expect(mocks.refreshTree).toHaveBeenCalledTimes(2))
 
     expect(mocks.upload).not.toHaveBeenCalled()
     expect(mocks.insert).not.toHaveBeenCalled()
-    expect(mocks.refreshTree).toHaveBeenCalledTimes(2)
+  })
+
+  test('uses hash template from assets.image-name setting for pasted image filename', async () => {
+    const ctx = createCtx()
+    editorPaste.register(ctx)
+    await ctx.editor.whenEditorReady.mock.results[0].value
+    mocks.upload.mockResolvedValue('assets/hashed.png')
+    mocks.triggerHook.mockResolvedValue(false)
+    mocks.fileToBase64URL.mockResolvedValue('data:image/png;base64,aW1n')
+    mocks.getSetting.mockImplementation((key: string, defaultValue: any) =>
+      key === 'assets.image-name' ? 'img-{hash:6}' : defaultValue
+    )
+
+    pasteListener({
+      clipboardData: {
+        items: [{ type: 'image/png', getAsFile: () => new File(['img'], 'clip.png', { type: 'image/png' }) }],
+      },
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    })
+    await vi.waitFor(() => expect(mocks.upload).toHaveBeenCalled())
+
+    expect(mocks.upload).toHaveBeenCalledWith(expect.any(File), store.state.currentFile, 'img-abcdef.png')
   })
 
   test('status menu actions paste clipboard image as base64 and html as markdown', async () => {
