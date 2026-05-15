@@ -316,6 +316,48 @@ describe('floating-editor plugin', () => {
     expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(false)
   })
 
+  test('focusout closes floating editor when focus leaves, keeps it when focus stays inside', async () => {
+    const ctx = createCtx()
+    floatingEditor.register(ctx)
+
+    await ctx.actions.get('layout.show-floating-editor').handler({ line: 5 })
+    expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(true)
+
+    // focusout with relatedTarget inside editorDom — should NOT close
+    const innerEl = document.createElement('div')
+    ctx.editorDom.appendChild(innerEl)
+    ctx.editorDom.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: innerEl }))
+    expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(true)
+
+    // focusout with relatedTarget outside editorDom — should close
+    const outerEl = document.createElement('div')
+    document.body.appendChild(outerEl)
+    ctx.editorDom.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: outerEl }))
+    expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(false)
+  })
+
+  test('focusout does not close floating editor while dragging', async () => {
+    const ctx = createCtx()
+    floatingEditor.register(ctx)
+
+    await ctx.actions.get('layout.show-floating-editor').handler({ line: 5 })
+    const titleBar = ctx.editorDom.querySelector('.floating-editor-titlebar') as HTMLElement
+
+    // Start drag — dragState is set synchronously
+    titleBar.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientY: 50, bubbles: true }))
+
+    // focusout while dragging — should NOT close
+    ctx.editorDom.dispatchEvent(new FocusEvent('focusout', { bubbles: true }))
+    expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(true)
+
+    // End drag
+    window.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
+
+    // focusout after drag ends (focus left the editor) — should close
+    ctx.editorDom.dispatchEvent(new FocusEvent('focusout', { bubbles: true }))
+    expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(false)
+  })
+
   test('preview click ignores form controls, text selections, presentation mode, and invalid source lines', () => {
     const ctx = createCtx()
     floatingEditor.register(ctx)
