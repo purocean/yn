@@ -61,13 +61,11 @@ async function getAllConfigs () {
   return await jsonRPCClient.call.ctx.setting.getSettingsForMcp()
 }
 
-async function setConfig (key: string, value: any) {
-  const settings = await jsonRPCClient.call.ctx.setting.setSettingForMcp(key, value)
+async function showSettingPanel (key?: string) {
+  await jsonRPCClient.call.ctx.setting.showSettingPanel(key)
 
   return {
-    key,
-    value: settings?.[key],
-    refreshed: true,
+    key: key || null,
   }
 }
 
@@ -446,20 +444,16 @@ function createMCPServer (): Server {
           },
         },
         {
-          name: 'yn_set_config',
-          description: 'Set one Yank Note config value by key, persist it, and refresh frontend settings/hooks immediately.',
+          name: 'yn_show_setting_panel',
+          description: 'Open the Yank Note setting panel, optionally locating a specific config key or setting group.',
           inputSchema: {
             type: 'object',
             properties: {
               key: {
                 type: 'string',
-                description: 'Config key to update.',
-              },
-              value: {
-                description: 'New config value. Match the type defined in yn_get_config_schema.',
+                description: 'Optional config key or setting group to locate.',
               },
             },
-            required: ['key', 'value'],
             additionalProperties: false,
           },
         },
@@ -647,11 +641,11 @@ function createMCPServer (): Server {
       }
     }
 
-    if (name === 'yn_set_config') {
-      const { key, value } = (args || {}) as any
+    if (name === 'yn_show_setting_panel') {
+      const { key } = (args || {}) as any
 
       try {
-        const result = await setConfig(key, value)
+        const result = await showSettingPanel(key)
 
         return {
           content: [

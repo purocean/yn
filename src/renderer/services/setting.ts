@@ -6,7 +6,7 @@ import { basename } from '@fe/utils/path'
 import { sleep } from '@fe/utils'
 import type { BuildInSettings, FileItem, PathItem, SettingGroup, SettingSchema } from '@fe/types'
 import { getDefaultSettingSchema } from '@fe/others/setting-schema'
-import { getThemeName, setTheme } from './theme'
+import { getThemeName } from './theme'
 import { t } from './i18n'
 
 type Schema = SettingSchema
@@ -186,21 +186,6 @@ export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal:
  */
 export async function setSetting<T extends keyof BuildInSettings> (key: T, val: BuildInSettings[T]) {
   await writeSettings({ [key]: val })
-}
-
-export async function setSettingForMcp (key: string, val: any) {
-  await prepareSchemaForMcp()
-
-  if (!Object.prototype.hasOwnProperty.call(schema.properties, key)) {
-    throw new Error(`Unknown setting key: ${key}`)
-  }
-
-  if (key === 'theme') {
-    setTheme(val)
-    return await fetchSettings()
-  }
-
-  return await writeSettings({ [key]: val })
 }
 
 /**

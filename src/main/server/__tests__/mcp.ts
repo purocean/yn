@@ -15,9 +15,9 @@ const mocks = vi.hoisted(() => ({
           executeAction: vi.fn(),
         },
         setting: {
+          showSettingPanel: vi.fn(),
           getSchemaForMcp: vi.fn(),
           getSettingsForMcp: vi.fn(),
-          setSettingForMcp: vi.fn(),
         },
       },
     },
@@ -120,9 +120,9 @@ afterEach(() => {
   mocks.exportDocumentForMcp.mockReset()
   mocks.jsonRPCClient.call.ctx.action.getRawActions.mockReset()
   mocks.jsonRPCClient.call.ctx.action.executeAction.mockReset()
+  mocks.jsonRPCClient.call.ctx.setting.showSettingPanel.mockReset()
   mocks.jsonRPCClient.call.ctx.setting.getSchemaForMcp.mockReset()
   mocks.jsonRPCClient.call.ctx.setting.getSettingsForMcp.mockReset()
-  mocks.jsonRPCClient.call.ctx.setting.setSettingForMcp.mockReset()
 })
 
 describe('MCP server request handling', () => {
@@ -163,7 +163,7 @@ describe('MCP server request handling', () => {
       'yn_export_document',
       'yn_get_config_schema',
       'yn_get_all_configs',
-      'yn_set_config',
+      'yn_show_setting_panel',
     ])
 
     const callTool = server.handlers.get(CallToolRequestSchema)
@@ -218,7 +218,7 @@ describe('MCP server request handling', () => {
     expect(JSON.parse(exported.content[0].text)).toEqual({ success: true, result: { base64: 'ZGF0YQ==' } })
   })
 
-  it('gets config schema, fetches all configs, and sets a config with refresh', async () => {
+  it('gets config schema, fetches all configs, and opens the setting panel', async () => {
     const { server } = await initEnabledServer()
     const callTool = server.handlers.get(CallToolRequestSchema)
 
@@ -253,13 +253,12 @@ describe('MCP server request handling', () => {
       result: { theme: 'dark', readonly: true },
     })
 
-    mocks.jsonRPCClient.call.ctx.setting.setSettingForMcp.mockResolvedValue({ theme: 'light' })
-    const setConfig = await callTool({ params: { name: 'yn_set_config', arguments: { key: 'theme', value: 'light' } } })
-    expect(JSON.parse(setConfig.content[0].text)).toEqual({
+    const openPanel = await callTool({ params: { name: 'yn_show_setting_panel', arguments: { key: 'theme' } } })
+    expect(JSON.parse(openPanel.content[0].text)).toEqual({
       success: true,
-      result: { key: 'theme', value: 'light', refreshed: true },
+      result: { key: 'theme' },
     })
-    expect(mocks.jsonRPCClient.call.ctx.setting.setSettingForMcp).toHaveBeenCalledWith('theme', 'light')
+    expect(mocks.jsonRPCClient.call.ctx.setting.showSettingPanel).toHaveBeenCalledWith('theme')
 
     mocks.jsonRPCClient.call.ctx.setting.getSchemaForMcp.mockResolvedValue({ properties: {} })
     const missing = await callTool({ params: { name: 'yn_get_config_schema', arguments: { key: 'missing' } } })

@@ -6,7 +6,6 @@ type Ctx = {
     showSettingPanel: (key?: string) => void
     getSchemaForMcp: () => Promise<any>
     getSettingsForMcp: () => Promise<Record<string, any>>
-    setSettingForMcp: (key: string, value: any) => Promise<Record<string, any>>
   },
   doc: {
     switchDocByPath: (path: string) => Promise<void>

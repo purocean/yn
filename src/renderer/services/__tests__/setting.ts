@@ -199,7 +199,7 @@ test('gets and sets individual settings without exposing mutable local state', a
   expect(mocks.writtenSettings).toStrictEqual({ readonly: true })
 })
 
-test('provides MCP helpers for schema, refresh, and setting updates', async () => {
+test('provides MCP helpers for schema and refreshed settings', async () => {
   const setting = await importSetting({ readonly: false })
   mocks.fetchedSettings = { readonly: true }
 
@@ -215,23 +215,6 @@ test('provides MCP helpers for schema, refresh, and setting updates', async () =
   const settings = await setting.getSettingsForMcp()
   expect(settings.readonly).toBe(true)
   expect(mocks.hooks[0]).toMatchObject({ name: 'SETTING_FETCHED' })
-
-  mocks.hooks = []
-  await setting.setSettingForMcp('readonly', false)
-  expect(mocks.hooks[0]).toStrictEqual({
-    name: 'SETTING_PANEL_BEFORE_SHOW',
-    payload: {},
-    options: { breakable: true },
-  })
-  expect(mocks.writtenSettings).toStrictEqual({ readonly: false })
-
-  mocks.hooks = []
-  mocks.fetchedSettings = { readonly: true }
-  const themeSettings = await setting.setSettingForMcp('theme', 'light')
-  expect(mocks.setTheme).toHaveBeenCalledWith('light')
-  expect(themeSettings.readonly).toBe(true)
-
-  await expect(setting.setSettingForMcp('missing', true)).rejects.toThrow('Unknown setting key: missing')
 })
 
 test('shows, locates, and hides setting panel', async () => {
