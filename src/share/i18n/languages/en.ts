@@ -466,7 +466,7 @@ const data = {
       'assets': {
         'path-type': 'Path Type',
         'image-name': 'Paste Image Name',
-        'image-name-desc': 'Template for pasted image filename (without extension). Variables: {time:FORMAT}, {hash:N}.',
+        'image-name-desc': 'Pasted image filename template without extension: {time:FORMAT}, {hash:N}.',
       },
       'shell': 'Shell',
       'envs': 'Environments',

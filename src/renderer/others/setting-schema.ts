@@ -165,10 +165,14 @@ const schema: SettingSchema = ({
       description: 'T_setting-panel.schema.assets.image-name-desc',
       group: 'image',
       required: true,
+      pattern: '^(?=.{1,120}$)(?:[^{}\\\\/<>?:"|*]|\\{time:[^}\\\\/<>?"|*]+\\}|\\{hash:([1-9]|[1-2]\\d|3[0-2])\\})+$',
       suggestions: [
         'img-{time:YYYYMMDDHHmmss}',
         'img-{hash:6}',
       ],
+      options: {
+        patternmessage: 'Invalid image name template.'
+      },
     },
     'assets.path-type': {
       defaultValue: 'auto',

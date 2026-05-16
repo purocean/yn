@@ -457,7 +457,7 @@ const data: BaseLanguage = {
       'assets': {
         'path-type': '路徑類型',
         'image-name': '貼上圖片命名',
-        'image-name-desc': '貼上圖片的檔案名稱模版（不含副檔名），可用變數：{time:FORMAT}、{hash:N}',
+        'image-name-desc': '貼上圖片的檔案名稱模版（不含副檔名）：{time:FORMAT}、{hash:N}',
       },
       'shell': 'Shell',
       'envs': '環境變數',

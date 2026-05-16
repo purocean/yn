@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import TurndownService from 'turndown'
+import filenamify from 'filenamify/browser'
 import { gfm } from 'joplin-turndown-plugin-gfm'
 import { getEditor, insert } from '@fe/services/editor'
 import { Plugin } from '@fe/context'
@@ -13,6 +14,21 @@ import { isKeydown } from '@fe/core/keybinding'
 
 const IMAGE_REG = /^image\//i
 const HTML_REG = /^text\/html$/i
+const DEFAULT_IMAGE_NAME_TEMPLATE = 'img-{time:YYYYMMDDHHmmss}'
+
+function getSafeImageName (imageName: string) {
+  const safeName = filenamify(imageName, { replacement: '-' }).trim()
+  return safeName || `img-${dayjs().format('YYYYMMDDHHmmss')}`
+}
+
+function renderImageNameTemplate (tpl: string, fileBase64Url: string | null) {
+  return tpl
+    .replace(/\{time:([^}]+)\}/g, (_, fmt) => dayjs().format(fmt))
+    .replace(/\{hash:(\d+)\}/g, (_, len) => {
+      const hashLength = Math.min(Math.max(parseInt(len), 1), 32)
+      return binMd5(fileBase64Url!).slice(0, hashLength)
+    })
+}
 
 async function pasteHtml (html: string) {
   const td = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced', bulletListMarker: '+' })
@@ -31,11 +47,9 @@ async function pasteImage (file: File, asBase64: boolean) {
     }
 
     const ext = path.extname(file.name)
-    const imageNameTpl = getSetting('assets.image-name', 'img-{time:YYYYMMDDHHmmss}')
+    const imageNameTpl = getSetting('assets.image-name', DEFAULT_IMAGE_NAME_TEMPLATE) || DEFAULT_IMAGE_NAME_TEMPLATE
     const fileBase64Url = imageNameTpl.includes('{hash:') ? await fileToBase64URL(file) : null
-    const imageName = imageNameTpl
-      .replace(/\{time:([^}]+)\}/g, (_, fmt) => dayjs().format(fmt))
-      .replace(/\{hash:(\d+)\}/g, (_, len) => binMd5(fileBase64Url!).slice(0, parseInt(len)))
+    const imageName = getSafeImageName(renderImageNameTemplate(imageNameTpl, fileBase64Url))
     const filename = `${imageName}${ext}`
 
     file = new File([file], filename, { type: file.type })

@@ -311,6 +311,32 @@ describe('editor-paste plugin', () => {
     expect(mocks.upload).toHaveBeenCalledWith(expect.any(File), store.state.currentFile, 'img-abcdef.png')
   })
 
+  test('sanitizes unsafe pasted image filename templates before upload', async () => {
+    const ctx = createCtx()
+    editorPaste.register(ctx)
+    await ctx.editor.whenEditorReady.mock.results[0].value
+    mocks.upload.mockResolvedValue('assets/safe.png')
+    mocks.triggerHook.mockResolvedValue(false)
+    mocks.fileToBase64URL.mockResolvedValue('data:image/png;base64,aW1n')
+    mocks.getSetting.mockImplementation((key: string, defaultValue: any) =>
+      key === 'assets.image-name' ? '../bad/name:{hash:99}' : defaultValue
+    )
+
+    pasteListener({
+      clipboardData: {
+        items: [{ type: 'image/png', getAsFile: () => new File(['img'], 'clip.png', { type: 'image/png' }) }],
+      },
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    })
+    await vi.waitFor(() => expect(mocks.upload).toHaveBeenCalled())
+
+    const filename = mocks.upload.mock.calls[0][2]
+    expect(filename).toContain('abcdef1234567890')
+    expect(filename).toMatch(/\.png$/)
+    expect(filename).not.toMatch(/[\\/:*?"<>|]/)
+  })
+
   test('status menu actions paste clipboard image as base64 and html as markdown', async () => {
     const ctx = createCtx()
     editorPaste.register(ctx)

@@ -467,7 +467,7 @@ const data: BaseLanguage = {
       'assets': {
         'path-type': 'Тип пути',
         'image-name': 'Имя вставляемого изображения',
-        'image-name-desc': 'Шаблон имени файла вставляемого изображения (без расширения). Переменные: {time:FORMAT}, {hash:N}.',
+        'image-name-desc': 'Шаблон имени вставляемого изображения без расширения: {time:FORMAT}, {hash:N}.',
       },
       'shell': 'Оболочка',
       'envs': 'Окружение',
