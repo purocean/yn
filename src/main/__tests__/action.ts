@@ -3,12 +3,12 @@ import { registerAction, getAction } from '../action'
 describe('action module', () => {
   beforeEach(() => {
     // Clear actions between tests by re-requiring the module
-    jest.resetModules()
+    vi.resetModules()
   })
 
   describe('registerAction', () => {
     test('should register an action with a name and handler', () => {
-      const handler = jest.fn()
+      const handler = vi.fn()
       registerAction('test-action', handler)
 
       const retrievedAction = getAction('test-action')
@@ -16,8 +16,8 @@ describe('action module', () => {
     })
 
     test('should allow multiple actions to be registered', () => {
-      const handler1 = jest.fn()
-      const handler2 = jest.fn()
+      const handler1 = vi.fn()
+      const handler2 = vi.fn()
 
       registerAction('action-1', handler1)
       registerAction('action-2', handler2)
@@ -27,8 +27,8 @@ describe('action module', () => {
     })
 
     test('should override existing action with same name', () => {
-      const handler1 = jest.fn()
-      const handler2 = jest.fn()
+      const handler1 = vi.fn()
+      const handler2 = vi.fn()
 
       registerAction('test-action', handler1)
       registerAction('test-action', handler2)
@@ -51,7 +51,7 @@ describe('action module', () => {
     })
 
     test('should return the exact function that was registered', () => {
-      const handler = jest.fn().mockReturnValue('result')
+      const handler = vi.fn().mockReturnValue('result')
       registerAction('test-action', handler)
 
       const action = getAction('test-action')

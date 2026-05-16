@@ -503,15 +503,6 @@ chart.setOption(option, true)
 
 [drawio](./test.drawio){link-type="drawio"}
 
-## Luckysheet 表格
-
-链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
-
-> [!WARNING]
-> 现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。
-
-[luckysheet](./test.luckysheet){link-type="luckysheet"}
-
 ## 容器块
 
 支持类似 [VuePress 容器块](https://v2.vuepress.vuejs.org/zh/reference/default-theme/markdown.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%B9%E5%99%A8) 功能，使用 [markdown-it-container](https://github.com/markdown-it/markdown-it-container) 实现
@@ -754,6 +745,12 @@ Front Matter 中的 `define` 字段可以定义一些文本替换映射。支持
 1. 右键点击托盘图标，点击“打开主目录”，进入 `<主目录>/themes` 目录。
 2. 复制 `github.css` 为一个新 CSS 文件，修改 CSS 内容
 3. 打开设置 => 外观 => 自定义 CSS 切换 CSS 配置
+
+## CLI 和 MCP
+
+Yank Note 支持 CLI（命令行接口）和 MCP（模型上下文协议），允许你以编程方式与应用程序进行交互。
+
+更多详情请参考 [CLI 和 MCP](https://help.yank-note.com/cli-mcp.html)。
 
 ## 插件开发
 

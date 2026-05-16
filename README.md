@@ -76,33 +76,14 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.88.2](https://github.com/purocean/yn/releases/tag/v3.88.2) 2026-05-01
+### [v3.90.0](https://github.com/purocean/yn/releases/tag/v3.90.0) 2026-05-16
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-win-x64-3.88.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-arm64-3.88.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-x64-3.88.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-x86_64-3.88.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-amd64-3.88.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-win-x64-3.90.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-mac-arm64-3.90.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-mac-x64-3.90.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-linux-x86_64-3.90.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-linux-amd64-3.90.0.deb)
 
-1. feat: Add MCP integration, including the local MCP endpoint, settings switch, repository listing, user action execution, Markdown feature documentation, document export, and main window reload
-2. feat: Support `.mdx` and `.markdown` files as Markdown documents, including editor language mode and preview
-3. feat: Improve HTML export with optional code line numbers, copy buttons, and better rendered resource waiting
-4. feat: Support fallback handling for absolute-path image attachments and external image paths
-5. feat: Support localizing `file://` images when converting images to local assets
-6. feat: Show dot files in the repository tree by default
-7. fix: Improve terminal text selection colors in light mode
-8. fix: Fix creating new folders when the requested path ends with a trailing slash
-9. fix: Avoid loading syntax-highlight fonts on unsupported Windows versions
-10. test: Add Markdown feature test documents and Draw.io sample fixtures
-11. chore(deps): Update dependencies including `koa`, `lodash`, `lodash-es`, `node-forge`, `rollup`, `undici`, `uuid`, `yaml`, and security-related transitive packages
-
-### [v3.87.1](https://github.com/purocean/yn/releases/tag/v3.87.1) 2026-01-23
-
-[Windows](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-win-x64-3.87.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-arm64-3.87.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-x64-3.87.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-x86_64-3.87.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-amd64-3.87.1.deb)
-
-1. feat: Support displaying OpenCode in the sidebar
-2. feat: Search panel supports remembering expanded results state
-3. feat: Support list collapsing in preview area, needs to be enabled in `Settings - Rendering`
-4. feat: Open external files as read-only by default
-5. feat: Optimize list number auto-fill experience
-6. feat(plugin): Support `ctx.workbench.ContentRightSide.registerPanel` for registering sidebar panel components
-7. feat(plugin): Add `EDITOR_ATTEMPT_READONLY_EDIT` Hook
+1. feat: Add MCP setting inspection tools for reading setting schemas, reading current setting values, and opening the settings panel at a specific key or group
+2. feat: Add pasted-image filename templates with time and hash placeholders
+3. feat: Add a CJ-friendly Markdown rendering option for better Chinese/Japanese text emphasis parsing
+4. feat(editor): Focus the floating editor when clicking preview lines and close it automatically when it loses focus
 
 [More release notes](https://github.com/purocean/yn/releases)
 

@@ -42,6 +42,33 @@ async function executeAction (actionName: string, args: any[]): Promise<any> {
   return await jsonRPCClient.call.ctx.action.executeAction(actionName, ...args)
 }
 
+async function getConfigSchema (key?: string) {
+  const schema = await jsonRPCClient.call.ctx.setting.getSchemaForMcp()
+
+  if (!key) {
+    return schema
+  }
+
+  const config = schema?.properties?.[key]
+  if (!config) {
+    throw new Error(`Unknown config key: ${key}`)
+  }
+
+  return { key, config }
+}
+
+async function getAllConfigs () {
+  return await jsonRPCClient.call.ctx.setting.getSettingsForMcp()
+}
+
+async function showSettingPanel (key?: string) {
+  await jsonRPCClient.call.ctx.setting.showSettingPanel(key)
+
+  return {
+    key: key || null,
+  }
+}
+
 /**
  * Get the built-in documentation for Yank Note's extended Markdown features.
  */
@@ -393,6 +420,43 @@ function createMCPServer (): Server {
             ],
           },
         },
+        {
+          name: 'yn_get_config_schema',
+          description: 'Get Yank Note config schema definitions, including title, description, type, default value, enum options, and dynamically updated schema fields from frontend plugins.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              key: {
+                type: 'string',
+                description: 'Optional config key. Omit to return the full config schema.',
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        {
+          name: 'yn_get_all_configs',
+          description: 'Get all current Yank Note config values after refreshing settings from the frontend.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+            additionalProperties: false,
+          },
+        },
+        {
+          name: 'yn_show_setting_panel',
+          description: 'Open the Yank Note setting panel, optionally locating a specific config key or setting group.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              key: {
+                type: 'string',
+                description: 'Optional config key or setting group to locate.',
+              },
+            },
+            additionalProperties: false,
+          },
+        },
       ],
     }
   })
@@ -503,6 +567,85 @@ function createMCPServer (): Server {
     if (name === 'yn_export_document') {
       try {
         const result = await exportDocumentForMcp(args as any)
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, result }),
+            },
+          ],
+        }
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: false, error: error.message }),
+            },
+          ],
+          isError: true,
+        }
+      }
+    }
+
+    if (name === 'yn_get_config_schema') {
+      const { key } = (args || {}) as any
+
+      try {
+        const result = await getConfigSchema(key)
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, result }),
+            },
+          ],
+        }
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: false, error: error.message }),
+            },
+          ],
+          isError: true,
+        }
+      }
+    }
+
+    if (name === 'yn_get_all_configs') {
+      try {
+        const result = await getAllConfigs()
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, result }),
+            },
+          ],
+        }
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: false, error: error.message }),
+            },
+          ],
+          isError: true,
+        }
+      }
+    }
+
+    if (name === 'yn_show_setting_panel') {
+      const { key } = (args || {}) as any
+
+      try {
+        const result = await showSettingPanel(key)
 
         return {
           content: [

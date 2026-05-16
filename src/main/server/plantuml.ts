@@ -8,6 +8,7 @@ import config from '../config'
 import { ASSETS_DIR, BIN_DIR, CACHE_DIR } from '../constant'
 import { getAction } from '../action'
 import { request } from 'undici'
+import { pipeline } from 'stream/promises'
 
 function plantumlBase64 (base64: string) {
   // eslint-disable-next-line quote-props
@@ -53,11 +54,7 @@ async function getCacheData (key: string, gen: () => Promise<any>) {
   }
 
   if (typeof data.pipe === 'function') {
-    await new Promise((resolve, reject) => {
-      data.on('end', resolve)
-      data.on('error', reject)
-      data.pipe(fs.createWriteStream(cacheFile))
-    })
+    await pipeline(data, fs.createWriteStream(cacheFile))
     return fs.createReadStream(cacheFile)
   } else {
     await fs.writeFile(cacheFile, data)

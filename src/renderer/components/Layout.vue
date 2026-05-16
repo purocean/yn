@@ -1,5 +1,5 @@
 <template>
-  <div :class="{layout: true, presentation, electron: isElectron}">
+  <div ref="layout" :class="{layout: true, presentation, electron: isElectron}">
     <div class="header" v-show="isElectron && !isFullscreen">
       <slot name="header"></slot>
     </div>
@@ -8,7 +8,7 @@
         <slot name="left"></slot>
         <div class="sash-right" @dblclick="resetSize('right', 'aside')" @mousedown="e => initResize('right', 'aside', 130, 700, e)"></div>
       </div>
-      <div class="right">
+      <div class="right" ref="right">
         <div class="right-before">
           <slot name="right-before" />
         </div>
@@ -16,7 +16,7 @@
           <div class="editor" ref="editor" v-show="showEditor">
             <slot name="editor"></slot>
           </div>
-          <div :class="{preview: true, 'preview-hidden': !presentation && !showView}">
+          <div ref="preview" :class="{preview: true, 'preview-hidden': !presentation && !showView}">
             <div v-if="showView && showEditor" class="sash-left" @dblclick="resetSize('right', 'editor')" @mousedown="initEditorResize"></div>
             <slot name="preview"></slot>
           </div>
@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, ref, toRefs, watchPostEffect } from 'vue'
 import { $args, FLAG_DISABLE_XTERM } from '@fe/support/args'
-import { emitResize, toggleEditor, toggleSide, toggleView, toggleContentRightSide, toggleXterm } from '@fe/services/layout'
+import { emitResize, setContainerDom, toggleEditor, toggleSide, toggleView, toggleContentRightSide, toggleXterm } from '@fe/services/layout'
 import { isElectron } from '@fe/support/env'
 import store from '@fe/support/store'
 
@@ -51,12 +51,25 @@ export default defineComponent({
   setup () {
     const { showView, showXterm, showSide, showEditor, presentation, isFullscreen, showContentRightSide } = toRefs(store.state)
 
+    const layout = ref<HTMLElement | null>(null)
     const aside = ref<HTMLElement | null>(null)
+    const right = ref<HTMLElement | null>(null)
     const editor = ref<HTMLElement | null>(null)
+    const preview = ref<HTMLElement | null>(null)
     const terminal = ref<HTMLElement | null>(null)
     const content = ref<HTMLElement | null>(null)
     const contentRightSide = ref<HTMLElement | null>(null)
     const refs: any = { aside, editor, terminal, contentRightSide }
+    const containerRefs = [
+      ['layout', layout],
+      ['aside', aside],
+      ['right', right],
+      ['content', content],
+      ['editor', editor],
+      ['preview', preview],
+      ['terminal', terminal],
+      ['contentRightSide', contentRightSide],
+    ] as const
 
     function resizeOutOfRange (ref: string, outOfRange: null | 'min' | 'max') {
       if (ref === 'aside' && outOfRange === 'min') {
@@ -209,9 +222,10 @@ export default defineComponent({
     function initResize (type: any, ref: any, min: any, max: any, e: any) {
       const refEl = refs[ref].value
       if (!resizeOrigin && type) {
+        const fixedMax = Math.max(min, max)
         resizeOrigin = {
           min,
-          max,
+          max: fixedMax,
           type,
           ref,
           mouseX: e.clientX,
@@ -227,14 +241,16 @@ export default defineComponent({
 
     function initEditorResize (e: MouseEvent) {
       if (content.value && contentRightSide.value) {
-        const maxWidth = content.value.clientWidth - 200 - contentRightSide.value.clientWidth
+        const contentRightSideWidth = showContentRightSide.value ? contentRightSide.value.clientWidth : 0
+        const maxWidth = content.value.clientWidth - 200 - contentRightSideWidth
         initResize('right', 'editor', 200, maxWidth, e)
       }
     }
 
     function initContentRightSideResize (e: MouseEvent) {
       if (content.value && editor.value) {
-        const maxWidth = content.value.clientWidth - 200 - editor.value.clientWidth
+        const editorWidth = showEditor.value ? editor.value.clientWidth : 0
+        const maxWidth = content.value.clientWidth - 200 - editorWidth
         initResize('left', 'contentRightSide', 200, maxWidth, e)
       }
     }
@@ -251,12 +267,16 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      containerRefs.forEach(([name, element]) => setContainerDom(name, element.value))
+
       window.addEventListener('resize', emitResize)
       window.document.addEventListener('mousemove', resizeFrame)
       window.document.addEventListener('mouseup', resizeDone)
     })
 
     onBeforeUnmount(() => {
+      containerRefs.forEach(([name]) => setContainerDom(name, null))
+
       window.removeEventListener('resize', emitResize)
       window.document.removeEventListener('mousemove', resizeFrame)
       window.document.removeEventListener('mouseup', resizeDone)
@@ -278,8 +298,11 @@ export default defineComponent({
       presentation,
       isElectron,
       isFullscreen,
+      layout,
       aside,
+      right,
       editor,
+      preview,
       terminal,
       content,
       contentRightSide,

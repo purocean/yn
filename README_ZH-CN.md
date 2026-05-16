@@ -76,33 +76,14 @@
 
 ## 更新日志
 
-### [v3.88.2](https://github.com/purocean/yn/releases/tag/v3.88.2) 2026-05-01
+### [v3.90.0](https://github.com/purocean/yn/releases/tag/v3.90.0) 2026-05-16
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-win-x64-3.88.2.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-arm64-3.88.2.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-mac-x64-3.88.2.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-x86_64-3.88.2.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.88.2/Yank-Note-linux-amd64-3.88.2.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-win-x64-3.90.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-mac-arm64-3.90.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-mac-x64-3.90.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-linux-x86_64-3.90.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.90.0/Yank-Note-linux-amd64-3.90.0.deb)
 
-1. feat: 增加 MCP 集成，包含本地 MCP 端点、设置开关、仓库列表、用户动作调用、Markdown 特性文档、文档导出和主窗口重载
-2. feat: 支持将 `.mdx` 和 `.markdown` 作为 Markdown 文档处理，包含编辑器语言模式和预览
-3. feat: 增强 HTML 导出，支持可选的代码行号、复制按钮，并改进渲染资源等待
-4. feat: 支持绝对路径图片附件和外部图片路径的回退处理
-5. feat: 支持在图片本地化时处理 `file://` 图片
-6. feat: 仓库文件树默认显示点号开头的隐藏文件
-7. fix: 修复终端浅色模式下选择文本颜色不清晰的问题
-8. fix: 修复创建以斜杠结尾的新文件夹时路径判断错误的问题
-9. fix: 避免在不支持的 Windows 版本上加载代码高亮字体
-10. test: 增加 Markdown 特性测试文档和 Draw.io 示例文件
-11. chore(deps): 更新 `koa`、`lodash`、`lodash-es`、`node-forge`、`rollup`、`undici`、`uuid`、`yaml` 以及安全相关的间接依赖
-
-### [v3.87.1](https://github.com/purocean/yn/releases/tag/v3.87.1) 2026-01-23
-
-[Windows](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-win-x64-3.87.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-arm64-3.87.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-mac-x64-3.87.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-x86_64-3.87.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.87.1/Yank-Note-linux-amd64-3.87.1.deb)
-
-1. feat: 支持在侧栏展示 OpenCode
-2. feat: 搜索面板支持记住展开结果状态
-3. feat: 支持预览区列表折叠，需在`设置-渲染`中开启
-4. feat: 打开外部文件默认只读
-5. feat: 优化列表序号自动填充体验
-6. feat(plugin): 支持 `ctx.workbench.ContentRightSide.registerPanel` 注册侧栏面板组件
-7. feat(plugin): 增加  `EDITOR_ATTEMPT_READONLY_EDIT` Hook
+1. feat: 增加 MCP 设置排查工具，支持读取设置结构、读取当前设置值，以及打开设置面板并定位到指定字段或分组
+2. feat: 增加粘贴图片文件名模板，支持时间和哈希占位符
+3. feat: 增加 CJ-friendly Markdown 渲染选项，优化中文、日文文本中的强调解析
+4. feat(editor): 点击预览行时聚焦浮动编辑器，并在浮动编辑器失焦后自动关闭
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

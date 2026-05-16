@@ -51,6 +51,11 @@ const data = {
     'enable-edit': 'Enable Editing for This External File',
     'open-setting': 'Change External File Readonly Settings',
   },
+  'floating-editor': {
+    'show-editor': 'Show Editor',
+    'preview-hint': '%s + click preview text to open the floating editor',
+    'resize': 'Resize',
+  },
   'trigger-suggestions': 'Trigger Suggestions',
   'table-of-contents': 'Table of Contents',
   'text-comparator': 'Text Comparator',
@@ -438,6 +443,7 @@ const data = {
         'md-typographer': 'Enable some language-neutral replacement + quotes beautification',
         'md-sup': 'Enable sup syntax: 29^th^',
         'md-sub': 'Enable sub syntax: H~2~O',
+        'md-cj-friendly': 'Enable CJ-friendly emphasis parsing',
         'md-emoji': 'Enable emoji syntax: :smile:',
         'list-collapsible': 'Enable collapsible lists - Click to collapse/expand nested lists',
         'multimd-multiline': '[markdown-it-multimd-table]: Enable multiline syntax',
@@ -459,6 +465,8 @@ const data = {
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, docHash, docPath, date.',
       'assets': {
         'path-type': 'Path Type',
+        'image-name': 'Paste Image Name',
+        'image-name-desc': 'Pasted image filename template without extension: {time:FORMAT}, {hash:N}.',
       },
       'shell': 'Shell',
       'envs': 'Environments',

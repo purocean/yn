@@ -46,6 +46,7 @@ import markdownImsize from '@fe/plugins/markdown-imsize'
 import markdownToc from '@fe/plugins/markdown-toc'
 import markdownCodeWrap from '@fe/plugins/markdown-code-wrap'
 import markdownCodeHighlight from '@fe/plugins/markdown-code-highlight'
+import floatingEditor from '@fe/plugins/floating-editor'
 import markdownLink from '@fe/plugins/markdown-link'
 import markdownTable from '@fe/plugins/markdown-table'
 import markdownTaskList from '@fe/plugins/markdown-task-list'
@@ -134,6 +135,7 @@ export default [
   markdownToc,
   markdownCodeWrap,
   markdownCodeHighlight,
+  floatingEditor,
   markdownLink,
   markdownTable,
   markdownTaskList,

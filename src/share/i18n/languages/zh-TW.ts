@@ -52,6 +52,11 @@ const data: BaseLanguage = {
     'enable-edit': '開啟當前外部文檔編輯',
     'open-setting': '修改外部文件唯讀設置',
   },
+  'floating-editor': {
+    'show-editor': '顯示編輯器',
+    'preview-hint': '%s + 點擊預覽文字，可開啟浮動編輯器',
+    'resize': '調整大小',
+  },
   'trigger-suggestions': '觸發提示',
   'table-of-contents': '目錄',
   'text-comparator': '文本比較器',
@@ -429,6 +434,7 @@ const data: BaseLanguage = {
         'md-typographer': '啟用排版美化，如 (c) -> ©',
         'md-sup': '啟用上標語法: 29^th^',
         'md-sub': '啟用下標語法: H~2~O',
+        'md-cj-friendly': '啟用 CJ 友好的強調解析',
         'md-emoji': '啟用 Emoji 語法: :smile:',
         'list-collapsible': '啟用列表折疊 - 點擊折疊/展開嵌套列表',
         'multimd-multiline': '[markdown-it-multimd-table]: 啟用 multiline 語法',
@@ -450,6 +456,8 @@ const data: BaseLanguage = {
       'assets-desc': '支援相對路徑和絕對路徑（限於倉庫內部）,可用變數：docName, docBasename, docSlug, docHash, docPath, date',
       'assets': {
         'path-type': '路徑類型',
+        'image-name': '貼上圖片命名',
+        'image-name-desc': '貼上圖片的檔案名稱模版（不含副檔名）：{time:FORMAT}、{hash:N}',
       },
       'shell': 'Shell',
       'envs': '環境變數',

@@ -158,6 +158,22 @@ const schema: SettingSchema = ({
         patternmessage: '[\\<>?:"|*] are not allowed. Cannot starts with ./{docName}, /{docName} or {docName}.'
       },
     },
+    'assets.image-name': {
+      defaultValue: 'img-{time:YYYYMMDDHHmmss}',
+      title: 'T_setting-panel.schema.assets.image-name',
+      type: 'string',
+      description: 'T_setting-panel.schema.assets.image-name-desc',
+      group: 'image',
+      required: true,
+      pattern: '^(?=.{1,120}$)(?:[^{}\\\\/<>?:"|*]|\\{time:[^}\\\\/<>?"|*]+\\}|\\{hash:([1-9]|[1-2]\\d|3[0-2])\\})+$',
+      suggestions: [
+        'img-{time:YYYYMMDDHHmmss}',
+        'img-{hash:6}',
+      ],
+      options: {
+        patternmessage: 'Invalid image name template.'
+      },
+    },
     'assets.path-type': {
       defaultValue: 'auto',
       title: 'T_setting-panel.schema.assets.path-type',
@@ -390,6 +406,14 @@ const schema: SettingSchema = ({
     'render.md-sub': {
       defaultValue: true,
       title: 'T_setting-panel.schema.render.md-sub',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'render',
+      required: true,
+    },
+    'render.md-cj-friendly': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.render.md-cj-friendly',
       type: 'boolean',
       format: 'checkbox',
       group: 'render',

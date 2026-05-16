@@ -69,13 +69,12 @@ export async function install (id: string, url: string) {
   }
 
   const extensionPath = getExtensionPath(id)
-  if (await fs.pathExists(extensionPath)) {
+  const tempExtensionPath = `${extensionPath}.tmp-${Date.now()}`
+  const backupExtensionPath = `${extensionPath}.backup-${Date.now()}`
+  const exists = await fs.pathExists(extensionPath)
+  if (exists) {
     console.log('[extension] already installed. upgrade:', id)
     await checkDirectory(extensionPath)
-
-    if (!(await fs.lstat(extensionPath)).isDirectory()) {
-      throw new Error('Extension path is not a directory')
-    }
   }
 
   const dispatcher = await getAction('get-proxy-dispatcher')(url)
@@ -100,7 +99,7 @@ export async function install (id: string, url: string) {
             return
           }
 
-          const filePath = path.join(extensionPath, header.name.replace(/^package/, ''))
+          const filePath = path.join(tempExtensionPath, header.name.replace(/^package/, ''))
           console.log('[extension] write', header.type, filePath)
 
           if (header.type === 'file') {
@@ -123,6 +122,23 @@ export async function install (id: string, url: string) {
         Readable.from(data).on('error', reject).pipe(extract)
       })
     })
+
+    if (exists) {
+      await fs.move(extensionPath, backupExtensionPath)
+    }
+
+    try {
+      await fs.move(tempExtensionPath, extensionPath, { overwrite: true })
+      await fs.remove(backupExtensionPath)
+    } catch (error) {
+      if (exists && await fs.pathExists(backupExtensionPath)) {
+        await fs.move(backupExtensionPath, extensionPath, { overwrite: true })
+      }
+      throw error
+    }
+  } catch (error) {
+    await fs.remove(tempExtensionPath)
+    throw error
   } finally {
     abortcontroller = null
   }

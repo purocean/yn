@@ -44,6 +44,10 @@ export function changeSchema (fun: (schema: Schema) => void) {
   fun(schema)
 }
 
+async function prepareSchemaForMcp () {
+  await triggerHook('SETTING_PANEL_BEFORE_SHOW', {}, { breakable: true })
+}
+
 function transformSettings (data: any) {
   if (!data) {
     return {}
@@ -147,6 +151,15 @@ export async function writeSettings (settings: Record<string, any>) {
  */
 export function getSettings () {
   return cloneDeep(settings)
+}
+
+export async function getSchemaForMcp () {
+  await prepareSchemaForMcp()
+  return getSchema()
+}
+
+export async function getSettingsForMcp () {
+  return await fetchSettings()
 }
 
 /**
