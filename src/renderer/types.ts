@@ -416,6 +416,7 @@ export interface BuildInSettings {
   'auto-save': number,
   'custom-css': string,
   'assets-dir': string,
+  'assets.image-name': string,
   'shell': string,
   'envs': string,
   'editor.mouse-wheel-zoom': boolean,

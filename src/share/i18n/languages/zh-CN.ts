@@ -455,6 +455,8 @@ const data: BaseLanguage = {
       'assets-desc': '支持相对路径和绝对路径（限于仓库内部）,可用变量：docName, docBasename, docSlug, docHash, docPath, date',
       'assets': {
         'path-type': '路径类型',
+        'image-name': '粘贴图片命名',
+        'image-name-desc': '粘贴图片的文件名模版（不含扩展名），可用变量：{time:FORMAT}、{hash:N}',
       },
       'shell': 'Shell',
       'envs': '环境变量',

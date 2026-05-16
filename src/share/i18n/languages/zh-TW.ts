@@ -455,6 +455,8 @@ const data: BaseLanguage = {
       'assets-desc': '支援相對路徑和絕對路徑（限於倉庫內部）,可用變數：docName, docBasename, docSlug, docHash, docPath, date',
       'assets': {
         'path-type': '路徑類型',
+        'image-name': '貼上圖片命名',
+        'image-name-desc': '貼上圖片的檔案名稱模版（不含副檔名），可用變數：{time:FORMAT}、{hash:N}',
       },
       'shell': 'Shell',
       'envs': '環境變數',
