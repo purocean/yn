@@ -6,7 +6,7 @@ import { basename } from '@fe/utils/path'
 import { sleep } from '@fe/utils'
 import type { BuildInSettings, FileItem, PathItem, SettingGroup, SettingSchema } from '@fe/types'
 import { getDefaultSettingSchema } from '@fe/others/setting-schema'
-import { getThemeName } from './theme'
+import { getThemeName, setTheme } from './theme'
 import { t } from './i18n'
 
 type Schema = SettingSchema
@@ -42,6 +42,10 @@ export function getSchema (): Schema {
  */
 export function changeSchema (fun: (schema: Schema) => void) {
   fun(schema)
+}
+
+async function prepareSchemaForMcp () {
+  await triggerHook('SETTING_PANEL_BEFORE_SHOW', {}, { breakable: true })
 }
 
 function transformSettings (data: any) {
@@ -149,6 +153,15 @@ export function getSettings () {
   return cloneDeep(settings)
 }
 
+export async function getSchemaForMcp () {
+  await prepareSchemaForMcp()
+  return getSchema()
+}
+
+export async function getSettingsForMcp () {
+  return await fetchSettings()
+}
+
 /**
  * get setting val by key
  * @param key
@@ -173,6 +186,21 @@ export function getSetting<T extends keyof BuildInSettings> (key: T, defaultVal:
  */
 export async function setSetting<T extends keyof BuildInSettings> (key: T, val: BuildInSettings[T]) {
   await writeSettings({ [key]: val })
+}
+
+export async function setSettingForMcp (key: string, val: any) {
+  await prepareSchemaForMcp()
+
+  if (!Object.prototype.hasOwnProperty.call(schema.properties, key)) {
+    throw new Error(`Unknown setting key: ${key}`)
+  }
+
+  if (key === 'theme') {
+    setTheme(val)
+    return await fetchSettings()
+  }
+
+  return await writeSettings({ [key]: val })
 }
 
 /**
