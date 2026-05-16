@@ -91,6 +91,8 @@ vi.mock('@fe/support/args', () => ({
     SKIP_PRINT: 'skip-print',
   },
   FLAG_READONLY: false,
+  FLAG_DISABLE_XTERM: false,
+  FLAG_MAS: false,
 }))
 
 vi.mock('@fe/support/ui/modal', () => ({
