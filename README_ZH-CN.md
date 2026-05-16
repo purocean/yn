@@ -4,6 +4,25 @@
 
 [![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Mac App Store 版本说明](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
+## 贡献
+
+```
+#代码检出
+
+git clone https://github.com/purocean/yn.git
+cd yn && git checkout develop
+
+#日常开发
+yarn dev
+
+#本地编译运行
+yarn build
+yarn start
+
+#本地打包
+yarn build
+yarn electron-builder 
+```
 [English](./README.md) | 中文说明 | [Русский](./README_RU.md)
 
 [toc]{level: [2]}
