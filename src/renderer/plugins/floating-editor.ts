@@ -701,6 +701,7 @@ export default {
 
       ctx.view.disableSyncScrollAwhile(() => {
         ctx.editor.highlightLine(range.lineEnd ? [range.line, range.lineEnd - 1] : range.line, true, 1000)
+        ctx.editor.getEditor().focus()
       }).catch(console.warn)
       return false
     }

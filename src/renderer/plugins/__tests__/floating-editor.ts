@@ -202,11 +202,13 @@ describe('floating-editor plugin', () => {
     expect(ctx.action.getActionHandler).toHaveBeenCalledWith('layout.show-floating-editor')
     expect(ctx.editorDom.classList.contains('floating-editor-active')).toBe(true)
 
+    ctx.editorInstance.focus.mockClear()
     const normalClick = new MouseEvent('click', { bubbles: true })
     Object.defineProperty(normalClick, 'target', { value: source })
     ctx.hooks.get('VIEW_ELEMENT_CLICK')[0]({ e: normalClick })
 
     expect(ctx.editor.highlightLine).toHaveBeenLastCalledWith([3, 3], true, 1000)
+    expect(ctx.editorInstance.focus).toHaveBeenCalledTimes(1)
   })
 
   test('watcher shows a limited preview hint when floating editor is available', () => {
