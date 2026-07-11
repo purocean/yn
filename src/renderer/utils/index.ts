@@ -156,9 +156,9 @@ export function createTextHighlighter (
 
   /** Highlight precomputed DOM ranges, such as ranges restored from review annotations. */
   const highlightRanges = (ranges: Range[]) => {
-    const targetDocument = ranges[0]?.startContainer.ownerDocument
-      || resolveContainer()?.ownerDocument
-      || contextDocument
+    const targetDocument = ranges[0]?.startContainer.ownerDocument ||
+      resolveContainer()?.ownerDocument ||
+      contextDocument
 
     return applyRanges(ranges, targetDocument)
   }
