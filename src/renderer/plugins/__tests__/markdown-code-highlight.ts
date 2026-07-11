@@ -1,5 +1,7 @@
 const mocks = vi.hoisted(() => ({
-  highlight: vi.fn((code: string, _grammar: any, lang: string) => `<span class="token ${lang}">${code}</span>`),
+  highlight: vi.fn((code: string, _grammar: any, lang: string) => lang === 'text'
+    ? code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    : `<span class="token ${lang}">${code}</span>`),
   juice: vi.fn((html: string) => `<inlined>${html}</inlined>`),
   loggerWarn: vi.fn(),
 }))
@@ -10,6 +12,7 @@ vi.mock('prismjs', () => ({
       javascript: {},
       markup: {},
       python: {},
+      text: {},
       typescript: {},
     },
     highlight: mocks.highlight,
@@ -124,14 +127,22 @@ describe('markdown-code-highlight plugin', () => {
     const numbered = ctx.md.options.highlight('const a = 1\nconst b = 2\n', 'ts')
     const escaped = ctx.md.options.highlight('<b>x</b>', '')
     const fallback = ctx.md.options.highlight('<x>\n', 'unknown')
+    const plainText = ctx.md.options.highlight('http://<host>:7999?install=1\nline2\n', 'text')
+    const plainTextContainer = document.createElement('div')
+
+    plainTextContainer.innerHTML = plainText
 
     expect(mocks.highlight).toHaveBeenCalledWith('const a = 1\nconst b = 2\n', {}, 'typescript')
+    expect(mocks.highlight).toHaveBeenCalledWith('http://<host>:7999?install=1\nline2\n', {}, 'text')
     expect(numbered).toContain('<table class="hljs-ln" data-lang="ts">')
     expect(numbered).toContain('data-line-number="1"')
     expect(numbered).toContain('data-line-number="2"')
     expect(numbered).toContain('<span class="token typescript">const a = 1</span>')
     expect(escaped).toBe('&lt;b&gt;x&lt;/b&gt;')
     expect(fallback).toContain('&lt;x&gt;')
+    expect(plainText).toContain('http://&lt;host&gt;:7999?install=1')
+    expect(plainText).not.toContain('&amp;lt;host')
+    expect(plainTextContainer.querySelector('td.hljs-ln-code .hljs-ln-line')?.textContent).toBe('http://<host>:7999?install=1')
     expect(mocks.loggerWarn).toHaveBeenCalledWith('Syntax highlight for language "unknown" is not supported.')
   })
 

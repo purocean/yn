@@ -173,10 +173,6 @@ function duplicateMultilineNodes (element: HTMLElement) {
 function wrap (code: string, lang: string, lineNumber: boolean) {
   let html = code
 
-  if (lang === 'text') {
-    html = escape(code)
-  }
-
   if (lineNumber) {
     const element = document.createElement('code')
     element.innerHTML = html
@@ -229,7 +225,7 @@ function highlight (str: string, lang: string, lineNumber: boolean) {
     logger.warn(`Syntax highlight for language "${lang}" is not supported.`)
   }
 
-  return wrap(str, 'text', lineNumber)
+  return wrap(escape(str), 'text', lineNumber)
 }
 
 export default {
