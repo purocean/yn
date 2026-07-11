@@ -21,8 +21,6 @@ const DEFAULT_HEIGHT = MIN_HEIGHT
 const REVEAL_TOP_CONTEXT_LINES = 3
 const SIDE_MARGIN = 24
 const SCREEN_MARGIN = 8
-const HINT_STORAGE_KEY = 'plugin.floating-editor.preview-hint-count'
-const HINT_LIMIT = 5
 const HINT_DURATION = 5000
 const EDITOR_SCROLL_SYNC_PAUSE_TIMEOUT = 350
 const CLOSE_SYNC_PAUSE_TIMEOUT = 800
@@ -272,14 +270,6 @@ export default {
       editorDom.style.height = `${Math.round(height)}px`
     }
 
-    function getHintCount () {
-      return ctx.storage.get(HINT_STORAGE_KEY, 0)
-    }
-
-    function setHintCount (count: number) {
-      ctx.storage.set(HINT_STORAGE_KEY, count)
-    }
-
     function hideHint () {
       if (hintTimer) {
         clearTimeout(hintTimer)
@@ -305,7 +295,7 @@ export default {
     }
 
     function showHint () {
-      if (visible || hint || getHintCount() >= HINT_LIMIT) {
+      if (visible || hint) {
         return
       }
 
@@ -319,7 +309,6 @@ export default {
       hint.textContent = getHintText()
       document.body.appendChild(hint)
       positionHint()
-      setHintCount(getHintCount() + 1)
 
       hintTimer = window.setTimeout(hideHint, HINT_DURATION)
     }

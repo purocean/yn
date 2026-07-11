@@ -211,7 +211,7 @@ describe('floating-editor plugin', () => {
     expect(ctx.editorInstance.focus).toHaveBeenCalledTimes(1)
   })
 
-  test('watcher shows a limited preview hint when floating editor is available', () => {
+  test('watcher shows a preview hint whenever floating editor is available', () => {
     const ctx = createCtx()
     floatingEditor.register(ctx)
     const canShow = ctx.lib.vue.watch.mock.calls[0][0]
@@ -222,7 +222,8 @@ describe('floating-editor plugin', () => {
 
     const hint = document.body.querySelector('.floating-editor-hint') as HTMLElement
     expect(hint.textContent).toBe('floating-editor.preview-hint:Alt')
-    expect(ctx.storage.set).toHaveBeenCalledWith('plugin.floating-editor.preview-hint-count', 1)
+    expect(ctx.storage.get).not.toHaveBeenCalled()
+    expect(ctx.storage.set).not.toHaveBeenCalled()
   })
 
   test('titlebar and resize handles move, maximize, restore, and close the floating frame', async () => {
