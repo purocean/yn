@@ -128,7 +128,7 @@
     "juice": "^8.0.0",
     "katex": "^0.16.21",
     "lodash-es": "^4.18.1",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.3.0",
     "markdown-it-abbr": "^2.0.0",
     "markdown-it-attributes": "^1.2.0",
     "markdown-it-container": "^4.0.0",
