@@ -82,14 +82,22 @@ export function createTextHighlighter (
   highlightName: string,
   css: string | undefined | null | ((colorScheme: 'light' | 'dark') => string) = color => `color: ${color === 'dark' ? '#ffec99' : '#bd7f02'}`
 ) {
-  let style: HTMLStyleElement | null = null
+  const resolveContainer = () => typeof container === 'function' ? container() : container
 
-  if (css) {
+  let style: HTMLStyleElement | null = null
+  let contextDocument = resolveContainer()?.ownerDocument || document
+  let contextWindow = contextDocument.defaultView || window
+
+  const installStyle = () => {
+    if (!css) {
+      return
+    }
+
     // remove existing styles
-    const existingStyle = document.querySelectorAll(`style[data-highlight-name="${highlightName}"]`)
+    const existingStyle = contextDocument.querySelectorAll(`style[data-highlight-name="${highlightName}"]`)
     existingStyle.forEach(style => style.remove())
 
-    style = document.createElement('style')
+    style = contextDocument.createElement('style')
     style.dataset.highlightName = highlightName
     style.textContent = `
       @media screen {
@@ -108,47 +116,84 @@ export function createTextHighlighter (
       }
     `
 
-    document.head.appendChild(style)
+    contextDocument.head.appendChild(style)
+  }
+
+  const switchContext = (nextDocument: Document) => {
+    if (nextDocument === contextDocument) {
+      return
+    }
+
+    contextWindow.CSS.highlights.delete(highlightName)
+    style?.remove()
+    style = null
+    contextDocument = nextDocument
+    contextWindow = nextDocument.defaultView || window
+    installStyle()
   }
 
   const remove = () => {
-    CSS.highlights.delete(highlightName)
+    contextWindow.CSS.highlights.delete(highlightName)
   }
 
   const dispose = () => {
     remove()
     style?.remove()
+    style = null
+  }
+
+  const applyRanges = (ranges: Range[], targetDocument: Document) => {
+    switchContext(targetDocument)
+    remove()
+
+    if (ranges.length > 0) {
+      const HighlightConstructor = (contextWindow as any).Highlight
+      contextWindow.CSS.highlights.set(highlightName, new HighlightConstructor(...ranges))
+    }
+
+    return remove
+  }
+
+  /** Highlight precomputed DOM ranges, such as ranges restored from review annotations. */
+  const highlightRanges = (ranges: Range[]) => {
+    const targetDocument = ranges[0]?.startContainer.ownerDocument
+      || resolveContainer()?.ownerDocument
+      || contextDocument
+
+    return applyRanges(ranges, targetDocument)
   }
 
   const highlight = (keyword: string | RegExp) => {
-    remove()
-
     keyword = typeof keyword === 'string' ? keyword.trim() : keyword
 
     if (!keyword) {
+      remove()
       return
     }
 
     const ranges: Range[] = []
-    const containerElement = typeof container === 'function' ? container() : container
+    const containerElement = resolveContainer()
 
     if (!containerElement) {
+      remove()
       return
     }
 
-    const treeWalker = document.createTreeWalker(containerElement, NodeFilter.SHOW_TEXT)
+    switchContext(containerElement.ownerDocument)
+
+    const treeWalker = contextDocument.createTreeWalker(containerElement, contextWindow.NodeFilter.SHOW_TEXT)
 
     let node: Node | null = null
 
     do {
       node = treeWalker.nextNode()
-      if (node && node.nodeType === Node.TEXT_NODE) {
+      if (node && node.nodeType === contextWindow.Node.TEXT_NODE) {
         const textContent = (node as Text).textContent || ''
         const regex = typeof keyword === 'string' ? new RegExp(`(${keyword})`, 'gi') : keyword
         let match: RegExpExecArray | null
 
         while ((match = regex.exec(textContent)) !== null) {
-          const range = document.createRange()
+          const range = contextDocument.createRange()
           range.setStart(node, match.index)
           range.setEnd(node, match.index + match[0].length)
           ranges.push(range)
@@ -156,14 +201,15 @@ export function createTextHighlighter (
       }
     } while (node)
 
-    CSS.highlights.set(highlightName, new Highlight(...ranges))
-
-    return remove
+    return applyRanges(ranges, containerElement.ownerDocument)
   }
+
+  installStyle()
 
   return {
     dispose,
     remove,
     highlight,
+    highlightRanges,
   }
 }
