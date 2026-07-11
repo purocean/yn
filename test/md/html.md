@@ -110,6 +110,17 @@ Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> to open command palette.
 
 </div>
 
+## Raw HTML Container
+
+The `html` container renders its contents as HTML without parsing Markdown inside it:
+
+::: html
+<div style="border: 2px dashed #888; padding: 1em;">
+  <strong>Raw HTML</strong>
+  <span>*This stays literal instead of becoming Markdown emphasis.*</span>
+</div>
+:::
+
 ## Notes
 
 - HTML rendering is controlled by `mdOptions.html` (default: `true`)

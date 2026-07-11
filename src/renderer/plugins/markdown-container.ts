@@ -2,7 +2,82 @@ import MarkdownItContainer from 'markdown-it-container'
 import { applyAttrs, getAttrs, parseInfo } from 'markdown-it-attributes'
 import { Fragment, h } from 'vue'
 import type Token from 'markdown-it/lib/token'
+import type StateBlock from 'markdown-it/lib/rules_block/state_block'
 import { Plugin } from '@fe/context'
+
+const RAW_HTML_MARKER = 0x3A // ':'
+const CONTAINER_NAMES = ['tip', 'warning', 'danger', 'details', 'group-item', 'group', 'row', 'col', 'section', 'div', 'code-group']
+
+function rawHtmlContainer (state: StateBlock, startLine: number, endLine: number, silent: boolean) {
+  if (!state.md.options.html || (state.env as { safeMode?: boolean })?.safeMode) {
+    return false
+  }
+
+  let start = state.bMarks[startLine] + state.tShift[startLine]
+  let max = state.eMarks[startLine]
+
+  if (state.src.charCodeAt(start) !== RAW_HTML_MARKER) {
+    return false
+  }
+
+  let pos = start + 1
+  while (pos <= max && state.src.charCodeAt(pos) === RAW_HTML_MARKER) {
+    pos++
+  }
+
+  const markerCount = pos - start
+  const params = state.src.slice(pos, max).trim()
+  if (markerCount < 3 || params.split(/\s+/, 1)[0] !== 'html') {
+    return false
+  }
+
+  if (silent) {
+    return true
+  }
+
+  let nextLine = startLine
+  let autoClosed = false
+
+  for (;;) {
+    nextLine++
+    if (nextLine >= endLine) {
+      break
+    }
+
+    start = state.bMarks[nextLine] + state.tShift[nextLine]
+    max = state.eMarks[nextLine]
+
+    if (start < max && state.sCount[nextLine] < state.blkIndent) {
+      break
+    }
+
+    if (state.src.charCodeAt(start) !== RAW_HTML_MARKER || state.sCount[nextLine] - state.blkIndent >= 4) {
+      continue
+    }
+
+    pos = start + 1
+    while (pos <= max && state.src.charCodeAt(pos) === RAW_HTML_MARKER) {
+      pos++
+    }
+
+    if (pos - start < markerCount || state.skipSpaces(pos) < max) {
+      continue
+    }
+
+    autoClosed = true
+    break
+  }
+
+  const token = state.push('html_block', '', 0)
+  token.block = true
+  token.markup = ':'.repeat(markerCount)
+  token.info = params
+  token.content = state.getLines(startLine + 1, nextLine, state.blkIndent, true)
+  token.map = [startLine + 1, nextLine]
+
+  state.line = nextLine + (autoClosed ? 1 : 0)
+  return true
+}
 
 export default {
   name: 'markdown-container',
@@ -234,7 +309,11 @@ export default {
     }
 
     ctx.markdown.registerPlugin(md => {
-      ['tip', 'warning', 'danger', 'details', 'group-item', 'group', 'row', 'col', 'section', 'div', 'code-group'].forEach(name => {
+      md.block.ruler.before('fence', 'container_html_raw', rawHtmlContainer, {
+        alt: ['paragraph', 'reference', 'blockquote', 'list']
+      })
+
+      CONTAINER_NAMES.forEach(name => {
         const reg = new RegExp(`^${name}\\s*(.*)$`)
 
         md.use(MarkdownItContainer, name, {
@@ -346,6 +425,7 @@ export default {
 
       items.push(
         { language: 'markdown', label: '/ ::: Container', insertText: '${3|:::,::::,:::::|} ${1|tip,warning,danger,details,code-group,group,group-item,row,col,section,div|} ${2:Title}\n${4:Content}\n${3|:::,::::,:::::|}\n', block: true, surroundSelection: '${4:Content}' },
+        { language: 'markdown', label: '/ ::: Raw HTML', insertText: '::: html\n${1:<div>Raw HTML</div>}\n:::\n', block: true, surroundSelection: '${1:<div>Raw HTML</div>}' },
         { language: 'markdown', label: '/ ::: Group Container', insertText: ':::: group ${1:Title}\n::: group-item Tab 1\ntest 1\n:::\n::: group-item *Tab 2\ntest 2\n:::\n::: group-item Tab 3\ntest 3\n:::\n::::\n', block: true },
         { language: 'markdown', label: '/ ::: Code Group Container', insertText: '::: code-group ${1:Title}\n${2:```js [test.js]\nlet a = 1\n```\n\n```ts [test.ts]\nlet a: number = 1\n```}\n:::\n', block: true },
         { language: 'markdown', label: '/ ::: Column Container', insertText: ':::: row ${1:Title}\n::: col\ntest 1\n:::\n::: col\ntest 2\n:::\n::::\n', block: true },
