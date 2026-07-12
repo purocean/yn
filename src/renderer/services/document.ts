@@ -1004,6 +1004,7 @@ export function hideHistory () {
 }
 
 function cacheSupportedExtension () {
+  const cacheInitialized = supportedExtensionCache.sortedExtensions.length > 0
   const currentFileSupported = !!(store.state.currentFile && supported(store.state.currentFile))
 
   supportedExtensionCache.types.clear()
@@ -1020,11 +1021,12 @@ function cacheSupportedExtension () {
 
   supportedExtensionCache.sortedExtensions.sort((a, b) => b.length - a.length)
 
-  // refresh current file if change supported status
-  if (store.state.currentFile) {
+  // Refresh the current file when document types change at runtime. Startup
+  // restoration is handled separately after the editor is ready.
+  if (cacheInitialized && store.state.currentFile) {
     const currentFileSupportedNow = supported(store.state.currentFile)
     if (currentFileSupported !== currentFileSupportedNow) {
-      switchDoc(store.state.currentFile || null, { force: true })
+      switchDoc(store.state.currentFile, { force: true })
     }
   }
 }

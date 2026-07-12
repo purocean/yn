@@ -298,6 +298,32 @@ describe('document service pure helpers', () => {
     expect(resolveDocType('/tmp/file.custom')).toBeNull()
   })
 
+  test('refreshes the current file when runtime document type support changes', async () => {
+    storeMock.state.currentFile = {
+      ...fileDoc,
+      path: '/tmp/file.runtime',
+      name: 'file.runtime',
+    }
+
+    registerDocCategory({
+      category: 'runtime-docs',
+      displayName: 'Runtime',
+      types: [{
+        id: 'runtime',
+        displayName: 'Runtime',
+        extension: ['.runtime'],
+        plain: true,
+      }],
+    })
+    await vi.waitFor(() => {
+      expect(apiMocks.readFile).toHaveBeenCalledWith(expect.objectContaining({
+        path: '/tmp/file.runtime',
+      }))
+    })
+
+    removeDocCategory('runtime-docs')
+  })
+
   test('marks and unmarks documents through settings', async () => {
     await markDoc(fileDoc)
     expect(settingMocks.setSetting).toHaveBeenLastCalledWith('mark', [
