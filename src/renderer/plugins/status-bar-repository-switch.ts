@@ -23,7 +23,13 @@ export default {
       }
 
       if (initFilePath) {
-        switchDoc({ type: 'file', repo: initRepoName || currentRepo!.name, name: basename(initFilePath), path: initFilePath })
+        return switchDoc({ type: 'file', repo: initRepoName || currentRepo!.name, name: basename(initFilePath), path: initFilePath })
+      }
+
+      // The persisted current file only contains metadata. Reload it explicitly
+      // so non-Markdown plain text files also get their content on startup.
+      if (store.state.currentFile && store.state.currentFile.status !== 'loaded') {
+        return switchDoc(store.state.currentFile, { force: true })
       }
     }
 

@@ -196,4 +196,8 @@ export default defineComponent({
 .xterm-dom ::v-deep(textarea) {
   transition: none;
 }
+
+.xterm-dom ::v-deep(.xterm-screen) {
+  overflow-x: clip;
+}
 </style>

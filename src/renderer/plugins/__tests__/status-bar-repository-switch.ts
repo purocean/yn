@@ -2,6 +2,7 @@ const mocks = vi.hoisted(() => ({
   args: new Map<string, string>(),
   state: {
     currentRepo: { name: 'repo-a', path: '/repos/a' } as any,
+    currentFile: null as any,
   },
   switchDoc: vi.fn(),
   whenEditorReady: vi.fn(() => Promise.resolve({})),
@@ -80,6 +81,7 @@ describe('status-bar-repository-switch plugin', () => {
   beforeEach(() => {
     mocks.args.clear()
     mocks.state.currentRepo = { name: 'repo-a', path: '/repos/a' }
+    mocks.state.currentFile = null
     mocks.switchDoc.mockReset()
     mocks.whenEditorReady.mockReset()
     mocks.whenEditorReady.mockResolvedValue({})
@@ -126,6 +128,57 @@ describe('status-bar-repository-switch plugin', () => {
       name: 'start.md',
       path: '/docs/start.md',
     })
+  })
+
+  test.each([
+    ['Markdown', '/docs/restored.md'],
+    ['HTML', '/docs/restored.html'],
+  ])('restores the last opened %s file after editor readiness', async (_type, path) => {
+    const ctx = createCtx()
+    mocks.state.currentFile = {
+      type: 'file',
+      repo: 'repo-a',
+      name: path.split('/').pop(),
+      path,
+    }
+
+    repositorySwitch.register(ctx)
+    await mocks.whenEditorReady.mock.results[0].value
+
+    expect(mocks.switchDoc).toHaveBeenCalledWith(mocks.state.currentFile, { force: true })
+  })
+
+  test('does not restore the persisted file when an init file is provided', async () => {
+    const ctx = createCtx()
+    mocks.state.currentFile = {
+      type: 'file',
+      repo: 'repo-a',
+      name: 'restored.html',
+      path: '/docs/restored.html',
+    }
+    mocks.args.set('init-file', '/docs/start.md')
+
+    repositorySwitch.register(ctx)
+    await mocks.whenEditorReady.mock.results[0].value
+
+    expect(mocks.switchDoc).toHaveBeenCalledTimes(1)
+    expect(mocks.switchDoc).toHaveBeenCalledWith(expect.objectContaining({ path: '/docs/start.md' }))
+  })
+
+  test('does not reload a current file that has already finished loading', async () => {
+    const ctx = createCtx()
+    mocks.state.currentFile = {
+      type: 'file',
+      repo: 'repo-a',
+      name: 'restored.md',
+      path: '/docs/restored.md',
+      status: 'loaded',
+    }
+
+    repositorySwitch.register(ctx)
+    await mocks.whenEditorReady.mock.results[0].value
+
+    expect(mocks.switchDoc).not.toHaveBeenCalled()
   })
 
   test('continues startup file switching if init repo selection throws', async () => {

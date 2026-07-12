@@ -108,9 +108,11 @@ describe('utils index utilities', () => {
   describe('createTextHighlighter', () => {
     const highlightStore = new Map<string, unknown>()
 
-    beforeEach(() => {
-      highlightStore.clear()
-      Object.defineProperty(globalThis, 'Highlight', {
+    const installHighlightApi = (target: typeof globalThis, store: Map<string, unknown>) => {
+      const deleteHighlight = vi.fn((name: string) => store.delete(name))
+      const setHighlight = vi.fn((name: string, value: unknown) => store.set(name, value))
+
+      Object.defineProperty(target, 'Highlight', {
         configurable: true,
         value: class {
           ranges: Range[]
@@ -120,15 +122,22 @@ describe('utils index utilities', () => {
           }
         },
       })
-      Object.defineProperty(globalThis, 'CSS', {
+      Object.defineProperty(target, 'CSS', {
         configurable: true,
         value: {
           highlights: {
-            delete: vi.fn((name: string) => highlightStore.delete(name)),
-            set: vi.fn((name: string, value: unknown) => highlightStore.set(name, value)),
+            delete: deleteHighlight,
+            set: setHighlight,
           },
         },
       })
+
+      return { deleteHighlight, setHighlight }
+    }
+
+    beforeEach(() => {
+      highlightStore.clear()
+      installHighlightApi(globalThis, highlightStore)
     })
 
     test('installs styles, highlights text matches, and disposes cleanly', () => {
@@ -172,6 +181,41 @@ describe('utils index utilities', () => {
       createTextHighlighter(container, 'words', null).highlight(/t\w+/g)
 
       expect((highlightStore.get('words') as { ranges: Range[] }).ranges).toHaveLength(2)
+    })
+
+    test('moves styles and range highlights to the container document', () => {
+      const container = document.createElement('div')
+      document.body.appendChild(container)
+
+      const iframe = document.createElement('iframe')
+      document.body.appendChild(iframe)
+      const iframeWindow = iframe.contentWindow!
+      const iframeDocument = iframe.contentDocument!
+      const iframeHighlightStore = new Map<string, unknown>()
+      const iframeHighlightApi = installHighlightApi(iframeWindow as unknown as typeof globalThis, iframeHighlightStore)
+      const iframeContainer = iframeDocument.createElement('div')
+      iframeContainer.textContent = 'review text'
+      iframeDocument.body.appendChild(iframeContainer)
+
+      let currentContainer = container
+      const highlighter = createTextHighlighter(() => currentContainer, 'review', 'background: yellow')
+      expect(document.querySelector('style[data-highlight-name="review"]')).not.toBeNull()
+
+      const range = iframeDocument.createRange()
+      range.selectNodeContents(iframeContainer)
+      currentContainer = iframeContainer
+      highlighter.highlightRanges([range])
+
+      expect(document.querySelector('style[data-highlight-name="review"]')).toBeNull()
+      expect(iframeDocument.querySelector('style[data-highlight-name="review"]')).not.toBeNull()
+      expect(iframeHighlightApi.setHighlight).toHaveBeenCalledWith('review', expect.any((iframeWindow as any).Highlight))
+      expect((iframeHighlightStore.get('review') as { ranges: Range[] }).ranges).toEqual([range])
+
+      highlighter.dispose()
+      expect(iframeHighlightApi.deleteHighlight).toHaveBeenLastCalledWith('review')
+      expect(iframeDocument.querySelector('style[data-highlight-name="review"]')).toBeNull()
+      iframe.remove()
+      container.remove()
     })
   })
 })

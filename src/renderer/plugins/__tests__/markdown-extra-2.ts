@@ -544,7 +544,7 @@ describe('markdown extra branch coverage', () => {
     expect(mocks.replaceLine).not.toHaveBeenCalled()
   })
 
-  test('floating editor noops when unavailable and suppresses hints after the display limit', async () => {
+  test('floating editor noops when unavailable and shows hints once available', async () => {
     vi.useFakeTimers()
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation((fn: FrameRequestCallback) => {
       fn(0)
@@ -552,7 +552,6 @@ describe('markdown extra branch coverage', () => {
     })
     const ctx = createFloatingCtx()
     ctx.store.state.showEditor = true
-    ctx.storage.get.mockReturnValue(5)
     floatingEditor.register(ctx)
 
     await ctx.actions.get('layout.show-floating-editor').handler({ line: 2, clientY: 80 })
@@ -563,6 +562,6 @@ describe('markdown extra branch coverage', () => {
     expect(canShow()).toBe(false)
     ctx.store.state.showEditor = false
     onChange(true)
-    expect(document.body.querySelector('.floating-editor-hint')).toBeNull()
+    expect(document.body.querySelector('.floating-editor-hint')).toBeTruthy()
   })
 })

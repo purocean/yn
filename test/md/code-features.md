@@ -192,3 +192,15 @@ Code blocks automatically display line numbers with a sticky left panel:
 // Line 14
 // Line 15
 ```
+
+## Plain Text
+
+```text
+http://<host>:7999?install=1
+line2
+```
+
+```
+http://<host>:7999?install=1
+line2
+```
