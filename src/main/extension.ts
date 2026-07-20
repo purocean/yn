@@ -41,8 +41,14 @@ function changeExtensionConfig (id: string, val: { enabled: boolean }) {
 }
 
 export async function list () {
-  const list = (await fs.readdir(USER_EXTENSION_DIR, { withFileTypes: true }))
-    .filter(x => (x.isDirectory() || x.isSymbolicLink()) && RE_EXTENSION_ID.test(x.name))
+  let list: fs.Dirent[] = []
+  try {
+    list = (await fs.readdir(USER_EXTENSION_DIR, { withFileTypes: true }))
+      .filter(x => (x.isDirectory() || x.isSymbolicLink()) && RE_EXTENSION_ID.test(x.name))
+  } catch (error) {
+    console.error('Failed to list extensions:', error)
+    return []
+  }
 
   const extensionsSettings = config.get(configKey, {})
 

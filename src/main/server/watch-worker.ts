@@ -91,7 +91,13 @@ function init (id: number, filePath: string | string[], options: WatchOpts) {
   })
 
   function enqueue (type: string, data: any) {
-    process.send?.({ id, type: 'enqueue', payload: { type, data } } satisfies Message)
+    try {
+      if (process.connected) {
+        process.send?.({ id, type: 'enqueue', payload: { type, data } } satisfies Message)
+      }
+    } catch (error) {
+      console.error(`watch process ${id} > enqueue error:`, error)
+    }
   }
 
   function stop () {

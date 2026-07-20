@@ -26,8 +26,13 @@ const readJson = () => {
     const result = fs.readJSONSync(configFile)
 
     // get license from store
-    const license = store.get('license', '')
-    result.license = license || result.license || ''
+    try {
+      const license = store.get('license', '')
+      result.license = license || result.license || ''
+    } catch (error) {
+      console.error('Failed to read license from store:', error)
+      result.license = result.license || ''
+    }
 
     return result
   } catch (error) {

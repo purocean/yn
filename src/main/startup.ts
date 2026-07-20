@@ -4,10 +4,17 @@ import { USER_DIR, USER_PLUGIN_DIR, USER_THEME_DIR, RESOURCES_DIR, BUILD_IN_STYL
 import './updater'
 
 export default function () {
-  fs.ensureDirSync(USER_DIR)
-  if (!fs.existsSync(USER_PLUGIN_DIR)) {
-    fs.mkdirSync(USER_PLUGIN_DIR)
-    fs.writeFileSync(path.join(USER_PLUGIN_DIR, 'plugin-example.js'), `
+  try {
+    fs.ensureDirSync(USER_DIR)
+  } catch (error) {
+    console.error('Failed to create user directory:', error)
+    return
+  }
+
+  try {
+    if (!fs.existsSync(USER_PLUGIN_DIR)) {
+      fs.mkdirSync(USER_PLUGIN_DIR)
+      fs.writeFileSync(path.join(USER_PLUGIN_DIR, 'plugin-example.js'), `
 window.registerPlugin({
   name: 'example-plugin',
   register: ctx => {
@@ -19,22 +26,47 @@ window.registerPlugin({
   }
 });
     `.trim())
+    }
+  } catch (error) {
+    console.error('Failed to create plugin directory:', error)
   }
 
-  fs.ensureDirSync(USER_THEME_DIR)
-  fs.ensureDirSync(HISTORY_DIR)
-  fs.ensureDirSync(USER_EXTENSION_DIR)
+  try {
+    fs.ensureDirSync(USER_THEME_DIR)
+  } catch (error) {
+    console.error('Failed to create theme directory:', error)
+  }
+
+  try {
+    fs.ensureDirSync(HISTORY_DIR)
+  } catch (error) {
+    console.error('Failed to create history directory:', error)
+  }
+
+  try {
+    fs.ensureDirSync(USER_EXTENSION_DIR)
+  } catch (error) {
+    console.error('Failed to create extension directory:', error)
+  }
 
   BUILD_IN_STYLES.forEach(style => {
-    fs.writeFileSync(
-      path.join(USER_THEME_DIR, style),
-      fs.readFileSync(path.join(RESOURCES_DIR, style))
-    )
+    try {
+      fs.writeFileSync(
+        path.join(USER_THEME_DIR, style),
+        fs.readFileSync(path.join(RESOURCES_DIR, style))
+      )
+    } catch (error) {
+      console.error('Failed to write built-in style:', style, error)
+    }
   })
 
   const docxTplPath = path.join(USER_DIR, PANDOC_REFERENCE_FILE)
   if (!fs.existsSync(docxTplPath)) {
-    fs.createReadStream(path.join(RESOURCES_DIR, PANDOC_REFERENCE_FILE))
-      .pipe(fs.createWriteStream(docxTplPath))
+    try {
+      fs.createReadStream(path.join(RESOURCES_DIR, PANDOC_REFERENCE_FILE))
+        .pipe(fs.createWriteStream(docxTplPath))
+    } catch (error) {
+      console.error('Failed to copy pandoc reference file:', error)
+    }
   }
 }

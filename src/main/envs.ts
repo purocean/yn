@@ -17,6 +17,10 @@ export function initEnvs () {
   const envsStr = config.get(keyEnvs, '')
   console.log('envs:', envsStr)
 
+  if (!envsStr) {
+    return
+  }
+
   let envs: Record<string, any>
   try {
     envs = yaml.parse(envsStr)
