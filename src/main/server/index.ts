@@ -230,9 +230,7 @@ const fileContent = async (ctx: any, next: any) => {
 
       ctx.body = result('ok', 'success', data)
     } else if (ctx.method === 'POST') {
-      const _dbg = (msg: string) => { try { require('fs').appendFileSync('/tmp/yank-debug.log', `[debug-fileContent] ${msg}\n`) } catch {} }
       const { oldHash, content, asBase64, repo, path } = ctx.request.body || {}
-      _dbg(`POST /api/file repo: ${repo} path: ${path} oldHash: ${oldHash} content type: ${typeof content} len: ${content?.length}`)
 
       if (!repo || !path) {
         throw new Error('Invalid repo or path')
@@ -253,19 +251,11 @@ const fileContent = async (ctx: any, next: any) => {
           'base64'
         )
       }
-      _dbg(`calling file.write, saveContent type: ${typeof saveContent} isBuffer: ${Buffer.isBuffer(saveContent)}`)
 
-      try {
-        const hash = await file.write(repo, path, saveContent)
-        _dbg(`file.write OK, hash: ${hash}`)
-        ctx.body = result('ok', 'success', {
-          hash,
-          stat: await file.stat(repo, path),
-        })
-      } catch (e) {
-        _dbg(`file.write FAILED: ${(e as Error).message}\n${(e as Error).stack}`)
-        throw e
-      }
+      ctx.body = result('ok', 'success', {
+        hash: await file.write(repo, path, saveContent),
+        stat: await file.stat(repo, path),
+      })
     } else if (ctx.method === 'DELETE') {
       const { repo, path } = ctx.query || {}
       if (!repo || !path) {
@@ -997,7 +987,6 @@ const wrapper = async (ctx: any, next: any, fun: any) => {
   try {
     await fun(ctx, next)
   } catch (error: any) {
-    try { require('fs').appendFileSync('/tmp/yank-debug.log', `[debug-wrapper] CAUGHT error in ${ctx.method} ${ctx.path}: ${error?.message}\n${error?.stack}\n`) } catch {}
     console.error(error)
     try {
       if (ctx.set) {
@@ -1065,25 +1054,15 @@ const server = (port = 3000) => {
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, checkPermission))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
 
-  app.use(async (ctx: any, next: any) => {
-    const fs = require('fs')
-    fs.appendFileSync('/tmp/yank-debug.log', `[debug-body] before bodyParser: ${ctx.method} ${ctx.path}\n`)
-    try {
-      await bodyParser({
-        multipart: true,
-        formLimit: '50mb',
-        jsonLimit: '50mb',
-        textLimit: '50mb',
-        formidable: {
-          maxFieldsSize: 268435456
-        }
-      })(ctx, next)
-      fs.appendFileSync('/tmp/yank-debug.log', `[debug-body] after bodyParser OK: ${ctx.method} ${ctx.path} body type: ${typeof ctx.request.body}\n`)
-    } catch (e) {
-      fs.appendFileSync('/tmp/yank-debug.log', `[debug-body] bodyParser FAILED: ${ctx.method} ${ctx.path} ${(e as Error).message}\n${(e as Error).stack}\n`)
-      throw e
+  app.use(bodyParser({
+    multipart: true,
+    formLimit: '50mb',
+    jsonLimit: '50mb',
+    textLimit: '50mb',
+    formidable: {
+      maxFieldsSize: 268435456
     }
-  })
+  }))
 
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, fileContent))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, attachment))

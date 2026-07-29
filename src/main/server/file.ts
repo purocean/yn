@@ -226,47 +226,29 @@ export function write (repo: string, p: string, content: any): Promise<string> {
   if (readonly) throw new Error('Readonly')
 
   return withRepo(repo, async (_, filePath) => {
-    const _dbg = (msg: string) => { try { require('fs').appendFileSync('/tmp/yank-debug.log', `[debug-write] ${msg}\n`) } catch {} }
-    _dbg(`enter write: ${filePath} content type: ${typeof content} isBuffer: ${Buffer.isBuffer(content)} len: ${content?.length}`)
-    // create dir. Check original path `p` because path.join() in withRepo strips trailing slashes.
     if (p.endsWith('/') || filePath.endsWith(path.sep)) {
       await fs.ensureDir(filePath)
       return ''
     }
 
+    const nativeFs = require('fs')
     try {
-      await fs.ensureFile(filePath)
-      _dbg(`ensureFile OK: ${filePath}`)
-    } catch (e) {
-      _dbg(`ensureFile FAILED: ${filePath} ${(e as Error).message}`)
-      throw e
+      await nativeFs.promises.access(filePath)
+    } catch {
+      await nativeFs.promises.writeFile(filePath, '')
     }
-    try {
-      await fs.writeFile(filePath, content)
-      _dbg(`fs.writeFile OK: ${filePath} content type: ${typeof content} len: ${content?.length}`)
-    } catch (e) {
-      _dbg(`fs.writeFile FAILED: ${filePath} ${(e as Error).message}`)
-      throw e
-    }
+
+    await fs.writeFile(filePath, content)
 
     if (isMarkdownFile(filePath) && typeof content === 'string') {
       if (content.length > DOC_HISTORY_MAX_CONTENT_LENGTH) {
-        _dbg(`skip write history for large file: ${filePath} ${content.length}`)
+        console.log('skip write history for large file', filePath, content.length)
       } else {
-        setTimeout(() => {
-          writeHistory(filePath, content).catch(e => _dbg(`writeHistory FAILED: ${filePath} ${(e as Error).message}`))
-        }, 0)
+        setTimeout(() => writeHistory(filePath, content), 0)
       }
     }
 
-    try {
-      const hash = crypto.createHash('md5').update(content).digest('hex')
-      _dbg(`hash OK: ${filePath} hash: ${hash}`)
-      return hash
-    } catch (e) {
-      _dbg(`hash FAILED: ${filePath} ${(e as Error).message}`)
-      throw e
-    }
+    return crypto.createHash('md5').update(content).digest('hex')
   }, p)
 }
 
