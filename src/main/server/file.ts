@@ -226,13 +226,18 @@ export function write (repo: string, p: string, content: any): Promise<string> {
   if (readonly) throw new Error('Readonly')
 
   return withRepo(repo, async (_, filePath) => {
-    // create dir. Check original path `p` because path.join() in withRepo strips trailing slashes.
     if (p.endsWith('/') || filePath.endsWith(path.sep)) {
       await fs.ensureDir(filePath)
       return ''
     }
 
-    await fs.ensureFile(filePath)
+    const nativeFs = require('fs')
+    try {
+      await nativeFs.promises.access(filePath)
+    } catch {
+      await nativeFs.promises.writeFile(filePath, '')
+    }
+
     await fs.writeFile(filePath, content)
 
     if (isMarkdownFile(filePath) && typeof content === 'string') {
@@ -603,7 +608,13 @@ export async function watchFile (repo: string, p: string | string[], options: Wa
 
     const wp = getWatchProcess()
 
-    wp.send({ id, type: 'init', payload: { filePath, options } } satisfies Message)
+    try {
+      if (wp.connected) {
+        wp.send({ id, type: 'init', payload: { filePath, options } } satisfies Message)
+      }
+    } catch (error) {
+      console.error('watchFile send init error:', error)
+    }
 
     const onMessage = (message: Message) => {
       if (message.id !== id) {
@@ -633,7 +644,13 @@ export async function watchFile (repo: string, p: string | string[], options: Wa
 
     const _stop = () => {
       console.log('watchFile', id, filePath, 'stop')
-      wp.send({ id, type: 'stop' } satisfies Message)
+      try {
+        if (wp.connected) {
+          wp.send({ id, type: 'stop' } satisfies Message)
+        }
+      } catch (error) {
+        console.error('watchFile send stop error:', error)
+      }
       app.off('quit', _stop)
       wp.off('message', onMessage)
       wp.off('error', onError)

@@ -91,8 +91,39 @@
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
+## 麒麟操作系统（Kylin OS）适配说明
+
+针对银河麒麟/统信 UOS 等 aarch64（ARM64）架构的国产 Linux 操作系统做了如下适配：
+
+### 已知问题与修复
+
+1. **文件写入 EFAULT 错误**：在 aarch64 平台上，`fs-extra` 的 `ensureFile` 会触发 `EFAULT: bad address in system call argument, write` 错误，导致文件无法创建和保存。已将文件写入逻辑改用 Node.js 原生 `fs.promises` API 实现。
+
+2. **Wayland 会话兼容**：麒麟桌面环境默认使用 Wayland 会话，但 Electron 的 Wayland 原生后端在该平台存在 DRM/EGL 初始化失败的问题。deb 包安装后通过 `.desktop` 文件中添加启动参数 `--ozone-platform=x11 --disable-gpu` 强制使用 X11 后端（经 XWayland）并禁用 GPU 硬件加速来解决。
+
+3. **桌面图标无法启动**：GLib/GIO 的 `GDesktopAppInfo` 无法解析 `Exec` 字段中含空格的可执行文件路径（如 `/opt/Yank Note/yank-note`）。已在 `/usr/bin/yank-note` 创建符号链接规避此问题。
+
+4. **deb 包依赖修正**：将依赖项由错误的 `libnss1` 修正为 `libnss3`，并确保 `chrome-sandbox` 设置 SUID 权限位（`4755`）以保证沙箱功能正常。
+
+### 安装方式
+
+```bash
+# 安装 deb 包
+sudo dpkg -i Yank-Note-linux-arm64-3.92.1.deb
+# 如遇依赖问题，执行
+sudo apt-get install -f
+```
+
+安装后可在应用菜单中找到 "Yank Note"，点击即可启动。如需命令行启动：
+
+```bash
+yank-note --ozone-platform=x11 --disable-gpu
+```
+
+> **说明**：AppImage 版本同样可用，但由于每次运行需手动添加启动参数，建议优先使用 deb 包安装以获得开箱即用的体验。
+
 ## 支持
 
 加我微信进交流群（备注 Yank Note）
 
-<img src="./help/qrcode-wechat.jpg" width="150">
+<img src="./help/wechat.jpg" width="150">

@@ -91,6 +91,37 @@ For more information on how to use the following functions, please see [characte
 
 [More release notes](https://github.com/purocean/yn/releases)
 
+## Kylin OS Adaptation Notes
+
+The following adaptations have been made for Kylin / UOS and other aarch64 (ARM64) domestic Linux operating systems:
+
+### Known Issues and Fixes
+
+1. **EFAULT error on file write**: On the aarch64 platform, `fs-extra`'s `ensureFile` triggers `EFAULT: bad address in system call argument, write`, preventing files from being created or saved. The file writing logic has been rewritten using Node.js native `fs.promises` API.
+
+2. **Wayland session compatibility**: Kylin desktop environment uses Wayland by default, but Electron's native Wayland backend has DRM/EGL initialization failures on this platform. The deb package's `.desktop` file adds launch flags `--ozone-platform=x11 --disable-gpu` to force the X11 backend (via XWayland) and disable GPU hardware acceleration.
+
+3. **Desktop icon fails to launch**: GLib/GIO's `GDesktopAppInfo` cannot parse `Exec` fields containing executable paths with spaces (e.g., `/opt/Yank Note/yank-note`). A symlink at `/usr/bin/yank-note` has been added to work around this.
+
+4. **deb dependency fix**: Corrected the dependency from the invalid `libnss1` to `libnss3`, and ensured `chrome-sandbox` has the SUID bit set (`4755`) for proper sandbox operation.
+
+### Installation
+
+```bash
+# Install the deb package
+sudo dpkg -i Yank-Note-linux-arm64-3.92.1.deb
+# Resolve dependency issues if any
+sudo apt-get install -f
+```
+
+After installation, "Yank Note" will appear in the application menu. To launch from the command line:
+
+```bash
+yank-note --ozone-platform=x11 --disable-gpu
+```
+
+> **Note**: The AppImage build is also functional, but since it requires manual launch flags each time, the deb package is recommended for an out-of-the-box experience.
+
 ## Supports
 
 Wechat Group

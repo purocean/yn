@@ -24,6 +24,88 @@ import type { UrlMode } from './url'
 
 app.commandLine.appendSwitch('enable-features', 'SharedArrayBuffer')
 
+const isMacos = os.platform() === 'darwin'
+const isLinux = os.platform() === 'linux'
+
+// Linux Wayland / input method support.
+//
+// On Linux Wayland sessions (e.g. 银河麒麟 V10 SP1 aarch64 + UKUI Wayland) two
+// problems must be solved:
+//
+// 1. GPU crash: Electron's Wayland (ozone) backend crashes with SIGSEGV during
+//    BrowserWindow creation on this environment (EGL/GBM/DRM errors). The only
+//    reliable fix is to force the X11 (XWayland) backend via the
+//    `--ozone-platform=x11` command-line flag.
+//
+// 2. Input method: fcitx4 does NOT support the Wayland text-input protocol. It
+//    only works through XIM / GTK / QT im-module on the X11 backend. So on a
+//    Wayland session we must run Electron on the X11 (XWayland) backend and use
+//    XIM, otherwise fcitx4 cannot attach to any window. fcitx5 supports the
+//    Wayland text-input protocol natively, but the GPU crash (problem 1) still
+//    forces us onto X11 on this environment.
+//
+// IMPORTANT: `app.commandLine.appendSwitch('ozone-platform', 'x11')` does NOT
+// work — Electron reads `ozone-platform` from process.argv during very early
+// initialization, before any JS runs. By the time appendSwitch is called the
+// Wayland backend is already chosen. So we must re-exec the process with the
+// flag as a real command-line argument. `app.relaunch()` is unreliable on some
+// Electron builds, so we use a manual child_process.spawn + app.exit(0).
+if (isLinux) {
+  const isWaylandSession = !!process.env.WAYLAND_DISPLAY
+  const currentOzone = app.commandLine.getSwitchValue('ozone-platform')
+
+  if (isWaylandSession && currentOzone !== 'x11') {
+    // We are on a Wayland session but not yet running on the X11 backend.
+    // Re-exec ourselves with --ozone-platform=x11 (and --disable-gpu to avoid
+    // EGL error spam / crashes on environments without a working GPU driver).
+    try {
+      const { spawn } = require('child_process') as typeof import('child_process')
+      const newArgs: string[] = []
+      for (const a of process.argv.slice(1)) {
+        if (a.startsWith('--ozone-platform')) continue
+        if (a.startsWith('--disable-gpu')) continue
+        newArgs.push(a)
+      }
+      newArgs.push('--ozone-platform=x11')
+      newArgs.push('--disable-gpu')
+
+      const child = spawn(process.execPath, newArgs, {
+        stdio: 'inherit',
+        detached: true,
+        env: { ...process.env },
+      })
+      child.on('error', (err) => {
+        console.error('Failed to re-exec with --ozone-platform=x11:', err)
+      })
+      child.unref()
+      // Exit the current (Wayland-backend) process; the spawned child continues
+      // on the X11 backend.
+      app.exit(0)
+    } catch (err) {
+      console.error('Linux Wayland re-exec failed:', err)
+    }
+  } else {
+    // Already on the X11 backend (either re-execed, or an X11 session).
+    // disable-gpu can be appended via JS (it is read later than ozone-platform).
+    if (isWaylandSession && !app.commandLine.hasSwitch('disable-gpu')) {
+      app.commandLine.appendSwitch('disable-gpu')
+    }
+
+    // Make sure XMODIFIERS is set for XIM (fcitx4 uses XIM on X11 backend).
+    if (!process.env.XMODIFIERS) {
+      process.env.XMODIFIERS = '@im=fcitx'
+    }
+
+    // Ensure input method environment variables are set (harmless defaults).
+    if (!process.env.GTK_IM_MODULE) {
+      process.env.GTK_IM_MODULE = 'fcitx'
+    }
+    if (!process.env.QT_IM_MODULE) {
+      process.env.QT_IM_MODULE = 'fcitx'
+    }
+  }
+}
+
 type WindowState = { maximized: boolean } & Rectangle
 
 initProxy()
@@ -31,9 +113,6 @@ initEnvs()
 
 const electronContextMenu = require('electron-context-menu')
 const electronRemote = require('@electron/remote/main')
-
-const isMacos = os.platform() === 'darwin'
-const isLinux = os.platform() === 'linux'
 
 let urlMode: UrlMode = 'scheme'
 let skipBeforeUnloadCheck = false
@@ -235,6 +314,7 @@ const createWindow = () => {
       webSecurity: false,
       nodeIntegration: true,
       contextIsolation: false,
+      enableBlinkFeatures: 'InputEventContext',
     },
     // for linux icon.
     ...(isLinux ? { icon: path.join(__dirname, './assets/icon.png') } : undefined)
@@ -378,21 +458,38 @@ const ensureDocumentSaved = () => {
 const reload = async () => {
   if (win) {
     skipBeforeUnloadCheck = true
-    await ensureDocumentSaved()
+    try {
+      await ensureDocumentSaved()
+    } catch (error) {
+      console.error('reload ensureDocumentSaved error:', error)
+    }
     win.loadURL(getUrl())
   }
 }
 
 const quit = async () => {
-  saveWindowBounds()
+  try {
+    saveWindowBounds()
+  } catch (error) {
+    console.error('saveWindowBounds error:', error)
+  }
 
   if (!win) {
     app.exit(0)
     return
   }
 
-  await ensureDocumentSaved()
-  await killPtyProcesses()
+  try {
+    await ensureDocumentSaved()
+  } catch (error) {
+    console.error('ensureDocumentSaved error:', error)
+  }
+
+  try {
+    await killPtyProcesses()
+  } catch (error) {
+    console.error('killPtyProcesses error:', error)
+  }
 
   win.destroy()
   app.quit()
@@ -406,7 +503,11 @@ const showSetting = (key?: string) => {
   showWindow()
   // delay to show setting panel to ensure window is ready.
   setTimeout(() => {
-    jsonRPCClient.call.ctx.setting.showSettingPanel(key)
+    try {
+      jsonRPCClient.call.ctx.setting.showSettingPanel(key)
+    } catch (error) {
+      console.error('showSetting error:', error)
+    }
   }, 200)
 }
 
@@ -416,7 +517,13 @@ const toggleFullscreen = () => {
 
 const serve = () => {
   try {
-    const { callback: handler, server } = httpServer(backendPort)
+    const result = httpServer(backendPort)
+    if (!result) {
+      console.error('httpServer returned no result')
+      return
+    }
+
+    const { callback: handler, server } = result
 
     if (server) {
       server.on('error', (e: Error) => {
@@ -438,25 +545,33 @@ const serve = () => {
           return
         }
 
-        throw e
+        console.error('server error:', e)
       })
     }
 
-    protocol.registerStreamProtocol('yank-note', async (request, callback) => {
-      // transform protocol data to koa request.
-      const { req, res, out } = await transformProtocolRequest(request)
-      ;(req as any)._protocol = true
+    if (handler) {
+      protocol.registerStreamProtocol('yank-note', async (request, callback) => {
+        try {
+          // transform protocol data to koa request.
+          const { req, res, out } = await transformProtocolRequest(request)
+          ;(req as any)._protocol = true
 
-      await handler(req, res)
-      // eslint-disable-next-line n/no-callback-literal
-      callback({
-        headers: res.getHeaders() as any,
-        statusCode: res.statusCode,
-        data: out,
+          await handler(req, res)
+          // eslint-disable-next-line n/no-callback-literal
+          callback({
+            headers: res.getHeaders() as any,
+            statusCode: res.statusCode,
+            data: out,
+          })
+        } catch (error) {
+          console.error('protocol handler error:', error)
+          callback({ statusCode: 500 })
+        }
       })
-    })
+    }
   } catch (error) {
-    app.exit(-1)
+    console.error('serve error:', error)
+    dialog.showErrorBox('Server Error', String(error))
   }
 }
 
@@ -490,19 +605,28 @@ function refreshMenus () {
 
 async function tryOpenFile (path: string) {
   console.log('tryOpenFile', path)
-  const stat = await fs.stat(path)
+  try {
+    const stat = await fs.stat(path)
 
-  if (stat.isFile()) {
-    jsonRPCClient.call.ctx.doc.switchDocByPath(path)
-    showWindow()
-  } else {
-    win && dialog.showMessageBox(win, { message: 'Yank Note only support open file.' })
+    if (stat.isFile()) {
+      jsonRPCClient.call.ctx.doc.switchDocByPath(path)
+      showWindow()
+    } else {
+      win && dialog.showMessageBox(win, { message: 'Yank Note only support open file.' })
+    }
+  } catch (error) {
+    console.error('tryOpenFile error:', error)
+    win && dialog.showMessageBox(win, { message: 'Failed to open file: ' + String(error) })
   }
 }
 
 async function tryHandleDeepLink (url: string) {
   if (url) {
-    jsonRPCClient.call.ctx.base.triggerDeepLinkOpen(url)
+    try {
+      jsonRPCClient.call.ctx.base.triggerDeepLinkOpen(url)
+    } catch (error) {
+      console.error('tryHandleDeepLink error:', error)
+    }
   }
 }
 
@@ -570,15 +694,33 @@ if (!gotTheLock) {
   })
 
   app.on('ready', () => {
-    startup()
-    serve()
-    showWindow()
+    try {
+      startup()
+    } catch (error) {
+      console.error('startup error:', error)
+    }
+
+    try {
+      serve()
+    } catch (error) {
+      console.error('serve error:', error)
+    }
+
+    try {
+      showWindow()
+    } catch (error) {
+      console.error('showWindow error:', error)
+    }
 
     // getLocale returns empty string before ready. so refresh menus after ready.
     refreshMenus()
 
     if (trayEnabled) {
-      showTray()
+      try {
+        showTray()
+      } catch (error) {
+        console.error('showTray error:', error)
+      }
     }
 
     registerShortcut({
