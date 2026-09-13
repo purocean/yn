@@ -438,6 +438,7 @@ const data = {
         'md-html': 'Enable HTML',
         'md-breaks': 'Convert \\n to &lt;br&gt;',
         'md-linkify': 'Auto convert URL-like text to links',
+        'heading-number': 'Enable heading numbers in preview and export',
         'md-wiki-links': 'Enable Wiki Links - [[link]]',
         'md-hash-tags': 'Enable Hash Tags - #tag',
         'md-typographer': 'Enable some language-neutral replacement + quotes beautification',

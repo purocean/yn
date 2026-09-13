@@ -419,6 +419,14 @@ const schema: SettingSchema = ({
       group: 'render',
       required: true,
     },
+    'render.heading-number': {
+      defaultValue: false,
+      title: 'T_setting-panel.schema.render.heading-number',
+      type: 'boolean',
+      format: 'checkbox',
+      group: 'render',
+      required: true,
+    },
     'render.text-autospace': {
       defaultValue: false,
       title: 'T_setting-panel.schema.render.text-autospace',

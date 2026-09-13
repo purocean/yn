@@ -429,6 +429,7 @@ const data: BaseLanguage = {
         'md-html': '啟用 HTML',
         'md-breaks': '將 \\n 轉換為 &lt;br&gt;',
         'md-linkify': '自動將類似 URL 的文字轉換為連結',
+        'heading-number': '啟用標題編號',
         'md-wiki-links': '啟用 Wiki 連結 - [[link]]',
         'md-hash-tags': '啟用哈希標籤 - #tag',
         'md-typographer': '啟用排版美化，如 (c) -> ©',

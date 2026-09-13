@@ -449,6 +449,7 @@ export interface BuildInSettings {
   'render.md-sub': boolean,
   'render.md-sup': boolean,
   'render.md-cj-friendly': boolean,
+  'render.heading-number': boolean,
   'render.multimd-multiline': boolean,
   'render.multimd-rowspan': boolean,
   'render.multimd-headerless': boolean,
