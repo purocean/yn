@@ -252,7 +252,7 @@ describe('DefaultEditor', () => {
 
     mocks.storeState.currentFile = { ...mocks.storeState.currentFile, content: 'changed', writeable: false }
     await nextTick()
-    expect(mocks.setValue).toHaveBeenCalledWith('changed')
+    expect(mocks.setValue).toHaveBeenCalledWith('changed', { ignoreReadOnly: true })
     expect(mocks.editor.updateOptions).toHaveBeenCalledWith({ readOnly: true })
 
     mocks.hooks.get('GLOBAL_RESIZE')?.()

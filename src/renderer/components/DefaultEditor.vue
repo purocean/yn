@@ -103,7 +103,7 @@ export default defineComponent({
       // change content only
       if (current && previous && isSameFile(current, previous)) {
         editor.updateOptions({ readOnly })
-        setValue(current.content ?? '\n')
+        setValue(current.content ?? '\n', { ignoreReadOnly: true })
       } else {
         getMonacoEditor().createModel(toUri(current), current?.content ?? '\n')
       }

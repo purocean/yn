@@ -351,7 +351,7 @@ export function getValue () {
  * Set text value to editor
  * @param text
  */
-export function setValue (text: string) {
+export function setValue (text: string, opts?: { ignoreReadOnly?: boolean }) {
   const model = editor.getModel()
 
   if (!model) {
@@ -360,13 +360,27 @@ export function setValue (text: string) {
 
   const viewState = editor.saveViewState()
 
-  editor.executeEdits('', [
-    {
-      range: model.getFullModelRange(),
-      text,
-      forceMoveMarkers: true
-    }
-  ])
+  if (opts?.ignoreReadOnly) {
+    model.pushEditOperations(
+      null,
+      [
+        {
+          range: model.getFullModelRange(),
+          text,
+          forceMoveMarkers: true
+        }
+      ],
+      () => null
+    )
+  } else {
+    editor.executeEdits('', [
+      {
+        range: model.getFullModelRange(),
+        text,
+        forceMoveMarkers: true
+      }
+    ])
+  }
   editor.pushUndoStop()
 
   editor.restoreViewState(viewState)

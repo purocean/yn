@@ -161,6 +161,7 @@ const makeModel = () => ({
   getValue: vi.fn(() => 'foo foo'),
   getFullModelRange: vi.fn(() => new Range(1, 1, 2, 4)),
   getLineCount: vi.fn(() => 2),
+  pushEditOperations: vi.fn(),
 })
 
 const makeEditor = () => ({
@@ -329,6 +330,25 @@ test('sets and replaces editor value while preserving view state', () => {
   expect(editor.restoreViewState).toHaveBeenCalledWith({ top: 1 })
   expect(editor.executeEdits).toHaveBeenCalledWith('', [expect.objectContaining({ text: 'updated' })])
   expect(editor.executeEdits).toHaveBeenLastCalledWith('', [expect.objectContaining({ text: 'bar foo' })])
+})
+
+test('can set value with ignoreReadOnly option', () => {
+  const editor = makeEditor()
+  const model = editor.getModel()
+  editor.getModel.mockReturnValue(model)
+  fireHook('MONACO_READY', {
+    monaco: makeMonaco(),
+    editor,
+  })
+
+  setValue('updated', { ignoreReadOnly: true })
+
+  expect(model.pushEditOperations).toHaveBeenCalledWith(
+    null,
+    [expect.objectContaining({ text: 'updated' })],
+    expect.any(Function)
+  )
+  expect(editor.executeEdits).not.toHaveBeenCalled()
 })
 
 test('reports selection info and keybinding labels', () => {
