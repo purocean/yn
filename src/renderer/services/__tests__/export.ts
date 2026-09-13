@@ -239,6 +239,7 @@ test('prints pdf in electron window and destroys temporary browser window', asyn
 
   const promise = printCurrentDocumentToPDF({ landscape: true } as any, { hidden: true })
   await vi.waitFor(() => expect(mocks.openWindow).toHaveBeenCalled())
+  expect(mocks.openWindow.mock.calls[0][2]).toMatchObject({ webSecurity: false })
   expect(loadHandler).toEqual(expect.any(Function))
   await loadHandler()
 

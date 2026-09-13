@@ -462,6 +462,7 @@ export async function printCurrentDocumentToPDF (opts?: PrintOpts, runtimeOption
     closable: false,
     modal: true,
     alwaysOnTop: false,
+    webSecurity: false,
   })
 
   if (!win) {
