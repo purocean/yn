@@ -73,6 +73,12 @@ For more information on how to use the following functions, please see [characte
 ![Screenshot](./help/3.png)
 ![Screenshot](./help/4.png)
 ![Screenshot](./help/5.png)
+<img width="2384" height="1330" alt="image" src="https://github.com/user-attachments/assets/dc69f40c-6385-4bba-82ef-ea248b363b5b" />
+<img width="2418" height="1518" alt="image" src="https://github.com/user-attachments/assets/9bad4e89-aa50-4226-85e4-6ee1318630da" />
+<img width="2564" height="1424" alt="image" src="https://github.com/user-attachments/assets/0cb64d76-5e4e-429a-8f2a-8961d1f144be" />
+
+
+
 
 ## Changelogs
 
