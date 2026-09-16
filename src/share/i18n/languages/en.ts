@@ -470,6 +470,10 @@ const data = {
         'image-name-desc': 'Pasted image filename template without extension: {time:FORMAT}, {hash:N}.',
       },
       'shell': 'Shell',
+      'terminal': {
+        'font-size': 'Terminal Font Size',
+        'font-family': 'Terminal Font Family',
+      },
       'envs': 'Environments',
       'auto-save': 'Auto Save',
       'plantuml-api': 'PlantUML Endpoint',

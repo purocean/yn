@@ -461,6 +461,10 @@ const data: BaseLanguage = {
         'image-name-desc': '粘贴图片的文件名模版（不含扩展名）：{time:FORMAT}、{hash:N}',
       },
       'shell': 'Shell',
+      'terminal': {
+        'font-size': '终端字体大小',
+        'font-family': '终端字体',
+      },
       'envs': '环境变量',
       'auto-save': '自动保存',
       'plantuml-api': 'PlantUML 端点',

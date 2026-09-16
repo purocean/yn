@@ -471,6 +471,10 @@ const data: BaseLanguage = {
         'image-name-desc': 'Шаблон имени вставляемого изображения без расширения: {time:FORMAT}, {hash:N}.',
       },
       'shell': 'Оболочка',
+      'terminal': {
+        'font-size': 'Размер шрифта терминала',
+        'font-family': 'Шрифт терминала',
+      },
       'envs': 'Окружение',
       'auto-save': 'Автосохранение',
       'plantuml-api': 'PlantUML точка',

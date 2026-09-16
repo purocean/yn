@@ -14,6 +14,7 @@ import { getLogger } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { getColorScheme } from '@fe/services/theme'
+import { getSetting } from '@fe/services/setting'
 import { isWindows, openWindow } from '@fe/support/env'
 import { t } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
@@ -66,6 +67,32 @@ export default defineComponent({
       xterm?.focus()
     }
 
+    function getTerminalOptions () {
+      const fontFamily = getSetting('terminal.font-family', '').trim()
+
+      return {
+        fontSize: getSetting('terminal.font-size', 16),
+        fontFamily: fontFamily || undefined,
+      }
+    }
+
+    function applyTerminalOptions () {
+      if (!xterm) {
+        return
+      }
+
+      const options = getTerminalOptions()
+      xterm.options.fontSize = options.fontSize
+      xterm.options.fontFamily = options.fontFamily
+      fitXterm()
+    }
+
+    function onSettingChanged ({ changedKeys }: { changedKeys: string[] }) {
+      if (changedKeys.includes('terminal.font-size') || changedKeys.includes('terminal.font-family')) {
+        applyTerminalOptions()
+      }
+    }
+
     function init (opts?: Components.XTerm.InitOpts) {
       if (FLAG_DISABLE_XTERM) {
         logger.warn('xterm disabled')
@@ -76,10 +103,9 @@ export default defineComponent({
         xterm = new Terminal({
           cols: 80,
           rows: 24,
-          fontSize: 16,
           cursorStyle: 'underline',
-          // fontFamily: 'Consolas',
           fontWeightBold: '500',
+          ...getTerminalOptions(),
           ...opts
         })
 
@@ -98,6 +124,7 @@ export default defineComponent({
         xterm.open(domRef.value!)
         fitAddon.fit()
         registerHook('THEME_CHANGE', changeTheme)
+        registerHook('SETTING_CHANGED', onSettingChanged)
 
         resizeObserver = new ResizeObserver((entires) => {
           const entry = entires[0]
@@ -173,6 +200,7 @@ export default defineComponent({
       webLinksAddon = null
 
       removeHook('THEME_CHANGE', changeTheme)
+      removeHook('SETTING_CHANGED', onSettingChanged)
     }
 
     onBeforeUnmount(() => {
