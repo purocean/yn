@@ -792,6 +792,7 @@ const data = {
     'editor': 'Editor',
     'application': 'Application',
     'keyboard-shortcuts': 'Keyboard Shortcuts',
+    'non-us-layout': 'Non-US keyboard layout (Beta)',
     'unavailable': 'Unavailable',
     'command': 'Command',
     'keybinding': 'Keybinding',

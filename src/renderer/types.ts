@@ -98,6 +98,9 @@ export interface Action<T extends string = string> {
    */
   keys?: null | (string | number)[]
 
+  /** Custom binding metadata; null marks a legacy custom shortcut. */
+  binding?: string | null
+
   /**
    * Handler
    */
@@ -341,7 +344,7 @@ export type LanguageName = 'system' | Language
 export type ExportType = 'print' | 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'macros' | 'render'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
-export type Keybinding = { type: 'workbench' | 'editor' | 'application', keys: string | null, command: string }
+export type Keybinding = { type: 'workbench' | 'editor' | 'application', keys: string | null, binding?: string | null, command: string }
 
 export type PrintOpts = PrintToPDFOptions
 
@@ -478,6 +481,7 @@ export interface BuildInSettings {
   'proxy.bypass-list': string,
   'extension.registry': RegistryHostname,
   'extension.auto-upgrade': boolean,
+  'keybindings.non-us-layout': boolean,
   'keep-running-after-closing-window': boolean,
   'hide-main-window-on-startup': boolean,
   'plantuml-api': string,

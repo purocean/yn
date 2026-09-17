@@ -3,6 +3,8 @@ import type { Plugin } from '@fe/context'
 import type * as Monaco from 'monaco-editor'
 import { getLogger } from '@fe/utils'
 import { isMacOS } from '@fe/support/env'
+import { getEffectiveKeybinding } from '@share/keybinding'
+import { getNonUsEditorKeys } from '@share/non-us-keybinding'
 
 const logger = getLogger('plugin:custom-keybindings')
 
@@ -213,6 +215,7 @@ export default {
         disposable = null
 
         const keybindings = ctx.setting.getSetting('keybindings', []).filter(x => x.type === 'editor')
+        const nonUsLayout = ctx.setting.getSetting('keybindings.non-us-layout', false)
         const newKeybindings: Parameters<typeof monaco.editor.addKeybindingRules>[0] = []
 
         for (const keybinding of keybindings) {
@@ -227,10 +230,11 @@ export default {
             newKeybindings.push({ keybinding: originMonacoKeys, command: `-${keybinding.command}`, when })
           }
 
-          const monacoKeys = resolveKeys(monaco, keybinding.keys)
+          const keys = nonUsLayout ? getNonUsEditorKeys(keybinding.keys, keybinding.binding) : keybinding.keys
+          const monacoKeys = resolveKeys(monaco, keys)
 
           if (!monacoKeys && keybinding.keys) {
-            logger.warn('updateEditorKeybindings', `invalid keybinding ${keybinding.keys} for command ${keybinding.command}`)
+            logger.warn('updateEditorKeybindings', `invalid keybinding ${keys} for command ${keybinding.command}`)
           }
 
           if (monacoKeys) {
@@ -257,12 +261,18 @@ export default {
       )
 
       if (keybindings[action.name]) {
-        action.keys = keybindings[action.name].keys?.split('+') || []
+        const custom = keybindings[action.name]
+        const nonUsLayout = ctx.setting.getSetting('keybindings.non-us-layout', false)
+        const keys = nonUsLayout ? getEffectiveKeybinding(custom.keys, custom.binding) : custom.keys
+        action.keys = keys?.split('+') || []
+        if (nonUsLayout) {
+          action.binding = custom.binding || null
+        }
       }
     })
 
     ctx.registerHook('SETTING_CHANGED', ({ changedKeys }) => {
-      if (changedKeys.includes('keybindings')) {
+      if (changedKeys.includes('keybindings') || changedKeys.includes('keybindings.non-us-layout')) {
         ctx.triggerHook('COMMAND_KEYBINDING_CHANGED')
         updateEditorKeybindings()
       }

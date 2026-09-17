@@ -793,6 +793,7 @@ const data: BaseLanguage = {
     'editor': '编辑器',
     'application': '应用',
     'keyboard-shortcuts': '键盘快捷键',
+    'non-us-layout': '非 US 键盘布局（Beta）',
     'unavailable': '不可用',
     'command': '命令',
     'keybinding': '快捷键',

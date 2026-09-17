@@ -793,6 +793,7 @@ const data: BaseLanguage = {
     'editor': 'Редактор',
     'application': 'Приложение',
     'keyboard-shortcuts': 'Сочетания клавиш',
+    'non-us-layout': 'Неамериканская раскладка клавиатуры (Beta)',
     'unavailable': 'Недоступно',
     'command': 'Команда',
     'keybinding': 'Привязка клавиш',
