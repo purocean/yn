@@ -461,6 +461,10 @@ const data: BaseLanguage = {
         'image-name-desc': '貼上圖片的檔案名稱模版（不含副檔名）：{time:FORMAT}、{hash:N}',
       },
       'shell': 'Shell',
+      'terminal': {
+        'font-size': '終端字體大小',
+        'font-family': '終端字體',
+      },
       'envs': '環境變數',
       'auto-save': '自動儲存',
       'plantuml-api': 'PlantUML 端點',

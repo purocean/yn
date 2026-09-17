@@ -419,6 +419,8 @@ export interface BuildInSettings {
   'assets.image-name': string,
   'shell': string,
   'envs': string,
+  'terminal.font-size': number,
+  'terminal.font-family': string,
   'editor.mouse-wheel-zoom': boolean,
   'editor.font-size': number,
   'editor.font-ligatures': boolean,

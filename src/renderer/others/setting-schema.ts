@@ -491,6 +491,24 @@ const schema: SettingSchema = ({
       type: 'string',
       group: 'other',
     },
+    'terminal.font-size': {
+      defaultValue: 16,
+      title: 'T_setting-panel.schema.terminal.font-size',
+      type: 'number',
+      format: 'range',
+      minimum: 8,
+      maximum: 40,
+      group: 'other',
+    },
+    'terminal.font-family': {
+      defaultValue: '',
+      title: 'T_setting-panel.schema.terminal.font-family',
+      type: 'string',
+      group: 'other',
+      options: {
+        inputAttributes: { placeholder: 'e.g., \'Courier New\', monospace' }
+      },
+    },
     'server.host': {
       defaultValue: '127.0.0.1',
       title: 'T_setting-panel.schema.server.host',
@@ -606,6 +624,8 @@ if (isWindows || FLAG_DISABLE_XTERM) {
 
 if (FLAG_DISABLE_XTERM) {
   delete (schema.properties as any).shell
+  delete (schema.properties as any)['terminal.font-size']
+  delete (schema.properties as any)['terminal.font-family']
   delete (schema.properties as any)['server.host']
   delete (schema.properties as any)['server.port']
   delete (schema.properties as any)['updater.source']
