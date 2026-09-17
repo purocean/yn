@@ -490,7 +490,10 @@ body.find-in-preview-highlight ::selection {
     }
 
     code {
-      background: rgba(var(--g-color-80-rgb), 0.9);
+      background: light-dark(
+        rgba(var(--g-color-80-rgb), 0.4),
+        rgba(var(--g-color-50-rgb), 0.4)
+      );
     }
 
     pre {
