@@ -96,14 +96,21 @@ vi.mock('@fe/utils', () => ({
 }))
 
 import MarkdownIt from 'markdown-it'
+import MarkdownItAttributes from 'markdown-it-attributes'
+import MarkdownItMultimdTable from 'markdown-it-multimd-table'
 import { h } from 'vue'
+import markdownContainer from '../markdown-container'
+import markdownRenderVNode from '../markdown-render-vnode'
 import markdownTable from '../markdown-table'
 
 function createCtx (md: MarkdownIt) {
+  const completionItems: any[] = []
   return {
     args: { FLAG_READONLY: false },
     editor: {
       getLineContent: vi.fn((line: number) => mocks.lines.get(line) || ''),
+      tapSimpleCompletionItems: vi.fn((fn: Function) => fn(completionItems)),
+      tapMarkdownMonarchLanguage: vi.fn((fn: any) => fn({ tokenizer: { root: [] } })),
     },
     i18n: { t: vi.fn((key: string) => key) },
     lib: { vue: { h } },
@@ -120,6 +127,7 @@ function createCtx (md: MarkdownIt) {
       getViewDom: vi.fn(() => document.createElement('div')),
       tapContextMenus: vi.fn(),
     },
+    completionItems,
   } as any
 }
 
@@ -231,6 +239,33 @@ describe('markdown-table plugin', () => {
     expect(tableResult.node.children).toBe('<table>\n')
     expect(thHtml).toBe('<th class="yn-table-cell">')
     expect(tdHtml).toBe('<td class="yn-table-cell">')
+  })
+
+  test('preserves trailing compact-table attrs for tables inside containers', () => {
+    const md = new MarkdownIt({ html: true })
+    const ctx = createCtx(md)
+    md.use(MarkdownItAttributes)
+    md.use(MarkdownItMultimdTable, {
+      multiline: true,
+      rowspan: false,
+      headerless: false,
+      multibody: false,
+    })
+    markdownRenderVNode.register(ctx)
+    markdownTable.register(ctx)
+    markdownContainer.register(ctx)
+
+    const source = '::: tip\n| A | B |\n| - | - |\n| 1 | 2 |\n{.small}\n:::'
+    const tokens = md.parse(source, {})
+    const nodes = md.renderer.render(tokens, md.options, {}) as any[]
+    const tableOpenIndex = tokens.findIndex(token => token.type === 'table_open')
+    const tableWrapper = nodes[0].children.find((child: any) => child.props?.class === 'table-wrapper')
+    const tableNode = Array.isArray(tableWrapper.children) ? tableWrapper.children[0] : tableWrapper.children
+
+    expect(tokens[tableOpenIndex].attrs).toContainEqual(['class', 'small'])
+    expect(tokens.some(token => token.type === 'inline' && token.content === '{.small}')).toBe(false)
+    expect(tableNode.type).toBe('table')
+    expect(tableNode.props.class).toContain('small')
   })
 
   test('context menu alignment rewrites the selected table column alignment row', () => {
