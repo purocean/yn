@@ -125,10 +125,11 @@ describe('FileTabs', () => {
     await nextTick()
 
     mocks.storeGetters.isSaved.value = false
-    mocks.storeState.currentFile = { ...docA, status: 'loaded' }
+    mocks.storeState.currentFile = { ...docA, status: 'loaded', encrypted: true }
     await nextTick()
     expect((wrapper.vm as any).fileTabs[0].label).toBe('*a.md')
     expect((wrapper.vm as any).fileTabs[0].temporary).toBe(false)
+    expect((wrapper.vm as any).fileTabs[0].class).toContain('status-warning')
 
     await mocks.hooks.get('DOC_CREATED')?.({ doc: docB })
     expect(mocks.switchDoc).toHaveBeenCalledWith(docB)
@@ -147,7 +148,6 @@ describe('FileTabs', () => {
 
     mocks.actions.get('file-tabs.refresh-action-btns')?.()
     expect((wrapper.vm as any).actionBtns[0].icon).toBe('plus-regular')
-
     await wrapper.findComponent({ name: 'Tabs' }).vm.$emit('dblclick-blank')
     expect(mocks.switchDoc).toHaveBeenCalledWith(null)
   })
@@ -164,6 +164,7 @@ describe('FileTabs', () => {
     mocks.storeState.currentFile = { ...docA, status: 'save-failed' }
     await nextTick()
     expect((wrapper.vm as any).fileTabs[0].label).toBe('!a.md')
+    expect((wrapper.vm as any).fileTabs[0].class).toContain('status-warning')
 
     mocks.storeState.currentFile = { ...docA, status: 'loading' }
     await nextTick()

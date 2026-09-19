@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
 .control-center {
   position: fixed;
   right: 14px;
-  top: 36px;
+  top: calc(var(--g-workbench-content-top, 30px) + 6px);
   outline: none;
   background: var(--g-color-backdrop);
   backdrop-filter: var(--g-backdrop-filter);
@@ -145,6 +145,6 @@ onBeforeUnmount(() => {
 }
 
 :root[electron="true"] .control-center {
-  top: 66px;
+  top: calc(var(--g-workbench-content-top, 60px) + 6px);
 }
 </style>

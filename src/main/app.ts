@@ -227,9 +227,14 @@ const createWindow = () => {
     show: false,
     minWidth: 940,
     minHeight: 500,
-    frame: false,
     backgroundColor: '#282a2b',
-    titleBarStyle: isMacos ? 'hidden' : undefined,
+    titleBarStyle: 'hidden',
+    ...(isMacos ? { titleBarOverlay: true } : {
+      titleBarOverlay: {
+        color: '#00000000',
+        height: 30,
+      }
+    }),
     fullscreenable: true,
     webPreferences: {
       webSecurity: false,

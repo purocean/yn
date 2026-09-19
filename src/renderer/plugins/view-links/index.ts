@@ -10,7 +10,7 @@ export default {
     function showLinks () {
       ctx.ui.useFixedFloat().show({
         right: '20px',
-        top: ctx.env.isElectron ? '66px' : '36px',
+        top: `calc(var(--g-workbench-content-top, ${ctx.env.isElectron ? '60px' : '30px'}) + 6px)`,
         component: ViewLinksComponent,
         closeOnBlur: false,
         closeBtn: true,

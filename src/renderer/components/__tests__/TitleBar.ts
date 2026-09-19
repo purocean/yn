@@ -1,48 +1,31 @@
-import { reactive, ref, nextTick } from 'vue'
-import { flushPromises, mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
+import { shallowMount } from '@vue/test-utils'
 
 const mocks = vi.hoisted(() => ({
-  storeState: undefined as any,
-  isSaved: undefined as any,
-  win: undefined as any,
-  listeners: new Map<string, Function>(),
-  isEncrypted: vi.fn(),
-  isOutOfRepo: vi.fn(),
-}))
-
-vi.mock('@fe/support/store', async () => {
-  const { ref } = await import('vue')
-  mocks.isSaved = ref(false)
-  return {
-    default: {
-      get state () { return mocks.storeState },
-      getters: {
-        get isSaved () { return mocks.isSaved },
-      },
+  actions: new Map<string, Function>(),
+  hooks: new Map<string, Function>(),
+  navClick: vi.fn(),
+  schema: {
+    navigation: {
+      items: [] as any[],
     },
-  }
-})
-
-vi.mock('@fe/support/args', () => ({
-  HELP_REPO_NAME: 'help',
+  },
 }))
 
-vi.mock('@fe/support/env', () => ({
-  isElectron: true,
-  isMacOS: true,
-  nodeRequire: true,
-  getElectronRemote: () => ({
-    getCurrentWindow: () => mocks.win,
-  }),
+vi.mock('@fe/core/action', () => ({
+  registerAction: (action: any) => mocks.actions.set(action.name, action.handler),
+  removeAction: (name: string) => mocks.actions.delete(name),
 }))
 
-vi.mock('@fe/services/document', () => ({
-  isEncrypted: mocks.isEncrypted,
-  isOutOfRepo: mocks.isOutOfRepo,
+vi.mock('@fe/core/hook', () => ({
+  registerHook: (name: string, handler: Function) => mocks.hooks.set(name, handler),
+  removeHook: (name: string) => mocks.hooks.delete(name),
 }))
 
-vi.mock('@fe/services/i18n', () => ({
-  useI18n: () => ({ t: (key: string) => key }),
+vi.mock('@fe/services/workbench', () => ({
+  ControlCenter: {
+    getSchema: () => mocks.schema,
+  },
 }))
 
 vi.mock('../SvgIcon.vue', () => ({
@@ -50,86 +33,55 @@ vi.mock('../SvgIcon.vue', () => ({
 }))
 
 import TitleBar from '../TitleBar.vue'
+import { setTitleBarTabsLeft, titleBarTabsContainer } from '@fe/support/title-bar'
 
 beforeEach(() => {
-  mocks.storeState = reactive({
-    currentFile: { repo: 'repo', path: '/docs/a.md', name: 'a.md', status: 'saved' },
-    isFullscreen: false,
-  })
-  mocks.isSaved = ref(false)
-  mocks.listeners.clear()
-  mocks.win = {
-    isMaximized: vi.fn(() => false),
-    isAlwaysOnTop: vi.fn(() => false),
-    isFocused: vi.fn(() => true),
-    setAlwaysOnTop: vi.fn(),
-    unmaximize: vi.fn(),
-    minimize: vi.fn(),
-    maximize: vi.fn(),
-    setDocumentEdited: vi.fn(),
-    close: vi.fn(),
-    on: vi.fn((name: string, handler: Function) => mocks.listeners.set(name, handler)),
-    removeListener: vi.fn((name: string) => mocks.listeners.delete(name)),
-  }
-  mocks.isEncrypted.mockReset()
-  mocks.isEncrypted.mockReturnValue(false)
-  mocks.isOutOfRepo.mockReset()
-  mocks.isOutOfRepo.mockReturnValue(false)
+  mocks.actions.clear()
+  mocks.hooks.clear()
+  mocks.navClick.mockReset()
+  mocks.schema.navigation.items = [
+    { type: 'btn', showInActionBar: true, icon: 'arrow-left-solid', title: 'Back', onClick: mocks.navClick },
+    { type: 'btn', showInActionBar: false, icon: 'sync-alt-solid', title: 'Refresh', onClick: vi.fn() },
+    { type: 'custom', component: {}, showInActionBar: true },
+  ]
+  titleBarTabsContainer.value = null
+  setTitleBarTabsLeft(260)
 })
 
 describe('TitleBar', () => {
-  test('tracks electron window state and invokes window controls', async () => {
-    const wrapper = mount(TitleBar, {
-      global: { mocks: { $t: (key: string) => key } },
-    })
-    await flushPromises()
+  test('hosts file tabs and renders refreshed navigation actions', async () => {
+    const wrapper = shallowMount(TitleBar)
     await nextTick()
 
-    expect(wrapper.find('.action').exists()).toBe(true)
-    expect(wrapper.text()).toContain('[repo] */docs/a.md-file-status.unsaved')
-    expect(document.title).toBe('a.md')
-    expect(window.documentSaved).toBe(false)
+    expect(titleBarTabsContainer.value).toBe(wrapper.find('.tabs-container').element)
+    expect(wrapper.find('.tabs-container').attributes('style')).toContain('--tabs-left: 260px')
+    expect(wrapper.find('.title-bar').attributes('style')).toContain('--navigation-safe-width: 51px')
+    expect(mocks.actions.has('action-bar.refresh')).toBe(true)
+    expect(mocks.hooks.has('COMMAND_KEYBINDING_CHANGED')).toBe(true)
+    expect(wrapper.findAll('.btn')).toHaveLength(1)
 
-    mocks.isSaved.value = true
+    mocks.schema.navigation = {
+      items: [
+        ...mocks.schema.navigation.items,
+        { type: 'btn', showInActionBar: true, icon: 'arrow-right-solid', title: 'Forward', onClick: vi.fn() },
+      ],
+    }
+    mocks.actions.get('action-bar.refresh')?.()
     await nextTick()
-    expect(window.documentSaved).toBe(true)
-    expect(mocks.win.setDocumentEdited).toHaveBeenCalledWith(false)
 
-    await wrapper.find('.pin').trigger('click')
-    expect(mocks.win.setAlwaysOnTop).toHaveBeenCalledWith(true)
+    const buttons = wrapper.findAll('.btn')
+    expect(buttons).toHaveLength(2)
+    expect(buttons[0].attributes('title')).toBe('Back')
+    expect(wrapper.find('.title-bar').attributes('style')).toContain('--navigation-safe-width: 75px')
+    await buttons[0].trigger('click')
+    expect(mocks.navClick).toHaveBeenCalled()
 
-    await wrapper.find('.maximize').trigger('click')
-    expect(mocks.win.maximize).toHaveBeenCalled()
-    expect(mocks.win.setAlwaysOnTop).toHaveBeenCalledWith(false)
-
-    await wrapper.find('.minimize').trigger('click')
-    expect(mocks.win.minimize).toHaveBeenCalled()
-
-    await wrapper.find('.btn-close').trigger('click')
-    expect(mocks.win.close).toHaveBeenCalled()
-  })
-
-  test('updates styles for failed or encrypted unsaved files and cleans listeners', async () => {
-    const wrapper = mount(TitleBar, {
-      global: { mocks: { $t: (key: string) => key } },
-    })
-    await flushPromises()
-
-    mocks.storeState.currentFile = { repo: 'repo', path: '/docs/a.md', name: 'a.md', status: 'save-failed' }
-    await nextTick()
-    expect((wrapper.vm as any).titleBarStyles).toEqual({ background: '#ff9800ad' })
-
-    mocks.storeState.currentFile = { repo: 'help', name: 'Help.md', status: 'loaded' }
-    await nextTick()
-    expect(wrapper.text()).toContain('Help.md')
-
-    mocks.listeners.get('enter-full-screen')?.()
-    expect(mocks.storeState.isFullscreen).toBe(true)
-    mocks.listeners.get('leave-full-screen')?.()
-    expect(mocks.storeState.isFullscreen).toBe(false)
+    setTitleBarTabsLeft(480)
+    expect(wrapper.find('.tabs-container').attributes('style')).toContain('--tabs-left: 480px')
 
     wrapper.unmount()
-    expect(mocks.win.removeListener).toHaveBeenCalledWith('maximize', expect.any(Function))
-    expect(mocks.win.removeListener).toHaveBeenCalledWith('leave-full-screen', expect.any(Function))
+    expect(titleBarTabsContainer.value).toBeNull()
+    expect(mocks.actions.has('action-bar.refresh')).toBe(false)
+    expect(mocks.hooks.has('COMMAND_KEYBINDING_CHANGED')).toBe(false)
   })
 })

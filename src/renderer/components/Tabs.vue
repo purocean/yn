@@ -294,7 +294,7 @@ export default defineComponent({
     flex: none;
     width: 22px;
     height: 22px;
-    margin: 0 3px;
+    margin: 0 2px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -322,6 +322,8 @@ export default defineComponent({
   overflow-x: hidden;
   overflow-y: hidden;
   order: -1024;
+  -webkit-app-region: drag;
+  app-region: drag;
 
   &::before,
   &::after {
@@ -383,6 +385,8 @@ export default defineComponent({
   font-size: 12px;
   overflow: hidden;
   background: var(--g-color-87);
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
 
 .label {
@@ -435,7 +439,7 @@ export default defineComponent({
   width: 1px;
   height: 14px;
   background: var(--g-color-70);
-  margin: 0 3px;
+  margin: 0 2px;
   flex: none;
 
   &:first-child,

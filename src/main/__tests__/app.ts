@@ -430,13 +430,18 @@ describe('main app entry', () => {
       show: false,
       minWidth: 940,
       minHeight: 500,
-      frame: false,
+      titleBarStyle: 'hidden',
+      titleBarOverlay: {
+        color: '#00000000',
+        height: 30,
+      },
       webPreferences: {
         webSecurity: false,
         nodeIntegration: true,
         contextIsolation: false,
       },
     })
+    expect(win.options.frame).toBeUndefined()
     expect(win.options.icon).toContain('/assets/icon.png')
     expect(win.setMenu).toHaveBeenCalledWith(null)
     expect(win.loadURL).toHaveBeenCalledWith('url:scheme:4555:8066')
@@ -455,6 +460,17 @@ describe('main app entry', () => {
     const preventNavigate = { preventDefault: vi.fn() }
     win.webContents.events['will-navigate'](preventNavigate)
     expect(preventNavigate.preventDefault).toHaveBeenCalled()
+  })
+
+  test('enables the native title bar safe area on macOS', async () => {
+    mocks.platform = 'darwin'
+    await loadApp()
+    mocks.appEvents.ready()
+
+    expect(mocks.browserWindowInstances[0].options).toMatchObject({
+      titleBarStyle: 'hidden',
+      titleBarOverlay: true,
+    })
   })
 
   test('restores, saves, hides, reloads, and quits through registered window actions', async () => {

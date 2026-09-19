@@ -63,6 +63,31 @@ beforeEach(() => {
 })
 
 describe('Layout', () => {
+  test('publishes actual content top for floating panels and cleans it up', () => {
+    let onResize = () => {}
+    const disconnect = vi.fn()
+    vi.stubGlobal('ResizeObserver', class {
+      constructor (callback: () => void) { onResize = callback }
+      observe () {}
+      disconnect = disconnect
+    })
+
+    const wrapper = mount(Layout)
+    const content = wrapper.find('.content').element
+    const rect = vi.spyOn(content, 'getBoundingClientRect')
+    const style = document.documentElement.style
+    for (const top of [60, 30, 0]) {
+      rect.mockReturnValue({ top } as DOMRect)
+      onResize()
+      expect(style.getPropertyValue('--g-workbench-content-top')).toBe(`${top}px`)
+    }
+
+    wrapper.unmount()
+    expect(disconnect).toHaveBeenCalled()
+    expect(style.getPropertyValue('--g-workbench-content-top')).toBe('')
+    vi.unstubAllGlobals()
+  })
+
   test('registers container DOM nodes and clears them on unmount', () => {
     const wrapper = mount(Layout, {
       slots: {
@@ -83,6 +108,18 @@ describe('Layout', () => {
 
     expect(mocks.setContainerDom).toHaveBeenCalledWith('layout', null)
     expect(mocks.setContainerDom).toHaveBeenCalledWith('contentRightSide', null)
+  })
+
+  test('keeps the title bar visible in fullscreen', async () => {
+    const wrapper = mount(Layout, {
+      slots: { header: '<div class="slot-header">header</div>' },
+    })
+
+    mocks.storeState.isFullscreen = true
+    await nextTick()
+
+    expect(wrapper.find('.header').isVisible()).toBe(true)
+    wrapper.unmount()
   })
 
   test('resizes side panels, toggles hidden panels at min size, and resets width', async () => {
