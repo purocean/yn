@@ -6,8 +6,15 @@ const mocks = vi.hoisted(() => ({
   isSaved: undefined as any,
   win: undefined as any,
   listeners: new Map<string, Function>(),
+  hooks: new Map<string, Function>(),
   isElectron: true,
   isMacOS: true,
+  colorScheme: 'light',
+}))
+
+vi.mock('@fe/core/hook', () => ({
+  registerHook: (name: string, handler: Function) => mocks.hooks.set(name, handler),
+  removeHook: (name: string) => mocks.hooks.delete(name),
 }))
 
 vi.mock('@fe/support/store', () => ({
@@ -32,6 +39,10 @@ vi.mock('@fe/services/i18n', () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }))
 
+vi.mock('@fe/services/theme', () => ({
+  getColorScheme: () => mocks.colorScheme,
+}))
+
 import { isWindowAlwaysOnTop, toggleWindowAlwaysOnTop, useWindowState } from '../window-state'
 
 const TestComponent = defineComponent({
@@ -48,11 +59,14 @@ beforeEach(() => {
   })
   mocks.isSaved = ref(false)
   mocks.listeners.clear()
+  mocks.hooks.clear()
   mocks.isElectron = true
   mocks.isMacOS = true
+  mocks.colorScheme = 'light'
   mocks.win = {
     isAlwaysOnTop: vi.fn(() => false),
     setAlwaysOnTop: vi.fn(),
+    setTitleBarOverlay: vi.fn(),
     setDocumentEdited: vi.fn(),
     on: vi.fn((name: string, handler: Function) => mocks.listeners.set(name, handler)),
     removeListener: vi.fn((name: string) => mocks.listeners.delete(name)),
@@ -81,6 +95,7 @@ describe('window state', () => {
 
     mocks.listeners.get('enter-full-screen')?.()
     expect(mocks.storeState.isFullscreen).toBe(true)
+    expect(mocks.win.setAlwaysOnTop).toHaveBeenLastCalledWith(false)
     mocks.listeners.get('leave-full-screen')?.()
     expect(mocks.storeState.isFullscreen).toBe(false)
 
@@ -92,6 +107,28 @@ describe('window state', () => {
     wrapper.unmount()
     expect(mocks.win.removeListener).toHaveBeenCalledWith('maximize', expect.any(Function))
     expect(mocks.win.removeListener).toHaveBeenCalledWith('leave-full-screen', expect.any(Function))
+  })
+
+  test('keeps native window controls legible when the app theme changes', () => {
+    mocks.isMacOS = false
+    const wrapper = mount(TestComponent)
+
+    expect(mocks.win.setTitleBarOverlay).toHaveBeenLastCalledWith({
+      color: '#00000000',
+      symbolColor: '#151518',
+      height: 30,
+    })
+
+    mocks.colorScheme = 'dark'
+    mocks.hooks.get('THEME_CHANGE')?.()
+    expect(mocks.win.setTitleBarOverlay).toHaveBeenLastCalledWith({
+      color: '#00000000',
+      symbolColor: '#e6e6e6',
+      height: 30,
+    })
+
+    wrapper.unmount()
+    expect(mocks.hooks.has('THEME_CHANGE')).toBe(false)
   })
 
   test('keeps the browser unsaved-document prompt', () => {

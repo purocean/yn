@@ -1,7 +1,9 @@
 import { computed, onBeforeUnmount, onMounted, ref, toRefs, watch } from 'vue'
+import { registerHook, removeHook } from '@fe/core/hook'
 import { getElectronRemote, isElectron, isMacOS, nodeRequire } from '@fe/support/env'
 import store from '@fe/support/store'
 import { useI18n } from '@fe/services/i18n'
+import { getColorScheme } from '@fe/services/theme'
 
 let win: ReturnType<ReturnType<typeof getElectronRemote>['getCurrentWindow']> | null = null
 
@@ -9,6 +11,23 @@ export const isWindowAlwaysOnTop = ref(false)
 
 function updateAlwaysOnTop () {
   isWindowAlwaysOnTop.value = !!win?.isAlwaysOnTop()
+}
+
+function clearAlwaysOnTop () {
+  if (win?.isAlwaysOnTop()) {
+    win.setAlwaysOnTop(false)
+  }
+  updateAlwaysOnTop()
+}
+
+function updateTitleBarOverlay () {
+  if (win && !isMacOS) {
+    win.setTitleBarOverlay({
+      color: '#00000000',
+      symbolColor: getColorScheme() === 'dark' ? '#e6e6e6' : '#151518',
+      height: 30,
+    })
+  }
 }
 
 export function toggleWindowAlwaysOnTop () {
@@ -27,6 +46,7 @@ export function useWindowState () {
 
   function handleFullscreenEnter () {
     store.state.isFullscreen = true
+    clearAlwaysOnTop()
   }
 
   function handleFullscreenLeave () {
@@ -34,10 +54,7 @@ export function useWindowState () {
   }
 
   function handleMaximize () {
-    if (win?.isAlwaysOnTop()) {
-      win.setAlwaysOnTop(false)
-    }
-    updateAlwaysOnTop()
+    clearAlwaysOnTop()
   }
 
   function clean () {
@@ -54,6 +71,8 @@ export function useWindowState () {
       win.removeListener('leave-full-screen', handleFullscreenLeave)
     }
 
+    removeHook('THEME_CHANGE', updateTitleBarOverlay)
+
     win = null
     isWindowAlwaysOnTop.value = false
   }
@@ -67,6 +86,8 @@ export function useWindowState () {
     if (nodeRequire) {
       win = getElectronRemote().getCurrentWindow()
       updateAlwaysOnTop()
+      updateTitleBarOverlay()
+      registerHook('THEME_CHANGE', updateTitleBarOverlay)
       win.on('maximize', handleMaximize)
       win.on('always-on-top-changed', updateAlwaysOnTop)
       win.on('enter-full-screen', handleFullscreenEnter)
