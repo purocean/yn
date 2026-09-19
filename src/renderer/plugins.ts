@@ -3,6 +3,7 @@ import customStyles from '@fe/plugins/custom-styles'
 import customKeybindings from '@fe/plugins/custom-keybindings'
 import codeSyntaxHighlightFont from '@fe/plugins/code-syntax-highlight-font'
 import electronZoom from '@fe/plugins/electron-zoom'
+import windowAlwaysOnTop from '@fe/plugins/window-always-on-top'
 import historyStack from '@fe/plugins/history-stack'
 import fileTreeFunctions from '@fe/plugins/file-tree-functions'
 import statusBarSetting from '@fe/plugins/status-bar-setting'
@@ -92,6 +93,7 @@ export default [
   customKeybindings,
   codeSyntaxHighlightFont,
   electronZoom,
+  windowAlwaysOnTop,
   historyStack,
   fileTreeFunctions,
   statusBarSetting,
