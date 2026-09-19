@@ -72,7 +72,7 @@ export default defineComponent({
       const fontFamily = getSetting('terminal.font-family', '').trim()
 
       return {
-        fontSize: getSetting('terminal.font-size', 16),
+        fontSize: getSetting('terminal.font-size', 13),
         fontFamily: fontFamily || defaultFontFamily,
       }
     }
@@ -173,8 +173,7 @@ export default defineComponent({
         })
       }
 
-      // force trigger resize event
-      xterm.resize(xterm.cols, xterm.cols)
+      socket.emit('resize', [xterm.cols, xterm.rows])
 
       if (!socket.connected) {
         socket.io.opts.query = query

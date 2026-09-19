@@ -492,7 +492,7 @@ const schema: SettingSchema = ({
       group: 'other',
     },
     'terminal.font-size': {
-      defaultValue: 16,
+      defaultValue: 13,
       title: 'T_setting-panel.schema.terminal.font-size',
       type: 'number',
       format: 'range',

@@ -31,7 +31,7 @@ describe('setting schema', () => {
 
     expect(schemaA).not.toBe(schemaB)
     expect(schemaA.properties.theme.defaultValue).toBe('system')
-    expect(schemaA.properties['terminal.font-size'].defaultValue).toBe(16)
+    expect(schemaA.properties['terminal.font-size'].defaultValue).toBe(13)
     expect(schemaA.properties['terminal.font-family'].defaultValue).toBe('')
     expect(schemaA.groups.map(group => group.value)).toEqual(['repos', 'appearance', 'editor', 'render', 'image', 'proxy'])
 

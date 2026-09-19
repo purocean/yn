@@ -193,7 +193,8 @@ describe('Xterm', () => {
     expect(term.options.fontSize).toBe(18)
     expect(term.options.fontFamily).toBe('Fira Code')
     expect(term.open).toHaveBeenCalled()
-    expect(term.resize).toHaveBeenCalledWith(80, 80)
+    expect(term.resize).not.toHaveBeenCalled()
+    expect(socket.emit).toHaveBeenCalledWith('resize', [80, 24])
     expect(term.focus).toHaveBeenCalled()
     expect(socket.connect).toHaveBeenCalled()
 
