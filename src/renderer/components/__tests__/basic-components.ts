@@ -348,6 +348,27 @@ describe('Tabs', () => {
     expect(changedList[0]).toMatchObject({ key: 'b', fixed: false, temporary: false })
   })
 
+  test('renders checked action buttons with a custom icon width', async () => {
+    const actionClick = vi.fn()
+    const wrapper = mountTabs({
+      actionBtns: [{
+        type: 'normal',
+        icon: 'thumbtack-solid',
+        iconWidth: '9px',
+        title: 'Pin',
+        checked: true,
+        onClick: actionClick,
+      }],
+    })
+
+    const pin = wrapper.find('[title="Pin"]')
+    expect(pin.classes()).toContain('checked')
+    expect(pin.findComponent(SvgIcon).props('width')).toBe('9px')
+
+    await pin.trigger('click')
+    expect(actionClick).toHaveBeenCalled()
+  })
+
   test('shows context menu, quick filter, action buttons, and cleans up hooks', async () => {
     const actionClick = vi.fn()
     const hookContextMenu = vi.fn((item, items) => {

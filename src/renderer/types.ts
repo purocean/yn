@@ -179,9 +179,11 @@ export namespace Components {
       type: 'normal',
       key?: string | number,
       icon: string,
+      iconWidth?: string,
       title: string,
       order?: number,
       hidden?: boolean,
+      checked?: boolean,
       style?: string,
       onClick: (e: MouseEvent) => void,
     }

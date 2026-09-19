@@ -32,8 +32,8 @@
     </div>
     <template v-for="(btn, i) in [...actionBtns].filter(x => !x.hidden).sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))">
       <div  v-if="btn.type === 'separator'" class="action-btn-separator" :key="i" />
-      <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" class="action-btn" @click="btn.onClick" :title="btn.title" :style="btn.style">
-        <svg-icon :name="btn.icon" width="12px" />
+      <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" :class="{'action-btn': true, checked: btn.checked}" @click="btn.onClick" :title="btn.title" :style="btn.style">
+        <svg-icon :name="btn.icon" :width="btn.iconWidth || '12px'" />
       </div>
       <component v-else-if="btn.type === 'custom'" :key="btn.key || `custom-${i}`" :is="btn.component" />
     </template>
@@ -301,6 +301,12 @@ export default defineComponent({
     color: var(--g-color-20);
 
     &:hover {
+      color: var(--g-color-0);
+      background-color: var(--g-color-75);
+      border-radius: 50%;
+    }
+
+    &.checked {
       color: var(--g-color-0);
       background-color: var(--g-color-75);
       border-radius: 50%;
