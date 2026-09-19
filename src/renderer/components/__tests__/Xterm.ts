@@ -36,7 +36,7 @@ const mocks = vi.hoisted(() => ({
     dispose = vi.fn()
 
     constructor (options: any) {
-      this.options = options
+      this.options = { fontFamily: 'courier-new, courier, monospace', ...options }
       mocks.terminals.push(this)
     }
   },
@@ -221,7 +221,7 @@ describe('Xterm', () => {
     mocks.settings.set('terminal.font-family', '')
     mocks.settingHandler({ changedKeys: ['terminal.font-size'] })
     expect(term.options.fontSize).toBe(20)
-    expect(term.options.fontFamily).toBeUndefined()
+    expect(term.options.fontFamily).toBe('courier-new, courier, monospace')
     expect(mocks.fitAddons[0].fit).toHaveBeenCalledTimes(3)
 
     socket.handlers.get('disconnect')?.()

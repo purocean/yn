@@ -29,6 +29,7 @@ export default defineComponent({
     const domRef = ref<HTMLElement | null>(null)
 
     let xterm: Terminal | null = null
+    let defaultFontFamily: string | undefined
     // eslint-disable-next-line no-undef
     let socket: Socket | null = null
     let resizeObserver: ResizeObserver | null = null
@@ -72,7 +73,7 @@ export default defineComponent({
 
       return {
         fontSize: getSetting('terminal.font-size', 16),
-        fontFamily: fontFamily || undefined,
+        fontFamily: fontFamily || defaultFontFamily,
       }
     }
 
@@ -100,14 +101,17 @@ export default defineComponent({
       }
 
       if (!xterm) {
+        const { fontFamily, ...terminalOptions } = getTerminalOptions()
         xterm = new Terminal({
           cols: 80,
           rows: 24,
           cursorStyle: 'underline',
           fontWeightBold: '500',
-          ...getTerminalOptions(),
+          ...terminalOptions,
           ...opts
         })
+        defaultFontFamily = xterm.options.fontFamily
+        xterm.options.fontFamily = opts?.fontFamily || fontFamily || defaultFontFamily
 
         changeTheme()
 
