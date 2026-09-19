@@ -76,18 +76,18 @@
 
 ## 更新日志
 
-### [v3.92.1](https://github.com/purocean/yn/releases/tag/v3.92.1) 2026-07-12
+### [v3.93.0](https://github.com/purocean/yn/releases/tag/v3.93.0) 2026-09-19
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-win-x64-3.92.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-mac-arm64-3.92.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-mac-x64-3.92.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-linux-x86_64-3.92.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-linux-amd64-3.92.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-win-x64-3.93.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-mac-arm64-3.93.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-mac-x64-3.93.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-linux-x86_64-3.93.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-linux-amd64-3.93.0.deb)
 
-1. feat(markdown): Markdown-it 升级到 14.3.0，并增加 CJK-friendly 强调解析，优化中文、日文文本的渲染
-2. feat(markdown): 增加原始 HTML 容器，支持在 Markdown 内容中混合并直接渲染 HTML 区块
-3. feat(plugin): 扩展 API 增加基于文本范围的高亮能力，供扩展和预览交互使用
-4. feat(editor): 始终显示浮动编辑器提示，方便用户发现和使用该功能
-5. fix(markdown): 修复带语言标记的纯文本代码围栏发生重复转义的问题
-6. fix(editor): 修复应用启动时无法正确恢复 HTML 及其他非 Markdown 文本文件内容的问题
-7. fix(terminal): 避免终端横向溢出导致输入法界面发生位置偏移
-8. chore: Electron 升级到 41，并更新依赖和安全相关的间接依赖
+1. feat(ui): 重构桌面端标题栏，整合文件标签、原生窗口按钮、导航操作、窗口拖动和置顶入口，释放更多纵向空间
+2. feat(keybinding): 增加可选的“非 US 键盘布局（Beta）”模式，提升编辑器、工作台和应用快捷键的录制与匹配准确性
+3. feat(markdown): 增加全局标题编号设置，支持预览和导出，并允许单篇文档通过 front matter 覆盖
+4. feat(terminal): 增加终端字体和字号设置
+5. fix(editor): 允许只读模式下由程序更新内容，修复外部只读文件无法正确加载源码的问题
+6. fix(export): 改善 PDF 导出窗口对嵌入内容的兼容性，包括 Drawio 图形
+7. style(markdown): 调柔浅色和暗色主题下的行内代码背景
+8. chore: Electron 升级到 41.10.3，并更新依赖和安全相关的间接依赖
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 
