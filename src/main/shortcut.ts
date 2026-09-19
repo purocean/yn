@@ -4,6 +4,8 @@ import { FLAG_DISABLE_SERVER } from './constant'
 import { getAction, registerAction } from './action'
 import config from './config'
 import { getDefaultApplicationAccelerators } from '../share/misc'
+import { parseKeybinding } from '../share/keybinding'
+import { getNonUsAccelerator } from '../share/non-us-keybinding'
 
 const platform = os.platform()
 
@@ -17,8 +19,11 @@ export const getAccelerator = (command: AcceleratorCommand): string | undefined 
     .find((item: any) => item.type === 'application' && item.command === command)
 
   if (customKeybinding) {
-    const keys = customKeybinding.keys
+    if (config.getAll()['keybindings.non-us-layout'] === true && parseKeybinding(customKeybinding.binding)) {
+      return getNonUsAccelerator(customKeybinding.keys, customKeybinding.binding)
+    }
 
+    const keys = customKeybinding.keys
     if (keys) {
       return keys.replace(/(Arrow|Key|Digit)/ig, '')
         .replace(/NumpadAdd/ig, 'numadd')
@@ -68,7 +73,7 @@ export const registerShortcut = (commands: typeof currentCommands, showAlert = f
 }
 
 function reload (changedKeys: string[]) {
-  if (changedKeys.includes('keybindings')) {
+  if (changedKeys.includes('keybindings') || changedKeys.includes('keybindings.non-us-layout')) {
     console.log('reload keybindings')
     registerShortcut(currentCommands, true)
   }

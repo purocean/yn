@@ -35,6 +35,13 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   overflow: hidden;
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+.status-bar :deep(.status-bar-menu-wrapper) {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
 
 .action {

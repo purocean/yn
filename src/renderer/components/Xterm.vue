@@ -14,6 +14,7 @@ import { getLogger } from '@fe/utils'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { $args, FLAG_DEMO, FLAG_DISABLE_XTERM } from '@fe/support/args'
 import { getColorScheme } from '@fe/services/theme'
+import { getSetting } from '@fe/services/setting'
 import { isWindows, openWindow } from '@fe/support/env'
 import { t } from '@fe/services/i18n'
 import type { Components } from '@fe/types'
@@ -28,6 +29,7 @@ export default defineComponent({
     const domRef = ref<HTMLElement | null>(null)
 
     let xterm: Terminal | null = null
+    let defaultFontFamily: string | undefined
     // eslint-disable-next-line no-undef
     let socket: Socket | null = null
     let resizeObserver: ResizeObserver | null = null
@@ -66,6 +68,32 @@ export default defineComponent({
       xterm?.focus()
     }
 
+    function getTerminalOptions () {
+      const fontFamily = getSetting('terminal.font-family', '').trim()
+
+      return {
+        fontSize: getSetting('terminal.font-size', 13),
+        fontFamily: fontFamily || defaultFontFamily,
+      }
+    }
+
+    function applyTerminalOptions () {
+      if (!xterm) {
+        return
+      }
+
+      const options = getTerminalOptions()
+      xterm.options.fontSize = options.fontSize
+      xterm.options.fontFamily = options.fontFamily
+      fitXterm()
+    }
+
+    function onSettingChanged ({ changedKeys }: { changedKeys: string[] }) {
+      if (changedKeys.includes('terminal.font-size') || changedKeys.includes('terminal.font-family')) {
+        applyTerminalOptions()
+      }
+    }
+
     function init (opts?: Components.XTerm.InitOpts) {
       if (FLAG_DISABLE_XTERM) {
         logger.warn('xterm disabled')
@@ -73,15 +101,17 @@ export default defineComponent({
       }
 
       if (!xterm) {
+        const { fontFamily, ...terminalOptions } = getTerminalOptions()
         xterm = new Terminal({
           cols: 80,
           rows: 24,
-          fontSize: 16,
           cursorStyle: 'underline',
-          // fontFamily: 'Consolas',
           fontWeightBold: '500',
+          ...terminalOptions,
           ...opts
         })
+        defaultFontFamily = xterm.options.fontFamily
+        xterm.options.fontFamily = opts?.fontFamily || fontFamily || defaultFontFamily
 
         changeTheme()
 
@@ -98,6 +128,7 @@ export default defineComponent({
         xterm.open(domRef.value!)
         fitAddon.fit()
         registerHook('THEME_CHANGE', changeTheme)
+        registerHook('SETTING_CHANGED', onSettingChanged)
 
         resizeObserver = new ResizeObserver((entires) => {
           const entry = entires[0]
@@ -142,8 +173,7 @@ export default defineComponent({
         })
       }
 
-      // force trigger resize event
-      xterm.resize(xterm.cols, xterm.cols)
+      socket.emit('resize', [xterm.cols, xterm.rows])
 
       if (!socket.connected) {
         socket.io.opts.query = query
@@ -173,6 +203,7 @@ export default defineComponent({
       webLinksAddon = null
 
       removeHook('THEME_CHANGE', changeTheme)
+      removeHook('SETTING_CHANGED', onSettingChanged)
     }
 
     onBeforeUnmount(() => {

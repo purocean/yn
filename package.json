@@ -1,6 +1,6 @@
 {
   "name": "yank.note",
-  "version": "3.92.1",
+  "version": "3.93.0",
   "description": "Yank Note: A highly extensible Markdown editor, designed for productivity.",
   "main": "dist/main/app.js",
   "license": "AGPL-3.0",
@@ -26,7 +26,7 @@
     "@electron/remote": "^2.1.2",
     "@modelcontextprotocol/sdk": "^1.25.3",
     "@vscode/ripgrep": "^1.15.6",
-    "adm-zip": "^0.5.9",
+    "adm-zip": "^0.6.0",
     "app-license": "^0.3.0",
     "async-lock": "^1.4.0",
     "chokidar": "^3.6.0",
@@ -58,7 +58,7 @@
     "socks": "^2.8.3",
     "tar-stream": "^2.2.0",
     "transliteration": "^2.2.0",
-    "undici": "^6.27.0",
+    "undici": "^6.28.0",
     "uuid": "^14.0.0",
     "yaml": "^2.8.3",
     "yargs": "^15.3.1"
@@ -112,7 +112,7 @@
     "crypto-js": "^4.2.0",
     "dexie": "^4.0.8",
     "dom-to-image": "^2.6.0",
-    "electron": "41.7.0",
+    "electron": "41.10.3",
     "electron-builder": "^26.0.12",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
@@ -155,7 +155,7 @@
     "utility-types": "^3.10.0",
     "viewerjs": "^1.11.6",
     "vite": "^6.4.3",
-    "vitest": "^4.1.5",
+    "vitest": "^4.1.11",
     "vue": "^3.5.13",
     "vue-tsc": "^2.2.0",
     "xterm-theme": "^1.1.0"

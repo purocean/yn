@@ -12,13 +12,18 @@
           <svg-icon v-if="treeSort.order === 'asc'" name="arrow-up-wide-short-solid" />
           <svg-icon v-else name="arrow-down-short-wide-solid" />
         </div>
-        <div class="btn flat" @click="findInRepository()" :title="$t('search-panel.search-files') + ' ' + getKeysLabel('base.find-in-repository')">
+        <div v-if="!isElectron" class="btn flat" @click="findInRepository()" :title="$t('search-panel.search-files') + ' ' + getKeysLabel('base.find-in-repository')">
           <svg-icon name="search-solid" />
         </div>
       </template>
     </div>
     <div class="title" @dblclick="onDblClickTitle">{{$t(showOutline ? 'outline' : 'files')}}</div>
-    <div class="btns" v-if="navigation">
+    <div v-if="isElectron" class="btns">
+      <div v-if="!showOutline" class="btn flat" @click="findInRepository()" :title="$t('search-panel.search-files') + ' ' + getKeysLabel('base.find-in-repository')">
+        <svg-icon name="search-solid" />
+      </div>
+    </div>
+    <div v-else-if="navigation" class="btns">
       <div v-for="(item, i) in navigation.items" :key="i">
         <div
           v-if="item.type === 'btn' && item.showInActionBar"
@@ -42,6 +47,7 @@ import { toggleOutline, ControlCenter } from '@fe/services/workbench'
 import { findInRepository } from '@fe/services/base'
 import { getKeysLabel } from '@fe/core/keybinding'
 import { registerHook, removeHook } from '@fe/core/hook'
+import { isElectron } from '@fe/support/env'
 import store from '@fe/support/store'
 import type { FileSort, Components } from '@fe/types'
 import SvgIcon from './SvgIcon.vue'
@@ -92,12 +98,16 @@ function onDblClickTitle () {
   }
 }
 
-registerAction({ name: 'action-bar.refresh', handler: refresh })
-registerHook('COMMAND_KEYBINDING_CHANGED', refresh)
+if (!isElectron) {
+  registerAction({ name: 'action-bar.refresh', handler: refresh })
+  registerHook('COMMAND_KEYBINDING_CHANGED', refresh)
+}
 
 onBeforeUnmount(() => {
-  removeAction('action-bar.refresh')
-  removeHook('COMMAND_KEYBINDING_CHANGED', refresh)
+  if (!isElectron) {
+    removeAction('action-bar.refresh')
+    removeHook('COMMAND_KEYBINDING_CHANGED', refresh)
+  }
 })
 </script>
 
@@ -112,6 +122,8 @@ onBeforeUnmount(() => {
   align-items: center;
   position: relative;
   padding: 0 3px;
+  -webkit-app-region: drag;
+  app-region: drag;
 
   & > .title {
     position: absolute;
@@ -131,6 +143,8 @@ onBeforeUnmount(() => {
 
   & > .btns {
     background: var(--g-color-98);
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
   }
 
   .btn {

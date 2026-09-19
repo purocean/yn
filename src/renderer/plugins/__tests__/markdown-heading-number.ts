@@ -2,8 +2,13 @@ vi.mock('@fe/context', () => ({
   Plugin: class {},
 }))
 
+vi.mock('@fe/services/setting', () => ({
+  getSetting: vi.fn(),
+}))
+
 import MarkdownIt from 'markdown-it'
 import markdownHeadingNumber from '../markdown-heading-number'
+import { getSetting } from '@fe/services/setting'
 
 function createCtx (md: MarkdownIt) {
   md.renderer.rules.heading_open = function (tokens, idx, options, _env, slf) {
@@ -19,6 +24,12 @@ function createCtx (md: MarkdownIt) {
   } as any
 }
 
+const mockedGetSetting = vi.mocked(getSetting)
+
+beforeEach(() => {
+  mockedGetSetting.mockReset()
+})
+
 describe('markdown-heading-number plugin', () => {
   test('registers theme/view styles and markdown renderer plugin', () => {
     const ctx = createCtx(new MarkdownIt())
@@ -31,13 +42,23 @@ describe('markdown-heading-number plugin', () => {
   })
 
   test('adds show-number class when front matter enables heading numbers', () => {
+    mockedGetSetting.mockReturnValue(false)
     const md = new MarkdownIt()
     markdownHeadingNumber.register(createCtx(md))
 
     expect(md.render('## Numbered', { attributes: { headingNumber: true } })).toContain('<h2 class="show-number">Numbered</h2>')
   })
 
+  test('falls back to global setting when front matter does not set heading number', () => {
+    mockedGetSetting.mockReturnValue(true)
+    const md = new MarkdownIt()
+    markdownHeadingNumber.register(createCtx(md))
+
+    expect(md.render('## Fallback', {})).toContain('<h2 class="show-number">Fallback</h2>')
+  })
+
   test('leaves headings unchanged when heading numbers are disabled', () => {
+    mockedGetSetting.mockReturnValue(false)
     const md = new MarkdownIt()
     markdownHeadingNumber.register(createCtx(md))
 

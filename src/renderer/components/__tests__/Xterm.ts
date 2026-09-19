@@ -10,8 +10,10 @@ const mocks = vi.hoisted(() => ({
   registerHook: vi.fn(),
   removeHook: vi.fn(),
   themeHandler: undefined as any,
+  settingHandler: undefined as any,
   io: vi.fn(),
   sockets: [] as any[],
+  settings: new Map<string, any>(),
   terminals: [] as any[],
   fitAddons: [] as any[],
   webLinksAddons: [] as any[],
@@ -34,7 +36,7 @@ const mocks = vi.hoisted(() => ({
     dispose = vi.fn()
 
     constructor (options: any) {
-      this.options = options
+      this.options = { fontFamily: 'courier-new, courier, monospace', ...options }
       mocks.terminals.push(this)
     }
   },
@@ -98,8 +100,15 @@ vi.mock('@fe/core/hook', () => ({
     if (name === 'THEME_CHANGE') {
       mocks.themeHandler = handler
     }
+    if (name === 'SETTING_CHANGED') {
+      mocks.settingHandler = handler
+    }
   },
   removeHook: mocks.removeHook,
+}))
+
+vi.mock('@fe/services/setting', () => ({
+  getSetting: (key: string, fallback?: any) => mocks.settings.has(key) ? mocks.settings.get(key) : fallback,
 }))
 
 vi.mock('@fe/support/args', () => ({
@@ -148,9 +157,11 @@ beforeEach(() => {
   mocks.registerHook.mockClear()
   mocks.removeHook.mockClear()
   mocks.themeHandler = undefined
+  mocks.settingHandler = undefined
   mocks.io.mockReset()
   mocks.io.mockImplementation(createSocket)
   mocks.sockets.length = 0
+  mocks.settings = new Map()
   mocks.terminals.length = 0
   mocks.fitAddons.length = 0
   mocks.webLinksAddons.length = 0
@@ -163,6 +174,8 @@ beforeEach(() => {
 describe('Xterm', () => {
   test('initializes terminal, socket, addons, resize handling and disposal', async () => {
     const onDisconnect = vi.fn()
+    mocks.settings.set('terminal.font-size', 18)
+    mocks.settings.set('terminal.font-family', 'Fira Code')
     const wrapper = mount(Xterm)
 
     ;(wrapper.vm as any).init({ cwd: '/repo', env: { A: '1' }, onDisconnect })
@@ -177,8 +190,11 @@ describe('Xterm', () => {
 
     const term = mocks.terminals[0]
     const socket = mocks.sockets[0]
+    expect(term.options.fontSize).toBe(18)
+    expect(term.options.fontFamily).toBe('Fira Code')
     expect(term.open).toHaveBeenCalled()
-    expect(term.resize).toHaveBeenCalledWith(80, 80)
+    expect(term.resize).not.toHaveBeenCalled()
+    expect(socket.emit).toHaveBeenCalledWith('resize', [80, 24])
     expect(term.focus).toHaveBeenCalled()
     expect(socket.connect).toHaveBeenCalled()
 
@@ -202,10 +218,18 @@ describe('Xterm', () => {
     mocks.webLinksAddons[0].handler(new MouseEvent('click'), 'https://example.com')
     expect(mocks.openWindow).toHaveBeenCalledWith('https://example.com')
 
+    mocks.settings.set('terminal.font-size', 20)
+    mocks.settings.set('terminal.font-family', '')
+    mocks.settingHandler({ changedKeys: ['terminal.font-size'] })
+    expect(term.options.fontSize).toBe(20)
+    expect(term.options.fontFamily).toBe('courier-new, courier, monospace')
+    expect(mocks.fitAddons[0].fit).toHaveBeenCalledTimes(3)
+
     socket.handlers.get('disconnect')?.()
     expect(onDisconnect).toHaveBeenCalled()
     expect(term.dispose).toHaveBeenCalled()
     expect(mocks.removeHook).toHaveBeenCalledWith('THEME_CHANGE', mocks.themeHandler)
+    expect(mocks.removeHook).toHaveBeenCalledWith('SETTING_CHANGED', mocks.settingHandler)
   })
 
   test('supports demo and disabled modes without opening a socket', () => {

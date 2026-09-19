@@ -98,6 +98,9 @@ export interface Action<T extends string = string> {
    */
   keys?: null | (string | number)[]
 
+  /** Custom binding metadata; null marks a legacy custom shortcut. */
+  binding?: string | null
+
   /**
    * Handler
    */
@@ -176,9 +179,11 @@ export namespace Components {
       type: 'normal',
       key?: string | number,
       icon: string,
+      iconWidth?: string,
       title: string,
       order?: number,
       hidden?: boolean,
+      checked?: boolean,
       style?: string,
       onClick: (e: MouseEvent) => void,
     }
@@ -341,7 +346,7 @@ export type LanguageName = 'system' | Language
 export type ExportType = 'print' | 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'macros' | 'render'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
-export type Keybinding = { type: 'workbench' | 'editor' | 'application', keys: string | null, command: string }
+export type Keybinding = { type: 'workbench' | 'editor' | 'application', keys: string | null, binding?: string | null, command: string }
 
 export type PrintOpts = PrintToPDFOptions
 
@@ -419,6 +424,8 @@ export interface BuildInSettings {
   'assets.image-name': string,
   'shell': string,
   'envs': string,
+  'terminal.font-size': number,
+  'terminal.font-family': string,
   'editor.mouse-wheel-zoom': boolean,
   'editor.font-size': number,
   'editor.font-ligatures': boolean,
@@ -449,6 +456,7 @@ export interface BuildInSettings {
   'render.md-sub': boolean,
   'render.md-sup': boolean,
   'render.md-cj-friendly': boolean,
+  'render.heading-number': boolean,
   'render.multimd-multiline': boolean,
   'render.multimd-rowspan': boolean,
   'render.multimd-headerless': boolean,
@@ -475,6 +483,7 @@ export interface BuildInSettings {
   'proxy.bypass-list': string,
   'extension.registry': RegistryHostname,
   'extension.auto-upgrade': boolean,
+  'keybindings.non-us-layout': boolean,
   'keep-running-after-closing-window': boolean,
   'hide-main-window-on-startup': boolean,
   'plantuml-api': string,

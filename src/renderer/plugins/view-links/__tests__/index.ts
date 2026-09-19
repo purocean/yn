@@ -80,7 +80,7 @@ describe('view-links plugin entry', () => {
     mocks.registeredAction.handler()
     expect(mocks.fixedFloatShow).toHaveBeenCalledWith(expect.objectContaining({
       right: '20px',
-      top: '66px',
+      top: 'calc(var(--g-workbench-content-top, 60px) + 6px)',
       component: ViewLinksComponent,
       closeOnBlur: false,
       closeBtn: true,
@@ -147,6 +147,6 @@ describe('view-links plugin entry', () => {
     viewLinksPlugin.register(ctx)
 
     mocks.registeredAction.handler()
-    expect(mocks.fixedFloatShow).toHaveBeenCalledWith(expect.objectContaining({ top: '36px' }))
+    expect(mocks.fixedFloatShow).toHaveBeenCalledWith(expect.objectContaining({ top: 'calc(var(--g-workbench-content-top, 30px) + 6px)' }))
   })
 })

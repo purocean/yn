@@ -298,6 +298,8 @@ export default defineComponent({
         name: 'file-tabs.close-tabs',
         handler: closeTabs,
       })
+
+      refreshActionBtns()
     })
 
     onBeforeUnmount(() => {
@@ -344,6 +346,7 @@ export default defineComponent({
     })
 
     const fileTabs = computed(() => (tabs.value as Components.FileTabs.Item[]).map(tab => {
+      let statusClass = ''
       if (currentFile.value && tab.key === toUri(currentFile.value)) {
         const { type, status, writeable } = currentFile.value
 
@@ -362,6 +365,10 @@ export default defineComponent({
           mark = '…'
         }
 
+        if ((!isSaved.value && isEncrypted(currentFile.value)) || status === 'save-failed') {
+          statusClass = 'status-warning'
+        }
+
         // not saved tab should be marked as permanent
         if (tab.temporary && status === 'loaded' && !isSaved.value) {
           tab.temporary = false
@@ -370,7 +377,10 @@ export default defineComponent({
         tab.label = mark + currentFile.value.name
       }
 
-      return tab
+      return {
+        ...tab,
+        class: [tab.class, statusClass].filter(Boolean).join(' '),
+      }
     }))
 
     return {
@@ -398,5 +408,15 @@ export default defineComponent({
 
 ::v-deep(.tabs .tab.out-of-repo) {
   color: #569bd5;
+}
+
+::v-deep(.tabs .tab.status-warning) {
+  color: light-dark(#804200, #ffec99);
+  background: light-dark(#fff3bf, #663500);
+}
+
+::v-deep(.tabs .tab.status-warning .icon) {
+  color: inherit;
+  opacity: 0.65;
 }
 </style>

@@ -2,6 +2,7 @@ import { upperFirst } from 'lodash-es'
 import { getLogger } from '@fe/utils'
 import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { FLAG_DISABLE_SHORTCUTS } from '@fe/support/args'
+import { isNonUsLayoutEnabled, matchNonUsKey } from '@fe/support/non-us-keybinding'
 import type { BuildInActions } from '@fe/types'
 import { getAction, getActionHandler, getRawActions } from './action'
 import { triggerHook } from './hook'
@@ -106,12 +107,13 @@ export function getKeyLabel (key: XKey | string | number) {
  * @param keys
  * @returns
  */
-export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number)[]) {
+export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number)[], binding?: string | null) {
   if (keys.length === 0) {
     return false
   }
 
   const modifiers = { metaKey: false, ctrlKey: false, altKey: false, shiftKey: false }
+  const nonUsLayout = isNonUsLayoutEnabled()
 
   for (const key of keys) {
     switch (key.toString().toUpperCase()) {
@@ -151,17 +153,20 @@ export function matchKeys (e: KeyboardEvent | MouseEvent, keys: (string | number
         // if the event from iframe, it not instance of KeyboardEvent.
         if (e instanceof KeyboardEvent || '' + e === '[object KeyboardEvent]') {
           e = e as KeyboardEvent
-          const eCode = e.code.toUpperCase()
-          const eKey = e.key.toUpperCase()
-          const iKey = key.toString().toUpperCase()
-
-          if (
-            iKey !== eKey &&
-            iKey !== eCode &&
-            `KEY${iKey}` !== eCode &&
-            `DIGIT${iKey}` !== eCode &&
-            `ARROW${iKey}` !== eCode
-          ) return false
+          if (nonUsLayout) {
+            if (!matchNonUsKey(e, key.toString(), binding)) return false
+          } else {
+            const eCode = e.code.toUpperCase()
+            const eKey = e.key.toUpperCase()
+            const iKey = key.toString().toUpperCase()
+            if (
+              iKey !== eKey &&
+              iKey !== eCode &&
+              `KEY${iKey}` !== eCode &&
+              `DIGIT${iKey}` !== eCode &&
+              `ARROW${iKey}` !== eCode
+            ) return false
+          }
         } else {
           if (key !== e.button) return false
         }
@@ -211,7 +216,7 @@ export function keydownHandler (e: KeyboardEvent) {
 
   for (const item of getRawActions()) {
     const action = getAction(item.name)
-    if (action && action.keys && matchKeys(e, action.keys)) {
+    if (action && action.keys && matchKeys(e, action.keys, action.binding)) {
       if (action.when && !action.when()) {
         continue
       }

@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils'
 
 const mocks = vi.hoisted(() => ({
   storeState: undefined as any,
+  isElectron: true,
   actions: new Map<string, Function>(),
   hooks: new Map<string, Function>(),
   contextMenuShow: vi.fn(),
@@ -27,6 +28,10 @@ vi.mock('@fe/core/action', () => ({
 vi.mock('@fe/core/hook', () => ({
   registerHook: (name: string, handler: Function) => mocks.hooks.set(name, handler),
   removeHook: (name: string) => mocks.hooks.delete(name),
+}))
+
+vi.mock('@fe/support/env', () => ({
+  get isElectron () { return mocks.isElectron },
 }))
 
 vi.mock('@fe/support/ui/context-menu', () => ({
@@ -66,6 +71,7 @@ vi.mock('../SvgIcon.vue', () => ({
 import ActionBar from '../ActionBar.vue'
 
 beforeEach(() => {
+  mocks.isElectron = true
   mocks.storeState = reactive({
     showOutline: false,
     treeSort: { by: 'name', order: 'asc' },
@@ -86,6 +92,10 @@ describe('ActionBar', () => {
     })
 
     const buttons = wrapper.findAll('.btn')
+    const buttonGroups = wrapper.findAll('.btns')
+    expect(buttonGroups[0].findAll('.btn')).toHaveLength(2)
+    expect(buttonGroups[1].findAll('.btn')).toHaveLength(1)
+
     await buttons[0].trigger('click')
     expect(mocks.toggleOutline).toHaveBeenCalled()
 
@@ -107,7 +117,20 @@ describe('ActionBar', () => {
     expect(mocks.revealCurrentNode).toHaveBeenCalled()
   })
 
-  test('registers refresh action, renders navigation buttons, and cleans up', async () => {
+  test('keeps only the outline switch when outline is visible', async () => {
+    const wrapper = shallowMount(ActionBar, {
+      global: { mocks: { $t: (key: string, value?: string) => value ? `${key}:${value}` : key } },
+    })
+
+    mocks.storeState.showOutline = true
+    await nextTick()
+    expect(wrapper.findAll('.btn')).toHaveLength(1)
+    await wrapper.find('.title').trigger('dblclick')
+    expect(mocks.revealCurrentNode).toHaveBeenCalledTimes(0)
+  })
+
+  test('keeps navigation actions in the side bar in browser mode', async () => {
+    mocks.isElectron = false
     const wrapper = shallowMount(ActionBar, {
       global: { mocks: { $t: (key: string, value?: string) => value ? `${key}:${value}` : key } },
     })
@@ -117,14 +140,12 @@ describe('ActionBar', () => {
 
     mocks.actions.get('action-bar.refresh')?.()
     await nextTick()
-    const buttons = wrapper.findAll('.btn')
-    await buttons[buttons.length - 1].trigger('click')
-    expect(mocks.navClick).toHaveBeenCalled()
 
-    mocks.storeState.showOutline = true
-    await nextTick()
-    await wrapper.find('.title').trigger('dblclick')
-    expect(mocks.revealCurrentNode).toHaveBeenCalledTimes(0)
+    const buttonGroups = wrapper.findAll('.btns')
+    expect(buttonGroups[0].findAll('.btn')).toHaveLength(3)
+    expect(buttonGroups[1].findAll('.btn')).toHaveLength(1)
+    await buttonGroups[1].find('.btn').trigger('click')
+    expect(mocks.navClick).toHaveBeenCalled()
 
     wrapper.unmount()
     expect(mocks.actions.has('action-bar.refresh')).toBe(false)

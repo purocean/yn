@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   },
   emitResize: vi.fn(),
   exitPresent: vi.fn(),
+  useWindowState: vi.fn(),
   stub: (name: string) => ({
     name,
     template: `<div class="${name}"><slot /></div>`,
@@ -37,6 +38,7 @@ vi.mock('@fe/support/args', () => ({
   FLAG_DISABLE_XTERM: true,
   MODE: 'normal',
 }))
+vi.mock('@fe/support/env', () => ({ isElectron: true }))
 vi.mock('@fe/support/store', () => ({
   default: { state: mocks.storeState },
 }))
@@ -45,6 +47,9 @@ vi.mock('@fe/services/layout', () => ({
 }))
 vi.mock('@fe/services/view', () => ({
   exitPresent: mocks.exitPresent,
+}))
+vi.mock('@fe/support/window-state', () => ({
+  useWindowState: mocks.useWindowState,
 }))
 
 vi.mock('@fe/components/Layout.vue', () => ({
@@ -75,7 +80,7 @@ vi.mock('@fe/components/Terminal.vue', () => ({
     template: '<button class="Terminal" @click="$emit(\'hide\')">terminal</button>',
   },
 }))
-vi.mock('@fe/components/FileTabs.vue', () => ({ default: mocks.stub('FileTabs') }))
+vi.mock('@fe/components/TitleBarTabs.vue', () => ({ default: mocks.stub('TitleBarTabs') }))
 vi.mock('@fe/components/Editor.vue', () => ({ default: mocks.stub('Editor') }))
 vi.mock('@fe/components/Previewer.vue', () => ({ default: mocks.stub('Previewer') }))
 vi.mock('@fe/components/ContentRightSide.vue', () => ({ default: mocks.stub('ContentRightSide') }))
@@ -104,6 +109,7 @@ beforeEach(() => {
   mocks.storeState.presentation = true
   mocks.emitResize.mockClear()
   mocks.exitPresent.mockClear()
+  mocks.useWindowState.mockClear()
 })
 
 describe('Main', () => {
@@ -112,9 +118,12 @@ describe('Main', () => {
     await nextTick()
 
     expect(mocks.startup).toHaveBeenCalled()
+    expect(mocks.useWindowState).toHaveBeenCalled()
     expect(mocks.registerHook).toHaveBeenCalledWith('EDITOR_CURRENT_EDITOR_CHANGE', expect.any(Function))
     expect(wrapper.findComponent({ name: 'Layout' }).classes()).toContain('flag-disable-xterm')
     expect(wrapper.findComponent({ name: 'Tree' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'TitleBar' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'TitleBarTabs' }).exists()).toBe(true)
 
     await wrapper.find('.Terminal').trigger('click')
     expect(mocks.getActionHandler).toHaveBeenCalledWith('layout.toggle-xterm')

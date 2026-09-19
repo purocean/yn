@@ -1,5 +1,6 @@
 import type { Plugin } from '@fe/context'
 import type { FrontMatterAttrs } from '@fe/types'
+import { getSetting } from '@fe/services/setting'
 
 export default {
   name: 'markdown-heading-number',
@@ -102,8 +103,9 @@ export default {
       const headingOpen = md.renderer.rules.heading_open!
 
       md.renderer.rules.heading_open = function (tokens, idx, opt, env, slf) {
-        const attrs: FrontMatterAttrs = env.attributes
-        if (attrs.headingNumber) {
+        const attrs: FrontMatterAttrs = env?.attributes || {}
+        const headingNumber = attrs.headingNumber ?? getSetting('render.heading-number', false)
+        if (headingNumber) {
           const token = tokens[idx]
           token.attrJoin('class', 'show-number')
         }

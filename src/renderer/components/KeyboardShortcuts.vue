@@ -26,7 +26,7 @@
               <td :class="{modified: item.modified}">
                 <kbd v-for="key in item.keys" :key="key">{{ key }}</kbd>
                 <i v-if="item.keys.length === 0">{{ t('keyboard-shortcuts.not-set') }}</i>
-                <a href="javascript:void(0)" v-else-if="getConflictCommands(item.keys).length > 1" @click="viewConflict(item.keys)">
+                <a href="javascript:void(0)" v-else-if="getConflictCommands(item.keybinding.split('+'), item.binding).length > 1" @click="viewConflict(item.keybinding.split('+'), item.binding)">
                   <i>{{ t('keyboard-shortcuts.conflict') }}</i>
                 </a>
               </td>
@@ -51,6 +51,7 @@
         </table>
       </div>
       <div class="action">
+        <label><input type="checkbox" v-model="nonUsLayout" @change="changeNonUsLayout" />{{ $t('keyboard-shortcuts.non-us-layout') }}</label>
         <button class="btn primary tr" @click="hide">{{$t('close')}}</button>
       </div>
     </div>
@@ -61,7 +62,7 @@
     <div v-if="shortcuts" class="output">
       {{ getKeysLabel(shortcuts) }}
     </div>
-    <div class="conflict" v-if="conflictCommands.length" @click="viewConflict(shortcuts)">
+    <div class="conflict" v-if="conflictCommands.length" @click="viewConflict(shortcuts, nonUsLayout ? serializeKeybinding(recordedBinding) : null)">
       {{ $t('keyboard-shortcuts.recorder.conflict-commands', String(conflictCommands.length)) }}
     </div>
   </div>
@@ -73,12 +74,15 @@ import { computed, h, onUnmounted, ref, shallowRef, watch, watchEffect } from 'v
 import { getDefaultApplicationAccelerators } from '@share/misc'
 import { getRawActions, registerAction, removeAction } from '@fe/core/action'
 import { Alt, Cmd, Ctrl, Meta, Shift, Win, disableShortcuts, enableShortcuts, getKeyLabel, getKeysLabel } from '@fe/core/keybinding'
+import { recordNonUsKey } from '@fe/support/non-us-keybinding'
 import { isMacOS, isOtherOS, isWindows } from '@fe/support/env'
 import { useModal } from '@fe/support/ui/modal'
 import { getSetting, setSetting } from '@fe/services/setting'
 import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
 import { lookupKeybindingKeys, whenEditorReady } from '@fe/services/editor'
 import { getLogger } from '@fe/utils'
+import { getDisplayKeybinding, getEffectiveKeybinding, serializeKeybinding } from '@share/keybinding'
+import type { RecordedKeybinding } from '@share/keybinding'
 import type { Action, Keybinding } from '@fe/types'
 
 import XMask from '@fe/components/Mask.vue'
@@ -89,6 +93,8 @@ type Item = {
   description?: string,
   keys: string[],
   keybinding: string,
+  effectiveKeybinding: string,
+  binding?: string | null,
   modified: boolean,
   unavailable?: boolean,
 }
@@ -110,9 +116,11 @@ const logger = getLogger('keyboard-shortcuts')
 const listRef = ref<HTMLElement | null>(null)
 const tab = ref<Tab>('workbench')
 const managerVisible = ref(false)
+const nonUsLayout = ref(false)
 const currentCommand = ref('')
 const filterStr = ref('')
 const shortcuts = shallowRef<string[] | null>(null)
+const recordedBinding = shallowRef<RecordedKeybinding | null>(null)
 const commands = shallowRef<XCommand[]>([])
 const keybindings = shallowRef<Keybinding[]>([])
 
@@ -128,13 +136,17 @@ const list = computed<Item[]>(() => {
 
   const data = _commands.filter(x => x.type === _tab).map((item) => {
     const modified = !!bindings[item.name]
-    const keys = modified ? (bindings[item.name].keys?.split('+') || []) || item.keys : item.keys
+    const keys = modified
+      ? (nonUsLayout.value ? getDisplayKeybinding(bindings[item.name].keys, bindings[item.name].binding) : bindings[item.name].keys)?.split('+') || []
+      : item.keys
 
     return {
       command: item.name,
       description: item.description,
       keys: (keys || []).map(getKeyLabel),
       keybinding: keys?.join('+') || '',
+      effectiveKeybinding: (nonUsLayout.value ? getEffectiveKeybinding(keys?.join('+'), bindings[item.name]?.binding) : keys?.join('+'))?.toLowerCase() || '',
+      binding: bindings[item.name]?.binding,
       modified,
     }
   })
@@ -145,11 +157,14 @@ const list = computed<Item[]>(() => {
   const unavailable = _currentTypeKeybindings.filter(x => !availableIds.includes(x.command))
 
   return data.concat(unavailable.map((item) => {
+    const keys = (nonUsLayout.value ? getDisplayKeybinding(item.keys, item.binding) : item.keys)?.split('+') || []
     return {
       command: item.command,
       description: t('keyboard-shortcuts.unavailable'),
-      keys: (item.keys?.split('+') || []).map(getKeyLabel),
-      keybinding: item.keys || '',
+      keys: keys.map(getKeyLabel),
+      keybinding: keys.join('+'),
+      effectiveKeybinding: (nonUsLayout.value ? getEffectiveKeybinding(keys.join('+'), item.binding) : keys.join('+'))?.toLowerCase() || '',
+      binding: item.binding,
       modified: true,
       unavailable: true,
     }
@@ -169,7 +184,7 @@ const items = computed(() => {
     }
 
     if (str === '#') {
-      return getConflictCommands(x.keys).length > 1
+      return getConflictCommands(x.keybinding.split('+'), x.binding).length > 1
     }
 
     return x.command.toLowerCase().includes(filterStr.value) ||
@@ -178,7 +193,7 @@ const items = computed(() => {
   })
 })
 
-function getConflictCommands (keys: (number | string)[]) {
+function getConflictCommands (keys: (number | string)[], binding?: string | null) {
   const commands = list.value.filter(x => !x.unavailable)
 
   // do not check Enter, Esc conflict for editor commands
@@ -186,16 +201,21 @@ function getConflictCommands (keys: (number | string)[]) {
     return []
   }
 
-  const keyLabels = getKeysLabel(keys)
-  if (!keyLabels) {
+  if (!nonUsLayout.value) {
+    const keyLabels = getKeysLabel(keys)
+    return keyLabels ? commands.filter(x => getKeysLabel(x.keys) === keyLabels) : []
+  }
+
+  const effective = getEffectiveKeybinding(keys.join('+'), binding)?.toLowerCase()
+  if (!effective) {
     return []
   }
 
-  return commands.filter(x => getKeysLabel(x.keys) === keyLabels)
+  return commands.filter(x => x.effectiveKeybinding === effective)
 }
 
 const conflictCommands = computed(() => {
-  return getConflictCommands(shortcuts.value || [])
+  return getConflictCommands(shortcuts.value || [], nonUsLayout.value ? serializeKeybinding(recordedBinding.value) : null)
 })
 
 async function refresh () {
@@ -235,7 +255,13 @@ watch(tab, () => {
 
 function show () {
   filterStr.value = ''
+  nonUsLayout.value = getSetting('keybindings.non-us-layout', false)
   managerVisible.value = true
+  refresh()
+}
+
+async function changeNonUsLayout () {
+  await setSetting('keybindings.non-us-layout', nonUsLayout.value)
   refresh()
 }
 
@@ -257,12 +283,12 @@ function revealCommand (commandId: string) {
   }
 }
 
-function viewConflict (keys: string[] | null) {
+function viewConflict (keys: string[] | null, binding?: string | null) {
   if (!keys) {
     return
   }
 
-  const commands = getConflictCommands(keys)
+  const commands = getConflictCommands(keys, binding)
   useModal().alert({
     title: t('keyboard-shortcuts.conflict-title', getKeysLabel(keys)),
     component: h('div', [
@@ -272,15 +298,21 @@ function viewConflict (keys: string[] | null) {
   })
 }
 
-async function updateCommand (command: string, keys: string[] | null) {
-  logger.debug('updateCommand', command, keys)
+async function updateCommand (command: string, keys: string[] | null, binding: RecordedKeybinding | null = null) {
+  logger.debug('updateCommand', command, keys, binding)
 
   const data = getSetting('keybindings', []).filter(x => (
     x.command !== command || x.type !== tab.value
   ))
 
   if (keys) {
-    data.push({ type: tab.value, command, keys: keys.join('+') || null })
+    const keyString = keys.join('+') || null
+    const entry: Keybinding = { type: tab.value, command, keys: keyString }
+    const bindingString = nonUsLayout.value ? serializeKeybinding(binding) : null
+    if (bindingString) {
+      entry.binding = bindingString
+    }
+    data.push(entry)
   }
 
   keybindings.value = data
@@ -296,6 +328,7 @@ async function clearShortcuts (command: string) {
 
 function editShortcuts (command: string) {
   currentCommand.value = command
+  recordedBinding.value = null
 }
 
 function resetShortcuts (command: string) {
@@ -303,12 +336,17 @@ function resetShortcuts (command: string) {
 }
 
 function recordKey (e: KeyboardEvent) {
+  if (nonUsLayout.value && (e.isComposing || e.repeat || e.key === 'Process')) {
+    return
+  }
+
   e.preventDefault()
   e.stopPropagation()
 
   if (e.key === 'Escape') {
     currentCommand.value = ''
     shortcuts.value = null
+    recordedBinding.value = null
     return
   }
 
@@ -323,35 +361,44 @@ function recordKey (e: KeyboardEvent) {
 
   const keys = Object.keys(modifiers).filter((key) => modifiers[key])
 
-  if (!['Control', 'Alt', 'Shift', 'Meta'].includes(e.key)) {
-    let val = e.code
-    if (val.startsWith('Key')) {
-      val = val.slice(3)
-    } else if (val.startsWith('Digit')) {
-      val = val.slice(5)
-    } else if (val.startsWith('Arrow')) {
-      val = val.slice(5)
-    } else if (val.startsWith('Numpad')) {
-      val = e.code
-    } else if (val === 'Equal') { // avoid conflict with '+'
-      val = '='
-    } else if ('`-=[]\\;\',./{}|:"<>?~!@#$%^&*()_'.includes(e.key)) {
-      val = e.key
-    }
+  if (nonUsLayout.value && e.key === 'Enter' && keys.length === 0) {
+    finishRecording()
+    return
+  }
 
+  if (nonUsLayout.value) {
+    const recorded = recordNonUsKey(e)
+    if (recorded) {
+      keys.push(recorded.key)
+      recordedBinding.value = recorded.binding
+    } else {
+      recordedBinding.value = null
+    }
+  } else if (!['Control', 'Alt', 'Shift', 'Meta'].includes(e.key)) {
+    let val = e.code
+    if (val.startsWith('Key')) val = val.slice(3)
+    else if (val.startsWith('Digit')) val = val.slice(5)
+    else if (val.startsWith('Arrow')) val = val.slice(5)
+    else if (val.startsWith('Numpad')) val = e.code
+    else if (val === 'Equal') val = '='
+    else if ('`-=[]\\;\',./{}|:"<>?~!@#$%^&*()_'.includes(e.key)) val = e.key
     keys.push(val)
   }
 
-  if (e.key === 'Enter' && keys.length <= 1) {
-    if (currentCommand.value && shortcuts.value && shortcuts.value.length) {
-      updateCommand(currentCommand.value, shortcuts.value)
-    }
-
-    currentCommand.value = ''
-    shortcuts.value = null
+  if (!nonUsLayout.value && e.key === 'Enter' && keys.length <= 1) {
+    finishRecording()
   } else {
     shortcuts.value = keys
   }
+}
+
+function finishRecording () {
+  if (currentCommand.value && shortcuts.value && (!nonUsLayout.value || shortcuts.value.length)) {
+    updateCommand(currentCommand.value, shortcuts.value, nonUsLayout.value ? recordedBinding.value : null)
+  }
+  currentCommand.value = ''
+  shortcuts.value = null
+  recordedBinding.value = null
 }
 
 watchEffect(() => {
@@ -526,8 +573,15 @@ table {
 
 .action {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   padding-top: 10px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 }
 
 .recorder {

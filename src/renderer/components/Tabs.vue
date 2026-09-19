@@ -32,8 +32,8 @@
     </div>
     <template v-for="(btn, i) in [...actionBtns].filter(x => !x.hidden).sort((a: any, b: any) => ((a.order || 0) - (b.order || 0)))">
       <div  v-if="btn.type === 'separator'" class="action-btn-separator" :key="i" />
-      <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" class="action-btn" @click="btn.onClick" :title="btn.title" :style="btn.style">
-        <svg-icon :name="btn.icon" width="12px" />
+      <div v-else-if="btn.type === 'normal'" :key="btn.key || `${i}`" :class="{'action-btn': true, checked: btn.checked}" @click="btn.onClick" :title="btn.title" :style="btn.style">
+        <svg-icon :name="btn.icon" :width="btn.iconWidth || '12px'" />
       </div>
       <component v-else-if="btn.type === 'custom'" :key="btn.key || `custom-${i}`" :is="btn.component" />
     </template>
@@ -294,13 +294,19 @@ export default defineComponent({
     flex: none;
     width: 22px;
     height: 22px;
-    margin: 0 3px;
+    margin: 0 2px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--g-color-20);
 
     &:hover {
+      color: var(--g-color-0);
+      background-color: var(--g-color-75);
+      border-radius: 50%;
+    }
+
+    &.checked {
       color: var(--g-color-0);
       background-color: var(--g-color-75);
       border-radius: 50%;
@@ -316,6 +322,8 @@ export default defineComponent({
   overflow-x: hidden;
   overflow-y: hidden;
   order: -1024;
+  -webkit-app-region: drag;
+  app-region: drag;
 
   &::before,
   &::after {
@@ -377,6 +385,8 @@ export default defineComponent({
   font-size: 12px;
   overflow: hidden;
   background: var(--g-color-87);
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
 
 .label {
@@ -429,7 +439,7 @@ export default defineComponent({
   width: 1px;
   height: 14px;
   background: var(--g-color-70);
-  margin: 0 3px;
+  margin: 0 2px;
   flex: none;
 
   &:first-child,

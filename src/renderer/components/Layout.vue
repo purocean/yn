@@ -1,6 +1,6 @@
 <template>
   <div ref="layout" :class="{layout: true, presentation, electron: isElectron}">
-    <div class="header" v-show="isElectron && !isFullscreen">
+    <div class="header" v-show="isElectron">
       <slot name="header"></slot>
     </div>
     <div class="main">
@@ -49,7 +49,7 @@ let resizeOrigin: any = null
 export default defineComponent({
   name: 'layout',
   setup () {
-    const { showView, showXterm, showSide, showEditor, presentation, isFullscreen, showContentRightSide } = toRefs(store.state)
+    const { showView, showXterm, showSide, showEditor, presentation, showContentRightSide } = toRefs(store.state)
 
     const layout = ref<HTMLElement | null>(null)
     const aside = ref<HTMLElement | null>(null)
@@ -266,8 +266,20 @@ export default defineComponent({
       }
     })
 
+    let contentResizeObserver: ResizeObserver | null = null
+
+    function updateContentTop () {
+      if (content.value) {
+        document.documentElement.style.setProperty('--g-workbench-content-top', `${content.value.getBoundingClientRect().top}px`)
+      }
+    }
+
     onMounted(() => {
       containerRefs.forEach(([name, element]) => setContainerDom(name, element.value))
+
+      updateContentTop()
+      contentResizeObserver = new ResizeObserver(updateContentTop)
+      contentResizeObserver.observe(content.value!)
 
       window.addEventListener('resize', emitResize)
       window.document.addEventListener('mousemove', resizeFrame)
@@ -275,6 +287,8 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
+      contentResizeObserver?.disconnect()
+      document.documentElement.style.removeProperty('--g-workbench-content-top')
       containerRefs.forEach(([name]) => setContainerDom(name, null))
 
       window.removeEventListener('resize', emitResize)
@@ -297,7 +311,6 @@ export default defineComponent({
       showContentRightSide,
       presentation,
       isElectron,
-      isFullscreen,
       layout,
       aside,
       right,
@@ -326,12 +339,6 @@ export default defineComponent({
     .header,
     .footer {
       display: none;
-    }
-
-    &.electron {
-      .header {
-        display: block;
-      }
     }
 
     .preview {

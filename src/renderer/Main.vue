@@ -1,7 +1,7 @@
 <template>
   <Layout :class="classes">
     <template v-slot:header>
-      <TitleBar />
+      <TitleBar v-if="isElectron" />
     </template>
     <template v-slot:footer>
       <StatusBar />
@@ -25,7 +25,7 @@
       <ContentRightSide />
     </template>
     <template v-slot:right-before>
-      <FileTabs />
+      <TitleBarTabs />
     </template>
   </Layout>
   <XFilter />
@@ -47,17 +47,19 @@ import startup from '@fe/startup'
 import { getActionHandler } from '@fe/core/action'
 import { registerHook, removeHook } from '@fe/core/hook'
 import { FLAG_DISABLE_XTERM, MODE } from '@fe/support/args'
+import { isElectron } from '@fe/support/env'
 import store from '@fe/support/store'
 import type { CustomEditor } from '@fe/types'
 import { emitResize } from '@fe/services/layout'
 import { exitPresent } from '@fe/services/view'
+import { useWindowState } from '@fe/support/window-state'
 import Layout from '@fe/components/Layout.vue'
 import SvgIcon from '@fe/components/SvgIcon.vue'
 import TitleBar from '@fe/components/TitleBar.vue'
 import StatusBar from '@fe/components/StatusBar.vue'
 import Tree from '@fe/components/Tree.vue'
 import Terminal from '@fe/components/Terminal.vue'
-import FileTabs from '@fe/components/FileTabs.vue'
+import TitleBarTabs from '@fe/components/TitleBarTabs.vue'
 import Editor from '@fe/components/Editor.vue'
 import Previewer from '@fe/components/Previewer.vue'
 import ContentRightSide from '@fe/components/ContentRightSide.vue'
@@ -83,7 +85,7 @@ export default defineComponent({
     StatusBar,
     Tree,
     Terminal,
-    FileTabs,
+    TitleBarTabs,
     Editor,
     Previewer,
     ContentRightSide,
@@ -100,6 +102,8 @@ export default defineComponent({
     KeyboardShortcuts,
   },
   setup () {
+    useWindowState()
+
     const showOutline = computed(() => store.state.showOutline)
     const presentationExitVisible = computed(() => MODE === 'normal' && store.state.presentation)
 
@@ -127,7 +131,7 @@ export default defineComponent({
       removeHook('EDITOR_CURRENT_EDITOR_CHANGE', onEditorChange)
     })
 
-    return { presentationExitVisible, classes, hideXterm, showOutline, onEditorChange, exitPresent }
+    return { presentationExitVisible, classes, hideXterm, showOutline, onEditorChange, exitPresent, isElectron }
   }
 })
 </script>

@@ -31,6 +31,8 @@ describe('setting schema', () => {
 
     expect(schemaA).not.toBe(schemaB)
     expect(schemaA.properties.theme.defaultValue).toBe('system')
+    expect(schemaA.properties['terminal.font-size'].defaultValue).toBe(13)
+    expect(schemaA.properties['terminal.font-family'].defaultValue).toBe('')
     expect(schemaA.groups.map(group => group.value)).toEqual(['repos', 'appearance', 'editor', 'render', 'image', 'proxy'])
 
     ;(schemaA.properties.theme as any).defaultValue = 'dark'
@@ -59,6 +61,8 @@ describe('setting schema', () => {
 
     expect(schema.properties.envs).toBeUndefined()
     expect(schema.properties.shell).toBeUndefined()
+    expect(schema.properties['terminal.font-size']).toBeUndefined()
+    expect(schema.properties['terminal.font-family']).toBeUndefined()
     expect(schema.properties['server.host']).toBeUndefined()
     expect(schema.properties['server.port']).toBeUndefined()
     expect(schema.properties['updater.source']).toBeUndefined()

@@ -73,21 +73,27 @@ For more information on how to use the following functions, please see [characte
 ![Screenshot](./help/3.png)
 ![Screenshot](./help/4.png)
 ![Screenshot](./help/5.png)
+<img width="2384" height="1330" alt="image" src="https://github.com/user-attachments/assets/dc69f40c-6385-4bba-82ef-ea248b363b5b" />
+<img width="2418" height="1518" alt="image" src="https://github.com/user-attachments/assets/9bad4e89-aa50-4226-85e4-6ee1318630da" />
+<img width="2564" height="1424" alt="image" src="https://github.com/user-attachments/assets/0cb64d76-5e4e-429a-8f2a-8961d1f144be" />
+
+
+
 
 ## Changelogs
 
-### [v3.92.1](https://github.com/purocean/yn/releases/tag/v3.92.1) 2026-07-12
+### [v3.93.0](https://github.com/purocean/yn/releases/tag/v3.93.0) 2026-09-19
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-win-x64-3.92.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-mac-arm64-3.92.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-mac-x64-3.92.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-linux-x86_64-3.92.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.92.1/Yank-Note-linux-amd64-3.92.1.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-win-x64-3.93.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-mac-arm64-3.93.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-mac-x64-3.93.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-linux-x86_64-3.93.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-linux-amd64-3.93.0.deb)
 
-1. feat(markdown): Upgrade Markdown-it to 14.3.0 and add CJK-friendly emphasis parsing for Chinese and Japanese text
-2. feat(markdown): Add a raw HTML container that can render HTML blocks mixed with Markdown content
-3. feat(plugin): Add range-based text highlighting APIs for extensions and preview interactions
-4. feat(editor): Always show the floating editor hint so the feature remains discoverable
-5. fix(markdown): Avoid double escaping plain-text code fences with a language marker
-6. fix(editor): Restore HTML and other non-Markdown text files correctly when the app starts
-7. fix(terminal): Prevent IME layout offsets caused by horizontal terminal overflow
-8. chore: Upgrade Electron to 41 and update dependencies and security-related transitive packages
+1. feat(ui): Redesign the desktop title bar to integrate file tabs, native window controls, navigation actions, dragging, and always-on-top controls while freeing more vertical space
+2. feat(keybinding): Add an opt-in Non-US keyboard layout Beta mode for more accurate shortcut recording and matching across the editor, workbench, and application
+3. feat(markdown): Add a global heading-number setting for preview and export, with per-document front matter overrides
+4. feat(terminal): Add settings for terminal font family and font size
+5. fix(editor): Allow programmatic content updates in read-only mode so external read-only files load correctly
+6. fix(export): Improve embedded content compatibility in PDF export windows, including Drawio diagrams
+7. style(markdown): Soften inline code backgrounds in light and dark themes
+8. chore: Upgrade Electron to 41.10.3 and update dependencies and security-related transitive packages
 
 [More release notes](https://github.com/purocean/yn/releases)
 

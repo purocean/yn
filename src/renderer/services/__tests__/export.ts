@@ -23,6 +23,8 @@ vi.mock('lodash-es', async importOriginal => ({
 }))
 
 vi.mock('@fe/core/hook', () => ({
+  registerHook: vi.fn(),
+  removeHook: vi.fn(),
   triggerHook: mocks.triggerHook,
 }))
 
@@ -32,6 +34,7 @@ vi.mock('@fe/support/embed', () => ({
 
 vi.mock('@fe/support/env', () => ({
   getElectronRemote: () => mocks.remote,
+  isMacOS: false,
   get isElectron () {
     return mocks.isElectron
   },
@@ -42,10 +45,14 @@ vi.mock('@fe/support/env', () => ({
 }))
 
 vi.mock('@fe/support/store', () => ({
-  default: { state: mocks.state },
+  default: {
+    state: mocks.state,
+    watch: vi.fn(),
+  },
 }))
 
 vi.mock('@fe/utils', () => ({
+  getLogger: vi.fn(() => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() })),
   sleep: vi.fn(() => Promise.resolve()),
 }))
 
@@ -57,8 +64,15 @@ vi.mock('@fe/services/repo', () => ({
   getRepo: mocks.getRepo,
 }))
 
+vi.mock('@fe/services/setting', () => ({
+  getSetting: (_key: string, defaultValue?: any) => defaultValue,
+}))
+
 vi.mock('@fe/services/i18n', () => ({
+  getCurrentLanguage: () => 'en-US',
+  $$t: (key: string) => key,
   t: (key: string) => key,
+  useI18n: () => ({ t: (key: string) => key, $t: { value: (key: string) => key } }),
 }))
 
 vi.mock('@fe/services/view', () => ({
@@ -239,6 +253,7 @@ test('prints pdf in electron window and destroys temporary browser window', asyn
 
   const promise = printCurrentDocumentToPDF({ landscape: true } as any, { hidden: true })
   await vi.waitFor(() => expect(mocks.openWindow).toHaveBeenCalled())
+  expect(mocks.openWindow.mock.calls[0][2]).toMatchObject({ webSecurity: false })
   expect(loadHandler).toEqual(expect.any(Function))
   await loadHandler()
 

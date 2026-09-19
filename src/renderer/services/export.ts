@@ -12,6 +12,7 @@ import { basename, dirname } from '@fe/utils/path'
 import { getRepo } from './repo'
 import { t } from './i18n'
 import { getContentHtml, getHeadings, getPreviewStyles, getRenderEnv, getRenderIframe } from './view'
+import { getSetting } from '@fe/services/setting'
 
 type HtmlExportOptions = Partial<NonNullable<ConvertOpts['fromHtmlOptions']>>
 
@@ -218,7 +219,8 @@ function buildHtml (title: string, body: string, options: HtmlExportOptions) {
   }
   const includeToc = options.includeToc || []
   const hasToc = includeToc.length > 0
-  const headingNumber = !!(getRenderEnv()?.attributes?.headingNumber)
+  const renderEnv = getRenderEnv()
+  const headingNumber = renderEnv?.attributes?.headingNumber ?? getSetting('render.heading-number', false)
   const bodyHtml = enhanceCodeBlocks(body, codeOptions)
   const codeBlockAssets = buildCodeBlockAssets(codeOptions)
 
@@ -460,6 +462,7 @@ export async function printCurrentDocumentToPDF (opts?: PrintOpts, runtimeOption
     closable: false,
     modal: true,
     alwaysOnTop: false,
+    webSecurity: false,
   })
 
   if (!win) {
