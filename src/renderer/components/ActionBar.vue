@@ -122,6 +122,8 @@ onBeforeUnmount(() => {
   align-items: center;
   position: relative;
   padding: 0 3px;
+  -webkit-app-region: drag;
+  app-region: drag;
 
   & > .title {
     position: absolute;
@@ -141,6 +143,8 @@ onBeforeUnmount(() => {
 
   & > .btns {
     background: var(--g-color-98);
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
   }
 
   .btn {
