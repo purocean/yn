@@ -1,4 +1,5 @@
 import type { Ctx, Plugin } from '@fe/context'
+import { FLAG_MAS } from '@fe/support/args'
 
 const settingKey = 'mcp.enabled'
 const copyEndpointAction = 'plugin.mcp-server.copy-endpoint'
@@ -48,6 +49,10 @@ function appendEndpointLink (ctx: Ctx, editor: any) {
 export default {
   name: 'mcp-server',
   register: (ctx) => {
+    if (FLAG_MAS) {
+      return
+    }
+
     ctx.action.registerAction({
       name: copyEndpointAction,
       description: ctx.i18n.t('copy'),
