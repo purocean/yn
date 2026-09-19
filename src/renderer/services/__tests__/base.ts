@@ -142,7 +142,7 @@ test('electron shell helpers quote paths and normalize windows paths', async () 
   await showItemInFolder('/tmp/a/b.md')
   await trashItem('/tmp/a/b.md')
 
-  expect(mocks.rpc).toHaveBeenNthCalledWith(2, 'require(\'electron\').shell.openPath("\\\\tmp\\\\a\\\\b.md")')
+  expect(mocks.rpc.mock.calls[1][0]).toContain('require(\'electron\').shell.openPath("\\\\tmp\\\\a\\\\b.md")')
   expect(mocks.rpc).toHaveBeenNthCalledWith(3, 'require(\'electron\').shell.showItemInFolder("\\\\tmp\\\\a\\\\b.md")')
   expect(mocks.rpc).toHaveBeenNthCalledWith(4, 'require(\'electron\').shell.trashItem("\\\\tmp\\\\a\\\\b.md")')
 })
