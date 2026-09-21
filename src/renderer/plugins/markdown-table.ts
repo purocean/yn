@@ -1,6 +1,7 @@
 import { nextTick, reactive } from 'vue'
 import Sortable from 'sortablejs'
 import { orderBy } from 'lodash-es'
+import { applyAttrs, getAttrs, parseInfo } from 'markdown-it-attributes'
 import type { Plugin } from '@fe/context'
 import { useModal } from '@fe/support/ui/modal'
 import { hasCtrlCmd } from '@fe/core/keybinding'
@@ -17,6 +18,7 @@ import type { Components } from '@fe/types'
 const tableSortMode = 'sort-mode'
 const cellClassName = 'yn-table-cell'
 const logger = getLogger('markdown-table')
+const attrsOpts = { leftDelimiter: '{', rightDelimiter: '}', allowedAttributes: undefined }
 
 function editWrapper<T extends Array<any>, U> (fn: (...args: T) => U) {
   return function (...args: T) {
@@ -34,6 +36,65 @@ function injectClass (tokens: Token[], idx: number, options: any, env: any, slf:
   const token = tokens[idx]
   token.attrJoin('class', cellClassName)
   return slf.renderToken(tokens, idx, options)
+}
+
+function findTableOpenIndex (tokens: Token[], tableCloseIndex: number) {
+  let depth = 1
+
+  for (let i = tableCloseIndex - 1; i >= 0; --i) {
+    if (tokens[i].type === 'table_close') {
+      depth++
+    } else if (tokens[i].type === 'table_open') {
+      depth--
+      if (depth === 0) {
+        return i
+      }
+    }
+  }
+
+  return -1
+}
+
+function fixTableAttrsInContainer (tokens: Token[]) {
+  let containerDepth = 0
+
+  for (let i = 0; i < tokens.length - 3; ++i) {
+    const token = tokens[i]
+
+    if (token.type.startsWith('container_')) {
+      containerDepth += token.nesting
+      continue
+    }
+
+    if (containerDepth <= 0 || token.type !== 'table_close') {
+      continue
+    }
+
+    const paragraphOpen = tokens[i + 1]
+    const inline = tokens[i + 2]
+    const paragraphClose = tokens[i + 3]
+
+    if (
+      paragraphOpen?.type !== 'paragraph_open' ||
+      inline?.type !== 'inline' ||
+      paragraphClose?.type !== 'paragraph_close'
+    ) {
+      continue
+    }
+
+    const attrInfo = parseInfo(attrsOpts, inline.content)
+    if (!attrInfo || attrInfo.text.trim()) {
+      continue
+    }
+
+    const tableOpenIndex = findTableOpenIndex(tokens, i)
+    if (tableOpenIndex < 0) {
+      continue
+    }
+
+    applyAttrs(attrsOpts, tokens[tableOpenIndex], getAttrs(attrInfo.exp))
+    tokens.splice(i + 1, 3)
+  }
 }
 
 function resetInput (input: HTMLTextAreaElement) {
@@ -744,6 +805,11 @@ export default {
     `)
 
     ctx.markdown.registerPlugin(md => {
+      md.core.ruler.after('block', 'table_attrs_in_container', state => {
+        fixTableAttrsInContainer(state.tokens)
+        return true
+      })
+
       md.renderer.rules.table_open = (tokens, idx, options, _, slf) => {
         const table = slf.renderToken(tokens, idx, options)
         return {
