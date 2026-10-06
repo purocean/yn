@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import path from 'path'
 import fs from 'fs-extra'
+import { createDevProxy } from './scripts/dev-proxy'
 
 // copy vs
 const vsDist = path.resolve(__dirname, 'src/renderer/public/vs')
@@ -24,22 +25,22 @@ export default defineConfig({
     port: 8066,
     proxy: {
       '/static': {
-        target: 'http://127.0.0.1:3044'
+        ...createDevProxy('http://127.0.0.1:3044')
       },
       '/custom-css': {
-        target: 'http://127.0.0.1:3044'
+        ...createDevProxy('http://127.0.0.1:3044')
       },
       '/extension': {
-        target: 'http://127.0.0.1:3044'
+        ...createDevProxy('http://127.0.0.1:3044')
       },
       '/github.css': {
-        target: 'http://127.0.0.1:3044'
+        ...createDevProxy('http://127.0.0.1:3044')
       },
       '/api': {
-        target: 'http://127.0.0.1:3044'
+        ...createDevProxy('http://127.0.0.1:3044')
       },
       '/ws': {
-        target: 'http://127.0.0.1:3044',
+        ...createDevProxy('http://127.0.0.1:3044'),
         ws: true
       }
     }

@@ -59,8 +59,11 @@ exact origin to `server.trusted-origins` in the config file, for example:
 `"server.trusted-origins": ["https://notes.example"]`. Preserve the browser-facing
 Host in the proxy; forwarding headers are not used as a trust source. Do not add
 origins that host untrusted content. Authentication and role checks still apply.
-Unpackaged development also allows the Vite frontend at `http://localhost:8066`
-and `http://127.0.0.1:8066`; packaged builds do not implicitly trust those ports.
+The Vite development proxy validates the original browser source against its
+actual listening address/port before adapting Host, Origin and Referer to the
+backend. This covers HTTP, Socket.IO polling and WebSocket upgrades; it never
+rewrites untrusted origins into trusted ones. The backend does not special-case
+Vite ports or Electron packaging mode.
 
 Settings responses never include `server.jwt-secret`, including the JavaScript
 bootstrap response. Other admin settings and existing guest filtering are

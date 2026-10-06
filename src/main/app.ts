@@ -421,7 +421,7 @@ const toggleFullscreen = () => {
 
 const serve = () => {
   try {
-    const { callback: handler, server } = httpServer(backendPort, app.isPackaged ? [] : [`http://localhost:${devFrontendPort}`, `http://127.0.0.1:${devFrontendPort}`])
+    const { callback: handler, server } = httpServer(backendPort)
 
     if (server) {
       server.on('error', (e: Error) => {

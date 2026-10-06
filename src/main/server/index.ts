@@ -832,11 +832,11 @@ export async function killPtyProcesses (pty?: NodePty.IPty) {
   }
 }
 
-const server = (port = 3000, additionalOrigins: string[] = []) => {
+const server = (port = 3000) => {
   const app = new Koa()
   const host = config.get('server.host', '127.0.0.1')
   const trustedOrigins = config.get('server.trusted-origins', [])
-  const checkOrigin = createRequestOriginGuard(port, host, [...additionalOrigins, ...(Array.isArray(trustedOrigins) ? trustedOrigins : [])])
+  const checkOrigin = createRequestOriginGuard(port, host, Array.isArray(trustedOrigins) ? trustedOrigins : [])
 
   app.use(async (ctx: any, next: any) => {
     if (!checkOrigin(ctx.headers, ctx.req._protocol === true)) {
