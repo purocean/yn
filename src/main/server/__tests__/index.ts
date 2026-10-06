@@ -33,7 +33,7 @@ const mocks = vi.hoisted(() => {
     }
   }
 
-  const socketEmitter = new EventEmitter()
+  const socketEmitter = Object.assign(new EventEmitter(), { engine: { use: vi.fn() } })
   const httpServer = { listen: vi.fn(), on: vi.fn() }
 
   return {
@@ -259,7 +259,6 @@ function createCtx (overrides: Record<string, any> = {}) {
   const headers: Record<string, any> = {}
   const ctx: any = {
     body: undefined,
-    headers: overrides.headers || {},
     method: overrides.method || 'GET',
     originalUrl: overrides.originalUrl || overrides.path || '/',
     path: overrides.path || '/',
@@ -290,7 +289,8 @@ function createCtx (overrides: Record<string, any> = {}) {
     get responseHeaders () {
       return headers
     },
-    ...overrides
+    ...overrides,
+    headers: { host: 'localhost:3099', origin: 'http://localhost:3099', ...overrides.headers }
   }
 
   return ctx
@@ -315,6 +315,7 @@ describe('server index module', () => {
     vi.clearAllMocks()
     vi.doUnmock('node-pty')
     mocks.actions.clear()
+    mocks.socketEmitter.removeAllListeners()
     mocks.MockKoa.instances.length = 0
     mocks.disableServer = true
     mocks.configGet.mockImplementation((_key: string, defaultValue: any) => defaultValue)
@@ -380,7 +381,7 @@ describe('server index module', () => {
       jsonLimit: '50mb',
       formidable: { maxFieldsSize: 268435456 }
     }))
-    expect(mocks.MockKoa.instances[0].middlewares).toHaveLength(21)
+    expect(mocks.MockKoa.instances[0].middlewares).toHaveLength(22)
   })
 
   test('enforces bearer permissions and allow lists before route handlers', async () => {
@@ -412,6 +413,74 @@ describe('server index module', () => {
     })
     expect(invalid.status).toBe(401)
     expect(invalid.body).toEqual({ status: 'error', message: 'bad token', data: null })
+  })
+
+  test.each([
+    '/api/file', '/api/tree', '/api/settings', '/api/settings/js', '/api/run',
+    '/api/attachment', '/api/plugins', '/api/extensions', '/api/mcp', '/api/future-route'
+  ])('rejects untrusted origins before any handler: %s', async (path) => {
+    const ctx = await runRequest({ path, headers: { origin: 'https://attacker.example' } })
+    expect(ctx.status).toBe(403)
+    expect(mocks.configGetAll).not.toHaveBeenCalled()
+    expect(mocks.fileRead).not.toHaveBeenCalled()
+    expect(mocks.jwtVerify).not.toHaveBeenCalled()
+    expect(mocks.handleMCPRequest).not.toHaveBeenCalled()
+  })
+
+  test('checks source even for token-bearing requests and rejects DNS rebinding', async () => {
+    for (const headers of [
+      { origin: 'null' },
+      { origin: undefined },
+      { origin: undefined, referer: 'http://localhost:3099/', 'sec-fetch-site': 'cross-site' },
+      { host: 'rebound.example:3099', origin: 'http://rebound.example:3099', 'sec-fetch-site': 'same-origin' },
+      { origin: 'http://localhost:3100' },
+      { origin: 'https://localhost:3099' }
+    ]) {
+      const ctx = await runRequest({ path: '/api/settings', headers: { ...headers, authorization: 'Bearer admin' } })
+      expect(ctx.status).toBe(403)
+    }
+    expect(mocks.jwtVerify).not.toHaveBeenCalled()
+  })
+
+  test('preserves same-origin bootstrap GET and trusted Electron protocol requests', async () => {
+    for (const headers of [
+      { origin: undefined, 'sec-fetch-site': 'same-origin' },
+      { origin: undefined, referer: 'http://localhost:3099/' }
+    ]) {
+      expect((await runRequest({ path: '/api/settings/js', headers })).status).toBe(200)
+    }
+    expect((await runRequest({ path: '/api/settings', req: { _protocol: true }, headers: { origin: undefined } })).status).toBe(200)
+    expect((await runRequest({ path: '/api/settings', req: { _protocol: true }, headers: { origin: 'null' } })).status).toBe(403)
+  })
+
+  test('preserves browser navigation and authenticated remote access at an explicitly trusted origin', async () => {
+    mocks.fsExistsSync.mockReturnValueOnce(true)
+    const home = await runRequest({ path: '/', headers: { origin: undefined, 'sec-fetch-site': 'none', 'sec-fetch-dest': 'document' } })
+    expect(home.status).not.toBe(403)
+    const rebinding = await runRequest({ path: '/', headers: { host: 'attacker.example:3099', origin: undefined, 'sec-fetch-dest': 'document' } })
+    expect(rebinding.status).toBe(403)
+    mocks.configGet.mockImplementation((key: string, defaultValue: any) => key === 'server.trusted-origins' ? ['https://notes.example'] : defaultValue)
+    mocks.jwtVerify.mockReturnValue({ role: 'guest' })
+    const remote = await runRequest({ path: '/api/settings', ip: '203.0.113.8', headers: { host: 'notes.example', origin: 'https://notes.example', authorization: 'Bearer guest' } })
+    expect(remote.status).toBe(200)
+    expect(mocks.jwtVerify).toHaveBeenCalledWith('guest')
+  })
+
+  test('redacts only the signing key from both admin settings formats without changing the cache', async () => {
+    const saved = Object.freeze({
+      'server.jwt-secret': 'signing-secret', 'other-secret': 'preserved', 'api-token': 'preserved',
+      repositories: { main: '/repo' }, license: 'license', extensions: ['one'], theme: 'plain.css'
+    })
+    mocks.configGetAll.mockReturnValue(saved)
+    const expected = { ...saved }
+    delete expected['server.jwt-secret']
+    const json = await runRequest({ path: '/api/settings' })
+    const js = await runRequest({ path: '/api/settings/js' })
+    expect(json.body.data).toEqual(expected)
+    expect(js.body).toBe('_INIT_SETTINGS = ' + JSON.stringify(expected))
+    expect(saved['server.jwt-secret']).toBe('signing-secret')
+    await runRequest({ path: '/api/settings', method: 'POST', body: { theme: 'changed.css' } })
+    expect(mocks.configSetAll).toHaveBeenCalledWith({ ...saved, theme: 'changed.css' })
   })
 
   test('handles file read, write, delete, rename, copy, history, tree, and watch routes', async () => {
@@ -684,7 +753,7 @@ describe('server index module', () => {
       body: { status: 'ok', data: ['github.css', 'plain.css', 'custom.css'] }
     })
 
-    mocks.configGet.mockReturnValueOnce('extension:foo/theme.css')
+    mocks.configGet.mockImplementation((key: string, defaultValue: any) => key.startsWith('custom-css') ? 'extension:foo/theme.css' : defaultValue)
     mocks.extensionList.mockResolvedValueOnce([{ enabled: true, id: 'id:foo' }])
     const cssRedirect = await runRequest({ path: '/custom-css' })
     expect(cssRedirect.redirect).toHaveBeenCalledWith('/extensions/foo/theme.css')
@@ -717,14 +786,14 @@ describe('server index module', () => {
     const responseBody = new mocks.PassThrough()
     mocks.request.mockResolvedValueOnce({ body: responseBody, headers: { 'x-upstream': 'yes' }, statusCode: 202 })
     const proxy = await runRequest({
-      headers: { host: 'local', 'x-proxy-timeout': '1000', 'x-proxy-max-redirections': '1', accept: 'text/plain' },
+      headers: { host: 'localhost:3099', 'x-proxy-timeout': '1000', 'x-proxy-max-redirections': '1', accept: 'text/plain' },
       method: 'POST',
       originalUrl: '/api/proxy-fetch/https://example.test/data',
       path: '/api/proxy-fetch/https://example.test/data',
       req: new mocks.PassThrough()
     })
     expect(mocks.request).toHaveBeenCalledWith('https://example.test/data', expect.objectContaining({
-      headers: { accept: 'text/plain' },
+      headers: { accept: 'text/plain', origin: 'http://localhost:3099' },
       maxRedirections: 1,
       method: 'POST'
     }))
@@ -770,7 +839,7 @@ describe('server index module', () => {
       body: { status: 'error', message: 'Forbidden', data: null }
     })
 
-    mocks.configGet.mockReturnValueOnce('missing.css')
+    mocks.configGet.mockImplementation((key: string, defaultValue: any) => key.startsWith('custom-css') ? 'missing.css' : defaultValue)
     mocks.fsReadFile
       .mockRejectedValueOnce(new Error('missing custom css'))
       .mockResolvedValueOnce(Buffer.from('default css'))
@@ -851,7 +920,7 @@ describe('server index module', () => {
     const responseBody = new mocks.PassThrough()
     mocks.request.mockResolvedValueOnce({ body: responseBody, headers: {}, statusCode: 204 })
     await runRequest({
-      headers: { 'x-proxy-url': 'http://proxy.test', host: 'local' },
+      headers: { 'x-proxy-url': 'http://proxy.test', host: 'localhost:3099' },
       originalUrl: '/api/proxy-fetch/https://example.test/proxied',
       path: '/api/proxy-fetch/https://example.test/proxied'
     })
@@ -902,14 +971,14 @@ describe('server index module', () => {
       const { default: server } = await loadServer()
       const started = server(3999)
       expect(started.server).toBe(mocks.httpServer)
-      expect(mocks.socketIo).toHaveBeenCalledWith(mocks.httpServer, { path: '/ws' })
+      expect(mocks.socketIo).toHaveBeenCalledWith(mocks.httpServer, expect.objectContaining({ path: '/ws', allowRequest: expect.any(Function) }))
       expect(mocks.httpServer.listen).toHaveBeenCalledWith(3999, '127.0.0.1')
 
       const remoteSocket = {
         client: { conn: { remoteAddress: '203.0.113.10' } },
         disconnect: vi.fn(),
         emit: vi.fn(),
-        handshake: { query: {} },
+        handshake: { headers: { host: 'localhost:3999', origin: 'http://localhost:3999' }, query: {} },
         on: vi.fn()
       }
       mocks.socketEmitter.emit('connection', remoteSocket)
@@ -919,7 +988,7 @@ describe('server index module', () => {
         client: { conn: { remoteAddress: '127.0.0.1' } },
         disconnect: vi.fn(),
         emit: vi.fn(),
-        handshake: { query: {} },
+        handshake: { headers: { host: 'localhost:3999', origin: 'http://localhost:3999' }, query: {} },
         on: vi.fn()
       }
       mocks.socketEmitter.emit('connection', localSocket)
@@ -976,11 +1045,27 @@ describe('server index module', () => {
         client: { conn: { remoteAddress: '127.0.0.1' } },
         disconnect: vi.fn(),
         emit: vi.fn(),
-        handshake: { query: { cwd: '/repo', env: '{"TERM":"xterm"}' } },
+        handshake: { headers: { host: 'localhost:3999', 'sec-fetch-site': 'same-origin' }, query: { cwd: '/repo', env: '{"TERM":"xterm"}' } },
         on: vi.fn((event: string, handler: Function) => {
           socketHandlers[event] = handler
         })
       }
+      for (const origin of ['https://attacker.example', 'null', undefined]) {
+        const blocked = { ...localSocket, handshake: { ...localSocket.handshake, headers: { host: 'localhost:3999', origin } } }
+        mocks.socketEmitter.emit('connection', blocked)
+        expect(pty.spawn).not.toHaveBeenCalled()
+      }
+      const allowRequest = mocks.socketIo.mock.calls.at(-1)![1].allowRequest
+      const callback = vi.fn()
+      allowRequest({ headers: { host: 'localhost:3999', origin: 'https://attacker.example' }, socket: { remoteAddress: '127.0.0.1' } }, callback)
+      expect(callback).toHaveBeenCalledWith('Forbidden request origin', false)
+      allowRequest({ headers: { host: 'localhost:3999', 'sec-fetch-site': 'same-origin' }, socket: { remoteAddress: '127.0.0.1' } }, callback)
+      expect(callback).toHaveBeenLastCalledWith(null, true)
+      allowRequest({ headers: { host: 'localhost:3999', 'sec-fetch-site': 'same-origin', upgrade: 'websocket' }, socket: { remoteAddress: '127.0.0.1' } }, callback)
+      expect(callback).toHaveBeenLastCalledWith('Forbidden request origin', false)
+      const engineGuard = mocks.socketEmitter.engine.use.mock.calls.at(-1)![0]
+      engineGuard({ headers: { host: 'localhost:3999', origin: 'https://attacker.example' }, socket: { remoteAddress: '127.0.0.1' } }, {}, callback)
+      expect(callback).toHaveBeenLastCalledWith(expect.any(Error))
       mocks.socketEmitter.emit('connection', localSocket)
 
       expect(pty.spawn).toHaveBeenCalledWith('/bin/zsh', [], expect.objectContaining({

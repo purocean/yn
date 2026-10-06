@@ -3,6 +3,8 @@ import ip from 'ip'
 import * as fs from 'fs-extra'
 import uniq from 'lodash/uniq'
 import type NodePty from 'node-pty'
+import type { IncomingMessage } from 'http'
+import { createRequestOriginGuard } from './request-origin'
 import isEqual from 'lodash/isEqual'
 import * as path from 'path'
 import Koa from 'koa'
@@ -26,7 +28,7 @@ import * as mcpServer from './mcp'
 import type { FileReadResult } from '../../share/types'
 
 const isLocalhost = (address: string) => {
-  return ip.isEqual(address, '127.0.0.1') || ip.isEqual(address, '::1')
+  return !!address && (ip.isEqual(address, '127.0.0.1') || ip.isEqual(address, '::1'))
 }
 
 const result = (status: 'ok' | 'error' = 'ok', message = 'success', data: any = null) => {
@@ -612,7 +614,9 @@ const setting = async (ctx: any, next: any) => {
     if (ctx.method === 'GET') {
       const getSettings = () => {
         if (isAdmin(ctx)) {
-          return config.getAll()
+          const data = { ...config.getAll() }
+          delete data['server.jwt-secret']
+          return data
         } else {
           const data = { ...config.getAll() }
           data.repositories = {}
@@ -828,8 +832,27 @@ export async function killPtyProcesses (pty?: NodePty.IPty) {
   }
 }
 
-const server = (port = 3000) => {
+const server = (port = 3000, additionalOrigins: string[] = []) => {
   const app = new Koa()
+  const host = config.get('server.host', '127.0.0.1')
+  const trustedOrigins = config.get('server.trusted-origins', [])
+  const checkOrigin = createRequestOriginGuard(port, host, [...additionalOrigins, ...(Array.isArray(trustedOrigins) ? trustedOrigins : [])])
+
+  app.use(async (ctx: any, next: any) => {
+    if (!checkOrigin(ctx.headers, ctx.req._protocol === true)) {
+      // Static pages must also reject untrusted Host names to prevent DNS rebinding.
+      // Ordinary top-level navigation may omit source metadata, but never an API request.
+      const navigation = ['/', '/index.html', '/embed/', '/embed/index.html'].includes(ctx.path) && ctx.method === 'GET' &&
+        !ctx.headers.origin && (!ctx.headers['sec-fetch-dest'] || ctx.headers['sec-fetch-dest'] === 'document') &&
+        checkOrigin({ host: ctx.headers.host, 'sec-fetch-site': 'same-origin' })
+      if (!navigation) {
+        ctx.status = 403
+        ctx.body = result('error', 'Forbidden request origin')
+        return
+      }
+    }
+    await next()
+  })
 
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, checkPermission))
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
@@ -879,9 +902,22 @@ const server = (port = 3000) => {
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const server = require('http').createServer(callback)
+  const isAllowedSocketRequest = (req: IncomingMessage) =>
+    checkOrigin(req.headers, false, req.headers.upgrade?.toLowerCase() === 'websocket') &&
+    isLocalhost(req.socket.remoteAddress || '')
+
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const io = require('socket.io')(server, { path: '/ws' })
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const io = require('socket.io')(server, {
+    path: '/ws',
+    allowRequest: (req: IncomingMessage, callback: (error: string | null, allowed: boolean) => void) => {
+      const allowed = isAllowedSocketRequest(req)
+      callback(allowed ? null : 'Forbidden request origin', allowed)
+    }
+  })
+  // Engine middleware also covers polling requests and upgrades with an existing sid.
+  io.engine.use((req: IncomingMessage, _res: unknown, next: (error?: Error) => void) => {
+    next(isAllowedSocketRequest(req) ? undefined : new Error('Forbidden request origin'))
+  })
 
   let pty: typeof NodePty | null = null
 
@@ -892,7 +928,7 @@ const server = (port = 3000) => {
   }
 
   io.on('connection', (socket: any) => {
-    if (!isLocalhost(socket.client.conn.remoteAddress)) {
+    if (!isLocalhost(socket.client.conn.remoteAddress) || !checkOrigin(socket.handshake.headers || {}, false, socket.handshake.headers?.upgrade?.toLowerCase() === 'websocket')) {
       socket.disconnect()
       return
     }
@@ -937,7 +973,6 @@ const server = (port = 3000) => {
     }
   })
 
-  const host = config.get('server.host', '127.0.0.1')
   server.listen(port, host)
 
   console.log(`Address: http://${host}:${port}`)

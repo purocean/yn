@@ -418,13 +418,26 @@ describe('main app entry', () => {
     expect(electron.app.on).not.toHaveBeenCalledWith('ready', expect.any(Function))
   })
 
+  test('does not trust development origins in a packaged app', async () => {
+    const electron = await import('electron')
+    const old = electron.app.isPackaged
+    Object.defineProperty(electron.app, 'isPackaged', { value: true, configurable: true })
+    try {
+      await loadApp()
+      mocks.appEvents.ready()
+      expect(mocks.httpServer).toHaveBeenCalledWith(4555, [])
+    } finally {
+      Object.defineProperty(electron.app, 'isPackaged', { value: old, configurable: true })
+    }
+  })
+
   test('ready event starts services, creates a window, tray, menus, and shortcuts', async () => {
     await loadApp()
     mocks.appEvents.ready()
 
     const win = mocks.browserWindowInstances[0]
     expect(mocks.startup).toHaveBeenCalled()
-    expect(mocks.httpServer).toHaveBeenCalledWith(4555)
+    expect(mocks.httpServer).toHaveBeenCalledWith(4555, ['http://localhost:8066', 'http://127.0.0.1:8066'])
     expect(mocks.protocolHandlers['yank-note']).toEqual(expect.any(Function))
     expect(win.options).toMatchObject({
       show: false,
