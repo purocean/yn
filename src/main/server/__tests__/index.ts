@@ -430,12 +430,11 @@ describe('server index module', () => {
     expect(mocks.handleMCPRequest).not.toHaveBeenCalled()
   })
 
-  test('checks source even for token-bearing requests and rejects DNS rebinding', async () => {
+  test('checks source even for token-bearing requests', async () => {
     for (const headers of [
       { origin: 'null' },
       { origin: undefined, 'sec-fetch-site': 'none' },
       { origin: undefined, referer: 'http://localhost:3099/', 'sec-fetch-site': 'cross-site' },
-      { host: 'rebound.example:3099', origin: 'http://rebound.example:3099', 'sec-fetch-site': 'same-origin' },
       { origin: 'http://localhost:3100' },
       { origin: 'https://localhost:3099' }
     ]) {
@@ -456,12 +455,25 @@ describe('server index module', () => {
     expect((await runRequest({ path: '/api/settings', req: { _protocol: true }, headers: { origin: 'null' } })).status).toBe(403)
   })
 
-  test('preserves root navigation and native MCP while rejecting rebinding', async () => {
-    mocks.fsExistsSync.mockReturnValueOnce(true)
+  test.each([
+    { host: 'notes.example:3099', origin: 'http://notes.example:3099' },
+    { host: '192.168.2.20:3099', origin: 'http://192.168.2.20:3099' },
+    { host: 'localhost:8066', origin: 'http://localhost:8066' }
+  ])('accepts same-origin API requests without an address allowlist: %j', async headers => {
+    const ctx = await runRequest({ path: '/api/settings', headers })
+    expect(ctx.status).toBe(200)
+    expect(ctx.req.jwt).toEqual({ role: 'admin' })
+    expect(mocks.configGetAll).toHaveBeenCalled()
+  })
+
+  test('preserves root navigation and native MCP with arbitrary Host names', async () => {
+    mocks.fsExistsSync.mockReturnValue(true)
     const home = await runRequest({ path: '/', headers: { origin: undefined, 'sec-fetch-site': 'none', 'sec-fetch-dest': 'document' } })
     expect(home.status).not.toBe(403)
-    expect((await runRequest({ path: '/', headers: { host: 'evil.example:3099', origin: undefined } })).status).toBe(403)
-    const native = await runRequest({ path: '/api/mcp/message', method: 'POST', headers: { origin: undefined, 'sec-fetch-mode': 'cors' }, body: { jsonrpc: '2.0', method: 'initialize', id: 1 } })
+    const alias = await runRequest({ path: '/', headers: { host: 'notes.example:3099', origin: undefined } })
+    expect(alias.status).toBe(200)
+    expect(alias.body).toEqual(Buffer.from('disk-content'))
+    const native = await runRequest({ path: '/api/mcp/message', method: 'POST', headers: { host: 'notes.example:3099', origin: undefined, 'sec-fetch-mode': 'cors' }, body: { jsonrpc: '2.0', method: 'initialize', id: 1 } })
     expect(native.status).toBe(200)
     expect(native.req.jwt).toEqual({ role: 'admin' })
     expect(mocks.handleMCPRequest).toHaveBeenCalled()

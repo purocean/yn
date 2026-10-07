@@ -888,15 +888,12 @@ export async function killPtyProcesses (pty?: NodePty.IPty) {
 const server = (port = 3000) => {
   const app = new Koa()
   const host = config.get('server.host', '127.0.0.1')
-  const checkOrigin = createRequestOriginGuard(port, host)
+  const checkOrigin = createRequestOriginGuard(port)
 
   app.use(async (ctx: any, next: any) => {
     const internal = ctx.req._protocol === true
     ctx.req[requestSourceGuard] = checkOrigin
-    // Host validation also protects static pages against DNS rebinding. Native
-    // API requests retain existing authentication only when provenance is absent.
-    if ((!internal && !checkOrigin.allowsHost(ctx.headers)) ||
-      (ctx.path.startsWith('/api') && !checkOrigin(ctx.headers, internal, false, true))) {
+    if (ctx.path.startsWith('/api') && !checkOrigin(ctx.headers, internal, false, true)) {
       ctx.status = 403
       ctx.body = result('error', 'Forbidden request origin')
       return

@@ -41,9 +41,10 @@ The node-pty module cannot be simply installed successfully, it can be operated 
 ## HTTP API request boundary
 
 API requests are checked before body parsing or route effects. The server
-validates Host independently of Origin and forwarding headers, rejects explicit
+compares browser Origin/Referer with the HTTP request Host, rejects explicit
 cross-origin, opaque/null, malformed or contradictory browser provenance, and
-accepts its same-origin browser and internal Electron protocol requests.
+accepts same-origin browser and internal Electron protocol requests.
+There is no Host/address allowlist or DNS-rebinding protection.
 Requests without Origin, Referer or Sec-Fetch-Site retain the existing native
 API/MCP authentication behavior. This is compatibility, not proof of a trusted
 caller: native programs and older clients can omit or forge browser headers.
@@ -72,8 +73,7 @@ Settings JSON and JavaScript responses remove only `server.jwt-secret` from a
 copy. Cached and persisted settings and the signing key are not rotated.
 These checks do not solve same-origin XSS, native same-user access or the existing
 loopback-admin risk of an externally exposed reverse proxy. Reverse-proxy access
-needs separate authentication and compatible Host/source configuration.
+needs separate authentication.
 
-Development proxy adaptation is intentionally outside this change. The existing
-Vite frontend port/forwarded Host and source may be rejected by the backend;
-this change does not add development-origin exceptions or modify Vite.
+The development proxy can forward the frontend Host and browser source unchanged
+for the same-origin comparison; no development-origin exceptions are required.

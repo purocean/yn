@@ -1,5 +1,4 @@
 import type { IncomingHttpHeaders } from 'http'
-import { networkInterfaces } from 'os'
 
 const desktopOrigin = 'yank-note://localhost'
 
@@ -16,32 +15,8 @@ function parseOrigin (value: unknown, allowPath = false): string | undefined {
   }
 }
 
-export function createRequestOriginGuard (port: number, host: string) {
-  // Never derive the allowlist from Host or forwarding headers: they are attacker-controlled.
-  const hosts = new Set(['localhost', '127.0.0.1', '[::1]'])
-  if (host === '0.0.0.0' || host === '::') {
-    try {
-      Object.values(networkInterfaces()).flat().forEach(address => {
-        if (address && !address.address.includes('%')) {
-          hosts.add(address.family === 'IPv6' ? `[${address.address}]` : address.address)
-        }
-      })
-    } catch (error) {
-      // Sandboxed platforms may deny interface enumeration. Fail closed to
-      // loopback instead of trusting request Host.
-      console.warn('Unable to enumerate server interfaces', error)
-    }
-  } else {
-    hosts.add(host.includes(':') && !host.startsWith('[') ? `[${host}]` : host)
-  }
-
-  const origins = new Set([...hosts].map(hostname => new URL(`http://${hostname}:${port}`).origin))
-  const authorities = new Set([...origins].map(origin => new URL(origin).host))
-
-  const allowsHost = (headers: IncomingHttpHeaders) =>
-    typeof headers.host === 'string' && authorities.has(headers.host)
-
-  const check = (headers: IncomingHttpHeaders, internalProtocol = false, websocket = false, allowNative = false): boolean => {
+export function createRequestOriginGuard (port: number) {
+  return (headers: IncomingHttpHeaders, internalProtocol = false, websocket = false, allowNative = false): boolean => {
     const originHeader = headers.origin
     const refererHeader = headers.referer
     const origin = parseOrigin(originHeader)
@@ -56,19 +31,18 @@ export function createRequestOriginGuard (port: number, host: string) {
         (!headers['sec-fetch-site'] || headers['sec-fetch-site'] === 'same-origin' || headers['sec-fetch-site'] === 'none')
     }
 
-    const authority = headers.host
-    if (typeof authority !== 'string' || !authorities.has(authority)) return false
+    const targetOrigin = typeof headers.host === 'string' && parseOrigin(`http://${headers.host}`)
+    if (!targetOrigin) return false
 
     // Electron's privileged, standard scheme connects to the local terminal over HTTP.
     if (origin === desktopOrigin) {
-      return ['localhost', '127.0.0.1', '[::1]'].includes(new URL(`http://${authority}`).hostname) &&
-        (new URL(`http://${authority}`).port || '80') === String(port) && (!referer || referer === desktopOrigin)
+      const target = new URL(targetOrigin)
+      return ['localhost', '127.0.0.1', '[::1]'].includes(target.hostname) &&
+        (target.port || '80') === String(port) && (!referer || referer === desktopOrigin)
     }
 
-    const matchesTarget = (source: string) => origins.has(source) && new URL(source).host === authority
-    if (origin && !matchesTarget(origin)) return false
-    if (referer && !matchesTarget(referer)) return false
-    if (origin && referer && origin !== referer) return false
+    if (origin && origin !== targetOrigin) return false
+    if (referer && referer !== targetOrigin) return false
     if (headers['sec-fetch-site'] !== undefined && headers['sec-fetch-site'] !== 'same-origin') return false
 
     // A WebSocket handshake must carry Origin. GET/script/image requests often do not;
@@ -78,6 +52,4 @@ export function createRequestOriginGuard (port: number, host: string) {
     // exists. This exception is never used for executable embeds or terminals.
     return !!origin || !!referer || headers['sec-fetch-site'] === 'same-origin' || allowNative
   }
-
-  return Object.assign(check, { allowsHost })
 }
