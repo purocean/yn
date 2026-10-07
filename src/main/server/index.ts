@@ -3,6 +3,9 @@ import ip from 'ip'
 import * as fs from 'fs-extra'
 import uniq from 'lodash/uniq'
 import type NodePty from 'node-pty'
+import type { IncomingMessage } from 'http'
+import { createRequestOriginGuard } from './request-origin'
+import { checkApiRequestBody } from './request-body'
 import isEqual from 'lodash/isEqual'
 import * as path from 'path'
 import Koa from 'koa'
@@ -26,7 +29,7 @@ import * as mcpServer from './mcp'
 import type { FileReadResult } from '../../share/types'
 
 const isLocalhost = (address: string) => {
-  return ip.isEqual(address, '127.0.0.1') || ip.isEqual(address, '::1')
+  return !!address && (ip.isEqual(address, '127.0.0.1') || ip.isEqual(address, '::1'))
 }
 
 const result = (status: 'ok' | 'error' = 'ok', message = 'success', data: any = null) => {
@@ -612,7 +615,9 @@ const setting = async (ctx: any, next: any) => {
     if (ctx.method === 'GET') {
       const getSettings = () => {
         if (isAdmin(ctx)) {
-          return config.getAll()
+          const data = { ...config.getAll() }
+          delete data['server.jwt-secret']
+          return data
         } else {
           const data = { ...config.getAll() }
           data.repositories = {}
@@ -713,6 +718,8 @@ const rpc = async (ctx: any, next: any) => {
   }
 }
 
+const requestSourceGuard = Symbol('requestSourceGuard')
+
 const sendFile = async (ctx: any, next: any, filePath: string, fullback = true) => {
   if (!fs.existsSync(filePath)) {
     if (fullback) {
@@ -727,6 +734,38 @@ const sendFile = async (ctx: any, next: any, filePath: string, fullback = true) 
   const fileStat = fs.statSync(filePath)
   if (fileStat.isDirectory()) {
     await sendFile(ctx, next, path.resolve(filePath, 'index.html'))
+    return true
+  }
+
+  // Check the resolved executable document, covering /static and encoded path
+  // aliases as well as directory index resolution. Native API compatibility
+  // must never grant a source-free navigation into this document.write page.
+  const embedPath = path.resolve(STATIC_DIR, 'embed/index.html')
+  // Conservatively fold Windows case, trailing-dot/space and stream spellings,
+  // including on filesystems that do not expose a useful inode identifier.
+  const resourceName = (name: string) => path.resolve(name).toLowerCase().split(path.sep)
+    .map(part => part.split(':', 1)[0].replace(/[. ]+$/, '')).join(path.sep)
+  let executableEmbed = resourceName(filePath) === resourceName(embedPath)
+  if (!executableEmbed && fs.existsSync(embedPath)) {
+    const embedStat = fs.statSync(embedPath)
+    if (fileStat.ino > 0 && embedStat.ino > 0) {
+      executableEmbed = fileStat.dev === embedStat.dev && fileStat.ino === embedStat.ino
+    }
+    if (!executableEmbed) {
+      // Electron ASAR can synthesize a new inode on every stat. Resolve aliases
+      // even when positive inode values differ. Fail closed if this fails.
+      try {
+        executableEmbed = resourceName(fs.realpathSync(filePath)) === resourceName(fs.realpathSync(embedPath))
+      } catch (_) {
+        ctx.status = 403
+        ctx.body = result('error', 'Unable to validate static resource')
+        return true
+      }
+    }
+  }
+  if (executableEmbed && !ctx.req[requestSourceGuard](ctx.headers, ctx.req._protocol === true)) {
+    ctx.status = 403
+    ctx.body = result('error', 'Forbidden request origin')
     return true
   }
 
@@ -830,8 +869,25 @@ export async function killPtyProcesses (pty?: NodePty.IPty) {
 
 const server = (port = 3000) => {
   const app = new Koa()
+  const host = config.get('server.host', '127.0.0.1')
+  const checkOrigin = createRequestOriginGuard(port, host)
+
+  app.use(async (ctx: any, next: any) => {
+    const internal = ctx.req._protocol === true
+    ctx.req[requestSourceGuard] = checkOrigin
+    // Host validation also protects static pages against DNS rebinding. Native
+    // API requests retain existing authentication only when provenance is absent.
+    if ((!internal && !checkOrigin.allowsHost(ctx.headers)) ||
+      (ctx.path.startsWith('/api') && !checkOrigin(ctx.headers, internal, false, true))) {
+      ctx.status = 403
+      ctx.body = result('error', 'Forbidden request origin')
+      return
+    }
+    await next()
+  })
 
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, checkPermission))
+  app.use(checkApiRequestBody)
   app.use(async (ctx: any, next: any) => await wrapper(ctx, next, proxy))
 
   app.use(bodyParser({
@@ -879,8 +935,20 @@ const server = (port = 3000) => {
 
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const server = require('http').createServer(callback)
+  const isAllowedSocketRequest = (req: IncomingMessage) =>
+    checkOrigin(req.headers, false, req.headers.upgrade?.toLowerCase() === 'websocket') &&
+    isLocalhost(req.socket.remoteAddress || '')
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const io = require('socket.io')(server, { path: '/ws' })
+  const io = require('socket.io')(server, {
+    path: '/ws',
+    allowRequest: (req: IncomingMessage, callback: (error: string | null, allowed: boolean) => void) => {
+      const allowed = isAllowedSocketRequest(req)
+      callback(allowed ? null : 'Forbidden request origin', allowed)
+    }
+  })
+  io.engine.use((req: IncomingMessage, _res: unknown, next: (error?: Error) => void) => {
+    next(isAllowedSocketRequest(req) ? undefined : new Error('Forbidden request origin'))
+  })
   // eslint-disable-next-line @typescript-eslint/no-var-requires
 
   let pty: typeof NodePty | null = null
@@ -892,7 +960,7 @@ const server = (port = 3000) => {
   }
 
   io.on('connection', (socket: any) => {
-    if (!isLocalhost(socket.client.conn.remoteAddress)) {
+    if (!isLocalhost(socket.client.conn.remoteAddress) || !checkOrigin(socket.handshake.headers || {}, false, socket.handshake.headers?.upgrade?.toLowerCase() === 'websocket')) {
       socket.disconnect()
       return
     }
@@ -937,7 +1005,6 @@ const server = (port = 3000) => {
     }
   })
 
-  const host = config.get('server.host', '127.0.0.1')
   server.listen(port, host)
 
   console.log(`Address: http://${host}:${port}`)
