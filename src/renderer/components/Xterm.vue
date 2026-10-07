@@ -162,7 +162,12 @@ export default defineComponent({
           ? location.origin
           : 'http://' + location.hostname + ':' + $args().get('port')
 
-        socket = io(uri, { path: '/ws', query })
+        socket = io(uri, {
+          path: '/ws',
+          query,
+          // Custom-scheme XHR polling has an opaque Origin; WebSocket preserves it.
+          ...(location.protocol === 'yank-note:' ? { transports: ['websocket'] } : {}),
+        })
 
         xterm.onResize(size => socket!.emit('resize', [size.cols, size.rows]))
         xterm.onData(data => socket!.emit('input', data))
