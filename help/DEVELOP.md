@@ -44,6 +44,10 @@ API requests are checked before body parsing or route effects. The server
 compares browser Origin/Referer with the HTTP request Host, rejects explicit
 cross-origin, opaque/null, malformed or contradictory browser provenance, and
 accepts same-origin browser and internal Electron protocol requests.
+HTTP and HTTPS browser sources are supported, including TLS termination at a
+reverse proxy. The proxy must preserve the original Host (including any
+non-default port); no forwarding-protocol header is required. Origin and Referer
+must agree when both are present.
 There is no Host/address allowlist or DNS-rebinding protection.
 Requests without Origin, Referer or Sec-Fetch-Site retain the existing native
 API/MCP authentication behavior. This is compatibility, not proof of a trusted

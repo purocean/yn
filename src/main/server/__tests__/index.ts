@@ -436,7 +436,7 @@ describe('server index module', () => {
       { origin: undefined, 'sec-fetch-site': 'none' },
       { origin: undefined, referer: 'http://localhost:3099/', 'sec-fetch-site': 'cross-site' },
       { origin: 'http://localhost:3100' },
-      { origin: 'https://localhost:3099' }
+      { origin: 'https://localhost:3100' }
     ]) {
       const ctx = await runRequest({ path: '/api/settings', headers: { ...headers, authorization: 'Bearer admin' } })
       expect(ctx.status).toBe(403)
@@ -457,6 +457,8 @@ describe('server index module', () => {
 
   test.each([
     { host: 'notes.example:3099', origin: 'http://notes.example:3099' },
+    { host: 'notes.example', origin: 'https://notes.example', referer: 'https://notes.example/' },
+    { host: 'notes.example:443', origin: undefined, referer: 'https://notes.example/', 'sec-fetch-site': 'same-origin' },
     { host: '192.168.2.20:3099', origin: 'http://192.168.2.20:3099' },
     { host: 'localhost:8066', origin: 'http://localhost:8066' }
   ])('accepts same-origin API requests without an address allowlist: %j', async headers => {
@@ -498,6 +500,7 @@ describe('server index module', () => {
         expect(mocks.fsReadFile).not.toHaveBeenCalled()
       }
       expect((await runRequest({ path })).status).toBe(200)
+      expect((await runRequest({ path, headers: { host: 'notes.example:443', origin: undefined, referer: 'https://notes.example/' } })).status).toBe(200)
       expect((await runRequest({ path, headers: { origin: undefined }, req: { _protocol: true } })).status).toBe(200)
     }
   })

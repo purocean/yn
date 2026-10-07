@@ -8,6 +8,13 @@ describe('request origin boundary', () => {
     { host: '127.0.0.1:3044', origin: 'http://127.0.0.1:3044' },
     { host: '[::1]:3044', origin: 'http://[::1]:3044' },
     { host: 'notes.example:3044', origin: 'http://notes.example:3044' },
+    { host: 'notes.example', origin: 'https://notes.example' },
+    { host: 'notes.example:443', origin: 'https://notes.example' },
+    { host: 'notes.example:8443', origin: 'https://notes.example:8443' },
+    { host: 'notes.example', referer: 'https://notes.example/embed/?a=1' },
+    { host: 'notes.example:443', origin: 'https://notes.example', referer: 'https://notes.example/', 'sec-fetch-site': 'same-origin' },
+    { host: '[::1]:443', origin: 'https://[::1]' },
+    { host: 'localhost:3044', origin: 'https://localhost:3044' },
     { host: '192.168.1.4:3044', origin: 'http://192.168.1.4:3044' },
     { host: '192.168.2.20:3044', referer: 'http://192.168.2.20:3044/' },
     { host: '[2001:db8::1]:3044', origin: 'http://[2001:db8::1]:3044' },
@@ -29,7 +36,12 @@ describe('request origin boundary', () => {
     { host: 'localhost:3044', origin: 'http://user@localhost:3044' },
     { host: 'localhost:3044', origin: 'http://localhost:3044 https://evil.example' },
     { host: 'localhost:3044', origin: 'http://localhost:3045' },
-    { host: 'localhost:3044', origin: 'https://localhost:3044' },
+    { host: 'notes.example', origin: 'https://other.example' },
+    { host: 'notes.example:8443', origin: 'https://notes.example' },
+    { host: 'notes.example', origin: 'https://notes.example', referer: 'http://notes.example/' },
+    { host: 'notes.example', origin: 'http://notes.example', referer: 'https://notes.example/' },
+    { host: 'notes.example', origin: 'https://notes.example', 'sec-fetch-site': 'cross-site' },
+    { host: 'notes.example', origin: 'https://other.example', 'x-forwarded-proto': 'https' },
     { host: 'localhost:3044', origin: 'http://127.0.0.1:3044' },
     { host: 'localhost:3044', referer: 'http://localhost:3044/', 'sec-fetch-site': 'same-site' },
     { host: 'localhost:3044', origin: 'http://localhost:3044', referer: 'https://evil.example/' },
@@ -49,6 +61,8 @@ describe('request origin boundary', () => {
   test('requires explicit Origin for WebSocket even with matching fetch metadata', () => {
     expect(check({ host: 'localhost:3044', 'sec-fetch-site': 'same-origin' }, false, true)).toBe(false)
     expect(check({ host: 'localhost:3044', origin: 'http://localhost:3044' }, false, true)).toBe(true)
+    expect(check({ host: 'notes.example:443', origin: 'https://notes.example' }, false, true)).toBe(true)
+    expect(check({ host: 'notes.example:443', referer: 'https://notes.example/', 'sec-fetch-site': 'same-origin' }, false, true)).toBe(false)
   })
 
   test('only grants the metadata-free exception to internal Electron transport', () => {

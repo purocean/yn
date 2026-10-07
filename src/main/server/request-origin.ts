@@ -31,7 +31,9 @@ export function createRequestOriginGuard (port: number) {
         (!headers['sec-fetch-site'] || headers['sec-fetch-site'] === 'same-origin' || headers['sec-fetch-site'] === 'none')
     }
 
-    const targetOrigin = typeof headers.host === 'string' && parseOrigin(`http://${headers.host}`)
+    // A reverse proxy may terminate TLS before forwarding to the HTTP server.
+    const protocol = (origin || referer)?.startsWith('https:') ? 'https' : 'http'
+    const targetOrigin = typeof headers.host === 'string' && parseOrigin(`${protocol}://${headers.host}`)
     if (!targetOrigin) return false
 
     // Electron's privileged, standard scheme connects to the local terminal over HTTP.
