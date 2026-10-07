@@ -126,7 +126,7 @@
     "joplin-turndown-plugin-gfm": "^1.0.12",
     "js-untar": "^2.0.0",
     "juice": "^8.0.0",
-    "katex": "^0.16.21",
+    "katex": "^0.18.2",
     "lodash-es": "^4.18.1",
     "markdown-it": "^14.3.1",
     "markdown-it-abbr": "^2.0.0",
