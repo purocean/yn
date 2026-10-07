@@ -1,5 +1,6 @@
 /* eslint-disable no-irregular-whitespace */
 import { escape } from 'lodash-es'
+import katex from 'katex'
 import { MARKDOWN_FILE_EXT } from '@share/misc'
 import { triggerHook } from '@fe/core/hook'
 import { buildSrc } from '@fe/support/embed'
@@ -378,7 +379,7 @@ function buildHtml (title: string, body: string, options: HtmlExportOptions) {
         setTimeout(listenToc, 0);
       </script>
     ` : ''}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/${katex.version}/katex.min.css" rel="stylesheet" />
   </body>
 </html>`
 }
