@@ -529,14 +529,23 @@ const proxy = async (ctx: any, next: any) => {
   }
 }
 
+const resolveHelpPath = (relativePath: string) => {
+  const resolved = path.resolve(HELP_DIR, relativePath)
+  const helpDirWithSep = HELP_DIR.endsWith(path.sep) ? HELP_DIR : HELP_DIR + path.sep
+  if (resolved !== HELP_DIR && !resolved.startsWith(helpDirWithSep)) {
+    throw new Error('Invalid path')
+  }
+  return resolved
+}
+
 const readme = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/help')) {
     if (ctx.query.path) {
       ctx.type = mime.getType(ctx.query.path)
-      ctx.body = await fs.readFile(path.join(HELP_DIR, ctx.query.path.replace('../', '')))
+      ctx.body = await fs.readFile(resolveHelpPath(ctx.query.path))
     } else {
       ctx.body = result('ok', 'success', {
-        content: await fs.readFile(path.join(HELP_DIR, ctx.query.doc.replace('../', '')), 'utf-8')
+        content: await fs.readFile(resolveHelpPath(ctx.query.doc), 'utf-8')
       })
     }
   } else {
