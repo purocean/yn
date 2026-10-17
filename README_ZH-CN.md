@@ -80,13 +80,8 @@
 
 [Windows](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-win-x64-3.93.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-mac-arm64-3.93.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-mac-x64-3.93.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-linux-x86_64-3.93.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-linux-amd64-3.93.1.deb)
 
-1. fix(server): 校验浏览器请求来源和 API 请求体格式，限制终端和嵌入文档请求，并从设置响应中移除 JWT 签名密钥
-2. fix(server): 拒绝越出帮助目录的帮助文档和资源路径
-3. fix(server): 支持保留原始 Host 的反向代理转发 HTTPS 来源请求
-4. fix(export): 导出的 KaTeX 样式版本与渲染器保持一致
-5. fix(mcp): 在 Mac App Store 版本中隐藏不支持的 MCP 设置
-6. docs: 增加安全问题报告和贡献政策
-7. chore: Electron 升级到 41.10.6，并更新 MCP SDK、KaTeX、Markdown-it、Undici 等依赖
+1. fix: 提升安全性
+2. chore: Electron 升级到 41.10.6，并更新 MCP SDK、KaTeX、Markdown-it、Undici 等依赖
 
 [更多发布说明](https://github.com/purocean/yn/releases)
 

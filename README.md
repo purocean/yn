@@ -86,13 +86,8 @@ For more information on how to use the following functions, please see [characte
 
 [Windows](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-win-x64-3.93.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-mac-arm64-3.93.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-mac-x64-3.93.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-linux-x86_64-3.93.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-linux-amd64-3.93.1.deb)
 
-1. fix(server): Validate browser request origins and API body formats, restrict terminal and embedded-document requests, and keep the JWT signing secret out of settings responses
-2. fix(server): Reject help document and asset paths that escape the help directory
-3. fix(server): Support HTTPS request origins behind reverse proxies that preserve the original Host
-4. fix(export): Match exported KaTeX styles to the renderer version
-5. fix(mcp): Hide unsupported MCP settings in Mac App Store builds
-6. docs: Add security reporting and contribution policies
-7. chore: Upgrade Electron to 41.10.6 and update dependencies including the MCP SDK, KaTeX, Markdown-it, and Undici
+1. fix: Improve security
+2. chore: Upgrade Electron to 41.10.6 and update dependencies including MCP SDK, KaTeX, Markdown-it, and Undici
 
 [More release notes](https://github.com/purocean/yn/releases)
 
