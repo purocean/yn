@@ -1,5 +1,46 @@
 import { convertAppPath, mergeStreams, createStreamResponse } from '../helper'
 import { PassThrough } from 'stream'
+import * as nodePath from 'node:path'
+
+describe.each([
+  { name: 'POSIX', paths: nodePath.posix, root: '/app/help' },
+  { name: 'Windows', paths: nodePath.win32, root: 'C:\\app\\help' }
+])('resolvePathWithin with $name semantics', ({ paths, root }) => {
+  let resolvePathWithin: typeof import('../helper').resolvePathWithin
+
+  beforeEach(async () => {
+    vi.resetModules()
+    vi.doMock('path', () => paths)
+    ;({ resolvePathWithin } = await import('../helper'))
+  })
+
+  afterEach(() => vi.doUnmock('path'))
+
+  test.each([
+    'README.md', 'nested/guide.png', './nested/guide.md',
+    'nested/../README.md', '..guide.md', 'nested/使用 指南.md'
+  ])('resolves a contained relative path: %s', input => {
+    expect(resolvePathWithin(root, input)).toBe(paths.resolve(root, input))
+  })
+
+  test.each([
+    '../README.md', '../../secret', '..//../secret', 'nested/../../secret',
+    '../help-other/secret', '/README.md', 'C:\\secret', 'C:/secret', 'C:secret', 'D:/secret',
+    '//server/share/secret', '\\\\server\\share\\secret', '\\secret', '\\\\?\\C:\\secret',
+    '.', '..', 'nested/..', '', undefined, null, ['README.md'], 123, {}, 'README.md\0'
+  ])('rejects invalid, rooted or escaping inputs: %j', input => {
+    expect(resolvePathWithin(root, input)).toBeNull()
+  })
+
+  test('uses native separator rules', () => {
+    const input = '..\\secret.md'
+    expect(resolvePathWithin(root, input)).toBe(paths === nodePath.win32 ? null : paths.resolve(root, input))
+  })
+
+  test('accepts a root with a trailing separator and does not require an existing file', () => {
+    expect(resolvePathWithin(root + paths.sep, 'not-created.md')).toBe(paths.resolve(root, 'not-created.md'))
+  })
+})
 
 describe('helper module', () => {
   function collectChunks<T extends Buffer | string> (

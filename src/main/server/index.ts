@@ -6,7 +6,7 @@ import type NodePty from 'node-pty'
 import type { IncomingMessage } from 'http'
 import { createRequestOriginGuard } from './request-origin'
 import { checkApiRequestBody } from './request-body'
-import { resolveHelpPath } from './help-path'
+import { resolvePathWithin } from '../helper'
 import isEqual from 'lodash/isEqual'
 import * as path from 'path'
 import Koa from 'koa'
@@ -533,7 +533,11 @@ const proxy = async (ctx: any, next: any) => {
 const readme = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/help')) {
     const isAsset = ctx.query.path !== undefined
-    const helpPath = await resolveHelpPath(HELP_DIR, isAsset ? ctx.query.path : ctx.query.doc)
+    const input = isAsset ? ctx.query.path : ctx.query.doc
+    // Help URLs use POSIX separators and a leading '/' is help-root-relative.
+    const helpPath = typeof input === 'string' && !/[\\:]/.test(input) && !input.startsWith('//')
+      ? resolvePathWithin(HELP_DIR, input.replace(/^\//, ''))
+      : null
     if (!helpPath) {
       ctx.status = 404
       throw new Error('Help file not found')

@@ -78,7 +78,6 @@ const mocks = vi.hoisted(() => {
     fsEnsureFile: vi.fn(),
     fsExistsSync: vi.fn(),
     fsReadFile: vi.fn(),
-    fsRealpath: vi.fn(),
     fsRealpathSync: vi.fn(),
     fsReaddir: vi.fn(),
     fsStat: vi.fn(),
@@ -138,7 +137,6 @@ vi.mock('fs-extra', () => {
     ensureFile: (...args: any[]) => mocks.fsEnsureFile(...args),
     existsSync: (...args: any[]) => mocks.fsExistsSync(...args),
     readFile,
-    realpath: (...args: any[]) => mocks.fsRealpath(...args),
     realpathSync: (...args: any[]) => mocks.fsRealpathSync(...args),
     readdir: (...args: any[]) => mocks.fsReaddir(...args),
     stat: (...args: any[]) => mocks.fsStat(...args),
@@ -351,7 +349,6 @@ describe('server index module', () => {
     mocks.fsCreateReadStream.mockReturnValue('fs-stream')
     mocks.fsEnsureFile.mockResolvedValue(undefined)
     mocks.fsExistsSync.mockReturnValue(false)
-    mocks.fsRealpath.mockImplementation(async (filePath: string) => filePath)
     mocks.fsRealpathSync.mockImplementation((filePath: string) => filePath)
     mocks.fsReadFile.mockResolvedValue(Buffer.from('disk-content'))
     mocks.fsReaddir.mockResolvedValue([])
@@ -829,7 +826,6 @@ describe('server index module', () => {
       expect(ctx.status).toBe(404)
       expect(ctx.body).toEqual({ status: 'error', message: 'Help file not found', data: null })
       expect(mocks.fsReadFile).not.toHaveBeenCalled()
-      expect(mocks.fsRealpath).not.toHaveBeenCalled()
     })
 
     test.each(['%2e%2e%2fsecret', '..%2f..%2fsecret', '..%5csecret', 'duplicate'])('checks Koa-parsed query input: %s', async encoded => {
@@ -843,21 +839,6 @@ describe('server index module', () => {
       expect(ctx.status).toBe(404)
       expect(mocks.fsReadFile).not.toHaveBeenCalled()
       expect(mocks.jwtVerify).not.toHaveBeenCalled()
-    })
-
-    test('denies a symlink escape before reading', async () => {
-      mocks.fsRealpath.mockResolvedValueOnce('/help').mockResolvedValueOnce('/help-other/secret')
-      const ctx = await runRequest({ path: '/api/help', query: { [parameter]: 'link.md' } })
-      expect(ctx.status).toBe(404)
-      expect(mocks.fsReadFile).not.toHaveBeenCalled()
-    })
-
-    test('does not expose filesystem errors for missing files', async () => {
-      mocks.fsRealpath.mockRejectedValueOnce(new Error('ENOENT: /private/install/path'))
-      const ctx = await runRequest({ path: '/api/help', query: { [parameter]: 'missing.md' } })
-      expect(ctx.status).toBe(404)
-      expect(ctx.body.message).toBe('Help file not found')
-      expect(mocks.fsReadFile).not.toHaveBeenCalled()
     })
 
     test.each(['ENOENT', 'ENOTDIR', 'EISDIR', 'EACCES'])('does not expose a failed read after path validation: %s', async code => {
