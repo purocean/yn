@@ -78,6 +78,7 @@ const mocks = vi.hoisted(() => {
     fsEnsureFile: vi.fn(),
     fsExistsSync: vi.fn(),
     fsReadFile: vi.fn(),
+    fsRealpath: vi.fn(),
     fsRealpathSync: vi.fn(),
     fsReaddir: vi.fn(),
     fsStat: vi.fn(),
@@ -137,6 +138,7 @@ vi.mock('fs-extra', () => {
     ensureFile: (...args: any[]) => mocks.fsEnsureFile(...args),
     existsSync: (...args: any[]) => mocks.fsExistsSync(...args),
     readFile,
+    realpath: (...args: any[]) => mocks.fsRealpath(...args),
     realpathSync: (...args: any[]) => mocks.fsRealpathSync(...args),
     readdir: (...args: any[]) => mocks.fsReaddir(...args),
     stat: (...args: any[]) => mocks.fsStat(...args),
@@ -349,6 +351,7 @@ describe('server index module', () => {
     mocks.fsCreateReadStream.mockReturnValue('fs-stream')
     mocks.fsEnsureFile.mockResolvedValue(undefined)
     mocks.fsExistsSync.mockReturnValue(false)
+    mocks.fsRealpath.mockImplementation(async (filePath: string) => filePath)
     mocks.fsRealpathSync.mockImplementation((filePath: string) => filePath)
     mocks.fsReadFile.mockResolvedValue(Buffer.from('disk-content'))
     mocks.fsReaddir.mockResolvedValue([])
@@ -784,7 +787,7 @@ describe('server index module', () => {
     expect(converted.responseHeaders['content-type']).toBe('application/octet-stream')
     expect(converted.body).toEqual(Buffer.from('converted'))
 
-    await runRequest({ path: '/api/help', query: { doc: '../README.md' } })
+    await runRequest({ path: '/api/help', query: { doc: 'README.md' } })
     expect(mocks.fsReadFile).toHaveBeenCalledWith('/help/README.md', 'utf-8')
 
     mocks.fsReaddir.mockResolvedValueOnce([
@@ -800,6 +803,75 @@ describe('server index module', () => {
     await expect(runRequest({ method: 'POST', path: '/api/premium', body: { method: 'activate', payload: { code: 'x' } } })).resolves.toMatchObject({
       body: { status: 'ok', message: 'success', data: 'premium-result' }
     })
+  })
+
+  describe.each(['path', 'doc'])('help query parameter %s', parameter => {
+    test.each(['README.md', '/README.md', 'nested/guide.png', '/nested/guide.png'])('serves a contained file: %s', async input => {
+      mocks.fsReadFile.mockResolvedValueOnce(parameter === 'path' ? Buffer.from('asset') : 'document')
+      const ctx = await runRequest({ path: '/api/help/file', query: { [parameter]: input } })
+      const target = mocks.nodePath.join('/help', input)
+      expect(ctx.status).toBe(200)
+      if (parameter === 'path') {
+        expect(mocks.fsReadFile).toHaveBeenCalledWith(target)
+        expect(ctx.body).toEqual(Buffer.from('asset'))
+      } else {
+        expect(mocks.fsReadFile).toHaveBeenCalledWith(target, 'utf-8')
+        expect(ctx.body).toEqual({ status: 'ok', message: 'success', data: { content: 'document' } })
+      }
+    })
+
+    test.each([
+      '../README.md', '../guide.png', '../../secret', '../help-other/secret',
+      '..\\secret', 'C:/secret', 'C:secret', '//server/share/secret',
+      '', '/', undefined, ['README.md', 'other.md'], 'README.md\0'
+    ])('denies invalid paths without reading a file: %j', async input => {
+      const ctx = await runRequest({ path: '/api/help', query: { [parameter]: input } })
+      expect(ctx.status).toBe(404)
+      expect(ctx.body).toEqual({ status: 'error', message: 'Help file not found', data: null })
+      expect(mocks.fsReadFile).not.toHaveBeenCalled()
+      expect(mocks.fsRealpath).not.toHaveBeenCalled()
+    })
+
+    test.each(['%2e%2e%2fsecret', '..%2f..%2fsecret', '..%5csecret', 'duplicate'])('checks Koa-parsed query input: %s', async encoded => {
+      const { default: Koa } = await vi.importActual<typeof import('koa')>('koa')
+      const app = new Koa()
+      const query = encoded === 'duplicate'
+        ? `${parameter}=README.md&${parameter}=other.md`
+        : `${parameter}=${encoded}`
+      const parsed = app.createContext({ url: '/api/help?' + query } as any, {} as any)
+      const ctx = await runRequest({ path: '/api/help', query: parsed.query, ip: '203.0.113.8', headers: { origin: undefined } })
+      expect(ctx.status).toBe(404)
+      expect(mocks.fsReadFile).not.toHaveBeenCalled()
+      expect(mocks.jwtVerify).not.toHaveBeenCalled()
+    })
+
+    test('denies a symlink escape before reading', async () => {
+      mocks.fsRealpath.mockResolvedValueOnce('/help').mockResolvedValueOnce('/help-other/secret')
+      const ctx = await runRequest({ path: '/api/help', query: { [parameter]: 'link.md' } })
+      expect(ctx.status).toBe(404)
+      expect(mocks.fsReadFile).not.toHaveBeenCalled()
+    })
+
+    test('does not expose filesystem errors for missing files', async () => {
+      mocks.fsRealpath.mockRejectedValueOnce(new Error('ENOENT: /private/install/path'))
+      const ctx = await runRequest({ path: '/api/help', query: { [parameter]: 'missing.md' } })
+      expect(ctx.status).toBe(404)
+      expect(ctx.body.message).toBe('Help file not found')
+      expect(mocks.fsReadFile).not.toHaveBeenCalled()
+    })
+
+    test.each(['ENOENT', 'ENOTDIR', 'EISDIR', 'EACCES'])('does not expose a failed read after path validation: %s', async code => {
+      mocks.fsReadFile.mockRejectedValueOnce(new Error(`${code}: /private/install/path`))
+      const ctx = await runRequest({ path: '/api/help', query: { [parameter]: 'guide.md' } })
+      expect(ctx.status).toBe(404)
+      expect(ctx.body.message).toBe('Help file not found')
+    })
+  })
+
+  test('does not fall back to doc when path is present but invalid', async () => {
+    const ctx = await runRequest({ path: '/api/help', query: { path: '', doc: 'README.md' } })
+    expect(ctx.status).toBe(404)
+    expect(mocks.fsReadFile).not.toHaveBeenCalled()
   })
 
   test('handles tmp files, user files, and recursive user directories', async () => {
@@ -1040,7 +1112,7 @@ describe('server index module', () => {
   })
 
   test('serves help assets, settings bootstrap js, extension files, and proxy dispatchers', async () => {
-    const helpAsset = await runRequest({ path: '/api/help', query: { path: '../guide.png' } })
+    const helpAsset = await runRequest({ path: '/api/help', query: { path: 'guide.png' } })
     expect(helpAsset.type).toBe('image/png')
     expect(mocks.fsReadFile).toHaveBeenCalledWith('/help/guide.png')
 
