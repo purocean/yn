@@ -104,7 +104,7 @@ describe('server file module', () => {
 
     await expect(file.read('main', 'notes/a.txt')).resolves.toEqual(Buffer.from('hello'))
     expect(hash).toBe(md5('hello'))
-    expect(() => file.read('main', '../outside.md')).toThrow('Path error.')
+    await expect(Promise.resolve().then(() => file.read('main', '../outside.md'))).rejects.toThrow('Path error.')
     expect(() => file.write('missing', '/a.md', 'x')).toThrow('repo missing not exists.')
   })
 

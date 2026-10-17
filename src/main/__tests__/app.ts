@@ -513,7 +513,9 @@ describe('main app entry', () => {
     expect(win.maximize).toHaveBeenCalled()
 
     await mocks.actions['show-open-dialog']({ properties: ['openFile'] })
-    expect(electron.dialog.showOpenDialog).toHaveBeenCalledWith(win, { properties: ['openFile'] })
+    expect(electron.dialog.showOpenDialog).toHaveBeenCalledWith(win, expect.objectContaining({
+      properties: ['openFile'],
+    }))
     expect(mocks.actions['get-main-widow']()).toBe(win)
     expect(mocks.actions['get-url-mode']()).toBe('scheme')
     mocks.actions['set-url-mode']('prod')

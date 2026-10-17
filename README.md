@@ -82,18 +82,12 @@ For more information on how to use the following functions, please see [characte
 
 ## Changelogs
 
-### [v3.93.0](https://github.com/purocean/yn/releases/tag/v3.93.0) 2026-09-19
+### [v3.93.1](https://github.com/purocean/yn/releases/tag/v3.93.1) 2026-10-17
 
-[Windows](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-win-x64-3.93.0.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-mac-arm64-3.93.0.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-mac-x64-3.93.0.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-linux-x86_64-3.93.0.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.93.0/Yank-Note-linux-amd64-3.93.0.deb)
+[Windows](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-win-x64-3.93.1.exe) | [macOS arm64](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-mac-arm64-3.93.1.dmg) | [macOS x64](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-mac-x64-3.93.1.dmg) | [Linux AppImage](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-linux-x86_64-3.93.1.AppImage) | [Linux deb](https://github.com/purocean/yn/releases/download/v3.93.1/Yank-Note-linux-amd64-3.93.1.deb)
 
-1. feat(ui): Redesign the desktop title bar to integrate file tabs, native window controls, navigation actions, dragging, and always-on-top controls while freeing more vertical space
-2. feat(keybinding): Add an opt-in Non-US keyboard layout Beta mode for more accurate shortcut recording and matching across the editor, workbench, and application
-3. feat(markdown): Add a global heading-number setting for preview and export, with per-document front matter overrides
-4. feat(terminal): Add settings for terminal font family and font size
-5. fix(editor): Allow programmatic content updates in read-only mode so external read-only files load correctly
-6. fix(export): Improve embedded content compatibility in PDF export windows, including Drawio diagrams
-7. style(markdown): Soften inline code backgrounds in light and dark themes
-8. chore: Upgrade Electron to 41.10.3 and update dependencies and security-related transitive packages
+1. fix: Improve security
+2. chore: Upgrade Electron to 41.10.6 and update dependencies including MCP SDK, KaTeX, Markdown-it, and Undici
 
 [More release notes](https://github.com/purocean/yn/releases)
 

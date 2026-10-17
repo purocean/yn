@@ -1,7 +1,23 @@
 import { PassThrough, Readable } from 'stream'
 import { ReadableStream } from 'stream/web'
+import * as path from 'path'
 
 export const convertAppPath = (path: string) => path.replace('app.asar', 'app.asar.unpacked')
+
+/**
+ * Resolve a relative path strictly inside root using native path semantics.
+ * Absolute and drive-qualified inputs are rejected on every platform.
+ * This is a lexical check only; it does not resolve symlinks or filesystem aliases.
+ */
+export function resolvePathWithin (root: string, input: unknown): string | null {
+  if (typeof input !== 'string' || !input || input.includes('\0') || path.isAbsolute(input) || path.win32.parse(input).root) {
+    return null
+  }
+
+  const target = path.resolve(root, input)
+  const relative = path.relative(path.resolve(root), target)
+  return relative !== '' && relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative) ? target : null
+}
 
 export function mergeStreams (streams: NodeJS.ReadableStream[]) {
   let pass = new PassThrough()

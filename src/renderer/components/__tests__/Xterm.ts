@@ -172,6 +172,26 @@ beforeEach(() => {
 })
 
 describe('Xterm', () => {
+  test.each([
+    ['yank-note:', 'yank-note://localhost', 'http://localhost:9876', ['websocket']],
+    ['http:', 'http://localhost:8066', 'http://localhost:8066', undefined],
+    ['https:', 'https://localhost:8066', 'https://localhost:8066', undefined],
+    ['yank-note-other:', 'null', 'http://localhost:9876', undefined],
+  ])('selects the transport for %s without changing browser defaults', (protocol, origin, uri, transports) => {
+    vi.stubGlobal('location', { protocol, origin, hostname: 'localhost' })
+    const wrapper = mount(Xterm)
+
+    try {
+      ;(wrapper.vm as any).init({ cwd: '/repo', env: { A: '1' } })
+
+      const options = { path: '/ws', query: { cwd: '/repo', env: '{"A":"1"}' } }
+      expect(mocks.io).toHaveBeenCalledWith(uri, transports ? { ...options, transports } : options)
+    } finally {
+      wrapper.unmount()
+      vi.unstubAllGlobals()
+    }
+  })
+
   test('initializes terminal, socket, addons, resize handling and disposal', async () => {
     const onDisconnect = vi.fn()
     mocks.settings.set('terminal.font-size', 18)

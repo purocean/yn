@@ -1,3 +1,11 @@
+const mocks = vi.hoisted(() => ({
+  isMas: false,
+}))
+
+vi.mock('@fe/support/args', () => ({
+  get FLAG_MAS () { return mocks.isMas },
+}))
+
 import mcpServer from '../mcp-server'
 
 function createCtx () {
@@ -32,8 +40,23 @@ function setUrl (url: string) {
 }
 
 describe('mcp-server plugin', () => {
+  beforeEach(() => {
+    mocks.isMas = false
+  })
+
   afterEach(() => {
     vi.clearAllMocks()
+  })
+
+  test('does not expose MCP settings in the Mac App Store build', () => {
+    mocks.isMas = true
+    const ctx = createCtx()
+
+    mcpServer.register(ctx)
+
+    expect(ctx.action.registerAction).not.toHaveBeenCalled()
+    expect(ctx.registerHook).not.toHaveBeenCalled()
+    expect(ctx._schema.properties).not.toHaveProperty('mcp.enabled')
   })
 
   test('registers copy endpoint action using explicit query port', () => {
