@@ -6,6 +6,7 @@ import type NodePty from 'node-pty'
 import type { IncomingMessage } from 'http'
 import { createRequestOriginGuard } from './request-origin'
 import { checkApiRequestBody } from './request-body'
+import { resolvePathWithin } from '../helper'
 import isEqual from 'lodash/isEqual'
 import * as path from 'path'
 import Koa from 'koa'
@@ -531,13 +532,30 @@ const proxy = async (ctx: any, next: any) => {
 
 const readme = async (ctx: any, next: any) => {
   if (ctx.path.startsWith('/api/help')) {
-    if (ctx.query.path) {
-      ctx.type = mime.getType(ctx.query.path)
-      ctx.body = await fs.readFile(path.join(HELP_DIR, ctx.query.path.replace('../', '')))
+    const isAsset = ctx.query.path !== undefined
+    const input = isAsset ? ctx.query.path : ctx.query.doc
+    // Help URLs use POSIX separators and a leading '/' is help-root-relative.
+    const helpPath = typeof input === 'string' && !/[\\:]/.test(input) && !input.startsWith('//')
+      ? resolvePathWithin(HELP_DIR, input.replace(/^\//, ''))
+      : null
+    if (!helpPath) {
+      ctx.status = 404
+      throw new Error('Help file not found')
+    }
+
+    let content: string | Buffer
+    try {
+      content = isAsset ? await fs.readFile(helpPath) : await fs.readFile(helpPath, 'utf-8')
+    } catch (_) {
+      ctx.status = 404
+      throw new Error('Help file not found')
+    }
+
+    if (isAsset) {
+      ctx.type = mime.getType(helpPath)
+      ctx.body = content
     } else {
-      ctx.body = result('ok', 'success', {
-        content: await fs.readFile(path.join(HELP_DIR, ctx.query.doc.replace('../', '')), 'utf-8')
-      })
+      ctx.body = result('ok', 'success', { content })
     }
   } else {
     await next()
