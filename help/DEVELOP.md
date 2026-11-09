@@ -1,6 +1,6 @@
 # Development environment setup guide
 
-English | [中文说明](./DEVELOP_ZH-CN.md)
+English | [中文说明](./DEVELOP_ZH-CN.md) | [Tiếng Việt](./DEVELOP_VI.md)
 
 ## Development environment setup
 

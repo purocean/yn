@@ -9,7 +9,7 @@ define:
 
 # Yank-Note Features Instructions
 
-English | [中文](./FEATURES_ZH-CN.md)
+English | [中文](./FEATURES_ZH-CN.md) | [Tiếng Việt](./FEATURES_VI.md)
 
 [toc]{type: "ol", level: [2]}
 
