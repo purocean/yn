@@ -1,6 +1,6 @@
 # 开发环境搭建指南
 
-[English](./DEVELOP.md) | 中文
+[English](./DEVELOP.md) | 中文 | [Tiếng Việt](./DEVELOP_VI.md)
 
 ## 开发环境搭建
 

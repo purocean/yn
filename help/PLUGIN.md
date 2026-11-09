@@ -4,7 +4,7 @@ headingNumber: true
 
 # Plug-In Development Guide
 
-English | [中文](./PLUGIN_ZH-CN.md)
+English | [中文](./PLUGIN_ZH-CN.md) | [Tiếng Việt](./PLUGIN_VI.md)
 
 [toc]{type: "ol"}
 

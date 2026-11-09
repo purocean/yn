@@ -4,7 +4,7 @@ headingNumber: true
 
 # 插件开发指南
 
-[English](./PLUGIN.md) | 中文
+[English](./PLUGIN.md) | 中文 | [Tiếng Việt](./PLUGIN_VI.md)
 
 [toc]{type: "ol"}
 

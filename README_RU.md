@@ -5,7 +5,7 @@
 
 [![Скачать](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Не рекомендуется](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
-[English](./README.md) | [中文说明](./README_ZH-CN.md) | Русский
+[English](./README.md) | [中文说明](./README_ZH-CN.md) | Русский | [Tiếng Việt](./README_VI.md)
 
 [toc]{level: [2]}
 

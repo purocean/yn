@@ -26,3 +26,8 @@ fs.writeFileSync(path.join(__dirname, '..', './help/README_ZH-CN.md'), md)
 readme = path.join(__dirname, '..', 'README_RU.md')
 md = fs.readFileSync(readme).toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')
 fs.writeFileSync(path.join(__dirname, '..', './help/README_RU.md'), md)
+
+// copy README_VI.md
+readme = path.join(__dirname, '..', 'README_VI.md')
+md = fs.readFileSync(readme).toString('UTF-8').replace(/\]\(\.\/help\//ig, '](./').replace(/src="\.\/help\//ig, 'src="./')
+fs.writeFileSync(path.join(__dirname, '..', './help/README_VI.md'), md)

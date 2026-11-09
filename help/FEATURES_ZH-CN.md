@@ -9,7 +9,7 @@ define:
 
 # Yank-Note 特色功能使用说明
 
-[English](./FEATURES.md) | 中文
+[English](./FEATURES.md) | 中文 | [Tiếng Việt](./FEATURES_VI.md)
 
 [toc]{type: "ol", level: [2]}
 
